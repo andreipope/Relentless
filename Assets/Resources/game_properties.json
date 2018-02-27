@@ -1,0 +1,57 @@
+{
+    "turnDuration": 30,
+    "minDeckSize": 0,
+    "maxDeckSize": 30,
+    "gameStartActions": [
+        {
+            "zoneId": 0,
+            "name": "Shuffle cards",
+            "target": "AllPlayers",
+            "$type": "CCGKit.ShuffleCardsAction"
+        },
+        {
+            "originZoneId": 0,
+            "destinationZoneId": 1,
+            "numCards": 5,
+            "name": "Move cards",
+            "target": "AllPlayers",
+            "$type": "CCGKit.MoveCardsAction"
+        }
+    ],
+    "turnStartActions": [
+        {
+            "statId": 1,
+            "value": {
+                "$type": "CCGKit.TurnNumberValue"
+            },
+            "name": "Set player stat",
+            "target": "CurrentPlayer",
+            "$type": "CCGKit.SetPlayerStatAction"
+        },
+        {
+            "originZoneId": 0,
+            "destinationZoneId": 1,
+            "numCards": 1,
+            "name": "Move cards",
+            "target": "CurrentPlayer",
+            "$type": "CCGKit.MoveCardsAction"
+        }
+    ],
+    "turnEndActions": [],
+    "endGameConditions": [
+        {
+            "statId": 0,
+            "op": "LessThanOrEqualTo",
+            "value": 0,
+            "type": "Loss",
+            "$type": "CCGKit.PlayerStatEndGameCondition"
+        },
+        {
+            "zoneId": 0,
+            "op": "LessThanOrEqualTo",
+            "value": 0,
+            "type": "Loss",
+            "$type": "CCGKit.CardsInZoneEndGameCondition"
+        }
+    ]
+}

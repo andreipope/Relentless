@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: LoadingCard3
+  m_Controller: {fileID: 9100000, guid: 2bbec30136c7b44a6bafe5c237c5ef92, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 27c4f556b171d4f38ae75bc55b9b28e2, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 27c4f556b171d4f38ae75bc55b9b28e2, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 776e0a761f2b04dd8941bf68e185d088, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d0a79c6223c8d40a3aeb9da7be837254, type: 2}

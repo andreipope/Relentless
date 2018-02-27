@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Life",
+        "baseValue": 20,
+        "originalValue": 20,
+        "minValue": 0,
+        "maxValue": 99,
+        "id": 0,
+        "$type": "CCGKit.PlayerStat"
+    },
+    {
+        "name": "Mana",
+        "baseValue": 0,
+        "originalValue": 0,
+        "minValue": 0,
+        "maxValue": 10,
+        "id": 1,
+        "$type": "CCGKit.PlayerStat"
+    }
+]

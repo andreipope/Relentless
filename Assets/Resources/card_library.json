@@ -1,0 +1,1593 @@
+[
+    {
+        "name": "Fire",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Burrrnn",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "<b>Feral:</b> attacks immediately DOT 1 dmg for 2 turns.",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Feral",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 2,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 2,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 1,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 1,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 34
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Cynderman",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 5,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "DOT 2 dmg for 2 turns",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 4,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 3,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 35
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Gargantua",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 8,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "DOT 4 for 2 turns",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Heavy",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 6,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 6,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 6,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 6,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 36
+            }
+        ]
+    },
+    {
+        "name": "Water",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Jetter",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 3,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Does extra dmg to fire zombies",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 3,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 4,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 37
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Freezzee",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 4,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Freeze target for 1 turn",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 4,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 4,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 38
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Tsunami",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 7,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Creates a title wave. damages target and 2 adj. targets",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 8,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 7,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 7,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 39
+            }
+        ]
+    },
+    {
+        "name": "Earth",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Golem",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 4,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "<b>Heavy:</b> must kill to attack others",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Heavy",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 2,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 2,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 6,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 6,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 40
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Bolderr",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 4,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 4,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 5,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 5,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 41
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Mountain",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 8,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "<b>Heavy:</b> must kill to attack others",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Heavy",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 8,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 8,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 42
+            }
+        ]
+    },
+    {
+        "name": "Air",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Pushhh",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 3,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Select a friendly zombie to return to hand",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 3,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 3,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 43
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Stromcaller",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 6,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Creates a storm that shocks target and 2 adjacent cards",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 4,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 5,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 5,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 44
+            },
+            {
+                "cardTypeId": 0,
+                "name": "ZeuZ",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 8,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Stuns target disabling it until its next turn.",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 8,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 7,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 7,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 45
+            }
+        ]
+    },
+    {
+        "name": "Life",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Shroom",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 4,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Poison target DOT 2 for 2 turns",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 4,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 4,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 2,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 2,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 46
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Vindrom",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Entangles target disable for the rest of turn",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 5,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 5,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 5,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 5,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 47
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Shammann",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 8,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Summons a 1/1 zombie minion start of each turn",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 6,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 6,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 8,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 48
+            }
+        ]
+    },
+    {
+        "name": "Toxic",
+        "cards": [
+            {
+                "cardTypeId": 0,
+                "name": "Ghoul ",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Walker",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 3,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 3,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 49
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Hazmaz",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "<b>Feral:</b> attacks immediately, DOT 2 for 2 turns",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Feral",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 3,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 3,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 50
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Cherno-bill",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "<b>Heavy:</b> must kill to attack others. does to all enemy 2 dmg",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Heavy",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 8,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 8,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 8,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 51
+            }
+        ]
+    },
+    {
+        "name": "Items",
+        "cards": [
+            {
+                "cardTypeId": 1,
+                "name": "Stapler",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Heals a zombie for 4 HP",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Common",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Item",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [],
+                "keywords": [],
+                "abilities": [],
+                "id": 52
+            },
+            {
+                "cardTypeId": 1,
+                "name": "Nail Bomb",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Damage target and 2 adjacent zombies for 5 damage",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Rare",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Item",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [],
+                "keywords": [],
+                "abilities": [],
+                "id": 53
+            },
+            {
+                "cardTypeId": 1,
+                "name": "Goo Bottle",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 0,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Adds 2 full Goo vials",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Legendary",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Item",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [],
+                "keywords": [],
+                "abilities": [
+                    {
+                        "zoneId": 0,
+                        "costs": [],
+                        "name": "AddGoo",
+                        "type": "Activated",
+                        "effect": {
+                            "statId": 1,
+                            "value": {
+                                "constant": 2,
+                                "$type": "CCGKit.ConstantValue"
+                            },
+                            "duration": 0,
+                            "$type": "CCGKit.IncreasePlayerStatEffect"
+                        },
+                        "target": {
+                            "conditions": [],
+                            "$type": "CCGKit.PlayerTarget"
+                        },
+                        "$type": "CCGKit.ActivatedAbility"
+                    }
+                ],
+                "id": 54
+            },
+            {
+                "cardTypeId": 0,
+                "name": "Chainsaw",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 2,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Loses 1 HP on attack",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Card_zombie",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 4,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": "Epic",
+                        "name": "Rarity",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Item",
+                        "name": "Type",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Card_zombie",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 5,
+                        "statId": 0,
+                        "name": "DMG",
+                        "originalValue": 5,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 3,
+                        "statId": 1,
+                        "name": "HP",
+                        "originalValue": 3,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 56
+            }
+        ]
+    }
+]

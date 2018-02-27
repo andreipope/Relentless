@@ -1,0 +1,3 @@
+MyText = aaaaaEN
+placeres = ccc // te veo
+puig = bbb // uiuiu

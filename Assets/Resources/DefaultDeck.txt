@@ -1,0 +1,53 @@
+    {
+        "name": "Default deck",
+        "cards": [
+            {
+                "id": 0,
+                "amount": 4
+            },
+            {
+                "id": 1,
+                "amount": 3
+            },
+            {
+                "id": 2,
+                "amount": 3
+            },
+            {
+                "id": 3,
+                "amount": 2
+            },
+            {
+                "id": 4,
+                "amount": 2
+            },
+            {
+                "id": 5,
+                "amount": 1
+            },
+            {
+                "id": 6,
+                "amount": 2
+            },
+            {
+                "id": 7,
+                "amount": 2
+            },
+            {
+                "id": 8,
+                "amount": 2
+            },
+            {
+                "id": 9,
+                "amount": 2
+            },
+            {
+                "id": 10,
+                "amount": 3
+            },
+            {
+                "id": 11,
+                "amount": 4
+            }
+        ]
+    }
