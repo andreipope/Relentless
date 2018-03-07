@@ -279,7 +279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &114138726668230486
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -461,9 +461,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d7209f411c7bc4649b588985882ba6b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 13faab6b01248f944b7eb3ecd2c60275, type: 3}
   m_Type: 0
-  m_PreserveAspect: 1
+  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -588,8 +588,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64aa9c59e03a17f4e83207e208677e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 0}
   onHoverOverlay: {fileID: 114777006250432522}
   onClickOverlay: {fileID: 114456084035219840}
+  _interactable: 1
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -633,8 +635,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64aa9c59e03a17f4e83207e208677e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 0}
   onHoverOverlay: {fileID: 114630991807168042}
   onClickOverlay: {fileID: 114299387682427988}
+  _interactable: 1
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -686,7 +690,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 1c6e4d9a6b2684673b51694dc1247851, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d94a7f196a28e4b4db04d5f403ad67d8, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -928,8 +932,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 481, y: 531}
+  m_AnchoredPosition: {x: 0.1, y: -5}
+  m_SizeDelta: {x: 481.1, y: 495}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224141405972037394
 RectTransform:
@@ -1123,7 +1127,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -230}
+  m_AnchoredPosition: {x: 0, y: -220}
   m_SizeDelta: {x: 450, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224906142430105812

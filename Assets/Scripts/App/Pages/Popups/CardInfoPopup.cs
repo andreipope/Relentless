@@ -41,8 +41,11 @@ namespace GrandDevs.CZB
 			_desintegrateButton = _selfPage.transform.Find("DesintegrateArea/DesintegrateButton").GetComponent<MenuButtonNoGlow>();
 			_backButton = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
 
+
 			_desintegrateButton.onClickEvent.AddListener(DesintegrateButtonHandler);
 			_backButton.onClickEvent.AddListener(Hide);
+			_selfPage.GetComponent<Button>().onClick.AddListener(Hide);
+
 
 			_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
 			_amount = _selfPage.transform.Find("DesintegrateArea/Amount/Value").GetComponent<Text>();
@@ -73,8 +76,12 @@ namespace GrandDevs.CZB
         {
             _card = data as Card;
             _description.text = _card.GetStringProperty("Text");
-            _amount.text = _card.GetIntProperty("MaxCopies").ToString();
-
+            int amount = _card.GetIntProperty("Amount");
+            if (amount == 0)
+                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+            else
+                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+            _amount.text = amount.ToString();
             Show();
         }
 
@@ -85,12 +92,17 @@ namespace GrandDevs.CZB
 
         private void DesintegrateButtonHandler()
         {
-            cardTransform.DOKill();
-			cardTransform.DOScale(new Vector3(1.8f, 1.8f, 1.8f), 0.2f);
-            _uiManager.DrawPopup<DesintigrateCardPopup>(_card);
-			(_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
-
+            int amount = _card.GetIntProperty("Amount");
+            if (amount == 0)
+                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+            //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
+            else
+            {
+                cardTransform.DOKill();
+                cardTransform.DOScale(new Vector3(1.8f, 1.8f, 1.8f), 0.2f);
+                _uiManager.DrawPopup<DesintigrateCardPopup>(_card);
+                (_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
+            }
 		}
-
     }
 }

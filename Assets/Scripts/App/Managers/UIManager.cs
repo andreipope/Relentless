@@ -40,6 +40,8 @@ namespace GrandDevs.CZB
             _uiPages.Add(new CollectionPage());
             _uiPages.Add(new DeckEditingPage());
             _uiPages.Add(new ShopPage());
+            _uiPages.Add(new GameplayPage());
+            _uiPages.Add(new PackOpenerPage());
 
             foreach (var page in _uiPages)
                 page.Init();

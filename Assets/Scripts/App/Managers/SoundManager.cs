@@ -14,6 +14,8 @@ namespace GrandDevs.CZB
                                      _containersToRemove;
         private Transform _soundsRoot;
 
+        private float _sfxVolume;
+
         public void Dispose()
         {
 
@@ -21,6 +23,7 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
+            _sfxVolume = 1;
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
             MonoBehaviour.DontDestroyOnLoad(_soundsRoot);
@@ -107,7 +110,10 @@ namespace GrandDevs.CZB
             //        soundParam.volume = soundParam.isBackground ? MM.PlayerManager.GetPlayerData.volumeMusic : MM.PlayerManager.GetPlayerData.volumeSound;
             //}
             soundParam.priority = 128;
-            soundParam.volume = 1f;
+            if (volume < 0)
+                soundParam.volume = _sfxVolume;
+            else
+                soundParam.volume = volume;
 
 
             soundParam.startPosition = 0f;
@@ -150,7 +156,10 @@ namespace GrandDevs.CZB
             soundParam.isMute = false;
             soundParam.playOnAwake = false;
             soundParam.priority = 128;
-            soundParam.volume = volume;
+            if (volume < 0)
+                soundParam.volume = _sfxVolume;
+            else
+                soundParam.volume = volume;
 
 
             soundParam.startPosition = 0f;
@@ -186,7 +195,7 @@ namespace GrandDevs.CZB
         {
             //GameClient.Get<IPlayerManager>().GetPlayerData.volumeSound = value;
             //GameClient.Get<IDataManager>().SavePlayerData();
-
+            _sfxVolume = value;
             var containers = _soundContainers.FindAll(x => !x.soundParameters.isBackground);
 
             if (containers != null)
@@ -266,7 +275,7 @@ namespace GrandDevs.CZB
                 default: break;
             }
 
-            list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
+            list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
 
             return list;
         }

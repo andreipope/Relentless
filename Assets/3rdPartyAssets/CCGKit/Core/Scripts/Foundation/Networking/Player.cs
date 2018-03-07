@@ -2,6 +2,7 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using GrandDevs.CZB;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -59,6 +60,12 @@ namespace CCGKit
 
         protected virtual void Start()
         {
+            //plugin doesn't use id's at all... very strange
+            playerInfo.id = 0;
+            opponentInfo.id = 1;
+
+            GameClient.Get<IPlayerManager>().playerInfo = playerInfo;
+            GameClient.Get<IPlayerManager>().opponentInfo = opponentInfo;
         }
 
         public override void OnStartLocalPlayer()
@@ -138,8 +145,8 @@ namespace CCGKit
             var msgDefaultDeck = new List<int>();
             if (decks.Count > 0)
             {
-                var defaultDeckIndex = isHuman ? PlayerPrefs.GetInt("default_deck") : PlayerPrefs.GetInt("default_ai_deck");
-                var defaultDeck = decks[defaultDeckIndex];
+                //var defaultDeckIndex = isHuman ? PlayerPrefs.GetInt("default_deck") : PlayerPrefs.GetInt("default_ai_deck");
+                var defaultDeck = decks[GameManager.Instance.currentDeckId];
                 for (var i = 0; i < defaultDeck.cards.Count; i++)
                 {
                     for (var j = 0; j < defaultDeck.cards[i].amount; j++)
@@ -533,6 +540,17 @@ namespace CCGKit
             client.Send(NetworkProtocol.FightPlayer, msg);
         }
 
+
+		public void FightPlayerBySkill(int attack)
+		{
+            effectSolver.FightPlayerBySkill(netId, attack);
+
+            var msg = new FightPlayerBySkillMessage();
+			msg.attackingPlayerNetId = netId;
+			msg.attack = attack;
+			client.Send(NetworkProtocol.FightPlayerBySkill, msg);
+		}
+
         public void FightCreature(RuntimeCard attackingCard, RuntimeCard attackedCard)
         {
             effectSolver.FightCreature(netId, attackingCard, attackedCard);
@@ -542,6 +560,16 @@ namespace CCGKit
             msg.attackingCardInstanceId = attackingCard.instanceId;
             msg.attackedCardInstanceId = attackedCard.instanceId;
             client.Send(NetworkProtocol.FightCreature, msg);
+        }
+		public void FightCreatureBySkill(int attack, RuntimeCard attackedCard)
+		{
+            effectSolver.FightCreatureBySkill(netId, attackedCard, attack);
+
+            var msg = new FightCreatureBySkillMessage();
+            msg.attackingPlayerNetId = netId;
+            msg.attackedCardInstanceId = attackedCard.instanceId;
+            msg.attack = attack;
+            client.Send(NetworkProtocol.FightCreatureBySkill, msg);
         }
     }
 }

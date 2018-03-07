@@ -23,6 +23,7 @@ namespace GrandDevs.CZB
         private bool _isAppPaused = false;
 
         private Enumerators.AppState _previouseState;
+        private Enumerators.AppState _previouseState2;
         public Enumerators.AppState AppState { get; set; }
 
         public bool IsAppPaused 
@@ -104,10 +105,15 @@ namespace GrandDevs.CZB
                         _uiManager.SetPage<ShopPage>();
                     }
                     break;
+                case Enumerators.AppState.PACK_OPENER:
+                    {
+                        _uiManager.SetPage<PackOpenerPage>();
+                    }
+                    break;
                 case Enumerators.AppState.GAMEPLAY:
                     {
                         _uiManager.HideAllPages();
-
+                        _uiManager.SetPage<GameplayPage>();
 						//GameObject.Find("MainApp/Camera").SetActive(false);
 						//GameObject.Find("MainApp/Camera2").SetActive(false);
 
@@ -135,7 +141,8 @@ namespace GrandDevs.CZB
                 default:
                     throw new NotImplementedException("Not Implemented " + stateTo.ToString() + " state!");
             }
-            _previouseState = AppState;
+            if(AppState != Enumerators.AppState.SHOP)
+                _previouseState = AppState;
             AppState = stateTo;
         }
 

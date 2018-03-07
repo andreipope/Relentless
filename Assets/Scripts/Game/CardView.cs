@@ -19,6 +19,9 @@ public class CardView : MonoBehaviour
     [SerializeField]
     protected SpriteRenderer pictureSprite;
 
+	[SerializeField]
+	protected SpriteRenderer backgroundSprite;
+
     [SerializeField]
     protected TextMeshPro costText;
 
@@ -27,6 +30,9 @@ public class CardView : MonoBehaviour
 
     [SerializeField]
     protected TextMeshPro bodyText;
+
+    [SerializeField]
+    protected TextMeshPro amountText;
 
     protected GameObject previewCard;
 
@@ -46,7 +52,7 @@ public class CardView : MonoBehaviour
         Assert.IsNotNull(bodyText);
     }
 
-    public virtual void PopulateWithInfo(RuntimeCard card)
+    public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
         this.card = card;
 
@@ -68,19 +74,26 @@ public class CardView : MonoBehaviour
             costText.text = manaCost.ToString();
         }
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", libraryCard.GetStringProperty("Picture")));
+        if (setName.Length > 0)
+        {
+            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Rarity")));
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
+        }
+
         var material = libraryCard.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {
             pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
         }
+        amountText.transform.parent.gameObject.SetActive(false);
     }
 
-    public virtual void PopulateWithLibraryInfo(Card card)
+    public virtual void PopulateWithLibraryInfo(Card card, string setName = "")
     {
         libraryCard = card;
         nameText.text = card.name;
         bodyText.text = card.GetStringProperty("Text");
+        amountText.text = card.GetIntProperty("Amount").ToString();
 
         var cost = card.costs.Find(x => x is PayResourceCost);
         if (cost != null)
@@ -90,7 +103,8 @@ public class CardView : MonoBehaviour
             costText.text = manaCost.ToString();
         }
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.GetStringProperty("Picture")));
+		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.GetStringProperty("Rarity")));
+		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.GetStringProperty("Picture")));
         var material = card.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {
@@ -98,6 +112,12 @@ public class CardView : MonoBehaviour
         }
     }
 
+
+	public virtual void UpdateAmount(Card card)
+	{
+		libraryCard = card;
+		amountText.text = card.GetIntProperty("Amount").ToString();
+	}
     public virtual bool CanBePlayed(DemoHumanPlayer owner)
     {
         return owner.isActivePlayer && owner.manaStat.effectiveValue >= manaCost;

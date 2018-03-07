@@ -43,7 +43,8 @@ namespace GrandDevs.CZB
         private int numSets;
         private int currentSet;
 
-        private GameObject _selectedCard;
+        private CardView _selectedCard;
+        private CardView _selectedCollectionCard;
 
         public void Init()
         {
@@ -89,7 +90,8 @@ namespace GrandDevs.CZB
                 {
                     if (_selectedCard != null)
                     {
-                        MonoBehaviour.Destroy(_selectedCard);
+                        _selectedCollectionCard.UpdateAmount(_selectedCollectionCard.libraryCard);
+                        MonoBehaviour.Destroy(_selectedCard.gameObject);
                         _selectedCard = null;
                     }
                     if (Input.GetMouseButtonDown(0))
@@ -127,13 +129,20 @@ namespace GrandDevs.CZB
             _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
             MonoBehaviour.Destroy(_backgroundCanvas);
+            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            {
+                MonoBehaviour.Destroy(card.gameObject);
+            }
         }
 
         public void Dispose()
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
             MonoBehaviour.Destroy(_backgroundCanvas);
-            
+            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            {
+                MonoBehaviour.Destroy(card.gameObject);
+            }
         }
 
         private void InitObjects()
@@ -159,8 +168,10 @@ namespace GrandDevs.CZB
 
         private void CardSelected(CardView card)
         {
-            _selectedCard = MonoBehaviour.Instantiate(card.gameObject);
-            SetLayerRecursively(_selectedCard, 8);
+            _selectedCollectionCard = card;
+            _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
+            _selectedCard.name = "CardPreview";
+            SetLayerRecursively(_selectedCard.gameObject, 8);
 
 			Sequence mySequence = DOTween.Sequence();
 			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
@@ -192,8 +203,8 @@ namespace GrandDevs.CZB
         }
 		private void OpenButtonHandler()
 		{
-			OpenAlertDialog("Coming Soon");
-		}
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+        }
 		private void BackButtonHandler()
 		{
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
@@ -291,7 +302,7 @@ namespace GrandDevs.CZB
 				}
 
 				var cardView = go.GetComponent<CardView>();
-				cardView.PopulateWithLibraryInfo(card);
+                cardView.PopulateWithLibraryInfo(card, GameManager.Instance.config.cardSets[setIndex].name);
 				cardView.SetHighlightingEnabled(false);
 				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
 				cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);

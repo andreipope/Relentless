@@ -30,6 +30,8 @@ namespace CCGKit
     [Serializable]
     public class Deck
     {
+        public int heroeId = 0;
+
         /// <summary>
         /// The name of this deck.
         /// </summary>

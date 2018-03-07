@@ -47,10 +47,13 @@ namespace CCGKit
         /// </summary>
         /// 
         public int currentDeckId = -1;
+        public int opponentDeckId = -1;
+
 
         public int currentEditingDeck = -1;
 
-        public int currentHeroId;
+        public int currentHeroId = -1;
+        public int opponentHeroId = -1;
 
 
         /// <summary>

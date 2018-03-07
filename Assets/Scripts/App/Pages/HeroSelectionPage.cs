@@ -14,6 +14,7 @@ namespace GrandDevs.CZB
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+        private IDataManager _dataManager;
 
         private GameObject _selfPage;
 
@@ -27,11 +28,15 @@ namespace GrandDevs.CZB
         private Text _selectedHeroName;
         private int _currentHeroId;
 
+		private Dictionary<Enumerators.SkillType, Sprite> _skillsIcons;
+        private Dictionary<Enumerators.ElementType, Sprite> _heroIcons;
+
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 
 			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -48,7 +53,14 @@ namespace GrandDevs.CZB
             _selectedHeroName = _selfPage.transform.Find("SelectedHero/Name/Text").GetComponent<Text>();
 
             _heroesContainer = _selfPage.transform.Find("HeroesContainer");
-                          
+
+            _skillsIcons = new Dictionary<Enumerators.SkillType, Sprite>();
+			_skillsIcons.Add(Enumerators.SkillType.FIREBALL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_01"));
+			_skillsIcons.Add(Enumerators.SkillType.HEAL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_02"));
+
+            _heroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
+            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_FIRE"));
+            _heroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_EARTH"));
             Hide();  
         }
 
@@ -78,13 +90,15 @@ namespace GrandDevs.CZB
 
         private void FillInfo()
         {
-			for (uint i = 0; i < Constants.HEROES_AMOUNT; i++)
+             for (int i = 0; i < Constants.HEROES_AMOUNT; i++)
 			{
                 Transform heroObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/HeroItem")).transform;
                 heroObject.SetParent(_heroesContainer, false);
+				var icon = heroObject.Find("HeroIconMask/HeroIcon").GetComponent<Image>();
 
-                if (i < GameManager.Instance.heroes.Count)
+				if (i < GameManager.Instance.heroes.Count)
                 {
+					icon.sprite = _heroIcons[GameManager.Instance.heroes[i].element];
                     heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     heroObject.Find("LockedIcon").gameObject.SetActive(false);
                     heroObject.Find("Button").GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
@@ -92,7 +106,7 @@ namespace GrandDevs.CZB
                 else
                 {
                     heroObject.Find("NormalIcon").gameObject.SetActive(false);
-                    heroObject.Find("SelectedIcon").gameObject.SetActive(false);
+                    icon.gameObject.SetActive(false);
                 }
 			}
             _currentHeroId = 0;
@@ -108,6 +122,7 @@ namespace GrandDevs.CZB
         public void ContinueButtonHandler()
         {
             GameManager.Instance.currentDeckId = -1;
+            GameManager.Instance.currentHeroId = _currentHeroId;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_EDITING);
            // OpenAlertDialog("You will have this chance soon ;) ");
         }
@@ -153,8 +168,8 @@ namespace GrandDevs.CZB
 
             if(active)
             {
-                //_selectedHeroIcon.sprite = selectedIcon.GetComponent<Image>().sprite;
-                //_selectedHeroSkillIcon = _selfPage.transform.Find("SelectedHero/SkillIcon").GetComponent<Image>();
+                _selectedHeroIcon.sprite = _heroIcons[GameManager.Instance.heroes[id].element];
+                _selectedHeroSkillIcon.sprite = _skillsIcons[GameManager.Instance.heroes[id].skill.skillType];
                 _selectedHeroName.text = GameManager.Instance.heroes[id].name;
             }
 		}

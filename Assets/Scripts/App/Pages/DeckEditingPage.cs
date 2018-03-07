@@ -128,13 +128,12 @@ namespace GrandDevs.CZB
 
             _cardsListScrollRect.verticalNormalizedPosition = 1f;
             _cardsListScrollRect.CalculateLayoutInputVertical();
+            _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
         }
 
         public void Hide()
         {
             _selfPage.SetActive(false);
-
-
             Dispose();
         }
 
@@ -146,6 +145,7 @@ namespace GrandDevs.CZB
             }
             MonoBehaviour.Destroy(_cardPlaceholders);
             MonoBehaviour.Destroy(_backgroundCanvas);
+            _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
         }
 
         private void OpenAlertDialog(string msg)
@@ -171,14 +171,6 @@ namespace GrandDevs.CZB
             LoadCards(0, 0);
         }
 
-        private void FillInfo()
-        {
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
-            _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
-        }
-
-
         #region button handlers
 
         private void CardSetsSliderOnValueChangedHandler(float value)
@@ -199,7 +191,7 @@ namespace GrandDevs.CZB
         }
         private void OpenButtonHandler()
         {
-            OpenAlertDialog("Coming Soon");
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         }
         private void SaveButtonHandler()
         {
@@ -292,7 +284,7 @@ namespace GrandDevs.CZB
                 }
 
                 var cardView = go.GetComponent<CardView>();
-                cardView.PopulateWithLibraryInfo(card);
+                cardView.PopulateWithLibraryInfo(card, GameManager.Instance.config.cardSets[currentSet].name);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
                 cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
@@ -400,8 +392,11 @@ namespace GrandDevs.CZB
 
         public void OnDoneButtonPressed()
         {
-            if(GameManager.Instance.currentDeckId == -1)
-			    GameManager.Instance.playerDecks.Add(_currentDeck);
+            if (GameManager.Instance.currentDeckId == -1)
+            {
+                _currentDeck.heroeId = GameManager.Instance.currentHeroId;
+                GameManager.Instance.playerDecks.Add(_currentDeck);
+            }
 
 			var decksPath = Application.persistentDataPath + "/decks.json";
             fsData serializedData;

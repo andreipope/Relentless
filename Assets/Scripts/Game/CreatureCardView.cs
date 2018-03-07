@@ -20,6 +20,9 @@ public class CreatureCardView : CardView
     [SerializeField]
     protected SpriteRenderer defenseSprite;
 
+	[SerializeField]
+	protected SpriteRenderer typeSprite;
+
     [SerializeField]
     protected TextMeshPro defenseText;
 
@@ -35,9 +38,9 @@ public class CreatureCardView : CardView
         Assert.IsNotNull(defenseText);
     }
 
-    public override void PopulateWithInfo(RuntimeCard card)
+    public override void PopulateWithInfo(RuntimeCard card, string setName)
     {
-        base.PopulateWithInfo(card);
+        base.PopulateWithInfo(card, setName);
         attackStat = card.namedStats["DMG"];
         defenseStat = card.namedStats["HP"];
         attackText.text = attackStat.effectiveValue.ToString();
@@ -47,10 +50,11 @@ public class CreatureCardView : CardView
         defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
     }
 
-    public override void PopulateWithLibraryInfo(Card card)
+    public override void PopulateWithLibraryInfo(Card card, string setName)
     {
-        base.PopulateWithLibraryInfo(card);
+        base.PopulateWithLibraryInfo(card, setName);
         attackText.text = card.stats[0].effectiveValue.ToString();
         defenseText.text = card.stats[1].effectiveValue.ToString();
-    }
+		typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.GetStringProperty("Type") + "_icon"));
+	}
 }

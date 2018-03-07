@@ -8,10 +8,12 @@ namespace GrandDevs.CZB
     {
         public Enumerators.ElementType element;
         public string name;
+        public HeroSkill skill;
+        public int heroId;
 
-        public Hero()
+        public Hero(int heroId)
         {
-
+            this.heroId = heroId;
         }
     }
 }

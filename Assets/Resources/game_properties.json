@@ -1,5 +1,5 @@
 {
-    "turnDuration": 30,
+    "turnDuration": 120,
     "minDeckSize": 0,
     "maxDeckSize": 30,
     "gameStartActions": [

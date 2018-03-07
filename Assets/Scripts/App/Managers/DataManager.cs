@@ -137,8 +137,10 @@ namespace GrandDevs.CZB
 
         private void CreateHeroesData()
         {
-            GameManager.Instance.heroes.Add(new Hero() { element = Enumerators.ElementType.FIRE, name = "Pyro Zombie Hero" });
-            GameManager.Instance.heroes.Add(new Hero() { element = Enumerators.ElementType.EARTH, name = "Golem Zombie Hero" });
+            GameManager.Instance.heroes.Add(new Hero(0) { element = Enumerators.ElementType.FIRE, name = "Pyro Zombie Hero", 
+                                                        skill = new HeroSkill(){ skillType = Enumerators.SkillType.FIREBALL, activeValue = 1, manaCost = 0}});
+            GameManager.Instance.heroes.Add(new Hero(1) { element = Enumerators.ElementType.EARTH, name = "Golem Zombie Hero", 
+                                                        skill = new HeroSkill() { skillType = Enumerators.SkillType.HEAL, activeValue = 2, manaCost = 2 }});
         }
 
         private void FillDummyData()

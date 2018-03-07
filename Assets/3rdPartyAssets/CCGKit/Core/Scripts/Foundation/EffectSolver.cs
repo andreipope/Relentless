@@ -2,6 +2,7 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using GrandDevs.CZB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +100,12 @@ namespace CCGKit
             }
         }
 
+        public void FightPlayerBySkill(NetworkInstanceId attackingPlayerNetId, int attack)
+        {
+            var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
+            attackedPlayer.namedStats["Life"].baseValue -= 2;
+        }
+
         /// <summary>
         /// Resolves the combat between the specified creatures.
         /// </summary>
@@ -113,6 +120,15 @@ namespace CCGKit
             {
                 attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue;
                 attackingCreature.namedStats["HP"].baseValue -= attackedCreature.namedStats["DMG"].effectiveValue;
+            }
+        }
+
+        public void FightCreatureBySkill(NetworkInstanceId attackingPlayerNetId, RuntimeCard attackedCreature, int attack)
+        {
+            var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
+            if (attackedPlayer != null)
+            {
+                attackedCreature.namedStats["HP"].baseValue -= attack;
             }
         }
 

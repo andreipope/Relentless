@@ -34,6 +34,8 @@ public class CombatHandler : ServerHandler
         base.RegisterNetworkHandlers();
         NetworkServer.RegisterHandler(NetworkProtocol.FightPlayer, OnFightPlayer);
         NetworkServer.RegisterHandler(NetworkProtocol.FightCreature, OnFightCreature);
+        NetworkServer.RegisterHandler(NetworkProtocol.FightPlayerBySkill, OnFightPlayerBySkill);
+        NetworkServer.RegisterHandler(NetworkProtocol.FightCreatureBySkill, OnFightCreatureBySkill);
     }
 
     public override void UnregisterNetworkHandlers()
@@ -41,6 +43,8 @@ public class CombatHandler : ServerHandler
         base.UnregisterNetworkHandlers();
         NetworkServer.UnregisterHandler(NetworkProtocol.FightCreature);
         NetworkServer.UnregisterHandler(NetworkProtocol.FightPlayer);
+        NetworkServer.UnregisterHandler(NetworkProtocol.FightPlayerBySkill);
+        NetworkServer.UnregisterHandler(NetworkProtocol.FightCreatureBySkill);
     }
 
     public virtual void OnFightPlayer(NetworkMessage netMsg)
@@ -60,6 +64,26 @@ public class CombatHandler : ServerHandler
             server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.PlayerAttacked, playerAttackedMsg);
 
             server.effectSolver.FightPlayer(msg.attackingPlayerNetId, msg.cardInstanceId);
+        }
+    }
+
+    public virtual void OnFightPlayerBySkill(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<FightPlayerBySkillMessage>();
+        if (msg != null)
+        {
+            // Only the current player can fight.
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+            {
+                return;
+            }
+
+            /*var playerAttackedMsg = new PlayerAttackedMessage();
+            playerAttackedMsg.attackingPlayerNetId = msg.attackingPlayerNetId;
+            playerAttackedMsg.attackingCardInstanceId = msg.cardInstanceId;
+            server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.PlayerAttacked, playerAttackedMsg);
+              */
+            server.effectSolver.FightPlayerBySkill(msg.attackingPlayerNetId, msg.attack);
         }
     }
 
@@ -85,6 +109,31 @@ public class CombatHandler : ServerHandler
             if (attackingCard != null && attackedCard != null)
             {
                 server.effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard, attackedCard);
+            }
+        }
+    }
+
+    public virtual void OnFightCreatureBySkill(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<FightCreatureBySkillMessage>();
+        if (msg != null)
+        {
+
+            // Only the current player can fight.
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+            {
+                return;
+            }
+            /*var creatureAttackedMsg = new CreatureAttackedMessage();
+            creatureAttackedMsg.attackingPlayerNetId = msg.attackingPlayerNetId;
+            creatureAttackedMsg.attackingCardInstanceId = msg.attackingCardInstanceId;
+            creatureAttackedMsg.attackedCardInstanceId = msg.attackedCardInstanceId;
+            server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.CreatureAttacked, creatureAttackedMsg);
+                            */
+            var attackedCard = server.gameState.currentOpponent.namedZones["Board"].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
+            if (attackedCard != null)
+            {
+                server.effectSolver.FightCreatureBySkill(msg.attackingPlayerNetId, attackedCard, msg.attack);
             }
         }
     }

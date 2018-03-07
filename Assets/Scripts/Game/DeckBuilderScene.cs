@@ -202,6 +202,14 @@ public class DeckBuilderScene : BaseScene
         {
             var card = gameConfig.cards[i];
             var cardType = gameConfig.cardTypes.Find(x => x.id == card.cardTypeId);
+
+			string cardSetName = string.Empty;
+			foreach (var cardSet in gameConfig.cardSets)
+			{
+				if (cardSet.cards.IndexOf(card) > -1)
+					cardSetName = cardSet.name;
+			}
+
             GameObject go = null;
             if (cardType.name == "Creature")
             {
@@ -212,7 +220,7 @@ public class DeckBuilderScene : BaseScene
                 go = Instantiate(spellCardViewPrefab as GameObject);
             }
             var cardView = go.GetComponent<CardView>();
-            cardView.PopulateWithLibraryInfo(card);
+            cardView.PopulateWithLibraryInfo(card, cardSetName);
             cardView.SetHighlightingEnabled(false);
             cardView.transform.position = cardPositions[i % cardPositions.Count].position;
             cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);

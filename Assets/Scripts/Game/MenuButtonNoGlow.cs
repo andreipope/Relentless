@@ -12,36 +12,74 @@ using DG.Tweening;
 public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField]
+    protected Image button;
+    [SerializeField]
     protected Image onHoverOverlay;
 	[SerializeField]
 	protected Image onClickOverlay;
 
+    public bool _interactable = true;
+
     public UnityEvent onClickEvent;
+
+    public bool interactable
+    {
+        get { return _interactable; }
+        set { _interactable = value;
+            Debug.Log(_interactable);
+            if (!_interactable)
+            {
+                Debug.Log("DO FADE");
+
+                onHoverOverlay.DOKill();
+                onClickOverlay.DOKill();
+                onHoverOverlay.DOFade(0.0f, 0.3f);
+                onClickOverlay.DOFade(0.0f, 0.3f);
+                button.DOFade(0.5f, 0.3f);
+            }
+            else
+            {
+                button.DOFade(1f, 0.3f);
+            }
+        }
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        onHoverOverlay.DOKill();
-        onHoverOverlay.DOFade(1.0f, 0.5f);
+        if (_interactable)
+        {
+            onHoverOverlay.DOKill();
+            onHoverOverlay.DOFade(1.0f, 0.5f);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        onHoverOverlay.DOKill();
-        onHoverOverlay.DOFade(0.0f, 0.25f);
+        if (_interactable)
+        {
+            onHoverOverlay.DOKill();
+            onHoverOverlay.DOFade(0.0f, 0.25f);
+        }
     }
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		onHoverOverlay.DOKill();
-		onHoverOverlay.DOFade(0.0f, 0.25f);
-		onClickOverlay.DOKill();
-		onClickOverlay.DOFade(1.0f, 0.2f);
+        if (_interactable)
+        {
+            onHoverOverlay.DOKill();
+            onHoverOverlay.DOFade(0.0f, 0.25f);
+            onClickOverlay.DOKill();
+            onClickOverlay.DOFade(1.0f, 0.2f);
+        }
 	}
 
     public void OnPointerUp(PointerEventData eventData)
     {
-		onClickOverlay.DOKill();
-		onClickOverlay.DOFade(0.0f, 0.25f);
-        onClickEvent.Invoke();
+        if (_interactable)
+        {
+            onClickOverlay.DOKill();
+            onClickOverlay.DOFade(0.0f, 0.25f);
+            onClickEvent.Invoke();
+        }
     }
 }

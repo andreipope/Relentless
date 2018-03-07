@@ -29,6 +29,8 @@ namespace GrandDevs.CZB
 
 		public Transform cardTransform;
 
+        private Card _card;
+
 		public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -76,9 +78,15 @@ namespace GrandDevs.CZB
 
         public void Show(object data)
         {
-            Card card = data as Card;
+            _card = data as Card;
             //_description.text = card.GetStringProperty("Text");
-            _amount.text = card.GetIntProperty("MaxCopies").ToString();
+            int amount = _card.GetIntProperty("Amount");
+            _amount.text = amount.ToString();
+            if (amount == 0)
+                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+            else
+                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+
 
             Show();
         }
@@ -90,8 +98,22 @@ namespace GrandDevs.CZB
 
         private void DesintegrateButtonHandler()
         {
-            //_uiManager.DrawPopup<WarningPopup>("Sorry you can't do that right now");
-        }
+            Debug.Log(_card.GetIntProperty("Amount"));
+            int amount = _card.GetIntProperty("Amount");
+            amount--;
 
+            if (amount == 0)
+            {
+                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+            }
+
+            _card.SetIntProperty("Amount", amount);
+            Debug.Log(_card.GetIntProperty("Amount"));
+
+            _amount.text = _card.GetIntProperty("Amount").ToString();
+
+            GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_card);
+            
+        }
     }
 }

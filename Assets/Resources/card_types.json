@@ -31,6 +31,11 @@
                 "value": null,
                 "name": "Material",
                 "$type": "CCGKit.StringProperty"
+            },
+            {
+                "value": 0,
+                "name": "Amount",
+                "$type": "CCGKit.IntProperty"
             }
         ],
         "stats": [
@@ -98,6 +103,11 @@
                 "value": null,
                 "name": "Material",
                 "$type": "CCGKit.StringProperty"
+            },
+            {
+                "value": 0,
+                "name": "Amount",
+                "$type": "CCGKit.IntProperty"
             }
         ],
         "stats": [],

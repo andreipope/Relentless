@@ -107,6 +107,9 @@ namespace GrandDevs.CZB
 				Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
                 deckObject.SetParent(_decksContainer, false);
                 deckObject.Find("ActiveCard").gameObject.SetActive(false);
+                string heroType = GameManager.Instance.heroes[deck.heroeId].element.ToString();
+                deckObject.Find("NormalCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
+                deckObject.Find("ActiveCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
                 deckObject.Find("CardsAmount/CardsAmountText").GetComponent<TMP_Text>().text = deck.GetNumCards().ToString();
                 deckObject.Find("NormalCard/DeckName/DeckNameText").GetComponent<TMP_Text>().text = deck.name;
                 deckObject.Find("ActiveCard/DeckName/DeckNameText").GetComponent<TMP_Text>().text = deck.name;
@@ -162,8 +165,8 @@ namespace GrandDevs.CZB
         }
         private void OpenButtonHandler()
 		{
-			OpenAlertDialog("Coming Soon");
-		}
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+        }
 		private void BackButtonHandler()
 		{
 			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
@@ -175,6 +178,8 @@ namespace GrandDevs.CZB
         }
         public void OnClickPlay()
         {
+            GameManager.Instance.opponentHeroId = UnityEngine.Random.Range(0, GameManager.Instance.heroes.Count);
+            //PlayerPrefs.SetInt("default_deck", GameManager.Instance.currentDeckId);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
         }
 		private void CreateDeck()

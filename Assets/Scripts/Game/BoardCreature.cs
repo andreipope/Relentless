@@ -94,7 +94,7 @@ public class BoardCreature : MonoBehaviour
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
     }
 
-    public virtual void PopulateWithInfo(RuntimeCard card)
+    public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
         this.card = card;
 
@@ -108,7 +108,11 @@ public class BoardCreature : MonoBehaviour
         attackText.text = attackStat.effectiveValue.ToString();
         healthText.text = healthStat.effectiveValue.ToString();
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", libraryCard.GetStringProperty("Picture")));
+		Debug.Log(setName);
+		Debug.Log(libraryCard.GetStringProperty("Picture"));
+		Debug.Log(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
+        if(setName.Length > 0)
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
         var material = libraryCard.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {
@@ -264,7 +268,7 @@ public class BoardCreature : MonoBehaviour
             fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
             fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
             fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
-            fightTargetingArrow.Begin(transform.localPosition);
+            fightTargetingArrow.Begin(transform.position);
             ownerPlayer.DestroyCardPreview();
             ownerPlayer.isCardSelected = true;
         }

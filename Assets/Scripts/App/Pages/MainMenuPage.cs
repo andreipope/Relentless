@@ -11,6 +11,8 @@ namespace GrandDevs.CZB
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+		private IAppStateManager _stateManager;
+		private ISoundManager _soundManager;
 
         private GameObject _selfPage;
 
@@ -29,8 +31,11 @@ namespace GrandDevs.CZB
 			_uiManager = GameClient.Get<IUIManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+            _stateManager = GameClient.Get<IAppStateManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
+
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
 
@@ -78,36 +83,47 @@ namespace GrandDevs.CZB
 #region Buttons Handlers
         public void OnClickPlay()
         {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 		private void OnClickCollection()
 		{
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.COLLECTION);
 		}
 		private void OnClickCredits()
 		{
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
             OpenAlertDialog("Coming Soon");
 		}
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
 
         private void OpenButtonHandler()
         {
-            OpenAlertDialog("Coming Soon");
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)
 		{
-		}
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.SetMusicVolume(value ? .5f : 0);
+
+
+        }
         private void OnValueChangedEventSFX(bool value)
         {
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.SetSoundVolume(value ? 1 : 0);
         }
-		#endregion
+        #endregion
 
-		private void OpenAlertDialog(string msg)
+        private void OpenAlertDialog(string msg)
 		{
 			_uiManager.DrawPopup<WarningPopup>(msg);
 		}

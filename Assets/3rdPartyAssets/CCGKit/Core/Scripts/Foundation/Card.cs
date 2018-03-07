@@ -72,6 +72,13 @@ namespace CCGKit
             return (property as IntProperty).value;
         }
 
+        public void SetIntProperty(string name, int value)
+        {
+            var property = properties.Find(x => x.name == name && x is IntProperty);
+            Assert.IsNotNull(property);
+            (property as IntProperty).value = value;
+        }
+
         /// <summary>
         /// Returns the value of the string property with the specified name.
         /// </summary>

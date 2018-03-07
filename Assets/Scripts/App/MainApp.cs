@@ -38,7 +38,9 @@ namespace GrandDevs.CZB
                 GameClient.Instance.InitServices();
                 //GameClient.Get<IDataManager>().StartLoadCache();
                 GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+                //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+                GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, .5f, null, true);
             }
         }
 

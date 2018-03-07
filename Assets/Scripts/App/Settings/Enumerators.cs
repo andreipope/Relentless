@@ -13,7 +13,8 @@
             COLLECTION,
             SHOP,
             GAMEPLAY,
-            DECK_EDITING
+            DECK_EDITING,
+            PACK_OPENER
         }
 
         public enum ButtonState
@@ -24,9 +25,9 @@
 
         public enum SoundType : int
         {
-          //  CLICK,
+            CLICK,
           //  OTHER,
-         //   BACKGROUND,
+            BACKGROUND,
         }
 
         public enum NotificationType
@@ -94,6 +95,12 @@
             LIFE,
             TOXIC,
             ITEMS
+        }
+
+        public enum SkillType
+        {
+            FIREBALL,
+            HEAL
         }
     }
 }

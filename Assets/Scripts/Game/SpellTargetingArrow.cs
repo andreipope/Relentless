@@ -91,14 +91,21 @@ public class SpellTargetingArrow : TargetingArrow
         {
             var conditionsFullfilled = true;
             var playerTarget = effectTarget as PlayerTargetBase;
+            Debug.Log(conditionsFullfilled);
+            Debug.Log(playerTarget);
             foreach (var condition in playerTarget.conditions)
             {
+                Debug.Log(player.playerInfo);
+                Debug.Log(condition.IsTrue(player.playerInfo));
+
                 if (!condition.IsTrue(player.playerInfo))
                 {
                     conditionsFullfilled = false;
                     break;
                 }
             }
+            Debug.Log(conditionsFullfilled);
+
             if (conditionsFullfilled)
             {
                 validTargetSelected = true;

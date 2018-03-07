@@ -39,7 +39,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Burrnn",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -47,6 +47,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 8,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -69,7 +74,12 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 0
+                    }
+                ],
                 "abilities": [],
                 "id": 34
             },
@@ -110,7 +120,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Cynderman",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -118,6 +128,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 8,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -181,7 +196,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Gargantua",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -189,6 +204,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 8,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -211,7 +231,12 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 1
+                    }
+                ],
                 "abilities": [],
                 "id": 36
             }
@@ -257,7 +282,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Jetter",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -265,6 +290,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -328,7 +358,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Freezzee",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -336,6 +366,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -399,7 +434,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Tsunami",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -407,6 +442,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -475,7 +515,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Golem",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -483,6 +523,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -505,7 +550,12 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 1
+                    }
+                ],
                 "abilities": [],
                 "id": 40
             },
@@ -546,7 +596,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Bolderr",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -554,6 +604,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -617,7 +672,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Mountain",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -625,6 +680,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -647,7 +707,12 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 1
+                    }
+                ],
                 "abilities": [],
                 "id": 42
             }
@@ -693,7 +758,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Pushhh",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -701,6 +766,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -764,7 +834,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Stormcaller",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -772,6 +842,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -835,7 +910,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Zeuz",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -843,6 +918,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -911,7 +991,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Shroom",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -919,6 +999,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -982,7 +1067,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "VindRom",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -990,6 +1075,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -1053,7 +1143,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Shaman",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1061,6 +1151,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -1098,7 +1193,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 3,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -1129,7 +1224,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Ghoul",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1137,6 +1232,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -1169,7 +1269,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 4,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -1200,7 +1300,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Hazmaz",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1208,6 +1308,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -1230,7 +1335,12 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 0
+                    }
+                ],
                 "abilities": [],
                 "id": 50
             },
@@ -1240,7 +1350,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 10,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -1271,7 +1381,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Cherno-Bill",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1279,6 +1389,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
@@ -1301,8 +1416,37 @@
                         "modifiers": []
                     }
                 ],
-                "keywords": [],
-                "abilities": [],
+                "keywords": [
+                    {
+                        "keywordId": 0,
+                        "valueId": 1
+                    }
+                ],
+                "abilities": [
+                    {
+                        "trigger": {
+                            "$type": "CCGKit.OnPlayerTurnEndedTrigger"
+                        },
+                        "name": "Radioactive",
+                        "type": "Triggered",
+                        "effect": {
+                            "value": {
+                                "constant": 2,
+                                "$type": "CCGKit.ConstantValue"
+                            },
+                            "duration": 0,
+                            "statId": 1,
+                            "gameZoneId": 2,
+                            "cardTypeId": 0,
+                            "$type": "CCGKit.DecreaseCardStatEffect"
+                        },
+                        "target": {
+                            "conditions": [],
+                            "$type": "CCGKit.AllOpponentCards"
+                        },
+                        "$type": "CCGKit.TriggeredAbility"
+                    }
+                ],
                 "id": 51
             }
         ]
@@ -1327,7 +1471,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Stapler",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1347,92 +1491,45 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": 4,
-                        "name": "MaxCopies",
+                        "value": 1,
+                        "name": "Amount",
                         "$type": "CCGKit.IntProperty"
-                    },
-                    {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
                     }
                 ],
                 "stats": [],
                 "keywords": [],
-                "abilities": [],
+                "abilities": [
+                    {
+                        "trigger": {
+                            "zoneId": 2,
+                            "$type": "CCGKit.OnCardEnteredZoneTrigger"
+                        },
+                        "name": "Heal",
+                        "type": "Triggered",
+                        "effect": {
+                            "value": {
+                                "constant": 2,
+                                "$type": "CCGKit.ConstantValue"
+                            },
+                            "duration": 0,
+                            "statId": 1,
+                            "gameZoneId": 2,
+                            "cardTypeId": 0,
+                            "$type": "CCGKit.IncreaseCardStatEffect"
+                        },
+                        "target": {
+                            "conditions": [],
+                            "$type": "CCGKit.PlayerCard"
+                        },
+                        "$type": "CCGKit.TriggeredAbility"
+                    }
+                ],
                 "id": 52
-            },
-            {
-                "cardTypeId": 1,
-                "name": "Nail Bomb",
-                "costs": [
-                    {
-                        "statId": 1,
-                        "value": 2,
-                        "$type": "CCGKit.PayResourceCost"
-                    }
-                ],
-                "properties": [
-                    {
-                        "value": "Damage target and 2 adjacent zombies for 5 damage",
-                        "name": "Text",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": 4,
-                        "name": "MaxCopies",
-                        "$type": "CCGKit.IntProperty"
-                    },
-                    {
-                        "value": "Rare",
-                        "name": "Rarity",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": "Item",
-                        "name": "Type",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": null,
-                        "name": "Material",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
-                        "value": 4,
-                        "name": "MaxCopies",
-                        "$type": "CCGKit.IntProperty"
-                    },
-                    {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
-                    }
-                ],
-                "stats": [],
-                "keywords": [],
-                "abilities": [],
-                "id": 53
             },
             {
                 "cardTypeId": 1,
@@ -1451,7 +1548,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "GooBottles",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1471,34 +1568,26 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
-                    },
-                    {
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": 4,
-                        "name": "MaxCopies",
+                        "value": 1,
+                        "name": "Amount",
                         "$type": "CCGKit.IntProperty"
-                    },
-                    {
-                        "value": "Card_zombie",
-                        "name": "Picture",
-                        "$type": "CCGKit.StringProperty"
                     }
                 ],
                 "stats": [],
                 "keywords": [],
                 "abilities": [
                     {
-                        "zoneId": 0,
-                        "costs": [],
+                        "trigger": {
+                            "zoneId": 2,
+                            "$type": "CCGKit.OnCardEnteredZoneTrigger"
+                        },
                         "name": "AddGoo",
-                        "type": "Activated",
+                        "type": "Triggered",
                         "effect": {
                             "statId": 1,
                             "value": {
@@ -1512,7 +1601,7 @@
                             "conditions": [],
                             "$type": "CCGKit.PlayerTarget"
                         },
-                        "$type": "CCGKit.ActivatedAbility"
+                        "$type": "CCGKit.TriggeredAbility"
                     }
                 ],
                 "id": 54
@@ -1554,7 +1643,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": "Card_zombie",
+                        "value": "Chainsaw",
                         "name": "Picture",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -1562,6 +1651,11 @@
                         "value": null,
                         "name": "Material",
                         "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 1,
+                        "name": "Amount",
+                        "$type": "CCGKit.IntProperty"
                     }
                 ],
                 "stats": [
