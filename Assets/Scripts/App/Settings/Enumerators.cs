@@ -148,6 +148,20 @@
         }
 
         // abilities
+        // TODO should be changed I guess
+        public enum AbilityType
+        {
+            HEAL,
+            MODIFICATOR_STATIC_DAMAGE,
+            STUN,
+            MODIFICATOR_STAT_VERSUS,
+            SPURT,
+            ADD_GOO_VIAL,
+            DOT,
+            SUMMON,
+            SPELL_ATTACK,
+        }
+
         public enum AbilityActivityType
         {
             PASSIVE,
@@ -167,20 +181,6 @@
         {
             HEALTH,
             DAMAGE
-        }
-
-        // TODO should be changed I guess
-        public enum AbilityType
-        {
-            HEAL,
-            MODIFICATOR_STATIC_DAMAGE,
-            STUN,
-            MODIFICATOR_STAT_VERSUS,
-            SPURT,
-            ADD_GOO_VIAL,
-            DOT,
-            SUMMON,
-            SPELL_ATTACK,
         }
 
         public enum Ability

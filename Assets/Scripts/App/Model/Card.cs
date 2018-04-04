@@ -16,7 +16,7 @@ namespace GrandDevs.CZB.Data
         public int health;
         public Enumerators.CardType type;
         public Enumerators.CardRarity rarity;
-        public List<Enumerators.Ability> abilities = new List<Enumerators.Ability>();
+        public List<AbilityData> abilities = new List<AbilityData>();
 
         public Card()
         {

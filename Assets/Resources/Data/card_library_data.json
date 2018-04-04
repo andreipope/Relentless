@@ -14,7 +14,17 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 3 ]
+          "abilities": [ 
+			  {
+				"type": "heal",
+				"activityType": "passive",
+				"callType": "each_turn",
+				"targetType": "none",
+				"affectObjectType": "none",
+				"statType": "health",
+				"value": 0,
+			  }
+		  ]
         },
         {
           "id": 1,
@@ -68,7 +78,6 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 7 ]
         },
         {
           "id": 5,
@@ -81,7 +90,6 @@
           "health": 4,
           "type": 0,
           "rarity": 1,
-          "abilities": [ 4 ]
         },
         {
           "id": 6,
@@ -148,7 +156,6 @@
           "health": 5,
           "type": 0,
           "rarity": 2,
-          "abilities": [ 5 ]
         },
         {
           "id": 11,
@@ -214,7 +221,6 @@
           "health": 7,
           "type": 0,
           "rarity": 3,
-          "abilities": [ 10 ]
         }
       ]
     },
@@ -232,7 +238,6 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 18 ]
         },
         {
           "id": 17,
@@ -257,7 +262,6 @@
           "health": 5,
           "type": 0,
           "rarity": 2,
-          "abilities": [ 12 ]
         },
         {
           "id": 19,
@@ -287,7 +291,6 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 3 ]
         },
         {
           "id": 21,
@@ -341,7 +344,6 @@
           "health": 0,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 14 ]
         },
         {
           "id": 25,
@@ -366,7 +368,6 @@
           "health": 0,
           "type": 0,
           "rarity": 2,
-          "abilities": [ 16 ]
         },
         {
           "id": 27,
