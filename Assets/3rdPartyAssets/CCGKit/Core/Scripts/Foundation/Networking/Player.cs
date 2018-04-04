@@ -3,10 +3,13 @@
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
 using GrandDevs.CZB;
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.Networking;
+using GrandDevs.CZB.Common;
+using System.Linq;
 
 namespace CCGKit
 {
@@ -52,6 +55,19 @@ namespace CCGKit
         protected int turnDuration;
 
         protected EffectSolver effectSolver;
+
+        public int CurrentTurn;
+
+
+        public EffectSolver EffectSolver
+        {
+            get
+            {
+                return effectSolver;
+            }
+        }
+
+        
 
         protected virtual void Awake()
         {
@@ -141,33 +157,78 @@ namespace CCGKit
 
         protected virtual void RegisterWithServer()
         {
-            var decks = GameManager.Instance.playerDecks;
             var msgDefaultDeck = new List<int>();
-            if (decks.Count > 0)
+
+            //var defaultDeckIndex = isHuman ? PlayerPrefs.GetInt("default_deck") : PlayerPrefs.GetInt("default_ai_deck");
+
+            if (GameManager.Instance.tutorial)
             {
-                //var defaultDeckIndex = isHuman ? PlayerPrefs.GetInt("default_deck") : PlayerPrefs.GetInt("default_ai_deck");
-                var defaultDeck = decks[GameManager.Instance.currentDeckId];
-                for (var i = 0; i < defaultDeck.cards.Count; i++)
+                if (isHuman)
                 {
-                    for (var j = 0; j < defaultDeck.cards[i].amount; j++)
-                    {
-                        msgDefaultDeck.Add(defaultDeck.cards[i].id);
-                    }
+                    msgDefaultDeck.Add(28);
+                    msgDefaultDeck.Add(29);
+                    msgDefaultDeck.Add(29);
+                    msgDefaultDeck.Add(29);
+                    msgDefaultDeck.Add(29);
                 }
+                else
+                {
+                    msgDefaultDeck.Add(31);
+                    msgDefaultDeck.Add(30);
+                    msgDefaultDeck.Add(32);
+                    msgDefaultDeck.Add(30);
+                    msgDefaultDeck.Add(30);
+                }
+                //int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+               // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId = 1;
+               // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId]. = 1;
             }
             else
             {
-                //GameManager.Instance.defaultDeck = new Deck();
-                //for(int i =0; i < GameManager.Instance.config.cardSets[0].cards.Count; i++)
-                //GameManager.Instance.defaultDeck.AddCard(GameManager.Instance.config.cardSets[0].cards[i]);
-
-               var defaultDeck = GameManager.Instance.defaultDeck;
-                for (var i = 0; i < defaultDeck.cards.Count; i++)
+                if (isHuman)
                 {
-                    for (var j = 0; j < defaultDeck.cards[i].amount; j++)
+                    int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+                    foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
                     {
-                        msgDefaultDeck.Add(defaultDeck.cards[i].id);
+                        for (var i = 0; i < card.amount; i++)
+                        {
+                            msgDefaultDeck.Add(card.cardId);
+                        }
                     }
+                }
+                else
+                {
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(12);
+                    msgDefaultDeck.Add(12);
+                    msgDefaultDeck.Add(12);
+                    msgDefaultDeck.Add(12);
+                    msgDefaultDeck.Add(8);
+                    msgDefaultDeck.Add(8);
+                    msgDefaultDeck.Add(8);
+                    msgDefaultDeck.Add(8);
+                    msgDefaultDeck.Add(20);
+                    msgDefaultDeck.Add(20);
+                    msgDefaultDeck.Add(20);
+                    msgDefaultDeck.Add(20);
+                    msgDefaultDeck.Add(16);
+                    msgDefaultDeck.Add(16);
+                    msgDefaultDeck.Add(16);
+                    msgDefaultDeck.Add(16);
+                    msgDefaultDeck.Add(24);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(0);
+
                 }
             }
 
@@ -197,7 +258,6 @@ namespace CCGKit
             effectSolver = new EffectSolver(gameState, msg.rngSeed);
             effectSolver.SetTriggers(playerInfo);
             effectSolver.SetTriggers(opponentInfo);
-
             LoadPlayerStates(msg.player, msg.opponent);
         }
 
@@ -222,8 +282,8 @@ namespace CCGKit
             }
 
             effectSolver.OnTurnStarted();
-
             LoadPlayerStates(msg.player, msg.opponent);
+            CurrentTurn = msg.turn;
         }
 
         public void LoadPlayerStates(NetPlayerInfo playerState, NetPlayerInfo opponentState)
@@ -266,6 +326,7 @@ namespace CCGKit
                             obsoleteCards.Add(card);
                         }
                     }
+
                     foreach (var card in obsoleteCards)
                     {
                         player.Value.zones[zone.zoneId].RemoveCard(card);
@@ -275,6 +336,7 @@ namespace CCGKit
                     foreach (var card in zone.cards)
                     {
                         var runtimeCard = player.Value.zones[zone.zoneId].cards.Find(x => x.instanceId == card.instanceId);
+
                         if (runtimeCard == null)
                         {
                             runtimeCard = CreateRuntimeCard();
@@ -327,25 +389,53 @@ namespace CCGKit
                             {
                                 runtimeCard.AddKeyword(keyword.keywordId, keyword.valueId);
                             }
+
+                            runtimeCard.connectedAbilities.Clear();
+                            foreach (var abilityId in card.connectedAbilities)
+                            {
+                                runtimeCard.ConnectAbility(abilityId);
+                            }
                         }
                         else
                         {
                             runtimeCard = CreateRuntimeCard();
+
+#if DEBUG_MODE
+                            runtimeCard.cardId = 0;
+#else
                             runtimeCard.cardId = card.cardId;
+#endif
+
                             runtimeCard.instanceId = card.instanceId;
                             runtimeCard.ownerPlayer = player.Value;
                             foreach (var stat in card.stats)
                             {
                                 var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
                                 runtimeCard.stats[stat.statId] = runtimeStat;
-                                var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
-                                var statName = libraryCard.stats.Find(x => x.statId == stat.statId).name;
+#if DEBUG_MODE
+
+								var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(0);
+#else
+								var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+#endif
+
+                                var statName = "DMG";
+                                if (stat.statId == 1)
+                                    statName = "HP";
                                 runtimeCard.namedStats[statName] = runtimeStat;
                             }
                             foreach (var keyword in card.keywords)
                             {
                                 runtimeCard.AddKeyword(keyword.keywordId, keyword.valueId);
                             }
+
+                            runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(card.abilities);
+ 
+                            foreach (var abilityId in card.connectedAbilities)
+                            {
+                                runtimeCard.ConnectAbility(abilityId);
+                            }
+
                             player.Value.zones[zone.zoneId].AddCard(runtimeCard);
                             effectSolver.SetDestroyConditions(runtimeCard);
                             effectSolver.SetTriggers(runtimeCard);
@@ -393,6 +483,8 @@ namespace CCGKit
             if (!isLocalPlayer)
                 return;
 
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.END_TURN);
+
             isActivePlayer = false;
             var msg = new StopTurnMessage();
             client.Send(NetworkProtocol.StopTurn, msg);
@@ -413,12 +505,17 @@ namespace CCGKit
             runtimeCard.cardId = msg.card.cardId;
             runtimeCard.instanceId = msg.card.instanceId;
             runtimeCard.ownerPlayer = playerInfo.netId == msg.playerNetId ? playerInfo : opponentInfo;
+            runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(msg.card.abilities);
+            runtimeCard.connectedAbilities = msg.card.connectedAbilities.ToList();
+
             foreach (var stat in msg.card.stats)
             {
                 var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
                 runtimeCard.stats[stat.statId] = runtimeStat;
-                var libraryCard = GameManager.Instance.config.GetCard(msg.card.cardId);
-                var statName = libraryCard.stats.Find(x => x.statId == stat.statId).name;
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(msg.card.cardId);
+                var statName = "DMG";
+                if (stat.statId == 1)
+                    statName = "HP";
                 runtimeCard.namedStats[statName] = runtimeStat;
             }
             opponentInfo.zones[msg.originZoneId].RemoveCard(runtimeCard);
@@ -486,14 +583,8 @@ namespace CCGKit
 
         public void PlayCreatureCard(RuntimeCard card, List<int> targetInfo = null)
         {
-            var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
-            var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-            if (cost != null)
-            {
-                var payResourceCost = cost as PayResourceCost;
-                var manaCost = payResourceCost.value;
-                playerInfo.stats[payResourceCost.statId].baseValue -= manaCost;
-            }
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+            playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
             msg.playerNetId = netId;
@@ -509,14 +600,8 @@ namespace CCGKit
 
         public void PlaySpellCard(RuntimeCard card, List<int> targetInfo = null)
         {
-            var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
-            var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-            if (cost != null)
-            {
-                var payResourceCost = cost as PayResourceCost;
-                var manaCost = payResourceCost.value;
-                playerInfo.stats[payResourceCost.statId].baseValue -= manaCost;
-            }
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+            playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
             msg.playerNetId = netId;
@@ -532,6 +617,7 @@ namespace CCGKit
 
         public void FightPlayer(int cardInstanceId)
         {
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
             effectSolver.FightPlayer(netId, cardInstanceId);
 
             var msg = new FightPlayerMessage();
@@ -551,8 +637,20 @@ namespace CCGKit
 			client.Send(NetworkProtocol.FightPlayerBySkill, msg);
 		}
 
+
+        public void HealPlayerBySkill(int value)
+        {
+            effectSolver.HealPlayerBySkill(netId, value);
+
+            var msg = new HealPlayerBySkillMessage();
+            msg.callerPlayerNetId = netId;
+            msg.value = value;
+            client.Send(NetworkProtocol.HealPlayerBySkill, msg);
+        }
+
         public void FightCreature(RuntimeCard attackingCard, RuntimeCard attackedCard)
         {
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             effectSolver.FightCreature(netId, attackingCard, attackedCard);
 
             var msg = new FightCreatureMessage();
@@ -570,6 +668,17 @@ namespace CCGKit
             msg.attackedCardInstanceId = attackedCard.instanceId;
             msg.attack = attack;
             client.Send(NetworkProtocol.FightCreatureBySkill, msg);
+        }
+
+        public void HealCreatureBySkill(int value, RuntimeCard card)
+        {
+            effectSolver.HealCreatureBySkill(netId, card, value);
+
+            var msg = new HealCreatureBySkillMessage();
+            msg.callerPlayerNetId = netId;
+            msg.cardInstanceId = card.instanceId;
+            msg.value = value;
+            client.Send(NetworkProtocol.HealCreatureBySkill, msg);
         }
     }
 }

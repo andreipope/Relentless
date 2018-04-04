@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 222050742630337006}
   - component: {fileID: 114127440355934758}
   - component: {fileID: 114241068648330234}
+  - component: {fileID: 114215968785115842}
   m_Layer: 5
   m_Name: CardGraveyard
   m_TagString: Untagged
@@ -117,7 +118,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1954389435673524}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -138,6 +139,18 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114215968785115842
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1954389435673524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 0
 --- !u!114 &114241068648330234
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -198,8 +211,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64aa9c59e03a17f4e83207e208677e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 0}
   onHoverOverlay: {fileID: 114953285762977832}
   onClickOverlay: {fileID: 114833724202872398}
+  _interactable: 1
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -298,8 +313,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 70, y: -121}
-  m_SizeDelta: {x: 76.6, y: 880}
+  m_AnchoredPosition: {x: 180, y: -285}
+  m_SizeDelta: {x: 76.6, y: 550}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224142890554859414
 RectTransform:

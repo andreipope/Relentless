@@ -16,7 +16,8 @@ namespace GrandDevs.CZB
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
-		private QuestionPopup _questionPopup;
+		private IDataManager _dataManager;
+        private QuestionPopup _questionPopup;
 
 		private GameObject _selfPage;
         private Transform _selectedDeck;                     
@@ -40,13 +41,16 @@ namespace GrandDevs.CZB
 
         private bool _createDeckButtonPersist;
 
+        private int _currentDeckId;
+
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckSelectionPage"));
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckSelectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
 
@@ -101,13 +105,14 @@ namespace GrandDevs.CZB
         private void FillInfo()
         {
             int i = 0;
-			foreach (var deck in GameManager.Instance.playerDecks)
+			foreach (var deck in _dataManager.CachedDecksData.decks)
 			{
                 var ind = i;
-				Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
+                string heroType = _dataManager.CachedHeroesData.heroes[deck.heroId].element.ToString();
+
+                Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
                 deckObject.SetParent(_decksContainer, false);
                 deckObject.Find("ActiveCard").gameObject.SetActive(false);
-                string heroType = GameManager.Instance.heroes[deck.heroeId].element.ToString();
                 deckObject.Find("NormalCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
                 deckObject.Find("ActiveCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
                 deckObject.Find("CardsAmount/CardsAmountText").GetComponent<TMP_Text>().text = deck.GetNumCards().ToString();
@@ -124,22 +129,19 @@ namespace GrandDevs.CZB
             AddCreationDeckButton();
             ActivatePlayButton(false);
 
-            //if (GameManager.Instance.playerDecks.Count == 0 || GameManager.Instance.currentDeckId == -1)
-                _selectedDeck.gameObject.SetActive(false);
-            GameManager.Instance.currentDeckId = -1;
+            _selectedDeck.gameObject.SetActive(false);
 
             if(_questionPopup == null)
             {
 				_questionPopup = _uiManager.GetPopup<QuestionPopup>() as QuestionPopup;
 				_questionPopup.ConfirmationEvent += DeleteConfirmationHandler;
             }
-
-           // SetActive(GameManager.Instance.currentDeckId, true);
+            _currentDeckId = -1;
         }
 
         private void AddCreationDeckButton()
         {
-            if (GameManager.Instance.playerDecks.Count < 8 && !_createDeckButtonPersist)
+            if (_dataManager.CachedDecksData.decks.Count < 8 && !_createDeckButtonPersist)
             {
                 Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItemCreate")).transform;
                 deckObject.SetParent(_decksContainer, false);
@@ -178,27 +180,28 @@ namespace GrandDevs.CZB
         }
         public void OnClickPlay()
         {
-            GameManager.Instance.opponentHeroId = UnityEngine.Random.Range(0, GameManager.Instance.heroes.Count);
-            //PlayerPrefs.SetInt("default_deck", GameManager.Instance.currentDeckId);
+            (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = _currentDeckId;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
         }
 		private void CreateDeck()
 		{
+            (_uiManager.GetPage<DeckEditingPage>() as DeckEditingPage).CurrentDeckId = -1;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.HERO_SELECTION);
         }
 
         private void ChooseDeckHandler(Transform deck)
         {
             int id = GetDeckId(deck);
-            if (id == GameManager.Instance.currentDeckId)
+            if (id == _currentDeckId)
                 return;
             
-            if (  GameManager.Instance.currentDeckId > -1)
-				SetActive(GameManager.Instance.currentDeckId, false);
-			GameManager.Instance.currentDeckId = id;
+            if (_currentDeckId > -1)
+				SetActive(_currentDeckId, false);
+            _currentDeckId = id;
             _selectedDeck.gameObject.SetActive(true);
             SetActive(id, true);
-            if (GameManager.Instance.playerDecks[GameManager.Instance.currentDeckId].GetNumCards() < GameManager.Instance.config.properties.maxDeckSize)
+
+            if (_dataManager.CachedDecksData.decks[_currentDeckId].GetNumCards() < 30 && !Constants.DEV_MODE)
             {
                 ActivatePlayButton(false);
                 //   OpenAlertDialog("You should have 30 cards inside your deck to use it for battle");
@@ -211,7 +214,8 @@ namespace GrandDevs.CZB
         private void EditDeckHandler(Transform deck)
         {
             int id = GetDeckId(deck);
-            GameManager.Instance.currentDeckId = id;
+            _currentDeckId = id;
+            (_uiManager.GetPage<DeckEditingPage>() as DeckEditingPage).CurrentDeckId = _currentDeckId;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_EDITING);
         }
 
@@ -219,36 +223,22 @@ namespace GrandDevs.CZB
         {
             int id = GetDeckId(deck);
             _deckToDelete = id;
-            _uiManager.DrawPopup<QuestionPopup>("Do you really want delete " + GameManager.Instance.playerDecks[id].name + "?");
+            _uiManager.DrawPopup<QuestionPopup>("Do you really want delete " + _dataManager.CachedDecksData.decks[id].name + "?");
         }
 
         private void DeleteConfirmationHandler()
         {
-			GameManager.Instance.playerDecks.RemoveAt(_deckToDelete);
+			_dataManager.CachedDecksData.decks.RemoveAt(_deckToDelete);
 			Transform deckObj = _decksContainer.GetChild(_deckToDelete);
 			deckObj.SetParent(null);
 			MonoBehaviour.Destroy(deckObj.gameObject);
-			if (GameManager.Instance.currentDeckId == _deckToDelete)
+			if (_currentDeckId == _deckToDelete)
 			{
 				_selectedDeck.gameObject.SetActive(false);
-				GameManager.Instance.currentDeckId = -1;
+                _currentDeckId = -1;
 			}
-            /*if(GameManager.Instance.playerDecks.Count > 0)
-            {
-                GameManager.Instance.currentDeckId = Mathf.Clamp(GameManager.Instance.currentDeckId, 0, GameManager.Instance.playerDecks.Count - 1);
-                SetActive(GameManager.Instance.currentDeckId, true);
-            }*/
 
             AddCreationDeckButton();
-
-            var decksPath = Application.persistentDataPath + "/decks.json";
-			Debug.Log(decksPath);
-			fsData serializedData;
-			serializer.TrySerialize(GameManager.Instance.playerDecks, out serializedData).AssertSuccessWithoutWarnings();
-			var file = new StreamWriter(decksPath);
-			var json = fsJsonPrinter.PrettyJson(serializedData);
-			file.WriteLine(json);
-			file.Close();
         }
 		
         private int GetDeckId(Transform deck)

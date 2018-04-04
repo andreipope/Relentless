@@ -4,9 +4,10 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
-
 using TMPro;
-
+using System;
+using GrandDevs.CZB.Common;
+using GrandDevs.CZB;
 using CCGKit;
 
 public class CardView : MonoBehaviour
@@ -36,7 +37,7 @@ public class CardView : MonoBehaviour
 
     protected GameObject previewCard;
 
-    public Card libraryCard;
+    public GrandDevs.CZB.Data.Card libraryCard;
 
     public int manaCost { get; protected set; }
 
@@ -56,67 +57,42 @@ public class CardView : MonoBehaviour
     {
         this.card = card;
 
-        var gameConfig = GameManager.Instance.config;
-        /*var cardType = gameConfig.cardTypes.Find(x => x.id == card.cardId);
-        Assert.IsNotNull(cardType);
-        pictureSprite.sprite = Resources.Load<Sprite>(cardType.GetStringProperty("Picture"));*/
+        libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-        var libraryCard = gameConfig.GetCard(card.cardId);
-        Assert.IsNotNull(libraryCard);
         nameText.text = libraryCard.name;
-        bodyText.text = libraryCard.GetStringProperty("Text");
+        bodyText.text = libraryCard.description;
+        costText.text = libraryCard.cost.ToString();
 
-        var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-        if (cost != null)
-        {
-            var payResourceCost = cost as PayResourceCost;
-            manaCost = payResourceCost.value;
-            costText.text = manaCost.ToString();
-        }
+        manaCost = libraryCard.cost;
 
-        if (setName.Length > 0)
-        {
-            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Rarity")));
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
-        }
+       var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.rarity);
 
-        var material = libraryCard.GetStringProperty("Material");
-        if (!string.IsNullOrEmpty(material))
-        {
-            pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
-        }
+        backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
+        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
+
         amountText.transform.parent.gameObject.SetActive(false);
     }
 
-    public virtual void PopulateWithLibraryInfo(Card card, string setName = "")
+    public virtual void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
     {
         libraryCard = card;
         nameText.text = card.name;
-        bodyText.text = card.GetStringProperty("Text");
-        amountText.text = card.GetIntProperty("Amount").ToString();
+        bodyText.text = card.description;
+        amountText.text = amount.ToString();
+        costText.text = card.cost.ToString();
 
-        var cost = card.costs.Find(x => x is PayResourceCost);
-        if (cost != null)
-        {
-            var payResourceCost = cost as PayResourceCost;
-            manaCost = payResourceCost.value;
-            costText.text = manaCost.ToString();
-        }
+        manaCost = libraryCard.cost;
 
-		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.GetStringProperty("Rarity")));
-		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.GetStringProperty("Picture")));
-        var material = card.GetStringProperty("Material");
-        if (!string.IsNullOrEmpty(material))
-        {
-            pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
-        }
+        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.rarity);
+
+        backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
+		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
     }
 
 
-	public virtual void UpdateAmount(Card card)
+	public virtual void UpdateAmount(int amount)
 	{
-		libraryCard = card;
-		amountText.text = card.GetIntProperty("Amount").ToString();
+		amountText.text = amount.ToString();
 	}
     public virtual bool CanBePlayed(DemoHumanPlayer owner)
     {

@@ -17,6 +17,7 @@ using TMPro;
 
 using CCGKit;
 using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 /// <summary>
 /// The demo player is a subclass of the core HumanPlayer type which extends it with demo-specific
@@ -25,6 +26,9 @@ using GrandDevs.CZB;
 /// </summary>
 public class DemoHumanPlayer : DemoPlayer
 {
+    public event Action OnEndTurnEvent;
+    public event Action OnStartTurnEvent;
+
     [SerializeField]
     private GameObject creatureCardViewPrefab;
 
@@ -83,6 +87,8 @@ public class DemoHumanPlayer : DemoPlayer
     protected int currentPreviewedCardId;
     protected Coroutine createPreviewCoroutine;
 
+    protected AbilitiesController _abilitiesController;
+
     protected override void Awake()
     {
         base.Awake();
@@ -107,6 +113,8 @@ public class DemoHumanPlayer : DemoPlayer
         //changed by Basil
         GameClient.Get<IPlayerManager>().PlayerGraveyardCards = playerGraveyardCards;
         GameClient.Get<IPlayerManager>().OpponentGraveyardCards = opponentGraveyardCards;
+
+        _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
     }
 
     public override void OnStartLocalPlayer()
@@ -359,6 +367,9 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.OnStartTurn(msg);
 
+        if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial && !GameClient.Get<ITutorialManager>().IsTutorial)
+			GameClient.Get<ITutorialManager>().StartTutorial();
+
         gameUI.SetPlayerActive(msg.isRecipientTheActivePlayer);
         gameUI.SetOpponentActive(!msg.isRecipientTheActivePlayer);
         gameUI.SetEndTurnButtonEnabled(msg.isRecipientTheActivePlayer);
@@ -406,6 +417,8 @@ public class DemoHumanPlayer : DemoPlayer
 
             gameUI.HideTurnCountdown();
         }
+
+        OnStartTurnEvent?.Invoke();
     }
 
     protected virtual void RearrangeHand()
@@ -419,7 +432,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
         handWidth -= spacing;
 
-        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.465f, -0.00f, 0.0f)); // changed by Basil
+        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.54f, 0.05f, 0.0f)); // changed by Basil
         var totalTwist = -20f;
         if (playerHandCards.Count == 1)
         {
@@ -453,7 +466,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
         handWidth -= spacing;
 
-        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.465f, 1.03f, 0.0f)); // changed by Basil
+        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
         var totalTwist = -20f;
         if (opponentHandCards.Count == 1)
         {
@@ -478,7 +491,7 @@ public class DemoHumanPlayer : DemoPlayer
     protected virtual void RearrangeTopBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
-        var spacing = 0.5f;
+        var spacing = -0.2f;
         var cardWidth = 0.0f;
         foreach (var card in opponentBoardCards)
         {
@@ -493,7 +506,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < opponentBoardCards.Count; i++)
         {
             var card = opponentBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y));
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 0.2f));
             pivot.x += boardWidth / opponentBoardCards.Count;
         }
 
@@ -515,7 +528,7 @@ public class DemoHumanPlayer : DemoPlayer
     protected virtual void RearrangeBottomBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
-        var spacing = 0.5f;
+        var spacing = -0.2f;
         var cardWidth = 0.0f;
         foreach (var card in playerBoardCards)
         {
@@ -530,7 +543,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < playerBoardCards.Count; i++)
         {
             var card = playerBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.6f));
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.4f));
             pivot.x += boardWidth / playerBoardCards.Count;
         }
 
@@ -562,6 +575,8 @@ public class DemoHumanPlayer : DemoPlayer
                 card.OnEndTurn();
             }
 
+            GameObject.Find("Player/Spell").GetComponent<BoardSkill>().OnEndTurn();
+
             if (currentCreature != null)
             {
                 playerBoardCards.Remove(currentCreature);
@@ -583,11 +598,15 @@ public class DemoHumanPlayer : DemoPlayer
         }
 
         gameUI.StopCountdown();
+
+        if(isHuman)
+            OnEndTurnEvent?.Invoke();
     }
 
     public override void StopTurn()
     {
-        var msg = new StopTurnMessage();
+        GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.END_TURN);
+		var msg = new StopTurnMessage();
         client.Send(NetworkProtocol.StopTurn, msg);
     }
 
@@ -607,6 +626,11 @@ public class DemoHumanPlayer : DemoPlayer
         //{
         //    return;
         //}
+
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 1 && 
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 13))
+            return;
+
 
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetMouseButtonDown(0))
@@ -716,25 +740,24 @@ public class DemoHumanPlayer : DemoPlayer
     {
         yield return new WaitForSeconds(0.3f);
 
-        var gameConfig = GameManager.Instance.config;
-        var libraryCard = gameConfig.GetCard(card.cardId);
-        var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-		string cardSetName = string.Empty;
-		foreach (var cardSet in gameConfig.cardSets)
-		{
-			if (cardSet.cards.IndexOf(libraryCard) > -1)
-				cardSetName = cardSet.name;
-		}
+        string cardSetName = string.Empty;
+        foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+        {
+            if (cardSet.cards.IndexOf(libraryCard) > -1)
+                cardSetName = cardSet.name;
+        }
 
-        if (cardType.name == "Creature")
+        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
         {
-            currentCardPreview = Instantiate(creatureCardViewPrefab as GameObject);
+            currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
         }
-        else if (cardType.name == "Spell")
+        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
         {
-            currentCardPreview = Instantiate(spellCardViewPrefab as GameObject);
+            currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
         }
+
         var cardView = currentCardPreview.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
         cardView.SetHighlightingEnabled(highlight);
@@ -780,27 +803,26 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected virtual void AddCardToHand(RuntimeCard card)
     {
-        var gameConfig = GameManager.Instance.config;
-        var libraryCard = gameConfig.GetCard(card.cardId);
-        var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-		string cardSetName = string.Empty;
-		foreach (var cardSet in gameConfig.cardSets)
+        string cardSetName = string.Empty;
+		foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
 		{
 			if (cardSet.cards.IndexOf(libraryCard) > -1)
 				cardSetName = cardSet.name;
 		}
 
         GameObject go = null;
-        if (cardType.name == "Creature")
+        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
         {
-            go = Instantiate(creatureCardViewPrefab as GameObject);
+            go = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
         }
-        else if (cardType.name == "Spell")
+        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
         {
-            go = Instantiate(spellCardViewPrefab as GameObject);
+            go = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
         }
-        var cardView = go.GetComponent<CardView>();
+
+    var cardView = go.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
 
         var handCard = go.AddComponent<HandCard>();
@@ -825,18 +847,18 @@ public class DemoHumanPlayer : DemoPlayer
         {
             gameUI.endTurnButton.SetEnabled(false);
 
-            var gameConfig = GameManager.Instance.config;
-            var libraryCard = gameConfig.GetCard(card.card.cardId);
-            var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
-			string cardSetName = string.Empty;
-			foreach (var cardSet in gameConfig.cardSets)
-			{
-				if (cardSet.cards.IndexOf(libraryCard) > -1)
-					cardSetName = cardSet.name;
-			}
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.card.cardId);
 
-            if (cardType.name == "Creature")
+            string cardSetName = string.Empty;
+            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            {
+                if (cardSet.cards.IndexOf(libraryCard) > -1)
+                    cardSetName = cardSet.name;
+            }
+
+            if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
             {
                 var boardCreature = Instantiate(boardCreaturePrefab);
 
@@ -859,50 +881,58 @@ public class DemoHumanPlayer : DemoPlayer
 
                 RearrangeBottomBoard(() =>
                 {
-                    var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
-                    TriggeredAbility targetableAbility = null;
-                    foreach (var ability in triggeredAbilities)
+                    bool canUseAbility = false;
+                    ActiveAbility activatedAbility;
+                    foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
                     {
-                        var triggeredAbility = ability as TriggeredAbility;
-                        var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-                        if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
-                        {
-                            targetableAbility = triggeredAbility;
-                            break;
-                        }
+                        activatedAbility = _abilitiesController.ActivateAbility(item, currentCreature, this);
+
+                        if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
+                            canUseAbility = true;
+                        else if(_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
+                            activatedAbility.ability.Activate();
                     }
 
                     // Preemptively move the card so that the effect solver can properly check the availability of targets
                     // by also taking into account this card (that is trying to be played).
-                    playerInfo.namedZones["Hand"].RemoveCard(card.card);
-                    playerInfo.namedZones["Board"].AddCard(card.card);
+                    playerInfo.namedZones[Constants.ZONE_HAND].RemoveCard(card.card);
+                    playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(card.card);
+                   
+                    effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+                    boardCreature.GetComponent<BoardCreature>().fightTargetingArrowPrefab = fightTargetingArrowPrefab;
 
-                    if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
+                    if (canUseAbility)
                     {
-                        var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
-                        boardCreature.GetComponent<BoardCreature>().abilitiesTargetingArrow = targetingArrow;
-                        targetingArrow.effectTarget = targetableAbility.target;
-                        targetingArrow.targetType = targetableAbility.target.GetTarget();
-                        targetingArrow.onTargetSelected += () =>
+                        var type = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
+                        var activeAbility = _abilitiesController.GetAbilityByTypeCardOwner(type, currentCreature, this);
+
+                        if (_abilitiesController.CheckActivateAvailability(Enumerators.CardKind.CREATURE, type, this))
                         {
-                            PlayCreatureCard(card.card, targetingArrow.targetInfo);
-                            effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetingArrow.targetInfo);
-                            currentCreature = null;
-                            gameUI.endTurnButton.SetEnabled(true);
-                        };
-                        targetingArrow.Begin(boardCreature.transform.localPosition);
+                            activeAbility.ability.Activate();
+
+                            activeAbility.ability.ActivateSelectTarget(callback: () =>
+                            {
+                                CallCardPlay(card);
+                            },
+                            failedCallback: () =>
+                            {
+                                Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
+
+                                CallCardPlay(card);
+                            });
+                        }
+                        else
+                        {
+                            CallCardPlay(card);
+                        }
                     }
                     else
                     {
-                        PlayCreatureCard(card.card);
-                        effectSolver.MoveCard(netId, card.card, "Hand", "Board");
-                        currentCreature = null;
-                        gameUI.endTurnButton.SetEnabled(true);
+                        CallCardPlay(card);
                     }
-                    boardCreature.GetComponent<BoardCreature>().fightTargetingArrowPrefab = fightTargetingArrowPrefab;
                 });
             }
-            else if (cardType.name == "Spell")
+            else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
@@ -915,42 +945,48 @@ public class DemoHumanPlayer : DemoPlayer
 
                     var boardSpell = card.gameObject.AddComponent<BoardSpell>();
 
-                    var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
-                    TriggeredAbility targetableAbility = null;
-                    foreach (var ability in triggeredAbilities)
+                    bool canUseAbility = false;
+                    ActiveAbility activatedAbility;
+                    foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
                     {
-                        var triggeredAbility = ability as TriggeredAbility;
-                        var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-                        if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
-                        {
-                            targetableAbility = triggeredAbility;
-                            break;
-                        }
+                        activatedAbility = _abilitiesController.ActivateAbility(item, boardSpell, this);
+
+                        if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
+                            canUseAbility = true;
+                        else if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
+                            activatedAbility.ability.Activate();
                     }
 
                     currentSpellCard = card;
+                    effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
 
-                    if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
+                    if (canUseAbility)
                     {
-                        var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
-                        boardSpell.targetingArrow = targetingArrow;
-                        targetingArrow.effectTarget = targetableAbility.target;
-                        targetingArrow.targetType = targetableAbility.target.GetTarget();
-                        targetingArrow.onTargetSelected += () =>
+                        var type = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
+                        var activeAbility = _abilitiesController.GetAbilityByTypeCardOwner(type, boardSpell, this);
+
+                        if (_abilitiesController.CheckActivateAvailability(Enumerators.CardKind.SPELL, type, this))
                         {
-                            PlaySpellCard(card.card, targetingArrow.targetInfo);
-                            effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetingArrow.targetInfo);
-                            currentSpellCard = null;
-                            gameUI.endTurnButton.SetEnabled(true);
-                        };
-                        targetingArrow.Begin(boardSpell.transform.localPosition);
+                            activeAbility.ability.Activate();
+
+                            activeAbility.ability.ActivateSelectTarget(callback: () =>
+                            {
+                                CallSpellCardPlay(card);
+                            },
+                            failedCallback: () =>
+                            {
+                                Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
+                                CallSpellCardPlay(card);
+                            });
+                        }
+                        else
+                        {
+                            CallSpellCardPlay(card);
+                        }
                     }
                     else
                     {
-                        PlaySpellCard(card.card);
-                        effectSolver.MoveCard(netId, card.card, "Hand", "Board");
-                        currentSpellCard = null;
-                        gameUI.endTurnButton.SetEnabled(true);
+                        CallSpellCardPlay(card);
                     }
                 });
             }
@@ -961,13 +997,27 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    private void SetCardType(Card card, GameObject cardobject)
+    private void CallCardPlay(CardView card)
     {
-        if (card.GetStringProperty("Type") != "Feral")
+        PlayCreatureCard(card.card);
+        currentCreature = null;
+        gameUI.endTurnButton.SetEnabled(true);
+    }
+
+    private void CallSpellCardPlay(CardView card)
+    {
+        PlaySpellCard(card.card);
+        currentSpellCard = null;
+        gameUI.endTurnButton.SetEnabled(true);
+    }
+
+    private void SetCardType(GrandDevs.CZB.Data.Card card, GameObject cardobject)
+    {
+        if (card.type != Enumerators.CardType.FERAL)
         {
             cardobject.transform.Find("TypeIcon").gameObject.SetActive(false);
         }
-        if (card.GetStringProperty("Type") == "Heavy")
+        if (card.type == Enumerators.CardType.HEAVY)
         {
             cardobject.transform.Find("Armor").gameObject.SetActive(true);
         }
@@ -1014,6 +1064,7 @@ public class DemoHumanPlayer : DemoPlayer
                 {
                     NetworkManager.singleton.StopClient();
                 }
+                GameClient.Get<ITutorialManager>().StopTutorial();
                 GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
             });
         });
@@ -1023,16 +1074,14 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.OnCardMoved(msg);
 
-        var gameConfig = GameManager.Instance.config;
-        var libraryCard = gameConfig.GetCard(msg.card.cardId);
-        var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(msg.card.cardId);
 
-		string cardSetName = string.Empty;
-		foreach (var cardSet in gameConfig.cardSets)
-		{
-			if (cardSet.cards.IndexOf(libraryCard) > -1)
-				cardSetName = cardSet.name;
-		}
+        string cardSetName = string.Empty;
+        foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+        {
+            if (cardSet.cards.IndexOf(libraryCard) > -1)
+                cardSetName = cardSet.name;
+        }
 
         var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
         var randomCard = opponentHandCards[randomIndex];
@@ -1041,7 +1090,7 @@ public class DemoHumanPlayer : DemoPlayer
         RearrangeOpponentHand();
         gameUI.SetOpponentHandCards(opponentHandCards.Count);
 
-        if (cardType.name == "Creature")
+        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
         {
             var opponentBoard = opponentInfo.namedZones["Board"];
             effectSolver.SetDestroyConditions(opponentBoard.cards[opponentBoard.cards.Count - 1]);
@@ -1055,13 +1104,7 @@ public class DemoHumanPlayer : DemoPlayer
             RearrangeTopBoard(() =>
             {
                 opponentHandZone.numCards -= 1;
-
-                var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-                if (cost != null)
-                {
-                    var payResourceCost = cost as PayResourceCost;
-                    opponentManaStat.baseValue -= payResourceCost.value;
-                }
+                opponentManaStat.baseValue -= libraryCard.cost;
 
                 if (msg.targetInfo != null && msg.targetInfo.Length >= 2)
                 {
@@ -1090,7 +1133,7 @@ public class DemoHumanPlayer : DemoPlayer
                 }
             });
         }
-        else if (cardType.name == "Spell")
+        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
         {
             var opponentBoard = opponentInfo.namedZones["Board"];
             effectSolver.SetDestroyConditions(opponentBoard.cards[opponentBoard.cards.Count - 1]);
@@ -1102,12 +1145,7 @@ public class DemoHumanPlayer : DemoPlayer
 
             currentSpellCard = spellCard.GetComponent<SpellCardView>();
 
-            var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-            if (cost != null)
-            {
-                var payResourceCost = cost as PayResourceCost;
-                opponentManaStat.baseValue -= payResourceCost.value;
-            }
+            opponentManaStat.baseValue -= libraryCard.cost;
 
             if (msg.targetInfo != null && msg.targetInfo.Length >= 2)
             {

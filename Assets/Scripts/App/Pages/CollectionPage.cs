@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
+using System;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
-using CCGKit;
 using TMPro;
 using DG.Tweening;
 
@@ -16,6 +16,7 @@ namespace GrandDevs.CZB
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+		private IDataManager _dataManager;
 
         private GameObject _selfPage;
 
@@ -51,8 +52,9 @@ namespace GrandDevs.CZB
 			_uiManager = GameClient.Get<IUIManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
 
@@ -63,8 +65,6 @@ namespace GrandDevs.CZB
             _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<MenuButtonNoGlow>();
 
             _cardSetsSlider = _selfPage.transform.Find("Elements").GetComponent<Slider>();
-
-            //_decksContainer = _selfPage.transform.Find("Cards");
 
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
             _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
@@ -90,7 +90,8 @@ namespace GrandDevs.CZB
                 {
                     if (_selectedCard != null)
                     {
-                        _selectedCollectionCard.UpdateAmount(_selectedCollectionCard.libraryCard);
+                        var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
+                        _selectedCollectionCard.UpdateAmount(amount);
                         MonoBehaviour.Destroy(_selectedCard.gameObject);
                         _selectedCard = null;
                     }
@@ -115,10 +116,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            //Canvas.worl
             _uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
-           // Canvas.
-
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -157,8 +155,8 @@ namespace GrandDevs.CZB
 			}
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
-            numSets = GameManager.Instance.config.cardSets.Count;
-            numPages = Mathf.CeilToInt(GameManager.Instance.config.cardSets[currentSet].cards.Count / (float)cardPositions.Count);
+            numSets = _dataManager.CachedCardsLibraryData.sets.Count;
+            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
 
             _cardSetsSlider.value = 0;
             LoadCards(0, 0);
@@ -259,7 +257,7 @@ namespace GrandDevs.CZB
                 }
             }
 
-            numPages = Mathf.CeilToInt(GameManager.Instance.config.cardSets[currentSet].cards.Count / (float)cardPositions.Count);
+            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
             _cardSetsSlider.value = currentSet;
 
 			LoadCards(currentPage, currentSet);
@@ -272,9 +270,9 @@ namespace GrandDevs.CZB
 
 		public void LoadCards(int page, int setIndex)
 		{
-            var cards = GameManager.Instance.config.cardSets[setIndex].cards;
+            var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
+            var cards = set.cards;
 
-            var gameConfig = GameManager.Instance.config;
 			var startIndex = page * cardPositions.Count;
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
@@ -289,20 +287,20 @@ namespace GrandDevs.CZB
                     break;
 
 				var card = cards[i];
-				var cardType = gameConfig.cardTypes.Find(x => x.id == card.cardTypeId);
 
-				GameObject go = null;
-				if (cardType.name == "Creature")
+                GameObject go = null;
+				if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.CREATURE)
 				{
 					go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
 				}
-				else if (cardType.name == "Spell")
+				else if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.SPELL)
 				{
 					go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
 				}
-
-				var cardView = go.GetComponent<CardView>();
-                cardView.PopulateWithLibraryInfo(card, GameManager.Instance.config.cardSets[setIndex].name);
+              
+                var cardView = go.GetComponent<CardView>();
+                var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
+                cardView.PopulateWithLibraryInfo(card, set.name, amount);
 				cardView.SetHighlightingEnabled(false);
 				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
 				cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);

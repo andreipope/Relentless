@@ -8,15 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/APP_INIT.unity
     guid: 546304dcb91374dc0bc632f8c21e267b
-  - enabled: 0
-    path: Assets/Scenes/Home.unity
-    guid: 2dbda52846efd49d2abae89b74d0501f
-  - enabled: 0
-    path: Assets/Scenes/Lobby.unity
-    guid: a4c40d647ade24dbb9aa3fdb24576ffd
-  - enabled: 0
-    path: Assets/Scenes/DeckBuilder.unity
-    guid: 6e50784ef73e545938d9df65870415fa
   - enabled: 1
     path: Assets/Scenes/GAMEPLAY.unity
     guid: c5f0e1bda8df04004829d31b8fc8f2ed

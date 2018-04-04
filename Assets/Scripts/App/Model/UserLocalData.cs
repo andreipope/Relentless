@@ -1,10 +1,11 @@
 ﻿using GrandDevs.CZB.Common;
 
-namespace GrandDevs.CZB
+namespace GrandDevs.CZB.Data
 {
     public class UserLocalData
     {
         public Enumerators.Language appLanguage;
+        public bool tutorial = true;
 
 
         public UserLocalData()

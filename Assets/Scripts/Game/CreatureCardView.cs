@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 using TMPro;
-
 using CCGKit;
 
 public class CreatureCardView : CardView
@@ -41,8 +40,23 @@ public class CreatureCardView : CardView
     public override void PopulateWithInfo(RuntimeCard card, string setName)
     {
         base.PopulateWithInfo(card, setName);
-        attackStat = card.namedStats["DMG"];
-        defenseStat = card.namedStats["HP"];
+
+        attackStat = new Stat();
+        attackStat.statId = 0;
+        attackStat.name = "DMG";
+        attackStat.originalValue = libraryCard.damage;
+        attackStat.baseValue = libraryCard.damage;
+        attackStat.minValue = 0;
+        attackStat.maxValue = 99;
+
+        defenseStat = new Stat();
+        defenseStat.statId = 1;
+        defenseStat.name = "HP";
+        defenseStat.originalValue = libraryCard.health;
+        defenseStat.baseValue = libraryCard.health;
+        defenseStat.minValue = 0;
+        defenseStat.maxValue = 99;
+
         attackText.text = attackStat.effectiveValue.ToString();
         defenseText.text = defenseStat.effectiveValue.ToString();
 
@@ -50,11 +64,12 @@ public class CreatureCardView : CardView
         defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
     }
 
-    public override void PopulateWithLibraryInfo(Card card, string setName)
+    public override void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
     {
-        base.PopulateWithLibraryInfo(card, setName);
-        attackText.text = card.stats[0].effectiveValue.ToString();
-        defenseText.text = card.stats[1].effectiveValue.ToString();
-		typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.GetStringProperty("Type") + "_icon"));
-	}
+        base.PopulateWithLibraryInfo(card, setName, amount);
+
+        attackText.text = card.damage.ToString();
+        defenseText.text = card.health.ToString();
+        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+    }
 }

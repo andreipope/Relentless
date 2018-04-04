@@ -1,0 +1,451 @@
+{
+  "sets": [
+    {
+      "name": "Fire",
+      "cards": [
+        {
+          "id": 0,
+          "cardTypeId": 0,
+          "name": "Pyromaz",
+          "cost": 1,
+          "description": "1 additional damage to life zombie",
+          "picture": "Pyromaz",
+          "damage": 2,
+          "health": 1,
+          "type": 0,
+          "rarity": 0,
+          "abilities": [ 3 ]
+        },
+        {
+          "id": 1,
+          "cardTypeId": 0,
+          "name": "Burrrnn",
+          "cost": 2,
+          "description": "<b>Feral:</b> attacks immediately DOT 1 dmg for 2 turns.",
+          "picture": "Burrrnn",
+          "damage": 2,
+          "health": 1,
+          "type": 1,
+          "rarity": 1
+        },
+        {
+          "id": 2,
+          "cardTypeId": 0,
+          "name": "Cynderman",
+          "cost": 5,
+          "description": "DOT 2 dmg for 2 turns",
+          "picture": "Cynderman",
+          "damage": 4,
+          "health": 3,
+          "type": 0,
+          "rarity": 2
+        },
+        {
+          "id": 3,
+          "cardTypeId": 0,
+          "name": "Gargantua",
+          "cost": 8,
+          "description": "DOT 4 for 2 turns",
+          "picture": "Gargantua",
+          "damage": 6,
+          "health": 6,
+          "type": 2,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Water",
+      "cards": [
+        {
+          "id": 4,
+          "cardTypeId": 0,
+          "name": "Izze",
+          "cost": 2,
+          "description": "Freezes enemy for 1 turn",
+          "picture": "Izze",
+          "damage": 1,
+          "health": 1,
+          "type": 0,
+          "rarity": 0,
+          "abilities": [ 7 ]
+        },
+        {
+          "id": 5,
+          "cardTypeId": 0,
+          "name": "Jetter",
+          "cost": 3,
+          "description": "Does extra dmg to fire zombies",
+          "picture": "Jetter",
+          "damage": 3,
+          "health": 4,
+          "type": 0,
+          "rarity": 1,
+          "abilities": [ 4 ]
+        },
+        {
+          "id": 6,
+          "cardTypeId": 0,
+          "name": "Freezzee",
+          "cost": 4,
+          "description": "Freeze target for 1 turn",
+          "picture": "Freezzee",
+          "damage": 4,
+          "health": 4,
+          "type": 0,
+          "rarity": 2,
+          "abilities": [ 5 ]
+        },
+        {
+          "id": 7,
+          "cardTypeId": 0,
+          "name": "Tsunami",
+          "cost": 7,
+          "description": "Creates a title wave. damages target and 2 adj. targets",
+          "picture": "Tsunami",
+          "damage": 8,
+          "health": 7,
+          "type": 0,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Earth",
+      "cards": [
+        {
+          "id": 8,
+          "cardTypeId": 0,
+          "name": "Rockky",
+          "cost": 1,
+          "description": "",
+          "picture": "Rockky",
+          "damage": 1,
+          "health": 2,
+          "type": 0,
+          "rarity": 0
+        },
+        {
+          "id": 9,
+          "cardTypeId": 0,
+          "name": "Golem",
+          "cost": 4,
+          "description": "<b>Heavy:</b> must kill to attack others",
+          "picture": "Golem",
+          "damage": 2,
+          "health": 6,
+          "type": 2,
+          "rarity": 1
+        },
+        {
+          "id": 10,
+          "cardTypeId": 0,
+          "name": "Bolderr",
+          "cost": 4,
+          "description": "Freeze target for 1 turn",
+          "picture": "Bolderr",
+          "damage": 4,
+          "health": 5,
+          "type": 0,
+          "rarity": 2,
+          "abilities": [ 5 ]
+        },
+        {
+          "id": 11,
+          "cardTypeId": 0,
+          "name": "Mountain",
+          "cost": 8,
+          "description": "<b>Heavy:</b> must kill to attack others",
+          "picture": "Mountain",
+          "damage": 8,
+          "health": 8,
+          "type": 2,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Air",
+      "cards": [
+        {
+          "id": 12,
+          "cardTypeId": 0,
+          "name": "Whizpar",
+          "cost": 2,
+          "description": "<b>Feral:</b> attacks immediately",
+          "picture": "Whizpar",
+          "damage": 1,
+          "health": 1,
+          "type": 1,
+          "rarity": 0
+        },
+        {
+          "id": 13,
+          "cardTypeId": 0,
+          "name": "Pushhh",
+          "cost": 3,
+          "description": "Select a friendly zombie to return to hand",
+          "picture": "Pushhh",
+          "damage": 3,
+          "health": 3,
+          "type": 0,
+          "rarity": 1
+        },
+        {
+          "id": 14,
+          "cardTypeId": 0,
+          "name": "Stormcaller",
+          "cost": 6,
+          "description": "Creates a storm that shocks target and 2 adjacent cards",
+          "picture": "Stormcaller",
+          "damage": 4,
+          "health": 5,
+          "type": 0,
+          "rarity": 2
+        },
+        {
+          "id": 15,
+          "cardTypeId": 0,
+          "name": "Zeuz",
+          "cost": 8,
+          "description": "Stuns target disabling it until its next turn.",
+          "picture": "Zeuz",
+          "damage": 8,
+          "health": 7,
+          "type": 0,
+          "rarity": 3,
+          "abilities": [ 10 ]
+        }
+      ]
+    },
+    {
+      "name": "Life",
+      "cards": [
+        {
+          "id": 16,
+          "cardTypeId": 0,
+          "name": "Azuraz",
+          "cost": 2,
+          "description": "1 additional damage to water zombie",
+          "picture": "Azuraz",
+          "damage": 2,
+          "health": 1,
+          "type": 0,
+          "rarity": 0,
+          "abilities": [ 18 ]
+        },
+        {
+          "id": 17,
+          "cardTypeId": 0,
+          "name": "Shroom",
+          "cost": 4,
+          "description": "Poison target DOT 2 for 2 turns",
+          "picture": "Shroom",
+          "damage": 4,
+          "health": 2,
+          "type": 0,
+          "rarity": 1
+        },
+        {
+          "id": 18,
+          "cardTypeId": 0,
+          "name": "Vindrom",
+          "cost": 2,
+          "description": "Entangles target disable for the rest of turn",
+          "picture": "Vindrom",
+          "damage": 5,
+          "health": 5,
+          "type": 0,
+          "rarity": 2,
+          "abilities": [ 12 ]
+        },
+        {
+          "id": 19,
+          "cardTypeId": 0,
+          "name": "Shammann",
+          "cost": 8,
+          "description": "Summons a 1/1 zombie minion start of each turn",
+          "picture": "Shammann",
+          "damage": 6,
+          "health": 8,
+          "type": 0,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Toxic",
+      "cards": [
+        {
+          "id": 20,
+          "cardTypeId": 0,
+          "name": "Poizom",
+          "cost": 2,
+          "description": "1 additional damage to life zombie",
+          "picture": "Poizom",
+          "damage": 2,
+          "health": 1,
+          "type": 0,
+          "rarity": 0,
+          "abilities": [ 3 ]
+        },
+        {
+          "id": 21,
+          "cardTypeId": 0,
+          "name": "Ghoul",
+          "cost": 3,
+          "description": "Poison target DOT 2 for 2 turns",
+          "picture": "Ghoul",
+          "damage": 3,
+          "health": 3,
+          "type": 0,
+          "rarity": 1
+        },
+        {
+          "id": 22,
+          "cardTypeId": 0,
+          "name": "Hazmaz",
+          "cost": 4,
+          "description": "<b>Feral:</b> attacks immediately, DOT 2 for 2 turns",
+          "picture": "Hazmaz",
+          "damage": 3,
+          "health": 3,
+          "type": 1,
+          "rarity": 2
+        },
+        {
+          "id": 23,
+          "cardTypeId": 0,
+          "name": "Cherno-bill",
+          "cost": 10,
+          "description": "<b>Heavy:</b> must kill to attack others. does to all enemy 2 dmg",
+          "picture": "Cherno-bill",
+          "damage": 8,
+          "health": 8,
+          "type": 2,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "cards": [
+        {
+          "id": 24,
+          "cardTypeId": 1,
+          "name": "Stapler",
+          "cost": 2,
+          "description": "Heals a zombie for 4 HP",
+          "picture": "Stapler",
+          "damage": 0,
+          "health": 0,
+          "type": 0,
+          "rarity": 0,
+          "abilities": [ 14 ]
+        },
+        {
+          "id": 25,
+          "cardTypeId": 1,
+          "name": "Nail Bomb",
+          "cost": 2,
+          "description": "Damage target and 2 adjacent zombies for 5 damage",
+          "picture": "NailBomb",
+          "damage": 10,
+          "health": 0,
+          "type": 0,
+          "rarity": 0
+        },
+        {
+          "id": 26,
+          "cardTypeId": 1,
+          "name": "Goo Bottle",
+          "cost": 0,
+          "description": "Adds 2 full Goo vials",
+          "picture": "GooBottles",
+          "damage": 0,
+          "health": 0,
+          "type": 0,
+          "rarity": 2,
+          "abilities": [ 16 ]
+        },
+        {
+          "id": 27,
+          "cardTypeId": 0,
+          "name": "Chainsaw",
+          "cost": 2,
+          "description": "Loses 1 HP on attack",
+          "picture": "Chainsaw",
+          "damage": 5,
+          "health": 3,
+          "type": 0,
+          "rarity": 3
+        }
+      ]
+    },
+    {
+      "name": "Others",
+      "cards": [
+        {
+          "id": 28,
+          "cardTypeId": 0,
+          "name": "Mountain",
+          "cost": 1,
+          "description": "",
+          "picture": "Mountain",
+          "damage": 8,
+          "health": 8,
+          "type": 0,
+          "rarity": 3
+        },
+        {
+          "id": 29,
+          "cardTypeId": 0,
+          "name": "Hazmaz",
+          "cost": 1,
+          "description": "",
+          "picture": "Hazmaz",
+          "damage": 6,
+          "health": 2,
+          "type": 1,
+          "rarity": 0
+        },
+		{
+          "id": 30,
+          "cardTypeId": 0,
+          "name": "Hazmaz",
+          "cost": 1,
+          "description": "",
+          "picture": "Hazmaz",
+          "damage": 1,
+          "health": 4,
+          "type": 0,
+          "rarity": 0
+        },
+		{
+          "id": 31,
+          "cardTypeId": 0,
+          "name": "Stormcaller",
+          "cost": 1,
+          "description": "",
+          "picture": "Stormcaller",
+          "damage": 4,
+          "health": 5,
+          "type": 0,
+          "rarity": 2
+        },
+        {
+          "id": 32,
+          "cardTypeId": 0,
+          "name": "Vindrom",
+          "cost": 1,
+          "description": "",
+          "picture": "Vindrom",
+          "damage": 5,
+          "health": 5,
+          "type": 2,
+          "rarity": 1
+        },
+      ]
+    }
+  ]
+}

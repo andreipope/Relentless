@@ -5,6 +5,7 @@
 using UnityEngine.Networking;
 
 using CCGKit;
+using GrandDevs.CZB.Common;
 
 /// <summary>
 ///  This server handler is responsible for managing the network aspects of a combat between
@@ -36,6 +37,8 @@ public class CombatHandler : ServerHandler
         NetworkServer.RegisterHandler(NetworkProtocol.FightCreature, OnFightCreature);
         NetworkServer.RegisterHandler(NetworkProtocol.FightPlayerBySkill, OnFightPlayerBySkill);
         NetworkServer.RegisterHandler(NetworkProtocol.FightCreatureBySkill, OnFightCreatureBySkill);
+        NetworkServer.RegisterHandler(NetworkProtocol.HealPlayerBySkill, OnHealPlayerBySkill);
+        NetworkServer.RegisterHandler(NetworkProtocol.HealCreatureBySkill, OnHealCreatureBySkill);
     }
 
     public override void UnregisterNetworkHandlers()
@@ -45,6 +48,8 @@ public class CombatHandler : ServerHandler
         NetworkServer.UnregisterHandler(NetworkProtocol.FightPlayer);
         NetworkServer.UnregisterHandler(NetworkProtocol.FightPlayerBySkill);
         NetworkServer.UnregisterHandler(NetworkProtocol.FightCreatureBySkill);
+        NetworkServer.UnregisterHandler(NetworkProtocol.HealPlayerBySkill);
+        NetworkServer.UnregisterHandler(NetworkProtocol.HealCreatureBySkill);
     }
 
     public virtual void OnFightPlayer(NetworkMessage netMsg)
@@ -130,10 +135,42 @@ public class CombatHandler : ServerHandler
             creatureAttackedMsg.attackedCardInstanceId = msg.attackedCardInstanceId;
             server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.CreatureAttacked, creatureAttackedMsg);
                             */
-            var attackedCard = server.gameState.currentOpponent.namedZones["Board"].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
+            var attackedCard = server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
             if (attackedCard != null)
             {
                 server.effectSolver.FightCreatureBySkill(msg.attackingPlayerNetId, attackedCard, msg.attack);
+            }
+        }
+    }
+
+    public virtual void OnHealPlayerBySkill(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<HealPlayerBySkillMessage>();
+        if (msg != null)
+        {
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+                return;
+
+            server.effectSolver.HealPlayerBySkill(msg.callerPlayerNetId, msg.value);
+        }
+    }
+
+    public virtual void OnHealCreatureBySkill(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<HealCreatureBySkillMessage>();
+        if (msg != null)
+        {
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+                return;
+
+            var selectedCard = server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.cardInstanceId);
+
+            if(selectedCard == null)
+                selectedCard = server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.cardInstanceId);
+
+            if (selectedCard != null)
+            {
+                server.effectSolver.HealCreatureBySkill(msg.callerPlayerNetId, selectedCard, msg.value);
             }
         }
     }

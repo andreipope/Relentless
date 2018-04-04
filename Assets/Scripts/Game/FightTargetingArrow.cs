@@ -23,6 +23,9 @@ public class FightTargetingArrow : TargetingArrow
 
     public override void OnCardSelected(BoardCreature creature)
     {
+        if (GameManager.Instance.tutorial && GameManager.Instance.tutorialStep == 8)
+            return;
+            
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetCard ||
             (targetType == EffectTarget.PlayerOrPlayerCreature && creature.tag == "PlayerOwned") ||
@@ -51,6 +54,8 @@ public class FightTargetingArrow : TargetingArrow
 
     public override void OnPlayerSelected(PlayerAvatar player)
     {
+        if (GameManager.Instance.tutorial && (GameManager.Instance.tutorialStep != 8 && GameManager.Instance.tutorialStep != 14 && GameManager.Instance.tutorialStep != 15))
+            return;
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetPlayer ||
             (targetType == EffectTarget.PlayerOrPlayerCreature && player.tag == "PlayerOwned") ||

@@ -4,6 +4,8 @@
 
 using UnityEngine.Assertions;
 using UnityEngine.Networking;
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 namespace CCGKit
 {
@@ -119,28 +121,45 @@ namespace CCGKit
                 card.cardId = id;
                 card.instanceId = player.currentCardInstanceId++;
                 card.ownerPlayer = player;
+                
                 // Copy stats.
-                var libraryCard = gameConfig.GetCard(id);
-                foreach (var stat in libraryCard.stats)
-                {
-                    var statCopy = new Stat();
-                    statCopy.statId = stat.statId;
-                    statCopy.name = stat.name;
-                    statCopy.originalValue = stat.originalValue;
-                    statCopy.baseValue = stat.baseValue;
-                    statCopy.minValue = stat.minValue;
-                    statCopy.maxValue = stat.maxValue;
-                    card.stats[stat.statId] = statCopy;
-                    card.namedStats[stat.name] = statCopy;
-                }
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(id);
+
+                var statCopy = new Stat();
+                statCopy.statId = 0;
+                statCopy.name = "DMG";
+                statCopy.originalValue = libraryCard.damage;
+                statCopy.baseValue = libraryCard.damage;
+                statCopy.minValue = 0;
+                statCopy.maxValue = 99;
+                card.stats[0] = statCopy;
+                card.namedStats["DMG"] = statCopy;
+
+                statCopy = new Stat();
+                statCopy.statId = 1;
+                statCopy.name = "HP";
+                statCopy.originalValue = libraryCard.health;
+                statCopy.baseValue = libraryCard.health;
+                statCopy.minValue = 0;
+                statCopy.maxValue = 99;
+                card.stats[1] = statCopy;
+                card.namedStats["HP"] = statCopy;
                 // Copy keywords.
-                foreach (var keyword in libraryCard.keywords)
+
+                var keywordCopy = new RuntimeKeyword();
+                keywordCopy.keywordId = 0;
+                if (libraryCard.type == Enumerators.CardType.FERAL)
                 {
-                    var keywordCopy = new RuntimeKeyword();
-                    keywordCopy.keywordId = keyword.keywordId;
-                    keywordCopy.valueId = keyword.valueId;
+                    keywordCopy.valueId = 0;
                     card.keywords.Add(keywordCopy);
                 }
+                else if(libraryCard.type == Enumerators.CardType.FERAL) //todod check it - is it correct type?
+                {
+                    keywordCopy.valueId = 1;
+                    card.keywords.Add(keywordCopy);
+                }
+
+                card.abilities = libraryCard.abilities;
 
                 deck.cards.Add(card);
             }

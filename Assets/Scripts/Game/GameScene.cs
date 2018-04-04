@@ -12,8 +12,6 @@ using GrandDevs.CZB;
 /// </summary>
 public class GameScene : BaseScene
 {
-    public PopupChat chatPopup;
-
     private void Start()
     {
         OpenPopup<PopupLoading>("PopupLoading", popup =>
@@ -55,44 +53,5 @@ public class GameScene : BaseScene
             }*/
             localPlayer.StopTurn();
         }
-    }
-
-    /// <summary>
-    /// Callback for when the exit game button is pressed.
-    /// </summary>
-    public void OnExitGameButtonPressed()
-    {
-        OpenPopup<PopupTwoButtons>("PopupTwoButtons", popup =>
-        {
-            popup.text.text = "Do you want to leave this game?";
-            popup.buttonText.text = "Yes";
-            popup.button2Text.text = "No";
-            popup.button.onClickEvent.AddListener(() =>
-            {
-                if (NetworkingUtils.GetLocalPlayer().isServer)
-                {
-                    GameNetworkManager.Instance.StopHost();
-                }
-                else
-                {
-                    GameNetworkManager.Instance.StopClient();
-                }
-
-                GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
-
-            });
-            popup.button2.onClickEvent.AddListener(() => 
-            {
-                popup.Close();
-            });
-        });
-    }
-
-    /// <summary>
-    /// Callback for when the chat button is pressed.
-    /// </summary>
-    public void OnChatButtonPressed()
-    {
-        chatPopup.Show();
     }
 }

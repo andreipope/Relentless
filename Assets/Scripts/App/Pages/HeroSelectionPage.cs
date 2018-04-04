@@ -59,8 +59,12 @@ namespace GrandDevs.CZB
 			_skillsIcons.Add(Enumerators.SkillType.HEAL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_02"));
 
             _heroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
-            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_FIRE"));
+            _heroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_AIR"));
             _heroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_EARTH"));
+            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_FIRE"));
+            _heroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_LIFE"));
+            _heroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_TOXIC"));
+            _heroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_WATER"));
             Hide();  
         }
 
@@ -96,9 +100,9 @@ namespace GrandDevs.CZB
                 heroObject.SetParent(_heroesContainer, false);
 				var icon = heroObject.Find("HeroIconMask/HeroIcon").GetComponent<Image>();
 
-				if (i < GameManager.Instance.heroes.Count)
+				if (i < _dataManager.CachedHeroesData.heroes.Count)
                 {
-					icon.sprite = _heroIcons[GameManager.Instance.heroes[i].element];
+					icon.sprite = _heroIcons[_dataManager.CachedHeroesData.heroes[i].element];
                     heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     heroObject.Find("LockedIcon").gameObject.SetActive(false);
                     heroObject.Find("Button").GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
@@ -121,8 +125,7 @@ namespace GrandDevs.CZB
 		}
         public void ContinueButtonHandler()
         {
-            GameManager.Instance.currentDeckId = -1;
-            GameManager.Instance.currentHeroId = _currentHeroId;
+            (_uiManager.GetPage<DeckEditingPage>() as DeckEditingPage).CurrentHeroId = _currentHeroId;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_EDITING);
            // OpenAlertDialog("You will have this chance soon ;) ");
         }
@@ -168,10 +171,11 @@ namespace GrandDevs.CZB
 
             if(active)
             {
-                _selectedHeroIcon.sprite = _heroIcons[GameManager.Instance.heroes[id].element];
-                _selectedHeroSkillIcon.sprite = _skillsIcons[GameManager.Instance.heroes[id].skill.skillType];
-                _selectedHeroName.text = GameManager.Instance.heroes[id].name;
+                _selectedHeroIcon.sprite = _heroIcons[_dataManager.CachedHeroesData.heroes[id].element];
+                _selectedHeroSkillIcon.sprite = _skillsIcons[_dataManager.CachedHeroesData.heroes[id].skill.skillType];
+                _selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
             }
 		}
     }
 }
+                     

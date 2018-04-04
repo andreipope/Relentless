@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using CCGKit;
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 /// <summary>
 /// Computer-controlled player that is used in the single-player mode from the demo game.
@@ -19,6 +21,7 @@ public class DemoAIPlayer : DemoPlayer
     /// </summary>
     protected Player humanPlayer;
 
+    private int _minTurnForAttack;
     /// <summary>
     /// True if the current game has ended; false otherwise.
     /// </summary>
@@ -43,6 +46,8 @@ public class DemoAIPlayer : DemoPlayer
     {
         base.OnStartGame(msg);
         humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
+        if (!GameManager.Instance.tutorial)
+            _minTurnForAttack = Random.Range(1,3);
     }
 
     /// <summary>
@@ -146,7 +151,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     var attackedCreature = GetTargetOpponentCreature();
                     if (attackedCreature != null)
@@ -174,7 +179,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     FightPlayer(creature.instanceId);
                     yield return new WaitForSeconds(2.0f);
@@ -186,7 +191,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     var playerPower = GetPlayerAttackingPower();
                     var opponentPower = GetOpponentAttackingPower();
@@ -220,52 +225,49 @@ public class DemoAIPlayer : DemoPlayer
     protected bool TryToPlayCard(RuntimeCard card)
     {
         var availableMana = playerInfo.namedStats["Mana"].effectiveValue;
-        var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
-        var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-        if (cost != null)
+
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+        if (libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack)
         {
-            var payResourceCost = cost as PayResourceCost;
-            var manaCost = payResourceCost.value;
-            if (manaCost <= availableMana)
+            List<int> target = null; //= GetAbilityTarget(card);
+            if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
             {
-                var target = GetAbilityTarget(card);
-                if (card.cardType.name == "Creature")
-                {
-                    playerInfo.namedZones["Hand"].RemoveCard(card);
-                    playerInfo.namedZones["Board"].AddCard(card);
-                    numTurnsOnBoard[card.instanceId] = 0;
-                    PlayCreatureCard(card, target);
-                }
-                else if (card.cardType.name == "Spell")
-                {
-                    if (target != null)
-                    {
-                        PlaySpellCard(card, target);
-                    }
-                }
-                return true;
+                playerInfo.namedZones["Hand"].RemoveCard(card);
+                playerInfo.namedZones["Board"].AddCard(card);
+                numTurnsOnBoard[card.instanceId] = 0;
+                PlayCreatureCard(card, target);
             }
+            else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+            {
+                if (target != null)
+                {
+                    PlaySpellCard(card, target);
+                }
+            }
+            return true;
         }
         return false;
     }
+    
 
     protected List<int> GetAbilityTarget(RuntimeCard card)
     {
         var config = GameManager.Instance.config;
-        var boardZoneId = config.gameZones.Find(x => x.name == "Board").id;
+        //var boardZoneId = config.gameZones.Find(x => x.name == "Board").id;
         var libraryCard = config.GetCard(card.cardId);
-        var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
+        var triggeredAbilities = libraryCard.abilities.FindAll(x => x is CCGKit.TriggeredAbility);
 
         var needsToSelectTarget = false;
         foreach (var ability in triggeredAbilities)
         {
-            var triggeredAbility = ability as TriggeredAbility;
+            var triggeredAbility = ability as CCGKit.TriggeredAbility;
             var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-            if (trigger != null && trigger.zoneId == boardZoneId && triggeredAbility.target is IUserTarget)
+           /* if (trigger != null && trigger.zoneId == boardZoneId && triggeredAbility.target is IUserTarget)
             {
                 needsToSelectTarget = true;
                 break;
-            }
+            }   */
         }
 
         if (needsToSelectTarget)
@@ -273,7 +275,7 @@ public class DemoAIPlayer : DemoPlayer
             var targetInfo = new List<int>();
             foreach (var ability in triggeredAbilities)
             {
-                var triggeredAbility = ability as TriggeredAbility;
+                var triggeredAbility = ability as CCGKit.TriggeredAbility;
                 if (IsBuffEffect(triggeredAbility.effect))
                 {
                     if (triggeredAbility.effect is PlayerEffect)
@@ -285,7 +287,7 @@ public class DemoAIPlayer : DemoPlayer
                         var target = GetRandomCreature();
                         if (target != null)
                         {
-                            targetInfo.Add(boardZoneId);
+                            //targetInfo.Add(boardZoneId);
                             targetInfo.Add(target.instanceId);
                         }
                         else
@@ -305,7 +307,7 @@ public class DemoAIPlayer : DemoPlayer
                         var target = GetRandomOpponentCreature();
                         if (target != null)
                         {
-                            targetInfo.Add(boardZoneId);
+                            //targetInfo.Add(boardZoneId);
                             targetInfo.Add(target.instanceId);
                         }
                         else

@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using UnityEngine.Rendering;
 using System.IO;
 using FullSerializer;
 using System.Collections.Generic;
+using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
@@ -55,6 +56,17 @@ namespace GrandDevs.CZB
         private GameObject _backgroundCanvasPrefab,
                            _backgroundCanvas;
 
+        private int _currentDeckId;
+        private int _currentHeroId;
+
+        public int CurrentDeckId
+        {
+            set { _currentDeckId = value; }
+        }
+        public int CurrentHeroId
+        {
+            set { _currentHeroId = value; }
+        }
 
         public void Init()
         {
@@ -115,16 +127,17 @@ namespace GrandDevs.CZB
         public void Show()
         {
             _selfPage.SetActive(true);
-            if (GameManager.Instance.currentDeckId == -1)
+            if (_currentDeckId == -1)
             {
-				//GameManager.Instance.currentDeckId = GameManager.Instance.playerDecks.Count;
 				_currentDeck = new Deck();
-                _currentDeck.name = "Deck " + GameManager.Instance.playerDecks.Count;
-			}
+                _currentDeck.name = "Deck " + _dataManager.CachedDecksData.decks.Count;
+                _currentDeck.cards = new List<DeckCardData>();
+
+            }
             else
-                _currentDeck = GameManager.Instance.playerDecks[GameManager.Instance.currentDeckId];
+                _currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId];
             InitObjects();
-            SetActiveDeck(_currentDeck);
+            LoadDeckInfo(_currentDeck);
 
             _cardsListScrollRect.verticalNormalizedPosition = 1f;
             _cardsListScrollRect.CalculateLayoutInputVertical();
@@ -164,8 +177,8 @@ namespace GrandDevs.CZB
                 cardPositions.Add(placeholder);
             }
 
-            numSets = GameManager.Instance.config.cardSets.Count;
-            numPages = Mathf.CeilToInt(GameManager.Instance.config.cardSets[currentSet].cards.Count / (float)cardPositions.Count);
+            numSets = _dataManager.CachedCardsLibraryData.sets.Count;
+            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
 
             _cardSetsSlider.value = 0;
             LoadCards(0, 0);
@@ -246,7 +259,7 @@ namespace GrandDevs.CZB
                 }
             }
 
-            numPages = Mathf.CeilToInt(GameManager.Instance.config.cardSets[currentSet].cards.Count / (float)cardPositions.Count);
+            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
             _cardSetsSlider.value = currentSet;
 
             LoadCards(currentPage, currentSet);
@@ -254,9 +267,9 @@ namespace GrandDevs.CZB
 
         public void LoadCards(int page, int setIndex)
         {
-            var cards = GameManager.Instance.config.cardSets[setIndex].cards;
+			var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
+			var cards = set.cards;
 
-            var gameConfig = GameManager.Instance.config;
             var startIndex = page * cardPositions.Count;
             var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
@@ -271,20 +284,21 @@ namespace GrandDevs.CZB
                     break;
 
                 var card = cards[i];
-                var cardType = gameConfig.cardTypes.Find(x => x.id == card.cardTypeId);
 
                 GameObject go = null;
-                if (cardType.name == "Creature")
+                if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.CREATURE)
                 {
                     go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
                 }
-                else if (cardType.name == "Spell")
+                else if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.SPELL)
                 {
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
 
+                var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
+
                 var cardView = go.GetComponent<CardView>();
-                cardView.PopulateWithLibraryInfo(card, GameManager.Instance.config.cardSets[currentSet].name);
+                cardView.PopulateWithLibraryInfo(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
                 cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
@@ -304,26 +318,26 @@ namespace GrandDevs.CZB
             _currentDeck.name = value;
         }
 
-        public void SetActiveDeck(Deck deckButton)
+        public void LoadDeckInfo(Deck deck)
         {
-            _deckNameInputField.text = deckButton.name;
+            _deckNameInputField.text = deck.name;
 
             foreach (var item in _cardListContent.GetComponentsInChildren<CardListItem>())
             {
                 MonoBehaviour.Destroy(item.gameObject);
             }
 
-            foreach (var card in deckButton.cards)
+            foreach (var card in deck.cards)
             {
-                var libraryCard = GameManager.Instance.config.GetCard(card.id);
+                var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
-                go.GetComponent<CardListItem>().deckButton = deckButton;
+                go.GetComponent<CardListItem>().deckButton = deck;
                 go.GetComponent<CardListItem>().card = libraryCard;
                 go.GetComponent<CardListItem>().cardNameText.text = libraryCard.name;
                 go.GetComponent<CardListItem>().cardAmountText.text = "x" + card.amount.ToString();
                 go.GetComponent<CardListItem>().count = card.amount;
-            }
+            }       
 
             UpdateNumCardsText();
         }
@@ -335,15 +349,15 @@ namespace GrandDevs.CZB
                 return;
             }
 
-            var existingCards = _currentDeck.cards.Find(x => x.id == card.id);
-            var maxCopies = card.GetIntProperty("MaxCopies");
+            var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
+            var maxCopies = Constants.CARD_MAX_COPIES;
             if (existingCards != null && existingCards.amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of this card in your deck.");
                 return;
             }
 
-			var maxDeckSize = GameManager.Instance.config.properties.maxDeckSize;
+			var maxDeckSize = Constants.DECK_MAX_SIZE;
 			if (_currentDeck.GetNumCards() == maxDeckSize)
 			{
 				OpenAlertDialog("Your '" + _currentDeck.name + "' deck has more than " + maxDeckSize + " cards.");
@@ -370,7 +384,7 @@ namespace GrandDevs.CZB
                 go.GetComponent<CardListItem>().cardNameText.text = card.name;
             }
 
-            _currentDeck.AddCard(card);
+            _currentDeck.AddCard(card.id); 
         }
 
         public void OnClearAllButtonPressed()
@@ -386,25 +400,19 @@ namespace GrandDevs.CZB
         {
             if (_currentDeck != null)
             {
-                _cardAmountText.text = _currentDeck.GetNumCards().ToString() + "/" + GameManager.Instance.config.properties.maxDeckSize;
+                _cardAmountText.text = _currentDeck.GetNumCards().ToString() + "/" + Constants.DECK_MAX_SIZE;
             }
         }
 
         public void OnDoneButtonPressed()
         {
-            if (GameManager.Instance.currentDeckId == -1)
+            if (_currentDeckId == -1)
             {
-                _currentDeck.heroeId = GameManager.Instance.currentHeroId;
-                GameManager.Instance.playerDecks.Add(_currentDeck);
+                _currentDeck.heroId = _currentHeroId;
+                _dataManager.CachedDecksData.decks.Add(_currentDeck);
             }
 
-			var decksPath = Application.persistentDataPath + "/decks.json";
-            fsData serializedData;
-            serializer.TrySerialize(GameManager.Instance.playerDecks, out serializedData).AssertSuccessWithoutWarnings();
-            var file = new StreamWriter(decksPath);
-            var json = fsJsonPrinter.PrettyJson(serializedData);
-            file.WriteLine(json);
-            file.Close();
+            _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
 
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }

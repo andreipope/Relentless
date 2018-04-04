@@ -18,49 +18,15 @@ namespace CCGKit
         /// </summary>
         public GameConfiguration config = new GameConfiguration();
 
-        public List<Hero> heroes = new List<Hero>();
-
-
-        /// <summary>
-        /// The default deck of this game.
-        /// </summary>
         public Deck defaultDeck;
-
-        /// <summary>
-        /// The player decks of this game.
-        /// </summary>
-        public List<Deck> playerDecks = new List<Deck>();
-
-        /// <summary>
-        /// The player's nickname of this game.
-        /// </summary>
-        public string playerName;
-
-        /// <summary>
-        /// True if the player is logged in; false otherwise (used in Master Server Kit
-        /// integration).
-        /// </summary>
-        public bool isPlayerLoggedIn;
-
-        /// <summary>
-        /// Current player deck id
-        /// </summary>
-        /// 
-        public int currentDeckId = -1;
-        public int opponentDeckId = -1;
-
-
-        public int currentEditingDeck = -1;
-
-        public int currentHeroId = -1;
-        public int opponentHeroId = -1;
-
-
         /// <summary>
         /// Static instance.
         /// </summary>
         private static readonly GameManager instance = new GameManager();
 
+
+        public bool tutorial;
+        public int tutorialStep;
         /// <summary>
         /// Constructor.
         /// </summary>

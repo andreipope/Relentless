@@ -3,6 +3,7 @@ using System;
 using GrandDevs.CZB.Common;
 using UnityEngine;
 using System.Collections.Generic;
+using GrandDevs.CZB.Data;
 using CCGKit;
 
 namespace GrandDevs.CZB
@@ -13,7 +14,6 @@ namespace GrandDevs.CZB
         public Action OnLocalPlayerSetUp { get; set; }
 
         private IDataManager _dataManager;
-
 
         public User LocalUser { get; set; }
 

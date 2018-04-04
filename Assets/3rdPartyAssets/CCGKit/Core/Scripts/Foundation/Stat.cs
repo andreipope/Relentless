@@ -190,5 +190,10 @@ namespace CCGKit
                 onValueChanged(oldValue, effectiveValue);
             }
         }
+
+        public void PermanentUpdateValue()
+        {
+            onValueChanged?.Invoke(effectiveValue, effectiveValue);
+        }
     }
 }

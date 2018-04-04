@@ -40,21 +40,25 @@ public class BoardSkill : MonoBehaviour
     private Enumerators.SkillType _skillType;
     private ILoadObjectsManager _loadObjectsManager;
 
-
+    private bool _used;
 
     private void Start()
     {
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
         _healVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
-        var skill = GameManager.Instance.heroes[GameManager.Instance.playerDecks[GameManager.Instance.currentDeckId].heroeId].skill;
-        _manaCost = skill.manaCost;
+        int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+        int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId;
+        var skill = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId].skill;
+
+        _manaCost = skill.cost;
         _skillType = skill.skillType;
-        _skillPower = skill.activeValue;
+        _skillPower = skill.value;
     }
 
     public void OnEndTurn()
     {
+        _used = false;
         CancelTargetingArrows();
     }
 
@@ -92,6 +96,10 @@ public class BoardSkill : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 15))
+			return;
+        if (_used)
+            return;
         if(_skillType == Enumerators.SkillType.FIREBALL)
         if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
         {
@@ -123,12 +131,13 @@ public class BoardSkill : MonoBehaviour
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
                 {
                     ownerPlayer.manaStat.baseValue -= _manaCost;
-					var lifeBuff = new Modifier(_skillPower);
+					//var lifeBuff = new Modifier(_skillPower);
                     //ownerPlayer.lifeStat.modifiers.Add(lifeBuff);
                     CreateHealVFX(transform.position - Vector3.right*2.3f);
-                    ownerPlayer.lifeStat.baseValue += 2;
+
+                    ownerPlayer.HealPlayerBySkill(2);
+                    _used = true;
                 }
-                Debug.Log(ownerPlayer.lifeStat.maxValue);
             }
         }
     }
@@ -140,13 +149,16 @@ public class BoardSkill : MonoBehaviour
         {
             if (fightTargetingArrow.selectedPlayer != null)
             {
+                Debug.Log(_manaCost);
                 ownerPlayer.manaStat.baseValue -= _manaCost;
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
-                ownerPlayer.FightPlayerBySkill(2);
+                ownerPlayer.FightPlayerBySkill(_skillPower);
                 CreateFireAttackVFX(targetPlayer.transform.position);
+                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                _used = true;
             }
 
-			else if (fightTargetingArrow.selectedCard != null)
+            else if (fightTargetingArrow.selectedCard != null)
             {
                 var targetCard = fightTargetingArrow.selectedCard;
                 if (targetCard != GetComponent<BoardCreature>() &&
@@ -155,6 +167,7 @@ public class BoardSkill : MonoBehaviour
                     ownerPlayer.manaStat.baseValue -= _manaCost;
                     ownerPlayer.FightCreatureBySkill(2, targetCard.card);
                     CreateFireAttackVFX(targetCard.transform.position);
+                    _used = true;
                 }
             }
             CancelTargetingArrows();

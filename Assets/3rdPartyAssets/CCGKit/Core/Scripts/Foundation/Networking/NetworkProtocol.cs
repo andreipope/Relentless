@@ -26,8 +26,10 @@ namespace CCGKit
 
         public static short FightPlayer = 1010;
         public static short FightPlayerBySkill = 10100;
+        public static short HealPlayerBySkill = 10104;
         public static short FightCreature = 1011;
         public static short FightCreatureBySkill = 10110;
+        public static short HealCreatureBySkill = 10114;
         public static short PlayerAttacked = 1012;
         public static short CreatureAttacked = 1013;
 
@@ -118,6 +120,20 @@ namespace CCGKit
         public int attack;
     }
 
+    public class HealPlayerBySkillMessage : MessageBase
+    {
+        public NetworkInstanceId callerPlayerNetId;
+        public int value;
+    }
+
+    public class HealCreatureBySkillMessage : MessageBase
+    {
+        public NetworkInstanceId callerPlayerNetId;
+        public int cardInstanceId;
+        public int value;
+    }
+
+    
     public class FightCreatureMessage : MessageBase
     {
         public NetworkInstanceId attackingPlayerNetId;

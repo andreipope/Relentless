@@ -3,6 +3,7 @@
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
 using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,10 +101,24 @@ namespace CCGKit
             }
         }
 
-        public void FightPlayerBySkill(NetworkInstanceId attackingPlayerNetId, int attack)
+        public void FightPlayerBySkill(NetworkInstanceId attackingPlayerNetId, int value)
         {
             var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
-            attackedPlayer.namedStats["Life"].baseValue -= 2;
+            attackedPlayer.namedStats[Constants.TAG_LIFE].baseValue -= value;
+        }
+
+        public void HealPlayerBySkill(NetworkInstanceId callerPlayerNetId, int value)
+        {
+            var choosedPlayer = gameState.players.Find(x => x.netId == callerPlayerNetId);
+
+            int maxHPPlayer = choosedPlayer.namedStats[Constants.TAG_LIFE].originalValue;
+            foreach (var item in choosedPlayer.namedStats[Constants.TAG_LIFE].modifiers)
+                maxHPPlayer += item.value;
+
+            choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue += value;
+
+            if (choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue > maxHPPlayer)
+                choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue = maxHPPlayer;
         }
 
         /// <summary>
@@ -118,8 +133,13 @@ namespace CCGKit
             var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
             if (attackingPlayer != null && attackedPlayer != null)
             {
-                attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue;
-                attackingCreature.namedStats["HP"].baseValue -= attackedCreature.namedStats["DMG"].effectiveValue;
+                var abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+
+                int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
+                int additionalDamageAttacked = abilitiesController.GetStatModificatorByAbility(attackedCreature, attackingCreature);
+
+                attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacker;
+                attackingCreature.namedStats["HP"].baseValue -= attackedCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacked;
             }
         }
 
@@ -128,7 +148,23 @@ namespace CCGKit
             var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
             if (attackedPlayer != null)
             {
-                attackedCreature.namedStats["HP"].baseValue -= attack;
+                attackedCreature.namedStats[Constants.TAG_HP].baseValue -= attack;
+            }
+        }
+
+        public void HealCreatureBySkill(NetworkInstanceId playerNetId, RuntimeCard creature, int value)
+        {
+            var player = gameState.players.Find(x => x.netId != playerNetId);
+            if (player != null)
+            {
+                int maxHPCreature = creature.namedStats[Constants.TAG_HP].originalValue;
+                foreach (var item in creature.namedStats[Constants.TAG_HP].modifiers)
+                    maxHPCreature += item.value;
+
+                creature.namedStats[Constants.TAG_HP].baseValue += value;
+
+                if (creature.namedStats[Constants.TAG_HP].baseValue > maxHPCreature)
+                    creature.namedStats[Constants.TAG_HP].baseValue = maxHPCreature;
             }
         }
 
@@ -150,11 +186,11 @@ namespace CCGKit
                 TriggerEffect<OnCardLeftZoneTrigger>(player, card, x => { return x.IsTrue(gameState, originZone); }, targetInfo);
                 TriggerEffect<OnCardEnteredZoneTrigger>(player, card, x => { return x.IsTrue(gameState, destinationZone); }, targetInfo);
 
-                var libraryCard = gameState.config.GetCard(card.cardId);
-                var cardType = gameState.config.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
-                if (cardType.moveAfterTriggeringEffect)
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                        
+                if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
                 {
-                    var finalDestinationZone = gameState.config.gameZones.Find(x => x.id == cardType.zoneId);
+                    var finalDestinationZone = gameState.config.gameZones.Find(x => x.id == 3); // GRAVEYARD ID is 3
                     // We do not use the MoveCards function here, because we do not want to trigger any effects
                     // (which would cause an infinite recursion).
                     player.namedZones[destinationZone].RemoveCard(card);
@@ -173,6 +209,7 @@ namespace CCGKit
         /// <param name="targetInfo">The optional target information.</param>
         public void TriggerEffect<T>(PlayerInfo player, RuntimeCard card, Predicate<T> predicate, List<int> targetInfo = null) where T : Trigger
         {
+            return;
             var libraryCard = gameState.config.GetCard(card.cardId);
             var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
             foreach (var ability in triggeredAbilities)

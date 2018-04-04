@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
+using GrandDevs.CZB.Data;
 using CCGKit;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -14,7 +15,8 @@ namespace GrandDevs.CZB
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
         private ILocalizationManager _localizationManager;
-        private IPlayerManager _playerManager;
+		private IPlayerManager _playerManager;
+		private IDataManager _dataManager;
 
         private GameObject _selfPage,
                            _cardGraveyard,  
@@ -26,12 +28,21 @@ namespace GrandDevs.CZB
         private PlayerSkillItem _playerSkill,
                                 _opponentSkill;
 
+		private int _currentDeckId;
+
+		public int CurrentDeckId
+		{
+			set { _currentDeckId = value; }
+            get { return _currentDeckId; }
+        }
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();
+			_playerManager = GameClient.Get<IPlayerManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -89,12 +100,13 @@ namespace GrandDevs.CZB
         private void SetUpPlayer()
         {
             GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
-            //int playerHeroId = GameManager.Instance.playerDecks[GameManager.Instance.currentDeckId].heroeId;
-            //TODO:↓
-            //int playerHeroId = 0, opponentHeroId = 1;
-            Hero currentPlayerHero = GameManager.Instance.heroes[GameManager.Instance.playerDecks[GameManager.Instance.currentDeckId].heroeId];
-            Hero currentOpponentHero = GameManager.Instance.heroes[GameManager.Instance.opponentHeroId];
 
+            int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+            int opponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
+
+            Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
+          
             if (currentPlayerHero != null)
             {
                 gameUI.SetPlayerName(currentPlayerHero.name);
@@ -109,6 +121,7 @@ namespace GrandDevs.CZB
 				GameObject.Find("Opponent/Avatar/Icon").GetComponent<SpriteRenderer>().sprite =
 					GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Avatar_" + currentOpponentHero.element.ToString());
             }
+            
         }
 
         public void Update()
@@ -159,7 +172,7 @@ namespace GrandDevs.CZB
         public GameObject selfObject;
         public SpriteRenderer icon;
         public TextMeshPro costText;
-        public HeroSkill skill;
+        //public HeroSkill skill;
 
         private ILoadObjectsManager _loader;
 
@@ -167,7 +180,7 @@ namespace GrandDevs.CZB
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
             selfObject = gameObject;
-            this.skill = skill;
+           // this.skill = skill;
             icon = selfObject.transform.Find("SpellIcon/Icon").GetComponent<SpriteRenderer>();
             costText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
@@ -186,7 +199,7 @@ namespace GrandDevs.CZB
 
             Sprite sp = _loader.GetObjectByPath<Sprite>(iconPath);
             if (sp != null)
-                icon.sprite = sp;
+                icon.sprite = sp;    
         }
     }
 

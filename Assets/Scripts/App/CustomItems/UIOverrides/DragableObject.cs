@@ -23,8 +23,10 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (canvas == null)
             return;
 
-        m_DraggingIcon = gameObject;
-
+        m_DraggingIcon = MonoBehaviour.Instantiate(gameObject) as GameObject;
+        m_DraggingIcon.transform.Find("Amount").gameObject.SetActive(false);
+		m_DraggingIcon.transform.position = gameObject.transform.position;
+		m_DraggingIcon.transform.localScale = Vector3.one;
         m_DraggingIcon.transform.SetParent(canvas.transform, false);
         m_DraggingIcon.transform.SetAsLastSibling();
 
@@ -65,7 +67,7 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (locked)
             return;
         if (OnItemEndDrag != null)
-            OnItemEndDrag(gameObject);
+            OnItemEndDrag(m_DraggingIcon);
 
         //if (m_DraggingIcon != null)
         //Destroy(m_DraggingIcon);

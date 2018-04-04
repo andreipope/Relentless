@@ -9,6 +9,8 @@ using UnityEngine.Assertions;
 
 using DG.Tweening;
 using TMPro;
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 /// <summary>
 /// This class wraps the game scene's user interface and it is mostly updated when the server
@@ -16,14 +18,14 @@ using TMPro;
 /// </summary>
 public class GameUI : MonoBehaviour
 {
-    public GameObject playerActiveBackground;
-    public GameObject playerInactiveBackground;
-    public GameObject opponentActiveBackground;
-    public GameObject opponentInactiveBackground;
-    public GameObject playerAvatarBorder;
-    public GameObject playerAvatarGlow;
-    public GameObject opponentAvatarBorder;
-    public GameObject opponentAvatarGlow;
+    //public GameObject playerActiveBackground;
+    //public GameObject playerInactiveBackground;
+    //public GameObject opponentActiveBackground;
+    //public GameObject opponentInactiveBackground;
+    //public GameObject playerAvatarBorder;
+    //public GameObject playerAvatarGlow;
+    //public GameObject opponentAvatarBorder;
+    //public GameObject opponentAvatarGlow;
 
     public TextMeshPro playerNameText;
     public TextMeshPro opponentNameText;
@@ -33,13 +35,13 @@ public class GameUI : MonoBehaviour
 
     public TextMeshPro playerDeckText;
     public TextMeshPro opponentDeckText;
-    public TextMeshPro playerHandText;
-    public TextMeshPro opponentHandText;
-    public TextMeshPro playerGraveyardText;
-    public TextMeshPro opponentGraveyardText;
+    //public TextMeshPro playerHandText;
+    //public TextMeshPro opponentHandText;
+    //public TextMeshPro playerGraveyardText;
+    //public TextMeshPro opponentGraveyardText;
 
     public PlayerManaBar playerManaBar;
-    public TextMeshPro opponentManaText;
+    public PlayerManaBar opponentManaBar;
 
     public SpriteRenderer endTurnSprite;
     public TextMeshPro endTurnTitleText;
@@ -48,26 +50,26 @@ public class GameUI : MonoBehaviour
 
     private void Awake()
     {
-        Assert.IsNotNull(playerActiveBackground);
-        Assert.IsNotNull(playerInactiveBackground);
-        Assert.IsNotNull(opponentActiveBackground);
-        Assert.IsNotNull(opponentInactiveBackground);
-        Assert.IsNotNull(playerAvatarBorder);
-        Assert.IsNotNull(playerAvatarGlow);
-        Assert.IsNotNull(opponentAvatarBorder);
-        Assert.IsNotNull(opponentAvatarGlow);
+        //Assert.IsNotNull(playerActiveBackground);
+        //Assert.IsNotNull(playerInactiveBackground);
+        //Assert.IsNotNull(opponentActiveBackground);
+        //Assert.IsNotNull(opponentInactiveBackground);
+        //Assert.IsNotNull(playerAvatarBorder);
+        //Assert.IsNotNull(playerAvatarGlow);
+        //Assert.IsNotNull(opponentAvatarBorder);
+        //Assert.IsNotNull(opponentAvatarGlow);
         Assert.IsNotNull(playerNameText);
         Assert.IsNotNull(opponentNameText);
         Assert.IsNotNull(playerHealthText);
         Assert.IsNotNull(opponentHealthText);
         Assert.IsNotNull(playerDeckText);
         Assert.IsNotNull(opponentDeckText);
-        Assert.IsNotNull(playerHandText);
-        Assert.IsNotNull(opponentHandText);
-        Assert.IsNotNull(playerGraveyardText);
-        Assert.IsNotNull(opponentGraveyardText);
+        //Assert.IsNotNull(playerHandText);
+        //Assert.IsNotNull(opponentHandText);
+        //Assert.IsNotNull(playerGraveyardText);
+        //Assert.IsNotNull(opponentGraveyardText);
         Assert.IsNotNull(playerManaBar);
-        Assert.IsNotNull(opponentManaText);
+        Assert.IsNotNull(opponentManaBar);
         Assert.IsNotNull(endTurnSprite);
         Assert.IsNotNull(endTurnTitleText);
         Assert.IsNotNull(endTurnTimeText);
@@ -76,18 +78,18 @@ public class GameUI : MonoBehaviour
 
     public void SetPlayerActive(bool active)
     {
-        playerActiveBackground.SetActive(active);
-        playerInactiveBackground.SetActive(!active);
-        playerAvatarBorder.SetActive(active);
-        playerAvatarGlow.SetActive(active);
+        //playerActiveBackground.SetActive(active);
+        //playerInactiveBackground.SetActive(!active);
+        //playerAvatarBorder.SetActive(active);
+        //playerAvatarGlow.SetActive(active);
     }
 
     public void SetOpponentActive(bool active)
     {
-        opponentActiveBackground.SetActive(active);
-        opponentInactiveBackground.SetActive(!active);
-        opponentAvatarBorder.SetActive(active);
-        opponentAvatarGlow.SetActive(active);
+        //opponentActiveBackground.SetActive(active);
+        //opponentInactiveBackground.SetActive(!active);
+        //opponentAvatarBorder.SetActive(active);
+        //opponentAvatarGlow.SetActive(active);
     }
 
     public void SetPlayerName(string text)
@@ -117,12 +119,12 @@ public class GameUI : MonoBehaviour
 
     public void SetPlayerHandCards(int cards)
     {
-        playerHandText.text = cards.ToString();
+        //playerHandText.text = cards.ToString();
     }
 
     public void SetPlayerGraveyardCards(int cards)
     {
-        playerGraveyardText.text = cards.ToString();
+        //playerGraveyardText.text = cards.ToString();
     }
 
     public void SetOpponentDeckCards(int cards)
@@ -132,12 +134,12 @@ public class GameUI : MonoBehaviour
 
     public void SetOpponentHandCards(int cards)
     {
-        opponentHandText.text = cards.ToString();
+        //opponentHandText.text = cards.ToString();
     }
 
     public void SetOpponentGraveyardCards(int cards)
     {
-        opponentGraveyardText.text = cards.ToString();
+        //opponentGraveyardText.text = cards.ToString();
     }
 
     public void SetPlayerMana(int mana)
@@ -147,7 +149,9 @@ public class GameUI : MonoBehaviour
 
     public void SetOpponentMana(int mana)
     {
-        opponentManaText.text = mana + "/10";
+        opponentManaBar.SetMana(mana);
+
+        //opponentManaText.text = mana + "/10";
     }
 
     public void SetEndTurnButtonEnabled(bool enabled)

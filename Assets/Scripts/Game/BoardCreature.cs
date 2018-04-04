@@ -13,6 +13,9 @@ using TMPro;
 
 using CCGKit;
 
+using GrandDevs.CZB.Common;
+using GrandDevs.CZB;
+
 public class BoardCreature : MonoBehaviour
 {
     public RuntimeCard card { get; private set; }
@@ -73,6 +76,7 @@ public class BoardCreature : MonoBehaviour
 
     protected Action<int, int> onAttackStatChangedDelegate;
     protected Action<int, int> onHealthStatChangedDelegate;
+    public event Action CreatureOnDieEvent;
 
     protected virtual void Awake()
     {
@@ -92,63 +96,49 @@ public class BoardCreature : MonoBehaviour
     {
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
+
+        CreatureOnDieEvent?.Invoke();
     }
 
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
         this.card = card;
+          
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-        var gameConfig = GameManager.Instance.config;
-        var libraryCard = gameConfig.GetCard(card.cardId);
-        Assert.IsNotNull(libraryCard);
         nameText.text = libraryCard.name;
 
-        attackStat = card.namedStats["DMG"];
-        healthStat = card.namedStats["HP"];
+        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.rarity);
+
+        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
+
+		attackStat = card.namedStats["DMG"];
+		healthStat = card.namedStats["HP"];
+
         attackText.text = attackStat.effectiveValue.ToString();
         healthText.text = healthStat.effectiveValue.ToString();
 
-		Debug.Log(setName);
-		Debug.Log(libraryCard.GetStringProperty("Picture"));
-		Debug.Log(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
-        if(setName.Length > 0)
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.GetStringProperty("Picture")));
-        var material = libraryCard.GetStringProperty("Material");
-        if (!string.IsNullOrEmpty(material))
-        {
-            pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
-        }
 
         onAttackStatChangedDelegate = (oldValue, newValue) =>
         {
+            Debug.Log("onAttackStatChangedDelegate");
             UpdateStatText(attackText, attackStat);
         };
         attackStat.onValueChanged += onAttackStatChangedDelegate;
 
         onHealthStatChangedDelegate = (oldValue, newValue) =>
         {
-            UpdateStatText(healthText, healthStat);
+			Debug.Log("onHealthStatChangedDelegate");
+
+			UpdateStatText(healthText, healthStat);
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;
 
-        var subtypes = gameConfig.keywords.Find(x => x.name == "Subtypes");
-        var impetus = subtypes.values.FindIndex(x => x.value == "Impetus");
-        var provoke = subtypes.values.FindIndex(x => x.value == "Provoke");
-        foreach (var keyword in libraryCard.keywords)
-        {
-            if (keyword.keywordId == subtypes.id)
-            {
-                if (keyword.valueId == impetus)
-                {
-                    hasImpetus = true;
-                }
-                else if (keyword.valueId == provoke)
-                {
-                    hasProvoke = true;
-                }
-            }
-        }
-
+        if(libraryCard.type == Enumerators.CardType.FERAL)
+            hasImpetus = true;
+        else if (libraryCard.type == Enumerators.CardType.HEAVY)
+			hasProvoke = true;
+          
         if (hasProvoke)
         {
             glowSprite.gameObject.SetActive(false);

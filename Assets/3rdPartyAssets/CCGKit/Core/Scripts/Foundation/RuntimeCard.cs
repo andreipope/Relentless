@@ -2,6 +2,8 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 
@@ -38,6 +40,11 @@ namespace CCGKit
         public List<RuntimeKeyword> keywords = new List<RuntimeKeyword>();
 
         /// <summary>
+        /// The keywords of this card.
+        /// </summary>
+        public List<uint> connectedAbilities = new List<uint>();
+
+        /// <summary>
         /// The player that owns this card.
         /// </summary>
         public PlayerInfo ownerPlayer;
@@ -50,7 +57,7 @@ namespace CCGKit
             get
             {
                 var gameConfig = GameManager.Instance.config;
-                var libraryCard = gameConfig.GetCard(cardId);
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(cardId);
                 return gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
             }
         }
@@ -64,6 +71,9 @@ namespace CCGKit
         /// The callback that is called when a keyword is removed from this card.
         /// </summary>
         public Action<RuntimeKeyword> onKeywordRemoved;
+
+
+        public List<Enumerators.Ability> abilities = new List<Enumerators.Ability>();
 
         /// <summary>
         /// Adds a keyword to this card.
@@ -126,6 +136,22 @@ namespace CCGKit
             }
             var k = keywords.Find(x => x.keywordId == keywordId && x.valueId == valueId);
             return k != null;
+        }
+
+        public void ConnectAbility(uint abilityId)
+        {
+            connectedAbilities.Add(abilityId);
+        }
+
+        public void DisconnectAbility(uint abilityId)
+        {
+            if (connectedAbilities.Contains(abilityId))
+                connectedAbilities.Remove(abilityId);
+        }
+
+        public bool HasConnectedAbility(Enumerators.AbilityType type)
+        {
+            return connectedAbilities.Contains((uint)type);
         }
     }
 }

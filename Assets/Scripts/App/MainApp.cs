@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandDevs.CZB.Common;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -36,9 +37,15 @@ namespace GrandDevs.CZB
             if (Instance == this)
             {
                 GameClient.Instance.InitServices();
-                //GameClient.Get<IDataManager>().StartLoadCache();
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
-                //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
+
+                if (Constants.DEV_MODE)
+                {
+                    GameClient.Get<IDataManager>().StartLoadCache();
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+                }
+                else
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+                
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, .5f, null, true);
             }

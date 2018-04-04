@@ -2,6 +2,9 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using GrandDevs.CZB.Common;
+using System.Collections.Generic;
+
 namespace CCGKit
 {
     public struct NetCard
@@ -10,5 +13,7 @@ namespace CCGKit
         public int instanceId;
         public NetStat[] stats;
         public NetKeyword[] keywords;
+        public uint[] abilities;
+        public uint[] connectedAbilities;   
     }
 }

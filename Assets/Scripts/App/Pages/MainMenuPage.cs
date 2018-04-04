@@ -84,7 +84,13 @@ namespace GrandDevs.CZB
         public void OnClickPlay()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+            if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            {
+                (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = 0;
+                _stateManager.ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
+            }
+            else
+                _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 		private void OnClickCollection()
 		{

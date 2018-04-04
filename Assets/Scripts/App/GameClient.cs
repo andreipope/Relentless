@@ -40,7 +40,9 @@ namespace GrandDevs.CZB
             AddService<ISoundManager>(new SoundManager());
             AddService<INotificationManager>(new NotificationManager());         
             AddService<IScreenOrientationManager>(new ScreenOrientationManager());
-            AddService<INavigationManager>(new NavigationManager()); 
+            AddService<INavigationManager>(new NavigationManager());
+            AddService<IGameplayManager>(new GameplayManager());
+            AddService<ITutorialManager>(new TutorialManager());
         }
 
         public static T Get<T>()

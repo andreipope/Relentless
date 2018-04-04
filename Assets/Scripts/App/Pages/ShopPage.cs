@@ -32,7 +32,8 @@ namespace GrandDevs.CZB
 
         private int _currentPackId = -1;
 
-        private float[] _costs = new float[] { 1.99f, 2.99f, 4.99f, 9.99f };
+		private float[] _costs = new float[] { 1.99f, 2.99f, 4.99f, 9.99f };
+		private int[] _amount = new int[] { 1, 3, 5, 8 };
         private GameObject[] _packsObjects;
 
         private float _itemYstartPos;
@@ -88,14 +89,19 @@ namespace GrandDevs.CZB
         {
             _cost.text = string.Empty;
             _playerManager.LocalUser.wallet = 1000;
-            _wallet.text = _playerManager.LocalUser.wallet.ToString() + " $";
+            _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
             if (_currentPackId > -1)
             {
-                Vector3 pos = _packsObjects[_currentPackId].transform.position;
-                pos.y = _itemYstartPos;
-                _packsObjects[_currentPackId].transform.position = pos;
+                _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0f, 0f);
                 _currentPackId = -1;
             }
+
+
+			_buttonItem1.transform.Find("Amount/Value").GetComponent<Text>().text = _amount[0].ToString();
+			_buttonItem2.transform.Find("Amount/Value").GetComponent<Text>().text = _amount[1].ToString();
+			_buttonItem3.transform.Find("Amount/Value").GetComponent<Text>().text = _amount[2].ToString();
+			_buttonItem4.transform.Find("Amount/Value").GetComponent<Text>().text = _amount[3].ToString();
+
             _selfPage.SetActive(true);
         }
 
@@ -121,18 +127,23 @@ namespace GrandDevs.CZB
 		private void BuyButtonHandler()
 		{
             _playerManager.LocalUser.wallet -= _costs[_currentPackId];
-            _playerManager.LocalUser.packsCount++;
-            _wallet.text = _playerManager.LocalUser.wallet.ToString() + " $";
+			_wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
 
-            GameObject packItem = MonoBehaviour.Instantiate(_packsObjects[_currentPackId]) as GameObject;
-            packItem.transform.position = _packsObjects[_currentPackId].transform.position;
-            packItem.transform.SetParent(_selfPage.transform, true);
-            packItem.transform.localScale = Vector3.one;
-            packItem.GetComponent<Button>().interactable = false;
-            packItem.transform.Find("PriceBackground").gameObject.SetActive(false);
+            for (int i = 0; i < _amount[_currentPackId]; i++)
+            {
+                _playerManager.LocalUser.packsCount++;
 
-            Sequence animationSequence = DOTween.Sequence();
-            animationSequence.Append(packItem.transform.DOMove(Vector3.up * -10, .8f));
+                GameObject packItem = MonoBehaviour.Instantiate(_packsObjects[_currentPackId]) as GameObject;
+                packItem.transform.position = _packsObjects[_currentPackId].transform.position;
+                packItem.transform.SetParent(_selfPage.transform, true);
+                packItem.transform.localScale = Vector3.one;
+                packItem.transform.Find("Highlight").gameObject.SetActive(false);
+                packItem.GetComponent<Button>().interactable = false;
+
+                Sequence animationSequence = DOTween.Sequence();
+                animationSequence.AppendInterval(0.1f * i);
+                animationSequence.Append(packItem.transform.DOMove(Vector3.up * -10, .3f));
+            }
         }
 
         private void ChooseItemHandler(int id)
@@ -144,14 +155,15 @@ namespace GrandDevs.CZB
             {
                 pos = _packsObjects[_currentPackId].transform.position;
                 pos.y = _itemYstartPos;
-                _packsObjects[_currentPackId].transform.DOMove(pos, .3f);
+                _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0f, 0.3f);
             }
             _currentPackId = id;
             //_description = "";
             _cost.text = _costs[_currentPackId] + " $";
             pos = _packsObjects[_currentPackId].GetComponent<RectTransform>().position;
             pos.y = _itemYstartPos - 1;
-            _packsObjects[_currentPackId].transform.DOMove(pos, .3f);
+            _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0.8f, 0.3f);
+
         }
 
         #endregion

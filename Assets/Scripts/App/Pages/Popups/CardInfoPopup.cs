@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using DG.Tweening;
+using GrandDevs.CZB.Data;
 
 
 namespace GrandDevs.CZB
@@ -29,6 +29,7 @@ namespace GrandDevs.CZB
 
         private Card _card;
         public Transform cardTransform;
+        public CollectionCardData _cardData;
 
         public void Init()
         {
@@ -75,13 +76,13 @@ namespace GrandDevs.CZB
         public void Show(object data)
         {
             _card = data as Card;
-            _description.text = _card.GetStringProperty("Text");
-            int amount = _card.GetIntProperty("Amount");
-            if (amount == 0)
+            _description.text = _card.description;
+            _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.id);
+            if (_cardData.amount == 0)
                 _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             else
                 _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
-            _amount.text = amount.ToString();
+            _amount.text = _cardData.amount.ToString();
             Show();
         }
 
@@ -92,7 +93,7 @@ namespace GrandDevs.CZB
 
         private void DesintegrateButtonHandler()
         {
-            int amount = _card.GetIntProperty("Amount");
+            int amount = _cardData.amount;
             if (amount == 0)
                 _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
@@ -100,9 +101,9 @@ namespace GrandDevs.CZB
             {
                 cardTransform.DOKill();
                 cardTransform.DOScale(new Vector3(1.8f, 1.8f, 1.8f), 0.2f);
-                _uiManager.DrawPopup<DesintigrateCardPopup>(_card);
+                _uiManager.DrawPopup<DesintigrateCardPopup>(_cardData);
                 (_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
-            }
+            }   
 		}
     }
 }

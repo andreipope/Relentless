@@ -12,7 +12,7 @@
         {
             "originZoneId": 0,
             "destinationZoneId": 1,
-            "numCards": 5,
+            "numCards": 4,
             "name": "Move cards",
             "target": "AllPlayers",
             "$type": "CCGKit.MoveCardsAction"
@@ -45,13 +45,6 @@
             "value": 0,
             "type": "Loss",
             "$type": "CCGKit.PlayerStatEndGameCondition"
-        },
-        {
-            "zoneId": 0,
-            "op": "LessThanOrEqualTo",
-            "value": 0,
-            "type": "Loss",
-            "$type": "CCGKit.CardsInZoneEndGameCondition"
         }
     ]
 }

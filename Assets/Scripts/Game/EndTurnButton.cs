@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 using DG.Tweening;
+using GrandDevs.CZB;
 
 public class EndTurnButton : MonoBehaviour
 {
@@ -60,6 +61,9 @@ public class EndTurnButton : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 3 && 
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 6 && GameClient.Get<ITutorialManager>().CurrentStep != 10))
+            return;
         if (active)
         {
             player.StopTurn();

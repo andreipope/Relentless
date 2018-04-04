@@ -82,6 +82,8 @@ namespace CCGKit
         {
             var gameConfig = GameManager.Instance.config;
             turnDuration = gameConfig.properties.turnDuration;
+            if (GameManager.Instance.tutorial)
+                turnDuration = 100000;
         }
 
         /// <summary>
@@ -166,11 +168,16 @@ namespace CCGKit
                 }
             }
 
-            // Execute the game start actions.
-            foreach (var action in GameManager.Instance.config.properties.gameStartActions)
+            if (!GameManager.Instance.tutorial)
             {
-                ExecuteGameAction(action);
+                // Execute the game start actions.
+                foreach (var action in GameManager.Instance.config.properties.gameStartActions)
+                {
+                    ExecuteGameAction(action);
+                }
             }
+            else
+                gameState.currentOpponent.stats[0].baseValue = 15;
 
             // Send a StartGame message to all the connected players.
             for (var i = 0; i < players.Count; i++)
@@ -184,6 +191,7 @@ namespace CCGKit
                 msg.player = GetPlayerNetworkState(player);
                 msg.opponent = GetOpponentNetworkState(players.Find(x => x != player));
                 msg.rngSeed = rngSeed;
+
                 SafeSendToClient(player, NetworkProtocol.StartGame, msg);
             }
 
@@ -264,6 +272,8 @@ namespace CCGKit
                         {
                             netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
                         }
+                        netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
+                        netCard.connectedAbilities = card.connectedAbilities.ToArray();
                         dynamicZone.cards[j] = netCard;
                     }
                     dynamicZone.numCards = zone.cards.Count;
@@ -344,6 +354,8 @@ namespace CCGKit
                             {
                                 netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
                             }
+                            netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
+                            netCard.connectedAbilities = card.connectedAbilities.ToArray();
                             dynamicZone.cards[j] = netCard;
                         }
                     }
@@ -507,7 +519,8 @@ namespace CCGKit
             if (turnCoroutine != null)
                 StopCoroutine(turnCoroutine);
             EndTurn();
-            turnCoroutine = StartCoroutine(RunTurn());
+            //if (!GameManager.Instance.tutorial)
+                turnCoroutine = StartCoroutine(RunTurn());
         }
 
         /// <summary>

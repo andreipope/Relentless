@@ -5,8 +5,7 @@
 using UnityEngine;
 
 using TMPro;
-
-using CCGKit;
+using GrandDevs.CZB.Data;
 
 public class CardListItem : MonoBehaviour
 {
@@ -30,7 +29,7 @@ public class CardListItem : MonoBehaviour
         {
             foreach(var deckEntry in deckButton.cards)
             {
-                if (deckEntry.id == card.id)
+                if (deckEntry.cardId == card.id)
                 {
                     deckEntry.amount--;
                     break;
@@ -40,7 +39,7 @@ public class CardListItem : MonoBehaviour
 		    
         else
         {
-			deckButton.RemoveCards(card);
+			deckButton.RemoveCard(card.id);
 			Destroy(gameObject);
         }    
     }

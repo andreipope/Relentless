@@ -1,10 +1,10 @@
 ﻿using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using DG.Tweening;
 
 
@@ -29,7 +29,7 @@ namespace GrandDevs.CZB
 
 		public Transform cardTransform;
 
-        private Card _card;
+        private CollectionCardData _cardData;
 
 		public void Init()
         {
@@ -78,16 +78,15 @@ namespace GrandDevs.CZB
 
         public void Show(object data)
         {
-            _card = data as Card;
-            //_description.text = card.GetStringProperty("Text");
-            int amount = _card.GetIntProperty("Amount");
-            _amount.text = amount.ToString();
-            if (amount == 0)
+            _cardData =  data as CollectionCardData;
+            //_description.text = _card.description;
+            _amount.text = _cardData.amount.ToString();
+            if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             else
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = true;
 
-
+                  
             Show();
         }
 
@@ -98,22 +97,11 @@ namespace GrandDevs.CZB
 
         private void DesintegrateButtonHandler()
         {
-            Debug.Log(_card.GetIntProperty("Amount"));
-            int amount = _card.GetIntProperty("Amount");
-            amount--;
-
-            if (amount == 0)
-            {
+            _cardData.amount--;
+            if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            }
-
-            _card.SetIntProperty("Amount", amount);
-            Debug.Log(_card.GetIntProperty("Amount"));
-
-            _amount.text = _card.GetIntProperty("Amount").ToString();
-
-            GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_card);
-            
+            _amount.text = _cardData.amount.ToString();
+            GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_cardData.amount);
         }
     }
 }

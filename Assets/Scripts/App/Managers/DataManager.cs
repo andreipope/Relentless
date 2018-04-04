@@ -2,11 +2,14 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using UnityEngine;
 using GrandDevs.Internal;
 using FullSerializer;
+using GrandDevs.CZB.Data;
 using CCGKit;
+
 
 namespace GrandDevs.CZB
 {
@@ -15,16 +18,24 @@ namespace GrandDevs.CZB
         private IAppStateManager _appStateManager;
         private ILocalizationManager _localizationManager;
 
-        private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
+
+		private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
         public UserLocalData CachedUserLocalData { get; set; }
+		public CardsLibraryData CachedCardsLibraryData { get; set; }
+        public HeroesData CachedHeroesData { get; set; }
+        public CollectionData CachedCollectionData { get; set; }
+        public DecksData CachedDecksData { get; set; }
 
-		private int _currentDeckIndex;
+        private int _currentDeckIndex;
 		private int _currentAIDeckIndex;
 
 		private fsSerializer serializer = new fsSerializer();
 
-		public int CurrentDeckInd
+        private DirectoryInfo dir;
+
+
+        public int CurrentDeckInd
 		{
 			get { return _currentDeckIndex; }
             set { _currentDeckIndex = value; }
@@ -38,6 +49,10 @@ namespace GrandDevs.CZB
         public DataManager()
         {
             CachedUserLocalData = new UserLocalData();
+			CachedCardsLibraryData = new CardsLibraryData();
+            CachedHeroesData = new HeroesData();
+            CachedCollectionData = new CollectionData();
+            CachedDecksData = new DecksData();
         }
 
         public void Dispose()
@@ -50,113 +65,29 @@ namespace GrandDevs.CZB
             _appStateManager = GameClient.Get<IAppStateManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
 
+            dir = new DirectoryInfo(Application.persistentDataPath + "/");
+
+            CheckVersion();
+            CheckFirstLaunch();
             FillCacheDataPathes();
+
+            GameNetworkManager.Instance.Initialize();
         }
 
         public void StartLoadCache()
         {
-
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
 
             _localizationManager.ApplyLocalization();
 
-            LoadCCGData();
-            //FillDummyData();
-            CreateHeroesData();
-
-            //_appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
         }
 
         public void Update()
         {
 
-        }
-
-        private void LoadCCGData()
-        {
-			var defaultDeckTextAsset = Resources.Load<TextAsset>("DefaultDeck");
-			if (defaultDeckTextAsset != null)
-			{
-				GameManager.Instance.defaultDeck = JsonUtility.FromJson<Deck>(defaultDeckTextAsset.text);
-			}
-
-			var decksPath = Application.persistentDataPath + "/decks.json";
-            List<Deck> decks = new List<Deck>();
-			if (File.Exists(decksPath))
-			{
-				var file = new StreamReader(decksPath);
-				var fileContents = file.ReadToEnd();
-				var data = fsJsonParser.Parse(fileContents);
-				object deserialized = null;
-				serializer.TryDeserialize(data, typeof(List<Deck>), ref deserialized).AssertSuccessWithoutWarnings();
-				file.Close();
-                decks = deserialized as List<Deck>;
-				GameManager.Instance.playerDecks = decks;
-			}
-
-            List<Deck> decksToRemove = new List<Deck>();
-            foreach(Deck deck in GameManager.Instance.playerDecks)
-            {
-                if (deck.GetNumCards() > 30)
-                    decksToRemove.Add(deck);
-            }
-            foreach (Deck deck in decksToRemove)
-            {
-                GameManager.Instance.playerDecks.Remove(deck);
-            }
-            decksToRemove.Clear();
-
-            GameNetworkManager.Instance.Initialize();
-
-			if (decks != null && decks.Count > 0)
-			{
-				/*_currentDeckIndex = PlayerPrefs.GetInt("default_deck");
-				if (_currentDeckIndex < decks.Count)
-				{
-					PlayerPrefs.SetInt("default_deck", _currentDeckIndex);
-				}
-				else
-				{
-					PlayerPrefs.SetInt("default_deck", 0);
-				} */
-				_currentAIDeckIndex = PlayerPrefs.GetInt("default_ai_deck");
-				if (_currentAIDeckIndex < decks.Count)
-				{
-					PlayerPrefs.SetInt("default_ai_deck", _currentAIDeckIndex);
-				}
-				else
-				{
-					PlayerPrefs.SetInt("default_ai_deck", 0);
-				}
-
-                //GameManager.Instance.currentDeckId = _currentDeckIndex;
-            }
-        }
-
-        private void CreateHeroesData()
-        {
-            GameManager.Instance.heroes.Add(new Hero(0) { element = Enumerators.ElementType.FIRE, name = "Pyro Zombie Hero", 
-                                                        skill = new HeroSkill(){ skillType = Enumerators.SkillType.FIREBALL, activeValue = 1, manaCost = 0}});
-            GameManager.Instance.heroes.Add(new Hero(1) { element = Enumerators.ElementType.EARTH, name = "Golem Zombie Hero", 
-                                                        skill = new HeroSkill() { skillType = Enumerators.SkillType.HEAL, activeValue = 2, manaCost = 2 }});
-        }
-
-        private void FillDummyData()
-        {
-            Debug.Log(GameManager.Instance.config.cardSets);
-            Deck deck;
-            for(int i = 0; i < 3; i++)
-            {
-                deck = new Deck();
-                deck.name = "Deck " + i;
-                for (int m = 0; m < (10*i + UnityEngine.Random.Range(10, 20)); m++)
-                {
-                    deck.AddCard(GameManager.Instance.config.cards[UnityEngine.Random.Range(0, GameManager.Instance.config.cards.Count)]);
-                }
-                GameManager.Instance.playerDecks.Add(deck);
-            }
         }
 
         public void SaveAllCache()
@@ -166,16 +97,54 @@ namespace GrandDevs.CZB
                 SaveCache((Enumerators.CacheDataType)i);
         }
 
+        private void CheckVersion()
+        {
+            var files = dir.GetFiles();
+            bool versionMatch = false;
+            foreach (var file in files)
+                if (file.Name == Constants.CURRENT_VERSION)
+                    versionMatch = true;
+
+            if (!versionMatch)
+            {
+                foreach (var file in files)
+                    if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains("ver"))
+                        file.Delete();
+                File.Create(dir + Constants.CURRENT_VERSION);
+            }
+        }
+
         public void SaveCache(Enumerators.CacheDataType type)
         {
+            if (!File.Exists(_cacheDataPathes[type]))
+                File.Create(_cacheDataPathes[type]).Close();
             switch (type)
             {
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     {
-                        if (!File.Exists(_cacheDataPathes[type]))
-                            File.Create(_cacheDataPathes[type]).Close();
-
                         File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedUserLocalData));
+                    }
+                    break;
+
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCardsLibraryData));
+                    }
+                    break;
+                case Enumerators.CacheDataType.HEROES_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedHeroesData));
+                    }
+                    break;
+
+                case Enumerators.CacheDataType.COLLECTION_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCollectionData));
+                    }
+                    break;
+                case Enumerators.CacheDataType.DECKS_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedDecksData));
                     }
                     break;
                 default: break;
@@ -191,21 +160,59 @@ namespace GrandDevs.CZB
         {
             switch (type)
             {
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                    }
+                    break;
+                case Enumerators.CacheDataType.HEROES_DATA:
+					{
+						if (File.Exists(_cacheDataPathes[type]))
+                            CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
+					}
+					break;
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
                     }
                     break;
+                case Enumerators.CacheDataType.COLLECTION_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                    }
+                    break;
+                case Enumerators.CacheDataType.DECKS_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                    }
+                    break;
                 default: break;
             }
         }
 
+        private void CheckFirstLaunch()
+        {
+            if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH)))
+            {
+                CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(Resources.Load("Data/card_library_data").ToString());
+                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(Resources.Load("Data/heroes_data").ToString());
+                CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(Resources.Load("Data/collection_data").ToString());
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
+            }
+        }
 
         private void FillCacheDataPathes()
         {
             _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>();
             _cacheDataPathes.Add(Enumerators.CacheDataType.USER_LOCAL_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_USER_DATA_FILE_PATH));
+			_cacheDataPathes.Add(Enumerators.CacheDataType.CARDS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.HEROES_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_HEROES_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.COLLECTION_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_COLLECTION_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_DECKS_DATA_FILE_PATH));
         }
 
         private T DeserializeObjectFromPath<T>(string path)
@@ -219,9 +226,9 @@ namespace GrandDevs.CZB
         private string SerializeObject(object obj)
         {
             if (Constants.DATA_ENCRYPTION_ENABLED)
-                return Utilites.Encrypt(JsonConvert.SerializeObject(obj), Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
+                return Utilites.Encrypt(JsonConvert.SerializeObject(obj, Formatting.Indented), Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
             else
-                return JsonConvert.SerializeObject(obj);
+                return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
     }
 }

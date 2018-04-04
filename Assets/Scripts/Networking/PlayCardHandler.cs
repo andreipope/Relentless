@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 
 using CCGKit;
+using GrandDevs.CZB;
 
 /// <summary>
 /// This server handler is responsible for managing client requests for playing new cards.
@@ -47,14 +48,9 @@ public class PlayCardHandler : ServerHandler
             var card = originZone.cards.Find(x => x.instanceId == msg.cardInstanceId);
             if (card != null)
             {
-                var gameConfig = GameManager.Instance.config;
-                var libraryCard = gameConfig.GetCard(card.cardId);
-                var cost = libraryCard.costs.Find(x => x is PayResourceCost);
-                if (cost != null)
-                {
-                    var payResourceCost = cost as PayResourceCost;
-                    player.stats[payResourceCost.statId].baseValue -= payResourceCost.value;
-                }
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+                player.namedStats["Mana"].baseValue -= libraryCard.cost;
 
                 var cardMovedMsg = new CardMovedMessage();
                 cardMovedMsg.playerNetId = msg.playerNetId;

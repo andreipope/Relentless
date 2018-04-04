@@ -51,6 +51,7 @@ namespace GrandDevs.CZB
             _uiPopups.Add(new DesintigrateCardPopup());
 			_uiPopups.Add(new WarningPopup());
 			_uiPopups.Add(new QuestionPopup());
+            _uiPopups.Add(new TutorialPopup());
 
 
 			foreach (var popup in _uiPopups)
