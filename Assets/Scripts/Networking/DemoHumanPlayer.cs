@@ -881,7 +881,7 @@ public class DemoHumanPlayer : DemoPlayer
 
                 RearrangeBottomBoard(() =>
                 {
-                    bool canUseAbility = false;
+                    /*bool canUseAbility = false;
                     ActiveAbility activatedAbility;
                     foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
                     {
@@ -930,10 +930,13 @@ public class DemoHumanPlayer : DemoPlayer
                     {
                         CallCardPlay(card);
                     }
+                    */
                 });
+
             }
             else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
+                /*
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
                 sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
@@ -988,7 +991,8 @@ public class DemoHumanPlayer : DemoPlayer
                     {
                         CallSpellCardPlay(card);
                     }
-                });
+
+                });*/
             }
         }
         else
