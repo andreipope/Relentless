@@ -161,7 +161,8 @@
             SUMMON,
             SPELL_ATTACK,
             MASSIVE_DAMAGE,
-            DAMAGE_TARGET_ADJUSTMENTS,
+			DAMAGE_TARGET_ADJUSTMENTS,
+			DAMAGE_TARGET,
         }
 
         public enum AbilityActivityType

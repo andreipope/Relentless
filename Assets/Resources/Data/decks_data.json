@@ -44,15 +44,19 @@
       "cards": [
         {
           "cardId": 24,
-          "amount": 4
+          "amount": 3
         },
-		{
+        {
           "cardId": 25,
-          "amount": 4
+          "amount": 3
+        },
+        {
+          "cardId": 26,
+          "amount": 3
         },
         {
           "cardId": 23,
-          "amount": 4
+          "amount": 3
         },
       ]
     },

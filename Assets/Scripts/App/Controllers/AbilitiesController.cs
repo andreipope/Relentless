@@ -90,6 +90,12 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.HEAL:
                     ability = new HealTargetAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DAMAGE_TARGET:
+                    ability = new DamageTargetAbility(cardKind, abilityData);
+					break;
+                case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
+                    ability = new DamageTargetAdjustmentsAbility(cardKind, abilityData);
+					break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;

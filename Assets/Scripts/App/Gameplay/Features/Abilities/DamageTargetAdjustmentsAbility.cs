@@ -20,7 +20,7 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
-            //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
         }
 
         public override void Update() { }
@@ -33,11 +33,47 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                foreach(var cardOpponent in cardCaller.opponentBoardZone.cards)
-                    cardCaller.FightCreatureBySkill(value, cardOpponent);
+                RuntimeCard target = null, 
+                            leftAdjustment = null, 
+                            rightAdjastment = null; 
 
-                foreach (var card in cardCaller.boardZone.cards)
-                    cardCaller.FightCreatureBySkill(value, card);
+                int targetIndex = -1;
+                //if(targetIndex)
+                for (int i = 0; i < cardCaller.opponentBoardZone.cards.Count; i++)
+                {
+                    if (cardCaller.opponentBoardZone.cards[i] == targetCreature.card)
+                        targetIndex = i;
+                }
+                if(targetIndex > -1)
+                {
+                    target = targetCreature.card;
+
+                    if (targetIndex - 1 > -1)
+                        leftAdjustment = cardCaller.opponentBoardZone.cards[targetIndex - 1];
+                    if (targetIndex + 1 < cardCaller.opponentBoardZone.cards.Count)
+                        rightAdjastment = cardCaller.opponentBoardZone.cards[targetIndex + 1];
+				}
+
+                if (target != null)
+                {
+                    cardCaller.FightCreatureBySkill(value, target);
+                    CreateVFX(targetCreature.transform.position);
+                }
+
+                if (leftAdjustment != null)
+                {
+                    cardCaller.FightCreatureBySkill(value, leftAdjustment);
+                    //CreateVFX(leftAdjustment..transform.position);
+                }
+
+                if (rightAdjastment != null)
+                {
+                    cardCaller.FightCreatureBySkill(value, rightAdjastment);
+                    //CreateVFX(targetCreature.transform.position);
+                }
+
+
+				
             }
         }
     }
