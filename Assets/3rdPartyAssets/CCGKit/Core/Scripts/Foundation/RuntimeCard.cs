@@ -4,6 +4,7 @@
 
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 
@@ -73,7 +74,7 @@ namespace CCGKit
         public Action<RuntimeKeyword> onKeywordRemoved;
 
 
-        public List<Enumerators.Ability> abilities = new List<Enumerators.Ability>();
+        public List<AbilityData> abilities = new List<AbilityData>();
 
         /// <summary>
         /// Adds a keyword to this card.

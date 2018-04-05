@@ -157,7 +157,7 @@ namespace CCGKit
                 netKeywords.Add(GetNetKeyword(keyword));
             }
             netCard.keywords = netKeywords.ToArray();
-            netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
+            //netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
             netCard.connectedAbilities = card.connectedAbilities.ToArray();
             return netCard;
         }
@@ -181,7 +181,7 @@ namespace CCGKit
                 keywords.Add(GetRuntimeKeyword(keyword));
             }
             runtimeCard.keywords = keywords;
-            runtimeCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityUintArrayTypeToList(netCard.abilities);
+            //runtimeCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityUintArrayTypeToList(netCard.abilities);
             runtimeCard.connectedAbilities = netCard.connectedAbilities.ToList();
             return runtimeCard;
         }

@@ -96,6 +96,8 @@ public class CardView : MonoBehaviour
 	}
     public virtual bool CanBePlayed(DemoHumanPlayer owner)
     {
+        if (Constants.DEV_MODE)
+            return true;
         return owner.isActivePlayer && owner.manaStat.effectiveValue >= manaCost;
     }
 

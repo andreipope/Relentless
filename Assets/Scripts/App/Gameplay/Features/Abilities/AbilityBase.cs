@@ -1,5 +1,6 @@
 ﻿using CCGKit;
 using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +19,6 @@ namespace GrandDevs.CZB
         protected Action OnObjectSelectedByTargettingArrowCallback;
         protected Action OnObjectSelectFailedByTargettingArrowCallback;
 
-        public Enumerators.Ability ability;
         public ulong activityId;
         
         public Enumerators.AbilityActivityType abilityActivityType;
@@ -28,7 +28,7 @@ namespace GrandDevs.CZB
 
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
-        public Enumerators.CardKind selfCardKind;
+        public Enumerators.CardKind cardKind;
 
         public BoardCreature boardCreature;
         public DemoHumanPlayer cardCaller;
@@ -45,17 +45,15 @@ namespace GrandDevs.CZB
             }
         }
 
-        public AbilityBase(Enumerators.Ability abilityId, Enumerators.CardKind cardKind, Enumerators.AbilityType abilType, Enumerators.AbilityActivityType type, Enumerators.AbilityCallType callType, List<Enumerators.AbilityTargetType> targetTypes)
+        public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-
-            ability = abilityId;
-            selfCardKind = cardKind;
-            abilityActivityType = type;
-            abilityCallType = callType;
-            abilityTargetTypes = targetTypes;
-            abilityType = abilType;
+            this.cardKind = cardKind;
+            this.abilityType = ability.abilityType;
+            this.abilityActivityType = ability.abilityActivityType;
+            this.abilityCallType = ability.abilityCallType;
+            this.abilityTargetTypes = ability.abilityTargetTypes;
         }
 
         public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
@@ -67,9 +65,9 @@ namespace GrandDevs.CZB
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = boardCreature;
 
-            if (selfCardKind == Enumerators.CardKind.CREATURE)
+            if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(boardCreature.transform.position);
-            else if (selfCardKind == Enumerators.CardKind.SPELL)
+            else if (this.cardKind == Enumerators.CardKind.SPELL)
                 _targettingArrow.Begin(boardSpell.transform.position);
             else
                 _targettingArrow.Begin(cardCaller.transform.position);
@@ -108,7 +106,9 @@ namespace GrandDevs.CZB
             cardCaller.OnEndTurnEvent += OnEndTurnEventHandler;
             cardCaller.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if (selfCardKind == Enumerators.CardKind.CREATURE)
+            Debug.Log(boardSpell);
+
+            if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
                 boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
 
@@ -117,7 +117,7 @@ namespace GrandDevs.CZB
                     boardCreature.card.ConnectAbility((uint)abilityType);
                 }
             }
-            else if (selfCardKind == Enumerators.CardKind.SPELL)
+            else if (this.cardKind == Enumerators.CardKind.SPELL)
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
         }
 

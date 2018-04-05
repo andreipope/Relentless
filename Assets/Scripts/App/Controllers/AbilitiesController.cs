@@ -1,5 +1,6 @@
 ﻿using CCGKit;
 using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,10 @@ namespace GrandDevs.CZB
 
         private ulong _castedAbilitiesIds = 0;
         private List<ActiveAbility> _activeAbilities;
-        private List<AbilityBase> _abilities;
 
         public AbilitiesController()
         {
             _activeAbilities = new List<ActiveAbility>();
-
-            FillAbilities();
         }
 
         public void Reset()
@@ -62,18 +60,21 @@ namespace GrandDevs.CZB
             }
         }
 
-        public ActiveAbility ActivateAbility(Enumerators.Ability ability, BoardCreature creature, DemoHumanPlayer caller)
+        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, DemoHumanPlayer caller)
         {
             lock (_lock)
             {
                 ActiveAbility activeAbility = new ActiveAbility()
                 {
                     id = _castedAbilitiesIds++,
-                    ability = _abilities.Find(x => x.ability == ability).Clone()
+                    ability = CreateAbilityByType(kind, ability)
                 };
 
                 activeAbility.ability.cardCaller = caller;
-                activeAbility.ability.boardCreature = creature;
+                if(kind == Enumerators.CardKind.CREATURE)
+                    activeAbility.ability.boardCreature = boardObject as BoardCreature;
+                else
+                    activeAbility.ability.boardSpell = boardObject as BoardSpell;
 
                 _activeAbilities.Add(activeAbility);
 
@@ -81,70 +82,76 @@ namespace GrandDevs.CZB
             }
         }
 
-        public ActiveAbility ActivateAbility(Enumerators.Ability ability, BoardSpell spell, DemoHumanPlayer caller)
+        private AbilityBase CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData)
         {
-            lock (_lock)
+            AbilityBase ability = null;
+            switch (abilityData.abilityType)
             {
-                ActiveAbility activeAbility = new ActiveAbility()
-                {
-                    id = _castedAbilitiesIds++,
-                    ability = _abilities.Find(x => x.ability == ability).Clone()
-                };
-
-                activeAbility.ability.cardCaller = caller;
-                activeAbility.ability.boardSpell = spell;
-
-                _activeAbilities.Add(activeAbility);
-
-                return activeAbility;
+                case Enumerators.AbilityType.HEAL:
+                    ability = new HealTargetAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADD_GOO_VIAL:
+                    ability = new AddGooVialsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.MODIFICATOR_STATIC_DAMAGE:
+                    ability = new ModificateStatAbility(cardKind, abilityData, 0);
+                    break;
+                case Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS:
+                    ability = new ModificateStatVersusAbility(cardKind, abilityData, 0);
+                    break;
+                default:
+                    break;
             }
+            return ability;
         }
 
-        public bool HasTargets(Enumerators.Ability ability)
+        public bool HasTargets(AbilityData ability)
         {
-            if (_abilities.Find(x => x.ability == ability).abilityTargetTypes.Count > 0)
+            if(ability.abilityTargetTypes.Count > 0)
                 return true;
             return false;
         }
 
-        public bool IsAbilityActive(Enumerators.Ability ability)
+        public bool IsAbilityActive(AbilityData ability)
         {
-            if (_abilities.Find(x => x.ability == ability).abilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+            if (ability.abilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
                 return true;
             return false;
         }
 
-        public bool IsAbilityCallsAtStart(Enumerators.Ability ability)
+        public bool IsAbilityCallsAtStart(AbilityData ability)
         {
-            if (_abilities.Find(x => x.ability == ability).abilityCallType == Enumerators.AbilityCallType.AT_START)
+            if (ability.abilityCallType == Enumerators.AbilityCallType.AT_START)
                 return true;
             return false;
         }
 
-        public bool IsAbilityCanActivateTargetAtStart(Enumerators.Ability ability)
+        public bool IsAbilityCanActivateTargetAtStart(AbilityData ability)
         {
             if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && IsAbilityActive(ability))
                 return true;
             return false;
         }
 
-        public bool IsAbilityCanActivateWithoutTargetAtStart(Enumerators.Ability ability)
+        public bool IsAbilityCanActivateWithoutTargetAtStart(AbilityData ability)
         {
             if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && !IsAbilityActive(ability))
                 return true;
             return false;
         }
 
-        public bool CheckActivateAvailability(Enumerators.CardKind kind, Enumerators.Ability abilityType, DemoHumanPlayer localPlayer)
+        public bool CheckActivateAvailability(Enumerators.CardKind kind, AbilityData ability, DemoHumanPlayer localPlayer)
         {
             bool available = false;
 
             lock (_lock)
             {
-                var ability = _abilities.Find(x => x.ability == abilityType);
+                Debug.Log("ability - " + ability);
 
                 foreach (var item in ability.abilityTargetTypes)
                 {
+                    Debug.Log("item - " + item);
+
                     switch (item)
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
@@ -155,6 +162,9 @@ namespace GrandDevs.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
+                                Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
+                                Debug.Log("kind - " + kind);
+
                                 if (localPlayer.boardZone.cards.Count > 1 || kind == Enumerators.CardKind.SPELL)
                                     available = true;
                             }
@@ -166,43 +176,22 @@ namespace GrandDevs.CZB
                             break;
                         default: break;
                     }
+                    Debug.Log("available - " + available);
+
                 }
             }
 
             return available;
         }
 
-
-        public ActiveAbility GetAbilityByTypeCardOwner(Enumerators.Ability ability, BoardCreature creature, DemoHumanPlayer caller)
-        {
-            lock (_lock)
-            {
-                return _activeAbilities.Find(x => x.ability.boardCreature == creature && x.ability.cardCaller.Equals(caller) && x.ability.ability.Equals(ability));
-            }
-        }
-
-        public ActiveAbility GetAbilityByTypeCardOwner(Enumerators.Ability ability, BoardSpell spell, DemoHumanPlayer caller)
-        {
-            lock (_lock)
-            {
-                return _activeAbilities.Find(x => x.ability.boardSpell == spell && x.ability.cardCaller.Equals(caller) && x.ability.ability.Equals(ability));
-            }
-        }
-
-        public AbilityBase GetAbilityInfoByType(Enumerators.Ability ability)
-        {
-            return _abilities.Find(x => x.ability == ability);
-        }
-
         public int GetStatModificatorByAbility(RuntimeCard attacker, RuntimeCard attacked)
         {
             int value = 0;
+            //TODO
             var attackedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacked.cardId);
             var abilities = attacker.abilities.FindAll(x =>
-            x == Enumerators.Ability.ONE_ADDITIONAL_DAMAGE_VERSUS_LIFE ||
-            x == Enumerators.Ability.ONE_ADDITIONAL_DAMAGE_VERSUS_WATER //todo improve
-            );
-
+            x.abilityType == Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS);
+            /*
             ModificateStatVersusAbility ability;
             for (int i = 0; i < abilities.Count; i++)
             {
@@ -210,128 +199,9 @@ namespace GrandDevs.CZB
                 if (attackedCard.cardSetType == ability.setType)
                     value += ability.value;
             }
-
+              */                
             return value;
         }
-
-        public static uint[] AbilityTypeToUintArray(List<Enumerators.Ability> abilities)
-        {
-            uint[] abils = new uint[abilities.Count];
-            for (int i = 0; i < abilities.Count; i++)
-                abils[i] = (uint)abilities[i];
-
-            return abils;
-        }
-
-        public static List<Enumerators.Ability> AbilityUintArrayTypeToList(uint[] abilities)
-        {
-            List<Enumerators.Ability> abils = new List<Enumerators.Ability>();
-            for (int i = 0; i < abilities.Length; i++)
-                abils.Add((Enumerators.Ability)abilities[i]);
-
-            return abils;
-        }
-
-        #region fill abilities
-        private void FillAbilities()
-        {
-            _abilities = new List<AbilityBase>();
-            _abilities.Add(new ModificateStatAbility(Enumerators.Ability.EXTRA_DAMAGE_TO_FIRE,
-                                         Enumerators.CardKind.CREATURE,
-                                         Enumerators.AbilityType.MODIFICATOR_STATIC_DAMAGE,
-                                                     Enumerators.AbilityActivityType.ACTIVE,
-                                                     Enumerators.AbilityCallType.AT_START,
-                                                     new List<Enumerators.AbilityTargetType>()
-                                                            { Enumerators.AbilityTargetType.OPPONENT_CARD,
-                                                              Enumerators.AbilityTargetType.PLAYER_CARD    },
-                                                     Enumerators.StatType.DAMAGE,
-                                                     Enumerators.SetType.FIRE,
-                                                     1));
-
-            _abilities.Add(new HealTargetAbility(Enumerators.Ability.HEALS_ZOMBIE_4_HP,
-                                         Enumerators.CardKind.SPELL,
-                                         Enumerators.AbilityType.HEAL,
-                                         Enumerators.AbilityActivityType.ACTIVE,
-                                         Enumerators.AbilityCallType.AT_START,
-                                         new List<Enumerators.AbilityTargetType>()
-                                                { Enumerators.AbilityTargetType.PLAYER_CARD,
-                                                  Enumerators.AbilityTargetType.OPPONENT_CARD },
-                                         4));
-
-            // not working properly
-            _abilities.Add(new DeactivateTargetAbility(Enumerators.Ability.STUN_TARGET_UNTILL_NEXT_TURN,
-                                         Enumerators.CardKind.CREATURE,
-                                         Enumerators.AbilityType.STUN,
-                                         Enumerators.AbilityActivityType.ACTIVE,
-                                         Enumerators.AbilityCallType.AT_START,
-                                         new List<Enumerators.AbilityTargetType>()
-                                                { Enumerators.AbilityTargetType.OPPONENT_CARD,
-                                                  Enumerators.AbilityTargetType.PLAYER_CARD },
-                                         1));
-
-
-            _abilities.Add(new ModificateStatVersusAbility(Enumerators.Ability.ONE_ADDITIONAL_DAMAGE_VERSUS_LIFE,
-                                         Enumerators.CardKind.CREATURE,
-                                          Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS,
-                                         Enumerators.AbilityActivityType.PASSIVE,
-                                         Enumerators.AbilityCallType.PERMANENT,
-                                         new List<Enumerators.AbilityTargetType>()
-                                                { Enumerators.AbilityTargetType.NONE },
-                                         Enumerators.StatType.DAMAGE,
-                                         Enumerators.SetType.LIFE,
-                                         1));
-
-            _abilities.Add(new ModificateStatVersusAbility(Enumerators.Ability.ONE_ADDITIONAL_DAMAGE_VERSUS_WATER,
-                                         Enumerators.CardKind.CREATURE,
-                                          Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS,
-                             Enumerators.AbilityActivityType.PASSIVE,
-                             Enumerators.AbilityCallType.PERMANENT,
-                             new List<Enumerators.AbilityTargetType>()
-                                    { Enumerators.AbilityTargetType.NONE },
-                             Enumerators.StatType.DAMAGE,
-                             Enumerators.SetType.WATER,
-                             1));
-
-            _abilities.Add(new DeactivateTargetAbility(Enumerators.Ability.FREEZE_ENEMY_1_TURN,
-                                         Enumerators.CardKind.CREATURE,
-                                         Enumerators.AbilityType.STUN,
-                                         Enumerators.AbilityActivityType.PASSIVE,
-                                         Enumerators.AbilityCallType.AT_ATTACK,
-                                         new List<Enumerators.AbilityTargetType>()
-                                                { Enumerators.AbilityTargetType.OPPONENT_CARD },
-                                         1));
-            // not working properly
-            _abilities.Add(new DeactivateTargetAbility(Enumerators.Ability.FREEZE_TARGET_1_TURN,
-                                         Enumerators.CardKind.CREATURE,
-                                          Enumerators.AbilityType.STUN,
-                             Enumerators.AbilityActivityType.ACTIVE,
-                             Enumerators.AbilityCallType.AT_START,
-                             new List<Enumerators.AbilityTargetType>()
-                                    { Enumerators.AbilityTargetType.OPPONENT_CARD,
-                                      Enumerators.AbilityTargetType.PLAYER_CARD },
-                             1));
-            // not working properly
-            _abilities.Add(new DeactivateTargetAbility(Enumerators.Ability.ENTANGLES_TARGET_DISABLE_UNTILL_REST_OF_TURN,
-                                         Enumerators.CardKind.CREATURE,
-                                          Enumerators.AbilityType.STUN,
-                             Enumerators.AbilityActivityType.ACTIVE,
-                             Enumerators.AbilityCallType.AT_START,
-                             new List<Enumerators.AbilityTargetType>()
-                                    { Enumerators.AbilityTargetType.OPPONENT_CARD,
-                                      Enumerators.AbilityTargetType.PLAYER_CARD },
-                             1));
-
-
-            _abilities.Add(new AddGooVialsAbility(Enumerators.Ability.ADDS_2_FULL_GOO_VIALS,
-                              Enumerators.CardKind.SPELL,
-                              Enumerators.AbilityType.ADD_GOO_VIAL,
-                             Enumerators.AbilityActivityType.PASSIVE,
-                             Enumerators.AbilityCallType.AT_START,
-                             new List<Enumerators.AbilityTargetType>()
-                                    { Enumerators.AbilityTargetType.PLAYER },
-                             2));
-        }
-        #endregion fill abilities
     }
 
 

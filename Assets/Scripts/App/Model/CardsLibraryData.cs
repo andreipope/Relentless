@@ -40,7 +40,6 @@ namespace GrandDevs.CZB.Data
                 {
                     card.id = id;
                     card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
-                    UnityEngine.Debug.Log(card.abilities.Count);
                     foreach (var ability in card.abilities)
                         ability.ParseData();
                     _allCards.Add(card);

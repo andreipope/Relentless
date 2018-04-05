@@ -82,6 +82,9 @@ namespace GrandDevs.CZB
 
             _localizationManager.ApplyLocalization();
 
+            if (Constants.DEV_MODE)
+                CachedUserLocalData.tutorial = false;
+
             GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
         }
 

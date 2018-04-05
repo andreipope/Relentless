@@ -255,7 +255,7 @@ namespace CCGKit
         /// <param name="card">The card that is activating the effect.</param>
         /// <param name="abilityIndex">The index of the ability to activate.</param>
         /// <param name="targetInfo">The optional target information.</param>
-        public void ActivateAbility(PlayerInfo player, RuntimeCard card, int abilityIndex, List<int> targetInfo = null)
+        public void CreateActiveAbility(PlayerInfo player, RuntimeCard card, int abilityIndex, List<int> targetInfo = null)
         {
             var libraryCard = gameState.config.GetCard(card.cardId);
             var activatedAbilities = libraryCard.abilities.FindAll(x => x is ActivatedAbility);

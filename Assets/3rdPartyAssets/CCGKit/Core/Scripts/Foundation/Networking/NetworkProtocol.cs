@@ -33,7 +33,7 @@ namespace CCGKit
         public static short PlayerAttacked = 1012;
         public static short CreatureAttacked = 1013;
 
-        public static short ActivateAbility = 1014;
+        public static short CreateActiveAbility = 1014;
 
         public static short SendChatTextMessage = 1015;
         public static short BroadcastChatTextMessage = 1016;
@@ -196,7 +196,7 @@ namespace CCGKit
         public int numCards;
     }
 
-    public class ActivateAbilityMessage : MessageBase
+    public class CreateActiveAbilityMessage : MessageBase
     {
         public NetworkInstanceId playerNetId;
         public int zoneId;

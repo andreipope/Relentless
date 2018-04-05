@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
+using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
@@ -10,10 +11,9 @@ namespace GrandDevs.CZB
     {
         private int _turnsLength;
 
-        public double value = 2;
+        public int value = 1;
 
-        public DeactivateTargetAbility(Enumerators.Ability abilityId, Enumerators.CardKind cardKind, Enumerators.AbilityType abilType, Enumerators.AbilityActivityType type, Enumerators.AbilityCallType abilityCallType, List<Enumerators.AbilityTargetType> targetTypes,
-                                     double value = 2) : base(abilityId, cardKind, abilType, type, abilityCallType, targetTypes)
+        public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1) : base(cardKind, ability)
         {
             this.value = value;
         }
@@ -57,12 +57,12 @@ namespace GrandDevs.CZB
 
             if (_turnsLength <= 0)
             {
-                if (selfCardKind == Enumerators.CardKind.CREATURE)
+                if (this.cardKind == Enumerators.CardKind.CREATURE)
                 {
                     targetCreature.card.DisconnectAbility((uint)abilityType);
                     CreatureOnDieEventHandler();
                 }
-                else if (selfCardKind == Enumerators.CardKind.SPELL)
+                else if (this.cardKind == Enumerators.CardKind.SPELL)
                     SpellOnUsedEventHandler();
             }
         }
@@ -81,11 +81,11 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    if (selfCardKind == Enumerators.CardKind.CREATURE)
+                    if (this.cardKind == Enumerators.CardKind.CREATURE)
                     {
                         CreatureOnDieEventHandler();
                     }
-                    else if (selfCardKind == Enumerators.CardKind.SPELL)
+                    else if (this.cardKind == Enumerators.CardKind.SPELL)
                         SpellOnUsedEventHandler();
                 }
             }

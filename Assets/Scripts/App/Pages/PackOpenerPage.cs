@@ -232,6 +232,10 @@ namespace GrandDevs.CZB
             for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
             {
                 var n = i;
+
+                UnityEngine.Debug.Log("PackItemAnimationComplete");
+
+
                 var card = GenerateNewCard();
 
                 string cardSetName = string.Empty;

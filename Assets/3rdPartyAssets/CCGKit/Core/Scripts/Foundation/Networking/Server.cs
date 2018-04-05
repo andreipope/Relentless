@@ -272,7 +272,7 @@ namespace CCGKit
                         {
                             netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
                         }
-                        netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
+                        //netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
                         netCard.connectedAbilities = card.connectedAbilities.ToArray();
                         dynamicZone.cards[j] = netCard;
                     }
@@ -354,7 +354,7 @@ namespace CCGKit
                             {
                                 netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
                             }
-                            netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
+                            //netCard.abilities = GrandDevs.CZB.AbilitiesController.AbilityTypeToUintArray(card.abilities);
                             netCard.connectedAbilities = card.connectedAbilities.ToArray();
                             dynamicZone.cards[j] = netCard;
                         }

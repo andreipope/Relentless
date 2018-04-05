@@ -5,6 +5,7 @@ using System.Text;
 using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
+using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
@@ -15,12 +16,11 @@ namespace GrandDevs.CZB
         public int value = 1;
 
 
-        public ModificateStatAbility(Enumerators.Ability abilityId, Enumerators.CardKind cardKind, Enumerators.AbilityType abilType, Enumerators.AbilityActivityType type, Enumerators.AbilityCallType abilityCallType, List<Enumerators.AbilityTargetType> targetTypes,
-                                     Enumerators.StatType statType, Enumerators.SetType setType, int value = 1) : base(abilityId, cardKind, abilType, type, abilityCallType, targetTypes)
+        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability, Enumerators.SetType setType) : base(cardKind, ability)
         {
-            this.setType = setType;
-            this.statType = statType;
-            this.value = value;
+            //this.setType = ability.ty;
+            this.statType = ability.abilityStatType;
+            this.value = ability.value;
         }
 
         public override void Activate()

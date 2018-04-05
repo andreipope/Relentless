@@ -71,7 +71,7 @@ namespace CCGKit
             client.RegisterHandler(NetworkProtocol.PlayerAttacked, OnPlayerAttacked);
             client.RegisterHandler(NetworkProtocol.CreatureAttacked, OnCreatureAttacked);
 
-            client.RegisterHandler(NetworkProtocol.ActivateAbility, OnActivateAbility);
+            client.RegisterHandler(NetworkProtocol.CreateActiveAbility, OnCreateActiveAbility);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace CCGKit
         {
             if (client != null)
             {
-                client.UnregisterHandler(NetworkProtocol.ActivateAbility);
+                client.UnregisterHandler(NetworkProtocol.CreateActiveAbility);
 
                 client.UnregisterHandler(NetworkProtocol.CreatureAttacked);
                 client.UnregisterHandler(NetworkProtocol.PlayerAttacked);
@@ -209,14 +209,14 @@ namespace CCGKit
         /// Called when an activated ability was activated.
         /// </summary>
         /// <param name="netMsg">Network message.</param>
-        protected void OnActivateAbility(NetworkMessage netMsg)
+        protected void OnCreateActiveAbility(NetworkMessage netMsg)
         {
-            var msg = netMsg.ReadMessage<ActivateAbilityMessage>();
+            var msg = netMsg.ReadMessage<CreateActiveAbilityMessage>();
             Assert.IsTrue(msg != null);
             var player = localPlayers.Find(x => x.netId != msg.playerNetId);
             if (player != null)
             {
-                player.OnActivateAbility(msg);
+                player.OnCreateActiveAbility(msg);
             }
         }
     }

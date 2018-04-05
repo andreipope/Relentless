@@ -429,7 +429,7 @@ namespace CCGKit
                                 runtimeCard.AddKeyword(keyword.keywordId, keyword.valueId);
                             }
 
-                            runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(card.abilities);
+                            //runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(card.abilities);
  
                             foreach (var abilityId in card.connectedAbilities)
                             {
@@ -505,7 +505,7 @@ namespace CCGKit
             runtimeCard.cardId = msg.card.cardId;
             runtimeCard.instanceId = msg.card.instanceId;
             runtimeCard.ownerPlayer = playerInfo.netId == msg.playerNetId ? playerInfo : opponentInfo;
-            runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(msg.card.abilities);
+            //runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(msg.card.abilities);
             runtimeCard.connectedAbilities = msg.card.connectedAbilities.ToList();
 
             foreach (var stat in msg.card.stats)
@@ -530,7 +530,7 @@ namespace CCGKit
         {
         }
 
-        public void ActivateAbility(int zoneId, int cardInstanceId, int abilityIndex)
+        public void CreateActiveAbility(int zoneId, int cardInstanceId, int abilityIndex)
         {
             var card = playerInfo.zones[zoneId].cards.Find(x => x.instanceId == cardInstanceId);
             if (card != null)
@@ -548,20 +548,20 @@ namespace CCGKit
                         if (playerInfo.stats[payResourceCost.statId].effectiveValue >= statCost)
                         {
                             playerInfo.stats[payResourceCost.statId].baseValue -= statCost;
-                            effectSolver.ActivateAbility(playerInfo, card, 0);
-                            var msg = new ActivateAbilityMessage();
+                            effectSolver.CreateActiveAbility(playerInfo, card, 0);
+                            var msg = new CreateActiveAbilityMessage();
                             msg.playerNetId = playerInfo.netId;
                             msg.zoneId = zoneId;
                             msg.cardInstanceId = cardInstanceId;
                             msg.abilityIndex = abilityIndex;
-                            client.Send(NetworkProtocol.ActivateAbility, msg);
+                            client.Send(NetworkProtocol.CreateActiveAbility, msg);
                         }
                     }
                 }
             }
         }
 
-        public virtual void OnActivateAbility(ActivateAbilityMessage msg)
+        public virtual void OnCreateActiveAbility(CreateActiveAbilityMessage msg)
         {
             var card = opponentInfo.zones[msg.zoneId].cards.Find(x => x.instanceId == msg.cardInstanceId);
             if (card != null)
@@ -575,7 +575,7 @@ namespace CCGKit
                     if (opponentInfo.stats[payResourceCost.statId].effectiveValue >= statCost)
                     {
                         opponentInfo.stats[payResourceCost.statId].baseValue -= statCost;
-                        effectSolver.ActivateAbility(opponentInfo, card, 0);
+                        effectSolver.CreateActiveAbility(opponentInfo, card, 0);
                     }
                 }
             }

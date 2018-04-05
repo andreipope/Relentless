@@ -881,62 +881,13 @@ public class DemoHumanPlayer : DemoPlayer
 
                 RearrangeBottomBoard(() =>
                 {
-                    /*bool canUseAbility = false;
-                    ActiveAbility activatedAbility;
-                    foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
-                    {
-                        activatedAbility = _abilitiesController.ActivateAbility(item, currentCreature, this);
-
-                        if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
-                            canUseAbility = true;
-                        else if(_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
-                            activatedAbility.ability.Activate();
-                    }
-
-                    // Preemptively move the card so that the effect solver can properly check the availability of targets
-                    // by also taking into account this card (that is trying to be played).
-                    playerInfo.namedZones[Constants.ZONE_HAND].RemoveCard(card.card);
-                    playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(card.card);
-                   
-                    effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-                    boardCreature.GetComponent<BoardCreature>().fightTargetingArrowPrefab = fightTargetingArrowPrefab;
-
-                    if (canUseAbility)
-                    {
-                        var type = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
-                        var activeAbility = _abilitiesController.GetAbilityByTypeCardOwner(type, currentCreature, this);
-
-                        if (_abilitiesController.CheckActivateAvailability(Enumerators.CardKind.CREATURE, type, this))
-                        {
-                            activeAbility.ability.Activate();
-
-                            activeAbility.ability.ActivateSelectTarget(callback: () =>
-                            {
-                                CallCardPlay(card);
-                            },
-                            failedCallback: () =>
-                            {
-                                Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
-
-                                CallCardPlay(card);
-                            });
-                        }
-                        else
-                        {
-                            CallCardPlay(card);
-                        }
-                    }
-                    else
-                    {
-                        CallCardPlay(card);
-                    }
-                    */
+                    CallAbility(libraryCard, card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay);
                 });
 
             }
             else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
-                /*
+                
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
                 sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
@@ -947,53 +898,10 @@ public class DemoHumanPlayer : DemoPlayer
                     card.GetComponent<SortingGroup>().sortingOrder = 1000;
 
                     var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-
-                    bool canUseAbility = false;
-                    ActiveAbility activatedAbility;
-                    foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
-                    {
-                        activatedAbility = _abilitiesController.ActivateAbility(item, boardSpell, this);
-
-                        if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
-                            canUseAbility = true;
-                        else if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
-                            activatedAbility.ability.Activate();
-                    }
-
-                    currentSpellCard = card;
-                    effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-
-                    if (canUseAbility)
-                    {
-                        var type = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
-                        var activeAbility = _abilitiesController.GetAbilityByTypeCardOwner(type, boardSpell, this);
-
-                        if (_abilitiesController.CheckActivateAvailability(Enumerators.CardKind.SPELL, type, this))
-                        {
-                            activeAbility.ability.Activate();
-
-                            activeAbility.ability.ActivateSelectTarget(callback: () =>
-                            {
-                                CallSpellCardPlay(card);
-                            },
-                            failedCallback: () =>
-                            {
-                                Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
-                                CallSpellCardPlay(card);
-                            });
-                        }
-                        else
-                        {
-                            CallSpellCardPlay(card);
-                        }
-                    }
-                    else
-                    {
-                        CallSpellCardPlay(card);
-                    }
-
-                });*/
-            }
+                    Debug.Log(card.name);
+                    CallAbility(libraryCard, card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay);
+                });
+            }              
         }
         else
         {
@@ -1001,8 +909,72 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
+    private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, Enumerators.CardKind kind, object boardObject, Action<CardView> action)
+    {
+        bool canUseAbility = false;
+        ActiveAbility activeAbility = null;
+        foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
+        {
+            activeAbility = _abilitiesController.CreateActiveAbility(item, kind, boardObject, this);
+
+            if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
+                canUseAbility = true;
+            else if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
+                activeAbility.ability.Activate();
+        }
+        Debug.Log("activeAbility - " + activeAbility);
+        Debug.Log("canUseAbility - " + canUseAbility);
+        // Preemptively move the card so that the effect solver can properly check the availability of targets
+        // by also taking into account this card (that is trying to be played).
+
+        if (kind == Enumerators.CardKind.SPELL)
+            currentSpellCard = card;
+        else
+        {
+            playerInfo.namedZones[Constants.ZONE_HAND].RemoveCard(card.card);
+            playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(card.card);
+            currentCreature.fightTargetingArrowPrefab = fightTargetingArrowPrefab;
+        }
+        effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+        Debug.Log("effectSolver.MoveCard Passed");
+        if (canUseAbility)
+        {
+            var ability = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
+            Debug.Log("type - " + ability);
+            Debug.Log("_abilitiesController.CheckActivateAvailability - " + _abilitiesController.CheckActivateAvailability(kind, ability, this));
+
+            if (_abilitiesController.CheckActivateAvailability(kind, ability, this))
+            {
+                Debug.Log("CheckActivateAvailability");
+                Debug.Log("activeAbility.ability.Activate - " + activeAbility.ability);
+                activeAbility.ability.Activate();
+                Debug.Log("Activate");
+
+                activeAbility.ability.ActivateSelectTarget(callback: () =>
+                {
+                    Debug.Log("ActivateSelectTarget");
+
+                    action(card);
+                    Debug.Log("DO action");
+
+                },
+                failedCallback: () =>
+                {
+                    Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
+                    action(card);
+                });
+            }
+            else
+                action(card);
+        }
+        else
+            action(card);
+    }
+
     private void CallCardPlay(CardView card)
     {
+        Debug.Log("CallCardPlay");
+
         PlayCreatureCard(card.card);
         currentCreature = null;
         gameUI.endTurnButton.SetEnabled(true);
@@ -1010,6 +982,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallSpellCardPlay(CardView card)
     {
+        Debug.Log("CallSpellCardPlay");
         PlaySpellCard(card.card);
         currentSpellCard = null;
         gameUI.endTurnButton.SetEnabled(true);

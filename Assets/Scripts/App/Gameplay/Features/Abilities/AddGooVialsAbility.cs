@@ -5,6 +5,7 @@ using System.Text;
 using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
+using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
@@ -12,10 +13,9 @@ namespace GrandDevs.CZB
     {
         public int value = 1;
         
-        public AddGooVialsAbility(Enumerators.Ability abilityId, Enumerators.CardKind cardKind, Enumerators.AbilityType abilType, Enumerators.AbilityActivityType type, Enumerators.AbilityCallType abilityCallType, List<Enumerators.AbilityTargetType> targetTypes,
-                                     int value = 1) : base(abilityId, cardKind, abilType, type, abilityCallType, targetTypes)
+        public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            this.value = value;
+            this.value = ability.value;
         }
 
         public override void Activate()

@@ -15,18 +15,18 @@ namespace CCGKit
         public override void RegisterNetworkHandlers()
         {
             base.RegisterNetworkHandlers();
-            NetworkServer.RegisterHandler(NetworkProtocol.ActivateAbility, OnActivateAbility);
+            NetworkServer.RegisterHandler(NetworkProtocol.CreateActiveAbility, OnCreateActiveAbility);
         }
 
         public override void UnregisterNetworkHandlers()
         {
             base.UnregisterNetworkHandlers();
-            NetworkServer.UnregisterHandler(NetworkProtocol.ActivateAbility);
+            NetworkServer.UnregisterHandler(NetworkProtocol.CreateActiveAbility);
         }
 
-        public virtual void OnActivateAbility(NetworkMessage netMsg)
+        public virtual void OnCreateActiveAbility(NetworkMessage netMsg)
         {
-            var msg = netMsg.ReadMessage<ActivateAbilityMessage>();
+            var msg = netMsg.ReadMessage<CreateActiveAbilityMessage>();
             var sourcePlayer = server.gameState.players.Find(x => x.netId == msg.playerNetId);
             if (sourcePlayer != null)
             {
@@ -42,19 +42,19 @@ namespace CCGKit
                         if (sourcePlayer.stats[payResourceCost.statId].effectiveValue >= statCost)
                         {
                             sourcePlayer.stats[payResourceCost.statId].baseValue -= statCost;
-                            server.effectSolver.ActivateAbility(sourcePlayer, card, 0);
+                            server.effectSolver.CreateActiveAbility(sourcePlayer, card, 0);
                         }
                     }
                 }
 
-                var broadcastMsg = new ActivateAbilityMessage();
+                var broadcastMsg = new CreateActiveAbilityMessage();
                 broadcastMsg.playerNetId = msg.playerNetId;
                 broadcastMsg.zoneId = msg.zoneId;
                 broadcastMsg.cardInstanceId = msg.cardInstanceId;
                 broadcastMsg.abilityIndex = msg.abilityIndex;
                 foreach (var player in server.gameState.players.FindAll(x => x != sourcePlayer))
                 {
-                    NetworkServer.SendToAll(NetworkProtocol.ActivateAbility, broadcastMsg);
+                    NetworkServer.SendToAll(NetworkProtocol.CreateActiveAbility, broadcastMsg);
                 }
             }
         }

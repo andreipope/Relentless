@@ -5,13 +5,13 @@ using System.Text;
 using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
+using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
     public class ModificateStatVersusAbility : ModificateStatAbility
     {
-        public ModificateStatVersusAbility(Enumerators.Ability abilityId, Enumerators.CardKind cardKind, Enumerators.AbilityType abilType, Enumerators.AbilityActivityType type, Enumerators.AbilityCallType abilityCallType, List<Enumerators.AbilityTargetType> targetTypes,
-                                     Enumerators.StatType statType, Enumerators.SetType setType, int value = 1) : base(abilityId, cardKind, abilType, type, abilityCallType, targetTypes, statType, setType, value)
+        public ModificateStatVersusAbility(Enumerators.CardKind cardKind, AbilityData ability, Enumerators.SetType setType) : base(cardKind, ability, setType)
         {
         }
 
