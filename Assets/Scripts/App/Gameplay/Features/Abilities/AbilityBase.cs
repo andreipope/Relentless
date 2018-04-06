@@ -106,8 +106,6 @@ namespace GrandDevs.CZB
             cardCaller.OnEndTurnEvent += OnEndTurnEventHandler;
             cardCaller.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            Debug.Log(boardSpell);
-
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
                 boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
@@ -207,7 +205,8 @@ namespace GrandDevs.CZB
 
         protected void CreatureOnDieEventHandler()
         {
-            targetCreature.card.DisconnectAbility((uint)abilityType);
+            if(targetCreature != null)
+                targetCreature.card.DisconnectAbility((uint)abilityType);
 
             boardCreature.CreatureOnDieEvent -= CreatureOnDieEventHandler;
             _abilitiesController.DeactivateAbility(activityId);

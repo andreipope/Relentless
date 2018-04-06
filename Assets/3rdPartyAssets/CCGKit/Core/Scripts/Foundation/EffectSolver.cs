@@ -101,15 +101,15 @@ namespace CCGKit
             }
         }
 
-        public void FightPlayerBySkill(NetworkInstanceId attackingPlayerNetId, int value)
+        public void FightPlayerBySkill(NetworkInstanceId attackingPlayerNetId, int value, bool isOpponent)
         {
-            var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
+            var attackedPlayer = gameState.players.Find(x => (isOpponent && x.netId != attackingPlayerNetId) || (!isOpponent && x.netId == attackingPlayerNetId));
             attackedPlayer.namedStats[Constants.TAG_LIFE].baseValue -= value;
         }
 
-        public void HealPlayerBySkill(NetworkInstanceId callerPlayerNetId, int value)
+        public void HealPlayerBySkill(NetworkInstanceId callerPlayerNetId, int value, bool isOpponent)
         {
-            var choosedPlayer = gameState.players.Find(x => x.netId == callerPlayerNetId);
+            var choosedPlayer = gameState.players.Find(x => (isOpponent && x.netId != callerPlayerNetId) || (!isOpponent && x.netId == callerPlayerNetId));
 
             int maxHPPlayer = choosedPlayer.namedStats[Constants.TAG_LIFE].originalValue;
             foreach (var item in choosedPlayer.namedStats[Constants.TAG_LIFE].modifiers)

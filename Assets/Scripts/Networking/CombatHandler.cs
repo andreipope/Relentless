@@ -88,7 +88,7 @@ public class CombatHandler : ServerHandler
             playerAttackedMsg.attackingCardInstanceId = msg.cardInstanceId;
             server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.PlayerAttacked, playerAttackedMsg);
               */
-            server.effectSolver.FightPlayerBySkill(msg.attackingPlayerNetId, msg.attack);
+            server.effectSolver.FightPlayerBySkill(msg.attackingPlayerNetId, msg.attack, msg.isOpponent);
         }
     }
 
@@ -151,7 +151,7 @@ public class CombatHandler : ServerHandler
             if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
                 return;
 
-            server.effectSolver.HealPlayerBySkill(msg.callerPlayerNetId, msg.value);
+            server.effectSolver.HealPlayerBySkill(msg.callerPlayerNetId, msg.value, msg.isOpponent);
         }
     }
 

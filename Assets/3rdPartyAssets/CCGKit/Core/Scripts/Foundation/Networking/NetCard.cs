@@ -13,7 +13,6 @@ namespace CCGKit
         public int instanceId;
         public NetStat[] stats;
         public NetKeyword[] keywords;
-        public uint[] abilities;
         public uint[] connectedAbilities;   
     }
 }

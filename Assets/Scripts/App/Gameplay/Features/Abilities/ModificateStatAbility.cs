@@ -16,9 +16,9 @@ namespace GrandDevs.CZB
         public int value = 1;
 
 
-        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability, Enumerators.SetType setType) : base(cardKind, ability)
+        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            //this.setType = ability.ty;
+            this.setType = ability.abilitySetType;
             this.statType = ability.abilityStatType;
             this.value = ability.value;
         }

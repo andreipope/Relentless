@@ -21,6 +21,35 @@ namespace GrandDevs.CZB
             base.Activate();
 
             //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            foreach (var target in abilityTargetTypes)
+            {
+                switch (target)
+                {
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                        BoardCreature[] cards = new BoardCreature[cardCaller.opponentBoardCardsList.Count];
+                        cardCaller.opponentBoardCardsList.CopyTo(cards);
+                        foreach (var cardOpponent in cards)
+                        {
+                            cardCaller.FightCreatureBySkill(value, cardOpponent.card);
+                            CreateVFX(cardOpponent.transform.position);
+                        }
+                        Array.Clear(cards, 0, cards.Length);
+                        cards = null;
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        cardCaller.FightPlayerBySkill(value);
+                        //CreateVFX(targetCreature.transform.position);
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER:
+                        //cardCaller.FightPlayerBySkill(value, false);
+                        //CreateVFX(targetCreature.transform.position);
+                        break;
+                    default: break;
+                }
+            }
+
+               // foreach (var card in cardCaller.boardZone.cards)
+                 //   cardCaller.FightCreatureBySkill(value, card);
         }
 
         public override void Update() { }
@@ -30,15 +59,6 @@ namespace GrandDevs.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                foreach(var cardOpponent in cardCaller.opponentBoardZone.cards)
-                    cardCaller.FightCreatureBySkill(value, cardOpponent);
-
-                foreach (var card in cardCaller.boardZone.cards)
-                    cardCaller.FightCreatureBySkill(value, card);
-            }
         }
     }
 }

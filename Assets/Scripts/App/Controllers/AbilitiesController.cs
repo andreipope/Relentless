@@ -100,10 +100,11 @@ namespace GrandDevs.CZB
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.MODIFICATOR_STATIC_DAMAGE:
-                    ability = new ModificateStatAbility(cardKind, abilityData, 0);
-                    break;
                 case Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS:
-                    ability = new ModificateStatVersusAbility(cardKind, abilityData, 0);
+                    ability = new ModificateStatAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.MASSIVE_DAMAGE:
+                    ability = new MassiveDamageAbility(cardKind, abilityData);
                     break;
                 default:
                     break;
@@ -193,20 +194,43 @@ namespace GrandDevs.CZB
         public int GetStatModificatorByAbility(RuntimeCard attacker, RuntimeCard attacked)
         {
             int value = 0;
-            //TODO
+
             var attackedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacked.cardId);
-            var abilities = attacker.abilities.FindAll(x =>
+            var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
+            Debug.Log(attackedCard);
+
+            var abilities = attackerCard.abilities.FindAll(x =>
             x.abilityType == Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS);
-            /*
-            ModificateStatVersusAbility ability;
+            Debug.Log(abilities);
+            Debug.Log(abilities.Count);
+
             for (int i = 0; i < abilities.Count; i++)
             {
-                ability = (GetAbilityInfoByType(abilities[i]) as ModificateStatVersusAbility);
-                if (attackedCard.cardSetType == ability.setType)
-                    value += ability.value;
+                Debug.Log(attackedCard.cardSetType + "_" + abilities[i].abilitySetType);
+
+                if (attackedCard.cardSetType == abilities[i].abilitySetType)
+                    value += abilities[i].value;
             }
-              */                
+                Debug.Log("value - " + value);
             return value;
+        }
+
+        public static uint[] AbilityTypeToUintArray(List<Enumerators.AbilityType> abilities)
+        {
+            uint[] abils = new uint[abilities.Count];
+            for (int i = 0; i < abilities.Count; i++)
+                abils[i] = (uint)abilities[i];
+
+            return abils;
+        }
+
+        public static List<Enumerators.AbilityType> AbilityTypeToUintArray(uint[] abilities)
+        {
+            List<Enumerators.AbilityType> abils = new List<Enumerators.AbilityType>();
+            for (int i = 0; i < abilities.Length; i++)
+                abils[i] = (Enumerators.AbilityType)abilities[i];
+
+            return abils;
         }
     }
 

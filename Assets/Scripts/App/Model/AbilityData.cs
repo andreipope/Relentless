@@ -13,8 +13,8 @@ namespace GrandDevs.CZB.Data
         public string activityType;
         public string callType;
         public string targetType;
-        public string affectObjectType;
         public string statType;
+        public string setType;
 
 
         [JsonIgnore]
@@ -26,11 +26,11 @@ namespace GrandDevs.CZB.Data
         [JsonIgnore]
 		public List<Enumerators.AbilityTargetType> abilityTargetTypes;
         [JsonIgnore]
-		public Enumerators.AffectObjectType abilityAffectObjectType;
-        [JsonIgnore]
 		public Enumerators.StatType abilityStatType;
+        [JsonIgnore]
+        public Enumerators.SetType abilitySetType;
 
-		public int value;
+        public int value;
 
         public AbilityData()
         {
@@ -43,10 +43,11 @@ namespace GrandDevs.CZB.Data
             abilityActivityType     =  CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
             abilityCallType         =  CastStringTuEnum<Enumerators.AbilityCallType>(callType);
             abilityTargetTypes      =  CastList<Enumerators.AbilityTargetType>(targetType);
-            abilityAffectObjectType =  CastStringTuEnum<Enumerators.AffectObjectType>(affectObjectType);
             if(statType != null)
                 abilityStatType     =  CastStringTuEnum<Enumerators.StatType>(statType);
-		}
+            if (setType != null)
+                abilitySetType      =  CastStringTuEnum<Enumerators.SetType>(setType);
+        }
 
         private T CastStringTuEnum<T>(string data)
         {

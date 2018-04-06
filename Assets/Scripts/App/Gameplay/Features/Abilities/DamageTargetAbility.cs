@@ -36,9 +36,12 @@ namespace GrandDevs.CZB
 				switch (affectObjectType)
 				{
 					case Enumerators.AffectObjectType.PLAYER:
-                        cardCaller.FightPlayer(value);
-						CreateVFX(targetPlayer.transform.position);
-						break;
+                        if(targetPlayer.playerInfo.netId == cardCaller.netId)
+                            cardCaller.FightPlayerBySkill(value, false);
+                        else
+                            cardCaller.FightPlayerBySkill(value);
+                        CreateVFX(targetPlayer.transform.position);
+                        break;
 					case Enumerators.AffectObjectType.CHARACTER:
 						cardCaller.FightCreatureBySkill(value, targetCreature.card);
 						CreateVFX(targetCreature.transform.position);

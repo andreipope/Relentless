@@ -73,9 +73,6 @@ namespace CCGKit
         /// </summary>
         public Action<RuntimeKeyword> onKeywordRemoved;
 
-
-        public List<AbilityData> abilities = new List<AbilityData>();
-
         /// <summary>
         /// Adds a keyword to this card.
         /// </summary>

@@ -118,12 +118,14 @@ namespace CCGKit
     {
         public NetworkInstanceId attackingPlayerNetId;
         public int attack;
+        public bool isOpponent;
     }
 
     public class HealPlayerBySkillMessage : MessageBase
     {
         public NetworkInstanceId callerPlayerNetId;
         public int value;
+        public bool isOpponent;
     }
 
     public class HealCreatureBySkillMessage : MessageBase

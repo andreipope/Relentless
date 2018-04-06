@@ -66,6 +66,11 @@ public class DemoHumanPlayer : DemoPlayer
     protected float accTime;
     protected float secsAccTime;
 
+    public List<BoardCreature> opponentBoardCardsList
+    {
+        get { return opponentBoardCards; }
+    }
+
     public Stat lifeStat { get; protected set; }
     public Stat manaStat { get; protected set; }
 

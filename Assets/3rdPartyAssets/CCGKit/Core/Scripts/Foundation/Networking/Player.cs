@@ -198,6 +198,13 @@ namespace CCGKit
                 }
                 else
                 {
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(9);
+
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(9);
+                    /*
+
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
@@ -228,6 +235,7 @@ namespace CCGKit
                     msgDefaultDeck.Add(11);
                     msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(0);
+                    */
 
                 }
             }
@@ -619,7 +627,7 @@ namespace CCGKit
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
             effectSolver.FightPlayer(netId, cardInstanceId);
-
+            Debug.Log("FightPlayer");
             var msg = new FightPlayerMessage();
             msg.attackingPlayerNetId = netId;
             msg.cardInstanceId = cardInstanceId;
@@ -627,24 +635,26 @@ namespace CCGKit
         }
 
 
-		public void FightPlayerBySkill(int attack)
+		public void FightPlayerBySkill(int attack, bool isOpponent = true)
 		{
-            effectSolver.FightPlayerBySkill(netId, attack);
+            effectSolver.FightPlayerBySkill(netId, attack, isOpponent);
 
             var msg = new FightPlayerBySkillMessage();
 			msg.attackingPlayerNetId = netId;
 			msg.attack = attack;
-			client.Send(NetworkProtocol.FightPlayerBySkill, msg);
+			msg.isOpponent = isOpponent;
+            client.Send(NetworkProtocol.FightPlayerBySkill, msg);
 		}
 
 
-        public void HealPlayerBySkill(int value)
+        public void HealPlayerBySkill(int value, bool isOpponent = true)
         {
-            effectSolver.HealPlayerBySkill(netId, value);
+            effectSolver.HealPlayerBySkill(netId, value, isOpponent);
 
             var msg = new HealPlayerBySkillMessage();
             msg.callerPlayerNetId = netId;
             msg.value = value;
+            msg.isOpponent = isOpponent;
             client.Send(NetworkProtocol.HealPlayerBySkill, msg);
         }
 

@@ -42,21 +42,17 @@
       "heroId": 2,
       "name": "Deck2",
       "cards": [
-        {
-          "cardId": 24,
-          "amount": 3
+		{
+          "cardId": 0,
+          "amount": 2
         },
-        {
-          "cardId": 25,
-          "amount": 3
+		{
+          "cardId": 5,
+          "amount": 2
         },
-        {
-          "cardId": 26,
-          "amount": 3
-        },
-        {
-          "cardId": 23,
-          "amount": 3
+		{
+          "cardId": 20,
+          "amount": 2
         },
       ]
     },

@@ -10,21 +10,21 @@
           "cost": 1,
           "description": "1 additional damage to life zombie",
           "picture": "Pyromaz",
-          "damage": 2,
+          "damage": 1,
           "health": 1,
           "type": 0,
           "rarity": 0,
-          "abilities": [ 
-			  {
-				"type": "heal",
-				"activityType": "passive",
-				"callType": "each_turn",
-				"targetType": "none",
-				"affectObjectType": "none",
-				"statType": "health",
-				"value": 0,
-			  }
-		  ]
+          "abilities": [
+            {
+              "type": "MODIFICATOR_STAT_VERSUS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+			  "setType": "life",
+			  "value": 1,
+            }
+          ]
         },
         {
           "id": 1,
@@ -48,7 +48,7 @@
           "damage": 4,
           "health": 3,
           "type": 0,
-          "rarity": 2
+          "rarity": 2,
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -65,12 +65,22 @@
           "cardTypeId": 0,
           "name": "Gargantua",
           "cost": 8,
-          "description": "DOT 4 for 2 turns",
+          "description": "Entry: Damage all enemy zombies (including heros) for 2 Damage",
           "picture": "Gargantua",
           "damage": 6,
           "health": 6,
           "type": 2,
-          "rarity": 3
+          "rarity": 3,
+		  "abilities": [
+            {
+              "type": "MASSIVE_DAMAGE",
+              "activityType": "PASSIVE",
+              "callType": "at_start",
+              "targetType": "OPPONENT_ALL_CARDS|opponent",
+              "affectObjectType": "none",
+              "value": 2,
+            }
+          ]
         }
       ]
     },
@@ -97,9 +107,20 @@
           "description": "Does extra dmg to fire zombies",
           "picture": "Jetter",
           "damage": 3,
-          "health": 4,
+          "health": 3,
           "type": 0,
           "rarity": 1,
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STAT_VERSUS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+			  "setType": "fire",
+			  "value": 1,
+            }
+          ]
         },
         {
           "id": 6,
@@ -117,13 +138,23 @@
           "id": 7,
           "cardTypeId": 0,
           "name": "Tsunami",
-          "cost": 7,
-          "description": "Creates a title wave. damages target and 2 adj. targets",
+          "cost": 9,
+          "description": "Creates a title wave and 2 damages all enemy targets",
           "picture": "Tsunami",
           "damage": 8,
           "health": 7,
           "type": 0,
-          "rarity": 3
+          "rarity": 3,
+		  "abilities": [
+            {
+              "type": "MASSIVE_DAMAGE",
+              "activityType": "PASSIVE",
+              "callType": "at_start",
+              "targetType": "OPPONENT_ALL_CARDS",
+              "affectObjectType": "none",
+              "value": 2,
+            }
+          ]
         }
       ]
     },
@@ -138,9 +169,20 @@
           "description": "",
           "picture": "Rockky",
           "damage": 1,
-          "health": 2,
+          "health": 1,
           "type": 0,
-          "rarity": 0
+          "rarity": 0,
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STAT_VERSUS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+			  "setType": "water",
+			  "value": 1,
+            }
+          ]
         },
         {
           "id": 9,
@@ -158,10 +200,10 @@
           "id": 10,
           "cardTypeId": 0,
           "name": "Bolderr",
-          "cost": 4,
-          "description": "Freeze target for 1 turn",
+          "cost": 5,
+          "description": " Entry: attack target for 3 damage",
           "picture": "Bolderr",
-          "damage": 4,
+          "damage": 3,
           "health": 5,
           "type": 0,
           "rarity": 2,
@@ -222,20 +264,19 @@
           "cardTypeId": 0,
           "name": "Stormcaller",
           "cost": 6,
-          "description": "Creates a storm that shocks target and 2 adjacent cards",
+          "description": "Creates a storm that attack target and 2 adjacent cards for 1",
           "picture": "Stormcaller",
           "damage": 4,
           "health": 5,
           "type": 0,
-          "rarity": 2
+          "rarity": 2,
           "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
               "callType": "at_start",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
-              "value": 2,
+              "value": 1,
             }
           ]
         },
@@ -243,13 +284,22 @@
           "id": 15,
           "cardTypeId": 0,
           "name": "Zeuz",
-          "cost": 8,
-          "description": "Stuns target disabling it until its next turn.",
+          "cost": 10,
+          "description": "Entry: Damage 3 all enemy zombies",
           "picture": "Zeuz",
           "damage": 8,
           "health": 7,
           "type": 0,
           "rarity": 3,
+		  "abilities": [
+            {
+              "type": "MASSIVE_DAMAGE",
+              "activityType": "PASSIVE",
+              "callType": "at_start",
+              "targetType": "OPPONENT_ALL_CARDS",
+              "value": 3,
+            }
+          ]
         }
       ]
     },
@@ -260,32 +310,42 @@
           "id": 16,
           "cardTypeId": 0,
           "name": "Azuraz",
-          "cost": 2,
+          "cost": 1,
           "description": "1 additional damage to water zombie",
           "picture": "Azuraz",
-          "damage": 2,
+          "damage": 1,
           "health": 1,
           "type": 0,
           "rarity": 0,
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STAT_VERSUS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+			  "setType": "earth",
+			  "value": 1,
+            }
+          ]
         },
         {
           "id": 17,
           "cardTypeId": 0,
           "name": "Shroom",
           "cost": 4,
-          "description": "Poison target DOT 2 for 2 turns",
+          "description": "Entry: 2 damage to target",
           "picture": "Shroom",
           "damage": 4,
           "health": 2,
           "type": 0,
-          "rarity": 1
+          "rarity": 1,
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "at_start",
               "targetType": "player_card|opponent_card|player|opponent",
-              "affectObjectType": "none",
               "value": 2,
             }
           ]
@@ -323,13 +383,24 @@
           "id": 20,
           "cardTypeId": 0,
           "name": "Poizom",
-          "cost": 2,
+          "cost": 1,
           "description": "1 additional damage to life zombie",
           "picture": "Poizom",
-          "damage": 2,
+          "damage": 1,
           "health": 1,
           "type": 0,
           "rarity": 0,
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STAT_VERSUS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+			  "setType": "life",
+			  "value": 1,
+            }
+          ]
         },
         {
           "id": 21,
@@ -347,8 +418,8 @@
           "id": 22,
           "cardTypeId": 0,
           "name": "Hazmaz",
-          "cost": 4,
-          "description": "<b>Feral:</b> attacks immediately, DOT 2 for 2 turns",
+          "cost": 3,
+          "description": "<b>Feral:</b> attacks immediately, 1 Damage to target",
           "picture": "Hazmaz",
           "damage": 3,
           "health": 3,
@@ -360,7 +431,6 @@
               "activityType": "active",
               "callType": "at_start",
               "targetType": "player_card|opponent_card|player|opponent",
-              "affectObjectType": "none",
               "value": 1,
             }
           ]
@@ -399,7 +469,6 @@
 				"activityType": "active",
 				"callType": "at_start",
 				"targetType": "player_card|opponent_card|player|opponent",
-				"affectObjectType": "none",
 				"value": 4,
 			  }
 		  ]
@@ -421,8 +490,7 @@
 							"activityType": "active",
 							"callType": "at_start",
 							"targetType": "player_card|opponent_card",
-							"affectObjectType": "none",
-							"value": 1,
+							"value": 5,
 					  }
 				  ]
         },
@@ -436,14 +504,13 @@
           "damage": 0,
           "health": 0,
           "type": 0,
-          "rarity": 2,Ы
+          "rarity": 2,
           "abilities": [
             {
               "type": "ADD_GOO_VIAL",
               "activityType": "active",
               "callType": "at_start",
               "targetType": "player",
-              "affectObjectType": "none",
               "value": 4,
             }
           ]

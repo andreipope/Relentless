@@ -11,7 +11,7 @@ namespace GrandDevs.CZB
 {
     public class ModificateStatVersusAbility : ModificateStatAbility
     {
-        public ModificateStatVersusAbility(Enumerators.CardKind cardKind, AbilityData ability, Enumerators.SetType setType) : base(cardKind, ability, setType)
+        public ModificateStatVersusAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
         }
 

@@ -36,8 +36,12 @@ namespace GrandDevs.CZB
                 switch(affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
-                        cardCaller.HealPlayerBySkill(value);
+                        if (targetPlayer.playerInfo.netId == cardCaller.netId)
+                            cardCaller.HealPlayerBySkill(value, false);
+                        else
+                            cardCaller.HealPlayerBySkill(value);
                         CreateVFX(targetPlayer.transform.position);
+                        break;
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         cardCaller.HealCreatureBySkill(value, targetCreature.card);

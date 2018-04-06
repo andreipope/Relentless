@@ -159,9 +159,6 @@ namespace CCGKit
                     card.keywords.Add(keywordCopy);
                 }
 
-                //TODO
-                //card.abilities = libraryCard.abilities;
-
                 deck.cards.Add(card);
             }
 
