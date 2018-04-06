@@ -36,17 +36,7 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                switch (affectObjectType)
-                {
-                    case Enumerators.AffectObjectType.CHARACTER:
-
-                        targetCreature.isPlayable = false;
-                        targetCreature.SetHighlightingEnabled(false);
-
-                        CreateVFX(targetCreature.transform.position);
-                        break;
-                    default: break;
-                }
+                Action();
             }
         }
         protected override void OnEndTurnEventHandler()
@@ -88,6 +78,22 @@ namespace GrandDevs.CZB
                     else if (this.cardKind == Enumerators.CardKind.SPELL)
                         SpellOnUsedEventHandler();
                 }
+            }
+        }
+        public override void Action()
+        {
+            base.Action();
+
+            switch (affectObjectType)
+            {
+                case Enumerators.AffectObjectType.CHARACTER:
+
+                    targetCreature.isPlayable = false;
+                    targetCreature.SetHighlightingEnabled(false);
+
+                    CreateVFX(targetCreature.transform.position);
+                    break;
+                default: break;
             }
         }
     }

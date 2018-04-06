@@ -152,9 +152,9 @@
         public enum AbilityType
         {
             HEAL,
-            MODIFICATOR_STATIC_DAMAGE,
+            MODIFICATOR_STATS,
+            CHANGE_STAT,
             STUN,
-            MODIFICATOR_STAT_VERSUS,
             SPURT,
             ADD_GOO_VIAL,
             DOT,

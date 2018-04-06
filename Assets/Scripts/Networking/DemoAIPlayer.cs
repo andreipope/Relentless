@@ -151,7 +151,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     var attackedCreature = GetTargetOpponentCreature();
                     if (attackedCreature != null)
@@ -179,7 +179,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     FightPlayer(creature.instanceId);
                     yield return new WaitForSeconds(2.0f);
@@ -191,7 +191,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
                 {
                     var playerPower = GetPlayerAttackingPower();
                     var opponentPower = GetOpponentAttackingPower();
@@ -331,7 +331,7 @@ public class DemoAIPlayer : DemoPlayer
         foreach (var creature in playerInfo.namedZones["Board"].cards)
         {
             if (creature.namedStats["HP"].effectiveValue > 0 &&
-                (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")))
+                (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL))
             {
                 power += creature.namedStats["DMG"].effectiveValue;
             }
@@ -388,7 +388,7 @@ public class DemoAIPlayer : DemoPlayer
         var eligibleCreatures = opponentBoard.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)
         {
-            var provokeCreatures = eligibleCreatures.FindAll(x => x.HasKeyword("Provoke"));
+            var provokeCreatures = eligibleCreatures.FindAll(x => x.type == Enumerators.CardType.HEAVY);
             if (provokeCreatures != null && provokeCreatures.Count >= 1)
             {
                 return provokeCreatures[Random.Range(0, provokeCreatures.Count)];
@@ -418,7 +418,7 @@ public class DemoAIPlayer : DemoPlayer
         var eligibleCreatures = opponentBoard.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)
         {
-            var provokeCreatures = eligibleCreatures.FindAll(x => x.HasKeyword("Provoke"));
+            var provokeCreatures = eligibleCreatures.FindAll(x => x.type == Enumerators.CardType.HEAVY);
             return (provokeCreatures != null && provokeCreatures.Count >= 1);
         }
         return false;

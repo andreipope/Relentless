@@ -192,6 +192,11 @@ namespace GrandDevs.CZB
             DeactivateSelectTarget();
         }
 
+        public virtual void Action()
+        {
+
+        }
+
         protected virtual void OnEndTurnEventHandler()
         {
             if (_targettingArrow != null)

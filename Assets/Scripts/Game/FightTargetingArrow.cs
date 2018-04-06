@@ -34,7 +34,7 @@ public class FightTargetingArrow : TargetingArrow
             (targetType == EffectTarget.OpponentCard && creature.tag == "OpponentOwned"))
         {
             var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-            if (!opponentHasProvoke || (opponentHasProvoke && creature.card.HasKeyword("Provoke")))
+            if (!opponentHasProvoke || (opponentHasProvoke && creature.card.type == GrandDevs.CZB.Common.Enumerators.CardType.HEAVY))
             {
                 selectedCard = creature;
                 selectedPlayer = null;
@@ -84,7 +84,7 @@ public class FightTargetingArrow : TargetingArrow
 
     protected bool OpponentBoardContainsProvokingCreatures()
     {
-        var provokeCards = opponentBoardZone.cards.FindAll(x => x.HasKeyword("Provoke"));
+        var provokeCards = opponentBoardZone.cards.FindAll(x => x.type == GrandDevs.CZB.Common.Enumerators.CardType.HEAVY);
         return provokeCards.Count > 0;
     }
 }

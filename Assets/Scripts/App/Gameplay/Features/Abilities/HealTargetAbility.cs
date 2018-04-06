@@ -33,22 +33,28 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                switch(affectObjectType)
-                {
-                    case Enumerators.AffectObjectType.PLAYER:
-                        if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                            cardCaller.HealPlayerBySkill(value, false);
-                        else
-                            cardCaller.HealPlayerBySkill(value);
-                        CreateVFX(targetPlayer.transform.position);
-                        break;
-                        break;
-                    case Enumerators.AffectObjectType.CHARACTER:
-                        cardCaller.HealCreatureBySkill(value, targetCreature.card);
-                        CreateVFX(targetCreature.transform.position);
-                        break;
-                    default: break;
-                }
+                Action();
+            }
+        }
+        public override void Action()
+        {
+            base.Action();
+
+            switch (affectObjectType)
+            {
+                case Enumerators.AffectObjectType.PLAYER:
+                    if (targetPlayer.playerInfo.netId == cardCaller.netId)
+                        cardCaller.HealPlayerBySkill(value, false);
+                    else
+                        cardCaller.HealPlayerBySkill(value);
+                    CreateVFX(targetPlayer.transform.position);
+                    break;
+                    break;
+                case Enumerators.AffectObjectType.CHARACTER:
+                    cardCaller.HealCreatureBySkill(value, targetCreature.card);
+                    CreateVFX(targetCreature.transform.position);
+                    break;
+                default: break;
             }
         }
     }

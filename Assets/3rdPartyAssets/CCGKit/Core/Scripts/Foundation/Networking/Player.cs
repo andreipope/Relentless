@@ -198,11 +198,13 @@ namespace CCGKit
                 }
                 else
                 {
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(1);
 
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(9);
                     /*
 
                     msgDefaultDeck.Add(1);
@@ -392,12 +394,7 @@ namespace CCGKit
                                     runtimeCard.stats[stat.statId].modifiers.Add(modifier);
                                 }
                             }
-                            runtimeCard.keywords.Clear();
-                            foreach (var keyword in card.keywords)
-                            {
-                                runtimeCard.AddKeyword(keyword.keywordId, keyword.valueId);
-                            }
-
+                            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
                             runtimeCard.connectedAbilities.Clear();
                             foreach (var abilityId in card.connectedAbilities)
                             {
@@ -407,38 +404,23 @@ namespace CCGKit
                         else
                         {
                             runtimeCard = CreateRuntimeCard();
-
-#if DEBUG_MODE
-                            runtimeCard.cardId = 0;
-#else
                             runtimeCard.cardId = card.cardId;
-#endif
-
                             runtimeCard.instanceId = card.instanceId;
                             runtimeCard.ownerPlayer = player.Value;
                             foreach (var stat in card.stats)
                             {
                                 var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
                                 runtimeCard.stats[stat.statId] = runtimeStat;
-#if DEBUG_MODE
 
-								var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(0);
-#else
 								var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-#endif
 
                                 var statName = "DMG";
                                 if (stat.statId == 1)
                                     statName = "HP";
                                 runtimeCard.namedStats[statName] = runtimeStat;
                             }
-                            foreach (var keyword in card.keywords)
-                            {
-                                runtimeCard.AddKeyword(keyword.keywordId, keyword.valueId);
-                            }
+                            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
 
-                            //runtimeCard.abilities = AbilitiesController.AbilityUintArrayTypeToList(card.abilities);
- 
                             foreach (var abilityId in card.connectedAbilities)
                             {
                                 runtimeCard.ConnectAbility(abilityId);
@@ -449,7 +431,6 @@ namespace CCGKit
                             effectSolver.SetTriggers(runtimeCard);
                         }
                     }
-
                     player.Value.zones[zone.zoneId].numCards = zone.numCards;
                 }
             }

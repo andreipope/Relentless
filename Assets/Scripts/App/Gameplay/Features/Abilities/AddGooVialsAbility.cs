@@ -12,7 +12,7 @@ namespace GrandDevs.CZB
     public class AddGooVialsAbility : AbilityBase
     {
         public int value = 1;
-        
+
         public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             this.value = ability.value;
@@ -23,8 +23,7 @@ namespace GrandDevs.CZB
             base.Activate();
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
-
-            cardCaller.manaStat.baseValue += value;
+            Action();
         }
 
         public override void Update()
@@ -43,8 +42,15 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-               
+
             }
+        }
+
+        public override void Action()
+        {
+            base.Action();
+
+            cardCaller.manaStat.baseValue += value;
         }
     }
 }

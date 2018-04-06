@@ -40,6 +40,8 @@ namespace CCGKit
         /// </summary>
         public List<RuntimeKeyword> keywords = new List<RuntimeKeyword>();
 
+        public Enumerators.CardType type;
+
         /// <summary>
         /// The keywords of this card.
         /// </summary>

@@ -9,16 +9,15 @@ using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
-    public class ModificateStatAbility : AbilityBase
+    public class ChangeStatAbility : AbilityBase
     {
         public Enumerators.SetType setType;
         public Enumerators.StatType statType;
         public int value = 1;
 
 
-        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            this.setType = ability.abilitySetType;
             this.statType = ability.abilityStatType;
             this.value = ability.value;
         }
@@ -46,27 +45,33 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                Action();
             }
         }
+
         public override void Action()
         {
             base.Action();
-
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
                     var targetCardInfo = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCreature.card.cardId);
+                    Debug.Log("!");
 
-                    if (targetCardInfo.cardSetType == setType || setType == Enumerators.SetType.NONE)
+                    if (statType == Enumerators.StatType.DAMAGE)
                     {
-                        if (statType == Enumerators.StatType.DAMAGE)
-                            targetCreature.attackStat.AddModifier(new Modifier(value));
-                        else if (statType == Enumerators.StatType.HEALTH)
-                            targetCreature.healthStat.AddModifier(new Modifier(value));
+                        Debug.Log("!!");
 
-                        CreateVFX(targetCreature.transform.position);
+                        targetCreature.attackStat.baseValue += value;
+                        if (targetCreature.attackStat.baseValue < 0)
+                            targetCreature.attackStat.baseValue = 0;
                     }
+                    else if (statType == Enumerators.StatType.HEALTH)
+                    {
+                        targetCreature.healthStat.baseValue += value;
+                        if (targetCreature.healthStat.baseValue < 0)
+                            targetCreature.healthStat.baseValue = 0;
+                    }
+                    CreateVFX(targetCreature.transform.position);
                     break;
                 default: break;
             }

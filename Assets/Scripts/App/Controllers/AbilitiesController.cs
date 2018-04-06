@@ -99,12 +99,14 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.MODIFICATOR_STATIC_DAMAGE:
-                case Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS:
+                case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.MASSIVE_DAMAGE:
                     ability = new MassiveDamageAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT:
+                    ability = new ChangeStatAbility(cardKind, abilityData);
                     break;
                 default:
                     break;
@@ -197,22 +199,35 @@ namespace GrandDevs.CZB
 
             var attackedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacked.cardId);
             var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
-            Debug.Log(attackedCard);
 
             var abilities = attackerCard.abilities.FindAll(x =>
-            x.abilityType == Enumerators.AbilityType.MODIFICATOR_STAT_VERSUS);
-            Debug.Log(abilities);
-            Debug.Log(abilities.Count);
+            x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
             for (int i = 0; i < abilities.Count; i++)
             {
-                Debug.Log(attackedCard.cardSetType + "_" + abilities[i].abilitySetType);
-
                 if (attackedCard.cardSetType == abilities[i].abilitySetType)
                     value += abilities[i].value;
             }
-                Debug.Log("value - " + value);
             return value;
+        }
+
+        public void UpdateAttackAbilities(RuntimeCard attacker)
+        {
+            Debug.Log("@");
+
+            var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
+
+            var abilities = _activeAbilities.FindAll(x => x.ability.abilityCallType == Enumerators.AbilityCallType.AT_ATTACK);
+            foreach(var ability in abilities)
+            {
+                if(ability.ability.boardCreature.card == attacker)
+                {
+                    Debug.Log("@@");
+
+                    if(ability.ability.abilityType == Enumerators.AbilityType.CHANGE_STAT)
+                        (ability.ability as ChangeStatAbility).Action();
+                }
+            }
         }
 
         public static uint[] AbilityTypeToUintArray(List<Enumerators.AbilityType> abilities)

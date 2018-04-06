@@ -20,7 +20,26 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
+            Action();
             //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            
+
+               // foreach (var card in cardCaller.boardZone.cards)
+                 //   cardCaller.FightCreatureBySkill(value, card);
+        }
+
+        public override void Update() { }
+
+        public override void Dispose() { }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+        }
+        public override void Action()
+        {
+            base.Action();
+
             foreach (var target in abilityTargetTypes)
             {
                 switch (target)
@@ -47,18 +66,6 @@ namespace GrandDevs.CZB
                     default: break;
                 }
             }
-
-               // foreach (var card in cardCaller.boardZone.cards)
-                 //   cardCaller.FightCreatureBySkill(value, card);
-        }
-
-        public override void Update() { }
-
-        public override void Dispose() { }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }
