@@ -308,7 +308,7 @@ public class BoardCreature : MonoBehaviour
                 {
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
-						abilitiesController.UpdateAttackAbilities(card);
+						abilitiesController.UpdateAttackAbilities(card, targetCard.card);
                         ownerPlayer.FightCreature(card, targetCard.card);
                     },
                     () =>

@@ -211,7 +211,7 @@ namespace GrandDevs.CZB
             return value;
         }
 
-        public void UpdateAttackAbilities(RuntimeCard attacker)
+        public void UpdateAttackAbilities(RuntimeCard attacker, RuntimeCard attacked = null)
         {
             Debug.Log("@");
 
@@ -225,8 +225,7 @@ namespace GrandDevs.CZB
                     Debug.Log("@@");
 					Debug.Log(ability.ability.abilityType);
 
-					if(ability.ability.abilityType == Enumerators.AbilityType.CHANGE_STAT)
-                        (ability.ability as ChangeStatAbility).Action();
+                    ability.ability.Action(attacked);
                 }
             }
         }

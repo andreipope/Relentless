@@ -192,7 +192,7 @@ namespace GrandDevs.CZB
             DeactivateSelectTarget();
         }
 
-        public virtual void Action()
+        public virtual void Action(RuntimeCard attacked = null)
         {
 
         }

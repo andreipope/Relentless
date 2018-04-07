@@ -14,6 +14,7 @@ namespace GrandDevs.CZB
         public Enumerators.SetType setType;
         public Enumerators.StatType statType;
         public int value = 1;
+        private Server _server;
 
 
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
@@ -48,27 +49,36 @@ namespace GrandDevs.CZB
             }
         }
 
-        public override void Action()
+        public override void Action(RuntimeCard attacked = null)
         {
-            base.Action();
-            Debug.Log("BAM");
-            Debug.Log("!");
-            //cardCaller.FightCreatureBySkill(1, boardCreature.card);
-            return;
-            if (statType == Enumerators.StatType.DAMAGE)
-            {
-                boardCreature.card.namedStats["HP"].baseValue += value;
-                //boardCreature.attackStat.baseValue += value;
-                if (boardCreature.attackStat.baseValue < 0)
-                    boardCreature.attackStat.baseValue = 0;
-            }
-            else if (statType == Enumerators.StatType.HEALTH)
-            {
-                boardCreature.healthStat.baseValue += value;
-                if (boardCreature.healthStat.baseValue < 0)
-                    boardCreature.healthStat.baseValue = 0;
-            }
+            base.Action(attacked);
+
+            string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
+
+            GetServer();
+
+            var newValue = boardCreature.card.namedStats[statName].baseValue + value;
+            if (newValue < 0)
+                newValue = 0;
+
+            var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
+
+            boardCreature.card.namedStats[statName].baseValue = newValue;              
+            netCard.namedStats[statName].baseValue = newValue;
+
             CreateVFX(boardCreature.transform.position);
+        }
+
+        private void GetServer()
+        {
+            if (_server == null)
+            {
+                var server = GameObject.Find("Server");
+                if (server != null)
+                {
+                    _server = server.GetComponent<Server>();
+                }
+            }
         }
     }
 }

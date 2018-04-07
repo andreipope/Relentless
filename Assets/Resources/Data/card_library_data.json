@@ -12,7 +12,7 @@
           "picture": "Pyromaz",
           "damage": 1,
           "health": 1,
-          "type": 2,
+          "type": 0,
           "rarity": 0,
           "abilities": [
             {
@@ -222,13 +222,22 @@
           "id": 11,
           "cardTypeId": 0,
           "name": "Mountain",
-          "cost": 8,
+          "cost": 10,
           "description": "<b>Heavy:</b> must kill to attack others",
           "picture": "Mountain",
           "damage": 8,
           "health": 8,
           "type": 2,
-          "rarity": 3
+          "rarity": 3,
+		  "abilities": [
+            {
+              "type": "DAMAGE_TARGET_ADJUSTMENTS",
+              "activityType": "passive",
+              "callType": "AT_ATTACK",
+              "targetType": "none",
+              "value": 4,
+            }
+          ]
         }
       ]
     },
@@ -406,11 +415,11 @@
           "id": 21,
           "cardTypeId": 0,
           "name": "Ghoul",
-          "cost": 3,
+          "cost": 2,
           "description": "Poison target DOT 2 for 2 turns",
           "picture": "Ghoul",
           "damage": 3,
-          "health": 3,
+          "health": 2,
           "type": 0,
           "rarity": 1,
 		  "abilities": [

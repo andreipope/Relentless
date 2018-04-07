@@ -46,9 +46,9 @@ namespace GrandDevs.CZB
             }
         }
 
-        public override void Action()
+        public override void Action(RuntimeCard attacked = null)
         {
-            base.Action();
+            base.Action(attacked);
 
             cardCaller.manaStat.baseValue += value;
         }

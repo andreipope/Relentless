@@ -135,11 +135,6 @@ namespace CCGKit
             {
                 var abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
 
-                abilitiesController.UpdateAttackAbilities(attackingCreature);
-
-				UnityEngine.Debug.Log("FightCreature");
-
-
 				int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
                 int additionalDamageAttacked = abilitiesController.GetStatModificatorByAbility(attackedCreature, attackingCreature);
 
@@ -150,7 +145,7 @@ namespace CCGKit
 
         public void FightCreatureBySkill(NetworkInstanceId attackingPlayerNetId, RuntimeCard attackedCreature, int attack)
         {
-            var attackedPlayer = gameState.players.Find(x => x.netId != attackingPlayerNetId);
+            var attackedPlayer = gameState.players.Find(x => x.netId == attackingPlayerNetId);
             if (attackedPlayer != null)
             {
                 attackedCreature.namedStats[Constants.TAG_HP].baseValue -= attack;

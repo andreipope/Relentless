@@ -135,9 +135,13 @@ public class CombatHandler : ServerHandler
             creatureAttackedMsg.attackedCardInstanceId = msg.attackedCardInstanceId;
             server.SafeSendToClient(server.gameState.currentOpponent, NetworkProtocol.CreatureAttacked, creatureAttackedMsg);
                             */
+
             var attackedCard = server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
+            if( attackedCard == null)
+                attackedCard = server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
             if (attackedCard != null)
             {
+                UnityEngine.Debug.Log("ATTACK");
                 server.effectSolver.FightCreatureBySkill(msg.attackingPlayerNetId, attackedCard, msg.attack);
             }
         }

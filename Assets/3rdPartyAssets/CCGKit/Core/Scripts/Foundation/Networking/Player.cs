@@ -198,12 +198,22 @@ namespace CCGKit
                 }
                 else
                 {
+                    //msgDefaultDeck.Add(0);
+                    //msgDefaultDeck.Add(1);
+                    //msgDefaultDeck.Add(0);
+                    //msgDefaultDeck.Add(1);
+                    //msgDefaultDeck.Add(0);
+                    //msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(2);
                     msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(2);
                     msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(2);
+                    msgDefaultDeck.Add(2);
 
                     /*
 
@@ -383,7 +393,6 @@ namespace CCGKit
                         {
                             foreach (var stat in card.stats)
                             {
-                                Debug.Log(runtimeCard.stats[stat.statId].baseValue + "_" + stat.baseValue);
                                 runtimeCard.stats[stat.statId].originalValue = stat.originalValue;
                                 runtimeCard.stats[stat.statId].baseValue = stat.baseValue;
                                 runtimeCard.stats[stat.statId].minValue = stat.minValue;
@@ -649,7 +658,7 @@ namespace CCGKit
             msg.attackingPlayerNetId = netId;
             msg.attackingCardInstanceId = attackingCard.instanceId;
             msg.attackedCardInstanceId = attackedCard.instanceId;
-            //client.Send(NetworkProtocol.FightCreature, msg);
+            client.Send(NetworkProtocol.FightCreature, msg);
         }
 		public void FightCreatureBySkill(int attack, RuntimeCard attackedCard)
 		{
@@ -659,6 +668,7 @@ namespace CCGKit
             msg.attackingPlayerNetId = netId;
             msg.attackedCardInstanceId = attackedCard.instanceId;
             msg.attack = attack;
+
             client.Send(NetworkProtocol.FightCreatureBySkill, msg);
         }
 
