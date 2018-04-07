@@ -200,7 +200,7 @@ public class BoardCreature : MonoBehaviour
         }
         else
         {
-            text.color = Color.white;
+            text.color = Color.black;
         }
         var sequence = DOTween.Sequence();
         sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
@@ -278,6 +278,8 @@ public class BoardCreature : MonoBehaviour
         var sortingGroup = GetComponent<SortingGroup>();
         if (fightTargetingArrow != null)
         {
+			var abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+			
             if (fightTargetingArrow.selectedPlayer != null)
             {
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
@@ -286,6 +288,7 @@ public class BoardCreature : MonoBehaviour
                 sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
+					abilitiesController.UpdateAttackAbilities(card);
                     ownerPlayer.FightPlayer(card.instanceId);
                 },
                 () =>
@@ -305,6 +308,7 @@ public class BoardCreature : MonoBehaviour
                 {
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
+						abilitiesController.UpdateAttackAbilities(card);
                         ownerPlayer.FightCreature(card, targetCard.card);
                     },
                     () =>

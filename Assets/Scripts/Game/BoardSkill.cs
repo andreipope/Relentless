@@ -106,7 +106,7 @@ public class BoardSkill : MonoBehaviour
             if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
             {
                 fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
-                fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
+                fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
                 fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
                 fightTargetingArrow.Begin(transform.position);
             }

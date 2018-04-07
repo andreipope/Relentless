@@ -223,8 +223,9 @@ namespace GrandDevs.CZB
                 if(ability.ability.boardCreature.card == attacker)
                 {
                     Debug.Log("@@");
+					Debug.Log(ability.ability.abilityType);
 
-                    if(ability.ability.abilityType == Enumerators.AbilityType.CHANGE_STAT)
+					if(ability.ability.abilityType == Enumerators.AbilityType.CHANGE_STAT)
                         (ability.ability as ChangeStatAbility).Action();
                 }
             }

@@ -383,6 +383,7 @@ namespace CCGKit
                         {
                             foreach (var stat in card.stats)
                             {
+                                Debug.Log(runtimeCard.stats[stat.statId].baseValue + "_" + stat.baseValue);
                                 runtimeCard.stats[stat.statId].originalValue = stat.originalValue;
                                 runtimeCard.stats[stat.statId].baseValue = stat.baseValue;
                                 runtimeCard.stats[stat.statId].minValue = stat.minValue;
@@ -648,7 +649,7 @@ namespace CCGKit
             msg.attackingPlayerNetId = netId;
             msg.attackingCardInstanceId = attackingCard.instanceId;
             msg.attackedCardInstanceId = attackedCard.instanceId;
-            client.Send(NetworkProtocol.FightCreature, msg);
+            //client.Send(NetworkProtocol.FightCreature, msg);
         }
 		public void FightCreatureBySkill(int attack, RuntimeCard attackedCard)
 		{

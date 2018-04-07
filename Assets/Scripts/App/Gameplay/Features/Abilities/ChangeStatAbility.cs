@@ -51,30 +51,24 @@ namespace GrandDevs.CZB
         public override void Action()
         {
             base.Action();
-            switch (affectObjectType)
+            Debug.Log("BAM");
+            Debug.Log("!");
+            //cardCaller.FightCreatureBySkill(1, boardCreature.card);
+            return;
+            if (statType == Enumerators.StatType.DAMAGE)
             {
-                case Enumerators.AffectObjectType.CHARACTER:
-                    var targetCardInfo = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCreature.card.cardId);
-                    Debug.Log("!");
-
-                    if (statType == Enumerators.StatType.DAMAGE)
-                    {
-                        Debug.Log("!!");
-
-                        targetCreature.attackStat.baseValue += value;
-                        if (targetCreature.attackStat.baseValue < 0)
-                            targetCreature.attackStat.baseValue = 0;
-                    }
-                    else if (statType == Enumerators.StatType.HEALTH)
-                    {
-                        targetCreature.healthStat.baseValue += value;
-                        if (targetCreature.healthStat.baseValue < 0)
-                            targetCreature.healthStat.baseValue = 0;
-                    }
-                    CreateVFX(targetCreature.transform.position);
-                    break;
-                default: break;
+                boardCreature.card.namedStats["HP"].baseValue += value;
+                //boardCreature.attackStat.baseValue += value;
+                if (boardCreature.attackStat.baseValue < 0)
+                    boardCreature.attackStat.baseValue = 0;
             }
+            else if (statType == Enumerators.StatType.HEALTH)
+            {
+                boardCreature.healthStat.baseValue += value;
+                if (boardCreature.healthStat.baseValue < 0)
+                    boardCreature.healthStat.baseValue = 0;
+            }
+            CreateVFX(boardCreature.transform.position);
         }
     }
 }

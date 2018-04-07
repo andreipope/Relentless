@@ -96,9 +96,6 @@ namespace CCGKit
                 var card = board.cards.Find(x => x.instanceId == attackingCardInstanceId);
                 if (card != null)
                 {
-                    var abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
-                    abilitiesController.UpdateAttackAbilities(card);
-
                     attackedPlayer.namedStats["Life"].baseValue -= card.namedStats["DMG"].effectiveValue;
                 }
             }
@@ -140,7 +137,10 @@ namespace CCGKit
 
                 abilitiesController.UpdateAttackAbilities(attackingCreature);
 
-                int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
+				UnityEngine.Debug.Log("FightCreature");
+
+
+				int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
                 int additionalDamageAttacked = abilitiesController.GetStatModificatorByAbility(attackedCreature, attackingCreature);
 
                 attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacker;
