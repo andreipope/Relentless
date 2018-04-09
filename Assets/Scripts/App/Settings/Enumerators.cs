@@ -178,7 +178,7 @@
 
         public enum AbilityCallType
         {
-            EACH_TURN,
+            TURN_START,
             AT_START,
             AT_END,
             PERMANENT,

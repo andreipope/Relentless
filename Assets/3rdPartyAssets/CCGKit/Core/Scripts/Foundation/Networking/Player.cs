@@ -36,7 +36,7 @@ namespace CCGKit
         protected NetworkClient client;
 
         protected GameState gameState = new GameState();
-        protected PlayerInfo playerInfo = new PlayerInfo();
+        public PlayerInfo playerInfo = new PlayerInfo();
         protected PlayerInfo opponentInfo = new PlayerInfo();
 
         /// <summary>
@@ -195,9 +195,11 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                            msgDefaultDeck.Add(card.cardId);
+                            //msgDefaultDeck.Add(card.cardId);
                         }
                     }
+                    msgDefaultDeck.Add(19);
+                    msgDefaultDeck.Add(19);
                 }
                 else
                 {

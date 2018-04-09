@@ -71,6 +71,11 @@ public class DemoHumanPlayer : DemoPlayer
         get { return opponentBoardCards; }
     }
 
+    public List<BoardCreature> playerBoardCardsList
+    {
+        get { return playerBoardCards; }
+    }
+
     public Stat lifeStat { get; protected set; }
     public Stat manaStat { get; protected set; }
 

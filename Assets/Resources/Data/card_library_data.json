@@ -402,13 +402,22 @@
           "id": 19,
           "cardTypeId": 0,
           "name": "Shammann",
-          "cost": 8,
+          "cost": 1,
           "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
           "picture": "Shammann",
           "damage": 5,
           "health": 6,
           "type": 0,
-          "rarity": 3
+          "rarity": 3,
+		  "abilities": [
+            {
+              "type": "SUMMON",
+              "activityType": "passive",
+              "callType": "TURN_START",
+              "targetType": "NONE",
+              "value": 33
+            }
+          ]
         }
       ]
     },
@@ -648,6 +657,18 @@
           "health": 5,
           "type": 2,
           "rarity": 1
+        },
+		{
+          "id": 33,
+          "cardTypeId": 0,
+          "name": "Zombie",
+          "cost": 1,
+          "description": "",
+          "picture": "Pyromaz",
+          "damage": 1,
+          "health": 1,
+          "type": 0,
+          "rarity": 0,
         },
       ]
     }

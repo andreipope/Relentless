@@ -114,6 +114,9 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
                     ability = new StunOrDamageAdjustmentsAbility(cardKind, abilityData);
 					break;
+                case Enumerators.AbilityType.SUMMON:
+                    ability = new SummonsAbility(cardKind, abilityData);
+                    break;
                 default:
                     break;
             }
