@@ -42,6 +42,9 @@ public class BoardCreature : MonoBehaviour
     protected SpriteRenderer pictureSprite;
 
     [SerializeField]
+    protected SpriteRenderer frozenSprite;
+
+    [SerializeField]
     protected TextMeshPro nameText;
 
     [SerializeField]
@@ -52,6 +55,8 @@ public class BoardCreature : MonoBehaviour
 
     [SerializeField]
     protected ParticleSystem sleepingParticles;
+
+   
 
     [HideInInspector]
     public DemoHumanPlayer ownerPlayer;
@@ -88,10 +93,9 @@ public class BoardCreature : MonoBehaviour
             var netCard = GameClient.Get<IPlayerManager>().playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
             if(netCard == null)
                 netCard = GameClient.Get<IPlayerManager>().opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
-
-			netCard.isPlayable = value;
-
-		}
+            if(netCard != null)
+                netCard.isPlayable = value;
+        }
         get{
             return card.isPlayable;
         }
@@ -172,34 +176,30 @@ public class BoardCreature : MonoBehaviour
         {
             StopSleepingParticles();
             if (ownerPlayer != null)
-            {
                 SetHighlightingEnabled(true);
-                card.isPlayable = true;
-
-			}
+            IsPlayable = true;
         }
     }
 
     public void OnStartTurn()
     {
         numTurnsOnBoard += 1;
+        StopSleepingParticles();
 
-		if (_stunTurns == 0)
-        {
-            StopSleepingParticles();
-			IsPlayable = true;
-
-
-			if (ownerPlayer != null)
-                SetHighlightingEnabled(true);
-
-		}
-        else
-            _stunTurns--;
+        if (ownerPlayer != null && IsPlayable)
+            SetHighlightingEnabled(true);
     }
 
     public void OnEndTurn()
     {
+        if(_stunTurns > 0)
+            _stunTurns--;
+        if (_stunTurns == 0)
+        {
+            IsPlayable = true;
+            frozenSprite.DOFade(0, 1);
+        }
+
         CancelTargetingArrows();
     }
 
@@ -209,9 +209,9 @@ public class BoardCreature : MonoBehaviour
             _stunTurns = turns;
         IsPlayable = false;
 
-		sleepingParticles.Play();
-
-	}
+        frozenSprite.DOFade(1, 1);
+        //sleepingParticles.Play();
+    }
 
     public void CancelTargetingArrows()
     {
@@ -291,7 +291,7 @@ public class BoardCreature : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (ownerPlayer != null && ownerPlayer.isActivePlayer && card.isPlayable)
+        if (ownerPlayer != null && ownerPlayer.isActivePlayer && IsPlayable)
         {
             fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
             fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;

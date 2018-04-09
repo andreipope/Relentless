@@ -38,19 +38,5 @@
         }
       ]
     },
-	{
-      "heroId": 1,
-      "name": "Deck2",
-      "cards": [
-		{
-          "cardId": 6,
-          "amount": 4
-        },
-		{
-          "cardId": 6,
-          "amount": 4
-        },
-      ]
-    },
   ]
 }

@@ -190,7 +190,7 @@ public class DemoAIPlayer : DemoPlayer
         {
             foreach (var creature in boardCreatures)
             {
-				if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
+                if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                     (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
 					var playerPower = GetPlayerAttackingPower();

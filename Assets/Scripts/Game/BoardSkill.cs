@@ -100,7 +100,7 @@ public class BoardSkill : MonoBehaviour
 			return;
         if (_used)
             return;
-        if(_skillType == Enumerators.SkillType.FIREBALL)
+        if(_skillType != Enumerators.SkillType.HEAL)
         if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
         {
             if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
@@ -115,26 +115,21 @@ public class BoardSkill : MonoBehaviour
 
     private void OnMouseUp()
     {
+        if (_used)
+            return;
         if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
         {
-            
-            if (_skillType == Enumerators.SkillType.FIREBALL)
+            if (_skillType == Enumerators.SkillType.HEAL)
+            {
+                if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
+                    DoSkillAction(null);
+            }
+            else
             {
                 if (fightTargetingArrow != null)
                 {
                     ResolveCombat();
                     ownerPlayer.isCardSelected = false;
-                }
-            }
-            else
-            {
-                if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
-                {
-                    ownerPlayer.manaStat.baseValue -= _manaCost;
-                    CreateHealVFX(transform.position - Vector3.right*2.3f);
-
-                    ownerPlayer.HealPlayerBySkill(2);
-                    _used = true;
                 }
             }
         }
@@ -147,12 +142,10 @@ public class BoardSkill : MonoBehaviour
         {
             if (fightTargetingArrow.selectedPlayer != null)
             {
-                ownerPlayer.manaStat.baseValue -= _manaCost;
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
-                ownerPlayer.FightPlayerBySkill(_skillPower);
-                CreateFireAttackVFX(targetPlayer.transform.position);
+                DoSkillAction(targetPlayer);
+                
                 GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                _used = true;
             }
 
             else if (fightTargetingArrow.selectedCard != null)
@@ -161,9 +154,7 @@ public class BoardSkill : MonoBehaviour
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
-					ownerPlayer.manaStat.baseValue -= _manaCost;
 					DoSkillAction(targetCard);
-                    _used = true;
                 }
             }
             CancelTargetingArrows();
@@ -173,7 +164,8 @@ public class BoardSkill : MonoBehaviour
 
     private void DoSkillAction(object target)
     {
-        switch(_skillType)
+        ownerPlayer.manaStat.baseValue -= _manaCost;
+        switch (_skillType)
         {
             case Enumerators.SkillType.FREEZE:
                 FreezeAction(target);
@@ -190,29 +182,68 @@ public class BoardSkill : MonoBehaviour
             case Enumerators.SkillType.CARD_RETURN:
 				CardReturnAction(target);
                 break;
+            case Enumerators.SkillType.HEAL:
+                HealAction();
+                break;
             default:
                 break;
         }
+        _used = true;
     }
 
     private void FreezeAction(object target)
     {
-        Debug.Log("FREEZE HIM"); 
+        Debug.Log("FREEZE HIM");
+        if (target is BoardCreature)
+        {
+            var creature = target as BoardCreature;
+
+
+            for (int i = 0; i < ownerPlayer.opponentBoardCardsList.Count; i++)
+            {
+                if (ownerPlayer.opponentBoardCardsList[i] == creature)
+                {
+                    creature = ownerPlayer.opponentBoardCardsList[i];
+                    break;
+                }
+            }
+
+            creature.Stun(_skillPower);
+            CreateFireAttackVFX(creature.transform.position);
+        }
+        //TODO for heroes
     }
 	private void ToxicDamageAction(object target)
 	{
 		Debug.Log("POISON HIM");
-	}
+        AttackWithModifiers(target, Enumerators.SetType.LIFE);
+    }
 	private void FireDamageAction(object target)
 	{
 		Debug.Log("BURN HIM");
-		ownerPlayer.FightCreatureBySkill(2, target.card);
-		CreateFireAttackVFX(target.transform.position);
+        AttackWithModifiers(target, Enumerators.SetType.TOXIC);
 	}
 	private void HealAnyAction(object target)
 	{
-		Debug.Log("HEAL HIM");
-	}
+		Debug.Log("HEAL ANY");
+        if (target is PlayerAvatar)
+        {
+            var player = target as PlayerAvatar;
+            if (player.playerInfo.netId == ownerPlayer.netId)
+                ownerPlayer.HealPlayerBySkill(_skillPower, false);
+            else
+                ownerPlayer.HealPlayerBySkill(_skillPower);
+            //TODO ????? QuestionPopup about when we damage ourselves
+
+            CreateFireAttackVFX(player.transform.position);
+        }
+        else
+        {
+            var cruature = target as BoardCreature;
+            ownerPlayer.HealCreatureBySkill(_skillPower, cruature.card);
+            CreateFireAttackVFX(cruature.transform.position);
+        }
+    }
 	private void CardReturnAction(object target)
 	{
 		Debug.Log("RETURN CARD");
@@ -222,10 +253,36 @@ public class BoardSkill : MonoBehaviour
 	private void HealAction()
 	{
 		Debug.Log("HEAL HIM");
-	}
+        CreateHealVFX(transform.position - Vector3.right * 2.3f);
+        ownerPlayer.HealPlayerBySkill(_skillPower, false, false);
+    }
 	
 
+    private void AttackWithModifiers(object target, Enumerators.SetType setType)
+    {
+        if (target is PlayerAvatar)
+        {
+            var player = target as PlayerAvatar;
+            //TODO additional damage to heros
+            if (player.playerInfo.netId == ownerPlayer.netId)
+                ownerPlayer.FightPlayerBySkill(_skillPower, false);
+            else
+                ownerPlayer.FightPlayerBySkill(_skillPower);
 
+
+            CreateFireAttackVFX(player.transform.position);
+        }
+        else
+        {
+            var cruature = target as BoardCreature;
+            var attackModifier = 0;
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(cruature.card.cardId);
+            if (libraryCard.cardSetType == setType)
+                attackModifier = 1;
+            ownerPlayer.FightCreatureBySkill(_skillPower + attackModifier, cruature.card);
+            CreateFireAttackVFX(cruature.transform.position);
+        }
+    }
 
     private void CreateFireAttackVFX(Vector3 pos)
     {

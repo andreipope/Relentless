@@ -601,8 +601,13 @@ public class DemoHumanPlayer : DemoPlayer
                 RearrangeHand();
             }
         }
-
-        gameUI.StopCountdown();
+        else
+        {
+            foreach (var card in opponentBoardCards)
+            {
+                card.OnEndTurn();
+            }
+        }
 
         if(isHuman)
             OnEndTurnEvent?.Invoke();

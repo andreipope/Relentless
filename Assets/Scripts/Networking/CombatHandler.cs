@@ -154,7 +154,7 @@ public class CombatHandler : ServerHandler
             if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
                 return;
 
-            server.effectSolver.HealPlayerBySkill(msg.callerPlayerNetId, msg.value, msg.isOpponent);
+            server.effectSolver.HealPlayerBySkill(msg.callerPlayerNetId, msg.value, msg.isOpponent, msg.isLimited);
         }
     }
 

@@ -104,20 +104,32 @@ namespace GrandDevs.CZB
             int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
             int opponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
 
+
+
+            var _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
+            _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
+            _skillsIcons.Add(Enumerators.SkillType.HEAL, "Images/hero_power_02");
+            _skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, "Images/hero_power_03");
+            _skillsIcons.Add(Enumerators.SkillType.FREEZE, "Images/hero_power_04");
+            _skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, "Images/hero_power_05");
+            _skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, "Images/hero_power_06");
+
+
+
             Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
           
             if (currentPlayerHero != null)
             {
                 gameUI.SetPlayerName(currentPlayerHero.name);
-				_playerSkill = new PlayerSkillItem(GameObject.Find("Player/Spell"), currentPlayerHero.skill);
+				_playerSkill = new PlayerSkillItem(GameObject.Find("Player/Spell"), currentPlayerHero.skill, _skillsIcons[currentPlayerHero.skill.skillType]);
                 GameObject.Find("Player/Avatar/Icon").GetComponent<SpriteRenderer>().sprite = 
                     GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Avatar_" + currentPlayerHero.element.ToString());
             }
             if (currentOpponentHero != null)
             {
                 gameUI.SetOpponentName(currentOpponentHero.name);
-                _opponentSkill = new PlayerSkillItem(GameObject.Find("Opponent/Spell"), currentOpponentHero.skill);
+                _opponentSkill = new PlayerSkillItem(GameObject.Find("Opponent/Spell"), currentOpponentHero.skill, _skillsIcons[currentOpponentHero.skill.skillType]);
 				GameObject.Find("Opponent/Avatar/Icon").GetComponent<SpriteRenderer>().sprite =
 					GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Avatar_" + currentOpponentHero.element.ToString());
             }
@@ -176,26 +188,13 @@ namespace GrandDevs.CZB
 
         private ILoadObjectsManager _loader;
 
-        public PlayerSkillItem(GameObject gameObject, HeroSkill skill)
+        public PlayerSkillItem(GameObject gameObject, HeroSkill skill, string iconPath)
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
             selfObject = gameObject;
            // this.skill = skill;
             icon = selfObject.transform.Find("SpellIcon/Icon").GetComponent<SpriteRenderer>();
             costText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
-
-            string iconPath = "";
-
-            switch (skill.skillType)
-            {
-                case Enumerators.SkillType.FIREBALL:
-                    iconPath = "Images/hero_power_01";
-                    break;
-                case Enumerators.SkillType.HEAL:
-                default:
-                    iconPath = "Images/hero_power_02";
-                    break;
-            }
 
             Sprite sp = _loader.GetObjectByPath<Sprite>(iconPath);
             if (sp != null)

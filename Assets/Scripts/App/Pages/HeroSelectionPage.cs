@@ -55,8 +55,12 @@ namespace GrandDevs.CZB
             _heroesContainer = _selfPage.transform.Find("HeroesContainer");
 
             _skillsIcons = new Dictionary<Enumerators.SkillType, Sprite>();
-			_skillsIcons.Add(Enumerators.SkillType.FIREBALL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_01"));
+			_skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_01"));
 			_skillsIcons.Add(Enumerators.SkillType.HEAL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_02"));
+			_skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_03"));
+			_skillsIcons.Add(Enumerators.SkillType.FREEZE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_04"));
+			_skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_05"));
+			_skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_06"));
 
             _heroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
             _heroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_AIR"));

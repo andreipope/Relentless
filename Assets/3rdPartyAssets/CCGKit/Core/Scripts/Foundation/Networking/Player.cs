@@ -201,21 +201,6 @@ namespace CCGKit
                 }
                 else
                 {
-                    //msgDefaultDeck.Add(0);
-                    //msgDefaultDeck.Add(1);
-                    //msgDefaultDeck.Add(0);
-                    //msgDefaultDeck.Add(1);
-                    //msgDefaultDeck.Add(0);
-                    //msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(2);
-                    msgDefaultDeck.Add(2);
-                    msgDefaultDeck.Add(6);
-                    msgDefaultDeck.Add(6);
-                    msgDefaultDeck.Add(2);
-                    msgDefaultDeck.Add(2);
-
-                    /*
-
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
@@ -246,8 +231,6 @@ namespace CCGKit
                     msgDefaultDeck.Add(11);
                     msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(0);
-                    */
-
                 }
             }
 
@@ -637,14 +620,15 @@ namespace CCGKit
 		}
 
 
-        public void HealPlayerBySkill(int value, bool isOpponent = true)
+        public void HealPlayerBySkill(int value, bool isOpponent = true, bool isLimited = true)
         {
-            effectSolver.HealPlayerBySkill(netId, value, isOpponent);
+            effectSolver.HealPlayerBySkill(netId, value, isOpponent, isLimited);
 
             var msg = new HealPlayerBySkillMessage();
             msg.callerPlayerNetId = netId;
             msg.value = value;
             msg.isOpponent = isOpponent;
+            msg.isLimited = isLimited;
             client.Send(NetworkProtocol.HealPlayerBySkill, msg);
         }
 

@@ -107,7 +107,7 @@ namespace CCGKit
             attackedPlayer.namedStats[Constants.TAG_LIFE].baseValue -= value;
         }
 
-        public void HealPlayerBySkill(NetworkInstanceId callerPlayerNetId, int value, bool isOpponent)
+        public void HealPlayerBySkill(NetworkInstanceId callerPlayerNetId, int value, bool isOpponent, bool isLimited = true)
         {
             var choosedPlayer = gameState.players.Find(x => (isOpponent && x.netId != callerPlayerNetId) || (!isOpponent && x.netId == callerPlayerNetId));
 
@@ -117,7 +117,7 @@ namespace CCGKit
 
             choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue += value;
 
-            if (choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue > maxHPPlayer)
+            if (choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue > maxHPPlayer && isLimited)
                 choosedPlayer.namedStats[Constants.TAG_LIFE].baseValue = maxHPPlayer;
         }
 

@@ -126,6 +126,7 @@ namespace CCGKit
         public NetworkInstanceId callerPlayerNetId;
         public int value;
         public bool isOpponent;
+        public bool isLimited;
     }
 
     public class HealCreatureBySkillMessage : MessageBase
