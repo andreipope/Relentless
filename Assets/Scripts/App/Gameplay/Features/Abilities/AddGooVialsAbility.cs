@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,9 +46,9 @@ namespace GrandDevs.CZB
             }
         }
 
-        public override void Action(RuntimeCard attacked = null)
+        public override void Action(object info = null)
         {
-            base.Action(attacked);
+            base.Action(info);
 
             cardCaller.manaStat.baseValue += value;
         }

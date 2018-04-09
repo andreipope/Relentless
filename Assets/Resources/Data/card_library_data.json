@@ -42,7 +42,7 @@
           "id": 2,
           "cardTypeId": 0,
           "name": "Cynderman",
-          "cost": 5,
+          "cost": 1,
           "description": "DOT 2 dmg for 2 turns",
           "picture": "Cynderman",
           "damage": 4,
@@ -71,7 +71,7 @@
           "health": 6,
           "type": 2,
           "rarity": 3,
-		  "abilities": [
+		      "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
@@ -98,6 +98,15 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
+          "abilities": [
+            {
+              "type": "STUN",
+              "activityType": "passive",
+              "callType": "AT_ATTACK",
+              "targetType": "opponent_card|opponent",
+              "value": 1
+            }
+          ]
         },
         {
           "id": 5,
@@ -129,10 +138,19 @@
           "cost": 4,
           "description": "Freeze target for 1 turn",
           "picture": "Freezzee",
-          "damage": 4,
+          "damage": 1,
           "health": 4,
           "type": 0,
           "rarity": 2,
+          "abilities": [
+            {
+              "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
+              "activityType": "passive",
+              "callType": "AT_ATTACK",
+              "targetType": "opponent_card|opponent",
+              "value": 1
+            }
+          ]
         },
         {
           "id": 7,
@@ -145,18 +163,18 @@
           "health": 7,
           "type": 0,
           "rarity": 3,
-		  "abilities": [
-            {
-              "type": "MASSIVE_DAMAGE",
-              "activityType": "PASSIVE",
-              "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS",
-              "affectObjectType": "none",
-              "value": 2,
-            }
-          ]
-        }
-      ]
+				  "abilities": [
+		            {
+		              "type": "MASSIVE_DAMAGE",
+		              "activityType": "PASSIVE",
+		              "callType": "at_start",
+		              "targetType": "OPPONENT_ALL_CARDS",
+		              "affectObjectType": "none",
+		              "value": 2,
+		            }
+		          ]
+		        }
+		      ]
     },
     {
       "name": "Earth",
@@ -363,13 +381,22 @@
           "id": 18,
           "cardTypeId": 0,
           "name": "Vindrom",
-          "cost": 2,
+          "cost": 6,
           "description": "Entangles target disable for the rest of turn",
           "picture": "Vindrom",
           "damage": 5,
           "health": 5,
           "type": 0,
           "rarity": 2,
+          "abilities": [
+            {
+              "type": "STUN",
+              "activityType": "passive",
+              "callType": "AT_ATTACK",
+              "targetType": "opponent_card|opponent",
+              "value": 1
+            }
+          ]
         },
         {
           "id": 19,
@@ -399,15 +426,15 @@
           "health": 1,
           "type": 0,
           "rarity": 0,
-		  "abilities": [
+          "abilities": [
             {
               "type": "MODIFICATOR_STATS",
               "activityType": "passive",
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-			  "setType": "life",
-			  "value": 1,
+              "setType": "life",
+              "value": 1,
             }
           ]
         },
@@ -422,14 +449,14 @@
           "health": 2,
           "type": 0,
           "rarity": 1,
-		  "abilities": [
+          "abilities": [
             {
               "type": "CHANGE_STAT",
               "activityType": "passive",
               "callType": "AT_ATTACK",
               "targetType": "none",
               "statType": "damage",
-			  "value": -1,
+              "value": -1,
             }
           ]
         },
@@ -458,13 +485,23 @@
           "id": 23,
           "cardTypeId": 0,
           "name": "Cherno-bill",
-          "cost": 10,
+          "cost": 7,
           "description": "<b>Heavy:</b> must kill to attack others. does to all enemy 2 dmg",
           "picture": "Cherno-bill",
           "damage": 8,
           "health": 8,
           "type": 2,
-          "rarity": 3
+          "rarity": 3,
+          "abilities": [
+            {
+              "type": "MASSIVE_DAMAGE",
+              "activityType": "PASSIVE",
+              "callType": "at_death",
+              "targetType": "player|PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS|opponent",
+              "affectObjectType": "none",
+              "value": 2,
+            }
+          ]
         }
       ]
     },
@@ -482,15 +519,15 @@
           "health": 0,
           "type": 0,
           "rarity": 0,
-		  "abilities": [ 
-			  {
-				"type": "heal",
-				"activityType": "active",
-				"callType": "at_start",
-				"targetType": "player_card|opponent_card|player|opponent",
-				"value": 4,
-			  }
-		  ]
+				  "abilities": [ 
+					  {
+						"type": "heal",
+						"activityType": "active",
+						"callType": "at_start",
+						"targetType": "player_card|opponent_card|player|opponent",
+						"value": 4,
+					  }
+				  ]
         },
         {
           "id": 25,

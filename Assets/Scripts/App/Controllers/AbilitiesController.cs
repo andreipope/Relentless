@@ -108,6 +108,12 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.STUN:
+                    ability = new StunAbility(cardKind, abilityData);
+					break;
+                case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
+                    ability = new StunOrDamageAdjustmentsAbility(cardKind, abilityData);
+					break;
                 default:
                     break;
             }
@@ -144,6 +150,9 @@ namespace GrandDevs.CZB
 
         public bool IsAbilityCanActivateWithoutTargetAtStart(AbilityData ability)
         {
+			Debug.Log(HasTargets(ability));
+			Debug.Log(IsAbilityCallsAtStart(ability));
+			Debug.Log(IsAbilityActive(ability));
             if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && !IsAbilityActive(ability))
                 return true;
             return false;
@@ -209,25 +218,6 @@ namespace GrandDevs.CZB
                     value += abilities[i].value;
             }
             return value;
-        }
-
-        public void UpdateAttackAbilities(RuntimeCard attacker, RuntimeCard attacked = null)
-        {
-            Debug.Log("@");
-
-            var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
-
-            var abilities = _activeAbilities.FindAll(x => x.ability.abilityCallType == Enumerators.AbilityCallType.AT_ATTACK);
-            foreach(var ability in abilities)
-            {
-                if(ability.ability.boardCreature.card == attacker)
-                {
-                    Debug.Log("@@");
-					Debug.Log(ability.ability.abilityType);
-
-                    ability.ability.Action(attacked);
-                }
-            }
         }
 
         public static uint[] AbilityTypeToUintArray(List<Enumerators.AbilityType> abilities)

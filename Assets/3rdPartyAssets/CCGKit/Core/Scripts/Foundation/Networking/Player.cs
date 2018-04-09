@@ -58,6 +58,8 @@ namespace CCGKit
 
         public int CurrentTurn;
 
+        private AbilitiesController abilitiesController;
+
 
         public EffectSolver EffectSolver
         {
@@ -82,6 +84,7 @@ namespace CCGKit
 
             GameClient.Get<IPlayerManager>().playerInfo = playerInfo;
             GameClient.Get<IPlayerManager>().opponentInfo = opponentInfo;
+            abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
         }
 
         public override void OnStartLocalPlayer()
@@ -204,14 +207,10 @@ namespace CCGKit
                     //msgDefaultDeck.Add(1);
                     //msgDefaultDeck.Add(0);
                     //msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(2);
-                    msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(2);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(6);
+                    msgDefaultDeck.Add(6);
                     msgDefaultDeck.Add(2);
                     msgDefaultDeck.Add(2);
 
@@ -614,14 +613,14 @@ namespace CCGKit
             client.Send(NetworkProtocol.MoveCard, msg);
         }
 
-        public void FightPlayer(int cardInstanceId)
+        public void FightPlayer(RuntimeCard attackingCard)
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
-            effectSolver.FightPlayer(netId, cardInstanceId);
-            Debug.Log("FightPlayer");
+            effectSolver.FightPlayer(netId, attackingCard.instanceId);
+
             var msg = new FightPlayerMessage();
             msg.attackingPlayerNetId = netId;
-            msg.cardInstanceId = cardInstanceId;
+            msg.cardInstanceId = attackingCard.instanceId;
             client.Send(NetworkProtocol.FightPlayer, msg);
         }
 
@@ -654,7 +653,7 @@ namespace CCGKit
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             effectSolver.FightCreature(netId, attackingCard, attackedCard);
 
-            var msg = new FightCreatureMessage();
+			var msg = new FightCreatureMessage();
             msg.attackingPlayerNetId = netId;
             msg.attackingCardInstanceId = attackingCard.instanceId;
             msg.attackedCardInstanceId = attackedCard.instanceId;

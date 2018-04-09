@@ -39,9 +39,9 @@ namespace GrandDevs.CZB
                 CreateVFX(targetCreature.transform.position);
             }
         }
-        public override void Action(RuntimeCard attacked = null)
+        public override void Action(object info = null)
         {
-            base.Action(attacked);
+            base.Action(info);
 
 
             RuntimeCard leftAdjustment = null,
@@ -50,7 +50,7 @@ namespace GrandDevs.CZB
             int targetIndex = -1;
             for (int i = 0; i < cardCaller.opponentBoardZone.cards.Count; i++)
             {
-                if (cardCaller.opponentBoardZone.cards[i] == attacked)
+                if (cardCaller.opponentBoardZone.cards[i] == info as RuntimeCard)
                     targetIndex = i;
             }
             if (targetIndex > -1)

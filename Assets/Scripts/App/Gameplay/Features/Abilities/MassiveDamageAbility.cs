@@ -19,13 +19,10 @@ namespace GrandDevs.CZB
         public override void Activate()
         {
             base.Activate();
-
+            if (abilityCallType != Enumerators.AbilityCallType.AT_START)
+				return;
             Action();
             //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
-            
-
-               // foreach (var card in cardCaller.boardZone.cards)
-                 //   cardCaller.FightCreatureBySkill(value, card);
         }
 
         public override void Update() { }
@@ -36,36 +33,61 @@ namespace GrandDevs.CZB
         {
             base.OnInputEndEventHandler();
         }
-        public override void Action(RuntimeCard attacked = null)
-        {
-            base.Action(attacked);
 
-            foreach (var target in abilityTargetTypes)
-            {
-                switch (target)
-                {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        BoardCreature[] cards = new BoardCreature[cardCaller.opponentBoardCardsList.Count];
-                        cardCaller.opponentBoardCardsList.CopyTo(cards);
-                        foreach (var cardOpponent in cards)
-                        {
-                            cardCaller.FightCreatureBySkill(value, cardOpponent.card);
-                            CreateVFX(cardOpponent.transform.position);
-                        }
-                        Array.Clear(cards, 0, cards.Length);
-                        cards = null;
-                        break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        cardCaller.FightPlayerBySkill(value);
-                        //CreateVFX(targetCreature.transform.position);
-                        break;
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        //cardCaller.FightPlayerBySkill(value, false);
-                        //CreateVFX(targetCreature.transform.position);
-                        break;
-                    default: break;
-                }
-            }
+        protected override void CreatureOnDieEventHandler()
+        {
+            base.CreatureOnDieEventHandler();
+			if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
+				return;
+            Debug.Log("CreatureOnDieEventHandler");
+            Action();
+        }
+
+        private void Action()
+        {
+
+			foreach (var target in abilityTargetTypes)
+			{
+				Debug.Log("target - " + target);
+				switch (target)
+				{
+					case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+						BoardCreature[] creatures = new BoardCreature[cardCaller.opponentBoardCardsList.Count];
+						cardCaller.opponentBoardCardsList.CopyTo(creatures);
+						foreach (var cardOpponent in creatures)
+						{
+							cardCaller.FightCreatureBySkill(value, cardOpponent.card);
+							CreateVFX(cardOpponent.transform.position);
+						}
+						Array.Clear(creatures, 0, creatures.Length);
+						creatures = null;
+						break;
+                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+						RuntimeCard[] cards = new RuntimeCard[cardCaller.boardZone.cards.Count];
+						cardCaller.boardZone.cards.CopyTo(cards);
+						foreach (var cardPlayer in cards)
+						{
+							cardCaller.FightCreatureBySkill(value, cardPlayer);
+							//CreateVFX(cardPlayer.transform.position);
+						}
+						Array.Clear(cards, 0, cards.Length);
+						cards = null;
+
+						// foreach (var card in cardCaller.boardZone.cards)
+						//   cardCaller.FightCreatureBySkill(value, card);
+
+						break;
+					case Enumerators.AbilityTargetType.OPPONENT:
+						cardCaller.FightPlayerBySkill(value);
+						//CreateVFX(targetCreature.transform.position);
+						break;
+					case Enumerators.AbilityTargetType.PLAYER:
+						cardCaller.FightPlayerBySkill(value, false);
+						//CreateVFX(targetCreature.transform.position);
+						break;
+					default: break;
+				}
+			}
         }
     }
 }

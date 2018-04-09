@@ -131,8 +131,6 @@ public class BoardSkill : MonoBehaviour
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
                 {
                     ownerPlayer.manaStat.baseValue -= _manaCost;
-					//var lifeBuff = new Modifier(_skillPower);
-                    //ownerPlayer.lifeStat.modifiers.Add(lifeBuff);
                     CreateHealVFX(transform.position - Vector3.right*2.3f);
 
                     ownerPlayer.HealPlayerBySkill(2);
@@ -149,7 +147,6 @@ public class BoardSkill : MonoBehaviour
         {
             if (fightTargetingArrow.selectedPlayer != null)
             {
-                Debug.Log(_manaCost);
                 ownerPlayer.manaStat.baseValue -= _manaCost;
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
                 ownerPlayer.FightPlayerBySkill(_skillPower);
@@ -164,9 +161,8 @@ public class BoardSkill : MonoBehaviour
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
-                    ownerPlayer.manaStat.baseValue -= _manaCost;
-                    ownerPlayer.FightCreatureBySkill(2, targetCard.card);
-                    CreateFireAttackVFX(targetCard.transform.position);
+					ownerPlayer.manaStat.baseValue -= _manaCost;
+					DoSkillAction(targetCard);
                     _used = true;
                 }
             }
@@ -174,6 +170,62 @@ public class BoardSkill : MonoBehaviour
             fightTargetingArrow = null;
         }       
     }
+
+    private void DoSkillAction(object target)
+    {
+        switch(_skillType)
+        {
+            case Enumerators.SkillType.FREEZE:
+                FreezeAction(target);
+                break;
+            case Enumerators.SkillType.TOXIC_DAMAGE:
+				ToxicDamageAction(target);
+                break;
+            case Enumerators.SkillType.FIRE_DAMAGE:
+				FireDamageAction(target);
+                break;
+            case Enumerators.SkillType.HEAL_ANY:
+				HealAnyAction(target);
+                break;
+            case Enumerators.SkillType.CARD_RETURN:
+				CardReturnAction(target);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void FreezeAction(object target)
+    {
+        Debug.Log("FREEZE HIM"); 
+    }
+	private void ToxicDamageAction(object target)
+	{
+		Debug.Log("POISON HIM");
+	}
+	private void FireDamageAction(object target)
+	{
+		Debug.Log("BURN HIM");
+		ownerPlayer.FightCreatureBySkill(2, target.card);
+		CreateFireAttackVFX(target.transform.position);
+	}
+	private void HealAnyAction(object target)
+	{
+		Debug.Log("HEAL HIM");
+	}
+	private void CardReturnAction(object target)
+	{
+		Debug.Log("RETURN CARD");
+	}
+
+
+	private void HealAction()
+	{
+		Debug.Log("HEAL HIM");
+	}
+	
+
+
 
     private void CreateFireAttackVFX(Vector3 pos)
     {

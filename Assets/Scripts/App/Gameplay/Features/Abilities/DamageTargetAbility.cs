@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using CCGKit;
@@ -36,9 +36,9 @@ namespace GrandDevs.CZB
                 Action();
             }
         }
-        public override void Action(RuntimeCard attacked = null)
+        public override void Action(object info = null)
         {
-            base.Action(attacked);
+            base.Action(info);
 
             switch (affectObjectType)
             {

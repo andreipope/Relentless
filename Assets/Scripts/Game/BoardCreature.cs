@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2017 David Pol. All rights reserved.
+﻿// Copyright (C) 2016-2017 David Pol. All rights reserved.
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
@@ -64,9 +64,6 @@ public class BoardCreature : MonoBehaviour
     public Stat healthStat { get; protected set; }
 
     [HideInInspector]
-    public bool isPlayable;
-
-    [HideInInspector]
     public bool hasImpetus;
     [HideInInspector]
     public bool hasProvoke;
@@ -76,7 +73,34 @@ public class BoardCreature : MonoBehaviour
 
     protected Action<int, int> onAttackStatChangedDelegate;
     protected Action<int, int> onHealthStatChangedDelegate;
-    public event Action CreatureOnDieEvent;
+	public event Action CreatureOnDieEvent;
+	public event Action<object> CreatureOnAttackEvent;
+
+    private int _stunTurns = 0;
+
+    private Server _server;
+
+    public bool IsPlayable
+    {
+        set{
+            card.isPlayable = value;
+
+            var netCard = GameClient.Get<IPlayerManager>().playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
+            if(netCard == null)
+                netCard = GameClient.Get<IPlayerManager>().opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
+
+			netCard.isPlayable = value;
+
+		}
+        get{
+            return card.isPlayable;
+        }
+    }
+
+    public bool IsStun
+    {
+        get{ return (_stunTurns > 0 ? true : false); }
+    }
 
     protected virtual void Awake()
     {
@@ -96,7 +120,6 @@ public class BoardCreature : MonoBehaviour
     {
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
-
         CreatureOnDieEvent?.Invoke();
     }
 
@@ -121,15 +144,12 @@ public class BoardCreature : MonoBehaviour
 
         onAttackStatChangedDelegate = (oldValue, newValue) =>
         {
-            Debug.Log("onAttackStatChangedDelegate");
             UpdateStatText(attackText, attackStat);
         };
         attackStat.onValueChanged += onAttackStatChangedDelegate;
 
         onHealthStatChangedDelegate = (oldValue, newValue) =>
         {
-			Debug.Log("onHealthStatChangedDelegate");
-
 			UpdateStatText(healthText, healthStat);
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;
@@ -154,26 +174,44 @@ public class BoardCreature : MonoBehaviour
             if (ownerPlayer != null)
             {
                 SetHighlightingEnabled(true);
-                isPlayable = true;
-            }
+                card.isPlayable = true;
+
+			}
         }
     }
 
     public void OnStartTurn()
     {
         numTurnsOnBoard += 1;
-        StopSleepingParticles();
-        if (ownerPlayer != null)
+
+		if (_stunTurns == 0)
         {
-            SetHighlightingEnabled(true);
-            isPlayable = true;
-        }
+            StopSleepingParticles();
+			IsPlayable = true;
+
+
+			if (ownerPlayer != null)
+                SetHighlightingEnabled(true);
+
+		}
+        else
+            _stunTurns--;
     }
 
     public void OnEndTurn()
     {
         CancelTargetingArrows();
     }
+
+	public void Stun(int turns)
+	{
+        if(turns > _stunTurns)
+            _stunTurns = turns;
+        IsPlayable = false;
+
+		sleepingParticles.Play();
+
+	}
 
     public void CancelTargetingArrows()
     {
@@ -253,7 +291,7 @@ public class BoardCreature : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (ownerPlayer != null && ownerPlayer.isActivePlayer && isPlayable)
+        if (ownerPlayer != null && ownerPlayer.isActivePlayer && card.isPlayable)
         {
             fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
             fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
@@ -277,19 +315,18 @@ public class BoardCreature : MonoBehaviour
     {
         var sortingGroup = GetComponent<SortingGroup>();
         if (fightTargetingArrow != null)
-        {
-			var abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
-			
+        {	
             if (fightTargetingArrow.selectedPlayer != null)
             {
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
                 SetHighlightingEnabled(false);
-                isPlayable = false;
-                sortingGroup.sortingOrder = 100;
+                IsPlayable = false;
+
+				sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
-					abilitiesController.UpdateAttackAbilities(card);
-                    ownerPlayer.FightPlayer(card.instanceId);
+                    CreatureOnAttackEvent?.Invoke(targetPlayer);
+                    ownerPlayer.FightPlayer(card);
                 },
                 () =>
                 {
@@ -301,14 +338,15 @@ public class BoardCreature : MonoBehaviour
             {
                 var targetCard = fightTargetingArrow.selectedCard;
                 SetHighlightingEnabled(false);
-                isPlayable = false;
-                sortingGroup.sortingOrder = 100;
+                IsPlayable = false;
+
+				sortingGroup.sortingOrder = 100;
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
-						abilitiesController.UpdateAttackAbilities(card, targetCard.card);
+                        CreatureOnAttackEvent?.Invoke(targetCard);
                         ownerPlayer.FightCreature(card, targetCard.card);
                     },
                     () =>

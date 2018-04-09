@@ -208,7 +208,7 @@ public class DemoHumanPlayer : DemoPlayer
                 playerGraveyardCards.Add(boardCard);
                 playerBoardCards.Remove(boardCard);
                 boardCard.transform.DOKill();
-                //boardCard.transform.DOMove(graveyardPos, 0.7f);
+                boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
                 RearrangeBottomBoard();
@@ -924,11 +924,9 @@ public class DemoHumanPlayer : DemoPlayer
 
             if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
                 canUseAbility = true;
-            else if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
+            else //if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
                 activeAbility.ability.Activate();
         }
-        Debug.Log("activeAbility - " + activeAbility);
-        Debug.Log("canUseAbility - " + canUseAbility);
         // Preemptively move the card so that the effect solver can properly check the availability of targets
         // by also taking into account this card (that is trying to be played).
 
@@ -941,26 +939,17 @@ public class DemoHumanPlayer : DemoPlayer
             currentCreature.fightTargetingArrowPrefab = fightTargetingArrowPrefab;
         }
         effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-        Debug.Log("effectSolver.MoveCard Passed");
         if (canUseAbility)
         {
             var ability = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
-            Debug.Log("type - " + ability);
-            Debug.Log("_abilitiesController.CheckActivateAvailability - " + _abilitiesController.CheckActivateAvailability(kind, ability, this));
 
             if (_abilitiesController.CheckActivateAvailability(kind, ability, this))
             {
-                Debug.Log("CheckActivateAvailability");
-                Debug.Log("activeAbility.ability.Activate - " + activeAbility.ability);
                 activeAbility.ability.Activate();
-                Debug.Log("Activate");
 
                 activeAbility.ability.ActivateSelectTarget(callback: () =>
                 {
-                    Debug.Log("ActivateSelectTarget");
-
                     action(card);
-                    Debug.Log("DO action");
 
                 },
                 failedCallback: () =>
@@ -978,8 +967,6 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallCardPlay(CardView card)
     {
-        Debug.Log("CallCardPlay");
-
         PlayCreatureCard(card.card);
         currentCreature = null;
         gameUI.endTurnButton.SetEnabled(true);
@@ -987,7 +974,6 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallSpellCardPlay(CardView card)
     {
-        Debug.Log("CallSpellCardPlay");
         PlaySpellCard(card.card);
         currentSpellCard = null;
         gameUI.endTurnButton.SetEnabled(true);

@@ -66,7 +66,7 @@ namespace GrandDevs.CZB
             {
                 if (targetCreature != null)
                 {
-                    targetCreature.isPlayable = false;
+                    targetCreature.card.isPlayable = false;
                     targetCreature.SetHighlightingEnabled(false);
                 }
                 else
@@ -80,15 +80,15 @@ namespace GrandDevs.CZB
                 }
             }
         }
-        public override void Action(RuntimeCard attacked = null)
+        public override void Action(object info = null)
         {
-            base.Action(attacked);
+            base.Action(info);
 
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
 
-                    targetCreature.isPlayable = false;
+                    targetCreature.card.isPlayable = false;
                     targetCreature.SetHighlightingEnabled(false);
 
                     CreateVFX(targetCreature.transform.position);

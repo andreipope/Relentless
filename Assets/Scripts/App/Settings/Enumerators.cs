@@ -103,8 +103,12 @@
 
         public enum SkillType
         {
-            FIREBALL,
-            HEAL
+            FREEZE,
+            TOXIC_DAMAGE,
+            FIRE_DAMAGE,
+            HEAL_ANY,
+            HEAL,
+            CARD_RETURN
         }
 
         public enum SkillTargetType
@@ -154,7 +158,8 @@
             HEAL,
             MODIFICATOR_STATS,
             CHANGE_STAT,
-            STUN,
+			STUN,
+			STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
             DOT,
@@ -177,7 +182,8 @@
             AT_START,
             AT_END,
             PERMANENT,
-            AT_ATTACK
+            AT_ATTACK,
+            AT_DEATH,
         }
 
         public enum StatType

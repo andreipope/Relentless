@@ -141,7 +141,6 @@ public class CombatHandler : ServerHandler
                 attackedCard = server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
             if (attackedCard != null)
             {
-                UnityEngine.Debug.Log("ATTACK");
                 server.effectSolver.FightCreatureBySkill(msg.attackingPlayerNetId, attackedCard, msg.attack);
             }
         }

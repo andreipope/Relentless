@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +9,14 @@ using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
-    public class ChangeStatAbility : AbilityBase
+    public class StunAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
         public Enumerators.StatType statType;
         public int value = 1;
         private Server _server;
 
 
-        public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public StunAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             this.statType = ability.abilityStatType;
             this.value = ability.value;
@@ -43,9 +42,6 @@ namespace GrandDevs.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-            if (_isAbilityResolved)
-            {
-            }
         }
 
         protected override void CreatureOnAttackEventHandler(object info)
@@ -53,33 +49,12 @@ namespace GrandDevs.CZB
             base.CreatureOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
-            
-			string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
-
-			GetServer();
-
-			var newValue = boardCreature.card.namedStats[statName].baseValue + value;
-			if (newValue < 0)
-				newValue = 0;
-
-			var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
-
-			boardCreature.card.namedStats[statName].baseValue = newValue;
-			netCard.namedStats[statName].baseValue = newValue;
-
-			//CreateVFX(boardCreature.transform.position);
-        }
-
-        private void GetServer()
-        {
-            if (_server == null)
+            if(info is BoardCreature)
             {
-                var server = GameObject.Find("Server");
-                if (server != null)
-                {
-                    _server = server.GetComponent<Server>();
-                }
-            }
+                var creature = info as BoardCreature;
+                creature.Stun(value);
+				CreateVFX(creature.transform.position);
+			}
         }
     }
 }

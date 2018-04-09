@@ -43,16 +43,12 @@
       "name": "Deck2",
       "cards": [
 		{
-          "cardId": 0,
-          "amount": 2
+          "cardId": 6,
+          "amount": 4
         },
 		{
-          "cardId": 11,
-          "amount": 2
-        },
-		{
-          "cardId": 11,
-          "amount": 2
+          "cardId": 6,
+          "amount": 4
         },
       ]
     },

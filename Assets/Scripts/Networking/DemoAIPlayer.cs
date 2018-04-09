@@ -151,7 +151,7 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
                     var attackedCreature = GetTargetOpponentCreature();
                     if (attackedCreature != null)
@@ -179,9 +179,9 @@ public class DemoAIPlayer : DemoPlayer
             foreach (var creature in boardCreatures)
             {
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
-                    FightPlayer(creature.instanceId);
+					FightPlayer(creature);
                     yield return new WaitForSeconds(2.0f);
                 }
             }
@@ -190,14 +190,14 @@ public class DemoAIPlayer : DemoPlayer
         {
             foreach (var creature in boardCreatures)
             {
-                if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && !creature.HasConnectedAbility(Enumerators.AbilityType.STUN))
+				if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
+                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
-                    var playerPower = GetPlayerAttackingPower();
+					var playerPower = GetPlayerAttackingPower();
                     var opponentPower = GetOpponentAttackingPower();
                     if (playerPower > opponentPower)
                     {
-                        FightPlayer(creature.instanceId);
+                        FightPlayer(creature);
                         yield return new WaitForSeconds(2.0f);
                     }
                     else
@@ -210,7 +210,7 @@ public class DemoAIPlayer : DemoPlayer
                         }
                         else
                         {
-                            FightPlayer(creature.instanceId);
+                            FightPlayer(creature);
                             yield return new WaitForSeconds(2.0f);
                         }
                     }

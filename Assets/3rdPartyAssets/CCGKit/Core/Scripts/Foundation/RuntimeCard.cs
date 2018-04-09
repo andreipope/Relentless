@@ -52,6 +52,8 @@ namespace CCGKit
         /// </summary>
         public PlayerInfo ownerPlayer;
 
+        public bool isPlayable;
+
         /// <summary>
         /// The type of this card.
         /// </summary>

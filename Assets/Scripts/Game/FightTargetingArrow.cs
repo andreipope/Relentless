@@ -84,10 +84,6 @@ public class FightTargetingArrow : TargetingArrow
 
     protected bool OpponentBoardContainsProvokingCreatures()
     {
-		UnityEngine.Debug.Log(opponentBoardZone.cards.Count);
-        foreach(var item in opponentBoardZone.cards)
-            UnityEngine.Debug.Log(item.type);          
-		UnityEngine.Debug.Log(opponentBoardZone.cards.Count);
         var provokeCards = opponentBoardZone.cards.FindAll(x => x.type == GrandDevs.CZB.Common.Enumerators.CardType.HEAVY);
         return provokeCards.Count > 0;
     }

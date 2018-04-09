@@ -108,9 +108,10 @@ namespace GrandDevs.CZB
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-                boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
+				boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
+                boardCreature.CreatureOnAttackEvent += CreatureOnAttackEventHandler;
 
-                if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
                     boardCreature.card.ConnectAbility((uint)abilityType);
                 }
@@ -192,7 +193,7 @@ namespace GrandDevs.CZB
             DeactivateSelectTarget();
         }
 
-        public virtual void Action(RuntimeCard attacked = null)
+        public virtual void Action(object info = null)
         {
 
         }
@@ -208,7 +209,7 @@ namespace GrandDevs.CZB
          
         }
 
-        protected void CreatureOnDieEventHandler()
+        protected virtual void CreatureOnDieEventHandler()
         {
             if(targetCreature != null)
                 targetCreature.card.DisconnectAbility((uint)abilityType);
@@ -216,6 +217,11 @@ namespace GrandDevs.CZB
             boardCreature.CreatureOnDieEvent -= CreatureOnDieEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
         }
+
+		protected virtual void CreatureOnAttackEventHandler(object info)
+		{
+			
+		}
 
         protected void SpellOnUsedEventHandler()
         {
