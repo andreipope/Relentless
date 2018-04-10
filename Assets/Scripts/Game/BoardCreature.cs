@@ -154,6 +154,8 @@ public class BoardCreature : MonoBehaviour
 
         onHealthStatChangedDelegate = (oldValue, newValue) =>
         {
+            Debug.Log("UpdateStatText - " + card.instanceId);
+
 			UpdateStatText(healthText, healthStat);
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;

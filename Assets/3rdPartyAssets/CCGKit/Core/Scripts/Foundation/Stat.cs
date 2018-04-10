@@ -85,6 +85,10 @@ namespace CCGKit
             {
                 var oldValue = _baseValue;
                 _baseValue = value;
+                //Debug.Log("_baseValue change - ");
+                //Debug.Log("onValueChanged - " + onValueChanged);
+                ////Debug.Log("oldValue - " + oldValue);
+                //Debug.Log("_baseValue - " + _baseValue);
                 if (onValueChanged != null && oldValue != _baseValue)
                 {
                     onValueChanged(oldValue, value);

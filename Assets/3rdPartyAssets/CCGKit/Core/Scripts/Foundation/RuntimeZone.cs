@@ -103,8 +103,11 @@ namespace CCGKit
         /// <param name="card">The card to remove.</param>
         public void RemoveCard(RuntimeCard card)
         {
+            //UnityEngine.Debug.Log("RemoveCard - " + card.instanceId);
+
             if (cards.Contains(card))
             {
+                //UnityEngine.Debug.Log("cards.Remove(card)");
                 cards.Remove(card);
                 _numCards -= 1;
                 if (onZoneChanged != null)
@@ -113,6 +116,7 @@ namespace CCGKit
                 }
                 if (onCardRemoved != null)
                 {
+                    //UnityEngine.Debug.Log("REMOVE - " + card.instanceId);
                     onCardRemoved(card);
                 }
             }

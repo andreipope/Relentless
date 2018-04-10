@@ -33,16 +33,31 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                Action(targetCreature.card);
 
-                cardCaller.FightCreatureBySkill(value, targetCreature.card);
-                CreateVFX(targetCreature.transform.position);
+                switch (affectObjectType)
+                {
+                    case Enumerators.AffectObjectType.PLAYER:
+                        if (targetPlayer.playerInfo.netId == cardCaller.netId)
+                            cardCaller.FightPlayerBySkill(value, false);
+                        else
+                            cardCaller.FightPlayerBySkill(value);
+                        CreateVFX(targetPlayer.transform.position);
+                        break;
+                    case Enumerators.AffectObjectType.CHARACTER:
+                        Action(targetCreature.card);
+
+                        cardCaller.FightCreatureBySkill(value, targetCreature.card);
+                        CreateVFX(targetCreature.transform.position);
+                        break;
+                    default: break;
+                }
+
+                
             }
         }
         public override void Action(object info = null)
         {
             base.Action(info);
-
 
             RuntimeCard leftAdjustment = null,
                         rightAdjastment = null;

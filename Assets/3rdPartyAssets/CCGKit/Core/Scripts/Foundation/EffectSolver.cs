@@ -138,8 +138,17 @@ namespace CCGKit
 				int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
                 int additionalDamageAttacked = abilitiesController.GetStatModificatorByAbility(attackedCreature, attackingCreature);
 
+                UnityEngine.Debug.Log(attackedCreature.instanceId);
+                UnityEngine.Debug.Log(attackingCreature.instanceId);
+
+
+                UnityEngine.Debug.Log("Before = " + attackedCreature.namedStats["HP"].baseValue);
+                UnityEngine.Debug.Log("Before = " + attackingCreature.namedStats["HP"].baseValue);
+
                 attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacker;
                 attackingCreature.namedStats["HP"].baseValue -= attackedCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacked;
+                UnityEngine.Debug.Log(attackedCreature.namedStats["HP"].baseValue);
+                UnityEngine.Debug.Log(attackingCreature.namedStats["HP"].baseValue);
             }
         }
 
@@ -178,7 +187,10 @@ namespace CCGKit
         /// <param name="targetInfo">The optional target information.</param>
         public void MoveCard(NetworkInstanceId playerNetId, RuntimeCard card, string originZone, string destinationZone, List<int> targetInfo = null)
         {
+            //UnityEngine.Debug.Log("MoveCard !!!" + card.cardId + "_" + card.instanceId);
             var player = gameState.players.Find(x => x.netId == playerNetId);
+            //UnityEngine.Debug.Log("player - " + player);
+
             if (player != null)
             {
                 player.namedZones[originZone].RemoveCard(card);
@@ -294,6 +306,7 @@ namespace CCGKit
         /// <param name="card">The card to set.</param>
         public void SetDestroyConditions(RuntimeCard card)
         {
+            //UnityEngine.Debug.Log("SetDestroyConditions - " + card.instanceId);
             var cardType = card.cardType;
             foreach (var condition in cardType.destroyConditions)
             {

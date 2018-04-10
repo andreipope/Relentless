@@ -168,7 +168,7 @@
 		              "type": "MASSIVE_DAMAGE",
 		              "activityType": "PASSIVE",
 		              "callType": "at_start",
-		              "targetType": "OPPONENT_ALL_CARDS",
+		              "targetType": "OPPONENT_ALL_CARDS | opponent",
 		              "affectObjectType": "none",
 		              "value": 2,
 		            }
@@ -284,7 +284,15 @@
           "damage": 3,
           "health": 3,
           "type": 0,
-          "rarity": 1
+          "rarity": 1,
+		  "abilities": [
+            {
+              "type": "CARD_RETURN",
+              "activityType": "active",
+              "callType": "at_start",
+              "targetType": "player_card|opponent_card",
+            }
+          ]
         },
         {
           "id": 14,
@@ -554,8 +562,8 @@
 		          "type": "DAMAGE_TARGET_ADJUSTMENTS",
 							"activityType": "active",
 							"callType": "at_start",
-							"targetType": "player_card|opponent_card",
-							"value": 5,
+							"targetType": "player_card|opponent_card|player|opponent",
+							"value": 4,
 					  }
 				  ]
         },
@@ -573,10 +581,10 @@
           "abilities": [
             {
               "type": "ADD_GOO_VIAL",
-              "activityType": "active",
+              "activityType": "passive",
               "callType": "at_start",
-              "targetType": "player",
-              "value": 4,
+              "targetType": "none",
+              "value": 2,
             }
           ]
         },

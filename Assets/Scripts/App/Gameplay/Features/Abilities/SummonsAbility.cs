@@ -14,7 +14,8 @@ namespace GrandDevs.CZB
         public Enumerators.StatType statType;
         public int value = 1;
         private Server _server;
-        private GameObject _boardCreaturePrefab;
+        private GameObject _boardCreaturePrefab,
+                        _fightTargetingArrowPrefab;
 
 
         public SummonsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
@@ -29,6 +30,7 @@ namespace GrandDevs.CZB
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
             _boardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature");
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
             Debug.Log(_boardCreaturePrefab);
         }
 
@@ -40,9 +42,13 @@ namespace GrandDevs.CZB
         protected override void OnStartTurnEventHandler()
         {
             base.OnStartTurnEventHandler();
-            if (abilityCallType != Enumerators.AbilityCallType.TURN_START)
+            if (abilityCallType != Enumerators.AbilityCallType.TURN_START || !cardCaller.isActivePlayer)
                 return;
 
+            if (cardCaller.boardZone.cards.Count > 6)
+                return;
+
+            Debug.Log(value);
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(value);
             string cardSetName = string.Empty;
             foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
@@ -51,17 +57,41 @@ namespace GrandDevs.CZB
                     cardSetName = cardSet.name;
             }
             Debug.Log(_boardCreaturePrefab);
-
-            var boardCreature = GameObject.Instantiate(_boardCreaturePrefab);
+           
+            var cardObject = GameObject.Instantiate(_boardCreaturePrefab);
             var board = GameObject.Find("PlayerBoard");
-            //boardCreature.tag = "PlayerOwned";
+            cardObject.tag = "PlayerOwned";
+            cardObject.transform.parent = board.transform;
+            cardObject.transform.position = new Vector2(1.9f * cardCaller.boardZone.cards.Count, 0);
+
+            var boardCreature = cardObject.GetComponent<BoardCreature>();
+            boardCreature.ownerPlayer = cardCaller;
+            boardCreature.PopulateWithInfo(CreateRuntimeCard(libraryCard), cardSetName);
+
+            cardCaller.playerBoardCardsList.Add(boardCreature);
+            cardCaller.RearrangeBottomBoard();
+           
+            cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(boardCreature.card);
+            boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
+
+            //cardCaller.PlayCreatureCard(boardCreature.card);
 
 
+            //player.Value.zones[zone.zoneId].AddCard(runtimeCard);
+            cardCaller.EffectSolver.SetDestroyConditions(boardCreature.card);
+            cardCaller.EffectSolver.SetTriggers(boardCreature.card);
+
+            GetServer();
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].AddCard(boardCreature.card);
+        }
+
+        private RuntimeCard CreateRuntimeCard(Data.Card libraryCard)
+        {
             var card = new RuntimeCard();
             card.cardId = value;
             //var player = gameState.players.Find(x => x.netId == netId);
-            //card.instanceId = player.currentCardInstanceId++;
-            //card.ownerPlayer = player;
+            card.instanceId = cardCaller.playerInfo.currentCardInstanceId++;
+            card.ownerPlayer = cardCaller.playerInfo;
 
             var statCopy = new Stat();
             statCopy.statId = 0;
@@ -83,13 +113,19 @@ namespace GrandDevs.CZB
             card.stats[1] = statCopy;
             card.namedStats["HP"] = statCopy;
 
-            boardCreature.transform.parent = board.transform;
-            boardCreature.transform.position = new Vector2(1.9f * cardCaller.boardZone.cards.Count, 0);
-            boardCreature.GetComponent<BoardCreature>().ownerPlayer = cardCaller;
-            boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card, cardSetName);
+            return card;
+        }
 
-            cardCaller.playerBoardCardsList.Add(boardCreature.GetComponent<BoardCreature>());
-            cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(card);
+        private void GetServer()
+        {
+            if (_server == null)
+            {
+                var server = GameObject.Find("Server");
+                if (server != null)
+                {
+                    _server = server.GetComponent<Server>();
+                }
+            }
         }
     }
 }

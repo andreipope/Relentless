@@ -404,6 +404,8 @@ public class DemoAIPlayer : DemoPlayer
     protected RuntimeCard GetRandomOpponentCreature()
     {
         var board = opponentInfo.namedZones["Board"].cards;
+        Debug.Log("!!! - " + opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
+
         var eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)
         {

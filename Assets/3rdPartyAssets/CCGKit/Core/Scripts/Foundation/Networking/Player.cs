@@ -37,7 +37,7 @@ namespace CCGKit
 
         protected GameState gameState = new GameState();
         public PlayerInfo playerInfo = new PlayerInfo();
-        protected PlayerInfo opponentInfo = new PlayerInfo();
+        public PlayerInfo opponentInfo = new PlayerInfo();
 
         /// <summary>
         /// True if the game has started; false otherwise.
@@ -198,8 +198,39 @@ namespace CCGKit
                             //msgDefaultDeck.Add(card.cardId);
                         }
                     }
-                    msgDefaultDeck.Add(19);
-                    msgDefaultDeck.Add(19);
+                    msgDefaultDeck.Add(26);
+                    msgDefaultDeck.Add(26);
+                    msgDefaultDeck.Add(25);
+                    msgDefaultDeck.Add(25);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+                    msgDefaultDeck.Add(13);
+
+                    /*  msgDefaultDeck.Add(1);
+                      msgDefaultDeck.Add(1);
+                      msgDefaultDeck.Add(1);
+                      msgDefaultDeck.Add(19);
+                    /*  msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19);
+                      msgDefaultDeck.Add(19); */
                 }
                 else
                 {
@@ -397,37 +428,42 @@ namespace CCGKit
                         }
                         else
                         {
-                            runtimeCard = CreateRuntimeCard();
-                            runtimeCard.cardId = card.cardId;
-                            runtimeCard.instanceId = card.instanceId;
-                            runtimeCard.ownerPlayer = player.Value;
-                            foreach (var stat in card.stats)
-                            {
-                                var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
-                                runtimeCard.stats[stat.statId] = runtimeStat;
-
-								var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-                                var statName = "DMG";
-                                if (stat.statId == 1)
-                                    statName = "HP";
-                                runtimeCard.namedStats[statName] = runtimeStat;
-                            }
-                            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
-
-                            foreach (var abilityId in card.connectedAbilities)
-                            {
-                                runtimeCard.ConnectAbility(abilityId);
-                            }
-
-                            player.Value.zones[zone.zoneId].AddCard(runtimeCard);
-                            effectSolver.SetDestroyConditions(runtimeCard);
-                            effectSolver.SetTriggers(runtimeCard);
+                            CreateAndPutToHandRuntimeCard(card, player.Value);
                         }
                     }
                     player.Value.zones[zone.zoneId].numCards = zone.numCards;
                 }
             }
+        }
+
+        public void CreateAndPutToHandRuntimeCard(NetCard card, PlayerInfo player)
+        {
+            var runtimeCard = CreateRuntimeCard();
+            runtimeCard.cardId = card.cardId;
+            runtimeCard.instanceId = card.instanceId;
+            runtimeCard.ownerPlayer = player;
+            foreach (var stat in card.stats)
+            {
+                var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
+                runtimeCard.stats[stat.statId] = runtimeStat;
+
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+                var statName = "DMG";
+                if (stat.statId == 1)
+                    statName = "HP";
+                runtimeCard.namedStats[statName] = runtimeStat;
+            }
+            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
+
+            foreach (var abilityId in card.connectedAbilities)
+            {
+                runtimeCard.ConnectAbility(abilityId);
+            }
+
+            player.namedZones[Constants.ZONE_HAND].AddCard(runtimeCard);
+            effectSolver.SetDestroyConditions(runtimeCard);
+            effectSolver.SetTriggers(runtimeCard);
         }
 
         public virtual void OnEndTurn(EndTurnMessage msg)
@@ -638,6 +674,8 @@ namespace CCGKit
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             effectSolver.FightCreature(netId, attackingCard, attackedCard);
+
+            Debug.Log(attackingCard + "_" + attackedCard);
 
 			var msg = new FightCreatureMessage();
             msg.attackingPlayerNetId = netId;

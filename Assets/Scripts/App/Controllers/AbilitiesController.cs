@@ -117,6 +117,9 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.SUMMON:
                     ability = new SummonsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.CARD_RETURN:
+                    ability = new ReturnToHandAbility(cardKind, abilityData);
+                    break;
                 default:
                     break;
             }
@@ -167,11 +170,11 @@ namespace GrandDevs.CZB
 
             lock (_lock)
             {
-                Debug.Log("ability - " + ability);
+               // Debug.Log("ability - " + ability);
 
                 foreach (var item in ability.abilityTargetTypes)
                 {
-                    Debug.Log("item - " + item);
+                    //Debug.Log("item - " + item);
 
                     switch (item)
                     {
@@ -183,8 +186,8 @@ namespace GrandDevs.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
-                                Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
-                                Debug.Log("kind - " + kind);
+                               // Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
+                               // Debug.Log("kind - " + kind);
 
                                 if (localPlayer.boardZone.cards.Count > 1 || kind == Enumerators.CardKind.SPELL)
                                     available = true;
@@ -197,7 +200,7 @@ namespace GrandDevs.CZB
                             break;
                         default: break;
                     }
-                    Debug.Log("available - " + available);
+                    //Debug.Log("available - " + available);
 
                 }
             }

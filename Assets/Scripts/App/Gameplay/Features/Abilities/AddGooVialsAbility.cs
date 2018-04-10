@@ -22,6 +22,7 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
+            Debug.Log("Activate");
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
             Action();
         }
@@ -50,6 +51,7 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
+            Debug.Log("WOW");
             cardCaller.manaStat.baseValue += value;
         }
     }

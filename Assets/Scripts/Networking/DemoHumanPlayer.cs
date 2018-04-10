@@ -189,6 +189,7 @@ public class DemoHumanPlayer : DemoPlayer
         };
         handZone.onCardAdded += card =>
         {
+            //Debug.Log("%%%%%");
             AddCardToHand(card);
             RearrangeHand();
         };
@@ -220,7 +221,6 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
-                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -279,7 +279,6 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
-                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -535,7 +534,7 @@ public class DemoHumanPlayer : DemoPlayer
         });
     }
 
-    protected virtual void RearrangeBottomBoard(Action onComplete = null)
+    public virtual void RearrangeBottomBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
         var spacing = -0.2f;
@@ -931,7 +930,7 @@ public class DemoHumanPlayer : DemoPlayer
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
         {
             activeAbility = _abilitiesController.CreateActiveAbility(item, kind, boardObject, this);
-
+            //Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
             if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
                 canUseAbility = true;
             else //if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))

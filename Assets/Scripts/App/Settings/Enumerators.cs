@@ -168,6 +168,7 @@
             MASSIVE_DAMAGE,
 			DAMAGE_TARGET_ADJUSTMENTS,
 			DAMAGE_TARGET,
+            CARD_RETURN
         }
 
         public enum AbilityActivityType
