@@ -107,6 +107,9 @@ public class BoardSkill : MonoBehaviour
             {
                 fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
                 fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
+                    if (_skillType == Enumerators.SkillType.CARD_RETURN)
+                        fightTargetingArrow.targetType = EffectTarget.TargetCard;
+
                 fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
                 fightTargetingArrow.Begin(transform.position);
             }
@@ -246,11 +249,92 @@ public class BoardSkill : MonoBehaviour
     }
 	private void CardReturnAction(object target)
 	{
-		Debug.Log("RETURN CARD");
-	}
+        var cruature = target as BoardCreature;
 
+        Debug.Log("RETURN CARD");
 
-	private void HealAction()
+        //if (cardCaller.playerInfo.netId == cardCaller.netId)
+
+        PlayerInfo playerInfo = ownerPlayer.playerInfo;
+        if (ownerPlayer == null)
+            playerInfo = ownerPlayer.opponentInfo;
+
+        //Get server access
+        Server _server = null;
+        if (_server == null)
+        {
+            var server = GameObject.Find("Server");
+            if (server != null)
+            {
+                _server = server.GetComponent<Server>();
+            }
+        }
+
+        //create RuntimeCard
+        var card = CreateRuntimeCard(playerInfo, cruature);
+
+        //Add RuntimeCard to hand on server
+        _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+
+        //Create Visual process of creating new card at the hand (simulation turn back)
+        var netCard = CreateNetCard(card);
+
+        //Put netCard to hand
+        ownerPlayer.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
+
+        //MAYBE use that on future
+        /*playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
+        cardCaller.EffectSolver.SetDestroyConditions(card);
+        cardCaller.EffectSolver.SetTriggers(card);*/
+
+        //Remove RuntimeCard on server
+        var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
+        _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+        //Remove RuntimeCard from hand
+        playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(cruature.card);
+
+        GameObject.Destroy(cruature.gameObject);
+        CreateFireAttackVFX(cruature.transform.position);
+    }
+
+    private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo, BoardCreature cruature)
+    {
+        var card = new RuntimeCard();
+        card.cardId = cruature.card.cardId;
+        card.instanceId = playerInfo.currentCardInstanceId++;
+        card.ownerPlayer = playerInfo;
+        card.stats[0] = cruature.card.stats[0];
+        card.stats[1] = cruature.card.stats[1];
+        card.namedStats["DMG"] = cruature.card.namedStats["DMG"];
+        card.namedStats["HP"] = cruature.card.namedStats["HP"];
+
+        card.namedStats["DMG"].baseValue = card.namedStats["DMG"].originalValue;
+        card.namedStats["HP"].baseValue = card.namedStats["HP"].originalValue;
+        return card;
+    }
+
+    private NetCard CreateNetCard(RuntimeCard card)
+    {
+        var netCard = new NetCard();
+        netCard.cardId = card.cardId;
+        netCard.instanceId = card.instanceId;
+        netCard.stats = new NetStat[card.stats.Count];
+        var idx = 0;
+        foreach (var entry in card.stats)
+        {
+            netCard.stats[idx++] = NetworkingUtils.GetNetStat(entry.Value);
+        }
+        netCard.keywords = new NetKeyword[card.keywords.Count];
+        idx = 0;
+        foreach (var entry in card.keywords)
+        {
+            netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
+        }
+        netCard.connectedAbilities = card.connectedAbilities.ToArray();
+        return netCard;
+    }
+
+    private void HealAction()
 	{
 		Debug.Log("HEAL HIM");
         CreateHealVFX(transform.position - Vector3.right * 2.3f);

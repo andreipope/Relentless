@@ -154,8 +154,6 @@ public class BoardCreature : MonoBehaviour
 
         onHealthStatChangedDelegate = (oldValue, newValue) =>
         {
-            Debug.Log("UpdateStatText - " + card.instanceId);
-
 			UpdateStatText(healthText, healthStat);
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;
@@ -264,6 +262,7 @@ public class BoardCreature : MonoBehaviour
 
     public void StopSleepingParticles()
     {
+        if(sleepingParticles != null)
         sleepingParticles.Stop();
     }
 

@@ -33,7 +33,7 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-
+                Debug.Log(_vfxObject);
                 switch (affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
@@ -44,7 +44,7 @@ namespace GrandDevs.CZB
                         CreateVFX(targetPlayer.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
-                        Action(targetCreature.card);
+                        Action(targetCreature);
 
                         cardCaller.FightCreatureBySkill(value, targetCreature.card);
                         CreateVFX(targetCreature.transform.position);
@@ -59,35 +59,51 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
-            RuntimeCard leftAdjustment = null,
-                        rightAdjastment = null;
+            var creature = info as BoardCreature;
+
+            BoardCreature leftAdjustment = null,
+                    rightAdjastment = null;
 
             int targetIndex = -1;
-            for (int i = 0; i < cardCaller.opponentBoardZone.cards.Count; i++)
+            List<BoardCreature> list = null;
+            for (int i = 0; i < cardCaller.opponentBoardCardsList.Count; i++)
             {
-                if (cardCaller.opponentBoardZone.cards[i] == info as RuntimeCard)
+                if (cardCaller.opponentBoardCardsList[i] == creature)
+                {
                     targetIndex = i;
+                    list = cardCaller.opponentBoardCardsList;
+                    break;
+                }
+            }
+            if(targetIndex == -1)
+            for (int i = 0; i < cardCaller.playerBoardCardsList.Count; i++)
+            {
+                if (cardCaller.playerBoardCardsList[i] == creature)
+                {
+                    targetIndex = i;
+                    list = cardCaller.playerBoardCardsList;
+                    break;
+                }
             }
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
-                    leftAdjustment = cardCaller.opponentBoardZone.cards[targetIndex - 1];
-                if (targetIndex + 1 < cardCaller.opponentBoardZone.cards.Count)
-                    rightAdjastment = cardCaller.opponentBoardZone.cards[targetIndex + 1];
+                    leftAdjustment = list[targetIndex - 1];
+                if (targetIndex + 1 < list.Count)
+                    rightAdjastment = list[targetIndex + 1];
             }
-            
+
             if (leftAdjustment != null)
             {
-                cardCaller.FightCreatureBySkill(value, leftAdjustment);
-                //CreateVFX(leftAdjustment..transform.position);
+                cardCaller.FightCreatureBySkill(value, leftAdjustment.card);
+                CreateVFX(leftAdjustment.transform.position);
             }
 
             if (rightAdjastment != null)
             {
-                cardCaller.FightCreatureBySkill(value, rightAdjastment);
-                //CreateVFX(targetCreature.transform.position);
+                cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
+                CreateVFX(rightAdjastment.transform.position);
             }
-
         }
     }
 }

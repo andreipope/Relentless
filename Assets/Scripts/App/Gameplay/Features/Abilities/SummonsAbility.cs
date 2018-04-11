@@ -48,50 +48,59 @@ namespace GrandDevs.CZB
             if (cardCaller.boardZone.cards.Count > 6)
                 return;
 
-            Debug.Log(value);
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(value);
+
             string cardSetName = string.Empty;
             foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
             {
                 if (cardSet.cards.IndexOf(libraryCard) > -1)
                     cardSetName = cardSet.name;
             }
-            Debug.Log(_boardCreaturePrefab);
-           
+            //Get server access
+            GetServer();
+
+            //PlayerInfo playerInfo = cardCaller.playerInfo;
+            //if (cardCaller == null)
+              var  playerInfo = cardCaller.playerInfo;
+
+            var card = CreateRuntimeCard(libraryCard, playerInfo);
+
+            var creature = CreateBoardCreature(card, cardSetName);
+
+            playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(creature.card);
+
+            //Add RuntimeCard to hand on server
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Add(card);
+            Debug.Log("SUMMON WOOOOOOOW");
+        }
+
+        private BoardCreature CreateBoardCreature(RuntimeCard card, string cardSetName)
+        {
             var cardObject = GameObject.Instantiate(_boardCreaturePrefab);
             var board = GameObject.Find("PlayerBoard");
             cardObject.tag = "PlayerOwned";
             cardObject.transform.parent = board.transform;
             cardObject.transform.position = new Vector2(1.9f * cardCaller.boardZone.cards.Count, 0);
+            cardObject.transform.Find("TypeIcon").gameObject.SetActive(false);
 
             var boardCreature = cardObject.GetComponent<BoardCreature>();
             boardCreature.ownerPlayer = cardCaller;
-            boardCreature.PopulateWithInfo(CreateRuntimeCard(libraryCard), cardSetName);
+            boardCreature.PopulateWithInfo(card, cardSetName);
+            boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
 
             cardCaller.playerBoardCardsList.Add(boardCreature);
             cardCaller.RearrangeBottomBoard();
-           
-            cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(boardCreature.card);
-            boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
 
-            //cardCaller.PlayCreatureCard(boardCreature.card);
-
-
-            //player.Value.zones[zone.zoneId].AddCard(runtimeCard);
-            cardCaller.EffectSolver.SetDestroyConditions(boardCreature.card);
-            cardCaller.EffectSolver.SetTriggers(boardCreature.card);
-
-            GetServer();
-            _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].AddCard(boardCreature.card);
+            return boardCreature;
         }
 
-        private RuntimeCard CreateRuntimeCard(Data.Card libraryCard)
+        private RuntimeCard CreateRuntimeCard(Data.Card libraryCard, PlayerInfo playerInfo)
         {
             var card = new RuntimeCard();
             card.cardId = value;
             //var player = gameState.players.Find(x => x.netId == netId);
-            card.instanceId = cardCaller.playerInfo.currentCardInstanceId++;
-            card.ownerPlayer = cardCaller.playerInfo;
+            card.instanceId = playerInfo.currentCardInstanceId++;
+            card.ownerPlayer = playerInfo;
 
             var statCopy = new Stat();
             statCopy.statId = 0;
@@ -100,18 +109,22 @@ namespace GrandDevs.CZB
             statCopy.baseValue = libraryCard.damage;
             statCopy.minValue = 0;
             statCopy.maxValue = 99;
-            card.stats[0] = statCopy;
-            card.namedStats["DMG"] = statCopy;
+           
+            var statCopy2 = new Stat();
+            statCopy2.statId = 1;
+            statCopy2.name = "HP";
+            statCopy2.originalValue = libraryCard.health;
+            statCopy2.baseValue = libraryCard.health;
+            statCopy2.minValue = 0;
+            statCopy2.maxValue = 99;
 
-            statCopy = new Stat();
-            statCopy.statId = 1;
-            statCopy.name = "HP";
-            statCopy.originalValue = libraryCard.health;
-            statCopy.baseValue = libraryCard.health;
-            statCopy.minValue = 0;
-            statCopy.maxValue = 99;
-            card.stats[1] = statCopy;
-            card.namedStats["HP"] = statCopy;
+            card.stats[0] = statCopy;
+            card.stats[1] = statCopy2;
+            card.namedStats["DMG"] = statCopy;
+            card.namedStats["HP"] = statCopy2;
+
+            cardCaller.EffectSolver.SetDestroyConditions(card);
+            cardCaller.EffectSolver.SetTriggers(card);
 
             return card;
         }

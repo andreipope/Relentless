@@ -187,12 +187,13 @@ namespace CCGKit
         /// <param name="targetInfo">The optional target information.</param>
         public void MoveCard(NetworkInstanceId playerNetId, RuntimeCard card, string originZone, string destinationZone, List<int> targetInfo = null)
         {
-            UnityEngine.Debug.Log("MoveCard !!!" + card.cardId + "_" + card.instanceId);
             var player = gameState.players.Find(x => x.netId == playerNetId);
-            UnityEngine.Debug.Log("player - " + player);
 
             if (player != null)
             {
+                UnityEngine.Debug.Log(card.cardId + "_" + card.instanceId);
+                UnityEngine.Debug.Log(originZone);
+                UnityEngine.Debug.Log(destinationZone);
                 player.namedZones[originZone].RemoveCard(card);
                 player.namedZones[destinationZone].AddCard(card);
                 TriggerEffect<OnCardLeftZoneTrigger>(player, card, x => { return x.IsTrue(gameState, originZone); }, targetInfo);
@@ -313,12 +314,15 @@ namespace CCGKit
                 if (condition is StatDestroyCardCondition)
                 {
                     var statCondition = condition as StatDestroyCardCondition;
+                    UnityEngine.Debug.Log("SetDestroyConditions " + card.cardId +"_" +  card.instanceId);
+                    if(card.stats[statCondition.statId].onValueChanged == null)
                     card.stats[statCondition.statId].onValueChanged += (oldValue, newValue) =>
                     {
                         if (statCondition.IsTrue(card))
                         {
-                            UnityEngine.Debug.Log("MoveCard(card.ownerPlayer.netId");
+                            UnityEngine.Debug.Log("MoveCard SetDestroyConditions - " + card.instanceId);
                             MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
+                            GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
                         }
                     };
                 }

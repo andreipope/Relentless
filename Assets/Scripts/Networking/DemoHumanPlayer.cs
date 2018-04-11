@@ -221,7 +221,6 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
-                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -280,7 +279,6 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
-                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -541,6 +539,7 @@ public class DemoHumanPlayer : DemoPlayer
         var boardWidth = 0.0f;
         var spacing = -0.2f;
         var cardWidth = 0.0f;
+        Debug.Log(playerBoardCards);
         foreach (var card in playerBoardCards)
         {
             cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;

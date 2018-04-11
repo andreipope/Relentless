@@ -410,7 +410,7 @@
           "id": 19,
           "cardTypeId": 0,
           "name": "Shammann",
-          "cost": 1,
+          "cost": 8,
           "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
           "picture": "Shammann",
           "damage": 5,

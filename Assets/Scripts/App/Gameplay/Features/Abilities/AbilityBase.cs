@@ -216,6 +216,7 @@ namespace GrandDevs.CZB
 
             boardCreature.CreatureOnDieEvent -= CreatureOnDieEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
+            Dispose();
         }
 
 		protected virtual void CreatureOnAttackEventHandler(object info)

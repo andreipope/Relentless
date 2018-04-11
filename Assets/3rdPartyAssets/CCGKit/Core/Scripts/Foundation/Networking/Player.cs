@@ -195,42 +195,9 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                            //msgDefaultDeck.Add(card.cardId);
+                            msgDefaultDeck.Add(card.cardId);
                         }
                     }
-                    msgDefaultDeck.Add(26);
-                    msgDefaultDeck.Add(26);
-                    msgDefaultDeck.Add(25);
-                    msgDefaultDeck.Add(25);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-                    msgDefaultDeck.Add(13);
-
-                    /*  msgDefaultDeck.Add(1);
-                      msgDefaultDeck.Add(1);
-                      msgDefaultDeck.Add(1);
-                      msgDefaultDeck.Add(19);
-                    /*  msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19);
-                      msgDefaultDeck.Add(19); */
                 }
                 else
                 {
@@ -238,30 +205,30 @@ namespace CCGKit
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(12);
-                    msgDefaultDeck.Add(12);
-                    msgDefaultDeck.Add(12);
-                    msgDefaultDeck.Add(12);
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(20);
-                    msgDefaultDeck.Add(20);
-                    msgDefaultDeck.Add(20);
-                    msgDefaultDeck.Add(20);
-                    msgDefaultDeck.Add(16);
-                    msgDefaultDeck.Add(16);
-                    msgDefaultDeck.Add(16);
-                    msgDefaultDeck.Add(16);
-                    msgDefaultDeck.Add(24);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(11);
-                    msgDefaultDeck.Add(11);
-                    msgDefaultDeck.Add(11);
-                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(4);
+                    msgDefaultDeck.Add(4);
+                    msgDefaultDeck.Add(5);
+                    msgDefaultDeck.Add(5);
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(15);
+                    msgDefaultDeck.Add(18);
+                    msgDefaultDeck.Add(18);
+                    msgDefaultDeck.Add(21);
+                    msgDefaultDeck.Add(21);
+                    msgDefaultDeck.Add(21);
+                    msgDefaultDeck.Add(21);
+                    msgDefaultDeck.Add(22);
+                    msgDefaultDeck.Add(22);
+                    msgDefaultDeck.Add(22);
+                    msgDefaultDeck.Add(22);
+                    msgDefaultDeck.Add(25);
+                    msgDefaultDeck.Add(25);
+                    msgDefaultDeck.Add(26);
+                    msgDefaultDeck.Add(26);
+                    msgDefaultDeck.Add(4);
                     msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(0);
                 }
@@ -315,7 +282,6 @@ namespace CCGKit
                 gameState.currentPlayer = opponentInfo;
                 gameState.currentOpponent = playerInfo;
             }
-
             effectSolver.OnTurnStarted();
             LoadPlayerStates(msg.player, msg.opponent);
             CurrentTurn = msg.turn;
@@ -385,6 +351,7 @@ namespace CCGKit
                     player.Value.zones[zone.zoneId].numCards = zone.numCards;
                 }
 
+                
                 foreach (var zone in player.Key.dynamicZones)
                 {
                     // Remove obsolete entries.
@@ -406,6 +373,9 @@ namespace CCGKit
                         var runtimeCard = player.Value.zones[zone.zoneId].cards.Find(x => x.instanceId == card.instanceId);
                         if (runtimeCard != null)
                         {
+                            if (playerInfo.id == playerState.id && playerInfo.id == player.Value.id)
+
+                                Debug.Log("zoneId - " + zone.zoneId + "_" + card.instanceId + "_" + card.cardId);
                             foreach (var stat in card.stats)
                             {
                                 runtimeCard.stats[stat.statId].originalValue = stat.originalValue;
@@ -428,7 +398,12 @@ namespace CCGKit
                         }
                         else
                         {
-                            CreateAndPutToHandRuntimeCard(card, player.Value);
+                            if (zone.zoneId == 1)
+                            {
+                                if (playerInfo.id == playerState.id && playerInfo.id == player.Value.id)
+                                    Debug.Log("zoneId - " + zone.zoneId + "_" + card.instanceId + "_" + card.cardId + "!!!!!!!!!!!!!!!!!");
+                                CreateAndPutToHandRuntimeCard(card, player.Value);
+                            }
                         }
                     }
                     player.Value.zones[zone.zoneId].numCards = zone.numCards;
@@ -614,7 +589,7 @@ namespace CCGKit
             {
                 msg.targetInfo = targetInfo.ToArray();
             }
-            client.Send(NetworkProtocol.MoveCard, msg);
+            client.Send(NetworkProtocol.MoveCard, msg);     
         }
 
         public void PlaySpellCard(RuntimeCard card, List<int> targetInfo = null)

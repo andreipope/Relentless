@@ -42,22 +42,46 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
+
+            Debug.Log("Return To Hand");
             //if (cardCaller.playerInfo.netId == cardCaller.netId)
-            //{
-            return;
-
-            // targetCreature.ownerPlayer
-
+      
             PlayerInfo playerInfo = cardCaller.playerInfo;
             if (targetCreature.ownerPlayer == null)
                 playerInfo = cardCaller.opponentInfo;
 
-            Debug.Log(targetCreature.ownerPlayer);
-            Debug.Log(playerInfo.isHuman);
-            Debug.Log(playerInfo.nickname);
-            Debug.Log(playerInfo.id);
+            //Get server access
+            GetServer();
 
+            //create RuntimeCard
+            var card = CreateRuntimeCard(playerInfo);
 
+            //Add RuntimeCard to hand on server
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+
+            //Create Visual process of creating new card at the hand (simulation turn back)
+            var netCard = CreateNetCard(card);
+
+            //Put netCard to hand
+            cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
+
+            //MAYBE use that on future
+            /*playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
+            cardCaller.EffectSolver.SetDestroyConditions(card);
+            cardCaller.EffectSolver.SetTriggers(card);*/
+
+            //Remove RuntimeCard on server
+            var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == targetCreature.card.instanceId);
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+            //Remove RuntimeCard from hand
+            playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
+
+            GameObject.Destroy(targetCreature.gameObject);
+            CreateVFX(targetCreature.transform.position);
+        }
+
+        private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo)
+        {
             var card = new RuntimeCard();
             card.cardId = targetCreature.card.cardId;
             card.instanceId = playerInfo.currentCardInstanceId++;
@@ -66,14 +90,14 @@ namespace GrandDevs.CZB
             card.stats[1] = targetCreature.card.stats[1];
             card.namedStats["DMG"] = targetCreature.card.namedStats["DMG"];
             card.namedStats["HP"] = targetCreature.card.namedStats["HP"];
-            
+
             card.namedStats["DMG"].baseValue = card.namedStats["DMG"].originalValue;
             card.namedStats["HP"].baseValue = card.namedStats["HP"].originalValue;
+            return card;
+        }
 
-            //cardCaller.EffectSolver.MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
-            //cardCaller.playerInfo.namedZones["Board"].RemoveCard(card);
-            //MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
-
+        private NetCard CreateNetCard(RuntimeCard card)
+        {
             var netCard = new NetCard();
             netCard.cardId = card.cardId;
             netCard.instanceId = card.instanceId;
@@ -90,29 +114,7 @@ namespace GrandDevs.CZB
                 netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
             }
             netCard.connectedAbilities = card.connectedAbilities.ToArray();
-
-            card.namedStats["HP"].baseValue = 0;
-            
-            //cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
-            
-            //Debug.Log(playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
-            //TODO CHEEEEECK!!!!
-                //playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
-            //cardCaller.EffectSolver.MoveCard(playerInfo.netId, card, "Board", "Graveyard");
-			//MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
-			//Debug.Log(playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
-
-			//GameObject.Destroy(targetCreature.gameObject);        */
-			/* }
-			 else
-			 {
-				 cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
-				 GameObject.Destroy(targetCreature.gameObject);
-
-				 Debug.Log("return to Opponent hand");
-			 }*/
-
-			CreateVFX(targetCreature.transform.position);
+            return netCard;
         }
 
         private void GetServer()
