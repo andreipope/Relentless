@@ -187,9 +187,9 @@ namespace CCGKit
         /// <param name="targetInfo">The optional target information.</param>
         public void MoveCard(NetworkInstanceId playerNetId, RuntimeCard card, string originZone, string destinationZone, List<int> targetInfo = null)
         {
-            //UnityEngine.Debug.Log("MoveCard !!!" + card.cardId + "_" + card.instanceId);
+            UnityEngine.Debug.Log("MoveCard !!!" + card.cardId + "_" + card.instanceId);
             var player = gameState.players.Find(x => x.netId == playerNetId);
-            //UnityEngine.Debug.Log("player - " + player);
+            UnityEngine.Debug.Log("player - " + player);
 
             if (player != null)
             {
@@ -317,6 +317,7 @@ namespace CCGKit
                     {
                         if (statCondition.IsTrue(card))
                         {
+                            UnityEngine.Debug.Log("MoveCard(card.ownerPlayer.netId");
                             MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
                         }
                     };

@@ -44,7 +44,7 @@ namespace GrandDevs.CZB
 
             //if (cardCaller.playerInfo.netId == cardCaller.netId)
             //{
-            
+            return;
 
             // targetCreature.ownerPlayer
 
@@ -90,25 +90,29 @@ namespace GrandDevs.CZB
                 netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
             }
             netCard.connectedAbilities = card.connectedAbilities.ToArray();
+
+            card.namedStats["HP"].baseValue = 0;
             
-            cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
+            //cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
             
             //Debug.Log(playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
             //TODO CHEEEEECK!!!!
-                playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
-            //Debug.Log(playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
+                //playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
+            //cardCaller.EffectSolver.MoveCard(playerInfo.netId, card, "Board", "Graveyard");
+			//MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
+			//Debug.Log(playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
 
-            //GameObject.Destroy(targetCreature.gameObject);        */
-           /* }
-            else
-            {
-                cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
-                GameObject.Destroy(targetCreature.gameObject);
+			//GameObject.Destroy(targetCreature.gameObject);        */
+			/* }
+			 else
+			 {
+				 cardCaller.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
+				 GameObject.Destroy(targetCreature.gameObject);
 
-                Debug.Log("return to Opponent hand");
-            }*/
+				 Debug.Log("return to Opponent hand");
+			 }*/
 
-            CreateVFX(targetCreature.transform.position);
+			CreateVFX(targetCreature.transform.position);
         }
 
         private void GetServer()

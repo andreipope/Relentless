@@ -214,13 +214,14 @@ public class DemoHumanPlayer : DemoPlayer
                 playerGraveyardCards.Add(boardCard);
                 playerBoardCards.Remove(boardCard);
                 boardCard.transform.DOKill();
-                boardCard.transform.DOMove(graveyardPos, 0.7f);
+                //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
                 RearrangeBottomBoard();
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
+                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -279,6 +280,7 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
+                GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
