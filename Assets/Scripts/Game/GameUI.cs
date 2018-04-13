@@ -142,14 +142,14 @@ public class GameUI : MonoBehaviour
         //opponentGraveyardText.text = cards.ToString();
     }
 
-    public void SetPlayerMana(int mana)
+    public void SetPlayerMana(int manaRows, int mana)
     {
-        playerManaBar.SetMana(mana);
+        playerManaBar.SetMana(manaRows, mana);
     }
 
-    public void SetOpponentMana(int mana)
+    public void SetOpponentMana(int manaRows, int mana)
     {
-        opponentManaBar.SetMana(mana);
+        opponentManaBar.SetMana(manaRows, mana);
 
         //opponentManaText.text = mana + "/10";
     }

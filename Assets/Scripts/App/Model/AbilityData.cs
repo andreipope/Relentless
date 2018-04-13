@@ -32,6 +32,9 @@ namespace GrandDevs.CZB.Data
 
         public int value;
 
+        public int damage;
+        public int health;
+
         public AbilityData()
         {
 

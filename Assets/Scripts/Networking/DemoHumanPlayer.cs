@@ -163,7 +163,7 @@ public class DemoHumanPlayer : DemoPlayer
         };
         manaStat.onValueChanged += (oldValue, newValue) =>
         {
-            gameUI.SetPlayerMana(manaStat.effectiveValue);
+            gameUI.SetPlayerMana(manaStat.maxValue, manaStat.effectiveValue);
             UpdateHandCardsHighlight();
         };
 
@@ -173,7 +173,7 @@ public class DemoHumanPlayer : DemoPlayer
         };
         opponentManaStat.onValueChanged += (oldValue, newValue) =>
         {
-            gameUI.SetOpponentMana(opponentManaStat.effectiveValue);
+            gameUI.SetOpponentMana(opponentManaStat.maxValue, opponentManaStat.effectiveValue);
         };
 
         deckZone = playerInfo.namedZones["Deck"];
@@ -321,8 +321,8 @@ public class DemoHumanPlayer : DemoPlayer
         // Update the UI as appropriate.
         gameUI.SetPlayerHealth(lifeStat.effectiveValue);
         gameUI.SetOpponentHealth(opponentLifeStat.effectiveValue);
-        gameUI.SetPlayerMana(manaStat.effectiveValue);
-        gameUI.SetOpponentMana(opponentManaStat.effectiveValue);
+        gameUI.SetPlayerMana(manaStat.maxValue, manaStat.effectiveValue);
+        gameUI.SetOpponentMana(opponentManaStat.maxValue, opponentManaStat.effectiveValue);
 
         gameUI.SetPlayerHandCards(handZone.cards.Count);
         gameUI.SetPlayerGraveyardCards(graveyardZone.numCards);
@@ -401,6 +401,12 @@ public class DemoHumanPlayer : DemoPlayer
             foreach (var card in playerBoardCards)
             {
                 card.OnStartTurn();
+            }
+
+            if (CurrentBoardWeapon != null && !isPlayerStunned)
+            {
+                AlreadyAttackedInThisTurn = false;
+                CurrentBoardWeapon.ActivateWeapon();
             }
 
             var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
@@ -1195,5 +1201,20 @@ public class DemoHumanPlayer : DemoPlayer
     public override void OnReceiveChatText(NetworkInstanceId senderNetId, string text)
     {
         //chatPopup.SendText(senderNetId, text);
+    }
+
+    public virtual void AddWeapon()
+    {
+        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Player").transform.Find("Weapon").gameObject);
+    }
+
+    public virtual void DestroyWeapon()
+    {
+        if(CurrentBoardWeapon != null)
+        {
+            CurrentBoardWeapon.Destroy();
+        }
+
+        CurrentBoardWeapon = null;
     }
 }

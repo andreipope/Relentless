@@ -167,23 +167,24 @@ public class BoardSkill : MonoBehaviour
 
     private void DoSkillAction(object target)
     {
-        ownerPlayer.manaStat.baseValue -= _manaCost;
+        if (!Constants.DEV_MODE)
+            ownerPlayer.manaStat.baseValue -= _manaCost;
         switch (_skillType)
         {
             case Enumerators.SkillType.FREEZE:
                 FreezeAction(target);
                 break;
             case Enumerators.SkillType.TOXIC_DAMAGE:
-				ToxicDamageAction(target);
+                ToxicDamageAction(target);
                 break;
             case Enumerators.SkillType.FIRE_DAMAGE:
-				FireDamageAction(target);
+                FireDamageAction(target);
                 break;
             case Enumerators.SkillType.HEAL_ANY:
-				HealAnyAction(target);
+                HealAnyAction(target);
                 break;
             case Enumerators.SkillType.CARD_RETURN:
-				CardReturnAction(target);
+                CardReturnAction(target);
                 break;
             case Enumerators.SkillType.HEAL:
                 HealAction();

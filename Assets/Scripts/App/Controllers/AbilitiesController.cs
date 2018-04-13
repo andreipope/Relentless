@@ -120,6 +120,9 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.WEAPON:
+                    ability = new HeroWeaponAbility(cardKind, abilityData);
+                    break;
                 default:
                     break;
             }

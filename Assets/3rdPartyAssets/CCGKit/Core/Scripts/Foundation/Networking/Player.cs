@@ -69,7 +69,10 @@ namespace CCGKit
             }
         }
 
-        
+
+        public BoardWeapon CurrentBoardWeapon { get; protected set; }
+        public bool AlreadyAttackedInThisTurn { get; set; }
+        public bool isPlayerStunned { get; set; }
 
         protected virtual void Awake()
         {
@@ -106,6 +109,7 @@ namespace CCGKit
                 statCopy.maxValue = stat.maxValue;
                 playerInfo.stats[stat.id] = statCopy;
                 playerInfo.namedStats[stat.name] = statCopy;
+               
             }
             foreach (var stat in gameConfig.playerStats)
             {
@@ -195,7 +199,10 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                            msgDefaultDeck.Add(card.cardId);
+                            if (Constants.DEV_MODE)
+                                msgDefaultDeck.Add(26);
+                            else
+                                msgDefaultDeck.Add(card.cardId);
                         }
                     }
                 }
@@ -283,13 +290,35 @@ namespace CCGKit
                 gameState.currentOpponent = playerInfo;
             }
             effectSolver.OnTurnStarted();
-            LoadPlayerStates(msg.player, msg.opponent);
+            LoadPlayerStates(msg.player, msg.opponent, msg.isRecipientTheActivePlayer);
             CurrentTurn = msg.turn;
         }
 
-        public void LoadPlayerStates(NetPlayerInfo playerState, NetPlayerInfo opponentState)
+        public Server GetServer()
         {
-            var players = new Dictionary<NetPlayerInfo, PlayerInfo>();
+            var server = GameObject.Find("Server");
+            if (server != null)
+            {
+                return server.GetComponent<Server>();
+            }
+            return null;
+        }
+
+        public void ModificateStatMaxValue(string stat, int value, int max)
+        {
+            var server = GetServer();
+
+            playerInfo.namedStats[stat].maxValue += value;
+            playerInfo.namedStats[stat].baseValue = playerInfo.namedStats[stat].maxValue;
+            playerInfo.namedStats[stat].PermanentUpdateValue();
+
+            server.gameState.currentPlayer.namedStats[stat].maxValue += value;
+            server.gameState.currentPlayer.namedStats[stat].baseValue = server.gameState.currentPlayer.namedStats[stat].maxValue;
+        }
+
+        public void LoadPlayerStates(NetPlayerInfo playerState, NetPlayerInfo opponentState, bool isNewTurn = false)
+        {
+               var players = new Dictionary<NetPlayerInfo, PlayerInfo>();
             players.Add(playerState, playerInfo);
             players.Add(opponentState, opponentInfo);
             foreach (var player in players)
@@ -313,8 +342,12 @@ namespace CCGKit
                     if (playerStat.onValueChanged != null)
                     {
                         playerStat.onValueChanged(oldValue, playerStat.effectiveValue);
-                    }
+                    }   
                 }
+
+                if (playerState.id == player.Key.id && isNewTurn)
+                    ModificateStatMaxValue(Constants.TAG_MANA, 1, 10);
+
 
                 foreach (var zone in player.Key.staticZones)
                 {
@@ -578,7 +611,9 @@ namespace CCGKit
         public void PlayCreatureCard(RuntimeCard card, List<int> targetInfo = null)
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-            playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
+
+            if (!Constants.DEV_MODE)
+                playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
             msg.playerNetId = netId;
@@ -595,7 +630,9 @@ namespace CCGKit
         public void PlaySpellCard(RuntimeCard card, List<int> targetInfo = null)
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-            playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
+
+            if (!Constants.DEV_MODE)
+                playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
             msg.playerNetId = netId;

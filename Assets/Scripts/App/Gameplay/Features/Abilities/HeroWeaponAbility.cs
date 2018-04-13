@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,20 +9,21 @@ using GrandDevs.CZB.Data;
 
 namespace GrandDevs.CZB
 {
-    public class AddGooVialsAbility : AbilityBase
+    public class HeroWeaponAbility : AbilityBase
     {
-        public int value = 1;
+        public int health = 1;
+        public int damage = 1;
 
-        public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public HeroWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            this.value = ability.value;
+            this.health = ability.health;
+            this.damage = ability.damage;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            Debug.Log("Activate");
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
             Action();
         }
@@ -40,24 +41,17 @@ namespace GrandDevs.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-
-            }
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            cardCaller.manaStat.maxValue += value;
-            cardCaller.manaStat.baseValue += value;
+            cardCaller.AddWeapon();
+            cardCaller.CurrentBoardWeapon.InitWeapon(damage, health, cardCaller, abilityTargetTypes);
 
-            cardCaller.manaStat.PermanentUpdateValue();
-
-            cardCaller.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].maxValue += value;
-            cardCaller.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue += value;
+            if (!cardCaller.AlreadyAttackedInThisTurn)
+                cardCaller.CurrentBoardWeapon.ActivateWeapon();
         }
     }
 }

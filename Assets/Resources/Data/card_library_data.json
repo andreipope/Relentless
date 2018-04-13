@@ -590,7 +590,7 @@
         },
         {
           "id": 27,
-          "cardTypeId": 0,
+          "cardTypeId": 1,
           "name": "Chainsaw",
           "cost": 2,
           "description": "Loses 1 HP on attack",
@@ -598,7 +598,17 @@
           "damage": 5,
           "health": 3,
           "type": 0,
-          "rarity": 3
+          "rarity": 3,
+          "abilities": [
+            {
+              "type": "WEAPON",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "opponent_card|opponent",
+              "damage": 5,
+              "health": 3
+            }
+          ]
         }
       ]
     },

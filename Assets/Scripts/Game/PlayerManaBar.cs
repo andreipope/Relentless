@@ -11,22 +11,23 @@ using TMPro;
 
 public class PlayerManaBar : MonoBehaviour
 {
-    public TextMeshPro manaText;
+ //   public TextMeshPro manaText;
     public List<GameObject> manaIcons;
 
-    public void SetMana(int mana)
+    public void SetMana(int manaRows, int mana)
     {
-        manaText.text = mana + "/10";
+ //       manaText.text = mana + "/10";
         for (var i = 0; i < manaIcons.Count; i++)
         {
             if (i < mana)
-            {
-                manaIcons[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
-            }
+                manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
             else
-            {
-                manaIcons[i].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
-            }
+                manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
+
+            if(i < manaRows)
+                manaIcons[i].transform.Find("ManaIconGrey").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
+            else
+                manaIcons[i].transform.Find("ManaIconGrey").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
         }
     }
 }

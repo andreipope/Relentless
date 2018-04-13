@@ -34,6 +34,8 @@
         internal const string TAG_LIFE = "Life";
         internal const string TAG_DAMAGE = "Damage";
         internal const string TAG_HP = "HP";
+        internal const string TAG_MANA = "Mana";
+        
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
