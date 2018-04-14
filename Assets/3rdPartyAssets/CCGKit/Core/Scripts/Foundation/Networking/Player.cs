@@ -314,13 +314,29 @@ namespace CCGKit
 
             server.gameState.currentPlayer.namedStats[stat].maxValue += value;
             server.gameState.currentPlayer.namedStats[stat].baseValue = server.gameState.currentPlayer.namedStats[stat].maxValue;
-        }
 
+
+
+            if(this is DemoHumanPlayer)
+            {
+
+            }
+            else
+            {
+                var humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
+
+                humanPlayer.opponentInfo.namedStats[stat].maxValue = playerInfo.namedStats[stat].maxValue;
+                humanPlayer.opponentInfo.namedStats[stat].baseValue = playerInfo.namedStats[stat].maxValue;
+                humanPlayer.opponentInfo.namedStats[stat].PermanentUpdateValue();
+            }
+        }
+    
         public void LoadPlayerStates(NetPlayerInfo playerState, NetPlayerInfo opponentState, bool isNewTurn = false)
         {
-               var players = new Dictionary<NetPlayerInfo, PlayerInfo>();
+            var players = new Dictionary<NetPlayerInfo, PlayerInfo>();
             players.Add(playerState, playerInfo);
             players.Add(opponentState, opponentInfo);
+
             foreach (var player in players)
             {
                 player.Value.netId = player.Key.netId;
@@ -342,12 +358,11 @@ namespace CCGKit
                     if (playerStat.onValueChanged != null)
                     {
                         playerStat.onValueChanged(oldValue, playerStat.effectiveValue);
-                    }   
+                    }
                 }
 
                 if (playerState.id == player.Key.id && isNewTurn)
                     ModificateStatMaxValue(Constants.TAG_MANA, 1, 10);
-
 
                 foreach (var zone in player.Key.staticZones)
                 {
@@ -384,7 +399,7 @@ namespace CCGKit
                     player.Value.zones[zone.zoneId].numCards = zone.numCards;
                 }
 
-                
+
                 foreach (var zone in player.Key.dynamicZones)
                 {
                     // Remove obsolete entries.

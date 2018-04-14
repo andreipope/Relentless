@@ -60,7 +60,7 @@ public class DemoHumanPlayer : DemoPlayer
     protected BoardCreature currentCreature;
     protected CardView currentSpellCard;
 
-    protected GameUI gameUI;
+    public GameUI gameUI;
     //protected PopupChat chatPopup;
 
     protected float accTime;
