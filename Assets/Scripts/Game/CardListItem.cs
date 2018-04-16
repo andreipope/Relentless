@@ -6,9 +6,12 @@ using UnityEngine;
 
 using TMPro;
 using GrandDevs.CZB.Data;
+using System;
 
 public class CardListItem : MonoBehaviour
 {
+    public Action<int, int> DeleteCard;
+
     public Deck deckButton;
     public Card card;
     public TextMeshProUGUI cardNameText;
@@ -24,8 +27,10 @@ public class CardListItem : MonoBehaviour
 
     public void OnDeleteButtonPressed()
     {
-		UpdateCardsCount(-1);
-        if(count > 0)
+        UpdateCardsCount(-1);
+        DeleteCard?.Invoke(card.id, count);
+
+        if (count > 0)
         {
             foreach(var deckEntry in deckButton.cards)
             {

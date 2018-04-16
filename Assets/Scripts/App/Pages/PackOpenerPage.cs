@@ -127,9 +127,10 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(true);
             InitObjects();
-            InternalTools.FixVerticalLayoutGroupFitting(_packItemContent);
-            _cardsListScrollRect.verticalNormalizedPosition = 1f;
-            _cardsListScrollRect.CalculateLayoutInputVertical();
+            //Debug.Log(_packItemContent);
+            //InternalTools.FixVerticalLayoutGroupFitting(_packItemContent);
+            //_cardsListScrollRect.verticalNormalizedPosition = 1f;
+            //_cardsListScrollRect.CalculateLayoutInputVertical();
             
         }
 
@@ -145,8 +146,14 @@ namespace GrandDevs.CZB
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
+            //foreach (Transform child in _packItemContent.transform)
+            //{
+            //    MonoBehaviour.Destroy(child.gameObject);
+            //}
+             MonoBehaviour.Destroy(_packsObject);
             MonoBehaviour.Destroy(_backgroundCanvas);
 			MonoBehaviour.Destroy(_cardPlaceholders);
+            //MonoBehaviour.Destroy(_packsObject);
 		}
 
         private void OpenAlertDialog(string msg)
@@ -207,6 +214,10 @@ namespace GrandDevs.CZB
                 }
 
                 DetachAndAnimatePackItem(go);
+                if (_playerManager.LocalUser.packsCount == 0)
+                {
+                    MonoBehaviour.Destroy(_packsObject);
+                }
             }
         }
 

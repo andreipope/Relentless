@@ -56,6 +56,8 @@ namespace GrandDevs.CZB
         private GameObject _backgroundCanvasPrefab,
                            _backgroundCanvas;
 
+        private CollectionData _collectionData;
+
         private int _currentDeckId;
         private int _currentHeroId;
 
@@ -74,6 +76,9 @@ namespace GrandDevs.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
+
+            _collectionData = new CollectionData();
+            _collectionData.cards = new List<CollectionCardData>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -126,7 +131,11 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _collectionData.cards.Clear();
+            foreach (var card in _dataManager.CachedCollectionData.cards)
+                _collectionData.cards.Add(card);
+
+           _selfPage.SetActive(true);
             if (_currentDeckId == -1)
             {
 				_currentDeck = new Deck();
@@ -136,8 +145,9 @@ namespace GrandDevs.CZB
             }
             else
                 _currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId];
-            InitObjects();
+            //InitObjects();
             LoadDeckInfo(_currentDeck);
+            InitObjects();
 
             _cardsListScrollRect.verticalNormalizedPosition = 1f;
             _cardsListScrollRect.CalculateLayoutInputVertical();
@@ -295,7 +305,7 @@ namespace GrandDevs.CZB
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
 
-                var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
+                var amount = _collectionData.GetCardData(card.id).amount;
 
                 var cardView = go.GetComponent<CardView>();
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
@@ -327,20 +337,31 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(item.gameObject);
             }
 
+
             foreach (var card in deck.cards)
             {
                 var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
-                go.GetComponent<CardListItem>().deckButton = deck;
-                go.GetComponent<CardListItem>().card = libraryCard;
-                go.GetComponent<CardListItem>().cardNameText.text = libraryCard.name;
-                go.GetComponent<CardListItem>().cardAmountText.text = "x" + card.amount.ToString();
-                go.GetComponent<CardListItem>().count = card.amount;
-            }       
+                var cardListItem = go.GetComponent<CardListItem>();
+                cardListItem.deckButton = deck;
+                cardListItem.card = libraryCard;
+                cardListItem.cardNameText.text = libraryCard.name;
+                cardListItem.cardAmountText.text = "x" + card.amount.ToString();
+                cardListItem.count = card.amount;
+                cardListItem.DeleteCard += DeleteCardHandler;
 
+                _collectionData.GetCardData(card.cardId).amount -= card.amount;
+            }
             UpdateNumCardsText();
         }
+
+        public void DeleteCardHandler(int cardId, int amount)
+        {
+            Debug.Log("@@#!#@");
+            UpdateCardAmount(cardId, amount);
+        }
+
 
         public void AddCardToDeck(Card card)
         {
@@ -349,11 +370,39 @@ namespace GrandDevs.CZB
                 return;
             }
 
+            var collectionCardData = _collectionData.GetCardData(card.id);
+            if(collectionCardData.amount == 0)
+            {
+                OpenAlertDialog("You don't have enough cards of this type. \n Buy or earn new packs to get more cards!");
+                return;
+            }
+            collectionCardData.amount--;
+            UpdateCardAmount(card.id, collectionCardData.amount);
+
             var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
-            var maxCopies = Constants.CARD_MAX_COPIES;
+
+            uint maxCopies = 0;
+            var cardRarity = "You cannot have more than ";
+
+            switch (card.rarity)
+            {
+                case Enumerators.CardRarity.COMMON:
+                    maxCopies = Constants.CARD_COMMON_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.RARE:
+                    maxCopies = Constants.CARD_RARE_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.LEGENDARY:
+                    maxCopies = Constants.CARD_LEGENDARY_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.EPIC:
+                    maxCopies = Constants.CARD_EPIC_MAX_COPIES;
+                    break;
+            }
+
             if (existingCards != null && existingCards.amount == maxCopies)
             {
-                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of this card in your deck.");
+                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.rarity.ToString().ToLower() + " card in your deck.");
                 return;
             }
 
@@ -385,6 +434,18 @@ namespace GrandDevs.CZB
             }
 
             _currentDeck.AddCard(card.id); 
+        }
+
+        public void UpdateCardAmount(int cardId, int amount)
+        {
+            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            {
+                if (card.libraryCard.id == cardId)
+                {
+                    card.UpdateAmount(amount);
+                    break;
+                }
+            }
         }
 
         public void OnClearAllButtonPressed()

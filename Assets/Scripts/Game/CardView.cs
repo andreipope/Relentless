@@ -89,8 +89,7 @@ public class CardView : MonoBehaviour
 		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
     }
 
-
-	public virtual void UpdateAmount(int amount)
+    public virtual void UpdateAmount(int amount)
 	{
 		amountText.text = amount.ToString();
 	}
