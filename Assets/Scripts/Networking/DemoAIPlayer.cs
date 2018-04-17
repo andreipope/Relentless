@@ -67,6 +67,8 @@ public class DemoAIPlayer : DemoPlayer
     /// <param name="msg">Start turn message.</param>
     public override void OnStartTurn(StartTurnMessage msg)
     {
+        Debug.Log(121212);
+
         base.OnStartTurn(msg);
         if (msg.isRecipientTheActivePlayer)
         {
@@ -230,6 +232,8 @@ public class DemoAIPlayer : DemoPlayer
 
         if (libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack)
         {
+            Debug.Log(2222);
+
             List<int> target = null; //= GetAbilityTarget(card);
             if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
             {
@@ -237,19 +241,50 @@ public class DemoAIPlayer : DemoPlayer
                 playerInfo.namedZones["Board"].AddCard(card);
                 numTurnsOnBoard[card.instanceId] = 0;
                 PlayCreatureCard(card, target);
+                AddCardInfo(card);
             }
             else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
                 if (target != null)
                 {
                     PlaySpellCard(card, target);
+                    AddCardInfo(card);
                 }
             }
             return true;
         }
         return false;
     }
-    
+
+    protected virtual void AddCardInfo(RuntimeCard card)
+    {
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+        string cardSetName = string.Empty;
+        foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+        {
+            if (cardSet.cards.IndexOf(libraryCard) > -1)
+                cardSetName = cardSet.name;
+        }
+
+        GameObject prefab = null;
+        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+        {
+            prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/CreatureCard");
+        }
+        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+        {
+            prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/SpellCard");
+        }
+        GameObject go = MonoBehaviour.Instantiate(prefab);
+
+        var cardView = go.GetComponent<CardView>();
+        cardView.PopulateWithInfo(card, cardSetName);
+        go.transform.position = new Vector3(-6, 0, 0);
+        go.transform.localScale = Vector3.one * 1.5f;
+        GameClient.Get<ITimerManager>().AddTimer((x) => { Destroy(go); }, null, 2, false);
+    }
+
 
     protected List<int> GetAbilityTarget(RuntimeCard card)
     {

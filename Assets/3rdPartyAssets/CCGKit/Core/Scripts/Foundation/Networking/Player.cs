@@ -461,6 +461,7 @@ namespace CCGKit
 
         public void CreateAndPutToHandRuntimeCard(NetCard card, PlayerInfo player)
         {
+            Debug.Log(4444);
             var runtimeCard = CreateRuntimeCard();
             runtimeCard.cardId = card.cardId;
             runtimeCard.instanceId = card.instanceId;

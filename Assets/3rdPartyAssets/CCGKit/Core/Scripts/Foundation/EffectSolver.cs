@@ -191,6 +191,7 @@ namespace CCGKit
 
             if (player != null)
             {
+                UnityEngine.Debug.Log(player.id);
                 UnityEngine.Debug.Log(card.cardId + "_" + card.instanceId);
                 UnityEngine.Debug.Log(originZone);
                 UnityEngine.Debug.Log(destinationZone);

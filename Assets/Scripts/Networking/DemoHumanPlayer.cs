@@ -118,6 +118,8 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.Start();
 
+        //playerInfo.numTurn
+
         //chatPopup = GameObject.Find("PopupChat").GetComponent<PopupChat>();
 
         //changed by Basil
@@ -189,7 +191,7 @@ public class DemoHumanPlayer : DemoPlayer
         };
         handZone.onCardAdded += card =>
         {
-            //Debug.Log("%%%%%");
+            Debug.Log("%%%%%" + CurrentTurn);
             AddCardToHand(card);
             RearrangeHand();
         };
@@ -258,7 +260,7 @@ public class DemoHumanPlayer : DemoPlayer
             var randomCard = opponentHandCards[randomIndex];
             opponentHandCards.Remove(randomCard);
             Destroy(randomCard);
-            RearrangeOpponentHand();
+            RearrangeOpponentHand(true);
         };
 
         opponentBoardZone = opponentInfo.namedZones["Board"];
@@ -388,11 +390,15 @@ public class DemoHumanPlayer : DemoPlayer
             Destroy(card);
         }
         opponentHandCards.Clear();
+        Debug.Log("msg.isRecipientTheActivePlayer: " + msg.isRecipientTheActivePlayer);
         for (var i = 0; i < opponentHandZone.numCards; i++)
         {
+            if (i == opponentHandZone.numCards - 1)
+                RearrangeOpponentHand();
+
             AddCardToOpponentHand();
         }
-        RearrangeOpponentHand();
+        RearrangeOpponentHand(!msg.isRecipientTheActivePlayer, true);
 
         if (msg.isRecipientTheActivePlayer)
         {
@@ -456,22 +462,26 @@ public class DemoHumanPlayer : DemoPlayer
         var twistPerCard = totalTwist / playerHandCards.Count;
         float startTwist = -1f * (totalTwist / 2);
         var scalingFactor = 0.06f;
+        Vector2 moveToPosition = Vector2.zero;
         for (var i = 0; i < playerHandCards.Count; i++)
         {
             var card = playerHandCards[i];
             var twist = startTwist + (i * twistPerCard);
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
-            card.transform.position = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
-            card.transform.rotation = Quaternion.Euler(0, 0, twist);
+            moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
+            //card.transform.DOMove(moveToPosition, 0.5f);
+            //card.transform.DORotate(Vector3.forward * twist, 0.5f);
+            card.RearrangeHand(moveToPosition, Vector3.forward * twist);
             pivot.x += handWidth / playerHandCards.Count;
             card.GetComponent<SortingGroup>().sortingLayerName = "HandCards";
             card.GetComponent<SortingGroup>().sortingOrder = i;
         }
     }
 
-    protected virtual void RearrangeOpponentHand()
+    protected virtual void RearrangeOpponentHand(bool isMove = false ,bool isNewCard = false)
     {
+        Debug.Log(999);
         var handWidth = 0.0f;
         var spacing = -1.0f;
         foreach (var card in opponentHandCards)
@@ -490,14 +500,34 @@ public class DemoHumanPlayer : DemoPlayer
         var twistPerCard = totalTwist / opponentHandCards.Count;
         float startTwist = -1f * (totalTwist / 2);
         var scalingFactor = 0.06f;
+        Vector3 movePosition = Vector3.zero;
+        Vector3 rotatePosition = Vector3.zero;
         for (var i = 0; i < opponentHandCards.Count; i++)
         {
             var card = opponentHandCards[i];
             var twist = startTwist + (i * twistPerCard);
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
-            card.transform.position = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
-            card.transform.rotation = Quaternion.Euler(0, 0, -twist);
+
+            movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
+            rotatePosition = new Vector3(0, 0, -twist);
+
+            if (isMove)
+            {
+                if (i == opponentHandCards.Count - 1 && isNewCard)
+                {
+                    card.transform.position = new Vector3(4.5f, 4.15f, 0);
+                    card.transform.eulerAngles = Vector3.forward * 90f;
+                }
+                card.transform.DOMove(movePosition, 0.5f);
+                card.transform.DORotate(rotatePosition, 0.5f);
+            }
+            else
+            {
+                card.transform.position = movePosition;
+                card.transform.rotation = Quaternion.Euler(rotatePosition);
+            }
+
             pivot.x += handWidth / opponentHandCards.Count;
             card.GetComponent<SortingGroup>().sortingOrder = i;
         }
@@ -824,6 +854,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected virtual void AddCardToHand(RuntimeCard card)
     {
+        Debug.Log(CurrentTurn);
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
         string cardSetName = string.Empty;
@@ -843,8 +874,18 @@ public class DemoHumanPlayer : DemoPlayer
             go = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
         }
 
-    var cardView = go.GetComponent<CardView>();
+        Debug.Log(creatureCardViewPrefab.name);
+
+        var cardView = go.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
+
+        cardView.CurrentTurn = CurrentTurn;
+        if (CurrentTurn == 0)
+        {
+            cardView.SetDefaultAnimation(playerHandCards.Count);
+            //if(playerHandCards.Count == 4)
+            //    RearrangeHand();
+        }
 
         var handCard = go.AddComponent<HandCard>();
         handCard.ownerPlayer = this;
@@ -1056,6 +1097,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     public override void OnCardMoved(CardMovedMessage msg)
     {
+        Debug.Log(3333);
         base.OnCardMoved(msg);
 
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(msg.card.cardId);
@@ -1070,8 +1112,17 @@ public class DemoHumanPlayer : DemoPlayer
         var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
         var randomCard = opponentHandCards[randomIndex];
         opponentHandCards.Remove(randomCard);
-        Destroy(randomCard);
-        RearrangeOpponentHand();
+        //Destroy(randomCard);
+
+        randomCard.transform.DOMove(Vector3.up * 2.5f, 0.5f).OnComplete(() => 
+        {
+            Destroy(randomCard);
+            //randomCard.GetComponent<Animator>().enabled = true;
+        });
+        randomCard.transform.DOScale(Vector3.one * 1.3f, 0.5f);
+        randomCard.transform.DORotate(Vector3.zero, 0.5f);
+
+        RearrangeOpponentHand(true);
         gameUI.SetOpponentHandCards(opponentHandCards.Count);
 
         if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)

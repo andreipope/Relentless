@@ -9,6 +9,7 @@ using System;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB;
 using CCGKit;
+using DG.Tweening;
 
 public class CardView : MonoBehaviour
 {
@@ -37,9 +38,15 @@ public class CardView : MonoBehaviour
 
     protected GameObject previewCard;
 
+    protected Animator cardAnimator;
+
+    protected bool isNewCard = false;
+
     public GrandDevs.CZB.Data.Card libraryCard;
 
     public int manaCost { get; protected set; }
+
+    public int CurrentTurn { get; set; }
 
     [HideInInspector]
     public bool isPreview;
@@ -63,6 +70,11 @@ public class CardView : MonoBehaviour
         bodyText.text = libraryCard.description;
         costText.text = libraryCard.cost.ToString();
 
+        isNewCard = true;
+
+        cardAnimator = gameObject.GetComponent<Animator>();
+        cardAnimator.enabled = false;
+
         manaCost = libraryCard.cost;
 
        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.rarity);
@@ -81,6 +93,8 @@ public class CardView : MonoBehaviour
         amountText.text = amount.ToString();
         costText.text = card.cost.ToString();
 
+        Debug.Log(2222);
+
         manaCost = libraryCard.cost;
 
         var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.rarity);
@@ -89,10 +103,56 @@ public class CardView : MonoBehaviour
 		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
     }
 
-    public virtual void UpdateAmount(int amount)
+
+	public virtual void UpdateAmount(int amount)
 	{
 		amountText.text = amount.ToString();
 	}
+
+    protected Vector3 positionOnHand;
+    protected Vector3 rotationOnHand;
+    public virtual void RearrangeHand(Vector3 position, Vector3 rotation)
+    {
+        positionOnHand = position;
+        rotationOnHand = rotation;
+        if (!isNewCard)
+        {
+            UpdatePositionOnHand();
+        }
+        else if(CurrentTurn != 0)
+        {
+            cardAnimator.enabled = true;
+            cardAnimator.SetTrigger("DeckToHand");
+        }
+        isNewCard = false;
+    }
+
+    protected virtual void UpdatePositionOnHand()
+    {
+        transform.DOMove(positionOnHand, 0.5f);
+        transform.DORotate(rotationOnHand, 0.5f);
+    }
+
+    public virtual void SetDefaultAnimation(int id)
+    {
+        cardAnimator.enabled = true;
+        cardAnimator.SetTrigger("DeckToHandDefault");
+        cardAnimator.SetFloat("Id", id);
+    }
+
+    public virtual void UpdateAnimation(string name)
+    {
+        switch (name)
+        {
+            case "DeckToHandEnd":
+                cardAnimator.enabled = false;
+                UpdatePositionOnHand();
+                break;
+            default:
+                break;
+        }
+    }
+
     public virtual bool CanBePlayed(DemoHumanPlayer owner)
     {
         if (Constants.DEV_MODE)
