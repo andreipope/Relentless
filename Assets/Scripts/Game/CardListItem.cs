@@ -10,7 +10,7 @@ using System;
 
 public class CardListItem : MonoBehaviour
 {
-    public Action<int, int> DeleteCard;
+    public Action<int> OnDeleteCard;
 
     public Deck deckButton;
     public Card card;
@@ -28,7 +28,7 @@ public class CardListItem : MonoBehaviour
     public void OnDeleteButtonPressed()
     {
         UpdateCardsCount(-1);
-        DeleteCard?.Invoke(card.id, count);
+        OnDeleteCard?.Invoke(card.id);
 
         if (count > 0)
         {

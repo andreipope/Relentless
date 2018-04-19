@@ -132,10 +132,16 @@ namespace GrandDevs.CZB
         public void Show()
         {
             _collectionData.cards.Clear();
+            CollectionCardData cardData;
             foreach (var card in _dataManager.CachedCollectionData.cards)
-                _collectionData.cards.Add(card);
+            {
+                cardData = new CollectionCardData();
+                cardData.amount = card.amount;
+                cardData.cardId = card.cardId;
+                _collectionData.cards.Add(cardData);
+            }
 
-           _selfPage.SetActive(true);
+            _selfPage.SetActive(true);
             if (_currentDeckId == -1)
             {
 				_currentDeck = new Deck();
@@ -349,19 +355,19 @@ namespace GrandDevs.CZB
                 cardListItem.cardNameText.text = libraryCard.name;
                 cardListItem.cardAmountText.text = "x" + card.amount.ToString();
                 cardListItem.count = card.amount;
-                cardListItem.DeleteCard += DeleteCardHandler;
+                cardListItem.OnDeleteCard += DeleteCardHandler;
 
                 _collectionData.GetCardData(card.cardId).amount -= card.amount;
             }
             UpdateNumCardsText();
         }
 
-        public void DeleteCardHandler(int cardId, int amount)
+        private void DeleteCardHandler(int cardId)
         {
-            Debug.Log("@@#!#@");
-            UpdateCardAmount(cardId, amount);
+            var collectionCardData = _collectionData.GetCardData(cardId);
+            collectionCardData.amount++;
+            UpdateCardAmount(cardId, collectionCardData.amount);
         }
-
 
         public void AddCardToDeck(Card card)
         {
@@ -428,9 +434,11 @@ namespace GrandDevs.CZB
             {
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
-                go.GetComponent<CardListItem>().deckButton = _currentDeck;
-                go.GetComponent<CardListItem>().card = card;
-                go.GetComponent<CardListItem>().cardNameText.text = card.name;
+                var cardListItem = go.GetComponent<CardListItem>();
+                cardListItem.deckButton = _currentDeck;
+                cardListItem.card = card;
+                cardListItem.cardNameText.text = card.name;
+                cardListItem.OnDeleteCard += DeleteCardHandler;
             }
 
             _currentDeck.AddCard(card.id); 
