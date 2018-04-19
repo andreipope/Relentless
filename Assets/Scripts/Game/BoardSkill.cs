@@ -24,8 +24,14 @@ public class BoardSkill : MonoBehaviour
     public GameObject fightTargetingArrowPrefab,
                             _fireDamageVFXprefab,
                             _healVFXprefab,
-                           _fireDamageVFX,
-                            _healVFX;
+                            _airPickUpCardVFXprefab,
+                            _frozenVFXprefab,
+                            _toxicVFXprefab,
+                            _fireDamageVFX,
+                            _healVFX,
+                            _airPickUpCardVFX,
+                            _frozenVFX,
+                            _toxicVFX;
 
     [SerializeField]
     protected ParticleSystem sleepingParticles;
@@ -47,6 +53,9 @@ public class BoardSkill : MonoBehaviour
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
         _healVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+        _airPickUpCardVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+        _toxicVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
+        _frozenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
         int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
         int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId;
         var skill = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId].skill;
@@ -213,19 +222,19 @@ public class BoardSkill : MonoBehaviour
             }
 
             creature.Stun(_skillPower);
-            CreateFireAttackVFX(creature.transform.position);
+            CreateFrozenVFX(creature.transform.position);
         }
         //TODO for heroes
     }
 	private void ToxicDamageAction(object target)
 	{
 		Debug.Log("POISON HIM");
-        AttackWithModifiers(target, Enumerators.SetType.LIFE);
+        AttackWithModifiers(target,Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
     }
 	private void FireDamageAction(object target)
 	{
 		Debug.Log("BURN HIM");
-        AttackWithModifiers(target, Enumerators.SetType.TOXIC);
+        AttackWithModifiers(target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
 	}
 	private void HealAnyAction(object target)
 	{
@@ -239,13 +248,13 @@ public class BoardSkill : MonoBehaviour
                 ownerPlayer.HealPlayerBySkill(_skillPower);
             //TODO ????? QuestionPopup about when we damage ourselves
 
-            CreateFireAttackVFX(player.transform.position);
+            CreateHealVFX(player.transform.position);
         }
         else
         {
             var cruature = target as BoardCreature;
             ownerPlayer.HealCreatureBySkill(_skillPower, cruature.card);
-            CreateFireAttackVFX(cruature.transform.position);
+            CreateHealVFX(cruature.transform.position);
         }
     }
 	private void CardReturnAction(object target)
@@ -295,7 +304,7 @@ public class BoardSkill : MonoBehaviour
         playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(cruature.card);
 
         GameObject.Destroy(cruature.gameObject);
-        CreateFireAttackVFX(cruature.transform.position);
+        CreateAirVFX(cruature.transform.position);
     }
 
     private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo, BoardCreature cruature)
@@ -343,7 +352,7 @@ public class BoardSkill : MonoBehaviour
     }
 	
 
-    private void AttackWithModifiers(object target, Enumerators.SetType setType)
+    private void AttackWithModifiers(object target, Enumerators.SetType attackType, Enumerators.SetType setType)
     {
         if (target is PlayerAvatar)
         {
@@ -355,7 +364,7 @@ public class BoardSkill : MonoBehaviour
                 ownerPlayer.FightPlayerBySkill(_skillPower);
 
 
-            CreateFireAttackVFX(player.transform.position);
+            CreateAttackVFXByType(attackType, player.transform.position);
         }
         else
         {
@@ -365,7 +374,22 @@ public class BoardSkill : MonoBehaviour
             if (libraryCard.cardSetType == setType)
                 attackModifier = 1;
             ownerPlayer.FightCreatureBySkill(_skillPower + attackModifier, cruature.card);
-            CreateFireAttackVFX(cruature.transform.position);
+            CreateAttackVFXByType(attackType, cruature.transform.position);
+        }
+    }
+
+    private void CreateAttackVFXByType(Enumerators.SetType type, Vector3 pos)
+    {
+        switch (type)
+        {
+            case Enumerators.SetType.FIRE:
+                CreateFireAttackVFX(pos);
+                break;
+            case Enumerators.SetType.TOXIC:
+                CreateToxicAttackVFX(pos);
+                break;
+            default:
+                break;
         }
     }
 
@@ -378,5 +402,23 @@ public class BoardSkill : MonoBehaviour
     {
         _healVFX = MonoBehaviour.Instantiate(_healVFXprefab);
         _healVFX.transform.position = pos + Vector3.forward;
+    }
+
+    private void CreateAirVFX(Vector3 pos)
+    {
+        _airPickUpCardVFX = MonoBehaviour.Instantiate(_airPickUpCardVFXprefab);
+        _airPickUpCardVFX.transform.position = pos + Vector3.forward;
+    }
+
+    private void CreateToxicAttackVFX(Vector3 pos)
+    {
+        _toxicVFX = MonoBehaviour.Instantiate(_toxicVFXprefab);
+        _toxicVFX.transform.position = pos + Vector3.forward;
+    }
+
+    private void CreateFrozenVFX(Vector3 pos)
+    {
+        _frozenVFX = MonoBehaviour.Instantiate(_frozenVFXprefab);
+        _frozenVFX.transform.position = pos + Vector3.forward;
     }
 }

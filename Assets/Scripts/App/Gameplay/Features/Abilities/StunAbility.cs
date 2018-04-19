@@ -26,7 +26,16 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.STUN_FREEZES:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    break;
+                default:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    break;
+            }
+            
         }
 
         public override void Update()

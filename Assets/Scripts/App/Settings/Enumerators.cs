@@ -237,5 +237,24 @@
             ATTACK_CARD_HERO,
             USE_ABILITY,
         }
+
+        public enum AbilityEffectType
+        {
+            NONE,
+            MASSIVE_WATER_WAVE,
+            MASSIVE_FIRE,
+            MASSIVE_LIGHTNING,
+            MASSIVE_TOXIC_ALL,
+            TARGET_ROCK,
+            TARGET_FIRE,
+            TARGET_LIFE,
+            TARGET_TOXIC,
+            TARGET_ADJUSTMENTS_BOMB,
+            STUN_FREEZES,
+            STUN_OR_DAMAGE_FREEZES,
+            TARGET_ADJUSTMENTS_AIR,
+            HEAL_DIRECTLY,
+            HEAL
+        }
     }
 }

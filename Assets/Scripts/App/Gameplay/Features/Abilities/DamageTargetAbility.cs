@@ -1,9 +1,10 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
+using DG.Tweening;
 
 namespace GrandDevs.CZB
 {
@@ -40,6 +41,40 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
+            CreateVFX(Vector3.zero);
+
+
+        }
+
+        protected override void CreateVFX(Vector3 pos)
+        {
+            
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetRockAttack");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_FIRE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_LIFE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_TOXIC:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    break;
+                default:
+                    break;
+            }
+            //base.CreateVFX(pos);
+            var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.transform.position;
+            _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
+            _vfxObject.transform.position = boardCreature.transform.position;
+            _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+        }
+
+        private void ActionCompleted()
+        {
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
@@ -47,14 +82,37 @@ namespace GrandDevs.CZB
                         cardCaller.FightPlayerBySkill(value, false);
                     else
                         cardCaller.FightPlayerBySkill(value);
-                    CreateVFX(targetPlayer.transform.position);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     cardCaller.FightCreatureBySkill(value, targetCreature.card);
-                    CreateVFX(targetCreature.transform.position);
                     break;
                 default: break;
             }
+
+            var targetPosition = _vfxObject.transform.position;
+            Debug.Log(abilityEffectType);
+            DestroyCurrentParticle(true);
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/rockDamageVFX");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_FIRE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamage2VFX");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_LIFE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_TOXIC:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                    break;
+                default:
+                    break;
+            }
+            _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
+            _vfxObject.transform.position = targetPosition;
+            DestroyCurrentParticle();
+
         }
     }
 }

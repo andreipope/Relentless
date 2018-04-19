@@ -25,6 +25,7 @@ namespace GrandDevs.CZB
         public Enumerators.AbilityCallType abilityCallType;
         public Enumerators.AbilityType abilityType;
         public Enumerators.AffectObjectType affectObjectType;
+        public Enumerators.AbilityEffectType abilityEffectType;
 
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
@@ -54,6 +55,7 @@ namespace GrandDevs.CZB
             this.abilityActivityType = ability.abilityActivityType;
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
+            this.abilityEffectType = ability.abilityEffectType;
         }
 
         public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
@@ -228,6 +230,20 @@ namespace GrandDevs.CZB
         {
             boardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
+        }
+
+        protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)
+        {
+            if (isDirectly)
+                DestroyParticle(null);
+            else
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time, false);
+        }
+
+
+        private void DestroyParticle(object[] param)
+        {
+            MonoBehaviour.Destroy(_vfxObject);
         }
     }
 }

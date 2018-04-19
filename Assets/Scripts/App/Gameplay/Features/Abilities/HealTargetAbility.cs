@@ -4,6 +4,7 @@ using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
+using DG.Tweening;
 
 namespace GrandDevs.CZB
 {
@@ -44,17 +45,38 @@ namespace GrandDevs.CZB
             {
                 case Enumerators.AffectObjectType.PLAYER:
                     if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                        cardCaller.HealPlayerBySkill(value, false);
+                        CreateAndMoveParticle(() => { cardCaller.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
                     else
-                        cardCaller.HealPlayerBySkill(value);
-                    CreateVFX(targetPlayer.transform.position);
-                    break;
+                        CreateAndMoveParticle(() => { cardCaller.HealPlayerBySkill(value); }, targetPlayer.transform.position);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    cardCaller.HealCreatureBySkill(value, targetCreature.card);
-                    CreateVFX(targetCreature.transform.position);
+
+                    CreateAndMoveParticle(() => { cardCaller.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
                     break;
                 default: break;
+            }
+        }
+
+        private void CreateAndMoveParticle(Action callback, Vector3 target)
+        {
+           
+            if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
+            {
+                _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                CreateVFX(cardCaller.transform.position);
+                _vfxObject.transform.DOMove(target, 0.5f).OnComplete(() => {
+                    DestroyCurrentParticle(true);
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+                    CreateVFX(target);
+                    callback();
+                    DestroyCurrentParticle();
+                });
+            }
+            else if(abilityEffectType == Enumerators.AbilityEffectType.HEAL_DIRECTLY)
+            {
+                CreateVFX(target);
+                callback();
+                DestroyCurrentParticle();
             }
         }
     }

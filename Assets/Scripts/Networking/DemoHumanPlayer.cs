@@ -191,7 +191,7 @@ public class DemoHumanPlayer : DemoPlayer
         };
         handZone.onCardAdded += card =>
         {
-            Debug.Log("%%%%%" + CurrentTurn);
+            //Debug.Log("%%%%%" + CurrentTurn);
             AddCardToHand(card);
             RearrangeHand();
         };
@@ -481,7 +481,6 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected virtual void RearrangeOpponentHand(bool isMove = false ,bool isNewCard = false)
     {
-        Debug.Log(999);
         var handWidth = 0.0f;
         var spacing = -1.0f;
         foreach (var card in opponentHandCards)
@@ -854,7 +853,6 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected virtual void AddCardToHand(RuntimeCard card)
     {
-        Debug.Log(CurrentTurn);
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
         string cardSetName = string.Empty;
@@ -949,7 +947,7 @@ public class DemoHumanPlayer : DemoPlayer
             }
             else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
-                
+                Debug.Log(111111);   
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
                 sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
@@ -973,6 +971,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, Enumerators.CardKind kind, object boardObject, Action<CardView> action)
     {
+        Debug.Log(2222);
         bool canUseAbility = false;
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
@@ -1097,9 +1096,33 @@ public class DemoHumanPlayer : DemoPlayer
 
     public override void OnCardMoved(CardMovedMessage msg)
     {
-        Debug.Log(3333);
         base.OnCardMoved(msg);
 
+        var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
+        var randomCard = opponentHandCards[randomIndex];
+        opponentHandCards.Remove(randomCard);
+
+        randomCard.transform.DOMove(Vector3.up * 2.5f, 0.5f).OnComplete(() => 
+        {
+            GameClient.Get<ITimerManager>().AddTimer(DestroyRandomCard, new object[] { randomCard }, 1f, false);
+            randomCard.GetComponent<Animator>().SetTrigger("RemoveCard");
+            OnMovedCardCompleted(msg);
+        });
+        randomCard.transform.DOScale(Vector3.one * 1.3f, 0.5f);
+        randomCard.transform.DORotate(Vector3.zero, 0.5f);
+
+        RearrangeOpponentHand(true);
+        gameUI.SetOpponentHandCards(opponentHandCards.Count);
+    }
+
+    private void DestroyRandomCard(object[] param)
+    {
+        GameObject randomCard = param[0] as GameObject;
+        Destroy(randomCard);
+    }
+
+    private void OnMovedCardCompleted(CardMovedMessage msg)
+    {
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(msg.card.cardId);
 
         string cardSetName = string.Empty;
@@ -1108,22 +1131,6 @@ public class DemoHumanPlayer : DemoPlayer
             if (cardSet.cards.IndexOf(libraryCard) > -1)
                 cardSetName = cardSet.name;
         }
-
-        var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
-        var randomCard = opponentHandCards[randomIndex];
-        opponentHandCards.Remove(randomCard);
-        //Destroy(randomCard);
-
-        randomCard.transform.DOMove(Vector3.up * 2.5f, 0.5f).OnComplete(() => 
-        {
-            Destroy(randomCard);
-            //randomCard.GetComponent<Animator>().enabled = true;
-        });
-        randomCard.transform.DOScale(Vector3.one * 1.3f, 0.5f);
-        randomCard.transform.DORotate(Vector3.zero, 0.5f);
-
-        RearrangeOpponentHand(true);
-        gameUI.SetOpponentHandCards(opponentHandCards.Count);
 
         if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
         {

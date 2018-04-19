@@ -57,9 +57,10 @@ namespace GrandDevs.CZB
 						foreach (var cardOpponent in creatures)
 						{
 							cardCaller.FightCreatureBySkill(value, cardOpponent.card);
-							CreateVFX(cardOpponent.transform.position);
+							
 						}
-						Array.Clear(creatures, 0, creatures.Length);
+                        CreateVFX(Vector3.up * 1.5f);
+                        Array.Clear(creatures, 0, creatures.Length);
 						creatures = null;
 						break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
@@ -88,6 +89,34 @@ namespace GrandDevs.CZB
 					default: break;
 				}
 			}
+        }
+
+        protected override void CreateVFX(Vector3 pos)
+        {
+            Debug.Log(abilityEffectType);
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/tsunamiSpellVFX");
+                    break;
+                case Enumerators.AbilityEffectType.MASSIVE_FIRE:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellMassiveFireVFX");
+                    break;
+                case Enumerators.AbilityEffectType.MASSIVE_LIGHTNING:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/LightningVFX");
+                    pos = Vector3.up * 0.5f;
+                    break;
+                case Enumerators.AbilityEffectType.MASSIVE_TOXIC_ALL:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
+                    pos = Vector3.zero;
+                    break;
+                default:
+                    break;
+            }
+
+            DestroyCurrentParticle();
+
+            base.CreateVFX(pos);
         }
     }
 }

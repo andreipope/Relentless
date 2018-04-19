@@ -41,8 +41,6 @@ public class PlayCardHandler : ServerHandler
                 return;
             }
 
-            UnityEngine.Debug.Log(11111);
-
             var player = server.gameState.players.Find(x => x.netId == msg.playerNetId);
             var originZone = player.zones[msg.originZoneId];
             var destinationZone = player.zones[msg.destinationZoneId];

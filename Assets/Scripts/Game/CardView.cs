@@ -58,6 +58,9 @@ public class CardView : MonoBehaviour
         Assert.IsNotNull(costText);
         Assert.IsNotNull(nameText);
         Assert.IsNotNull(bodyText);
+
+        cardAnimator = gameObject.GetComponent<Animator>();
+        cardAnimator.enabled = false;
     }
 
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
@@ -72,8 +75,7 @@ public class CardView : MonoBehaviour
 
         isNewCard = true;
 
-        cardAnimator = gameObject.GetComponent<Animator>();
-        cardAnimator.enabled = false;
+
 
         manaCost = libraryCard.cost;
 
@@ -92,8 +94,6 @@ public class CardView : MonoBehaviour
         bodyText.text = card.description;
         amountText.text = amount.ToString();
         costText.text = card.cost.ToString();
-
-        Debug.Log(2222);
 
         manaCost = libraryCard.cost;
 

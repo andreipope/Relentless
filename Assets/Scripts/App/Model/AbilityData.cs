@@ -15,6 +15,7 @@ namespace GrandDevs.CZB.Data
         public string targetType;
         public string statType;
         public string setType;
+        public string effectType;
 
 
         [JsonIgnore]
@@ -29,7 +30,9 @@ namespace GrandDevs.CZB.Data
 		public Enumerators.StatType abilityStatType;
         [JsonIgnore]
         public Enumerators.SetType abilitySetType;
-
+        [JsonIgnore]
+        public Enumerators.AbilityEffectType abilityEffectType;
+        
         public int value;
 
         public int damage;
@@ -50,10 +53,14 @@ namespace GrandDevs.CZB.Data
                 abilityStatType     =  CastStringTuEnum<Enumerators.StatType>(statType);
             if (setType != null)
                 abilitySetType      =  CastStringTuEnum<Enumerators.SetType>(setType);
+
+            if (effectType != null)
+                abilityEffectType = CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
         }
 
         private T CastStringTuEnum<T>(string data)
         {
+            //UnityEngine.Debug.Log(typeof(T) + " | " + data);
             return (T)Enum.Parse(typeof(T), data.ToUpper());
         }
 

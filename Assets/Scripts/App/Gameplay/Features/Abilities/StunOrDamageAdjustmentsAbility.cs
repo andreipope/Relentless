@@ -26,7 +26,15 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    break;
+                default:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    break;
+            }
         }
 
         public override void Update()
@@ -46,13 +54,15 @@ namespace GrandDevs.CZB
 
         protected override void CreatureOnAttackEventHandler(object info)
         {
+            Debug.Log(abilityCallType);
             base.CreatureOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
 
 			if (info is BoardCreature)
 			{
-				var creature = info as BoardCreature;
+                Debug.Log(55555);
+                var creature = info as BoardCreature;
 
 				CreateVFX(creature.transform.position);
 

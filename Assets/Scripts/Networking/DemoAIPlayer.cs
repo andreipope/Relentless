@@ -67,7 +67,6 @@ public class DemoAIPlayer : DemoPlayer
     /// <param name="msg">Start turn message.</param>
     public override void OnStartTurn(StartTurnMessage msg)
     {
-        Debug.Log(121212);
 
         base.OnStartTurn(msg);
         if (msg.isRecipientTheActivePlayer)
@@ -232,7 +231,6 @@ public class DemoAIPlayer : DemoPlayer
 
         if (libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack)
         {
-            Debug.Log(2222);
 
             List<int> target = null; //= GetAbilityTarget(card);
             if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)

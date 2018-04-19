@@ -57,6 +57,7 @@
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 2,
+			  "effectType": "TARGET_FIRE"
             }
           ]
         },
@@ -79,6 +80,7 @@
               "targetType": "OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
+              "effectType": "MASSIVE_FIRE"
             }
           ]
         }
@@ -128,6 +130,7 @@
               "statType": "damage",
 			  "setType": "fire",
 			  "value": 1,
+			  "effectType": "STUN_FREEZES"
             }
           ]
         },
@@ -148,7 +151,8 @@
               "activityType": "passive",
               "callType": "AT_ATTACK",
               "targetType": "opponent_card|opponent",
-              "value": 3
+              "value": 3,
+			  "effectType": "STUN_OR_DAMAGE_FREEZES"
             }
           ]
         },
@@ -171,6 +175,7 @@
 		              "targetType": "OPPONENT_ALL_CARDS | opponent",
 		              "affectObjectType": "none",
 		              "value": 2,
+					  "effectType": "MASSIVE_WATER_WAVE"
 		            }
 		          ]
 		        }
@@ -233,6 +238,7 @@
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 3,
+			  "effectType": "TARGET_ROCK"
             }
           ]
         },
@@ -312,6 +318,7 @@
               "callType": "at_start",
               "targetType": "player_card|opponent_card",
               "value": 1,
+			  "effectType": "TARGET_ADJUSTMENTS_AIR"
             }
           ]
         },
@@ -333,6 +340,7 @@
               "callType": "at_start",
               "targetType": "OPPONENT_ALL_CARDS",
               "value": 3,
+			  "effectType": "MASSIVE_LIGHTNING"
             }
           ]
         }
@@ -382,6 +390,7 @@
               "callType": "at_start",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 2,
+			  "effectType": "TARGET_LIFE"
             }
           ]
         },
@@ -495,6 +504,7 @@
               "callType": "at_start",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 1,
+			  "effectType": "TARGET_TOXIC"
             }
           ]
         },
@@ -517,6 +527,7 @@
               "targetType": "player|PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
+			  "effectType": "MASSIVE_TOXIC_ALL"
             }
           ]
         }
@@ -543,6 +554,7 @@
 						"callType": "at_start",
 						"targetType": "player_card|opponent_card|player|opponent",
 						"value": 4,
+						"effectType": "HEAL"
 					  }
 				  ]
         },
@@ -564,6 +576,7 @@
 							"callType": "at_start",
 							"targetType": "player_card|opponent_card|player|opponent",
 							"value": 4,
+							"effectType": "TARGET_ADJUSTMENTS_BOMB"
 					  }
 				  ]
         },

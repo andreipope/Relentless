@@ -4,6 +4,7 @@ using GrandDevs.CZB.Common;
 using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
+using DG.Tweening;
 
 namespace GrandDevs.CZB
 {
@@ -20,7 +21,15 @@ namespace GrandDevs.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            switch (abilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                    break;
+                default:
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    break;
+            }
         }
 
         public override void Update() { }
@@ -33,7 +42,6 @@ namespace GrandDevs.CZB
 
             if (_isAbilityResolved)
             {
-                Debug.Log(_vfxObject);
                 switch (affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
@@ -46,8 +54,9 @@ namespace GrandDevs.CZB
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetCreature);
 
-                        cardCaller.FightCreatureBySkill(value, targetCreature.card);
-                        CreateVFX(targetCreature.transform.position);
+                        //cardCaller.FightCreatureBySkill(value, targetCreature.card);
+                        //CreateVFX(cardCaller.transform.position);
+                        CreateAndMoveParticle(targetCreature);
                         break;
                     default: break;
                 }
@@ -95,14 +104,28 @@ namespace GrandDevs.CZB
 
             if (leftAdjustment != null)
             {
-                cardCaller.FightCreatureBySkill(value, leftAdjustment.card);
-                CreateVFX(leftAdjustment.transform.position);
+                //CreateVFX(cardCaller.transform.position);
+                CreateAndMoveParticle(leftAdjustment);
             }
 
             if (rightAdjastment != null)
             {
-                cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-                CreateVFX(rightAdjastment.transform.position);
+                //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
+                CreateAndMoveParticle(rightAdjastment);
+            }
+        }
+
+        private void CreateAndMoveParticle(BoardCreature targetCard)
+        {
+            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+            {
+                CreateVFX(cardCaller.transform.position);
+                _vfxObject.transform.DOMove(targetCard.transform.position, 0.5f).OnComplete(() => { cardCaller.FightCreatureBySkill(value, targetCard.card); });
+            }
+            else
+            {
+                CreateVFX(targetCreature.transform.position);
+                cardCaller.FightCreatureBySkill(value, targetCard.card);
             }
         }
     }
