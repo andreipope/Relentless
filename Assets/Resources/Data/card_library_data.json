@@ -148,11 +148,11 @@
           "abilities": [
             {
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
-              "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "activityType": "active",
+              "callType": "at_start",
               "targetType": "opponent_card|opponent",
               "value": 3,
-			  "effectType": "STUN_OR_DAMAGE_FREEZES"
+              "effectType": "STUN_OR_DAMAGE_FREEZES"
             }
           ]
         },

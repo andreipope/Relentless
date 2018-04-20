@@ -14,9 +14,10 @@ namespace GrandDevs.CZB.Gameplay
 
         private CanvasGroup _fadeImageGroup;
 
-        private float _fadeSpeed = 5f,
+        private float _fadeSpeed = 10f,
                       _fadeThreshold = 0.01f,
-                      _fadeDelay = 0.01f;
+                      _fadeDelay = 0.01f,
+                      _fadeGoalValue = 1f;
 
         private bool _isFading = false;
         private Enumerators.FadeState _currentFadeState;
@@ -57,9 +58,17 @@ namespace GrandDevs.CZB.Gameplay
 
         public void FadeIn(Action callback = null)
         {
-            PrepareFading(true);
+			_fadeGoalValue = 1f;
+			PrepareFading(true);
             _timerManager.AddTimer(Fade, new object[] { true, callback }, _fadeDelay, true);
         }
+
+		public void FadeIn(float fadeValue)
+		{
+            _fadeGoalValue = fadeValue;
+			PrepareFading(true);
+			_timerManager.AddTimer(Fade, new object[] { true, null }, _fadeDelay, true);
+		}
 
         public void FadeOut(Action callback = null)
         {
@@ -70,7 +79,7 @@ namespace GrandDevs.CZB.Gameplay
         private void PrepareFading(bool fadeIn)
         {
             _timerManager.StopTimer(Fade);
-            _fadeImageGroup.alpha = fadeIn ? 0f : 1f;
+            _fadeImageGroup.alpha = fadeIn ? 0f : _fadeGoalValue;
             _fadeImageGroup.transform.SetAsLastSibling();
             _fadeImageGroup.gameObject.SetActive(true);
             _isFading = true;
@@ -82,7 +91,7 @@ namespace GrandDevs.CZB.Gameplay
             Action callback = (param[1] == null) ? null : (Action)param[1];
 
             float speed = Time.deltaTime * _fadeSpeed;
-            float to = fadeIn ? 1f : 0f;
+            float to = fadeIn ? _fadeGoalValue : 0f;
 
             _fadeImageGroup.alpha = Mathf.Lerp(_fadeImageGroup.alpha, to, speed);
 

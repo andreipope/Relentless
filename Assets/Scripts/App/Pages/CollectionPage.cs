@@ -7,7 +7,7 @@ using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 using TMPro;
 using DG.Tweening;
-
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -116,7 +116,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            _uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
+            //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -169,7 +169,7 @@ namespace GrandDevs.CZB
             _selectedCollectionCard = card;
             _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
             _selectedCard.name = "CardPreview";
-            SetLayerRecursively(_selectedCard.gameObject, 8);
+            Utilites.SetLayerRecursively(_selectedCard.gameObject, 8);
 
 			Sequence mySequence = DOTween.Sequence();
 			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
@@ -319,16 +319,6 @@ namespace GrandDevs.CZB
 		public void SetActive(int id, bool active)
 		{
 
-		}
-
-		private void SetLayerRecursively(GameObject obj, int layer)
-		{
-			obj.layer = layer;
-
-			foreach (Transform child in obj.transform)
-			{
-				SetLayerRecursively(child.gameObject, layer);
-			}
 		}
     }
 }

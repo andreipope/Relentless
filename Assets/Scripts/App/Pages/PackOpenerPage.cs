@@ -10,6 +10,8 @@ using DG.Tweening;
 using GrandDevs.CZB.Helpers;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
+using GrandDevs.Internal;
+using GrandDevs.CZB.Gameplay;
 
 namespace GrandDevs.CZB
 {
@@ -42,13 +44,15 @@ namespace GrandDevs.CZB
 
         private Vector3 _centerPos;
 
-        private bool _lock;
+        private bool _lock, _isCardPreview;
 
         private Transform _cardsContainer;
 
         private GameObject _packsObject;
 
         private int _cardsTurned = 0;
+
+        private Transform _cardPreview, _cardPreviewOriginal;
 
         public void Init()
         {
@@ -86,38 +90,10 @@ namespace GrandDevs.CZB
 				{
 					if (Input.GetMouseButtonDown(0))
 					{
-                        if (_cardsTurned == 5)
-                        {
-                            foreach (Transform cardObj in _cardsContainer)
-                            {
-                                Sequence animationSequence5 = DOTween.Sequence();
-                                animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 7, .3f));
-                                animationSequence5.OnComplete(() =>
-                                {
-                                    MonoBehaviour.Destroy(cardObj.gameObject);
-                                });
-                            }
-                            _lock = false;
-                            foreach (Transform item in _packItemContent.transform)
-                                item.GetComponent<DragableObject>().locked = _lock;
-                            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
-                            _cardsTurned = 0;
-                        }
+                        if (_isCardPreview)
+                            CardPreview(false);
                         else
-                        {
-                            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                            var hit = Physics2D.Raycast(mousePos, Vector2.zero);
-                            if (hit.collider != null)
-                            {
-                                foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-                                {
-                                    if (hit.collider.gameObject == card.gameObject)
-                                    {
-                                        CardSelected(card);
-                                    }
-                                }
-                            }
-                        }
+                            CardClickeCheck();
 					}
 				}
 			}
@@ -155,6 +131,90 @@ namespace GrandDevs.CZB
 			MonoBehaviour.Destroy(_cardPlaceholders);
             //MonoBehaviour.Destroy(_packsObject);
 		}
+
+        private void CardClickeCheck()
+        {
+			var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			var hit = Physics2D.Raycast(mousePos, Vector2.zero);
+			if (hit.collider != null)
+			{
+				foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+				{
+					if (hit.collider.gameObject == card.gameObject)
+					{
+                        if (card.transform.Find("BackgroundBack").gameObject.activeSelf)
+                            CardSelected(card);
+                        else
+                        {
+                            _cardPreviewOriginal = card.transform;
+							CardPreview(true);
+                        }
+					}
+				}
+			}
+			else if (_cardsTurned == 5)
+				MoveCardsToBottomAndDestroy();
+        }
+
+        private void CardPreview(bool isOpen)
+        {
+            if(isOpen)
+            {
+                
+                _cardPreview = MonoBehaviour.Instantiate(_cardPreviewOriginal.gameObject).transform;
+				_cardPreview.name = "CardPreview";
+				Utilites.SetLayerRecursively(_cardPreview.gameObject, 8);
+
+				Sequence mySequence = DOTween.Sequence();
+				mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
+				mySequence.Append(_cardPreview.DORotate(new Vector3(0, 0, 0), .4f));
+
+				Sequence mySequence2 = DOTween.Sequence();
+				mySequence2.Append(_cardPreview.DOMove(new Vector3(0, .3f, 5), .4f));
+				mySequence2.Append(_cardPreview.DOMove(new Vector3(0, -0.3f, 5), .2f));
+
+				Sequence mySequence3 = DOTween.Sequence();
+				mySequence3.Append(_cardPreview.DOScale(new Vector3(2.7f, 2.7f, 2.7f), .4f));
+				mySequence3.Append(_cardPreview.DOScale(new Vector3(2.5f, 2.5f, 2.5f), .2f));
+
+				GameClient.Get<ICameraManager>().FadeIn(0.7f);
+				_isCardPreview = true;
+            }
+            else
+            {
+                GameClient.Get<ICameraManager>().FadeOut(null);
+
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(_cardPreview.DOScale(_cardPreviewOriginal.localScale, .3f));
+                sequence.Join(_cardPreview.DOMove(_cardPreviewOriginal.position, .3f));
+                sequence.Join(_cardPreview.DORotate(_cardPreviewOriginal.eulerAngles, .3f));
+                sequence.OnComplete(() => {
+                    MonoBehaviour.Destroy(_cardPreview.gameObject); 
+                    _isCardPreview = false;
+                });
+            }
+			
+			//_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
+			//(_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).cardTransform = _selectedCard.transform;
+        }
+
+        private void MoveCardsToBottomAndDestroy()
+        {
+			foreach (Transform cardObj in _cardsContainer)
+			{
+				Sequence animationSequence5 = DOTween.Sequence();
+				animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 7, .3f));
+				animationSequence5.OnComplete(() =>
+				{
+					MonoBehaviour.Destroy(cardObj.gameObject);
+				});
+			}
+			_lock = false;
+			foreach (Transform item in _packItemContent.transform)
+				item.GetComponent<DragableObject>().locked = _lock;
+			_dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+			_cardsTurned = 0;
+        }
 
         private void OpenAlertDialog(string msg)
         {
@@ -319,13 +379,13 @@ namespace GrandDevs.CZB
             Vector3 rotation = go.transform.eulerAngles;
 			Sequence animationSequence3 = DOTween.Sequence();
 			animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
-            animationSequence3.Append(go.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), .2f));
+            animationSequence3.Join(go.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), .2f));
 			animationSequence3.OnComplete(() =>
 			{                            
 				go.transform.Find("BackgroundBack").gameObject.SetActive(false);
 				Sequence animationSequence4 = DOTween.Sequence();
 				animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
-                animationSequence4.Append(go.transform.DOScale(new Vector3(1f, 1f, 1f), .2f));
+                animationSequence4.Join(go.transform.DOScale(new Vector3(1f, 1f, 1f), .2f));
                 animationSequence4.AppendInterval(2f);
 
                 _cardsTurned++;

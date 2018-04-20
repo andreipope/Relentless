@@ -6978,8 +6978,14 @@ MonoBehaviour:
     type: 2}
   _fireDamageVFXprefab: {fileID: 0}
   _healVFXprefab: {fileID: 0}
+  _airPickUpCardVFXprefab: {fileID: 0}
+  _frozenVFXprefab: {fileID: 0}
+  _toxicVFXprefab: {fileID: 0}
   _fireDamageVFX: {fileID: 0}
   _healVFX: {fileID: 0}
+  _airPickUpCardVFX: {fileID: 0}
+  _frozenVFX: {fileID: 0}
+  _toxicVFX: {fileID: 0}
   sleepingParticles: {fileID: 0}
   abilitiesTargetingArrow: {fileID: 0}
   fightTargetingArrow: {fileID: 0}
@@ -8232,7 +8238,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 6f968ce6e8f3fc746b7b2cbd8162c806, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

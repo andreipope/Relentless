@@ -11,7 +11,8 @@ namespace GrandDevs.CZB.Gameplay
         bool IsFading { get; }
         Enumerators.FadeState CurrentFadeState { get; }
 
-        void FadeIn(Action callback = null);
+		void FadeIn(Action callback = null);
+		void FadeIn(float fadeTo);
         void FadeOut(Action callback = null);
     }
 }

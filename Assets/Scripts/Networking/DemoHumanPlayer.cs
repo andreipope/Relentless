@@ -935,7 +935,8 @@ public class DemoHumanPlayer : DemoPlayer
                 RearrangeHand();
                 playerBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
 
-                Destroy(card.gameObject);
+                //Destroy(card.gameObject);
+                RemoveCard(card);
 
                 currentCreature = boardCreature.GetComponent<BoardCreature>();
 
@@ -947,7 +948,6 @@ public class DemoHumanPlayer : DemoPlayer
             }
             else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
             {
-                Debug.Log(111111);   
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
                 sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
@@ -969,9 +969,60 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
+    private void RemoveCard(CardView card)
+    {
+        var go = card.gameObject;
+
+        //if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
+        //    return;
+        var sortingGroup = card.GetComponent<SortingGroup>();
+
+
+        //var allSprites = go.GetComponentsInChildren<SpriteRenderer>();
+        //Color color = new Color();
+        //for (int i = 0; i < allSprites.Length - 1; i++)
+        //{
+        //    color = allSprites[i].color;
+        //    color.a = 0;
+        //    allSprites[i].DOColor(color, .5f);
+        //}
+        //color = allSprites[allSprites.Length -1].color;
+        //color.a = 0;
+        //allSprites[allSprites.Length - 1].DOColor(color, .5f).OnComplete(() => 
+        //{
+
+        Sequence animationSequence3 = DOTween.Sequence();
+        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
+        go.transform.DOScale(new Vector3(.89f, .89f, .89f), .2f);
+        animationSequence3.OnComplete(() =>
+        {
+            go.transform.Find("BackgroundBack").gameObject.SetActive(true);
+            Sequence animationSequence4 = DOTween.Sequence();
+            animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+            //animationSequence4.AppendInterval(2f);
+        });
+
+        Sequence animationSequence2 = DOTween.Sequence();
+        animationSequence2.Append(go.transform.DOMove(new Vector3(-4, -1, 0), .3f));
+        
+        animationSequence2.OnComplete(() =>
+        {
+            sortingGroup.sortingLayerName = "Default";
+            sortingGroup.sortingOrder = 1;
+            Debug.Log(121212);
+            Sequence animationSequence5 = DOTween.Sequence();
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-4.63f, -3.66f, 0), .5f));
+            animationSequence5.OnComplete(() => 
+            {
+                MonoBehaviour.Destroy(go);
+            });
+        });
+
+        //});
+    }
+
     private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, Enumerators.CardKind kind, object boardObject, Action<CardView> action)
     {
-        Debug.Log(2222);
         bool canUseAbility = false;
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets

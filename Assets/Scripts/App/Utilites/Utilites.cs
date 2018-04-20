@@ -351,6 +351,17 @@ namespace GrandDevs.Internal
             MemoryStream memoryStream = new MemoryStream(key);
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
         }
-        #endregion cryptography
+		#endregion cryptography
+
+
+		public static void SetLayerRecursively(GameObject obj, int layer)
+		{
+			obj.layer = layer;
+
+			foreach (Transform child in obj.transform)
+			{
+				SetLayerRecursively(child.gameObject, layer);
+			}
+		}
     }
 }

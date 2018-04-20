@@ -62,8 +62,9 @@ namespace GrandDevs.CZB
            
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
+                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
-                CreateVFX(cardCaller.transform.position);
+                CreateVFX(startPosition);
                 _vfxObject.transform.DOMove(target, 0.5f).OnComplete(() => {
                     DestroyCurrentParticle(true);
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");

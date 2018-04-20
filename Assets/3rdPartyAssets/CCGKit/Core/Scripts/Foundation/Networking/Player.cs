@@ -194,17 +194,10 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-                    int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
-                    foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
-                    {
-                        for (var i = 0; i < card.amount; i++)
-                        {
-                            if (Constants.DEV_MODE)
-                                msgDefaultDeck.Add(26);
-                            else
-                                msgDefaultDeck.Add(card.cardId);
-                        }
-                    }
+					int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+					foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
+						for (var i = 0; i < card.amount; i++)
+                            msgDefaultDeck.Add(card.cardId);
                 }
                 else
                 {

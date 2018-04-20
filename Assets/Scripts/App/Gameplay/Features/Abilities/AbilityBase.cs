@@ -37,6 +37,7 @@ namespace GrandDevs.CZB
 
         public BoardCreature targetCreature;
         public PlayerAvatar targetPlayer;
+        public PlayerAvatar selectedPlayer;
 
         public AbilityTargetingArrow TargettingArrow
         {
@@ -56,6 +57,7 @@ namespace GrandDevs.CZB
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
             this.abilityEffectType = ability.abilityEffectType;
+            selectedPlayer = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
         }
 
         public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
@@ -137,6 +139,7 @@ namespace GrandDevs.CZB
         protected virtual void OnCardSelectedEventHandler(BoardCreature obj)
         {
             targetCreature = obj;
+
             targetPlayer = null;
         }
 
@@ -148,6 +151,7 @@ namespace GrandDevs.CZB
         protected virtual void OnPlayerSelectedHandler(PlayerAvatar obj)
         {
             targetPlayer = obj;
+                
             targetCreature = null;
         }
 

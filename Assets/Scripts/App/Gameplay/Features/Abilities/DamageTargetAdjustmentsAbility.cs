@@ -27,7 +27,7 @@ namespace GrandDevs.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
         }
@@ -46,17 +46,17 @@ namespace GrandDevs.CZB
                 {
                     case Enumerators.AffectObjectType.PLAYER:
                         if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                            cardCaller.FightPlayerBySkill(value, false);
+                            CreateAndMoveParticle(() => cardCaller.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         else
-                            cardCaller.FightPlayerBySkill(value);
-                        CreateVFX(targetPlayer.transform.position);
+                            CreateAndMoveParticle(() => cardCaller.FightPlayerBySkill(value), targetPlayer.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetCreature);
 
                         //cardCaller.FightCreatureBySkill(value, targetCreature.card);
                         //CreateVFX(cardCaller.transform.position);
-                        CreateAndMoveParticle(targetCreature);
+                        //CreateAndMoveParticle(targetCreature);
+                        CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, targetCreature.card), targetCreature.transform.position);
                         break;
                     default: break;
                 }
@@ -105,28 +105,57 @@ namespace GrandDevs.CZB
             if (leftAdjustment != null)
             {
                 //CreateVFX(cardCaller.transform.position);
-                CreateAndMoveParticle(leftAdjustment);
+                CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
             }
 
             if (rightAdjastment != null)
             {
                 //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-                CreateAndMoveParticle(rightAdjastment);
+                CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
             }
         }
 
-        private void CreateAndMoveParticle(BoardCreature targetCard)
+        private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
+            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
             {
-                CreateVFX(cardCaller.transform.position);
-                _vfxObject.transform.DOMove(targetCard.transform.position, 0.5f).OnComplete(() => { cardCaller.FightCreatureBySkill(value, targetCard.card); });
+                //CreateVFX(cardCaller.transform.position);
+                var particleMain = MonoBehaviour.Instantiate(_vfxObject);
+                particleMain.transform.position = startPosition + Vector3.forward;
+                particleMain.transform.DOMove(targetPosition, 0.5f).OnComplete(() => 
+                {
+                    callback();
+                    if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
+                    {
+                        DestroyParticle(particleMain, true);
+                        var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        var particle  = MonoBehaviour.Instantiate(prefab);
+                        particle.transform.position = targetPosition + Vector3.forward;
+                        DestroyParticle(particle);
+                    }
+                });
             }
             else
             {
                 CreateVFX(targetCreature.transform.position);
-                cardCaller.FightCreatureBySkill(value, targetCard.card);
+                callback();
             }
+        }
+
+        private void DestroyParticle(GameObject particleObj, bool isDirectly = false, float time = 3f)
+        {
+            if (isDirectly)
+                DestroyParticle(new object[] { particleObj });
+            else
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { particleObj }, time, false);
+        }
+
+
+        private void DestroyParticle(object[] param)
+        {
+            var particleObj = param[0] as GameObject;
+            MonoBehaviour.Destroy(particleObj);
         }
     }
 }

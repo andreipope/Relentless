@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.403.ver";
+        internal const string CURRENT_VERSION = "0.0.501.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -42,7 +42,7 @@
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
-        internal const bool DEV_MODE = true;
+        internal const bool DEV_MODE = false;
 
     }
 }
