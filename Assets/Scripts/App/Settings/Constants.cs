@@ -42,7 +42,7 @@
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;
 
     }
 }
