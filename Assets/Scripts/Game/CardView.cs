@@ -46,6 +46,8 @@ public class CardView : MonoBehaviour
 
     public int manaCost { get; protected set; }
 
+    public ParticleSystem removeCardParticle { get; protected set; }
+
     public int CurrentTurn { get; set; }
 
     [HideInInspector]
@@ -83,6 +85,8 @@ public class CardView : MonoBehaviour
 
         backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
+
+        removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
         amountText.transform.parent.gameObject.SetActive(false);
     }

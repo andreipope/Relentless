@@ -34,7 +34,8 @@ namespace GrandDevs.CZB
                           _cardPlaceholders,
                             _backgroundCanvasPrefab,
                            _backgroundCanvas;
-        //private TextMeshProUGUI numCardsText;
+
+        private TextMeshProUGUI gooValueText;
 
         private Slider _cardSetsSlider;
 
@@ -57,6 +58,7 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
+            gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
 			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
 			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
@@ -90,10 +92,7 @@ namespace GrandDevs.CZB
                 {
                     if (_selectedCard != null)
                     {
-                        var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
-                        _selectedCollectionCard.UpdateAmount(amount);
-                        MonoBehaviour.Destroy(_selectedCard.gameObject);
-                        _selectedCard = null;
+                        ClosePopupInfo();
                     }
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -117,6 +116,7 @@ namespace GrandDevs.CZB
         public void Show()
         {
             //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
+            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -160,6 +160,29 @@ namespace GrandDevs.CZB
 
             _cardSetsSlider.value = 0;
             LoadCards(0, 0);
+        }
+
+        private void ClosePopupInfo()
+        {
+			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
+			_selectedCollectionCard.UpdateAmount(amount);
+
+            UpdateGooValue();
+
+			Sequence sequence = DOTween.Sequence();
+            sequence.Append(_selectedCard.transform.DOScale(_selectedCollectionCard.transform.localScale, .3f));
+			sequence.Join(_selectedCard.transform.DOMove(_selectedCollectionCard.transform.position, .3f));
+			sequence.Join(_selectedCard.transform.DORotate(_selectedCollectionCard.transform.eulerAngles, .3f));
+			sequence.OnComplete(() =>
+			{
+				MonoBehaviour.Destroy(_selectedCard.gameObject);
+				_selectedCard = null;
+			});
+        }
+
+        public void UpdateGooValue()
+        {
+            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
         }
 
 #region Buttons Handlers

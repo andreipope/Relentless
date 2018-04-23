@@ -42,6 +42,7 @@ namespace GrandDevs.CZB
             AddService<IScreenOrientationManager>(new ScreenOrientationManager());
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
+            AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
         }
 

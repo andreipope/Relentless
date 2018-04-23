@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.501.ver";
+        internal const string CURRENT_VERSION = "0.0.502.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -18,13 +18,13 @@
             
         internal static bool DEBUG_MODE = false;
 
-        internal static uint HEROES_AMOUNT = 9;
-        internal static uint DECK_MAX_SIZE = 30;
-        internal static uint CARD_COMMON_MAX_COPIES = 4;
-        internal static uint CARD_RARE_MAX_COPIES = 2;
-        internal static uint CARD_LEGENDARY_MAX_COPIES = 2;
-        internal static uint CARD_EPIC_MAX_COPIES = 1;
-        internal static uint CARDS_IN_PACK = 5;
+		internal static uint HEROES_AMOUNT = 9;
+		internal static uint DECK_MAX_SIZE = 30;
+		internal static uint CARD_COMMON_MAX_COPIES = 4;
+		internal static uint CARD_RARE_MAX_COPIES = 2;
+		internal static uint CARD_LEGENDARY_MAX_COPIES = 2;
+		internal static uint CARD_EPIC_MAX_COPIES = 1;
+		internal static uint CARDS_IN_PACK = 5;
 
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
@@ -38,11 +38,14 @@
         internal const string TAG_DAMAGE = "Damage";
         internal const string TAG_HP = "HP";
         internal const string TAG_MANA = "Mana";
-        
+
+        internal const string CONTENT_FOLDER_NAME = "SpreadsheetsData/";
+        internal const string SPREADSHEET_FILE_FORMAT = ".csv";
+
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
-        internal const bool DEV_MODE = true;
+        internal const bool DEV_MODE = false;
 
     }
 }

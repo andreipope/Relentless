@@ -78,11 +78,7 @@ namespace GrandDevs.CZB
             _card = data as Card;
             _description.text = _card.description;
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.id);
-            if (_cardData.amount == 0)
-                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            else
-                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
-            _amount.text = _cardData.amount.ToString();
+            UpdateCardAmount();
             Show();
         }
 
@@ -90,6 +86,15 @@ namespace GrandDevs.CZB
         {
 
         }
+
+		public void UpdateCardAmount()
+		{
+			if (_cardData.amount == 0)
+				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+			else
+				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+			_amount.text = _cardData.amount.ToString();
+		}
 
         private void DesintegrateButtonHandler()
         {

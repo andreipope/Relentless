@@ -29,8 +29,6 @@ public class DemoAIPlayer : DemoPlayer
 
     protected Dictionary<int, int> numTurnsOnBoard = new Dictionary<int, int>();
 
-    protected AbilitiesController _abilitiesController;
-
     /// <summary>
     /// Unity's Awake.
     /// </summary>
@@ -38,7 +36,6 @@ public class DemoAIPlayer : DemoPlayer
     {
         base.Awake();
         isHuman = false;
-        _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
     }
 
     /// <summary>
@@ -235,9 +232,7 @@ public class DemoAIPlayer : DemoPlayer
         if (libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack)
         {
 
-            List<int> target = null;//GetAbilityTarget(card);
-            //CallAbility(libraryCard, card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay);
-
+            List<int> target = null; //= GetAbilityTarget(card);
             if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
             {
                 playerInfo.namedZones["Hand"].RemoveCard(card);
@@ -285,65 +280,15 @@ public class DemoAIPlayer : DemoPlayer
         cardView.PopulateWithInfo(card, cardSetName);
         go.transform.position = new Vector3(-6, 0, 0);
         go.transform.localScale = Vector3.one * 1.5f;
+        cardView.SetHighlightingEnabled(false);
         GameClient.Get<ITimerManager>().AddTimer((x) => { Destroy(go); }, null, 2, false);
     }
 
 
-    private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, Enumerators.CardKind kind, object boardObject, Action<CardView> action)
-    {
-        bool canUseAbility = false;
-        ActiveAbility activeAbility = null;
-        foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
-        {
-            activeAbility = _abilitiesController.CreateActiveAbility(item, kind, boardObject, this);
-            //Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
-            if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
-                canUseAbility = true;
-            else //if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
-                activeAbility.ability.Activate();
-        }
-        // Preemptively move the card so that the effect solver can properly check the availability of targets
-        // by also taking into account this card (that is trying to be played).
-
-        if (kind == Enumerators.CardKind.SPELL)
-            //currentSpellCard = card;
-        else
-        {
-            playerInfo.namedZones[Constants.ZONE_HAND].RemoveCard(card.card);
-            playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(card.card);
-           // currentCreature.fightTargetingArrowPrefab = fightTargetingArrowPrefab;
-        }
-        effectSolver.MoveCard(netId, card.card, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-        if (canUseAbility)
-        {
-            var ability = libraryCard.abilities.Find(x => _abilitiesController.IsAbilityCanActivateTargetAtStart(x));
-
-            if (_abilitiesController.CheckActivateAvailability(kind, ability, this))
-            {
-                activeAbility.ability.Activate();
-
-                activeAbility.ability.ActivateSelectTarget(callback: () =>
-                {
-                    //action(card);
-
-                },
-                failedCallback: () =>
-                {
-                    Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
-                    //action(card);
-                });
-            }
-            else { }
-                //action(card);
-        }
-        else { }
-            //action(card);
-    }
-
     protected List<int> GetAbilityTarget(RuntimeCard card)
     {
         var config = GameManager.Instance.config;
-        var boardZoneId = config.gameZones.Find(x => x.name == "Board").id;
+        //var boardZoneId = config.gameZones.Find(x => x.name == "Board").id;
         var libraryCard = config.GetCard(card.cardId);
         var triggeredAbilities = libraryCard.abilities.FindAll(x => x is CCGKit.TriggeredAbility);
 
@@ -352,11 +297,11 @@ public class DemoAIPlayer : DemoPlayer
         {
             var triggeredAbility = ability as CCGKit.TriggeredAbility;
             var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-            if (trigger != null && trigger.zoneId == boardZoneId && triggeredAbility.target is IUserTarget)
+           /* if (trigger != null && trigger.zoneId == boardZoneId && triggeredAbility.target is IUserTarget)
             {
                 needsToSelectTarget = true;
                 break;
-            }   
+            }   */
         }
 
         if (needsToSelectTarget)

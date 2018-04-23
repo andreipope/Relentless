@@ -9,6 +9,8 @@ namespace GrandDevs.CZB.Helpers
 {
     public class InternalTools
     {
+        private static string LINE_BREAK = "%n%";
+
         public static void FixVerticalLayoutGroupFitting(UnityEngine.Object value)
         {
             VerticalLayoutGroup group = null;
@@ -42,6 +44,14 @@ namespace GrandDevs.CZB.Helpers
         public static void CallPhoneNumber(string phone)
         {
             Application.OpenURL("tel://" + phone);
+        }
+
+        public static string ReplaceLineBreaks(string data)
+        {
+            if (data == null)
+                return "";
+
+            return data.Replace(LINE_BREAK, "\n");
         }
     }
 }

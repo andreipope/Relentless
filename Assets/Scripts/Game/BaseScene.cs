@@ -9,16 +9,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using DG.Tweening;
+using GrandDevs.CZB;
 
 public class BaseScene : MonoBehaviour
 {
     public GameObject currentPopup { get; protected set; }
 
-    [SerializeField]
+    //[SerializeField]
     protected Canvas canvas;
 
-    [SerializeField]
+    //[SerializeField]
     protected CanvasGroup panelCanvasGroup;
+
+    public void Awake()
+    {
+        canvas = GameClient.Get<IUIManager>().Canvas.GetComponent<Canvas>();
+        panelCanvasGroup = canvas.transform.Find("Panel").GetComponent<CanvasGroup>();
+    }
 
     public void OpenPopup<T>(string name, Action<T> onOpened = null, bool darkenBackground = true) where T : Popup
     {
@@ -45,6 +52,7 @@ public class BaseScene : MonoBehaviour
             yield return null;
         }
 
+        
         currentPopup = Instantiate(request.asset) as GameObject;
         currentPopup.transform.SetParent(canvas.transform, false);
         currentPopup.GetComponent<Popup>().parentScene = this;

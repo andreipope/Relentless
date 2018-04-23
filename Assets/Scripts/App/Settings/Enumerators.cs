@@ -256,5 +256,10 @@
             HEAL_DIRECTLY,
             HEAL
         }
+
+        public enum SpreadsheetType
+        {
+            TUTORIAL
+        }
     }
 }
