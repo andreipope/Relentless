@@ -109,20 +109,25 @@ public class BoardSkill : MonoBehaviour
 			return;
         if (_used)
             return;
-        if(_skillType != Enumerators.SkillType.HEAL)
-        if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
-        {
-            if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
+        if (_skillType != Enumerators.SkillType.HEAL)
+            if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
             {
-                fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
-                fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
+                if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
+                {
+                    fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
+                    fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
                     if (_skillType == Enumerators.SkillType.CARD_RETURN)
                         fightTargetingArrow.targetType = EffectTarget.TargetCard;
 
-                fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
-                fightTargetingArrow.Begin(transform.position);
+                    fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
+                    fightTargetingArrow.Begin(transform.position);
+
+                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
+                    }
+                }
             }
-        }
     }
 
     private void OnMouseUp()
@@ -131,6 +136,11 @@ public class BoardSkill : MonoBehaviour
             return;
         if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+            }
+
             if (_skillType == Enumerators.SkillType.HEAL)
             {
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
@@ -178,29 +188,9 @@ public class BoardSkill : MonoBehaviour
     {
         if (!Constants.DEV_MODE)
             ownerPlayer.manaStat.baseValue -= _manaCost;
-        switch (_skillType)
-        {
-            case Enumerators.SkillType.FREEZE:
-                FreezeAction(target);
-                break;
-            case Enumerators.SkillType.TOXIC_DAMAGE:
-                ToxicDamageAction(target);
-                break;
-            case Enumerators.SkillType.FIRE_DAMAGE:
-                FireDamageAction(target);
-                break;
-            case Enumerators.SkillType.HEAL_ANY:
-                HealAnyAction(target);
-                break;
-            case Enumerators.SkillType.CARD_RETURN:
-                CardReturnAction(target);
-                break;
-            case Enumerators.SkillType.HEAL:
-                HealAction();
-                break;
-            default:
-                break;
-        }
+
+        CreateVFX(target);
+
         _used = true;
     }
 
@@ -397,28 +387,119 @@ public class BoardSkill : MonoBehaviour
     {
         _fireDamageVFX = MonoBehaviour.Instantiate(_fireDamageVFXprefab);
         _fireDamageVFX.transform.position = pos + Vector3.forward;
+        DestroyCurrentParticle(_fireDamageVFX);
     }
     private void CreateHealVFX(Vector3 pos)
     {
         _healVFX = MonoBehaviour.Instantiate(_healVFXprefab);
         _healVFX.transform.position = pos + Vector3.forward;
+        DestroyCurrentParticle(_healVFX);
     }
 
     private void CreateAirVFX(Vector3 pos)
     {
         _airPickUpCardVFX = MonoBehaviour.Instantiate(_airPickUpCardVFXprefab);
         _airPickUpCardVFX.transform.position = pos + Vector3.forward;
+        DestroyCurrentParticle(_airPickUpCardVFX);
     }
 
     private void CreateToxicAttackVFX(Vector3 pos)
     {
         _toxicVFX = MonoBehaviour.Instantiate(_toxicVFXprefab);
         _toxicVFX.transform.position = pos + Vector3.forward;
+        DestroyCurrentParticle(_toxicVFX);
     }
 
     private void CreateFrozenVFX(Vector3 pos)
     {
         _frozenVFX = MonoBehaviour.Instantiate(_frozenVFXprefab);
         _frozenVFX.transform.position = pos + Vector3.forward;
+        DestroyCurrentParticle(_frozenVFX);
+    }
+
+    private GameObject _firstParticle;
+    private void CreateVFX(object target)
+    {
+        GameObject prefab = null;
+
+        switch (_skillType)
+        {
+            case Enumerators.SkillType.FREEZE:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
+                break;
+            case Enumerators.SkillType.TOXIC_DAMAGE:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                break;
+            case Enumerators.SkillType.FIRE_DAMAGE:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                break;
+            case Enumerators.SkillType.HEAL_ANY:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                break;
+            case Enumerators.SkillType.HEAL:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                break;
+            case Enumerators.SkillType.CARD_RETURN:
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                break;
+            default:
+                break;
+        }
+        _firstParticle = MonoBehaviour.Instantiate(prefab);
+        _firstParticle.transform.position = transform.position + Vector3.forward;
+
+        if (target is PlayerAvatar)
+        {
+            var player = target as PlayerAvatar;
+            _firstParticle.transform.DOMove(player.transform.position, .5f).OnComplete(() => ActionCompleted(target));
+        }
+        else
+        {
+            var cruature = target as BoardCreature;
+            _firstParticle.transform.DOMove(cruature.transform.position, .5f).OnComplete(() => ActionCompleted(target));
+        }        
+    }
+
+    private void ActionCompleted(object target)
+    {
+        DestroyCurrentParticle(_firstParticle, true);
+
+        switch (_skillType)
+        {
+            case Enumerators.SkillType.FREEZE:
+                FreezeAction(target);
+                break;
+            case Enumerators.SkillType.TOXIC_DAMAGE:
+                ToxicDamageAction(target);
+                break;
+            case Enumerators.SkillType.FIRE_DAMAGE:
+                FireDamageAction(target);
+                break;
+            case Enumerators.SkillType.HEAL_ANY:
+                HealAnyAction(target);
+                break;
+            case Enumerators.SkillType.CARD_RETURN:
+                CardReturnAction(target);
+                break;
+            case Enumerators.SkillType.HEAL:
+                HealAction();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void DestroyCurrentParticle(GameObject currentParticle, bool isDirectly = false, float time = 5f)
+    {
+        if (isDirectly)
+            DestroyParticle(new object[] { currentParticle });
+        else
+            GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
+    }
+
+    private void DestroyParticle(object[] param)
+    {
+        GameObject particleObj = param[0] as GameObject;
+        MonoBehaviour.Destroy(particleObj);
     }
 }

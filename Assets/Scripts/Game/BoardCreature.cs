@@ -59,7 +59,7 @@ public class BoardCreature : MonoBehaviour
    
 
     [HideInInspector]
-    public DemoHumanPlayer ownerPlayer;
+    public Player ownerPlayer;
     [HideInInspector]
     public TargetingArrow abilitiesTargetingArrow;
     [HideInInspector]
@@ -292,14 +292,27 @@ public class BoardCreature : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (fightTargetingArrowPrefab == null)
+            return;
+
         if (ownerPlayer != null && ownerPlayer.isActivePlayer && IsPlayable)
         {
             fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
             fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
             fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
             fightTargetingArrow.Begin(transform.position);
-            ownerPlayer.DestroyCardPreview();
-            ownerPlayer.isCardSelected = true;
+
+            // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
+            if (ownerPlayer is DemoHumanPlayer)
+            {
+                (ownerPlayer as DemoHumanPlayer).DestroyCardPreview();
+                (ownerPlayer as DemoHumanPlayer).isCardSelected = true;
+
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
+                }
+            }
         }
     }
 
@@ -308,7 +321,14 @@ public class BoardCreature : MonoBehaviour
         if (fightTargetingArrow != null)
         {
             fightTargetingArrow.End(this);
-            ownerPlayer.isCardSelected = false;
+
+            // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
+            if (ownerPlayer is DemoHumanPlayer)
+            {
+                (ownerPlayer as DemoHumanPlayer).isCardSelected = false;
+
+
+            }
         }
     }
 
@@ -355,6 +375,13 @@ public class BoardCreature : MonoBehaviour
                         sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                     });
+                }
+            }
+            if(fightTargetingArrow.selectedCard == null && fightTargetingArrow.selectedPlayer == null)
+            {
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
                 }
             }
         }

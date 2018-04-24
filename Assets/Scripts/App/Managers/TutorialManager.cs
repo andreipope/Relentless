@@ -10,6 +10,7 @@ namespace GrandDevs.CZB
     public class TutorialManager : IService, ITutorialManager
     {
         private IUIManager _uiManager;
+        private IContentManager _contentManager;
         private TutorialPopup _popup;
 
 
@@ -18,6 +19,10 @@ namespace GrandDevs.CZB
         private List<TutorialStep> _steps;
 
         private bool _tutorialStarted;
+
+        private TutorialTargetingArrow _targettingArrow;
+
+        private GameObject _targettingArrowPrefab;
 
         public int CurrentStep
         {
@@ -36,67 +41,73 @@ namespace GrandDevs.CZB
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
-            
+            _contentManager = GameClient.Get<IContentManager>();
+
             int i = 0;
             _steps = new List<TutorialStep>();
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "<b><color=#FFC300>Hello dear friend!</color></b>\n We will teach you how to play \n *Press anykey to continue*", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Please take your card and drag to battleground", true));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Great, it was your first step to become a great Warrior. \n *Press anykey to continue*", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "You creature need to rest before attack, end your turn!", true));
+                                    _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Wow enemy also call the creature, you should attack it. \n Wait for your turn.", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Drag your zombie to enemy to attack him and see what happens...", true));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Congrats! it was your first attack. Give your zombie to rest and end your turn", true));
+                                    _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Now Opponent Turn. \n You should wait...", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Try now attack the opponent hero!", true));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Perfect Attack! \n One step and you win.  \n *Press anykey to continue*", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Now end your turn.", true));
+                                    _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Damn what is that??? \n He called the <b>Heavy</b> Monster. \n This creatures not give you chance to attack anybody else till they alive", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                    new Vector2[] { new Vector2(0, 0) },
-                                   "You should kill him to get the chance to attack the Hero", true));
+                                   _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                   new Vector2[] { new Vector2(0, 0) },
-                                  "I see you have <b>Ferral</b> zombie! Use It! \n This creatures can attack immediately after they was played", true));
+                                  _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
 
             _steps.Add(new TutorialStep(ref i,
                                  new Vector2[] { new Vector2(0, 0) },
-                                 "Now finish him! Do not let him escape! WOHAAA!!!", true));
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
 
             _steps.Add(new TutorialStep(ref i,
                                  new Vector2[] { new Vector2(0, 0) },
-                                 "He still alive! \n Use your hero skill. \n BURN HIM!", true));
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(1.8f, -3.5f, 0), new Vector3(0, 4f, 0)));
 
             _steps.Add(new TutorialStep(ref i,
                                     new Vector2[] { new Vector2(0, 0) },
-                                    "Well Done! Good start warrior! Back to the deck selection and try real game", false));
+                                    _contentManager.TutorialInfo[i].Description, false));
+
+
+            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/TutorialTargetingArrow");
+            
         }
 
         public void StartTutorial()
         {
+            
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
@@ -132,16 +143,24 @@ namespace GrandDevs.CZB
             _currentStep++;
             GameManager.Instance.tutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
+
         }  
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
         {
+            DestroySelectTarget();
             _popup.Show(_steps[_currentStep].description);
             //_popup.SetPosition(positions[0]);
             if (_steps[_currentStep].focusing)
+            {
+                if (_steps[_currentStep].isArrowEnabled)
+                    CreateSelectTarget();
                 _popup.ShowTutorialFocus(_currentStep);
+            }
             else
+            {
                 _popup.HideTutorialFocus();
+            }
         }
 
         public void ReportAction(Enumerators.TutorialReportAction action)
@@ -174,6 +193,35 @@ namespace GrandDevs.CZB
                     break;
             }
         }
+
+        public void ActivateSelectTarget()
+        {
+            if (_targettingArrow != null)
+                _targettingArrow.Activate();
+        }
+
+        public void DeactivateSelectTarget()
+        {
+            _targettingArrow.Deactivate();
+        }
+
+
+        private void CreateSelectTarget()
+        {
+            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).GetComponent<TutorialTargetingArrow>();
+            _targettingArrow.Begin(_steps[_currentStep].tutorialTargetingArrowInfo.startPosition);
+            _targettingArrow.UpdateTargetPosition(_steps[_currentStep].tutorialTargetingArrowInfo.targetPosition);
+        }
+
+        private void DestroySelectTarget()
+        {
+            if (_targettingArrow != null)
+            {
+                MonoBehaviour.Destroy(_targettingArrow.gameObject);
+                _targettingArrow = null;
+            }
+            //_targettingArrow.Deactivate();
+        }
     }
 
     public class TutorialStep
@@ -184,6 +232,8 @@ namespace GrandDevs.CZB
         public bool focusing;
         //public Action _handler;
         public bool finished;
+        public bool isArrowEnabled;
+        public TutorialTargetingArrowInfo tutorialTargetingArrowInfo;
 
 
         public TutorialStep(ref int index, Vector2[] focusPoints, string description, bool focusing)
@@ -194,6 +244,22 @@ namespace GrandDevs.CZB
             this.focusing = focusing;
             finished = false;
             index++;
+            tutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
+            isArrowEnabled = false;
+        }
+
+        public TutorialStep(ref int index, Vector2[] focusPoints, string description, bool focusing, bool isArrowEnabled, Vector3 startPosition, Vector3 targetPosition)
+        {
+            _index = index;
+            this.focusPoints = focusPoints;
+            this.description = description;
+            this.focusing = focusing;
+            finished = false;
+            index++;
+            this.isArrowEnabled = isArrowEnabled;
+            tutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
+            tutorialTargetingArrowInfo.startPosition = startPosition;
+            tutorialTargetingArrowInfo.targetPosition = targetPosition;
         }
 
         public void Update()
@@ -204,5 +270,11 @@ namespace GrandDevs.CZB
             }
             
         }
+    }
+
+    public class TutorialTargetingArrowInfo
+    {
+        public Vector3 startPosition;
+        public Vector3 targetPosition;
     }
 }

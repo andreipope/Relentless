@@ -53,7 +53,7 @@ namespace GrandDevs.CZB
 				{
 					case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 						BoardCreature[] creatures = new BoardCreature[cardCaller.opponentBoardCardsList.Count];
-						cardCaller.opponentBoardCardsList.CopyTo(creatures);
+                        cardCaller.opponentBoardCardsList.CopyTo(creatures);
 						foreach (var cardOpponent in creatures)
 						{
 							cardCaller.FightCreatureBySkill(value, cardOpponent.card);

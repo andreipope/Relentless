@@ -33,6 +33,8 @@
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";
+        internal const string ZONE_DECK = "Deck";
+        internal const string ZONE_GRAVEYARD = "Graveyard";
 
         internal const string TAG_LIFE = "Life";
         internal const string TAG_DAMAGE = "Damage";

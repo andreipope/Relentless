@@ -10,6 +10,8 @@ namespace GrandDevs.CZB
         void ReportAction(Enumerators.TutorialReportAction action);
         int CurrentStep { get; }
         bool IsTutorial { get; }
+        void ActivateSelectTarget();
+        void DeactivateSelectTarget();
         //void StopTimer(Action<object[]> handler);
         //void AddTimer(Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false, bool storeTimer = false);
     }

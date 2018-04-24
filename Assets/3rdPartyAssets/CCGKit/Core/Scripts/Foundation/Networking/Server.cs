@@ -206,7 +206,7 @@ namespace CCGKit
             SafeSendToClient(player, NetworkProtocol.PlayerState, playerStateMsg);
         }
 
-        protected virtual NetPlayerInfo GetPlayerNetworkState(PlayerInfo player)
+        public virtual NetPlayerInfo GetPlayerNetworkState(PlayerInfo player)
         {
             var netPlayer = new NetPlayerInfo();
             netPlayer.id = player.id;
@@ -285,7 +285,7 @@ namespace CCGKit
             return netPlayer;
         }
 
-        protected virtual NetPlayerInfo GetOpponentNetworkState(PlayerInfo player)
+        public virtual NetPlayerInfo GetOpponentNetworkState(PlayerInfo player)
         {
             var netOpponent = new NetPlayerInfo();
             netOpponent.id = player.id;

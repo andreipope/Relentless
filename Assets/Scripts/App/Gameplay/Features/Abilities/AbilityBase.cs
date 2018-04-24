@@ -9,6 +9,8 @@ namespace GrandDevs.CZB
 {
     public class AbilityBase
     {
+        protected event Action PermanentInputEndEvent;
+
         protected AbilitiesController _abilitiesController;
         protected ILoadObjectsManager _loadObjectsManager;
         protected AbilityTargetingArrow _targettingArrow;
@@ -32,12 +34,15 @@ namespace GrandDevs.CZB
         public Enumerators.CardKind cardKind;
 
         public BoardCreature boardCreature;
-        public DemoHumanPlayer cardCaller;
+        public Player cardCaller;
         public BoardSpell boardSpell;
 
         public BoardCreature targetCreature;
         public PlayerAvatar targetPlayer;
         public PlayerAvatar selectedPlayer;
+
+        private PlayerAvatar playerAvatar;
+        private PlayerAvatar opponenentAvatar;
 
         public AbilityTargetingArrow TargettingArrow
         {
@@ -57,7 +62,10 @@ namespace GrandDevs.CZB
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
             this.abilityEffectType = ability.abilityEffectType;
-            selectedPlayer = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
+            playerAvatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
+            opponenentAvatar = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
+
+            PermanentInputEndEvent += OnInputEndEventHandler;
         }
 
         public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
@@ -72,7 +80,7 @@ namespace GrandDevs.CZB
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(boardCreature.transform.position);
             else if (this.cardKind == Enumerators.CardKind.SPELL)
-                _targettingArrow.Begin(boardSpell.transform.position);
+                _targettingArrow.Begin(selectedPlayer.transform.position);//(boardSpell.transform.position);
             else
                 _targettingArrow.Begin(cardCaller.transform.position);
 
@@ -122,6 +130,11 @@ namespace GrandDevs.CZB
             }
             else if (this.cardKind == Enumerators.CardKind.SPELL)
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
+
+            if (cardCaller is DemoHumanPlayer)
+                selectedPlayer = playerAvatar;
+            else
+                selectedPlayer = opponenentAvatar;
         }
 
         public virtual void Update()
@@ -171,6 +184,18 @@ namespace GrandDevs.CZB
 
         protected virtual void OnInputEndEventHandler()
         {
+            SelectedTargetAction();
+            DeactivateSelectTarget();
+        }
+
+        public virtual void SelectedTargetAction(bool callInputEndBefore = false)
+        {
+            if (callInputEndBefore)
+            {
+                PermanentInputEndEvent?.Invoke();
+                return;
+            }
+
             if (targetCreature != null)
                 affectObjectType = Enumerators.AffectObjectType.CHARACTER;
             else if (targetPlayer != null)
@@ -182,7 +207,7 @@ namespace GrandDevs.CZB
             {
                 _isAbilityResolved = true;
 
-                if(affectObjectType == Enumerators.AffectObjectType.CHARACTER)
+                if (affectObjectType == Enumerators.AffectObjectType.CHARACTER)
                 {
                     targetCreature.card.ConnectAbility((uint)abilityType);
                 }
@@ -195,8 +220,6 @@ namespace GrandDevs.CZB
                 OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectFailedByTargettingArrowCallback = null;
             }
-
-            DeactivateSelectTarget();
         }
 
         public virtual void Action(object info = null)

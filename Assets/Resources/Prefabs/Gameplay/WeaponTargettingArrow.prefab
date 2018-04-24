@@ -53,6 +53,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetType: 0
   material: {fileID: 2100000, guid: d485273af9b3ac04ab7a10fb00b593a7, type: 2}
-  headTexture: {fileID: 2800000, guid: 76d7d20540375a445863ea109ba14359, type: 3}
+  headPrefab: {fileID: 1344073064746114, guid: fd800791f38d454468486a1602db3202, type: 2}
+  middlePrefab: {fileID: 1964738341089064, guid: 1b9b36478317c3a42927e77c32c6370b,
+    type: 2}
+  startPrefab: {fileID: 1571884269077470, guid: 4b01e8ca3c4f0064faf43280310f843e,
+    type: 2}
   targetTexture: {fileID: 2800000, guid: 5a3a04e5ec43c4c4c9cef153be98af0c, type: 3}
+  coef: 0
   possibleTargets: 

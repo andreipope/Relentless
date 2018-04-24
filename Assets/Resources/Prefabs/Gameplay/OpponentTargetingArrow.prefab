@@ -19,9 +19,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4117665145847118}
-  - component: {fileID: 114717098265375600}
+  - component: {fileID: 114387452037393976}
   m_Layer: 0
-  m_Name: FightTargetingArrow
+  m_Name: OpponentTargetingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114717098265375600
+--- !u!114 &114387452037393976
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -48,14 +48,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1009513512288260}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f28d43e384cc6d4a8b704563e9b0971, type: 3}
+  m_Script: {fileID: 11500000, guid: cd9f52b1377ec4a4b9810bc19a663e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 0
   material: {fileID: 2100000, guid: d485273af9b3ac04ab7a10fb00b593a7, type: 2}
-  headPrefab: {fileID: 1578310273764448, guid: 286b244658daaa74b803cd7fa0dbfecb, type: 2}
-  middlePrefab: {fileID: 1104071946691844, guid: f2bcad24ee46bf941a788e70818bc8f4,
+  headPrefab: {fileID: 1344073064746114, guid: fd800791f38d454468486a1602db3202, type: 2}
+  middlePrefab: {fileID: 1964738341089064, guid: 1b9b36478317c3a42927e77c32c6370b,
     type: 2}
-  startPrefab: {fileID: 1315348258837350, guid: 30dfc4b28c972764d91976b19a0019e0,
+  startPrefab: {fileID: 1571884269077470, guid: 4b01e8ca3c4f0064faf43280310f843e,
     type: 2}
   targetTexture: {fileID: 2800000, guid: 5a3a04e5ec43c4c4c9cef153be98af0c, type: 3}
+  coef: 0

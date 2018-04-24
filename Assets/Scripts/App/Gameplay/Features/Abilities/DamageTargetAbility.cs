@@ -90,7 +90,6 @@ namespace GrandDevs.CZB
             }
 
             var targetPosition = _vfxObject.transform.position;
-            Debug.Log(abilityEffectType);
             DestroyCurrentParticle(true);
             switch (abilityEffectType)
             {
@@ -112,7 +111,6 @@ namespace GrandDevs.CZB
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
             _vfxObject.transform.position = targetPosition;
             DestroyCurrentParticle();
-
         }
     }
 }

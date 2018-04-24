@@ -9,30 +9,30 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1249348931839178}
+  m_RootGameObject: {fileID: 1293870573161046}
   m_IsPrefabParent: 1
---- !u!1 &1249348931839178
+--- !u!1 &1293870573161046
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4043859479835438}
-  - component: {fileID: 114705486346972818}
+  - component: {fileID: 4210688455670952}
+  - component: {fileID: 114098952741786604}
   m_Layer: 0
-  m_Name: AbilityTargetingArrow
+  m_Name: TutorialTargetingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4043859479835438
+--- !u!4 &4210688455670952
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1249348931839178}
+  m_GameObject: {fileID: 1293870573161046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -40,15 +40,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114705486346972818
+--- !u!114 &114098952741786604
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1249348931839178}
+  m_GameObject: {fileID: 1293870573161046}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0c31a300c363bc4a8e2b4dea0bc3b70, type: 3}
+  m_Script: {fileID: 11500000, guid: 82f5c53209f627f4f8a93f2c07831c51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 0
@@ -59,5 +59,3 @@ MonoBehaviour:
   startPrefab: {fileID: 1315348258837350, guid: 30dfc4b28c972764d91976b19a0019e0,
     type: 2}
   targetTexture: {fileID: 2800000, guid: 5a3a04e5ec43c4c4c9cef153be98af0c, type: 3}
-  possibleTargets: 
-  selfBoardCreature: {fileID: 0}

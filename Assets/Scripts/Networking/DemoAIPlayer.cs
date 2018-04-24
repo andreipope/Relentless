@@ -10,12 +10,16 @@ using UnityEngine;
 using CCGKit;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Computer-controlled player that is used in the single-player mode from the demo game.
 /// </summary>
 public class DemoAIPlayer : DemoPlayer
 {
+    // REMVE THIS SHIT!
+    public static DemoAIPlayer Instance;
+
     /// <summary>
     /// Cached reference to the human opponent player.
     /// </summary>
@@ -29,6 +33,31 @@ public class DemoAIPlayer : DemoPlayer
 
     protected Dictionary<int, int> numTurnsOnBoard = new Dictionary<int, int>();
 
+    protected AbilitiesController _abilitiesController;
+
+    [SerializeField]
+    protected GameObject fightTargetingArrowPrefab;
+
+    protected BoardCreature currentCreature;
+    protected CardView currentSpellCard;
+
+
+    protected List<BoardCreature> playerBoardCards = new List<BoardCreature>();
+    protected List<BoardCreature> opponentBoardCards = new List<BoardCreature>();
+
+
+    public override List<BoardCreature> opponentBoardCardsList
+    {
+        get { return opponentBoardCards; }
+        set { opponentBoardCards = value; }
+    }
+
+    public override List<BoardCreature> playerBoardCardsList
+    {
+        get { return playerBoardCards; }
+        set { playerBoardCards = value; }
+    }
+
     /// <summary>
     /// Unity's Awake.
     /// </summary>
@@ -36,6 +65,12 @@ public class DemoAIPlayer : DemoPlayer
     {
         base.Awake();
         isHuman = false;
+
+        Instance = this;
+
+        fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/fightTargetingArrowPrefab");
+
+        _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
     }
 
     /// <summary>
@@ -47,7 +82,7 @@ public class DemoAIPlayer : DemoPlayer
         base.OnStartGame(msg);
         humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
         if (!GameManager.Instance.tutorial)
-            _minTurnForAttack = Random.Range(1,3);
+            _minTurnForAttack = Random.Range(1, 3);
     }
 
     /// <summary>
@@ -182,7 +217,7 @@ public class DemoAIPlayer : DemoPlayer
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                     (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
-					FightPlayer(creature);
+                    FightPlayer(creature);
                     yield return new WaitForSeconds(2.0f);
                 }
             }
@@ -194,7 +229,7 @@ public class DemoAIPlayer : DemoPlayer
                 if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                     (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                 {
-					var playerPower = GetPlayerAttackingPower();
+                    var playerPower = GetPlayerAttackingPower();
                     var opponentPower = GetOpponentAttackingPower();
                     if (playerPower > opponentPower)
                     {
@@ -229,10 +264,10 @@ public class DemoAIPlayer : DemoPlayer
 
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-        if (libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack)
+        if ((libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack) || Constants.DEV_MODE)
         {
 
-            List<int> target = null; //= GetAbilityTarget(card);
+            List<int> target = GetAbilityTarget(card);
             if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
             {
                 playerInfo.namedZones["Hand"].RemoveCard(card);
@@ -251,6 +286,193 @@ public class DemoAIPlayer : DemoPlayer
             }
             return true;
         }
+        return false;
+    }
+
+    protected List<int> GetAbilityTarget(RuntimeCard card)
+    {
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+        var abilitiesWithTarget = new List<GrandDevs.CZB.Data.AbilityData>();
+
+        var needsToSelectTarget = false;
+        foreach (var ability in libraryCard.abilities)
+        {
+            foreach (var item in ability.abilityTargetTypes)
+            {
+                switch (item)
+                {
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        {
+                            if (opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1)
+                            {
+                                needsToSelectTarget = true;
+                                abilitiesWithTarget.Add(ability);
+                            }
+                        }
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                        {
+                            if (playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || (Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+                            {
+                                needsToSelectTarget = true;
+                                abilitiesWithTarget.Add(ability);
+                            }
+                        }
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTargetType.ALL:
+                        {
+                            needsToSelectTarget = true;
+                            abilitiesWithTarget.Add(ability);
+                        }
+                        break;
+                    default: break;
+                }
+            }
+        }
+
+        if (needsToSelectTarget)
+        {
+            var targetInfo = new List<int>();
+            foreach (var ability in abilitiesWithTarget)
+            {
+                switch(ability.abilityType)
+                {
+                    case Enumerators.AbilityType.ADD_GOO_VIAL:
+                        {
+                            targetInfo.Add(1);
+                        }
+                        break;
+                    case Enumerators.AbilityType.CARD_RETURN:
+                        {
+                            if(!AddRandomTargetCreature(true, ref targetInfo))
+                            {
+                                AddRandomTargetCreature(false, ref targetInfo);
+                            }
+                        }
+                        break;
+                    case Enumerators.AbilityType.DAMAGE_TARGET:
+                        {
+                            CheckAndAddTargets(ability, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
+                        {
+                            if (!AddRandomTargetCreature(true, ref targetInfo))
+                                targetInfo.Add(0);
+                        }
+                        break;
+                    case Enumerators.AbilityType.MASSIVE_DAMAGE:
+                        {
+                            AddRandomTargetCreature(true, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.MODIFICATOR_STATS:
+                        {
+                            if (ability.value > 0)
+                                AddRandomTargetCreature(false, ref targetInfo);
+                            else
+                                AddRandomTargetCreature(true, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.STUN:
+                        {
+                            CheckAndAddTargets(ability, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
+                        {
+                            CheckAndAddTargets(ability, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.CHANGE_STAT:
+                        {
+                            if(ability.value > 0)
+                                AddRandomTargetCreature(false, ref targetInfo);
+                            else
+                                AddRandomTargetCreature(true, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.SUMMON:
+                        {
+
+                        }
+                        break;
+                    case Enumerators.AbilityType.WEAPON:
+                        {
+                            targetInfo.Add(1);
+                        }
+                        break;
+                    case Enumerators.AbilityType.SPURT:
+                        {
+                            AddRandomTargetCreature(true, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.SPELL_ATTACK:
+                        {
+                            CheckAndAddTargets(ability, ref targetInfo);
+                        }
+                        break;
+                    case Enumerators.AbilityType.HEAL:
+                        {
+                            var creatures = GetCreaturesWithLowHP();
+
+                            if (creatures.Count > 0)
+                            { 
+                               targetInfo.Add(creatures[Random.Range(0, creatures.Count)].instanceId);
+                            }
+                            else
+                            {
+                                targetInfo.Add(1);
+                            }
+                        }
+                        break;
+                    case Enumerators.AbilityType.DOT:
+                        {
+                            CheckAndAddTargets(ability, ref targetInfo);
+                        }
+                        break;
+                    default: break;
+                }
+            }
+            return targetInfo;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref List<int> targetInfo)
+    {
+        if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+        {
+            AddRandomTargetCreature(true, ref targetInfo);
+        }
+        else if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+        {
+            targetInfo.Add(0);
+        }
+    }
+
+    private bool AddRandomTargetCreature(bool opponent, ref List<int> targetInfo)
+    {
+        RuntimeCard target = null;
+
+        if (opponent)
+            target = GetRandomOpponentCreature();
+        else
+            target = GetRandomCreature();
+
+        if (target != null)
+        {
+            targetInfo.Add(target.instanceId);
+
+            return true;
+        }
+
         return false;
     }
 
@@ -284,81 +506,6 @@ public class DemoAIPlayer : DemoPlayer
         GameClient.Get<ITimerManager>().AddTimer((x) => { Destroy(go); }, null, 2, false);
     }
 
-
-    protected List<int> GetAbilityTarget(RuntimeCard card)
-    {
-        var config = GameManager.Instance.config;
-        //var boardZoneId = config.gameZones.Find(x => x.name == "Board").id;
-        var libraryCard = config.GetCard(card.cardId);
-        var triggeredAbilities = libraryCard.abilities.FindAll(x => x is CCGKit.TriggeredAbility);
-
-        var needsToSelectTarget = false;
-        foreach (var ability in triggeredAbilities)
-        {
-            var triggeredAbility = ability as CCGKit.TriggeredAbility;
-            var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-           /* if (trigger != null && trigger.zoneId == boardZoneId && triggeredAbility.target is IUserTarget)
-            {
-                needsToSelectTarget = true;
-                break;
-            }   */
-        }
-
-        if (needsToSelectTarget)
-        {
-            var targetInfo = new List<int>();
-            foreach (var ability in triggeredAbilities)
-            {
-                var triggeredAbility = ability as CCGKit.TriggeredAbility;
-                if (IsBuffEffect(triggeredAbility.effect))
-                {
-                    if (triggeredAbility.effect is PlayerEffect)
-                    {
-                        targetInfo.Add(0);
-                    }
-                    else if (triggeredAbility.effect is CardEffect)
-                    {
-                        var target = GetRandomCreature();
-                        if (target != null)
-                        {
-                            //targetInfo.Add(boardZoneId);
-                            targetInfo.Add(target.instanceId);
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }
-                else
-                {
-                    if (triggeredAbility.effect is PlayerEffect)
-                    {
-                        targetInfo.Add(1);
-                    }
-                    else if (triggeredAbility.effect is CardEffect)
-                    {
-                        var target = GetRandomOpponentCreature();
-                        if (target != null)
-                        {
-                            //targetInfo.Add(boardZoneId);
-                            targetInfo.Add(target.instanceId);
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }
-            }
-            return targetInfo;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     protected int GetPlayerAttackingPower()
     {
         var power = 0;
@@ -386,6 +533,22 @@ public class DemoAIPlayer : DemoPlayer
     protected bool IsBuffEffect(Effect effect)
     {
         return effect is IncreasePlayerStatEffect || effect is IncreaseCardStatEffect;
+    }
+
+
+    protected List<RuntimeCard> GetCreaturesWithLowHP()
+    {
+        List<RuntimeCard> finalList = new List<RuntimeCard>();
+
+        var list = GetBoardCreatures();
+
+        foreach(var item in list)
+        {
+            if (item.namedStats[Constants.TAG_HP].effectiveValue < item.namedStats[Constants.TAG_HP].maxValue)
+                finalList.Add(item);
+        }
+
+        return finalList;
     }
 
     protected List<RuntimeCard> GetCreatureCardsInHand()
@@ -458,5 +621,25 @@ public class DemoAIPlayer : DemoPlayer
             return (provokeCreatures != null && provokeCreatures.Count >= 1);
         }
         return false;
+    }
+
+    public override void AddWeapon()
+    {
+        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Opponent").transform.Find("Weapon").gameObject);
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+
+        deckZone = playerInfo.namedZones[Constants.ZONE_DECK];
+        handZone = playerInfo.namedZones[Constants.ZONE_HAND];
+        boardZone = playerInfo.namedZones[Constants.ZONE_BOARD];
+        graveyardZone = playerInfo.namedZones[Constants.ZONE_GRAVEYARD];
+
+        opponentDeckZone = opponentInfo.namedZones[Constants.ZONE_DECK];
+        opponentHandZone = opponentInfo.namedZones[Constants.ZONE_HAND];
+        opponentBoardZone = opponentInfo.namedZones[Constants.ZONE_BOARD];
+        opponentGraveyardZone = opponentInfo.namedZones[Constants.ZONE_GRAVEYARD];
     }
 }

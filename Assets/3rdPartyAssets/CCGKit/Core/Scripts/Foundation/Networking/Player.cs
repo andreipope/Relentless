@@ -19,6 +19,9 @@ namespace CCGKit
     /// </summary>
     public class Player : NetworkBehaviour
     {
+        public event Action OnEndTurnEvent;
+        public event Action OnStartTurnEvent;
+
         /// <summary>
         /// True if this player is the current active player in the game; false otherwise. 'Active' meaning
         /// the current game turn is his turn.
@@ -42,17 +45,17 @@ namespace CCGKit
         /// <summary>
         /// True if the game has started; false otherwise.
         /// </summary>
-        protected bool gameStarted;
+        public bool gameStarted;
 
         /// <summary>
         /// Index of this player in the game.
         /// </summary>
-        protected int playerIndex;
+        public int playerIndex;
 
         /// <summary>
         /// This game's turn duration (in seconds).
         /// </summary>
-        protected int turnDuration;
+        public int turnDuration;
 
         protected EffectSolver effectSolver;
 
@@ -67,12 +70,29 @@ namespace CCGKit
             {
                 return effectSolver;
             }
+            set
+            {
+                effectSolver = value;
+            }
         }
 
 
         public BoardWeapon CurrentBoardWeapon { get; protected set; }
         public bool AlreadyAttackedInThisTurn { get; set; }
         public bool isPlayerStunned { get; set; }
+
+        public virtual List<BoardCreature> opponentBoardCardsList { get; set; }
+        public virtual List<BoardCreature> playerBoardCardsList { get; set;  }
+
+        public RuntimeZone deckZone;
+        public RuntimeZone handZone;
+        public RuntimeZone boardZone;
+        public RuntimeZone graveyardZone;
+
+        public RuntimeZone opponentDeckZone;
+        public RuntimeZone opponentHandZone;
+        public RuntimeZone opponentBoardZone;
+        public RuntimeZone opponentGraveyardZone;
 
         protected virtual void Awake()
         {
@@ -88,6 +108,17 @@ namespace CCGKit
             GameClient.Get<IPlayerManager>().playerInfo = playerInfo;
             GameClient.Get<IPlayerManager>().opponentInfo = opponentInfo;
             abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+        }
+
+
+        public void CallOnEndTurnEvent()
+        {
+            OnEndTurnEvent?.Invoke();
+        }
+
+        public void CallOnStartTurnEvent()
+        {
+            OnStartTurnEvent?.Invoke();
         }
 
         public override void OnStartLocalPlayer()
@@ -194,13 +225,27 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-					int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
-					foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
-						for (var i = 0; i < card.amount; i++)
-                            msgDefaultDeck.Add(card.cardId);
+                    int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+                    foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
+                    {
+                        for (var i = 0; i < card.amount; i++)
+                        {
+                            //if (Constants.DEV_MODE)
+                            //    msgDefaultDeck.Add(26);
+                            //else
+                                msgDefaultDeck.Add(card.cardId);
+                        }
+                    }
                 }
                 else
                 {
+                    //if (Constants.DEV_MODE)
+                    //{
+                    //for (int i = 0; i < 10; i++)
+                    //    msgDefaultDeck.Add(25);
+                    //}
+                    //else
+                    //{
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
@@ -231,6 +276,7 @@ namespace CCGKit
                     msgDefaultDeck.Add(4);
                     msgDefaultDeck.Add(0);
                     msgDefaultDeck.Add(0);
+                    //}
                 }
             }
 
@@ -282,7 +328,7 @@ namespace CCGKit
                 gameState.currentPlayer = opponentInfo;
                 gameState.currentOpponent = playerInfo;
             }
-            effectSolver.OnTurnStarted();
+            EffectSolver.OnTurnStarted();
             LoadPlayerStates(msg.player, msg.opponent, msg.isRecipientTheActivePlayer);
             CurrentTurn = msg.turn;
         }
@@ -454,7 +500,6 @@ namespace CCGKit
 
         public void CreateAndPutToHandRuntimeCard(NetCard card, PlayerInfo player)
         {
-            Debug.Log(4444);
             var runtimeCard = CreateRuntimeCard();
             runtimeCard.cardId = card.cardId;
             runtimeCard.instanceId = card.instanceId;
@@ -479,8 +524,8 @@ namespace CCGKit
             }
 
             player.namedZones[Constants.ZONE_HAND].AddCard(runtimeCard);
-            effectSolver.SetDestroyConditions(runtimeCard);
-            effectSolver.SetTriggers(runtimeCard);
+            EffectSolver.SetDestroyConditions(runtimeCard);
+            EffectSolver.SetTriggers(runtimeCard);
         }
 
         public virtual void OnEndTurn(EndTurnMessage msg)
@@ -491,7 +536,7 @@ namespace CCGKit
                 CleanupTurnLocalState();
             }
 
-            effectSolver.OnTurnEnded();
+            EffectSolver.OnTurnEnded();
 
             foreach (var entry in gameState.currentPlayer.stats)
             {
@@ -584,7 +629,7 @@ namespace CCGKit
                         if (playerInfo.stats[payResourceCost.statId].effectiveValue >= statCost)
                         {
                             playerInfo.stats[payResourceCost.statId].baseValue -= statCost;
-                            effectSolver.CreateActiveAbility(playerInfo, card, 0);
+                            EffectSolver.CreateActiveAbility(playerInfo, card, 0);
                             var msg = new CreateActiveAbilityMessage();
                             msg.playerNetId = playerInfo.netId;
                             msg.zoneId = zoneId;
@@ -611,7 +656,7 @@ namespace CCGKit
                     if (opponentInfo.stats[payResourceCost.statId].effectiveValue >= statCost)
                     {
                         opponentInfo.stats[payResourceCost.statId].baseValue -= statCost;
-                        effectSolver.CreateActiveAbility(opponentInfo, card, 0);
+                        EffectSolver.CreateActiveAbility(opponentInfo, card, 0);
                     }
                 }
             }
@@ -658,7 +703,7 @@ namespace CCGKit
         public void FightPlayer(RuntimeCard attackingCard)
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
-            effectSolver.FightPlayer(netId, attackingCard.instanceId);
+            EffectSolver.FightPlayer(netId, attackingCard.instanceId);
 
             var msg = new FightPlayerMessage();
             msg.attackingPlayerNetId = netId;
@@ -669,7 +714,7 @@ namespace CCGKit
 
 		public void FightPlayerBySkill(int attack, bool isOpponent = true)
 		{
-            effectSolver.FightPlayerBySkill(netId, attack, isOpponent);
+            EffectSolver.FightPlayerBySkill(netId, attack, isOpponent);
 
             var msg = new FightPlayerBySkillMessage();
 			msg.attackingPlayerNetId = netId;
@@ -681,7 +726,7 @@ namespace CCGKit
 
         public void HealPlayerBySkill(int value, bool isOpponent = true, bool isLimited = true)
         {
-            effectSolver.HealPlayerBySkill(netId, value, isOpponent, isLimited);
+            EffectSolver.HealPlayerBySkill(netId, value, isOpponent, isLimited);
 
             var msg = new HealPlayerBySkillMessage();
             msg.callerPlayerNetId = netId;
@@ -694,7 +739,7 @@ namespace CCGKit
         public void FightCreature(RuntimeCard attackingCard, RuntimeCard attackedCard)
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
-            effectSolver.FightCreature(netId, attackingCard, attackedCard);
+            EffectSolver.FightCreature(netId, attackingCard, attackedCard);
 
             Debug.Log(attackingCard + "_" + attackedCard);
 
@@ -706,7 +751,7 @@ namespace CCGKit
         }
 		public void FightCreatureBySkill(int attack, RuntimeCard attackedCard)
 		{
-            effectSolver.FightCreatureBySkill(netId, attackedCard, attack);
+            EffectSolver.FightCreatureBySkill(netId, attackedCard, attack);
 
             var msg = new FightCreatureBySkillMessage();
             msg.attackingPlayerNetId = netId;
@@ -718,13 +763,18 @@ namespace CCGKit
 
         public void HealCreatureBySkill(int value, RuntimeCard card)
         {
-            effectSolver.HealCreatureBySkill(netId, card, value);
+            EffectSolver.HealCreatureBySkill(netId, card, value);
 
             var msg = new HealCreatureBySkillMessage();
             msg.callerPlayerNetId = netId;
             msg.cardInstanceId = card.instanceId;
             msg.value = value;
             client.Send(NetworkProtocol.HealCreatureBySkill, msg);
+        }
+
+        public virtual void AddWeapon()
+        {
+           
         }
     }
 }

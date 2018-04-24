@@ -60,7 +60,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, DemoHumanPlayer caller)
+        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller)
         {
             lock (_lock)
             {
@@ -84,6 +84,7 @@ namespace GrandDevs.CZB
 
         private AbilityBase CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData)
         {
+            Debug.Log(abilityData.abilityType);
             AbilityBase ability = null;
             switch (abilityData.abilityType)
             {
@@ -167,7 +168,7 @@ namespace GrandDevs.CZB
             return false;
         }
 
-        public bool CheckActivateAvailability(Enumerators.CardKind kind, AbilityData ability, DemoHumanPlayer localPlayer)
+        public bool CheckActivateAvailability(Enumerators.CardKind kind, AbilityData ability, Player localPlayer)
         {
             bool available = false;
 
@@ -183,16 +184,15 @@ namespace GrandDevs.CZB
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
                             {
-                                if (localPlayer.opponentBoardZone.cards.Count > 0)
+                                if (localPlayer.opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1)
                                     available = true;
                             }
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
-                               // Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
-                               // Debug.Log("kind - " + kind);
-
-                                if (localPlayer.boardZone.cards.Count > 1 || kind == Enumerators.CardKind.SPELL)
+                                // Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
+                                // Debug.Log("kind - " + kind);
+                                if (localPlayer.playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || kind == Enumerators.CardKind.SPELL)
                                     available = true;
                             }
                             break;

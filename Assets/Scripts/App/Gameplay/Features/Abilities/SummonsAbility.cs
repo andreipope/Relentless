@@ -89,7 +89,9 @@ namespace GrandDevs.CZB
             boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
 
             cardCaller.playerBoardCardsList.Add(boardCreature);
-            cardCaller.RearrangeBottomBoard();
+
+            if(cardCaller is DemoHumanPlayer)// WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
+                (cardCaller as DemoHumanPlayer).RearrangeBottomBoard();
 
             return boardCreature;
         }

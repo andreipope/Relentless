@@ -51,13 +51,21 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
+
+            cardCaller.playerInfo.namedStats[Constants.TAG_MANA].maxValue += value;
+            cardCaller.playerInfo.namedStats[Constants.TAG_MANA].baseValue += value;
+
+            cardCaller.playerInfo.namedStats[Constants.TAG_MANA].PermanentUpdateValue();
+
+
+            /*
             cardCaller.manaStat.maxValue += value;
             cardCaller.manaStat.baseValue += value;
 
-            cardCaller.manaStat.PermanentUpdateValue();
+            cardCaller.manaStat.PermanentUpdateValue(); */
 
             cardCaller.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].maxValue += value;
-            cardCaller.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue += value;
+            cardCaller.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue += value; 
         }
     }
 }
