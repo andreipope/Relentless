@@ -368,18 +368,24 @@ public class DemoHumanPlayer : DemoPlayer
         if (!opponentInfo.isHuman)
         {
             opponent = DemoAIPlayer.Instance;
-            //   opponent.playerInfo = opponentInfo;
-            //     opponent.opponentInfo = playerInfo;
-            opponent.opponentBoardZone = boardZone;
-            opponent.opponentHandZone = handZone;
-            opponent.boardZone = opponentBoardZone;
-            opponent.handZone = opponentHandZone;
-            opponent.playerBoardCardsList = opponentBoardCardsList;
-            opponent.opponentBoardCardsList = playerBoardCardsList;
-            //opponent.EffectSolver = new EffectSolver(gameState, System.Environment.TickCount);
-            //opponent.EffectSolver.SetTriggers(opponentInfo);
-            //opponent.EffectSolver.SetTriggers(playerInfo);
+            UpdateOpponentInfo();
         }
+    }
+
+
+    private void UpdateOpponentInfo()
+    {
+        //   opponent.playerInfo = opponentInfo;
+        //     opponent.opponentInfo = playerInfo;
+        opponent.opponentBoardZone = boardZone;
+        opponent.opponentHandZone = handZone;
+        opponent.boardZone = opponentBoardZone;
+        opponent.handZone = opponentHandZone;
+        opponent.playerBoardCardsList = opponentBoardCardsList;
+        opponent.opponentBoardCardsList = playerBoardCardsList;
+        //opponent.EffectSolver = new EffectSolver(gameState, System.Environment.TickCount);
+        //opponent.EffectSolver.SetTriggers(opponentInfo);
+        //opponent.EffectSolver.SetTriggers(playerInfo);
     }
 
     public override void OnStartTurn(StartTurnMessage msg)
@@ -387,7 +393,7 @@ public class DemoHumanPlayer : DemoPlayer
         base.OnStartTurn(msg);
 
         if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial && !GameClient.Get<ITutorialManager>().IsTutorial)
-			GameClient.Get<ITutorialManager>().StartTutorial();
+            GameClient.Get<ITutorialManager>().StartTutorial();
 
         gameUI.SetPlayerActive(msg.isRecipientTheActivePlayer);
         gameUI.SetOpponentActive(!msg.isRecipientTheActivePlayer);
@@ -398,7 +404,6 @@ public class DemoHumanPlayer : DemoPlayer
             Destroy(card);
         }
         opponentHandCards.Clear();
-        Debug.Log("msg.isRecipientTheActivePlayer: " + msg.isRecipientTheActivePlayer);
         for (var i = 0; i < opponentHandZone.numCards; i++)
         {
             if (i == opponentHandZone.numCards - 1)
@@ -407,6 +412,8 @@ public class DemoHumanPlayer : DemoPlayer
             AddCardToOpponentHand();
         }
         RearrangeOpponentHand(!msg.isRecipientTheActivePlayer, true);
+
+        opponent.isActivePlayer = !msg.isRecipientTheActivePlayer;
 
         if (msg.isRecipientTheActivePlayer)
         {
@@ -447,6 +454,14 @@ public class DemoHumanPlayer : DemoPlayer
             gameUI.HideTurnCountdown();
         }
 
+   
+
+        if (opponent != null)
+        {
+            UpdateOpponentInfo();
+            opponent.CallOnStartTurnEvent();
+        }
+
         CallOnStartTurnEvent();
     }
 
@@ -483,7 +498,7 @@ public class DemoHumanPlayer : DemoPlayer
             card.RearrangeHand(moveToPosition, Vector3.forward * twist);
             pivot.x += handWidth / playerHandCards.Count;
             card.GetComponent<SortingGroup>().sortingLayerName = "HandCards";
-            card.GetComponent<SortingGroup>().sortingOrder = i;
+            card.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count - (i + 1);
         }
     }
 
@@ -582,7 +597,6 @@ public class DemoHumanPlayer : DemoPlayer
         var boardWidth = 0.0f;
         var spacing = -0.2f;
         var cardWidth = 0.0f;
-        Debug.Log(playerBoardCards);
         foreach (var card in playerBoardCards)
         {
             cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
@@ -659,6 +673,9 @@ public class DemoHumanPlayer : DemoPlayer
 
         if (isHuman)
             CallOnEndTurnEvent();
+
+        if (opponent != null)
+            opponent.CallOnEndTurnEvent();
     }
 
     public override void StopTurn()
@@ -811,11 +828,11 @@ public class DemoHumanPlayer : DemoPlayer
                 cardSetName = cardSet.name;
         }
 
-        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+        if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
             currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
         }
-        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+        else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
         {
             currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
         }
@@ -875,16 +892,14 @@ public class DemoHumanPlayer : DemoPlayer
 		}
 
         GameObject go = null;
-        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+        if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
             go = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
         }
-        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+        else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
         {
             go = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
         }
-
-        Debug.Log(creatureCardViewPrefab.name);
 
         var cardView = go.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
@@ -903,7 +918,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         playerHandCards.Add(cardView);
 
-        go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
+        //go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
     }
 
     protected virtual void AddCardToOpponentHand()
@@ -933,7 +948,7 @@ public class DemoHumanPlayer : DemoPlayer
             card.transform.DORotate(Vector3.zero, .1f);
             card.GetComponent<HandCard>().enabled = false;
 
-            if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 var boardCreature = Instantiate(boardCreaturePrefab);
 
@@ -962,7 +977,7 @@ public class DemoHumanPlayer : DemoPlayer
                 });
 
             }
-            else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+            else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
                 //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 //var sequence = DOTween.Sequence();
@@ -1016,7 +1031,6 @@ public class DemoHumanPlayer : DemoPlayer
         {
             sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 1;
-            Debug.Log(121212);
             Sequence animationSequence5 = DOTween.Sequence();
             animationSequence5.Append(go.transform.DOMove(new Vector3(-4.63f, -3.66f, 0), .5f));
             animationSequence5.OnComplete(() => 
@@ -1042,7 +1056,7 @@ public class DemoHumanPlayer : DemoPlayer
             if (go.transform.Find("BackgroundBack") != null)
                 go.transform.Find("BackgroundBack").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
-            animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+            //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
             //animationSequence4.AppendInterval(2f);
         });
 
@@ -1053,7 +1067,6 @@ public class DemoHumanPlayer : DemoPlayer
         {
             sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 1;
-            Debug.Log(121212);
             Sequence animationSequence5 = DOTween.Sequence();
             animationSequence5.Append(go.transform.DOMove(new Vector3(-4.85f, 4, 0), .5f));
             animationSequence5.OnComplete(() =>
@@ -1156,11 +1169,11 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void SetCardType(GrandDevs.CZB.Data.Card card, GameObject cardobject)
     {
-        if (card.type != Enumerators.CardType.FERAL)
+        if (card.cardType != Enumerators.CardType.FERAL)
         {
             cardobject.transform.Find("TypeIcon").gameObject.SetActive(false);
         }
-        if (card.type == Enumerators.CardType.HEAVY)
+        if (card.cardType == Enumerators.CardType.HEAVY)
         {
             cardobject.transform.Find("Armor").gameObject.SetActive(true);
         }
@@ -1257,7 +1270,7 @@ public class DemoHumanPlayer : DemoPlayer
         var opponentBoard = opponentInfo.namedZones[Constants.ZONE_BOARD];
         var runtimeCard = opponentBoard.cards[opponentBoard.cards.Count - 1];
 
-        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+        if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
             effectSolver.SetDestroyConditions(runtimeCard);
             effectSolver.SetTriggers(runtimeCard);
@@ -1278,13 +1291,13 @@ public class DemoHumanPlayer : DemoPlayer
 
                 if (msg.targetInfo != null && msg.targetInfo.Length > 0)
                 {
-                    var playerCard = playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
-                    var opponentCard = opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
+                    var playerCard = opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
+                    var opponentCard = playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
 
-                    if (playerCard != null)
-                        targetCreature = playerBoardCards.Find(x => x.card.instanceId == playerCard.instanceId);
-                    else if (opponentCard != null)
-                        targetCreature = opponentBoardCards.Find(x => x.card.instanceId == opponentCard.instanceId);
+                    if (opponentCard != null)
+                        targetCreature = playerBoardCards.Find(x => x.card.instanceId == opponentCard.instanceId);
+                    else if (playerCard != null)
+                        targetCreature = opponentBoardCards.Find(x => x.card.instanceId == playerCard.instanceId);
                     else
                     {
                         var playerAvatar = GameObject.Find("PlayerAvatar").GetComponent<PlayerAvatar>();
@@ -1316,11 +1329,13 @@ public class DemoHumanPlayer : DemoPlayer
                     CreateOpponentTarget(createTargetArrow, boardCreature.gameObject, targetPlayerAvatar.gameObject,
                          () => { CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreature.GetComponent<BoardCreature>(), null, false, target); });
                 }
-
-               
+                else
+                {
+                    CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreature.GetComponent<BoardCreature>(), null, false);
+                }
             });
         }
-        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+        else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
         {
             effectSolver.SetDestroyConditions(runtimeCard);
             effectSolver.SetTriggers(runtimeCard);
@@ -1339,14 +1354,14 @@ public class DemoHumanPlayer : DemoPlayer
 
             BoardCreature targetCreature = null;
             PlayerAvatar targetPlayerAvatar = null;
-            PlayerAvatar selectedPlayer = null;
             object target = null;
+
+            var playerAvatar = GameObject.Find("PlayerAvatar").GetComponent<PlayerAvatar>();
+            var opponentAvatar = GameObject.Find("OpponentAvatar").GetComponent<PlayerAvatar>();
 
             if (msg.targetInfo != null && msg.targetInfo.Length > 0)
             {
-                var playerAvatar = GameObject.Find("PlayerAvatar").GetComponent<PlayerAvatar>();
-                var opponentAvatar = GameObject.Find("OpponentAvatar").GetComponent<PlayerAvatar>();
-
+                Debug.LogError(msg.targetInfo[0]);
                 var playerCard = playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
                 var opponentCard = opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
 
@@ -1356,16 +1371,12 @@ public class DemoHumanPlayer : DemoPlayer
                     targetCreature = opponentBoardCards.Find(x => x.card.instanceId == opponentCard.instanceId);
                 else
                 {
+                    
                     if (playerAvatar.playerInfo.id == msg.targetInfo[0])
                         targetPlayerAvatar = playerAvatar;
                     else if (opponentAvatar.playerInfo.id == msg.targetInfo[0])
                         targetPlayerAvatar = opponentAvatar;
                 }
-
-                if (playerAvatar.playerInfo.id == msg.targetInfo[0])
-                    selectedPlayer = opponentAvatar;
-                else if (opponentAvatar.playerInfo.id == msg.targetInfo[0])
-                    selectedPlayer = playerAvatar;
             }
 
 
@@ -1379,15 +1390,19 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 target = targetCreature;
 
-                CreateOpponentTarget(createTargetArrow, selectedPlayer.gameObject, targetCreature.gameObject,
+                CreateOpponentTarget(createTargetArrow, opponentAvatar.gameObject, targetCreature.gameObject,
                     () => { CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false, target); });
             }
             else if (targetPlayerAvatar != null)
             {
                 target = targetPlayerAvatar;
 
-                CreateOpponentTarget(createTargetArrow, selectedPlayer.gameObject, targetPlayerAvatar.gameObject, 
+                CreateOpponentTarget(createTargetArrow, opponentAvatar.gameObject, targetPlayerAvatar.gameObject, 
                     () => { CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false, target); });
+            }
+            else
+            {
+                CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false);
             }
         }
     }

@@ -81,7 +81,7 @@ public class CardView : MonoBehaviour
 
         manaCost = libraryCard.cost;
 
-       var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.rarity);
+       var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
         backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
@@ -101,7 +101,7 @@ public class CardView : MonoBehaviour
 
         manaCost = libraryCard.cost;
 
-        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.rarity);
+        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 
         backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
 		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
@@ -141,7 +141,11 @@ public class CardView : MonoBehaviour
     {
         cardAnimator.enabled = true;
         cardAnimator.SetTrigger("DeckToHandDefault");
-        cardAnimator.SetFloat("Id", id);
+
+        if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            cardAnimator.SetFloat("Id", 2);
+        else
+            cardAnimator.SetFloat("Id", id);
     }
 
     public virtual void UpdateAnimation(string name)

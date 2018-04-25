@@ -148,12 +148,12 @@ namespace CCGKit
 
                 var keywordCopy = new RuntimeKeyword();
                 keywordCopy.keywordId = 0;
-                if (libraryCard.type == Enumerators.CardType.FERAL)
+                if (libraryCard.cardType == Enumerators.CardType.FERAL)
                 {
                     keywordCopy.valueId = 0;
                     card.keywords.Add(keywordCopy);
                 }
-                else if(libraryCard.type == Enumerators.CardType.FERAL) //todod check it - is it correct type?
+                else if(libraryCard.cardType == Enumerators.CardType.FERAL) //todod check it - is it correct type?
                 {
                     keywordCopy.valueId = 1;
                     card.keywords.Add(keywordCopy);

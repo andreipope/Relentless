@@ -476,7 +476,7 @@ namespace CCGKit
                                     runtimeCard.stats[stat.statId].modifiers.Add(modifier);
                                 }
                             }
-                            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
+                            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).cardType;
                             runtimeCard.connectedAbilities.Clear();
                             foreach (var abilityId in card.connectedAbilities)
                             {
@@ -516,7 +516,7 @@ namespace CCGKit
                     statName = "HP";
                 runtimeCard.namedStats[statName] = runtimeStat;
             }
-            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).type;
+            runtimeCard.type = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId).cardType;
 
             foreach (var abilityId in card.connectedAbilities)
             {

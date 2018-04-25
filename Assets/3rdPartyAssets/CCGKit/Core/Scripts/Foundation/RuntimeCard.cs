@@ -63,7 +63,7 @@ namespace CCGKit
             {
                 var gameConfig = GameManager.Instance.config;
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(cardId);
-                return gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
+                return gameConfig.cardTypes.Find(x => (Enumerators.CardKind)x.id == libraryCard.cardKind);
             }
         }
 

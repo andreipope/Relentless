@@ -34,7 +34,6 @@ public class EndTurnButton : MonoBehaviour
     public void SetEnabled(bool enabled)
     {
         disabledSprite.gameObject.SetActive(!enabled);
-        Debug.Log("Enabled: " + enabled);
         active = enabled;
     }
 
@@ -67,7 +66,6 @@ public class EndTurnButton : MonoBehaviour
             return;
         if (active)
         {
-            Debug.Log(shineSprite.name + " | " + hoverSprite.name);
             player.StopTurn();
             shineSprite.DOKill();
             hoverSprite.DOKill();

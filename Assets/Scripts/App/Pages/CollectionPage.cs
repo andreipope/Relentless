@@ -312,11 +312,11 @@ namespace GrandDevs.CZB
 				var card = cards[i];
 
                 GameObject go = null;
-				if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.CREATURE)
+				if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
 				{
 					go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
 				}
-				else if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.SPELL)
+				else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
 				{
 					go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
 				}

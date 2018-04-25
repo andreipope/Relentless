@@ -93,7 +93,8 @@ namespace GrandDevs.CZB
 
         protected override void CreateVFX(Vector3 pos)
         {
-            Debug.Log(abilityEffectType);
+            int playerPos = cardCaller is DemoHumanPlayer ? 1 : -1;
+            
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
@@ -113,6 +114,7 @@ namespace GrandDevs.CZB
                 default:
                     break;
             }
+            pos = pos * playerPos;
 
             DestroyCurrentParticle();
 

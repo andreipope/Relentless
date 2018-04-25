@@ -302,11 +302,11 @@ namespace GrandDevs.CZB
                 var card = cards[i];
 
                 GameObject go = null;
-                if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.CREATURE)
+                if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
                 {
                     go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
                 }
-                else if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.SPELL)
+                else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
                 {
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
@@ -390,7 +390,7 @@ namespace GrandDevs.CZB
             uint maxCopies = 0;
             var cardRarity = "You cannot have more than ";
 
-            switch (card.rarity)
+            switch (card.cardRarity)
             {
                 case Enumerators.CardRarity.COMMON:
                     maxCopies = Constants.CARD_COMMON_MAX_COPIES;
@@ -408,7 +408,7 @@ namespace GrandDevs.CZB
 
             if (existingCards != null && existingCards.amount == maxCopies)
             {
-                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.rarity.ToString().ToLower() + " card in your deck.");
+                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.cardRarity.ToString().ToLower() + " card in your deck.");
                 return;
             }
 

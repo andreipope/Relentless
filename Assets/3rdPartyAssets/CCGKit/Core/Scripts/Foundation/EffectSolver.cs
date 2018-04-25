@@ -138,17 +138,8 @@ namespace CCGKit
 				int additionalDamageAttacker = abilitiesController.GetStatModificatorByAbility(attackingCreature, attackedCreature);
                 int additionalDamageAttacked = abilitiesController.GetStatModificatorByAbility(attackedCreature, attackingCreature);
 
-                UnityEngine.Debug.Log(attackedCreature.instanceId);
-                UnityEngine.Debug.Log(attackingCreature.instanceId);
-
-
-                UnityEngine.Debug.Log("Before = " + attackedCreature.namedStats["HP"].baseValue);
-                UnityEngine.Debug.Log("Before = " + attackingCreature.namedStats["HP"].baseValue);
-
                 attackedCreature.namedStats["HP"].baseValue -= attackingCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacker;
                 attackingCreature.namedStats["HP"].baseValue -= attackedCreature.namedStats["DMG"].effectiveValue + additionalDamageAttacked;
-                UnityEngine.Debug.Log(attackedCreature.namedStats["HP"].baseValue);
-                UnityEngine.Debug.Log(attackingCreature.namedStats["HP"].baseValue);
             }
         }
 
@@ -191,10 +182,6 @@ namespace CCGKit
 
             if (player != null)
             {
-                UnityEngine.Debug.Log(player.id);
-                UnityEngine.Debug.Log(card.cardId + "_" + card.instanceId);
-                UnityEngine.Debug.Log(originZone);
-                UnityEngine.Debug.Log(destinationZone);
                 player.namedZones[originZone].RemoveCard(card);
                 player.namedZones[destinationZone].AddCard(card);
                 TriggerEffect<OnCardLeftZoneTrigger>(player, card, x => { return x.IsTrue(gameState, originZone); }, targetInfo);
@@ -202,7 +189,7 @@ namespace CCGKit
 
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
                         
-                if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+                if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 {
                     var finalDestinationZone = gameState.config.gameZones.Find(x => x.id == 3); // GRAVEYARD ID is 3
                     // We do not use the MoveCards function here, because we do not want to trigger any effects
@@ -315,13 +302,11 @@ namespace CCGKit
                 if (condition is StatDestroyCardCondition)
                 {
                     var statCondition = condition as StatDestroyCardCondition;
-                    UnityEngine.Debug.Log("SetDestroyConditions " + card.cardId +"_" +  card.instanceId);
                     if(card.stats[statCondition.statId].onValueChanged == null)
                     card.stats[statCondition.statId].onValueChanged += (oldValue, newValue) =>
                     {
                         if (statCondition.IsTrue(card))
                         {
-                            UnityEngine.Debug.Log("MoveCard SetDestroyConditions - " + card.instanceId);
                             MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
                             GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
                         }

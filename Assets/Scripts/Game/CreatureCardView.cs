@@ -70,6 +70,6 @@ public class CreatureCardView : CardView
 
         attackText.text = card.damage.ToString();
         defenseText.text = card.health.ToString();
-        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.cardType + "_icon"));
     }
 }

@@ -318,11 +318,11 @@ namespace GrandDevs.CZB
                 }
               
                 GameObject go = null;
-                if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.CREATURE)
+                if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
                 {
                     go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
                 }
-                else if ((Enumerators.CardKind)card.cardTypeId == Enumerators.CardKind.SPELL)
+                else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
                 {
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
@@ -351,7 +351,7 @@ namespace GrandDevs.CZB
         {
             int id = 0;
             var rarity = (Enumerators.CardRarity)IsChanceFit(0);
-            var cards = _dataManager.CachedCardsLibraryData.Cards.Where((item) => item.rarity == rarity).ToList();
+            var cards = _dataManager.CachedCardsLibraryData.Cards.Where((item) => item.cardRarity == rarity).ToList();
             Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
             return card;
         }

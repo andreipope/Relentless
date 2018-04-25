@@ -109,7 +109,7 @@ namespace GrandDevs.CZB
             GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_cardData.amount);
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
-            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 25 * ((int)libraryCard.rarity + 1);
+            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 25 * ((int)libraryCard.cardRarity + 1);
 
 			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();
 		}

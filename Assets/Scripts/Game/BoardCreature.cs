@@ -135,7 +135,7 @@ public class BoardCreature : MonoBehaviour
 
         nameText.text = libraryCard.name;
 
-        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.rarity);
+        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
 
@@ -158,9 +158,9 @@ public class BoardCreature : MonoBehaviour
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;
 
-        if(libraryCard.type == Enumerators.CardType.FERAL)
+        if(libraryCard.cardType == Enumerators.CardType.FERAL)
             hasImpetus = true;
-        else if (libraryCard.type == Enumerators.CardType.HEAVY)
+        else if (libraryCard.cardType == Enumerators.CardType.HEAVY)
 			hasProvoke = true;
           
         if (hasProvoke)
@@ -205,6 +205,7 @@ public class BoardCreature : MonoBehaviour
 
 	public void Stun(int turns)
 	{
+        Debug.Log("WAS STUNED");
         if(turns > _stunTurns)
             _stunTurns = turns;
         IsPlayable = false;
@@ -343,15 +344,17 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-				sortingGroup.sortingOrder = 100;
+				//sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
+                    Debug.Log("CreatureOnAttackEvent?.Invoke(targetPlayer)");
+
                     CreatureOnAttackEvent?.Invoke(targetPlayer);
                     ownerPlayer.FightPlayer(card);
                 },
                 () =>
                 {
-                    sortingGroup.sortingOrder = 0;
+                    //sortingGroup.sortingOrder = 0;
                     fightTargetingArrow = null;
                 });
             }
@@ -361,18 +364,19 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-				sortingGroup.sortingOrder = 100;
+				//sortingGroup.sortingOrder = 100;
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
+                        Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
                         CreatureOnAttackEvent?.Invoke(targetCard);
                         ownerPlayer.FightCreature(card, targetCard.card);
                     },
                     () =>
                     {
-                        sortingGroup.sortingOrder = 0;
+                        //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                     });
                 }

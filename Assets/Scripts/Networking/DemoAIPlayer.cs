@@ -268,7 +268,7 @@ public class DemoAIPlayer : DemoPlayer
         {
 
             List<int> target = GetAbilityTarget(card);
-            if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 playerInfo.namedZones["Hand"].RemoveCard(card);
                 playerInfo.namedZones["Board"].AddCard(card);
@@ -276,7 +276,7 @@ public class DemoAIPlayer : DemoPlayer
                 PlayCreatureCard(card, target);
                 AddCardInfo(card);
             }
-            else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+            else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
                 if (target != null)
                 {
@@ -313,7 +313,7 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                         {
-                            if (playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || (Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+                            if (playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -362,6 +362,8 @@ public class DemoAIPlayer : DemoPlayer
                         {
                             if (!AddRandomTargetCreature(true, ref targetInfo))
                                 targetInfo.Add(0);
+
+                            Debug.LogError(targetInfo[0] + " | " + targetInfo.Count);
                         }
                         break;
                     case Enumerators.AbilityType.MASSIVE_DAMAGE:
@@ -488,11 +490,11 @@ public class DemoAIPlayer : DemoPlayer
         }
 
         GameObject prefab = null;
-        if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.CREATURE)
+        if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
             prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/CreatureCard");
         }
-        else if ((Enumerators.CardKind)libraryCard.cardTypeId == Enumerators.CardKind.SPELL)
+        else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
         {
             prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/SpellCard");
         }
@@ -601,7 +603,6 @@ public class DemoAIPlayer : DemoPlayer
     protected RuntimeCard GetRandomOpponentCreature()
     {
         var board = opponentInfo.namedZones["Board"].cards;
-        Debug.Log("!!! - " + opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count);
 
         var eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)

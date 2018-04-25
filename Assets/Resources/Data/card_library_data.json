@@ -5,15 +5,15 @@
       "cards": [
         {
           "id": 0,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Pyromaz",
           "cost": 1,
           "description": "1 additional damage to life zombie",
           "picture": "Pyromaz",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -28,27 +28,27 @@
         },
         {
           "id": 1,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Burrrnn",
           "cost": 3,
           "description": "<b>Feral:</b> attacks immediately",
           "picture": "Burrrnn",
           "damage": 2,
           "health": 2,
-          "type": 1,
-          "rarity": 1
+          "type": "FERAL",
+          "rarity": "RARE"
         },
         {
           "id": 2,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Cynderman",
           "cost": 5,
           "description": "<b>Enter:</b> Damage a target for 2 damage",
           "picture": "Cynderman",
           "damage": 4,
           "health": 3,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -63,15 +63,15 @@
         },
         {
           "id": 3,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Gargantua",
           "cost": 8,
           "description": "<b>Entry:</b> Damage all enemy zombies (including heros) for 2 Damage",
           "picture": "Gargantua",
           "damage": 6,
           "health": 6,
-          "type": 2,
-          "rarity": 3,
+          "type": "HEAVY",
+          "rarity": "EPIC",
 		      "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -91,15 +91,15 @@
       "cards": [
         {
           "id": 4,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Izze",
           "cost": 1,
           "description": "Freezes enemy for 1 turn",
           "picture": "Izze",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
           "abilities": [
             {
               "type": "STUN",
@@ -112,15 +112,15 @@
         },
         {
           "id": 5,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Jetter",
           "cost": 3,
           "description": "Does extra dmg to fire zombies",
           "picture": "Jetter",
           "damage": 3,
           "health": 3,
-          "type": 0,
-          "rarity": 1,
+          "type": "WALKER",
+          "rarity": "RARE",
 		  "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -136,15 +136,15 @@
         },
         {
           "id": 6,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 6,
           "description": "<b>Entry:</b> Freeze target and 2 adjacent targets for 1 turn, if frozen add 3 damage",
           "picture": "Freezzee",
           "damage": 4,
           "health": 4,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
@@ -158,15 +158,15 @@
         },
         {
           "id": 7,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Tsunami",
           "cost": 9,
           "description": "<b>Entry:</b>Creates a title wave and 2 damages all enemy targets",
           "picture": "Tsunami",
           "damage": 8,
           "health": 7,
-          "type": 0,
-          "rarity": 3,
+          "type": "WALKER",
+          "rarity": "EPIC",
 				  "abilities": [
 		            {
 		              "type": "MASSIVE_DAMAGE",
@@ -186,15 +186,15 @@
       "cards": [
         {
           "id": 8,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Rockky",
           "cost": 1,
           "description": "<b>Attack:</b> 1 additional damage for water zombies",
           "picture": "Rockky",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
 		  "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -209,27 +209,27 @@
         },
         {
           "id": 9,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Golem",
           "cost": 4,
           "description": "<b>Heavy:</b> must kill to attack others",
           "picture": "Golem",
           "damage": 2,
           "health": 6,
-          "type": 2,
-          "rarity": 1
+          "type": "HEAVY",
+          "rarity": "RARE"
         },
         {
           "id": 10,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Bolderr",
           "cost": 5,
           "description": "<b>Entry:</b> attack target for 3 damage",
           "picture": "Bolderr",
           "damage": 3,
           "health": 5,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -244,15 +244,15 @@
         },
         {
           "id": 11,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Mountain",
           "cost": 10,
           "description": "<b>Heavy, Attack:</b> damage 2 adjacent targets for 4 dmg",
           "picture": "Mountain",
           "damage": 8,
           "health": 8,
-          "type": 2,
-          "rarity": 3,
+          "type": "HEAVY",
+          "rarity": "EPIC",
 		  "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -270,27 +270,27 @@
       "cards": [
         {
           "id": 12,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Whizpar",
           "cost": 2,
           "description": "<b>Feral:</b> attacks immediately",
           "picture": "Whizpar",
           "damage": 1,
           "health": 1,
-          "type": 1,
-          "rarity": 0
+          "type": "FERAL",
+          "rarity": "COMMON"
         },
         {
           "id": 13,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Pushhh",
           "cost": 3,
           "description": "<b>Entry:</b> Return a zombie to hand",
           "picture": "Pushhh",
           "damage": 3,
           "health": 3,
-          "type": 0,
-          "rarity": 1,
+          "type": "WALKER",
+          "rarity": "RARE",
 		  "abilities": [
             {
               "type": "CARD_RETURN",
@@ -302,15 +302,15 @@
         },
         {
           "id": 14,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Stormcaller",
           "cost": 6,
           "description": "<b>Entry:</b> damage 1 to 3 adjacent cards",
           "picture": "Stormcaller",
           "damage": 4,
           "health": 5,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -324,15 +324,15 @@
         },
         {
           "id": 15,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Zeuz",
           "cost": 10,
           "description": "<b>Entry:</b> Damage 3 all enemy zombies",
           "picture": "Zeuz",
           "damage": 8,
           "health": 7,
-          "type": 0,
-          "rarity": 3,
+          "type": "WALKER",
+          "rarity": "EPIC",
 		  "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -351,15 +351,15 @@
       "cards": [
         {
           "id": 16,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Azuraz",
           "cost": 1,
           "description": "<b>Attack:</b> 1 additional damage to life zombies",
           "picture": "Azuraz",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
 		  "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -374,15 +374,15 @@
         },
         {
           "id": 17,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Shroom",
           "cost": 4,
           "description": "<b>Entry:</b> 2 damage to target",
           "picture": "Shroom",
           "damage": 4,
           "health": 2,
-          "type": 0,
-          "rarity": 1,
+          "type": "WALKER",
+          "rarity": "RARE",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -396,15 +396,15 @@
         },
         {
           "id": 18,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Vindrom",
           "cost": 6,
           "description": "Entangles target disable for the rest of turn",
           "picture": "Vindrom",
           "damage": 5,
           "health": 5,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "STUN",
@@ -417,15 +417,15 @@
         },
         {
           "id": 19,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Shammann",
           "cost": 8,
           "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
           "picture": "Shammann",
           "damage": 5,
           "health": 6,
-          "type": 0,
-          "rarity": 3,
+          "type": "WALKER",
+          "rarity": "EPIC",
 		  "abilities": [
             {
               "type": "SUMMON",
@@ -443,15 +443,15 @@
       "cards": [
         {
           "id": 20,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Poizom",
           "cost": 1,
           "description": "<b>Attack:</b>1 additional damage to life zombie",
           "picture": "Poizom",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -466,15 +466,15 @@
         },
         {
           "id": 21,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Ghoul",
           "cost": 2,
           "description": "<b>Attack:</b> looses 1 DMG",
           "picture": "Ghoul",
           "damage": 3,
           "health": 2,
-          "type": 0,
-          "rarity": 1,
+          "type": "WALKER",
+          "rarity": "RARE",
           "abilities": [
             {
               "type": "CHANGE_STAT",
@@ -488,15 +488,15 @@
         },
         {
           "id": 22,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Hazmaz",
           "cost": 3,
           "description": "<b>Feral, Entry:</b> 1 Damage to target",
           "picture": "Hazmaz",
           "damage": 3,
           "health": 3,
-          "type": 1,
-          "rarity": 2,
+          "type": "FERAL",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -510,15 +510,15 @@
         },
         {
           "id": 23,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Cherno-bill",
           "cost": 7,
           "description": "<b>Heavy, Death</b> Damage 2 to ALL zombies and heroes",
           "picture": "Cherno-bill",
           "damage": 8,
           "health": 8,
-          "type": 2,
-          "rarity": 3,
+          "type": "HEAVY",
+          "rarity": "EPIC",
           "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -538,15 +538,15 @@
       "cards": [
         {
           "id": 24,
-          "cardTypeId": 1,
+          "kind": "SPELL",
           "name": "Stapler",
           "cost": 4,
           "description": "Heals a zombie for 4 HP",
           "picture": "Stapler",
           "damage": 0,
           "health": 0,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
 				  "abilities": [ 
 					  {
 						"type": "heal",
@@ -560,15 +560,15 @@
         },
         {
           "id": 25,
-          "cardTypeId": 1,
+          "kind": "SPELL",
           "name": "Nail Bomb",
           "cost": 4,
           "description": "Damage target and 2 adjacent zombies for 5 damage",
           "picture": "NailBomb",
           "damage": 10,
           "health": 0,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
 				  "abilities": [ 
 					  {
 		          "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -582,15 +582,15 @@
         },
         {
           "id": 26,
-          "cardTypeId": 1,
+          "kind": "SPELL",
           "name": "Goo Bottle",
           "cost": 0,
           "description": "Adds 2 full Goo vials",
           "picture": "GooBottles",
           "damage": 0,
           "health": 0,
-          "type": 0,
-          "rarity": 2,
+          "type": "WALKER",
+          "rarity": "LEGENDARY",
           "abilities": [
             {
               "type": "ADD_GOO_VIAL",
@@ -603,15 +603,15 @@
         },
         {
           "id": 27,
-          "cardTypeId": 1,
+          "kind": "SPELL",
           "name": "Chainsaw",
           "cost": 2,
           "description": "Loses 1 HP on attack",
           "picture": "Chainsaw",
           "damage": 5,
           "health": 3,
-          "type": 0,
-          "rarity": 3,
+          "type": "WALKER",
+          "rarity": "EPIC",
           "abilities": [
             {
               "type": "WEAPON",
@@ -630,76 +630,76 @@
       "cards": [
         {
           "id": 28,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Mountain",
           "cost": 1,
           "description": "",
           "picture": "Mountain",
           "damage": 8,
           "health": 8,
-          "type": 0,
-          "rarity": 3
+          "type": "WALKER",
+          "rarity": "EPIC"
         },
         {
           "id": 29,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Hazmaz",
           "cost": 1,
           "description": "",
           "picture": "Hazmaz",
           "damage": 6,
           "health": 2,
-          "type": 1,
-          "rarity": 0
+          "type": "FERAL",
+          "rarity": "COMMON"
             
         },
 		{
           "id": 30,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Hazmaz",
           "cost": 1,
           "description": "",
           "picture": "Hazmaz",
           "damage": 1,
           "health": 4,
-          "type": 0,
-          "rarity": 0
+          "type": "WALKER",
+          "rarity": "COMMON"
         },
 		{
           "id": 31,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Stormcaller",
           "cost": 1,
           "description": "",
           "picture": "Stormcaller",
           "damage": 4,
           "health": 5,
-          "type": 0,
-          "rarity": 2
+          "type": "WALKER",
+          "rarity": "LEGENDARY"
         },
         {
           "id": 32,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Vindrom Clone",
           "cost": 1,
           "description": "",
           "picture": "Vindrom",
           "damage": 5,
           "health": 5,
-          "type": 2,
-          "rarity": 1
+          "type": "HEAVY",
+          "rarity": "RARE"
         },
 		{
           "id": 33,
-          "cardTypeId": 0,
+          "kind": "CREATURE",
           "name": "Zombie",
           "cost": 1,
           "description": "",
           "picture": "Pyromaz",
           "damage": 1,
           "health": 1,
-          "type": 0,
-          "rarity": 0,
+          "type": "WALKER",
+          "rarity": "COMMON",
         },
       ]
     }

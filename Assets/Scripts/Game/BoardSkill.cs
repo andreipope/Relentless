@@ -437,7 +437,7 @@ public class BoardSkill : MonoBehaviour
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
                 break;
             case Enumerators.SkillType.HEAL:
-                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                HealAction();
                 break;
             case Enumerators.SkillType.CARD_RETURN:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
@@ -445,6 +445,10 @@ public class BoardSkill : MonoBehaviour
             default:
                 break;
         }
+
+        if (target == null)
+            return;
+
         _firstParticle = MonoBehaviour.Instantiate(prefab);
         _firstParticle.transform.position = transform.position + Vector3.forward;
 
@@ -453,16 +457,18 @@ public class BoardSkill : MonoBehaviour
             var player = target as PlayerAvatar;
             _firstParticle.transform.DOMove(player.transform.position, .5f).OnComplete(() => ActionCompleted(target));
         }
-        else
+        else if (target is BoardCreature)
         {
             var cruature = target as BoardCreature;
             _firstParticle.transform.DOMove(cruature.transform.position, .5f).OnComplete(() => ActionCompleted(target));
-        }        
+        }
+
     }
 
     private void ActionCompleted(object target)
     {
-        DestroyCurrentParticle(_firstParticle, true);
+        if (_firstParticle != null)
+            DestroyCurrentParticle(_firstParticle, true);
 
         switch (_skillType)
         {
@@ -480,9 +486,6 @@ public class BoardSkill : MonoBehaviour
                 break;
             case Enumerators.SkillType.CARD_RETURN:
                 CardReturnAction(target);
-                break;
-            case Enumerators.SkillType.HEAL:
-                HealAction();
                 break;
             default:
                 break;

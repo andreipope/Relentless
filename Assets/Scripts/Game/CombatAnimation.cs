@@ -17,7 +17,10 @@ public static class CombatAnimation
         var originalPos = source.transform.position;
         var sortingGroup = source.GetComponent<SortingGroup>();
         var oldSortingOrder = sortingGroup.sortingOrder;
+        var oldsortingLayerName = sortingGroup.sortingLayerName;
+        sortingGroup.sortingLayerName = "BoardCards";
         sortingGroup.sortingOrder = 1000;
+       
         source.transform.DOMove(target.transform.position, 0.35f).SetEase(Ease.InSine).OnComplete(() =>
         {
             DOTween.Sequence()
@@ -32,8 +35,8 @@ public static class CombatAnimation
                 {
                     onCompleteCallback();
                 }
-
                 sortingGroup.sortingOrder = oldSortingOrder;
+                sortingGroup.sortingLayerName = oldsortingLayerName;
             });
 
             if (onHitCallback != null)
