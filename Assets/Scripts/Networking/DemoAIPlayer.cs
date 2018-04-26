@@ -45,7 +45,6 @@ public class DemoAIPlayer : DemoPlayer
     protected List<BoardCreature> playerBoardCards = new List<BoardCreature>();
     protected List<BoardCreature> opponentBoardCards = new List<BoardCreature>();
 
-
     public override List<BoardCreature> opponentBoardCardsList
     {
         get { return opponentBoardCards; }
@@ -82,7 +81,10 @@ public class DemoAIPlayer : DemoPlayer
         base.OnStartGame(msg);
         humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
         if (!GameManager.Instance.tutorial)
+        {
             _minTurnForAttack = Random.Range(1, 3);
+            FillActions();
+        }
     }
 
     /// <summary>
@@ -141,6 +143,12 @@ public class DemoAIPlayer : DemoPlayer
         if (gameEnded)
         {
             yield return null;
+        }
+
+        if (CurrentBoardWeapon != null && !isPlayerStunned)
+        {
+            AlreadyAttackedInThisTurn = false;
+            CurrentBoardWeapon.ActivateWeapon(true);
         }
 
         // Simulate 'thinking' time. This could be random or dependent on the
@@ -255,7 +263,34 @@ public class DemoAIPlayer : DemoPlayer
         }
 
         yield return new WaitForSeconds(1.0f);
+
+        TryToUseBoardSkill();
+
+        yield return new WaitForSeconds(1.0f);
+
+        TryToUseBoardWeapon();
+
+        yield return new WaitForSeconds(1.0f);
+
         StopTurn();
+    }
+
+    protected void TryToUseBoardSkill()
+    {
+        if(playerInfo.namedStats[Constants.TAG_MANA].effectiveValue >= 2)
+        {
+            GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue -= 2;
+            playerInfo.namedStats[Constants.TAG_MANA].baseValue -= 2;
+            // do smth by type of skill!!
+            FightPlayerBySkill(2);
+            // implemente network logic
+        }
+    }
+
+    protected void TryToUseBoardWeapon()
+    {
+       // TryToAttackViaWeapon(2);
+        // implement fucntionality that the player has weapon.. also network logic
     }
 
     protected bool TryToPlayCard(RuntimeCard card)
@@ -629,6 +664,16 @@ public class DemoAIPlayer : DemoPlayer
         CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Opponent").transform.Find("Weapon").gameObject);
     }
 
+    public override void DestroyWeapon()
+    {
+        if (CurrentBoardWeapon != null)
+        {
+            CurrentBoardWeapon.Destroy();
+        }
+
+        CurrentBoardWeapon = null;
+    }
+
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
@@ -642,5 +687,15 @@ public class DemoAIPlayer : DemoPlayer
         opponentHandZone = opponentInfo.namedZones[Constants.ZONE_HAND];
         opponentBoardZone = opponentInfo.namedZones[Constants.ZONE_BOARD];
         opponentGraveyardZone = opponentInfo.namedZones[Constants.ZONE_GRAVEYARD];
+    }
+
+    private List<ActionItem> allActions;
+
+    private void FillActions()
+    {
+        allActions = new List<ActionItem>();
+
+        var allActionsType = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].opponentActions;
+        allActions = GameClient.Get<IDataManager>().CachedActionsLibraryData.GetActions(allActionsType.ToArray());
     }
 }

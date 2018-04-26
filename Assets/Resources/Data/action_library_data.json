@@ -1,0 +1,24 @@
+{
+  "actions": [
+    {
+      "actionType": "TEST",
+      "states": [
+        {
+          "actionStateIndex": 0,
+          "cardId": 0,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 1,
+          "cardId": 0,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 9,
+          "cardId": 12,
+          "targetType": "opponent|opponent_card",
+        },
+      ]
+    }
+  ]
+}

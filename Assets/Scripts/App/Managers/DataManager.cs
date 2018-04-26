@@ -26,6 +26,9 @@ namespace GrandDevs.CZB
         public HeroesData CachedHeroesData { get; set; }
         public CollectionData CachedCollectionData { get; set; }
         public DecksData CachedDecksData { get; set; }
+        public OpponentDecksData CachedOpponentDecksData { get; set; }
+
+        public ActionData CachedActionsLibraryData { get; set;}
 
         private int _currentDeckIndex;
 		private int _currentAIDeckIndex;
@@ -53,6 +56,8 @@ namespace GrandDevs.CZB
             CachedHeroesData = new HeroesData();
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData();
+            CachedOpponentDecksData = new OpponentDecksData();
+            CachedActionsLibraryData = new ActionData();
         }
 
         public void Dispose()
@@ -79,6 +84,9 @@ namespace GrandDevs.CZB
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
+
+            CachedOpponentDecksData.ParseData();
+            CachedActionsLibraryData.ParseData();
 
             _localizationManager.ApplyLocalization();
 
@@ -150,6 +158,16 @@ namespace GrandDevs.CZB
                         File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedDecksData));
                     }
                     break;
+                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedOpponentDecksData));
+                    }
+                    break;
+                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedActionsLibraryData));
+                    }
+                    break;
                 default: break;
             }
         }
@@ -193,6 +211,18 @@ namespace GrandDevs.CZB
                             CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
                     }
                     break;
+                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedOpponentDecksData = DeserializeObjectFromPath<OpponentDecksData>(_cacheDataPathes[type]);
+                    }
+                    break;
+                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedActionsLibraryData = DeserializeObjectFromPath<ActionData>(_cacheDataPathes[type]);
+                    }
+                    break;
                 default: break;
             }
         }
@@ -205,6 +235,8 @@ namespace GrandDevs.CZB
                 CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(Resources.Load("Data/heroes_data").ToString());
                 CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(Resources.Load("Data/collection_data").ToString());
                 CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
+                CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(Resources.Load("Data/opponent_decks_data").ToString());
+                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());//ParseData
             }
         }
 
@@ -216,6 +248,8 @@ namespace GrandDevs.CZB
             _cacheDataPathes.Add(Enumerators.CacheDataType.HEROES_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_HEROES_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.COLLECTION_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_COLLECTION_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_DECKS_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_OPPONENT_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_DECKS_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH));
         }
 
         private T DeserializeObjectFromPath<T>(string path)

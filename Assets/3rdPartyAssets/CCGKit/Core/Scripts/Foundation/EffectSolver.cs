@@ -168,6 +168,15 @@ namespace CCGKit
             }
         }
 
+        public void TryToAttackViaWeapon(NetworkInstanceId playerNetId, int value)
+        {
+            var player = gameState.players.Find(x => x.netId != playerNetId);
+            if (player != null)
+            {
+                player.namedStats[Constants.TAG_LIFE].baseValue -= value;
+            }
+        }
+
         /// <summary>
         /// Moves the specified card from the specified origin zone to the specified destination zone.
         /// </summary>

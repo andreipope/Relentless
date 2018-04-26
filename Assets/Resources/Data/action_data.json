@@ -1,0 +1,44 @@
+{
+  "actions": [
+    {
+      "actionType": "TEST",
+      "states": [
+        {
+          "actionStateIndex": 0,
+          "cardId": 0,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 1,
+          "cardId": 0,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 9,
+          "cardId": 12,
+          "targetType": "opponent|opponent_card",
+        },
+      ]
+    },
+	{
+      "actionType": "TEST2",
+      "states": [
+        {
+          "actionStateIndex": 0,
+          "cardId": 10,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 1,
+          "cardId": 5,
+          "targetType": "opponent|opponent_card",
+        },
+		{
+          "actionStateIndex": 9,
+          "cardId": 12,
+          "targetType": "opponent|opponent_card",
+        },
+      ]
+    }
+  ]
+}

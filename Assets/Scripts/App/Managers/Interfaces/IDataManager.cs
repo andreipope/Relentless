@@ -11,6 +11,8 @@ namespace GrandDevs.CZB
         HeroesData CachedHeroesData { get; set; }
         CollectionData CachedCollectionData { get; set; }
         DecksData CachedDecksData { get; set; }
+        OpponentDecksData CachedOpponentDecksData { get; set; }
+        ActionData CachedActionsLibraryData { get; set; }
 
         void StartLoadCache();
         void SaveAllCache();

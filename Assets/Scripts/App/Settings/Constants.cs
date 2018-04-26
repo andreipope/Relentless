@@ -11,6 +11,8 @@
 		internal const string LOCAL_COLLECTION_DATA_FILE_PATH = "collection_data.json";
 		internal const string LOCAL_HEROES_DATA_FILE_PATH = "heroes_data.json";
 		internal const string LOCAL_DECKS_DATA_FILE_PATH = "decks_data.json";
+        internal const string LOCAL_OPPONENT_DECKS_DATA_FILE_PATH = "opponent_decks_data.json";
+        internal const string LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH = "action_library_data.json";
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 

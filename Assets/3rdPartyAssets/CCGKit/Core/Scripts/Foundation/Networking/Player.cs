@@ -94,6 +94,8 @@ namespace CCGKit
         public RuntimeZone opponentBoardZone;
         public RuntimeZone opponentGraveyardZone;
 
+        public int deckId;
+
         protected virtual void Awake()
         {
             client = NetworkManager.singleton.client;
@@ -225,7 +227,7 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-                    int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+                    deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
                     foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
                     {
                         for (var i = 0; i < card.amount; i++)
@@ -239,44 +241,14 @@ namespace CCGKit
                 }
                 else
                 {
-                    //if (Constants.DEV_MODE)
-                    //{
-                    //for (int i = 0; i < 10; i++)
-                    //    msgDefaultDeck.Add(25);
-                    //}
-                    //else
-                    //{
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(4);
-                    msgDefaultDeck.Add(4);
-                    msgDefaultDeck.Add(5);
-                    msgDefaultDeck.Add(5);
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(15);
-                    msgDefaultDeck.Add(18);
-                    msgDefaultDeck.Add(18);
-                    msgDefaultDeck.Add(21);
-                    msgDefaultDeck.Add(21);
-                    msgDefaultDeck.Add(21);
-                    msgDefaultDeck.Add(21);
-                    msgDefaultDeck.Add(22);
-                    msgDefaultDeck.Add(22);
-                    msgDefaultDeck.Add(22);
-                    msgDefaultDeck.Add(22);
-                    msgDefaultDeck.Add(25);
-                    msgDefaultDeck.Add(25);
-                    msgDefaultDeck.Add(26);
-                    msgDefaultDeck.Add(26);
-                    msgDefaultDeck.Add(4);
-                    msgDefaultDeck.Add(0);
-                    msgDefaultDeck.Add(0);
-                    //}
+                    deckId = UnityEngine.Random.Range(0, GameClient.Get<IDataManager>().CachedOpponentDecksData.decks.Count);
+                    foreach (var card in GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].cards)
+                    {
+                        for (var i = 0; i < card.amount; i++)
+                        {
+                            msgDefaultDeck.Add(card.cardId);
+                        }
+                    }
                 }
             }
 
@@ -772,9 +744,22 @@ namespace CCGKit
             client.Send(NetworkProtocol.HealCreatureBySkill, msg);
         }
 
+        public void TryToAttackViaWeapon(int value)
+        {
+            EffectSolver.TryToAttackViaWeapon(netId, value);
+
+            var msg = new TryToAttackViaWeaponMessage();
+            msg.callerPlayerNetId = netId;
+            msg.value = value;
+            client.Send(NetworkProtocol.TryToAttackViaWeapon, msg);
+        }
+
         public virtual void AddWeapon()
         {
            
+        }
+        public virtual void DestroyWeapon()
+        {
         }
     }
 }

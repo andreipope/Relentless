@@ -11,6 +11,7 @@ using System.Text;
 using System.Collections;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace GrandDevs.Internal
 {
@@ -363,5 +364,21 @@ namespace GrandDevs.Internal
 				SetLayerRecursively(child.gameObject, layer);
 			}
 		}
+
+        public static T CastStringTuEnum<T>(string data)
+        {
+            return (T)Enum.Parse(typeof(T), data.ToUpper());
+        }
+
+        public static List<T> CastList<T>(string data, char separator = '|')
+        {
+            List<T> list = new List<T>();
+            string[] targets = data.Split(separator);
+            foreach (var target in targets)
+            {
+                list.Add(CastStringTuEnum<T>(target));
+            }
+            return list;
+        }
     }
 }

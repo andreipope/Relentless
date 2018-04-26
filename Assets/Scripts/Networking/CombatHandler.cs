@@ -39,6 +39,7 @@ public class CombatHandler : ServerHandler
         NetworkServer.RegisterHandler(NetworkProtocol.FightCreatureBySkill, OnFightCreatureBySkill);
         NetworkServer.RegisterHandler(NetworkProtocol.HealPlayerBySkill, OnHealPlayerBySkill);
         NetworkServer.RegisterHandler(NetworkProtocol.HealCreatureBySkill, OnHealCreatureBySkill);
+        NetworkServer.RegisterHandler(NetworkProtocol.TryToAttackViaWeapon, OnTryToAttackViaWeapon);
     }
 
     public override void UnregisterNetworkHandlers()
@@ -50,6 +51,7 @@ public class CombatHandler : ServerHandler
         NetworkServer.UnregisterHandler(NetworkProtocol.FightCreatureBySkill);
         NetworkServer.UnregisterHandler(NetworkProtocol.HealPlayerBySkill);
         NetworkServer.UnregisterHandler(NetworkProtocol.HealCreatureBySkill);
+        NetworkServer.UnregisterHandler(NetworkProtocol.TryToAttackViaWeapon);
     }
 
     public virtual void OnFightPlayer(NetworkMessage netMsg)
@@ -137,7 +139,7 @@ public class CombatHandler : ServerHandler
                             */
 
             var attackedCard = server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
-            if( attackedCard == null)
+            if (attackedCard == null)
                 attackedCard = server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.attackedCardInstanceId);
             if (attackedCard != null)
             {
@@ -168,13 +170,25 @@ public class CombatHandler : ServerHandler
 
             var selectedCard = server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.cardInstanceId);
 
-            if(selectedCard == null)
+            if (selectedCard == null)
                 selectedCard = server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.cardInstanceId);
 
             if (selectedCard != null)
             {
                 server.effectSolver.HealCreatureBySkill(msg.callerPlayerNetId, selectedCard, msg.value);
             }
+        }
+    }
+
+    public virtual void OnTryToAttackViaWeapon(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<TryToAttackViaWeaponMessage>();
+        if (msg != null)
+        {
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+                return;
+
+            server.effectSolver.TryToAttackViaWeapon(msg.callerPlayerNetId, msg.value);
         }
     }
 }

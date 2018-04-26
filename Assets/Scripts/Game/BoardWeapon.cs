@@ -39,6 +39,8 @@ namespace GrandDevs.CZB
 
         private OnMouseHandler _onMouseHandler;
 
+        private bool _isOpponentWeapon = false;
+
 
         public bool CanAttack { get; set; }
 
@@ -63,7 +65,7 @@ namespace GrandDevs.CZB
         {
             _owner = owner;
 
-            (_owner as DemoHumanPlayer).OnEndTurnEvent += OnEndTurnEventHandler;
+            _owner.OnEndTurnEvent += OnEndTurnEventHandler;
 
             _health = health;
             _damage = damage;
@@ -76,8 +78,11 @@ namespace GrandDevs.CZB
 
         private void OnEndTurnEventHandler()
         {
-            _onMouseHandler.OnMouseDownEvent -= OnMouseDownEventHandler;
-            _onMouseHandler.OnMouseUpEvent -= OnMouseUpEventHandler;
+            if (!_isOpponentWeapon)
+            {
+                _onMouseHandler.OnMouseDownEvent -= OnMouseDownEventHandler;
+                _onMouseHandler.OnMouseUpEvent -= OnMouseUpEventHandler;
+            }
 
             CanAttack = false;
             _owner.AlreadyAttackedInThisTurn = true;
@@ -86,12 +91,17 @@ namespace GrandDevs.CZB
             _playerAvatarShine.SetActive(false);
         }
 
-        public void ActivateWeapon()
+        public void ActivateWeapon(bool opponent)
         {
             CanAttack = true;
 
-            _onMouseHandler.OnMouseDownEvent += OnMouseDownEventHandler;
-            _onMouseHandler.OnMouseUpEvent += OnMouseUpEventHandler;
+            _isOpponentWeapon = opponent;
+
+            if (!_isOpponentWeapon)
+            {
+                _onMouseHandler.OnMouseDownEvent += OnMouseDownEventHandler;
+                _onMouseHandler.OnMouseUpEvent += OnMouseUpEventHandler;
+            }
 
             _playerAvatarShine.SetActive(true);
         }
@@ -103,7 +113,7 @@ namespace GrandDevs.CZB
 
         private void OnMouseUpEventHandler(GameObject obj)
         {
-      
+
         }
 
         public void EnableTargettig()
@@ -160,7 +170,7 @@ namespace GrandDevs.CZB
                 else
                     _owner.FightPlayerBySkill(_damage);
             }
-            else if(_creature != null)
+            else if (_creature != null)
             {
                 CreateVFX(_creature.transform.position);
                 _owner.FightCreatureBySkill(_damage, _creature.card);
@@ -204,9 +214,9 @@ namespace GrandDevs.CZB
 
         private void CheckIsDie()
         {
-            if(_health <= 0)
+            if (_health <= 0)
             {
-                (_owner as DemoHumanPlayer).DestroyWeapon();
+                _owner.DestroyWeapon();
             }
         }
 

@@ -60,7 +60,9 @@
 			HEROES_DATA,
 			COLLECTION_DATA,
             DECKS_DATA,
-            USER_LOCAL_DATA
+            DECKS_OPPONENT_DATA,
+            USER_LOCAL_DATA,
+            OPPONENT_ACTIONS_LIBRARY_DATA
         }
 
         public enum NotificationButtonState
@@ -260,6 +262,12 @@
         public enum SpreadsheetType
         {
             TUTORIAL
+        }
+
+        public enum ActionType
+        {
+            TEST,
+            TEST2
         }
     }
 }

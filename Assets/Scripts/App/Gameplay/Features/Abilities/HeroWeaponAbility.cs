@@ -51,7 +51,7 @@ namespace GrandDevs.CZB
             cardCaller.CurrentBoardWeapon.InitWeapon(damage, health, cardCaller, abilityTargetTypes);
 
             if (!cardCaller.AlreadyAttackedInThisTurn)
-                cardCaller.CurrentBoardWeapon.ActivateWeapon();
+                cardCaller.CurrentBoardWeapon.ActivateWeapon(!(cardCaller is DemoHumanPlayer));
         }
     }
 }

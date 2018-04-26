@@ -30,6 +30,7 @@ namespace CCGKit
         public static short FightCreature = 1011;
         public static short FightCreatureBySkill = 10110;
         public static short HealCreatureBySkill = 10114;
+        public static short TryToAttackViaWeapon = 10124;
         public static short PlayerAttacked = 1012;
         public static short CreatureAttacked = 1013;
 
@@ -205,5 +206,11 @@ namespace CCGKit
         public int zoneId;
         public int cardInstanceId;
         public int abilityIndex;
+    }
+
+    public class TryToAttackViaWeaponMessage : MessageBase
+    {
+        public NetworkInstanceId callerPlayerNetId;
+        public int value;
     }
 }

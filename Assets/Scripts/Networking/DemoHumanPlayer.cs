@@ -427,7 +427,7 @@ public class DemoHumanPlayer : DemoPlayer
             if (CurrentBoardWeapon != null && !isPlayerStunned)
             {
                 AlreadyAttackedInThisTurn = false;
-                CurrentBoardWeapon.ActivateWeapon();
+                CurrentBoardWeapon.ActivateWeapon(false);
             }
 
             var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
@@ -1078,7 +1078,8 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, RuntimeCard runtimeCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, object target = null)
     {
-        bool canUseAbility = false;
+
+            bool canUseAbility = false;
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
         {
@@ -1143,14 +1144,33 @@ public class DemoHumanPlayer : DemoPlayer
 
                     activeAbility.ability.SelectedTargetAction(true);
 
-                  //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
+                    //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
                 }
             }
             else
-                action?.Invoke(card);
+            {
+                CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+            }
         }
         else
+        {
+            CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+        }
+    }
+
+    private void CallPermanentAbilityAction(bool isPlayer, Action<CardView> action, CardView card, object target, ActiveAbility activeAbility)
+    {
+        if (isPlayer)
             action?.Invoke(card);
+        else
+        {
+            if (target is BoardCreature)
+                activeAbility.ability.targetCreature = target as BoardCreature;
+            else if (target is PlayerAvatar)
+                activeAbility.ability.targetPlayer = target as PlayerAvatar;
+
+            activeAbility.ability.SelectedTargetAction(true);
+        }
     }
 
     private void CallCardPlay(CardView card)
@@ -1361,7 +1381,6 @@ public class DemoHumanPlayer : DemoPlayer
 
             if (msg.targetInfo != null && msg.targetInfo.Length > 0)
             {
-                Debug.LogError(msg.targetInfo[0]);
                 var playerCard = playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
                 var opponentCard = opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == msg.targetInfo[0]);
 
@@ -1370,8 +1389,7 @@ public class DemoHumanPlayer : DemoPlayer
                 else if (opponentCard != null)
                     targetCreature = opponentBoardCards.Find(x => x.card.instanceId == opponentCard.instanceId);
                 else
-                {
-                    
+                {                    
                     if (playerAvatar.playerInfo.id == msg.targetInfo[0])
                         targetPlayerAvatar = playerAvatar;
                     else if (opponentAvatar.playerInfo.id == msg.targetInfo[0])

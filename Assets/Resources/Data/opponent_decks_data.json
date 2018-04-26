@@ -1,0 +1,355 @@
+{
+  "decks": [
+	{
+      "heroId": 1,
+      "name": "Blitz AI",
+	  "actions": "TEST",
+      "cards": [
+        {
+          "cardId": 1,
+          "amount": 2
+        },
+        {
+          "cardId": 9,
+          "amount": 2
+        },
+        {
+          "cardId": 12,
+          "amount": 4
+        },
+        {
+          "cardId": 22,
+          "amount": 2
+        },
+        {
+          "cardId": 11,
+          "amount": 1
+        },
+        {
+          "cardId": 3,
+          "amount": 1
+        },
+        {
+          "cardId": 2,
+          "amount": 2
+        },
+        {
+          "cardId": 0,
+          "amount": 4
+        },
+        {
+          "cardId": 5,
+          "amount": 1
+        },
+        {
+          "cardId": 17,
+          "amount": 2
+        },
+        {
+          "cardId": 16,
+          "amount": 2
+        },
+        {
+          "cardId": 20,
+          "amount": 3
+        },
+        {
+          "cardId": 4,
+          "amount": 3
+        },
+        {
+          "cardId": 21,
+          "amount": 1
+        }
+      ]
+    },
+	{
+      "heroId": 0,
+      "name": "Defense AI",
+	  "actions": "TEST|TEST2",
+      "cards": [
+        {
+          "cardId": 11,
+          "amount": 1
+        },
+        {
+          "cardId": 10,
+          "amount": 2
+        },
+        {
+          "cardId": 9,
+          "amount": 2
+        },
+        {
+          "cardId": 14,
+          "amount": 2
+        },
+        {
+          "cardId": 18,
+          "amount": 2
+        },
+        {
+          "cardId": 19,
+          "amount": 1
+        },
+        {
+          "cardId": 23,
+          "amount": 1
+        },
+        {
+          "cardId": 3,
+          "amount": 1
+        },
+        {
+          "cardId": 6,
+          "amount": 2
+        },
+        {
+          "cardId": 5,
+          "amount": 2
+        },
+        {
+          "cardId": 7,
+          "amount": 1
+        },
+        {
+          "cardId": 17,
+          "amount": 2
+        },
+        {
+          "cardId": 8,
+          "amount": 4
+        },
+        {
+          "cardId": 4,
+          "amount": 2
+        },
+        {
+          "cardId": 1,
+          "amount": 1
+        },
+        {
+          "cardId": 0,
+          "amount": 2
+        },
+        {
+          "cardId": 12,
+          "amount": 1
+        },
+        {
+          "cardId": 22,
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "heroId": 4,
+      "name": "Toxic AI",
+	  "actions": "TEST",
+      "cards": [
+        {
+          "cardId": 23,
+          "amount": 1
+        },
+        {
+          "cardId": 22,
+          "amount": 2
+        },
+        {
+          "cardId": 21,
+          "amount": 2
+        },
+        {
+          "cardId": 20,
+          "amount": 4
+        },
+        {
+          "cardId": 3,
+          "amount": 1
+        },
+        {
+          "cardId": 2,
+          "amount": 2
+        },
+        {
+          "cardId": 17,
+          "amount": 2
+        },
+        {
+          "cardId": 0,
+          "amount": 4
+        },
+        {
+          "cardId": 1,
+          "amount": 1
+        },
+        {
+          "cardId": 4,
+          "amount": 2
+        },
+        {
+          "cardId": 6,
+          "amount": 1
+        },
+        {
+          "cardId": 10,
+          "amount": 1
+        },
+        {
+          "cardId": 8,
+          "amount": 2
+        },
+        {
+          "cardId": 12,
+          "amount": 3
+        },
+        {
+          "cardId": 18,
+          "amount": 1
+        },
+        {
+          "cardId": 7,
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "heroId": 2,
+      "name": "Freeze AI",
+	  "actions": "TEST|TEST2",
+      "cards": [
+        {
+          "cardId": 4,
+          "amount": 4
+        },
+        {
+          "cardId": 5,
+          "amount": 2
+        },
+        {
+          "cardId": 6,
+          "amount": 2
+        },
+        {
+          "cardId": 7,
+          "amount": 1
+        },
+        {
+          "cardId": 14,
+          "amount": 2
+        },
+        {
+          "cardId": 15,
+          "amount": 1
+        },
+        {
+          "cardId": 12,
+          "amount": 4
+        },
+        {
+          "cardId": 17,
+          "amount": 2
+        },
+        {
+          "cardId": 16,
+          "amount": 2
+        },
+        {
+          "cardId": 22,
+          "amount": 1
+        },
+        {
+          "cardId": 20,
+          "amount": 2
+        },
+        {
+          "cardId": 8,
+          "amount": 3
+        },
+        {
+          "cardId": 9,
+          "amount": 1
+        },
+        {
+          "cardId": 13,
+          "amount": 1
+        },
+        {
+          "cardId": 18,
+          "amount": 1
+        },
+        {
+          "cardId": 10,
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "heroId": 3,
+      "name": "Push AI",
+	  "actions": "TEST",
+      "cards": [
+        {
+          "cardId": 12,
+          "amount": 4
+        },
+        {
+          "cardId": 13,
+          "amount": 2
+        },
+        {
+          "cardId": 14,
+          "amount": 2
+        },
+        {
+          "cardId": 15,
+          "amount": 1
+        },
+        {
+          "cardId": 16,
+          "amount": 4
+        },
+        {
+          "cardId": 17,
+          "amount": 2
+        },
+        {
+          "cardId": 18,
+          "amount": 2
+        },
+        {
+          "cardId": 4,
+          "amount": 3
+        },
+        {
+          "cardId": 5,
+          "amount": 1
+        },
+        {
+          "cardId": 6,
+          "amount": 1
+        },
+        {
+          "cardId": 8,
+          "amount": 3
+        },
+        {
+          "cardId": 9,
+          "amount": 1
+        },
+        {
+          "cardId": 10,
+          "amount": 1
+        },
+        {
+          "cardId": 21,
+          "amount": 1
+        },
+        {
+          "cardId": 20,
+          "amount": 2
+        }
+      ]
+    }
+  ]
+}
