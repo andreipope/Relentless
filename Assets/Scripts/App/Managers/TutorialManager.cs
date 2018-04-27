@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GrandDevs.CZB.Gameplay;
 using GrandDevs.CZB.Common;
 using CCGKit;
+using UnityEngine.Networking;
 
 namespace GrandDevs.CZB
 {
@@ -56,9 +57,33 @@ namespace GrandDevs.CZB
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
+			_steps.Add(new TutorialStep(ref i,
+						            _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -4.6f, 0), new Vector3(0, -3.0f, 0)));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 0.5f, 0)));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 2.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
@@ -66,35 +91,17 @@ namespace GrandDevs.CZB
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
+                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 0.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -4.6f, 0), new Vector3(0, -3.0f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, false));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 2.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i,
-                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
-            _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
-            _steps.Add(new TutorialStep(ref i,
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(1.8f, -3.5f, 0), new Vector3(0, 4f, 0)));
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(1.5f, -3.0f, 0), new Vector3(0.4f, 2.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
@@ -139,14 +146,17 @@ namespace GrandDevs.CZB
                     _currentStep == 3 ||
                     _currentStep == 4 ||
                     _currentStep == 5 ||
+                    _currentStep == 6 ||
                     _currentStep == 7 ||
-                    _currentStep == 11 ||
-                    _currentStep == 12 ||
-                    _currentStep == 16 ||
-                    _currentStep == 20 ||
-                    _currentStep == 21 ||
-                    _currentStep == 25 ||
-                    _currentStep == 26
+                    _currentStep == 9 ||
+                    _currentStep == 13 ||
+                    _currentStep == 14 ||
+                    _currentStep == 17 ||
+                    _currentStep == 19 ||
+                    _currentStep == 23 ||
+                    _currentStep == 24 ||
+                    _currentStep == 28 ||
+                    _currentStep == 29
                     )
                     NextStep();
             }
@@ -155,13 +165,34 @@ namespace GrandDevs.CZB
         public void NextStep()
         {
             if (_currentStep >= _steps.Count-1)
-                return;
+            {
+				var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+				scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
+				{
+					popup.text.text = "You win!";
+					popup.buttonText.text = "Exit";
+					popup.button.onClickEvent.AddListener(() =>
+					{
+						if (NetworkingUtils.GetLocalPlayer().isServer)
+						{
+							NetworkManager.singleton.StopHost();
+						}
+						else
+						{
+							NetworkManager.singleton.StopClient();
+						}
+						scene.ClosePopup();
+						GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
+					});
+				});
+                GameClient.Get<ITutorialManager>().StopTutorial();
+				return;
+            }
 
             _steps[_currentStep].finished = true;
             _currentStep++;
             GameManager.Instance.tutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-
         }  
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
@@ -174,10 +205,16 @@ namespace GrandDevs.CZB
                 if (_steps[_currentStep].isArrowEnabled)
                     CreateSelectTarget();
                 _popup.ShowTutorialFocus(_currentStep);
-            }
+				if (_currentStep == 5 || _currentStep == 9 || _currentStep == 13)
+					_popup.ShowNextButton();
+			}
             else
             {
                 _popup.HideTutorialFocus();
+                if (_currentStep == 3)
+                    _popup.ShowQuestion();
+                else if(_currentStep != 11 && _currentStep != 16 && _currentStep != 21 )
+                    _popup.ShowNextButton();
             }
         }
 
@@ -188,23 +225,23 @@ namespace GrandDevs.CZB
             switch(action)
             {
                 case Enumerators.TutorialReportAction.MOVE_CARD:
-                    if (_currentStep == 6 || _currentStep == 22)
+                    if (_currentStep == 8 || _currentStep == 25)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.END_TURN:
-                    if (_currentStep == 8 || _currentStep == 9 || _currentStep == 13 || _currentStep == 14 || _currentStep == 17 || _currentStep == 18)
+                    if (_currentStep == 10 || _currentStep == 11 || _currentStep == 15 || _currentStep == 16 || _currentStep == 20 || _currentStep == 21)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-					if (_currentStep == 10 || _currentStep == 19)
+					if (_currentStep == 12 || _currentStep == 22)
 						NextStep();
 					break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                    if (_currentStep == 15 || _currentStep == 23)
+                    if (_currentStep == 18 || _currentStep == 26)
                         NextStep();
                         break;
                 case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 24)
+                    if (_currentStep == 27)
                         NextStep();
                         break;
                     default:

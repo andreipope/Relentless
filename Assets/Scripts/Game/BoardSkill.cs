@@ -133,7 +133,7 @@ public class BoardSkill : MonoBehaviour
         if (!(ownerPlayer is DemoHumanPlayer))
             return;
 
-        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 24))
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 27))
             return;
 
         if (isUsed)

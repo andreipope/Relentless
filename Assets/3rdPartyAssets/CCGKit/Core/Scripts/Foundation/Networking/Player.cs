@@ -207,7 +207,7 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-                    msgDefaultDeck.Add(3);
+                    msgDefaultDeck.Add(11);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(1);
@@ -215,7 +215,7 @@ namespace CCGKit
                 }
                 else
                 {
-                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(5);
                     msgDefaultDeck.Add(5);
                     msgDefaultDeck.Add(9);
                     msgDefaultDeck.Add(8);

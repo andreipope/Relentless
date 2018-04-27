@@ -240,7 +240,10 @@ public class BoardCreature : MonoBehaviour
         }
         else
         {
-            text.color = Color.black;
+            if(stat.name == Constants.TAG_LIFE)
+                text.color = Color.white;
+            else
+                text.color = Color.black;
         }
         var sequence = DOTween.Sequence();
         sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));

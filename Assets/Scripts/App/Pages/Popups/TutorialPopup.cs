@@ -19,7 +19,8 @@ namespace GrandDevs.CZB
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
-
+		private GameObject _yesnoObject;
+		private GameObject _nextObject;
         private GameObject _focusedObject;
 
         private List<GameObject> _focusObjects;
@@ -35,13 +36,19 @@ namespace GrandDevs.CZB
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
-            _focusObjects = new List<GameObject>();
+			_nextObject = _selfPage.transform.Find("Description/NextButton").gameObject;
+			_yesnoObject = _selfPage.transform.Find("Description/Question").gameObject;
+
+
+			_focusObjects = new List<GameObject>();
 
             foreach (Transform obj in _selfPage.transform.Find("FocusObjects").transform)
             {
                 _focusObjects.Add(obj.gameObject);
             }
 
+			_nextObject.SetActive(false);
+			_yesnoObject.SetActive(false);
 
             Hide();
         }
@@ -89,7 +96,20 @@ namespace GrandDevs.CZB
             foreach (var obj in _focusObjects)
                 if (obj.activeSelf)
                     obj.SetActive(false);
+			_nextObject.SetActive(false);
+			_yesnoObject.SetActive(false);
         }
+
+        public void ShowNextButton()
+        {
+		    _nextObject.SetActive(true);
+        }
+
+        public void ShowQuestion()
+        {
+			_yesnoObject.SetActive(true);
+
+		}
 
         public void Update()
         {

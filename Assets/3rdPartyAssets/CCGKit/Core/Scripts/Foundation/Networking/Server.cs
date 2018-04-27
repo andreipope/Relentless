@@ -374,6 +374,8 @@ namespace CCGKit
         /// <param name="type">The result of the game (win/loss).</param>
         public virtual void EndGame(PlayerInfo player, EndGameType type)
         {
+            if (GameManager.Instance.tutorial)
+                return;
             gameFinished = true;
             var msg = new EndGameMessage();
             switch (type)

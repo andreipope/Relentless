@@ -219,8 +219,10 @@ public class TargetingArrow : MonoBehaviour
     private Vector3 newPosition;
     private void MoveBlock(GameObject block)
     {
+        if (GameManager.Instance.tutorial)
+            return;
 
-        oldPosition = block.transform.localPosition;       
+		oldPosition = block.transform.localPosition;       
 
         if (block.transform.localPosition == Vector3.zero)
         {
