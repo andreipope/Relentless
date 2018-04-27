@@ -150,7 +150,7 @@
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
               "activityType": "active",
               "callType": "at_start",
-              "targetType": "opponent_card|opponent",
+              "targetType": "opponent_card",
               "value": 3,
               "effectType": "STUN_OR_DAMAGE_FREEZES"
             }

@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 using CCGKit;
 using GrandDevs.CZB.Common;
+using UnityEngine;
 
 /// <summary>
 ///  This server handler is responsible for managing the network aspects of a combat between
@@ -40,6 +41,7 @@ public class CombatHandler : ServerHandler
         NetworkServer.RegisterHandler(NetworkProtocol.HealPlayerBySkill, OnHealPlayerBySkill);
         NetworkServer.RegisterHandler(NetworkProtocol.HealCreatureBySkill, OnHealCreatureBySkill);
         NetworkServer.RegisterHandler(NetworkProtocol.TryToAttackViaWeapon, OnTryToAttackViaWeapon);
+        NetworkServer.RegisterHandler(NetworkProtocol.PlayEffect, OnPlayEffect);
     }
 
     public override void UnregisterNetworkHandlers()
@@ -52,6 +54,7 @@ public class CombatHandler : ServerHandler
         NetworkServer.UnregisterHandler(NetworkProtocol.HealPlayerBySkill);
         NetworkServer.UnregisterHandler(NetworkProtocol.HealCreatureBySkill);
         NetworkServer.UnregisterHandler(NetworkProtocol.TryToAttackViaWeapon);
+        NetworkServer.UnregisterHandler(NetworkProtocol.PlayEffect);
     }
 
     public virtual void OnFightPlayer(NetworkMessage netMsg)
@@ -189,6 +192,18 @@ public class CombatHandler : ServerHandler
                 return;
 
             server.effectSolver.TryToAttackViaWeapon(msg.callerPlayerNetId, msg.value);
+        }
+    }
+
+    public virtual void OnPlayEffect(NetworkMessage netMsg)
+    {
+        var msg = netMsg.ReadMessage<PlayEffectMessage>();
+        if (msg != null)
+        {
+            if (netMsg.conn.connectionId != server.gameState.currentPlayer.connectionId)
+                return;
+
+            server.effectSolver.PlaySkillEffect(msg.callerPlayerNetId, msg.effectType, msg.from, msg.to, msg.toType);
         }
     }
 }

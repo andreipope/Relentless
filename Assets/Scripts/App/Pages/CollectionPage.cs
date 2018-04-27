@@ -48,6 +48,8 @@ namespace GrandDevs.CZB
         private CardView _selectedCard;
         private CardView _selectedCollectionCard;
 
+        private bool _isPopupChangedStart;
+
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -90,11 +92,11 @@ namespace GrandDevs.CZB
             {
                 if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
                 {
-                    if (_selectedCard != null)
+                    if (!_isPopupChangedStart && _selectedCard != null)
                     {
                         ClosePopupInfo();
                     }
-                    if (Input.GetMouseButtonDown(0))
+                    if (!_isPopupChangedStart && Input.GetMouseButtonDown(0))
                     {
                         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                         var hit = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -155,7 +157,7 @@ namespace GrandDevs.CZB
 			}
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count;
+            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1; //1 - tutorial
             numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
 
             _cardSetsSlider.value = 0;
@@ -164,6 +166,8 @@ namespace GrandDevs.CZB
 
         private void ClosePopupInfo()
         {
+            ChangeStatePopup(true);
+            Debug.LogError("ClosePopupInfo");
 			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
 			_selectedCollectionCard.UpdateAmount(amount);
 
@@ -177,7 +181,8 @@ namespace GrandDevs.CZB
 			{
 				MonoBehaviour.Destroy(_selectedCard.gameObject);
 				_selectedCard = null;
-			});
+                ChangeStatePopup(false);
+            });
         }
 
         public void UpdateGooValue()
@@ -189,6 +194,7 @@ namespace GrandDevs.CZB
 
         private void CardSelected(CardView card)
         {
+            ChangeStatePopup(true);
             _selectedCollectionCard = card;
             _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
             _selectedCard.name = "CardPreview";
@@ -205,10 +211,25 @@ namespace GrandDevs.CZB
 			Sequence mySequence3 = DOTween.Sequence();
 			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(2.7f, 2.7f, 2.7f), .4f));
 			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(2.5f, 2.5f, 2.5f), .2f));
+            mySequence3.OnComplete(() =>
+            {
+                ChangeStatePopup(false);
+            });
 
 
 			_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
             (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).cardTransform = _selectedCard.transform;
+        }
+
+        private void ChangeStatePopup(bool isStart)
+        {
+            _isPopupChangedStart = isStart;
+            _cardSetsSlider.interactable = !isStart;
+            _buttonBuy.interactable = !isStart;
+            _buttonOpen.interactable = !isStart;
+            _buttonArrowLeft.interactable = !isStart;
+            _buttonArrowRight.interactable = !isStart;
+            _buttonBack.interactable = !isStart;
         }
 
         private void CardSetsSliderOnValueChangedHandler(float value)
@@ -254,8 +275,8 @@ namespace GrandDevs.CZB
 
                 if (currentSet < 0)
                 {
-                    currentSet = 0;
-                    currentPage = 0;
+                    currentSet = numSets - 1;
+                    currentPage = numPages - 1;
                 }
                 else
                 {
@@ -269,10 +290,8 @@ namespace GrandDevs.CZB
 
                 if (currentSet >= numSets)
                 {
-                    currentSet = numSets - 1;
-                    currentPage = numPages - 1;
-
-                    currentPage = currentPage < 0 ? 0 : currentPage;
+                    currentSet = 0;
+                    currentPage = 0;
                 }
                 else
                 {

@@ -26,6 +26,8 @@ using GrandDevs.CZB.Common;
 /// </summary>
 public class DemoHumanPlayer : DemoPlayer
 {
+    public static DemoHumanPlayer Instance;
+
     [SerializeField]
     private GameObject creatureCardViewPrefab;
 
@@ -92,6 +94,8 @@ public class DemoHumanPlayer : DemoPlayer
     protected override void Awake()
     {
         base.Awake();
+
+        Instance = this;
 
         Assert.IsNotNull(creatureCardViewPrefab);
         Assert.IsNotNull(spellCardViewPrefab);
@@ -363,13 +367,17 @@ public class DemoHumanPlayer : DemoPlayer
 
         GameClient.Get<IPlayerManager>().OnLocalPlayerSetUp();
 
-        GameObject.Find("Player/Spell").GetComponent<BoardSkill>().ownerPlayer = this;
+        boardSkill = GameObject.Find("Player/Spell").GetComponent<BoardSkill>();
+        boardSkill.ownerPlayer = this;
+        boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.heroes[GameClient.Get<IGameplayManager>().PlayerHeroId].skill);
 
         if (!opponentInfo.isHuman)
         {
             opponent = DemoAIPlayer.Instance;
             UpdateOpponentInfo();
         }
+
+        EffectSolver.EffectActivateEvent += EffectActivateEventHandler;
     }
 
 
@@ -702,8 +710,10 @@ public class DemoHumanPlayer : DemoPlayer
         //    return;
         //}
 
-        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 1 && 
-                                                              GameClient.Get<ITutorialManager>().CurrentStep != 13))
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 6 && 
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 14 &&
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 15 &&
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 22))
             return;
 
 
@@ -1078,8 +1088,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, RuntimeCard runtimeCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, object target = null)
     {
-
-            bool canUseAbility = false;
+        bool canUseAbility = false;
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
         {
@@ -1164,6 +1173,8 @@ public class DemoHumanPlayer : DemoPlayer
             action?.Invoke(card);
         else
         {
+            if (activeAbility == null)
+                return;
             if (target is BoardCreature)
                 activeAbility.ability.targetCreature = target as BoardCreature;
             else if (target is PlayerAvatar)
@@ -1232,6 +1243,7 @@ public class DemoHumanPlayer : DemoPlayer
             popup.buttonText.text = "Exit";
             popup.button.onClickEvent.AddListener(() =>
             {
+                scene.ClosePopup();
                 if (NetworkingUtils.GetLocalPlayer().isServer)
                 {
                     NetworkManager.singleton.StopHost();
@@ -1244,6 +1256,8 @@ public class DemoHumanPlayer : DemoPlayer
                 GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
             });
         });
+
+        EffectSolver.EffectActivateEvent -= EffectActivateEventHandler;
     }
 
     public override void OnCardMoved(CardMovedMessage msg)
@@ -1425,7 +1439,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    private void CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject obj, Action action)
+    private void CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, Action action)
     {
         if(!createTargetArrow)
         {
@@ -1437,7 +1451,7 @@ public class DemoHumanPlayer : DemoPlayer
         targetingArrow.opponentBoardZone = boardZone;
         targetingArrow.Begin(startObj.transform.position);
 
-        targetingArrow.SetTarget(obj);
+        targetingArrow.SetTarget(targetObject);
 
         StartCoroutine(RemoveOpponentTargetingArrow(targetingArrow, action));
     }
@@ -1493,7 +1507,7 @@ public class DemoHumanPlayer : DemoPlayer
         CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Player").transform.Find("Weapon").gameObject);
     }
 
-    public virtual void DestroyWeapon()
+    public override void DestroyWeapon()
     {
         if(CurrentBoardWeapon != null)
         {
@@ -1501,5 +1515,34 @@ public class DemoHumanPlayer : DemoPlayer
         }
 
         CurrentBoardWeapon = null;
+    }
+
+    private void EffectActivateEventHandler(Enumerators.EffectActivateType effectActivateType, object[] param)
+    {
+        Debug.LogError("EffectActivateEventHandler");
+
+        switch (effectActivateType)
+        {
+            case Enumerators.EffectActivateType.PLAY_SKILL_EFFECT:
+                {
+                    PlayerInfo player = (PlayerInfo)param[0];
+                    Enumerators.SkillType skillType = (Enumerators.SkillType)(int)param[1];
+                    int from = (int)param[2];
+                    int to = (int)param[3];
+                    int toType = (int)param[4];
+
+                    Debug.LogError(player.id + " player.id");
+
+                    if (player.Equals(opponent.playerInfo))
+                    {
+                        CreateOpponentTarget(true, GameObject.Find("Opponent/Spell"), GameObject.Find("Player/Avatar"), () =>
+                        {
+                            opponent.boardSkill.DoOnUpSkillAction();
+                        });
+                    }
+                }
+                break;
+            default: break;
+        }
     }
 }

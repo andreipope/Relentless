@@ -70,6 +70,8 @@ namespace GrandDevs.CZB
             set { _currentHeroId = value; }
         }
 
+        private List<DeckBuilderCard> _currentCards;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -79,6 +81,7 @@ namespace GrandDevs.CZB
 
             _collectionData = new CollectionData();
             _collectionData.cards = new List<CollectionCardData>();
+            _currentCards = new List<DeckBuilderCard>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -131,6 +134,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            WarningPopup.OnHidePopupEvent += OnCloseAlertDialogEventHandler;
             _collectionData.cards.Clear();
             CollectionCardData cardData;
             foreach (var card in _dataManager.CachedCollectionData.cards)
@@ -175,11 +179,24 @@ namespace GrandDevs.CZB
             MonoBehaviour.Destroy(_cardPlaceholders);
             MonoBehaviour.Destroy(_backgroundCanvas);
             _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
+            WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
         }
 
         private void OpenAlertDialog(string msg)
         {
+            foreach (var card in _currentCards)
+            {
+                card.isActive = false;
+            }
             _uiManager.DrawPopup<WarningPopup>(msg);
+        }
+
+        private void OnCloseAlertDialogEventHandler()
+        {
+            foreach (var card in _currentCards)
+            {
+                card.isActive = true;
+            }
         }
 
         private void InitObjects()
@@ -193,7 +210,7 @@ namespace GrandDevs.CZB
                 cardPositions.Add(placeholder);
             }
 
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count;
+            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1; //1 - tutorial
             numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
 
             _cardSetsSlider.value = 0;
@@ -249,8 +266,8 @@ namespace GrandDevs.CZB
 
                 if (currentSet < 0)
                 {
-                    currentSet = 0;
-                    currentPage = 0;
+                    currentSet = numSets - 1;
+                    currentPage = numPages - 1;
                 }
                 else
                 {
@@ -261,13 +278,11 @@ namespace GrandDevs.CZB
             else if (currentPage >= numPages)
             {
                 currentSet += direction;
-
+               
                 if (currentSet >= numSets)
                 {
-                    currentSet = numSets - 1;
-                    currentPage = numPages - 1;
-
-                    currentPage = currentPage < 0 ? 0 : currentPage;
+                    currentSet = 0;
+                    currentPage = 0;
                 }
                 else
                 {
@@ -283,6 +298,7 @@ namespace GrandDevs.CZB
 
         public void LoadCards(int page, int setIndex)
         {
+            _currentCards.Clear();
 			var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
 			var cards = set.cards;
 
@@ -326,6 +342,7 @@ namespace GrandDevs.CZB
                 var deckBuilderCard = go.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.scene = this;
                 deckBuilderCard.card = card;
+                _currentCards.Add(deckBuilderCard);
             }
         }
 

@@ -14,12 +14,13 @@ using TMPro;
 using CCGKit;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB;
+using GrandDevs.CZB.Data;
 
 public class BoardSkill : MonoBehaviour
 {
 
     [HideInInspector]
-    public DemoHumanPlayer ownerPlayer;
+    public Player ownerPlayer;
 
     public GameObject fightTargetingArrowPrefab,
                             _fireDamageVFXprefab,
@@ -41,12 +42,13 @@ public class BoardSkill : MonoBehaviour
     [HideInInspector]
     public FightTargetingArrow fightTargetingArrow;
 
-    private int _manaCost;
+    public int manaCost;
     private int _skillPower;
-    private Enumerators.SkillType _skillType;
+    public Enumerators.SkillType skillType;
     private ILoadObjectsManager _loadObjectsManager;
 
-    private bool _used;
+    public bool isUsed;
+    public bool isOpponent = false;
 
     private void Start()
     {
@@ -56,18 +58,41 @@ public class BoardSkill : MonoBehaviour
         _airPickUpCardVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
         _toxicVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
         _frozenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-        int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
-        int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId;
-        var skill = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId].skill;
 
-        _manaCost = skill.cost;
-        _skillType = skill.skillType;
+        SetSkill();
+    }
+
+    public void SetSkill(HeroSkill skill = null)
+    {
+        if (skill == null)
+        {
+            int deckId;
+            int heroId;
+
+            if (ownerPlayer is DemoHumanPlayer)
+            {
+                deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+                heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId;
+                skill = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId].skill;
+
+                isOpponent = false;
+            }
+            else
+            {
+                skill = GameClient.Get<IDataManager>().CachedHeroesData.heroes[GameClient.Get<IGameplayManager>().OpponentHeroId].skill;
+
+                isOpponent = true;
+            }
+        }
+
+        manaCost = skill.cost;
+        skillType = skill.skillType;
         _skillPower = skill.value;
     }
 
     public void OnEndTurn()
     {
-        _used = false;
+        isUsed = false;
         CancelTargetingArrows();
     }
 
@@ -79,44 +104,50 @@ public class BoardSkill : MonoBehaviour
         }
     }
 
-   /* private void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (collider.transform.parent != null)
-        {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
-            if (targetingArrow != null)
-            {
-                targetingArrow.OnCardSelected(this);
-            }
-        }
-    }
+    /* private void OnTriggerEnter2D(Collider2D collider)
+     {
+         if (collider.transform.parent != null)
+         {
+             var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+             if (targetingArrow != null)
+             {
+                 targetingArrow.OnCardSelected(this);
+             }
+         }
+     }
 
-    private void OnTriggerExit2D(Collider2D collider)
-    {
-        if (collider.transform.parent != null)
-        {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
-            if (targetingArrow != null)
-            {
-                targetingArrow.OnCardUnselected(this);
-            }
-        }
-    }              */
+     private void OnTriggerExit2D(Collider2D collider)
+     {
+         if (collider.transform.parent != null)
+         {
+             var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+             if (targetingArrow != null)
+             {
+                 targetingArrow.OnCardUnselected(this);
+             }
+         }
+     }              */
 
     private void OnMouseDown()
     {
-        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 15))
-			return;
-        if (_used)
+        if (!(ownerPlayer is DemoHumanPlayer))
             return;
-        if (_skillType != Enumerators.SkillType.HEAL)
-            if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
+
+        if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 24))
+            return;
+
+        if (isUsed)
+            return;
+
+        if (skillType != Enumerators.SkillType.HEAL)
+        {
+            if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
             {
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
                 {
                     fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
                     fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
-                    if (_skillType == Enumerators.SkillType.CARD_RETURN)
+                    if (skillType == Enumerators.SkillType.CARD_RETURN)
                         fightTargetingArrow.targetType = EffectTarget.TargetCard;
 
                     fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
@@ -128,30 +159,50 @@ public class BoardSkill : MonoBehaviour
                     }
                 }
             }
+        }
     }
 
     private void OnMouseUp()
     {
-        if (_used)
+        if (!(ownerPlayer is DemoHumanPlayer))
             return;
-        if (_manaCost <= ownerPlayer.manaStat.effectiveValue)
+
+        DoOnUpSkillAction();
+    }
+
+    public void DoOnUpSkillAction()
+    {
+        if (isUsed)
+            return;
+
+        if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
         {
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            if (!isOpponent)
             {
-                GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                }
             }
 
-            if (_skillType == Enumerators.SkillType.HEAL)
+            if (skillType == Enumerators.SkillType.HEAL)
             {
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
                     DoSkillAction(null);
             }
             else
             {
-                if (fightTargetingArrow != null)
+                if (!isOpponent)
+                {
+                    if (fightTargetingArrow != null)
+                    {
+                        ResolveCombat();
+                        (ownerPlayer as DemoHumanPlayer).isCardSelected = false;
+                    }
+                }
+                else
                 {
                     ResolveCombat();
-                    ownerPlayer.isCardSelected = false;
                 }
             }
         }
@@ -187,11 +238,11 @@ public class BoardSkill : MonoBehaviour
     private void DoSkillAction(object target)
     {
         if (!Constants.DEV_MODE)
-            ownerPlayer.manaStat.baseValue -= _manaCost;
+            ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].baseValue -= manaCost;
 
         CreateVFX(target);
 
-        _used = true;
+        isUsed = true;
     }
 
     private void FreezeAction(object target)
@@ -422,7 +473,7 @@ public class BoardSkill : MonoBehaviour
     {
         GameObject prefab = null;
 
-        switch (_skillType)
+        switch (skillType)
         {
             case Enumerators.SkillType.FREEZE:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
@@ -470,7 +521,7 @@ public class BoardSkill : MonoBehaviour
         if (_firstParticle != null)
             DestroyCurrentParticle(_firstParticle, true);
 
-        switch (_skillType)
+        switch (skillType)
         {
             case Enumerators.SkillType.FREEZE:
                 FreezeAction(target);

@@ -7,7 +7,6 @@ using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using UnityEngine.Networking;
 
 namespace CCGKit
@@ -22,6 +21,8 @@ namespace CCGKit
     /// </summary>
     public class EffectSolver
     {
+        public event Action<Enumerators.EffectActivateType, object[]> EffectActivateEvent;
+
         /// <summary>
         /// The current state of the game.
         /// </summary>
@@ -174,6 +175,17 @@ namespace CCGKit
             if (player != null)
             {
                 player.namedStats[Constants.TAG_LIFE].baseValue -= value;
+            }
+        }
+
+        public void PlaySkillEffect(NetworkInstanceId playerNetId, int effectType, int from, int to, int toType)
+        {
+            var player = gameState.players.Find(x => x.netId != playerNetId);
+            if (player != null)
+            {
+                UnityEngine.Debug.LogError("PlayEffect event");
+
+                EffectActivateEvent?.Invoke(Enumerators.EffectActivateType.PLAY_SKILL_EFFECT, new object[] { player, effectType, from, to, toType });
             }
         }
 

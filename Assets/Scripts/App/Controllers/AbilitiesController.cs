@@ -84,7 +84,6 @@ namespace GrandDevs.CZB
 
         private AbilityBase CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData)
         {
-            Debug.Log(abilityData.abilityType);
             AbilityBase ability = null;
             switch (abilityData.abilityType)
             {
@@ -160,9 +159,6 @@ namespace GrandDevs.CZB
 
         public bool IsAbilityCanActivateWithoutTargetAtStart(AbilityData ability)
         {
-			Debug.Log(HasTargets(ability));
-			Debug.Log(IsAbilityCallsAtStart(ability));
-			Debug.Log(IsAbilityActive(ability));
             if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && !IsAbilityActive(ability))
                 return true;
             return false;

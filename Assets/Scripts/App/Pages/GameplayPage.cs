@@ -101,8 +101,8 @@ namespace GrandDevs.CZB
         {
             GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
 
-            int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-            int opponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
+            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
 
 
 
@@ -171,6 +171,11 @@ namespace GrandDevs.CZB
             else
             {
                 GameNetworkManager.Instance.StopClient();
+            }
+
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                GameClient.Get<ITutorialManager>().CancelTutorial();
             }
 
             GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);

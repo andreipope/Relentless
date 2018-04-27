@@ -96,6 +96,8 @@ namespace CCGKit
 
         public int deckId;
 
+        public BoardSkill boardSkill { get; protected set; }
+
         protected virtual void Awake()
         {
             client = NetworkManager.singleton.client;
@@ -205,19 +207,19 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-                    msgDefaultDeck.Add(28);
-                    msgDefaultDeck.Add(29);
-                    msgDefaultDeck.Add(29);
-                    msgDefaultDeck.Add(29);
-                    msgDefaultDeck.Add(29);
+                    msgDefaultDeck.Add(3);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(16);
                 }
                 else
                 {
-                    msgDefaultDeck.Add(31);
-                    msgDefaultDeck.Add(30);
-                    msgDefaultDeck.Add(32);
-                    msgDefaultDeck.Add(30);
-                    msgDefaultDeck.Add(30);
+                    msgDefaultDeck.Add(0);
+                    msgDefaultDeck.Add(5);
+                    msgDefaultDeck.Add(9);
+                    msgDefaultDeck.Add(8);
+                    msgDefaultDeck.Add(8); 
                 }
                 //int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
                // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId = 1;
@@ -249,6 +251,8 @@ namespace CCGKit
                             msgDefaultDeck.Add(card.cardId);
                         }
                     }
+                    var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];
+                    GameClient.Get<IGameplayManager>().OpponentHeroId = deck.heroId;
                 }
             }
 
@@ -327,12 +331,7 @@ namespace CCGKit
             server.gameState.currentPlayer.namedStats[stat].baseValue = server.gameState.currentPlayer.namedStats[stat].maxValue;
 
 
-
-            if(this is DemoHumanPlayer)
-            {
-
-            }
-            else
+            if(!(this is DemoHumanPlayer))
             {
                 var humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
 
@@ -372,7 +371,9 @@ namespace CCGKit
                     }
                 }
 
-                if (playerState.id == player.Key.id && isNewTurn)
+                if (GameManager.Instance.tutorial)
+                    ModificateStatMaxValue(Constants.TAG_MANA, 8, 10);
+                else   if (playerState.id == player.Key.id && isNewTurn)
                     ModificateStatMaxValue(Constants.TAG_MANA, 1, 10);
 
                 foreach (var zone in player.Key.staticZones)
@@ -432,9 +433,6 @@ namespace CCGKit
                         var runtimeCard = player.Value.zones[zone.zoneId].cards.Find(x => x.instanceId == card.instanceId);
                         if (runtimeCard != null)
                         {
-                            if (playerInfo.id == playerState.id && playerInfo.id == player.Value.id)
-
-                                Debug.Log("zoneId - " + zone.zoneId + "_" + card.instanceId + "_" + card.cardId);
                             foreach (var stat in card.stats)
                             {
                                 runtimeCard.stats[stat.statId].originalValue = stat.originalValue;
@@ -459,8 +457,6 @@ namespace CCGKit
                         {
                             if (zone.zoneId == 1)
                             {
-                                if (playerInfo.id == playerState.id && playerInfo.id == player.Value.id)
-                                    Debug.Log("zoneId - " + zone.zoneId + "_" + card.instanceId + "_" + card.cardId + "!!!!!!!!!!!!!!!!!");
                                 CreateAndPutToHandRuntimeCard(card, player.Value);
                             }
                         }
@@ -638,7 +634,7 @@ namespace CCGKit
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-            if (!Constants.DEV_MODE)
+            if (!Constants.DEV_MODE || (this is DemoAIPlayer))
                 playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
@@ -657,7 +653,7 @@ namespace CCGKit
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-            if (!Constants.DEV_MODE)
+            if (!Constants.DEV_MODE || (this is DemoAIPlayer))
                 playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
 
             var msg = new MoveCardMessage();
@@ -713,8 +709,6 @@ namespace CCGKit
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             EffectSolver.FightCreature(netId, attackingCard, attackedCard);
 
-            Debug.Log(attackingCard + "_" + attackedCard);
-
 			var msg = new FightCreatureMessage();
             msg.attackingPlayerNetId = netId;
             msg.attackingCardInstanceId = attackingCard.instanceId;
@@ -752,6 +746,19 @@ namespace CCGKit
             msg.callerPlayerNetId = netId;
             msg.value = value;
             client.Send(NetworkProtocol.TryToAttackViaWeapon, msg);
+        }
+
+        public void DoBoardSkill(int effectType, int from, int to, int toType)
+        {
+            EffectSolver.PlaySkillEffect(netId, effectType, from, to, toType);
+
+            var msg = new PlayEffectMessage();
+            msg.callerPlayerNetId = netId;
+            msg.effectType = effectType;
+            msg.from = from;
+            msg.to = to;
+            msg.toType = toType;
+            client.Send(NetworkProtocol.PlayEffect, msg);
         }
 
         public virtual void AddWeapon()

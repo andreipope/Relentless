@@ -7,6 +7,7 @@ namespace GrandDevs.CZB
     {
         void StartTutorial();
         void StopTutorial();
+        void CancelTutorial();
         void ReportAction(Enumerators.TutorialReportAction action);
         int CurrentStep { get; }
         bool IsTutorial { get; }

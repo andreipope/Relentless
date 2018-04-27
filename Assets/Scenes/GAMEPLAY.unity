@@ -13182,6 +13182,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2033822590}
+  - component: {fileID: 2033822591}
   m_Layer: 0
   m_Name: Spell
   m_TagString: PlayerOwned
@@ -13204,6 +13205,33 @@ Transform:
   m_Father: {fileID: 1756679710}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2033822591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2033822589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef58cba550b43794f8511bc92b5fccfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerPlayer: {fileID: 0}
+  fightTargetingArrowPrefab: {fileID: 1009513512288260, guid: f511d06837f294b4895283c7fd7a7f58,
+    type: 2}
+  _fireDamageVFXprefab: {fileID: 0}
+  _healVFXprefab: {fileID: 0}
+  _airPickUpCardVFXprefab: {fileID: 0}
+  _frozenVFXprefab: {fileID: 0}
+  _toxicVFXprefab: {fileID: 0}
+  _fireDamageVFX: {fileID: 0}
+  _healVFX: {fileID: 0}
+  _airPickUpCardVFX: {fileID: 0}
+  _frozenVFX: {fileID: 0}
+  _toxicVFX: {fileID: 0}
+  sleepingParticles: {fileID: 0}
+  abilitiesTargetingArrow: {fileID: 0}
+  fightTargetingArrow: {fileID: 0}
 --- !u!1 &2114590145
 GameObject:
   m_ObjectHideFlags: 0

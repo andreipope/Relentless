@@ -46,63 +46,61 @@ namespace GrandDevs.CZB
             int i = 0;
             _steps = new List<TutorialStep>();
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
-                                    _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                   new Vector2[] { new Vector2(0, 0) },
-                                   _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
+                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 1.5f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                  new Vector2[] { new Vector2(0, 0) },
-                                  _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
-
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                 new Vector2[] { new Vector2(0, 0) },
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
-
+                                    _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                 new Vector2[] { new Vector2(0, 0) },
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -6, 0), new Vector3(0, -1.5f, 0)));
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.3f, 0), new Vector3(0, 4f, 0)));
+            _steps.Add(new TutorialStep(ref i,
                                  _contentManager.TutorialInfo[i].Description, true, true, new Vector3(1.8f, -3.5f, 0), new Vector3(0, 4f, 0)));
-
             _steps.Add(new TutorialStep(ref i,
-                                    new Vector2[] { new Vector2(0, 0) },
                                     _contentManager.TutorialInfo[i].Description, false));
-
+            _steps.Add(new TutorialStep(ref i,
+                                    _contentManager.TutorialInfo[i].Description, false));
 
             _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/TutorialTargetingArrow");
-            
         }
 
         public void StartTutorial()
@@ -122,6 +120,12 @@ namespace GrandDevs.CZB
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
         }
 
+        public void CancelTutorial()
+        {
+            _uiManager.HidePopup<TutorialPopup>();
+            _tutorialStarted = false;
+            _currentStep = 0;
+        }
 
         public void Update()
         {
@@ -129,7 +133,21 @@ namespace GrandDevs.CZB
                 return;
             if(Input.anyKeyDown)
             {
-                if (_currentStep == 0 || _currentStep == 2 || _currentStep == 9)
+                if (_currentStep == 0 ||
+                    _currentStep == 1 ||
+                    _currentStep == 2 ||
+                    _currentStep == 3 ||
+                    _currentStep == 4 ||
+                    _currentStep == 5 ||
+                    _currentStep == 7 ||
+                    _currentStep == 11 ||
+                    _currentStep == 12 ||
+                    _currentStep == 16 ||
+                    _currentStep == 20 ||
+                    _currentStep == 21 ||
+                    _currentStep == 25 ||
+                    _currentStep == 26
+                    )
                     NextStep();
             }
         }      
@@ -165,28 +183,28 @@ namespace GrandDevs.CZB
 
         public void ReportAction(Enumerators.TutorialReportAction action)
         {
-            //Debug.Log(action + "_" + _currentStep);
+            Debug.Log(action + "_" + _currentStep);
             if(_tutorialStarted)
             switch(action)
             {
                 case Enumerators.TutorialReportAction.MOVE_CARD:
-                    if (_currentStep == 1 || _currentStep == 13)
+                    if (_currentStep == 6 || _currentStep == 22)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.END_TURN:
-                    if (_currentStep == 3 || _currentStep == 4 || _currentStep == 6 || _currentStep == 7 || _currentStep == 10 || _currentStep == 11)
+                    if (_currentStep == 8 || _currentStep == 9 || _currentStep == 13 || _currentStep == 14 || _currentStep == 17 || _currentStep == 18)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-					if (_currentStep == 5 || _currentStep == 12)
+					if (_currentStep == 10 || _currentStep == 19)
 						NextStep();
 					break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                    if (_currentStep == 8 || _currentStep == 14)
+                    if (_currentStep == 15 || _currentStep == 23)
                         NextStep();
                         break;
                 case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 15)
+                    if (_currentStep == 24)
                         NextStep();
                         break;
                     default:
@@ -236,10 +254,10 @@ namespace GrandDevs.CZB
         public TutorialTargetingArrowInfo tutorialTargetingArrowInfo;
 
 
-        public TutorialStep(ref int index, Vector2[] focusPoints, string description, bool focusing)
+        public TutorialStep(ref int index, string description, bool focusing)
         {
             _index = index;
-            this.focusPoints = focusPoints;
+           // this.focusPoints = Vector2.zero;
             this.description = description;
             this.focusing = focusing;
             finished = false;
@@ -248,10 +266,10 @@ namespace GrandDevs.CZB
             isArrowEnabled = false;
         }
 
-        public TutorialStep(ref int index, Vector2[] focusPoints, string description, bool focusing, bool isArrowEnabled, Vector3 startPosition, Vector3 targetPosition)
+        public TutorialStep(ref int index, string description, bool focusing, bool isArrowEnabled, Vector3 startPosition, Vector3 targetPosition)
         {
             _index = index;
-            this.focusPoints = focusPoints;
+           // this.focusPoints = Vector2.zero;
             this.description = description;
             this.focusing = focusing;
             finished = false;

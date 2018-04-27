@@ -177,7 +177,7 @@ namespace CCGKit
                 }
             }
             else
-                gameState.currentOpponent.stats[0].baseValue = 15;
+                gameState.currentOpponent.stats[0].baseValue = 11;
 
             // Send a StartGame message to all the connected players.
             for (var i = 0; i < players.Count; i++)

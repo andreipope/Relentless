@@ -28,7 +28,7 @@ namespace GrandDevs.CZB.Data
     public class OpponentDeck
     {
         public int heroId;
-        public string name;
+        public string type;
         public string actions;
         public List<DeckCardData> cards;
 

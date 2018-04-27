@@ -14,6 +14,8 @@ namespace GrandDevs.CZB
             get { return _selfPage; }
         }
 
+        public static Action OnHidePopupEvent;
+
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private GameObject _selfPage;
@@ -48,8 +50,9 @@ namespace GrandDevs.CZB
 		}
 
 		public void Hide()
-		{
-			  _selfPage.SetActive(false);
+        {
+            OnHidePopupEvent?.Invoke();
+            _selfPage.SetActive(false);
 		}
 
         public void SetMainPriority()

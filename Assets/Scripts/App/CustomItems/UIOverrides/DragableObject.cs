@@ -25,6 +25,7 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         m_DraggingIcon = MonoBehaviour.Instantiate(gameObject) as GameObject;
         m_DraggingIcon.transform.Find("Amount").gameObject.SetActive(false);
+        Destroy(m_DraggingIcon.GetComponent<DragableObject>());
 		m_DraggingIcon.transform.position = gameObject.transform.position;
 		m_DraggingIcon.transform.localScale = Vector3.one;
         m_DraggingIcon.transform.SetParent(canvas.transform, false);

@@ -16,6 +16,8 @@ namespace GrandDevs.CZB
             get { return _tutorialInfo; }
         }
 
+        private static string TUTORIAL_LOCALIZATION_PATH = "https://docs.google.com/spreadsheets/d/1c6dQRpXM-mwT9NUsKKCp6XwE2OmIz9z1papZguXF--4/edit?usp=sharing";
+
         private ILocalizationManager _localizationManager;
 
         private List<SpreadsheetModelTutorialInfo> _tutorialInfo;

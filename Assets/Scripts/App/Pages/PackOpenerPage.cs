@@ -239,6 +239,7 @@ namespace GrandDevs.CZB
             Debug.Log(_playerManager.LocalUser.packsCount);
             if (_playerManager.LocalUser.packsCount > 0)
             {
+                Debug.LogError(11111);
                 _packsObject = MonoBehaviour.Instantiate(_packItemPrefab) as GameObject;
                 _packsObject.transform.SetParent(_packItemContent.transform, false);
                 _packsObject.transform.Find("Amount/Value").GetComponent<Text>().text = _playerManager.LocalUser.packsCount.ToString();
@@ -290,6 +291,7 @@ namespace GrandDevs.CZB
             animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 10, 90, false, false));
 
             _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
+            Debug.LogError(2222);
             _packOpenVFX.transform.position = _centerPos;
 
             animationSequence.OnComplete(() => {

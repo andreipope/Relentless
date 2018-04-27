@@ -6,10 +6,16 @@ public class DeckBuilderCard : MonoBehaviour
 {
     public DeckEditingPage scene;
     public Card card;
+    public bool isActive;
+
+    private void Awake()
+    {
+        isActive = true;
+    }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (isActive && Input.GetMouseButtonDown(0))
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var hit = Physics2D.Raycast(mousePos, Vector2.zero);

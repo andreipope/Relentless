@@ -36,7 +36,7 @@ namespace GrandDevs.CZB
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
             _focusObjects = new List<GameObject>();
-            Debug.Log(_selfPage.transform.Find("FocusObjects").transform);
+
             foreach (Transform obj in _selfPage.transform.Find("FocusObjects").transform)
             {
                 _focusObjects.Add(obj.gameObject);

@@ -124,7 +124,8 @@ public class BoardCreature : MonoBehaviour
     {
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
-        CreatureOnDieEvent?.Invoke();
+        if (ownerPlayer != null)
+            CreatureOnDieEvent?.Invoke();
     }
 
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")

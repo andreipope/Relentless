@@ -10,6 +10,9 @@ namespace GrandDevs.CZB
     {
         private List<IController> _controllers;
 
+        public int PlayerHeroId { get; set; }
+        public int OpponentHeroId { get; set; }
+
 
         public void Dispose()
         {

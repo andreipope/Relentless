@@ -269,5 +269,19 @@
             TEST,
             TEST2
         }
+
+        public enum EffectActivateType
+        {
+            PLAY_SKILL_EFFECT
+        }
+
+        public enum AIType
+        {
+            BLITZ_AI,
+            DEFENSE_AI,
+            MIXED_AI,
+            MIXED_BLITZ_AI,
+            TIME_BLITZ_AI
+        }
     }
 }

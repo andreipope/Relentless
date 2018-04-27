@@ -8,6 +8,9 @@ namespace GrandDevs.CZB
 {
     public interface IGameplayManager
     {
+        int PlayerHeroId { get; set; }
+        int OpponentHeroId { get; set; }
+
         T GetController<T>() where T : IController;
     }    
 }

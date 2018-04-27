@@ -120,7 +120,6 @@ namespace GrandDevs.CZB
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-                Debug.Log("Activate Ability");
 				boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
                 boardCreature.CreatureOnAttackEvent += CreatureOnAttackEventHandler;
 

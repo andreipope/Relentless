@@ -11,13 +11,14 @@ using CCGKit;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
 using UnityEngine.Assertions;
+using System.Linq;
 
 /// <summary>
 /// Computer-controlled player that is used in the single-player mode from the demo game.
 /// </summary>
 public class DemoAIPlayer : DemoPlayer
 {
-    // REMVE THIS SHIT!
+    // REMVE THIS SHIT MAYBE!
     public static DemoAIPlayer Instance;
 
     /// <summary>
@@ -57,6 +58,11 @@ public class DemoAIPlayer : DemoPlayer
         set { playerBoardCards = value; }
     }
 
+    public PlayerAvatar player,
+                        opponent;
+
+    public Enumerators.AIType aiType;
+
     /// <summary>
     /// Unity's Awake.
     /// </summary>
@@ -67,9 +73,10 @@ public class DemoAIPlayer : DemoPlayer
 
         Instance = this;
 
-        fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/fightTargetingArrowPrefab");
+        fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
 
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+
     }
 
     /// <summary>
@@ -84,6 +91,15 @@ public class DemoAIPlayer : DemoPlayer
         {
             _minTurnForAttack = Random.Range(1, 3);
             FillActions();
+
+            player = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
+            opponent = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
+
+            boardSkill = GameObject.Find("Opponent/Spell").GetComponent<BoardSkill>();
+            boardSkill.ownerPlayer = this;
+            boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.heroes[GameClient.Get<IGameplayManager>().OpponentHeroId].skill);
+
+            SetAITypeByDeck();
         }
     }
 
@@ -104,7 +120,6 @@ public class DemoAIPlayer : DemoPlayer
     /// <param name="msg">Start turn message.</param>
     public override void OnStartTurn(StartTurnMessage msg)
     {
-
         base.OnStartTurn(msg);
         if (msg.isRecipientTheActivePlayer)
         {
@@ -132,6 +147,12 @@ public class DemoAIPlayer : DemoPlayer
                 numTurnsOnBoard.Add(card.instanceId, 1);
             }
         }
+    }
+
+    private void SetAITypeByDeck()
+    {
+        var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];
+        aiType = (Enumerators.AIType)System.Enum.Parse(typeof(Enumerators.AIType), deck.type);
     }
 
     /// <summary>
@@ -180,7 +201,7 @@ public class DemoAIPlayer : DemoPlayer
             }
         }
 
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(2.0f); 
 
         var boardCreatures = new List<RuntimeCard>();
         foreach (var creature in GetBoardCreatures())
@@ -218,7 +239,9 @@ public class DemoAIPlayer : DemoPlayer
         }
 
         var totalPower = GetPlayerAttackingPower();
-        if (totalPower >= opponentInfo.namedStats["Life"].effectiveValue)
+        if (totalPower >= opponentInfo.namedStats["Life"].effectiveValue ||
+            (aiType == Enumerators.AIType.BLITZ_AI || 
+             aiType == Enumerators.AIType.TIME_BLITZ_AI))
         {
             foreach (var creature in boardCreatures)
             {
@@ -272,24 +295,143 @@ public class DemoAIPlayer : DemoPlayer
 
         yield return new WaitForSeconds(1.0f);
 
+        if (!GameClient.Get<ITutorialManager>().IsTutorial)
+            boardSkill.OnEndTurn();
         StopTurn();
     }
 
     protected void TryToUseBoardSkill()
     {
-        if(playerInfo.namedStats[Constants.TAG_MANA].effectiveValue >= 2)
+        if (GameClient.Get<ITutorialManager>().IsTutorial)
+            return;
+        if (playerInfo.namedStats[Constants.TAG_MANA].effectiveValue >= boardSkill.manaCost)
         {
-            GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue -= 2;
-            playerInfo.namedStats[Constants.TAG_MANA].baseValue -= 2;
-            // do smth by type of skill!!
-            FightPlayerBySkill(2);
-            // implemente network logic
+            GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue -= boardSkill.manaCost;
+         //   playerInfo.namedStats[Constants.TAG_MANA].baseValue -= boardSkill.manaCost;
+
+            int target = 0;
+
+            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
+
+            switch(boardSkill.skillType)
+            {
+                case Enumerators.SkillType.HEAL:
+                    {
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                        target = 1;
+                    }
+                    break;
+                case Enumerators.SkillType.HEAL_ANY:
+                    {
+                        target = 1;
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+
+                        var creatures = GetCreaturesWithLowHP();
+
+                        if(creatures.Count > 0)
+                        {
+                            target = creatures[0].instanceId;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                    }
+                    break;
+                case Enumerators.SkillType.FIRE_DAMAGE:
+                case Enumerators.SkillType.TOXIC_DAMAGE:
+                case Enumerators.SkillType.FREEZE:
+                    {
+                        target = 0;
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+
+                        var creature = GetRandomOpponentCreature();
+
+                        if (creature != null)
+                        {
+                            target = creature.instanceId;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                    }
+                    break;
+                case Enumerators.SkillType.CARD_RETURN:
+                    {
+                        var creatures = GetCreaturesWithLowHP();
+
+                        if (creatures.Count > 0)
+                        {
+                            target = creatures[0].instanceId;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                        else
+                        {
+                            var creature = GetRandomOpponentCreature();
+
+                            if (creature != null)
+                            {
+                                target = creature.instanceId;
+                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            }
+                            else return;
+                        }
+                    }
+                    break;
+                default: return;
+            }
+
+            if(selectedObjectType == Enumerators.AffectObjectType.PLAYER)
+            {
+                boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, target == 0 ? opponent.gameObject : player.gameObject, () =>
+                {
+                    boardSkill.fightTargetingArrow.selectedPlayer = target == 0 ? opponent : player;
+                    boardSkill.DoOnUpSkillAction();
+                });
+            }
+            else
+            {
+               var creature = DemoHumanPlayer.Instance.playerBoardCardsList.Find(x => x.card.instanceId == target);
+
+                if(creature == null)
+                {
+                    creature = DemoHumanPlayer.Instance.opponentBoardCardsList.Find(x => x.card.instanceId == target);
+                }
+
+                boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, creature.gameObject, () =>
+                {
+                    boardSkill.fightTargetingArrow.selectedCard = creature;
+                    boardSkill.DoOnUpSkillAction();
+                });
+            }
         }
+    }
+
+    private OpponentTargetingArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
+    {
+        if (!createTargetArrow)
+        {
+            action?.Invoke();
+            return null;
+        }
+
+        var targetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<OpponentTargetingArrow>();
+        targetingArrow.opponentBoardZone = boardZone;
+        targetingArrow.Begin(startObj.transform.position);
+
+        targetingArrow.SetTarget(targetObject);
+
+        StartCoroutine(RemoveOpponentTargetingArrow(targetingArrow, action));
+
+        return targetingArrow;
+    }
+
+    private IEnumerator RemoveOpponentTargetingArrow(TargetingArrow arrow, System.Action action)
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(arrow.gameObject);
+
+        action?.Invoke();
     }
 
     protected void TryToUseBoardWeapon()
     {
-       // TryToAttackViaWeapon(2);
+        //TryToAttackViaWeapon(2);
         // implement fucntionality that the player has weapon.. also network logic
     }
 
@@ -585,12 +727,33 @@ public class DemoAIPlayer : DemoPlayer
                 finalList.Add(item);
         }
 
+        list = list.OrderBy(x => x.namedStats[Constants.TAG_HP].effectiveValue).OrderBy(y => y.namedStats[Constants.TAG_HP].effectiveValue.ToString().Length).ToList();
+
         return finalList;
     }
 
     protected List<RuntimeCard> GetCreatureCardsInHand()
     {
-        return playerInfo.namedZones["Hand"].cards.FindAll(x => x.cardType.name == "Creature");
+        List<RuntimeCard> list = playerInfo.namedZones["Hand"].cards.FindAll(x => x.cardType.name == "Creature");
+
+        List<GrandDevs.CZB.Data.Card> cards = new List<GrandDevs.CZB.Data.Card>();
+
+        foreach (var item in list)
+            cards.Add(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(item.cardId));
+
+        cards = cards.OrderBy(x => x.cost).ThenBy(y => y.cost.ToString().Length).ToList();
+
+        List<RuntimeCard> sortedList = new List<RuntimeCard>();
+
+        cards.Reverse();
+
+        foreach (var item in cards)
+            sortedList.Add(list.Find(x => x.cardId == item.id));
+
+        list.Clear();
+        cards.Clear();
+
+        return sortedList;
     }
 
     protected List<RuntimeCard> GetSpellCardsInHand()
