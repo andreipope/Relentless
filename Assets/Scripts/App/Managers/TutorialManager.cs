@@ -25,6 +25,8 @@ namespace GrandDevs.CZB
 
         private GameObject _targettingArrowPrefab;
 
+        public bool paused;
+
         public int CurrentStep
         {
             get { return _currentStep; }
@@ -68,6 +70,8 @@ namespace GrandDevs.CZB
 									_contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, true));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
@@ -96,6 +100,8 @@ namespace GrandDevs.CZB
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -4.6f, 0), new Vector3(0, -3.0f, 0)));
             _steps.Add(new TutorialStep(ref i,
@@ -106,6 +112,10 @@ namespace GrandDevs.CZB
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
+			_steps.Add(new TutorialStep(ref i,
+									_contentManager.TutorialInfo[i].Description, false));
 
             _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/TutorialTargetingArrow");
         }
@@ -148,23 +158,29 @@ namespace GrandDevs.CZB
                     _currentStep == 5 ||
                     _currentStep == 6 ||
                     _currentStep == 7 ||
-                    _currentStep == 9 ||
-                    _currentStep == 13 ||
+					_currentStep == 9 ||
                     _currentStep == 14 ||
-                    _currentStep == 17 ||
-                    _currentStep == 19 ||
-                    _currentStep == 23 ||
+                    _currentStep == 15 ||
+                    _currentStep == 18 ||
+                    _currentStep == 20 ||
                     _currentStep == 24 ||
-                    _currentStep == 28 ||
-                    _currentStep == 29
+					_currentStep == 25 ||
+					_currentStep == 26 ||
+                    _currentStep == 30 ||
+                    _currentStep == 31 ||
+                    _currentStep == 32 ||
+                    _currentStep == 33 ||
+                    _currentStep == 34
                     )
+                    NextStep();
+                if (_currentStep == 11 && paused)
                     NextStep();
             }
         }      
         
         public void NextStep()
         {
-            if (_currentStep >= _steps.Count-1)
+            if (_currentStep >= _steps.Count - 1)
             {
 				var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
 				scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
@@ -188,6 +204,10 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITutorialManager>().StopTutorial();
 				return;
             }
+            if (_currentStep == 11)
+                GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
+			//if (_currentStep == 11)
+			//	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
 
             _steps[_currentStep].finished = true;
             _currentStep++;
@@ -205,7 +225,7 @@ namespace GrandDevs.CZB
                 if (_steps[_currentStep].isArrowEnabled)
                     CreateSelectTarget();
                 _popup.ShowTutorialFocus(_currentStep);
-				if (_currentStep == 5 || _currentStep == 9 || _currentStep == 13)
+				if (_currentStep == 5 || _currentStep == 9 || _currentStep == 14)
 					_popup.ShowNextButton();
 			}
             else
@@ -213,7 +233,7 @@ namespace GrandDevs.CZB
                 _popup.HideTutorialFocus();
                 if (_currentStep == 3)
                     _popup.ShowQuestion();
-                else if(_currentStep != 11 && _currentStep != 16 && _currentStep != 21 )
+                else if(_currentStep != 12 && _currentStep != 17 && _currentStep != 22 )
                     _popup.ShowNextButton();
             }
         }
@@ -225,23 +245,23 @@ namespace GrandDevs.CZB
             switch(action)
             {
                 case Enumerators.TutorialReportAction.MOVE_CARD:
-                    if (_currentStep == 8 || _currentStep == 25)
+                    if (_currentStep == 8 || _currentStep == 27)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.END_TURN:
-                    if (_currentStep == 10 || _currentStep == 11 || _currentStep == 15 || _currentStep == 16 || _currentStep == 20 || _currentStep == 21)
+                    if (_currentStep == 10 || _currentStep == 12 || _currentStep == 16 || _currentStep == 17 || _currentStep == 21 || _currentStep == 22)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-					if (_currentStep == 12 || _currentStep == 22)
+					if (_currentStep == 13 || _currentStep == 23)
 						NextStep();
 					break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                    if (_currentStep == 18 || _currentStep == 26)
+                    if (_currentStep == 19 || _currentStep == 28)
                         NextStep();
                         break;
                 case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 27)
+                    if (_currentStep == 29)
                         NextStep();
                         break;
                     default:

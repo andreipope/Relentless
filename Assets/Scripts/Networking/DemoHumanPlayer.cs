@@ -711,9 +711,9 @@ public class DemoHumanPlayer : DemoPlayer
         //}
 
         if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 8 && 
-                                                              GameClient.Get<ITutorialManager>().CurrentStep != 16 &&
-                                                              GameClient.Get<ITutorialManager>().CurrentStep != 18 &&
-                                                              GameClient.Get<ITutorialManager>().CurrentStep != 25))
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 17 &&
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 19 &&
+                                                              GameClient.Get<ITutorialManager>().CurrentStep != 27))
             return;
 
 
