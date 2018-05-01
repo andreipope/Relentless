@@ -1740,7 +1740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &237264086
 Transform:
   m_ObjectHideFlags: 0
@@ -7538,6 +7538,10 @@ MonoBehaviour:
   sleepingParticles: {fileID: 0}
   abilitiesTargetingArrow: {fileID: 0}
   fightTargetingArrow: {fileID: 0}
+  manaCost: 0
+  skillType: 0
+  isUsed: 0
+  isOpponent: 0
 --- !u!1 &1066561025
 GameObject:
   m_ObjectHideFlags: 0
@@ -13232,6 +13236,10 @@ MonoBehaviour:
   sleepingParticles: {fileID: 0}
   abilitiesTargetingArrow: {fileID: 0}
   fightTargetingArrow: {fileID: 0}
+  manaCost: 0
+  skillType: 0
+  isUsed: 0
+  isOpponent: 0
 --- !u!1 &2114590145
 GameObject:
   m_ObjectHideFlags: 0

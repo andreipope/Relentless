@@ -352,9 +352,8 @@ public class BoardCreature : MonoBehaviour
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
                     Debug.Log("CreatureOnAttackEvent?.Invoke(targetPlayer)");
-
-                    CreatureOnAttackEvent?.Invoke(targetPlayer);
                     ownerPlayer.FightPlayer(card);
+                    CreatureOnAttackEvent?.Invoke(targetPlayer);
                 },
                 () =>
                 {
@@ -375,8 +374,8 @@ public class BoardCreature : MonoBehaviour
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
                         Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
-                        CreatureOnAttackEvent?.Invoke(targetCard);
                         ownerPlayer.FightCreature(card, targetCard.card);
+                        CreatureOnAttackEvent?.Invoke(targetCard);
                     },
                     () =>
                     {
@@ -393,5 +392,10 @@ public class BoardCreature : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void CreatureOnAttack(object target)
+    {
+        CreatureOnAttackEvent?.Invoke(target);
     }
 }

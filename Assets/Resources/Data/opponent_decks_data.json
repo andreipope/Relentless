@@ -140,8 +140,8 @@
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 23,
-          "amount": 1
+          "cardId": 20,
+          "amount": 4
         },
         {
           "cardId": 22,
@@ -152,35 +152,31 @@
           "amount": 2
         },
         {
-          "cardId": 20,
-          "amount": 4
-        },
-        {
-          "cardId": 3,
+          "cardId": 23,
           "amount": 1
         },
         {
-          "cardId": 2,
-          "amount": 2
+          "cardId": 24,
+          "amount": 3
         },
         {
-          "cardId": 17,
-          "amount": 2
-        },
-        {
-          "cardId": 0,
+          "cardId": 25,
           "amount": 4
         },
         {
-          "cardId": 1,
-          "amount": 1
-        },
-        {
-          "cardId": 4,
+          "cardId": 26,
           "amount": 2
         },
         {
-          "cardId": 6,
+          "cardId": 15,
+          "amount": 1
+        },
+        {
+          "cardId": 14,
+          "amount": 2
+        },
+        {
+          "cardId": 11,
           "amount": 1
         },
         {
@@ -188,20 +184,20 @@
           "amount": 1
         },
         {
-          "cardId": 8,
+          "cardId": 6,
+          "amount": 1
+        },
+        {
+          "cardId": 3,
+          "amount": 1
+        },
+        {
+          "cardId": 9,
           "amount": 2
         },
         {
           "cardId": 12,
           "amount": 3
-        },
-        {
-          "cardId": 18,
-          "amount": 1
-        },
-        {
-          "cardId": 7,
-          "amount": 1
         }
       ]
     },
@@ -213,10 +209,6 @@
         {
           "cardId": 4,
           "amount": 4
-        },
-        {
-          "cardId": 5,
-          "amount": 2
         },
         {
           "cardId": 6,
@@ -231,47 +223,51 @@
           "amount": 2
         },
         {
+          "cardId": 18,
+          "amount": 2
+        },
+        {
           "cardId": 15,
           "amount": 1
         },
         {
-          "cardId": 12,
-          "amount": 4
+          "cardId": 24,
+          "amount": 3
+        },
+        {
+          "cardId": 25,
+          "amount": 2
+        },
+        {
+          "cardId": 26,
+          "amount": 2
+        },
+        {
+          "cardId": 13,
+          "amount": 2
+        },
+        {
+          "cardId": 5,
+          "amount": 2
+        },
+        {
+          "cardId": 3,
+          "amount": 1
         },
         {
           "cardId": 17,
           "amount": 2
         },
         {
-          "cardId": 16,
-          "amount": 2
-        },
-        {
-          "cardId": 22,
-          "amount": 1
-        },
-        {
-          "cardId": 20,
-          "amount": 2
-        },
-        {
-          "cardId": 8,
-          "amount": 3
-        },
-        {
-          "cardId": 9,
-          "amount": 1
-        },
-        {
-          "cardId": 13,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
+          "cardId": 11,
           "amount": 1
         },
         {
           "cardId": 10,
+          "amount": 2
+        },
+        {
+          "cardId": 9,
           "amount": 1
         }
       ]
@@ -298,114 +294,114 @@
           "amount": 1
         },
         {
-          "cardId": 16,
-          "amount": 4
-        },
-        {
-          "cardId": 17,
-          "amount": 2
-        },
-        {
           "cardId": 18,
           "amount": 2
         },
         {
-          "cardId": 4,
-          "amount": 3
-        },
-        {
-          "cardId": 5,
+          "cardId": 19,
           "amount": 1
         },
         {
-          "cardId": 6,
+          "cardId": 23,
           "amount": 1
         },
         {
-          "cardId": 8,
+          "cardId": 24,
           "amount": 3
+        },
+        {
+          "cardId": 26,
+          "amount": 2
         },
         {
           "cardId": 9,
-          "amount": 1
+          "amount": 2
         },
         {
-          "cardId": 10,
-          "amount": 1
+          "cardId": 1,
+          "amount": 2
         },
         {
-          "cardId": 21,
-          "amount": 1
+          "cardId": 4,
+          "amount": 2
         },
         {
-          "cardId": 20,
+          "cardId": 22,
+          "amount": 2
+        },
+        {
+          "cardId": 2,
+          "amount": 2
+        },
+        {
+          "cardId": 6,
           "amount": 2
         }
       ]
     },
     {
       "heroId": 5,
-      "type": "TIME_BLITZ_AI",
+      "type": "MIXED_DEFENSE_AI",
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 12,
-          "amount": 4
-        },
-        {
-          "cardId": 13,
+          "cardId": 26,
           "amount": 2
         },
         {
-          "cardId": 14,
-          "amount": 2
-        },
-        {
-          "cardId": 15,
+          "cardId": 19,
           "amount": 1
-        },
-        {
-          "cardId": 16,
-          "amount": 4
-        },
-        {
-          "cardId": 17,
-          "amount": 2
         },
         {
           "cardId": 18,
           "amount": 2
         },
         {
-          "cardId": 4,
-          "amount": 3
+          "cardId": 9,
+          "amount": 2
         },
         {
-          "cardId": 5,
+          "cardId": 7,
           "amount": 1
         },
         {
-          "cardId": 6,
+          "cardId": 3,
           "amount": 1
         },
         {
           "cardId": 8,
-          "amount": 3
+          "amount": 4
         },
         {
-          "cardId": 9,
+          "cardId": 11,
           "amount": 1
+        },
+        {
+          "cardId": 21,
+          "amount": 2
+        },
+        {
+          "cardId": 23,
+          "amount": 1
+        },
+        {
+          "cardId": 25,
+          "amount": 4
         },
         {
           "cardId": 10,
           "amount": 1
         },
         {
-          "cardId": 21,
-          "amount": 1
+          "cardId": 6,
+          "amount": 2
         },
         {
-          "cardId": 20,
+          "cardId": 4,
+          "amount": 4
+        },
+        {
+          "cardId": 2,
           "amount": 2
         }
       ]

@@ -80,7 +80,7 @@ public class TargetingArrow : MonoBehaviour
 
         _sizeMiddleBlock = middlePrefab.GetComponent<MeshRenderer>().bounds.size;
         _sizeHeadBlock = headPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
-        _sizeStartBlock = startPrefab.GetComponent<MeshRenderer>().bounds.size;
+        _sizeStartBlock = startPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
 
         var position = initialPos + new Vector3(0, _sizeStartBlock.z / 2, 0.02f);
 
@@ -118,6 +118,7 @@ public class TargetingArrow : MonoBehaviour
     {
         startedDrag = true;
         initialPos = pos;
+        initialPos.z = -5f; 
         Init();
         var rb = headArrow.GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
@@ -125,6 +126,8 @@ public class TargetingArrow : MonoBehaviour
 
     public void UpdateLength(Vector3 pos)
     {
+        pos.z = -5f;
+
         _deltaMove = headArrow.transform.position - pos;
 
         if (_deltaMove != Vector3.zero)
@@ -136,12 +139,12 @@ public class TargetingArrow : MonoBehaviour
             headArrow.transform.position = pos;
             _startPosition = startArrow.transform.position;// + startArrow.transform.up * _sizeMiddleBlock.z;
 
-            _endPosition = pos - (headArrow.transform.up * 0.4f);
+            _endPosition = pos;// - (headArrow.transform.up * 0.4f);
             _endPosition.z = pos.z + 0.05f;
 
-            float countTemp = (Vector3.Distance(_startPosition, _endPosition) / (_sizeMiddleBlock.y + _interval));
+            float countTemp = (Vector3.Distance(_startPosition, _endPosition) / (_sizeMiddleBlock.y + _interval));          
             Vector3 segment = new Vector3(_endPosition.x - _startPosition.x, _endPosition.y - _startPosition.y) / countTemp;
-            int count = Mathf.CeilToInt(countTemp);
+            int count = Mathf.CeilToInt(countTemp) -1;
 
             var angle = Mathf.Atan2(pos.y - _startPosition.y, pos.x - _startPosition.x) * 180 / Mathf.PI;
             var rotation = Quaternion.Euler(0, 180, -(angle - 90));
@@ -202,6 +205,31 @@ public class TargetingArrow : MonoBehaviour
                 MoveBlock(item);
             }
         }
+
+        var blocks = _allMiddleBlocks.OrderBy(x => (_middleBlockContainer.transform.position - x.transform.position).sqrMagnitude).ToList();
+        blocks.Reverse();
+        //for (int i = 0; i < blocks.Count; i++)
+        //{
+        //    index = i;
+        //    Debug.Log("index: " + index + "position: " + blocks[i].transform.position);
+        //}
+        GameObject target = startArrow;
+        bool isFirst = false;
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            if (i > 0)
+                target = blocks[i - 1];
+            else
+            {
+                isFirst = true;
+            }
+            UpdateSinusoidalPosition(blocks[i], target);
+            if (isFirst)
+            {
+                blocks[0].transform.localEulerAngles = new Vector3(25, 0, 0);
+            }
+        }
+       
     }
 
     protected void DestroyMiddleBlocks()
@@ -222,9 +250,9 @@ public class TargetingArrow : MonoBehaviour
         if (GameManager.Instance.tutorial)
             return;
 
-		oldPosition = block.transform.localPosition;       
+        oldPosition = block.transform.localPosition;
 
-        if (block.transform.localPosition == Vector3.zero)
+        if (Vector3.Distance(block.transform.localPosition, Vector3.zero) < 0.15f)
         {
             //coef = 0;
             //block.transform.position = _startPosition;
@@ -237,31 +265,92 @@ public class TargetingArrow : MonoBehaviour
 
     }
 
-    private void UpdateSinusoidalPosition(GameObject block)
+    private void UpdateSinusoidalPosition(GameObject block, GameObject target, bool isFirst = false)
     {
-        
         newRotation = block.transform.eulerAngles;
         newPosition = block.transform.localPosition;
-        var disCenter = Vector3.Distance(initialPos, _endPosition);
-        var disCur = Vector3.Distance(new Vector3(block.transform.position.x, block.transform.position.y, 0), _endPosition);
-        coef = (100 / disCenter * disCur) / 100;
-        float sin = Mathf.Sin(Mathf.Clamp01(coef) * Mathf.PI);//Mathf.Sin(coef);
-        newPosition.z = sin;
+        var disCenter = Vector3.Distance(_endPosition, _endPosition / 2);
+        var disCur = Vector3.Distance(new Vector3(block.transform.position.x, block.transform.position.y, 0), _endPosition / 2);
+        //coef = (1 / disCenter * disCur);
+        //float sin = Mathf.Sin(Mathf.Clamp01(coef) * Mathf.PI) * 2;//Mathf.Sin(coef);
+        //newPosition.z = sin;
+        var coef = 1 - (1 / disCenter * disCur);
+        newPosition.z = 3f * coef;
+
+
+        Vector3 targetPosition = headArrow.transform.position;
+
         block.transform.localPosition = newPosition;
-        //newRotation.x = AngleBetweenVector2(oldPosition, block.transform.localPosition) - 90;
-        //block.transform.localEulerAngles = newRotation;
-        //Debug.LogError(AngleBetweenVector2(block.transform.localPosition, newPosition));
 
-        //Debug.LogError("Time: " + block.transform.position);
 
-        //Debug.Log("sin: " + sin + "coef: " + coef + "disCenter: " + disCenter + "disCur: " + disCur);
+        float minDis = float.MaxValue;
+        float dis;
+        foreach (var item in _allMiddleBlocks)
+        {
+            dis = Vector3.Distance(block.transform.position, item.transform.position);
+            if (minDis > dis && item.transform.localPosition.y < block.transform.localPosition.y)
+            {
+                targetPosition = item.transform.position;
+                minDis = dis;
+            }
+            // Debug.LogError(item.transform.localPosition.y + " | " + block.transform.localPosition.y);
+        }
+        // Debug.LogError("MY: " + block.transform.position + " Target: " + targetPosition);
+        //if (targetPosition == headArrow.transform.position)
+        //    Debug.LogError(block.transform.position);
+
+
+        newRotation.x = AngleBetweenVector(block.transform, target.transform.position);//AngleBetweenVector2(block.transform.position, targetPosition, block.transform.eulerAngles);
+        newRotation.y = 0;
+        newRotation.z = 0;
+
+        //  Debug.DrawLine(block.transform.position, targetPosition, Color.red);
+        //newRotation.x = Vector3.Angle(block.transform.position, targetPosition);
+        block.transform.localEulerAngles = newRotation;
     }
 
-    private float AngleBetweenVector2(Vector3 vec1, Vector3 vec2)
+    private float AngleBetweenVector2(Vector3 vec1, Vector3 vec2, Vector3 dirA)
     {
-        Vector3 diference = vec2 - vec1;
+        Vector3 dir = (vec1 - vec2).normalized;
         float sign = (vec2.z < vec1.z) ? -1.0f : 1.0f;
-        return Vector3.Angle(Vector3.forward, diference);
+
+        Debug.DrawRay(vec1, dir, Color.red);
+
+        Vector3 angle = Vector3.zero;
+
+        //Debug.Log(dir);
+
+        //if (dir.x < 0)
+        //{
+        //    angle = Vector3.Cross(dirA, dirA + dir);
+        //}
+        //else
+        angle = Vector3.Cross(dirA, dirA - dir);
+        //float angleX = (Vector3.Angle(, (vec2 - vec1))) + 90 * sign;
+
+        if (vec2.z < vec1.z)
+            Debug.Log("position: " + vec1 + "angle: " + angle);
+
+        return angle.x;
+
+        Vector3 diference = vec2 - vec1;
+
+        //Vector3 v2 = vec2 - vec1;
+        //return Mathf.Atan2(v2.y, v2.x) * Mathf.Rad2Deg;
+    }
+
+    private float AngleBetweenVector(Transform tr1, Vector3 vec2)
+    {
+        Vector3 vec1 = tr1.position;
+        Vector3 dir = (vec1 - vec2).normalized;
+        Debug.DrawRay(vec1, dir, Color.red);
+
+        Vector3 dirDis = (_endPosition - _startPosition).normalized;
+
+        Vector3 diference = vec2 - tr1.position;
+        float sign = (vec2.z < tr1.position.z) ? 1.0f : -1.0f;
+        float angleX = Vector3.Angle(dirDis, diference) * sign + 180;
+        return angleX;
     }
 
 

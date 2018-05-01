@@ -281,7 +281,8 @@
             DEFENSE_AI,
             MIXED_AI,
             MIXED_BLITZ_AI,
-            TIME_BLITZ_AI
+            TIME_BLITZ_AI,
+            MIXED_DEFENSE_AI,
         }
     }
 }

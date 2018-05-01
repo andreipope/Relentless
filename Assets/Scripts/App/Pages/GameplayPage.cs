@@ -30,7 +30,7 @@ namespace GrandDevs.CZB
 
 		private int _currentDeckId;
 
-		public int CurrentDeckId
+        public int CurrentDeckId
 		{
 			set { _currentDeckId = value; }
             get { return _currentDeckId; }
@@ -58,6 +58,9 @@ namespace GrandDevs.CZB
             _playerManager.OnLocalPlayerSetUp += SetUpPlayer;
 
             Hide();
+
+
+            //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
         }
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
@@ -178,6 +181,8 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITutorialManager>().CancelTutorial();
             }
 
+            var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+            scene.ClosePopup();
             GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
         }
         

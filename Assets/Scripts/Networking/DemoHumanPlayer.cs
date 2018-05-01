@@ -427,10 +427,23 @@ public class DemoHumanPlayer : DemoPlayer
         {
             UpdateHandCardsHighlight();
 
+            List<BoardCreature> creatures = new List<BoardCreature>();
+
             foreach (var card in playerBoardCards)
             {
+                if (!card || !card.gameObject)
+                {
+                    creatures.Add(card);
+                    continue;
+                }
+
                 card.OnStartTurn();
             }
+
+            foreach (var item in creatures)
+                playerBoardCards.Remove(item);
+            creatures.Clear();
+            creatures = null;
 
             if (CurrentBoardWeapon != null && !isPlayerStunned)
             {
@@ -1476,9 +1489,11 @@ public class DemoHumanPlayer : DemoPlayer
         var attackingCard = opponentBoardCards.Find(x => x.card.instanceId == msg.attackingCardInstanceId);
         if (attackingCard != null)
         {
-            CombatAnimation.PlayFightAnimation(attackingCard.gameObject, GameObject.Find("Player/Avatar"), 0.1f, () =>
+            var avatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>(); ;
+            CombatAnimation.PlayFightAnimation(attackingCard.gameObject, avatar.gameObject, 0.1f, () =>
             {
                 effectSolver.FightPlayer(msg.attackingPlayerNetId, msg.attackingCardInstanceId);
+                attackingCard.CreatureOnAttack(avatar);
             });
         }
     }
@@ -1493,6 +1508,7 @@ public class DemoHumanPlayer : DemoPlayer
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
                 effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);
+                attackingCard.CreatureOnAttack(attackedCard);
             });
         }
     }

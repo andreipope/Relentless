@@ -398,15 +398,16 @@ public class DemoAIPlayer : DemoPlayer
                var creature = DemoHumanPlayer.Instance.playerBoardCardsList.Find(x => x.card.instanceId == target);
 
                 if(creature == null)
-                {
                     creature = DemoHumanPlayer.Instance.opponentBoardCardsList.Find(x => x.card.instanceId == target);
-                }
 
-                boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, creature.gameObject, () =>
+                if (creature != null)
                 {
-                    boardSkill.fightTargetingArrow.selectedCard = creature;
-                    boardSkill.DoOnUpSkillAction();
-                });
+                    boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, creature.gameObject, () =>
+                    {
+                        boardSkill.fightTargetingArrow.selectedCard = creature;
+                        boardSkill.DoOnUpSkillAction();
+                    });
+                }
             }
         }
     }
@@ -548,8 +549,6 @@ public class DemoAIPlayer : DemoPlayer
                         {
                             if (!AddRandomTargetCreature(true, ref targetInfo))
                                 targetInfo.Add(0);
-
-                            Debug.LogError(targetInfo[0] + " | " + targetInfo.Count);
                         }
                         break;
                     case Enumerators.AbilityType.MASSIVE_DAMAGE:
