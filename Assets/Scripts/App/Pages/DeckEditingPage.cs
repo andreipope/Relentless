@@ -96,14 +96,14 @@ namespace GrandDevs.CZB
 
             _deckNameInputField = _selfPage.transform.Find("DeckTitleInputText").GetComponent<TMP_InputField>();
 
-            _cardSetsSlider = _selfPage.transform.Find("Elements").GetComponent<Slider>();
+            _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
-            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>();
+            _buttonBack = _selfPage.transform.Find("Panel_Header/Button_Back").GetComponent<MenuButtonNoGlow>();
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
             _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
             _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowLeft = _selfPage.transform.Find("Panel_Footer/ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowRight = _selfPage.transform.Find("Panel_Footer/ArrowRightButton").GetComponent<MenuButtonNoGlow>();
 
             _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 

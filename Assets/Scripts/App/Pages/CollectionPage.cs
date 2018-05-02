@@ -64,11 +64,11 @@ namespace GrandDevs.CZB
 
 			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
 			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
-			_buttonBack = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<MenuButtonNoGlow>();
+			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowLeft = _selfPage.transform.Find("Panel_Footer/ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowRight = _selfPage.transform.Find("Panel_Footer/ArrowRightButton").GetComponent<MenuButtonNoGlow>();
 
-            _cardSetsSlider = _selfPage.transform.Find("Elements").GetComponent<Slider>();
+            _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
             _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
@@ -167,7 +167,7 @@ namespace GrandDevs.CZB
         private void ClosePopupInfo()
         {
             ChangeStatePopup(true);
-            Debug.LogError("ClosePopupInfo");
+
 			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
 			_selectedCollectionCard.UpdateAmount(amount);
 
@@ -312,10 +312,13 @@ namespace GrandDevs.CZB
 
 		public void LoadCards(int page, int setIndex)
 		{
+            CorrectSetIndex(ref setIndex);
+
             var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
             var cards = set.cards;
 
 			var startIndex = page * cardPositions.Count;
+            Debug.Log(startIndex);
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
 			foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
@@ -345,7 +348,7 @@ namespace GrandDevs.CZB
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
 				cardView.SetHighlightingEnabled(false);
 				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-				cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+				cardView.transform.localScale = new Vector3(1f, 1f, 1f);
 				cardView.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
 				cardView.GetComponent<SpriteRenderer>().sortingOrder = 1;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
@@ -362,5 +365,34 @@ namespace GrandDevs.CZB
 		{
 
 		}
+
+        private void CorrectSetIndex(ref int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    index = 3;
+                    break;
+                case 1:
+                    index = 4;
+                    break;
+                case 2:
+                    index = 1;
+                    break;
+                case 3:
+                    index = 5;
+                    break;
+                case 4:
+                    index = 0;
+                    break;
+                case 5:
+                    index = 2;
+                    break;
+                case 6:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
