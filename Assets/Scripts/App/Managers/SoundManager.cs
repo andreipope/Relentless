@@ -115,7 +115,11 @@ namespace GrandDevs.CZB
             else
                 soundParam.volume = volume;
 
-
+            //for better audibility Tutorial dictor
+            if (soundParam.isBackground)
+            {
+                soundParam.volume = 0.15f;
+            }
             soundParam.startPosition = 0f;
 
             container.Init(_soundsRoot, soundType, soundParam, isPlaylist);
@@ -148,7 +152,11 @@ namespace GrandDevs.CZB
             SoundContainer container = new SoundContainer();
             SoundTypeList soundTypeList = new SoundTypeList();
             soundTypeList.soundType = soundType;
-            soundTypeList.audioTypeClips = clips;
+            if (soundType != Enumerators.SoundType.TUTORIAL)
+                soundTypeList.audioTypeClips = clips;
+
+            else
+                soundTypeList.audioTypeClips = _gameSounds[(int)Enumerators.SoundType.TUTORIAL].audioTypeClips;
 
             soundParam.isBackground = soundType.ToString().Contains("BACKGROUND") ? true : false;
             soundParam.audioClips = soundTypeList.audioTypeClips;
@@ -274,9 +282,14 @@ namespace GrandDevs.CZB
             { 
                 default: break;
             }
+            if (soundType != Enumerators.SoundType.TUTORIAL)
+                list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
 
-            list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
-
+            else
+            {
+                pathToSoundsLibrary = "Sounds/" + soundType.ToString();
+                list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
+            }
             return list;
         }
     }

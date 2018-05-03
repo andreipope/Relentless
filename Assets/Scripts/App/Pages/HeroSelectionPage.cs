@@ -18,18 +18,19 @@ namespace GrandDevs.CZB
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow _buttonBack,
+        private Button _buttonBack,
                                 _buttonContinue;
         private Transform _heroesContainer;
 
         private Image _selectedHeroIcon,
                         _selectedHeroSkillIcon;
 
-        private Text _selectedHeroName;
+        //private Text _selectedHeroName;
         private int _currentHeroId;
 
 		private Dictionary<Enumerators.SkillType, Sprite> _skillsIcons;
-        private Dictionary<Enumerators.ElementType, Sprite> _heroIcons;
+        private Dictionary<Enumerators.ElementType, Sprite> _heroIcons,
+                                                            _selectedHeroIcons;
 
         public void Init()
         {
@@ -42,15 +43,15 @@ namespace GrandDevs.CZB
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
 
-			_buttonBack = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
-			_buttonContinue = _selfPage.transform.Find("ContinueButton").GetComponent<MenuButtonNoGlow>();
+			_buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
+			_buttonContinue = _selfPage.transform.Find("ContinueButton/Button").GetComponent<Button>();
 
-			_buttonBack.onClickEvent.AddListener(BackButtonHandler);
-			_buttonContinue.onClickEvent.AddListener(ContinueButtonHandler);
+			_buttonBack.onClick.AddListener(BackButtonHandler);
+			_buttonContinue.onClick.AddListener(ContinueButtonHandler);
              
-			_selectedHeroIcon = _selfPage.transform.Find("SelectedHero/Icon").GetComponent<Image>();
+			_selectedHeroIcon = _selfPage.transform.Find("SelectedHero/Mask/Icon").GetComponent<Image>();
             _selectedHeroSkillIcon = _selfPage.transform.Find("SelectedHero/SkillIcon").GetComponent<Image>();
-            _selectedHeroName = _selfPage.transform.Find("SelectedHero/Name/Text").GetComponent<Text>();
+            //_selectedHeroName = _selfPage.transform.Find("SelectedHero/Name/Text").GetComponent<Text>();
 
             _heroesContainer = _selfPage.transform.Find("HeroesContainer");
 
@@ -63,12 +64,20 @@ namespace GrandDevs.CZB
 			_skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_06"));
 
             _heroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
-            _heroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_AIR"));
-            _heroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_EARTH"));
-            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_FIRE"));
-            _heroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_LIFE"));
-            _heroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_TOXIC"));
-            _heroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Hero_WATER"));
+            _heroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_air"));
+            _heroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_earth"));
+            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_fire"));
+            _heroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_life"));
+            _heroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_toxic"));
+            _heroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_water"));
+
+            _selectedHeroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
+            _selectedHeroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_AIR"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_EARTH"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_FIRE"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_LIFE"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_TOXIC"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_WATER"));
             Hide();  
         }
 
@@ -102,18 +111,22 @@ namespace GrandDevs.CZB
 			{
                 Transform heroObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/HeroItem")).transform;
                 heroObject.SetParent(_heroesContainer, false);
-				var icon = heroObject.Find("HeroIconMask/HeroIcon").GetComponent<Image>();
+				var icon = heroObject.Find("HeroIcon").GetComponent<Image>();
+                
 
-				if (i < _dataManager.CachedHeroesData.heroes.Count)
+                if (i < _dataManager.CachedHeroesData.heroes.Count)
                 {
 					icon.sprite = _heroIcons[_dataManager.CachedHeroesData.heroes[i].element];
                     heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     heroObject.Find("LockedIcon").gameObject.SetActive(false);
-                    heroObject.Find("Button").GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
+                    heroObject.GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
+                    heroObject.Find("Name").GetComponent<Text>().text = _dataManager.CachedHeroesData.heroes[i].name;
                 }
                 else
                 {
-                    heroObject.Find("NormalIcon").gameObject.SetActive(false);
+                    heroObject.Find("Name").gameObject.SetActive(false);
+                    heroObject.Find("LockedIcon").gameObject.SetActive(true);
+                    heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     icon.gameObject.SetActive(false);
                 }
 			}
@@ -175,9 +188,9 @@ namespace GrandDevs.CZB
 
             if(active)
             {
-                _selectedHeroIcon.sprite = _heroIcons[_dataManager.CachedHeroesData.heroes[id].element];
+                _selectedHeroIcon.sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.heroes[id].element];
                 _selectedHeroSkillIcon.sprite = _skillsIcons[_dataManager.CachedHeroesData.heroes[id].skill.skillType];
-                _selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
+                //_selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
             }
 		}
     }

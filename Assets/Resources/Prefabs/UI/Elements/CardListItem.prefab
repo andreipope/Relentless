@@ -114,6 +114,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1851994951657484
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224210612397989982}
+  - component: {fileID: 114555953424546778}
+  m_Layer: 5
+  m_Name: Panel_CardCount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1900633354530676
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +168,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: e1ca57298d56b794783b072c5be24a0b, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -312,7 +328,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: 317
-  m_PreferredHeight: 107
+  m_PreferredHeight: 129
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -327,10 +343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3cc4aa2b0920f145ad741e105719b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckButton:
-    heroeId: 0
-    name: New deck
-    cards: []
   cardNameText: {fileID: 114121758571978670}
   cardCostText: {fileID: 0}
   cardAmountText: {fileID: 114965090383203204}
@@ -354,9 +366,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: eb0167ebe0ac5d04a85aa673ed7429d2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c7537fc6de4964b2489a642ce37c7b00, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -414,6 +426,28 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114555953424546778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1851994951657484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -405508275, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 8
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
 --- !u!114 &114703919981113350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -605,9 +639,27 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -8}
-  m_SizeDelta: {x: 80, y: 69}
+  m_AnchoredPosition: {x: 38.8, y: -14.79}
+  m_SizeDelta: {x: 120.87, y: 102.27}
   m_Pivot: {x: 0, y: 1}
+--- !u!224 &224210612397989982
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1851994951657484}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 224744112109395134}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -166.4, y: 32}
+  m_SizeDelta: {x: 232.79, y: 18.29}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224276515877894414
 RectTransform:
   m_ObjectHideFlags: 1
@@ -678,13 +730,14 @@ RectTransform:
   - {fileID: 224765212256376556}
   - {fileID: 224601901773816822}
   - {fileID: 224645284769620154}
+  - {fileID: 224210612397989982}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 317, y: 107}
+  m_SizeDelta: {x: 479.7, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224765212256376556
 RectTransform:

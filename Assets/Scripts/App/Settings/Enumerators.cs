@@ -28,6 +28,7 @@
             CLICK,
           //  OTHER,
             BACKGROUND,
+            TUTORIAL
         }
 
         public enum NotificationType

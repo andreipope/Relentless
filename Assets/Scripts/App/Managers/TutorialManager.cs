@@ -12,6 +12,7 @@ namespace GrandDevs.CZB
     {
         private IUIManager _uiManager;
         private IContentManager _contentManager;
+        private ISoundManager _soundManager;
         private TutorialPopup _popup;
 
 
@@ -45,6 +46,7 @@ namespace GrandDevs.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _contentManager = GameClient.Get<IContentManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             int i = 0;
             _steps = new List<TutorialStep>();
@@ -126,6 +128,7 @@ namespace GrandDevs.CZB
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
+            _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, 0, 128, 1f, null, false, false, false);
             _tutorialStarted = true;            
         }
 
@@ -213,6 +216,8 @@ namespace GrandDevs.CZB
             _currentStep++;
             GameManager.Instance.tutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+            _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
         }  
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)

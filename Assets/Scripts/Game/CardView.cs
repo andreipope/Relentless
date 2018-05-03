@@ -83,8 +83,6 @@ public class CardView : MonoBehaviour
 
        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
-        Debug.LogError(libraryCard.cardRarity);
-
         backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
 
