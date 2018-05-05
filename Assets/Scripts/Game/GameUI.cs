@@ -48,6 +48,9 @@ public class GameUI : MonoBehaviour
     public TextMeshPro endTurnTimeText;
     public EndTurnButton endTurnButton;
 
+    public SpriteRenderer opponentDeckCardView;
+    public SpriteRenderer playerDeckCardView;
+
     private void Awake()
     {
         //Assert.IsNotNull(playerActiveBackground);
@@ -74,6 +77,8 @@ public class GameUI : MonoBehaviour
         Assert.IsNotNull(endTurnTitleText);
         Assert.IsNotNull(endTurnTimeText);
         Assert.IsNotNull(endTurnButton);
+        Assert.IsNotNull(opponentDeckCardView);
+        Assert.IsNotNull(playerDeckCardView);
     }
 
     public void SetPlayerActive(bool active)
@@ -115,6 +120,8 @@ public class GameUI : MonoBehaviour
     public void SetPlayerDeckCards(int cards)
     {
         playerDeckText.text = cards.ToString();
+        if (cards == 0 && playerDeckCardView.gameObject.activeInHierarchy)
+            playerDeckCardView.gameObject.SetActive(false);
     }
 
     public void SetPlayerHandCards(int cards)
@@ -130,6 +137,8 @@ public class GameUI : MonoBehaviour
     public void SetOpponentDeckCards(int cards)
     {
         opponentDeckText.text = cards.ToString();
+        if (cards == 0 && opponentDeckCardView.gameObject.activeInHierarchy)
+            opponentDeckCardView.gameObject.SetActive(false);
     }
 
     public void SetOpponentHandCards(int cards)

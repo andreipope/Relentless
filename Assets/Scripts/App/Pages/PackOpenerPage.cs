@@ -174,8 +174,8 @@ namespace GrandDevs.CZB
 				mySequence2.Append(_cardPreview.DOMove(new Vector3(0, -0.3f, 5), .2f));
 
 				Sequence mySequence3 = DOTween.Sequence();
-				mySequence3.Append(_cardPreview.DOScale(new Vector3(2.7f, 2.7f, 2.7f), .4f));
-				mySequence3.Append(_cardPreview.DOScale(new Vector3(2.5f, 2.5f, 2.5f), .2f));
+				mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
+				mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
 				GameClient.Get<ICameraManager>().FadeIn(0.7f);
 				_isCardPreview = true;
@@ -236,10 +236,8 @@ namespace GrandDevs.CZB
                 go.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
             }*/
 
-            Debug.Log(_playerManager.LocalUser.packsCount);
             if (_playerManager.LocalUser.packsCount > 0)
             {
-                Debug.LogError(11111);
                 _packsObject = MonoBehaviour.Instantiate(_packItemPrefab) as GameObject;
                 _packsObject.transform.SetParent(_packItemContent.transform, false);
                 _packsObject.transform.Find("Amount/Value").GetComponent<Text>().text = _playerManager.LocalUser.packsCount.ToString();
@@ -291,7 +289,6 @@ namespace GrandDevs.CZB
             animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 10, 90, false, false));
 
             _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
-            Debug.LogError(2222);
             _packOpenVFX.transform.position = _centerPos;
 
             animationSequence.OnComplete(() => {
@@ -344,6 +341,7 @@ namespace GrandDevs.CZB
 				Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
                 Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
 
+                go.transform.localScale = Vector3.one * .35f;
                 go.transform.DOMove(pos, 1.0f);
                 go.transform.DORotate(rotation, 1.0f);
             }
@@ -381,13 +379,13 @@ namespace GrandDevs.CZB
             Vector3 rotation = go.transform.eulerAngles;
 			Sequence animationSequence3 = DOTween.Sequence();
 			animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
-            animationSequence3.Join(go.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), .2f));
+            animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
 			animationSequence3.OnComplete(() =>
 			{                            
 				go.transform.Find("BackgroundBack").gameObject.SetActive(false);
 				Sequence animationSequence4 = DOTween.Sequence();
 				animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
-                animationSequence4.Join(go.transform.DOScale(new Vector3(1f, 1f, 1f), .2f));
+                animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
                 animationSequence4.AppendInterval(2f);
 
                 _cardsTurned++;

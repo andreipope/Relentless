@@ -105,7 +105,7 @@ namespace GrandDevs.CZB
             else
             {
                 cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(1.8f, 1.8f, 1.8f), 0.2f);
+                cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);
                 _uiManager.DrawPopup<DesintigrateCardPopup>(_cardData);
                 (_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
             }   

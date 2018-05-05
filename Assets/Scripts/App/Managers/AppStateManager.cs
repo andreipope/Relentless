@@ -113,7 +113,7 @@ namespace GrandDevs.CZB
                 case Enumerators.AppState.GAMEPLAY:
                     {
                         _uiManager.HideAllPages();
-                        _uiManager.SetPage<GameplayPage>();
+
                         //GameObject.Find("MainApp/Camera").SetActive(false);
                         //GameObject.Find("MainApp/Camera2").SetActive(false);
 

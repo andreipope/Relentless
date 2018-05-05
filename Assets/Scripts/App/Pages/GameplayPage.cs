@@ -181,8 +181,9 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITutorialManager>().CancelTutorial();
             }
 
-            var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-            scene.ClosePopup();
+            //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+            //scene.ClosePopup();
+            _uiManager.HidePopup<YourTurnPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
         }
         

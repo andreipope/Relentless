@@ -124,9 +124,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActivePlayer: 0
   isHuman: 0
+  gameStarted: 0
+  playerIndex: 0
+  turnDuration: 0
+  CurrentTurn: 0
+  deckId: 0
   creatureCardViewPrefab: {fileID: 1130229958192014, guid: 29ed28147ecda46cbaf8210ac86eb03b,
     type: 2}
-  spellCardViewPrefab: {fileID: 1236948560037684, guid: b4e197aa147aa4291a50a609feff6d0f,
+  spellCardViewPrefab: {fileID: 1236948560037684, guid: bbb1107a36e555f409cf7164120caddf,
     type: 2}
   opponentCardPrefab: {fileID: 1727265671445790, guid: c2e085de934874c5a876cabfe24a44c3,
     type: 2}
@@ -138,7 +143,9 @@ MonoBehaviour:
     type: 2}
   opponentTargetingArrowPrefab: {fileID: 1009513512288260, guid: 3a431f6b2d6393d4e806cd54fbe3bda9,
     type: 2}
+  gameUI: {fileID: 0}
   isCardSelected: 0
+  opponent: {fileID: 0}
 --- !u!114 &11436556
 MonoBehaviour:
   m_ObjectHideFlags: 1

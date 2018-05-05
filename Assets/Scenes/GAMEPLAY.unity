@@ -3272,8 +3272,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 427671030}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 3.216923, y: 0.7507695, z: 0}
-  m_LocalScale: {x: 0.69595826, y: 0.69595927, z: 0.6959579}
+  m_LocalPosition: {x: 3.2514, y: 0.7413, z: 0}
+  m_LocalScale: {x: 0.135, y: 0.14, z: 0.14}
   m_Children: []
   m_Father: {fileID: 84161013}
   m_RootOrder: 5
@@ -6220,6 +6220,8 @@ MonoBehaviour:
   endTurnTitleText: {fileID: 91259315}
   endTurnTimeText: {fileID: 1582678960}
   endTurnButton: {fileID: 312540292}
+  opponentDeckCardView: {fileID: 790147404}
+  playerDeckCardView: {fileID: 427671032}
 --- !u!4 &864873970
 Transform:
   m_ObjectHideFlags: 0
@@ -9886,7 +9888,7 @@ Camera:
   m_Depth: 2
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -13020,7 +13022,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294966527
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

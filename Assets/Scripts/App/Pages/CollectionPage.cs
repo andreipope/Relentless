@@ -209,8 +209,8 @@ namespace GrandDevs.CZB
 			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-2.6f, -0.3f, 5), .2f));
 
 			Sequence mySequence3 = DOTween.Sequence();
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(2.7f, 2.7f, 2.7f), .4f));
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(2.5f, 2.5f, 2.5f), .2f));
+			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
+			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(1f, 1f, 1f), .2f));
             mySequence3.OnComplete(() =>
             {
                 ChangeStatePopup(false);
@@ -318,7 +318,7 @@ namespace GrandDevs.CZB
             var cards = set.cards;
 
 			var startIndex = page * cardPositions.Count;
-            Debug.Log(startIndex);
+
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
 			foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
@@ -348,7 +348,7 @@ namespace GrandDevs.CZB
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
 				cardView.SetHighlightingEnabled(false);
 				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-				cardView.transform.localScale = new Vector3(1f, 1f, 1f);
+                cardView.transform.localScale = Vector3.one * 0.35f;
 				cardView.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
 				cardView.GetComponent<SpriteRenderer>().sortingOrder = 1;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";

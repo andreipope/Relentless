@@ -14,10 +14,10 @@ public class GameScene : BaseScene
 {
     private void Start()
     {
-        OpenPopup<PopupLoading>("PopupLoading", popup =>
-        {
-            popup.text.text = "Waiting for game to start...";
-        });
+        //OpenPopup<PopupLoading>("PopupLoading", popup =>
+        //{
+        //    popup.text.text = "Waiting for game to start...";
+        //});
         if (GameNetworkManager.Instance.isSinglePlayer)
         {
             Invoke("AddBot", 1.5f);
@@ -39,6 +39,7 @@ public class GameScene : BaseScene
     /// </summary>
     public void OnEndTurnButtonPressed()
     {
+        UnityEngine.Debug.LogError(11111);
         var localPlayer = NetworkingUtils.GetLocalPlayer() as DemoHumanPlayer;
         if (localPlayer != null)
         {

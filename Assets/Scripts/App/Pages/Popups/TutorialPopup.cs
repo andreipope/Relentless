@@ -31,7 +31,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
 
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;

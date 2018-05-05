@@ -67,7 +67,7 @@ namespace GrandDevs.CZB
             if (cardTransform != null)
             {
                 cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(2.5f, 2.5f, 2.5f), 0.2f);
+                cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
             }
             _selfPage.SetActive(false);
 		}

@@ -688,7 +688,7 @@ public class DemoAIPlayer : DemoPlayer
         var cardView = go.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
         go.transform.position = new Vector3(-6, 0, 0);
-        go.transform.localScale = Vector3.one * 1.5f;
+        go.transform.localScale = Vector3.one * .3f;
         cardView.SetHighlightingEnabled(false);
         GameClient.Get<ITimerManager>().AddTimer((x) => { Destroy(go); }, null, 2, false);
     }

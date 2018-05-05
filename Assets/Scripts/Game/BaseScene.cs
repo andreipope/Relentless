@@ -71,6 +71,7 @@ public class BaseScene : MonoBehaviour
 
     public void OnPopupClosed(Popup popup)
     {
+        Debug.Log("OnPopupClosed");
         panelCanvasGroup.blocksRaycasts = false;
         panelCanvasGroup.GetComponent<Image>().DOKill();
         panelCanvasGroup.GetComponent<Image>().DOFade(0.0f, 0.25f);

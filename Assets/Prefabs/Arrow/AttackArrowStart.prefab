@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4927014647234786}
   - component: {fileID: 33371896274100932}
   - component: {fileID: 23448203812470512}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ArrowObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4939598957083596}
   - component: {fileID: 33461370387297898}
   - component: {fileID: 23368459739078334}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AttackArrowStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}

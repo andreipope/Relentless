@@ -91,6 +91,8 @@ public class DemoHumanPlayer : DemoPlayer
 
     public Player opponent;
 
+    private IUIManager _uiManager;
+
     protected override void Awake()
     {
         base.Awake();
@@ -123,6 +125,8 @@ public class DemoHumanPlayer : DemoPlayer
         GameClient.Get<IPlayerManager>().OpponentGraveyardCards = opponentGraveyardCards;
 
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+
+        _uiManager = GameClient.Get<IUIManager>();
     }
 
     public override void OnStartLocalPlayer()
@@ -352,10 +356,11 @@ public class DemoHumanPlayer : DemoPlayer
                 gameScene.GetComponent<MSK_GameScene>().CloseWaitingWindow();
             }
 #else
-            if (gameScene.GetComponent<GameScene>() != null)
-            {
-                gameScene.GetComponent<GameScene>().CloseWaitingWindow();
-            }
+            //if (gameScene.GetComponent<GameScene>() != null)
+            //{
+            //    gameScene.GetComponent<GameScene>().CloseWaitingWindow();
+            //}
+            _uiManager.HidePopup<PreparingForBattlePopup>();
 #endif
         }
 
@@ -451,8 +456,9 @@ public class DemoHumanPlayer : DemoPlayer
                 CurrentBoardWeapon.ActivateWeapon(false);
             }
 
-            var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-            scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
+            //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+            //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
+            _uiManager.DrawPopup<YourTurnPopup>();
 
             gameUI.StartTurnCountdown(turnDuration);
         }
@@ -488,6 +494,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected virtual void RearrangeHand()
     {
+        
         var handWidth = 0.0f;
         var spacing = -1.0f;
         foreach (var card in playerHandCards)
@@ -869,7 +876,7 @@ public class DemoHumanPlayer : DemoPlayer
         newPos.y += 2.0f;
         currentCardPreview.transform.position = newPos;
         currentCardPreview.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        currentCardPreview.transform.localScale = new Vector2(1.5f, 1.5f);
+        currentCardPreview.transform.localScale = new Vector2(.4f, .4f);
         currentCardPreview.GetComponent<SortingGroup>().sortingOrder = 1000;
         currentCardPreview.layer = LayerMask.NameToLayer("Ignore Raycast");
         currentCardPreview.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
@@ -939,6 +946,7 @@ public class DemoHumanPlayer : DemoPlayer
         handCard.ownerPlayer = this;
         handCard.boardZone = GameObject.Find("PlayerBoard");
 
+        cardView.transform.localScale = Vector3.one * .3f;
         playerHandCards.Add(cardView);
 
         //go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
@@ -1038,7 +1046,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         Sequence animationSequence3 = DOTween.Sequence();
         animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
-        go.transform.DOScale(new Vector3(.89f, .89f, .89f), .2f);
+        go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
         animationSequence3.OnComplete(() =>
         {
             go.transform.Find("BackgroundBack").gameObject.SetActive(true);
@@ -1048,14 +1056,14 @@ public class DemoHumanPlayer : DemoPlayer
         });
 
         Sequence animationSequence2 = DOTween.Sequence();
-        animationSequence2.Append(go.transform.DOMove(new Vector3(-4, -1, 0), .3f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
         
         animationSequence2.OnComplete(() =>
         {
             sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 1;
             Sequence animationSequence5 = DOTween.Sequence();
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-4.63f, -3.66f, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
                 MonoBehaviour.Destroy(go);
@@ -1242,33 +1250,41 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.OnEndGame(msg);
 
-        var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-        scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
+        //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+        //scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
+        //{
+        //    if (msg.winnerPlayerIndex == playerInfo.netId)
+        //    {
+        //        popup.text.text = "You win!";
+        //    }
+        //    else
+        //    {
+        //        popup.text.text = "You lose!";
+        //    }
+        //    popup.buttonText.text = "Exit";
+        //    popup.button.onClickEvent.AddListener(() =>
+        //    {
+        //        scene.ClosePopup();
+        //        if (NetworkingUtils.GetLocalPlayer().isServer)
+        //        {
+        //            NetworkManager.singleton.StopHost();
+        //        }
+        //        else
+        //        {
+        //            NetworkManager.singleton.StopClient();
+        //        }
+        //        GameClient.Get<ITutorialManager>().StopTutorial();
+        //        GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
+        //    });
+        //});
+        if (msg.winnerPlayerIndex == playerInfo.netId)
         {
-            if (msg.winnerPlayerIndex == playerInfo.netId)
-            {
-                popup.text.text = "You win!";
-            }
-            else
-            {
-                popup.text.text = "You lose!";
-            }
-            popup.buttonText.text = "Exit";
-            popup.button.onClickEvent.AddListener(() =>
-            {
-                scene.ClosePopup();
-                if (NetworkingUtils.GetLocalPlayer().isServer)
-                {
-                    NetworkManager.singleton.StopHost();
-                }
-                else
-                {
-                    NetworkManager.singleton.StopClient();
-                }
-                GameClient.Get<ITutorialManager>().StopTutorial();
-                GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            });
-        });
+            _uiManager.DrawPopup<YouWonPopup>();
+        }
+        else
+        {
+            _uiManager.DrawPopup<YouLosePopup>();
+        }
 
         EffectSolver.EffectActivateEvent -= EffectActivateEventHandler;
     }

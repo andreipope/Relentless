@@ -124,6 +124,7 @@ namespace GrandDevs.CZB
 				deckObject.Find("Frame/EditButton").gameObject.SetActive(false);
 				deckObject.Find("Frame/DeleteButton").GetComponent<Button>().onClick.AddListener(() => { DeleteDeckHandler(deckObject); });
                 deckObject.Find("Frame/DeleteButton").gameObject.SetActive(false);
+                deckObject.Find("Frame/HeroSkillIcon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + heroType);
                 i++;
 			}
             _createDeckButtonPersist = false;

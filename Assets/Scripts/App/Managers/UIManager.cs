@@ -52,9 +52,12 @@ namespace GrandDevs.CZB
 			_uiPopups.Add(new WarningPopup());
 			_uiPopups.Add(new QuestionPopup());
             _uiPopups.Add(new TutorialPopup());
+            _uiPopups.Add(new PreparingForBattlePopup());
+            _uiPopups.Add(new YouLosePopup());
+            _uiPopups.Add(new YouWonPopup());
+            _uiPopups.Add(new YourTurnPopup());
 
-
-			foreach (var popup in _uiPopups)
+            foreach (var popup in _uiPopups)
                 popup.Init();
         }
 

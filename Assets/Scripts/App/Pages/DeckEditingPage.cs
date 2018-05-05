@@ -7,6 +7,7 @@ using FullSerializer;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -25,12 +26,15 @@ namespace GrandDevs.CZB
                                 _buttonBuy,
                                 _buttonOpen,
                                 _buttonSave,
-                                _buttonArrowLeft,
-                                _buttonArrowRight;
+                                _buttonCollection;
+        private Button _buttonArrowLeft,
+                       _buttonArrowRight;
 
         private ScrollRect _cardsListScrollRect;
 
         private TMP_Text _cardAmountText;
+
+        private TextMeshProUGUI _currentSetPageCountText;
 
         private Deck _currentDeck;
 
@@ -100,10 +104,11 @@ namespace GrandDevs.CZB
 
             _buttonBack = _selfPage.transform.Find("Panel_Header/Button_Back").GetComponent<MenuButtonNoGlow>();
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
-            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
+            //_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
             _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowLeft = _selfPage.transform.Find("Panel_Footer/ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowRight = _selfPage.transform.Find("Panel_Footer/ArrowRightButton").GetComponent<MenuButtonNoGlow>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
+            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
 
             _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
@@ -111,12 +116,16 @@ namespace GrandDevs.CZB
 
             _cardsListScrollRect = _selfPage.transform.Find("Panel_CardsList").GetComponent<ScrollRect>();
 
+            _currentSetPageCountText = _selfPage.transform.Find("Text_Count").GetComponent<TextMeshProUGUI>();
+
             _buttonBack.onClickEvent.AddListener(BackButtonHandler);
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
             _buttonSave.onClickEvent.AddListener(SaveButtonHandler);
-            _buttonArrowLeft.onClickEvent.AddListener(ArrowLeftButtonHandler);
-            _buttonArrowRight.onClickEvent.AddListener(ArrowRightButtonHandler);
+            _buttonCollection.onClickEvent.AddListener(SaveButtonHandler);
+            //_buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
+            
+            _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
+            _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
             _deckNameInputField.onEndEdit.AddListener(OnDeckNameInputFieldEndedEdit);
 
@@ -148,13 +157,27 @@ namespace GrandDevs.CZB
             _selfPage.SetActive(true);
             if (_currentDeckId == -1)
             {
-				_currentDeck = new Deck();
+                _currentDeck = new Deck();
                 _currentDeck.name = "Deck " + _dataManager.CachedDecksData.decks.Count;
                 _currentDeck.cards = new List<DeckCardData>();
 
             }
             else
-                _currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId];
+            {
+                _currentDeck = new Deck();
+                _currentDeck.name = _dataManager.CachedDecksData.decks[_currentDeckId].name;
+                _currentDeck.heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+                _currentDeck.cards = new List<DeckCardData>();
+                //_currentDeck.cards = _dataManager.CachedDecksData.decks[_currentDeckId].cards;
+                DeckCardData cardDat = null;
+                foreach (var item in _dataManager.CachedDecksData.decks[_currentDeckId].cards)
+                {
+                    cardDat = new DeckCardData();
+                    cardDat.cardId = item.cardId;
+                    cardDat.amount = item.amount;
+                    _currentDeck.cards.Add(cardDat);
+                }
+            }
             //InitObjects();
             LoadDeckInfo(_currentDeck);
             InitObjects();
@@ -228,6 +251,8 @@ namespace GrandDevs.CZB
 
         private void BackButtonHandler()
         {
+            if (Constants.DEV_MODE)
+                OnDoneButtonPressed();
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
@@ -235,6 +260,12 @@ namespace GrandDevs.CZB
         {
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
+
+        private void CollectionButtonHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
+        }
+
         private void OpenButtonHandler()
         {
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
@@ -258,6 +289,7 @@ namespace GrandDevs.CZB
 
         public void MoveCardsPage(int direction)
         {
+            Debug.Log(numPages);
             currentPage += direction;
 
             if (currentPage < 0)
@@ -298,9 +330,12 @@ namespace GrandDevs.CZB
 
         public void LoadCards(int page, int setIndex)
         {
+            CorrectSetIndex(ref setIndex);
             _currentCards.Clear();
 			var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
 			var cards = set.cards;
+
+            _currentSetPageCountText.text = string.Format("{0} Elements Cards {1}/{2}", Utilites.FirstCharToUpper(set.name), (currentPage + 1).ToString(), numPages.ToString()); 
 
             var startIndex = page * cardPositions.Count;
             var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
@@ -333,7 +368,7 @@ namespace GrandDevs.CZB
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-                cardView.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                cardView.transform.localScale = Vector3.one * 0.3f;
                 cardView.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
                 cardView.GetComponent<SpriteRenderer>().sortingOrder = 1;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
@@ -367,12 +402,16 @@ namespace GrandDevs.CZB
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
                 var cardListItem = go.GetComponent<CardListItem>();
-                cardListItem.deckButton = deck;
-                cardListItem.card = libraryCard;
-                cardListItem.cardNameText.text = libraryCard.name;
-                cardListItem.cardAmountText.text = "x" + card.amount.ToString();
-                cardListItem.count = card.amount;
+                //cardListItem.deckButton = deck;
+                //cardListItem.card = libraryCard;
+                //cardListItem.cardNameText.text = libraryCard.name;
+                //cardListItem.cardAmountText.text = "x" + card.amount.ToString();
+                //cardListItem.count = card.amount;
+                int maxCount = _collectionData.GetCardData(libraryCard.id).amount;// + card.amount;
+                cardListItem.Init(deck, libraryCard, card.amount, maxCount);
                 cardListItem.OnDeleteCard += DeleteCardHandler;
+               
+
 
                 _collectionData.GetCardData(card.cardId).amount -= card.amount;
             }
@@ -452,10 +491,14 @@ namespace GrandDevs.CZB
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
                 var cardListItem = go.GetComponent<CardListItem>();
-                cardListItem.deckButton = _currentDeck;
-                cardListItem.card = card;
-                cardListItem.cardNameText.text = card.name;
+                //cardListItem.deckButton = _currentDeck;
+                //cardListItem.card = card;
+                //cardListItem.cardNameText.text = card.name;
+                
+                int maxCount = _collectionData.GetCardData(card.id).amount + 1;
+                cardListItem.Init(_currentDeck, card, 1, maxCount);
                 cardListItem.OnDeleteCard += DeleteCardHandler;
+
             }
 
             _currentDeck.AddCard(card.id); 
@@ -486,7 +529,7 @@ namespace GrandDevs.CZB
         {
             if (_currentDeck != null)
             {
-                _cardAmountText.text = _currentDeck.GetNumCards().ToString() + "/" + Constants.DECK_MAX_SIZE;
+                _cardAmountText.text = _currentDeck.GetNumCards().ToString() + " / " + Constants.DECK_MAX_SIZE;
             }
         }
 
@@ -497,10 +540,43 @@ namespace GrandDevs.CZB
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
             }
+            else
+            {
+                _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
+            }
 
             _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
 
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+        }
+
+        private void CorrectSetIndex(ref int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    index = 3;
+                    break;
+                case 1:
+                    index = 4;
+                    break;
+                case 2:
+                    index = 1;
+                    break;
+                case 3:
+                    index = 5;
+                    break;
+                case 4:
+                    index = 0;
+                    break;
+                case 5:
+                    index = 2;
+                    break;
+                case 6:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

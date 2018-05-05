@@ -12,6 +12,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GrandDevs.Internal
 {
@@ -379,6 +380,14 @@ namespace GrandDevs.Internal
                 list.Add(CastStringTuEnum<T>(target));
             }
             return list;
+        }
+
+        public static string FirstCharToUpper(string input)
+        {
+            if (!String.IsNullOrEmpty(input))
+                input = input.First().ToString().ToUpper() + input.Substring(1);
+            return input;
+
         }
     }
 }

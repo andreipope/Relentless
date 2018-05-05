@@ -185,25 +185,26 @@ namespace GrandDevs.CZB
         {
             if (_currentStep >= _steps.Count - 1)
             {
-				var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-				scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
-				{
-					popup.text.text = "You win!";
-					popup.buttonText.text = "Exit";
-					popup.button.onClickEvent.AddListener(() =>
-					{
-						if (NetworkingUtils.GetLocalPlayer().isServer)
-						{
-							NetworkManager.singleton.StopHost();
-						}
-						else
-						{
-							NetworkManager.singleton.StopClient();
-						}
-						scene.ClosePopup();
-						GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-					});
-				});
+				//var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
+                //scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
+                //{
+                //	popup.text.text = "You win!";
+                //	popup.buttonText.text = "Exit";
+                //	popup.button.onClickEvent.AddListener(() =>
+                //	{
+                //		if (NetworkingUtils.GetLocalPlayer().isServer)
+                //		{
+                //			NetworkManager.singleton.StopHost();
+                //		}
+                //		else
+                //		{
+                //			NetworkManager.singleton.StopClient();
+                //		}
+                //		scene.ClosePopup();
+                //		GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
+                //	});
+                //});
+                GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
                 GameClient.Get<ITutorialManager>().StopTutorial();
 				return;
             }

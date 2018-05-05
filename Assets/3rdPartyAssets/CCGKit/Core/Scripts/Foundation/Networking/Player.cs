@@ -235,7 +235,7 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(26);
+                            //    msgDefaultDeck.Add(25);
                             //else
                                 msgDefaultDeck.Add(card.cardId);
                         }

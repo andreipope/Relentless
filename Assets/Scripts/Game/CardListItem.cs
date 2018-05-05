@@ -7,6 +7,8 @@ using UnityEngine;
 using TMPro;
 using GrandDevs.CZB.Data;
 using System;
+using GrandDevs.CZB;
+using System.Collections.Generic;
 
 public class CardListItem : MonoBehaviour
 {
@@ -19,6 +21,24 @@ public class CardListItem : MonoBehaviour
     public TextMeshProUGUI cardAmountText;
 
     public int count = 1;
+
+    private Transform panelCardCount;
+
+    private int _maxCount;
+
+    private List<CardInDeckAmountItem> _cardAmount;
+
+    public void Init(Deck deck, Card card, int count, int maxCount)
+    {
+        deckButton = deck;
+        this.card = card;
+        this.count = count;
+        cardNameText.text = card.name;
+        cardAmountText.text = "x" + count.ToString();
+        _maxCount = maxCount;
+
+        FillCardAmount();
+    }
 
     public void AddCard()
     {
@@ -53,5 +73,42 @@ public class CardListItem : MonoBehaviour
     {
 		count += amount;
 		cardAmountText.text = "x" + count.ToString();
+        bool state = amount > 0 ? true : false;
+        int index = amount > 0 ? count - 1 : count;
+        _cardAmount[index].ChangeActivate(state);
+    }
+
+    private void FillCardAmount()
+    {
+        panelCardCount = transform.Find("Panel_CardCount");
+        _cardAmount = new List<CardInDeckAmountItem>();
+        CardInDeckAmountItem item = null;
+        for (int i = 0; i < _maxCount; i++)
+        {
+            item = new CardInDeckAmountItem(panelCardCount);
+            if (i >= count)
+                item.ChangeActivate(false);
+            _cardAmount.Add(item);
+        }
+    }
+
+    class CardInDeckAmountItem
+    {
+        private GameObject _selfObject;
+
+        private GameObject _activateObject;
+
+        public CardInDeckAmountItem(Transform parent)
+        {
+            GameObject prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardInDeckCountPrefab");
+            _selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
+            _activateObject = _selfObject.transform.Find("Image_Active").gameObject;
+        }
+
+        public void ChangeActivate(bool state)
+        {
+            _activateObject.SetActive(state);
+        }
+
     }
 }
