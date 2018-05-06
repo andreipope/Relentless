@@ -25,9 +25,7 @@ namespace GrandDevs.CZB
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow _buttonBack;
-
-        private ScrollRect _cardsListScrollRect;
+        private Button _buttonBack;
 
         private fsSerializer serializer = new fsSerializer();
 
@@ -67,16 +65,15 @@ namespace GrandDevs.CZB
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
-            _packItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/PackItem");
-            _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
+            //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
             _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/packOpenVFX");
 
-            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>();
-            _packItemContent = _selfPage.transform.Find("Panel_PacksList/Group").gameObject;
-            _cardsListScrollRect = _selfPage.transform.Find("Panel_PacksList").GetComponent<ScrollRect>();
-            _buttonBack.onClickEvent.AddListener(BackButtonHandler);
+            _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
+			_packsObject = _selfPage.transform.Find("PackItem").gameObject;
+
+            _buttonBack.onClick.AddListener(BackButtonHandler);
 
             Hide();
         }
@@ -103,10 +100,6 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(true);
             InitObjects();
-            //Debug.Log(_packItemContent);
-            //InternalTools.FixVerticalLayoutGroupFitting(_packItemContent);
-            //_cardsListScrollRect.verticalNormalizedPosition = 1f;
-            //_cardsListScrollRect.CalculateLayoutInputVertical();
             
         }
 
@@ -122,14 +115,8 @@ namespace GrandDevs.CZB
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
-            //foreach (Transform child in _packItemContent.transform)
-            //{
-            //    MonoBehaviour.Destroy(child.gameObject);
-            //}
-             MonoBehaviour.Destroy(_packsObject);
             MonoBehaviour.Destroy(_backgroundCanvas);
 			MonoBehaviour.Destroy(_cardPlaceholders);
-            //MonoBehaviour.Destroy(_packsObject);
 		}
 
         private void CardClickeCheck()
@@ -193,9 +180,6 @@ namespace GrandDevs.CZB
                     _isCardPreview = false;
                 });
             }
-			
-			//_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
-			//(_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).cardTransform = _selectedCard.transform;
         }
 
         private void MoveCardsToBottomAndDestroy()
@@ -224,30 +208,19 @@ namespace GrandDevs.CZB
         private void InitObjects()
         {
             _cardsContainer = new GameObject("CardsContainer").transform;
-            _centerPos = new Vector3(2, 0, 10);
-            _backgroundCanvas = MonoBehaviour.Instantiate(_backgroundCanvasPrefab);
-            _backgroundCanvas.GetComponent<Canvas>().worldCamera = Camera.allCameras[0];
+            _centerPos = new Vector3(3.2f, -0.5f, 10);
             _cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
 
-            /*for(int i = 0; i < _playerManager.LocalUser.packsCount; i++)
-            {
-                var go = MonoBehaviour.Instantiate(_packItemPrefab) as GameObject;
-                go.transform.SetParent(_packItemContent.transform, false);
-                go.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
-            }*/
+            var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
+			_packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>().text = packsCount.ToString();
 
-            if (_playerManager.LocalUser.packsCount > 0)
+			_lock = false;
+
+			if (_playerManager.LocalUser.packsCount > 0)
             {
-                _packsObject = MonoBehaviour.Instantiate(_packItemPrefab) as GameObject;
-                _packsObject.transform.SetParent(_packItemContent.transform, false);
-                _packsObject.transform.Find("Amount/Value").GetComponent<Text>().text = _playerManager.LocalUser.packsCount.ToString();
-                _packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
+				_packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
+				_packsObject.GetComponent<DragableObject>().locked = _lock;
             }
-
-
-            _lock = false;
-            foreach (Transform item in _packItemContent.transform)
-                item.GetComponent<DragableObject>().locked = _lock;
         }
 
         #region button handlers
@@ -264,19 +237,11 @@ namespace GrandDevs.CZB
             if (_cardsContainer.transform.childCount == 0 && !_lock)
             {
                 _playerManager.LocalUser.packsCount--;
-                _packsObject.transform.Find("Amount/Value").GetComponent<Text>().text = _playerManager.LocalUser.packsCount.ToString();
+                _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>().text = _playerManager.LocalUser.packsCount.ToString();
                 _lock = true;
-                foreach (Transform item in _packItemContent.transform)
-                {
-                    if(item != go.transform)
-                        item.GetComponent<DragableObject>().locked = _lock;
-                }
+				_packsObject.GetComponent<DragableObject>().locked = _lock;
 
-                DetachAndAnimatePackItem(go);
-                if (_playerManager.LocalUser.packsCount == 0)
-                {
-                    MonoBehaviour.Destroy(_packsObject);
-                }
+				DetachAndAnimatePackItem(go);
             }
         }
 
@@ -286,7 +251,7 @@ namespace GrandDevs.CZB
         {
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
-            animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 10, 90, false, false));
+            animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
 
             _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
             _packOpenVFX.transform.position = _centerPos;
@@ -302,9 +267,6 @@ namespace GrandDevs.CZB
             for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
             {
                 var n = i;
-
-                UnityEngine.Debug.Log("PackItemAnimationComplete");
-
 
                 var card = GenerateNewCard();
 

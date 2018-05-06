@@ -94,7 +94,7 @@ namespace GrandDevs.CZB
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersEditingDeck");
             _cardListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardListItem");
-            _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
+            //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
 
             _cardAmountText = _selfPage.transform.Find("CardsAmount/CardsAmountText").GetComponent<TMP_Text>();
 
@@ -200,7 +200,6 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(card.gameObject);
             }
             MonoBehaviour.Destroy(_cardPlaceholders);
-            MonoBehaviour.Destroy(_backgroundCanvas);
             _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
             WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
         }
@@ -225,8 +224,6 @@ namespace GrandDevs.CZB
         private void InitObjects()
         {
             _cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
-            _backgroundCanvas = MonoBehaviour.Instantiate(_backgroundCanvasPrefab);
-            _backgroundCanvas.GetComponent<Canvas>().worldCamera = Camera.allCameras[0];
             cardPositions = new List<Transform>();
             foreach (Transform placeholder in _cardPlaceholders.transform)
             {

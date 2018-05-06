@@ -31,9 +31,7 @@ namespace GrandDevs.CZB
         public GameObject _cardCreaturePrefab,
                           _cardSpellPrefab,
                           _cardPlaceholdersPrefab,
-                          _cardPlaceholders,
-                            _backgroundCanvasPrefab,
-                           _backgroundCanvas;
+                          _cardPlaceholders;
 
         private TextMeshProUGUI gooValueText;
 
@@ -81,7 +79,7 @@ namespace GrandDevs.CZB
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
 			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
-            _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundCollectionCanvas");
+           // _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundCollectionCanvas");
 
             Hide();
         }
@@ -128,7 +126,6 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
-            MonoBehaviour.Destroy(_backgroundCanvas);
             foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
@@ -138,7 +135,6 @@ namespace GrandDevs.CZB
         public void Dispose()
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
-            MonoBehaviour.Destroy(_backgroundCanvas);
             foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
@@ -148,8 +144,6 @@ namespace GrandDevs.CZB
         private void InitObjects()
         {
 			_cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
-            _backgroundCanvas = MonoBehaviour.Instantiate(_backgroundCanvasPrefab);
-			_backgroundCanvas.GetComponent<Canvas>().worldCamera = Camera.allCameras[0];
 			cardPositions = new List<Transform>();
 			foreach (Transform placeholder in _cardPlaceholders.transform)
 			{

@@ -4,7 +4,7 @@ using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 using CCGKit;
 using DG.Tweening;
-
+using TMPro;
 
 namespace GrandDevs.CZB
 {
@@ -26,11 +26,12 @@ namespace GrandDevs.CZB
                             _buttonBack,
                             _buttonBuy;
 
-        private Text _description,
+        private TextMeshProUGUI _description,
                      _costItem_1,
                      _costItem_2,
                      _costItem_3,
-                     _costItem_4;
+                     _costItem_4,
+                    _wallet;
 
         private int _currentPackId = -1;
 
@@ -53,7 +54,8 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<Text>();
+			_description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
+			_wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
 
@@ -63,10 +65,10 @@ namespace GrandDevs.CZB
             _buttonItem3 = _selfPage.transform.Find("Item3").GetComponent<Button>();
             _buttonItem4 = _selfPage.transform.Find("Item4").GetComponent<Button>();
 
-            _costItem_1 = _buttonItem1.transform.Find("Cost").GetComponent<Text>();
-            _costItem_2 = _buttonItem2.transform.Find("Cost").GetComponent<Text>();
-            _costItem_3 = _buttonItem3.transform.Find("Cost").GetComponent<Text>();
-            _costItem_4 = _buttonItem4.transform.Find("Cost").GetComponent<Text>();
+            _costItem_1 = _buttonItem1.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem_2 = _buttonItem2.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem_3 = _buttonItem3.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem_4 = _buttonItem4.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
 
             _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<MenuButtonNoGlow>();
             _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<MenuButtonNoGlow>();
@@ -107,7 +109,7 @@ namespace GrandDevs.CZB
         public void Show()
         {
             _playerManager.LocalUser.wallet = 1000;
-            //_wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
+            _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
             if (_currentPackId > -1)
             {
                 _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0f, 0f);
@@ -148,21 +150,23 @@ namespace GrandDevs.CZB
         private void BuyButtonHandler()
         {
             _playerManager.LocalUser.wallet -= _costs[_currentPackId];
-            //_wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
-
+            _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
+            GameObject prefab = null;
             for (int i = 0; i < _amount[_currentPackId]; i++)
             {
                 _playerManager.LocalUser.packsCount++;
 
-                GameObject packItem = MonoBehaviour.Instantiate(_packsObjects[_currentPackId]) as GameObject;
-                packItem.transform.position = _packsObjects[_currentPackId].transform.position;
+                prefab = _packsObjects[_currentPackId].transform.Find("PackItemPrefab").gameObject;
+
+                GameObject packItem = MonoBehaviour.Instantiate(prefab) as GameObject;
+                packItem.transform.position = prefab.transform.position;
                 packItem.transform.SetParent(_selfPage.transform, true);
                 packItem.transform.localScale = Vector3.one;
-                packItem.transform.Find("Highlight").gameObject.SetActive(false);
-                packItem.GetComponent<Button>().interactable = false;
+				packItem.SetActive(true);
 
-                Sequence animationSequence = DOTween.Sequence();
-                animationSequence.AppendInterval(0.1f * i);
+
+				Sequence animationSequence = DOTween.Sequence();
+                animationSequence.AppendInterval(_amount[_currentPackId] * 0.1f - 0.1f * i);
                 animationSequence.Append(packItem.transform.DOMove(Vector3.up * -10, .3f));
             }
         }
