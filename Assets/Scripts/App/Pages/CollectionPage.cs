@@ -22,9 +22,9 @@ namespace GrandDevs.CZB
 
         private MenuButtonNoGlow _buttonBuy,
                                 _buttonOpen,
-                                _buttonBack,
-                                _buttonArrowLeft,
-                                _buttonArrowRight;
+                                _buttonBack;
+        private Button  _buttonArrowLeft,
+                        _buttonArrowRight;
 
 		public List<Transform> cardPositions;
 
@@ -63,23 +63,22 @@ namespace GrandDevs.CZB
 			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
 			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
 			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowLeft = _selfPage.transform.Find("Panel_Footer/ArrowLeftButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowRight = _selfPage.transform.Find("Panel_Footer/ArrowRightButton").GetComponent<MenuButtonNoGlow>();
+            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
+            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
 
             _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
             _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
             _buttonBack.onClickEvent.AddListener(BackButtonHandler);
-            _buttonArrowLeft.onClickEvent.AddListener(ArrowLeftButtonHandler);
-            _buttonArrowRight.onClickEvent.AddListener(ArrowRightButtonHandler);
+            _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
+            _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
             _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
 			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
-           // _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundCollectionCanvas");
 
             Hide();
         }
@@ -88,7 +87,7 @@ namespace GrandDevs.CZB
         {
             if (_selfPage.activeInHierarchy)
             {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
+                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf)
                 {
                     if (!_isPopupChangedStart && _selectedCard != null)
                     {
@@ -192,19 +191,19 @@ namespace GrandDevs.CZB
             _selectedCollectionCard = card;
             _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
             _selectedCard.name = "CardPreview";
-            Utilites.SetLayerRecursively(_selectedCard.gameObject, 8);
+            Utilites.SetLayerRecursively(_selectedCard.gameObject, 11);
 
 			Sequence mySequence = DOTween.Sequence();
 			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
 			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
 
 			Sequence mySequence2 = DOTween.Sequence();
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-2.6f, .3f, 5), .4f));
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-2.6f, -0.3f, 5), .2f));
+			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, 1.2f, 5), .4f));
+			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, .8f, 5), .2f));
 
 			Sequence mySequence3 = DOTween.Sequence();
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(1f, 1f, 1f), .2f));
+			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.9f, .9f, .9f), .4f));
+			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.72f, .72f, .72f), .2f));
             mySequence3.OnComplete(() =>
             {
                 ChangeStatePopup(false);

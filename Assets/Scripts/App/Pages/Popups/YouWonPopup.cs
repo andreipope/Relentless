@@ -8,6 +8,7 @@ using CCGKit;
 using UnityEngine.Networking;
 using GrandDevs.CZB.Data;
 using GrandDevs.Internal;
+using GrandDevs.CZB.Gameplay;
 
 namespace GrandDevs.CZB
 {
@@ -36,7 +37,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _selectHeroImage = _selfPage.transform.Find("Image_SelectHero").GetComponent<Image>();
             _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
@@ -55,7 +56,8 @@ namespace GrandDevs.CZB
         {
             OnHidePopupEvent?.Invoke();
             _selfPage.SetActive(false);
-        }
+			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+		}
 
         public void SetMainPriority()
         {
@@ -63,6 +65,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);
 
             int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId;

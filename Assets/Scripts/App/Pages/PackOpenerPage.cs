@@ -150,7 +150,7 @@ namespace GrandDevs.CZB
                 
                 _cardPreview = MonoBehaviour.Instantiate(_cardPreviewOriginal.gameObject).transform;
 				_cardPreview.name = "CardPreview";
-				Utilites.SetLayerRecursively(_cardPreview.gameObject, 8);
+				Utilites.SetLayerRecursively(_cardPreview.gameObject, 11);
 
 				Sequence mySequence = DOTween.Sequence();
 				mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
@@ -164,12 +164,12 @@ namespace GrandDevs.CZB
 				mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
 				mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
-				GameClient.Get<ICameraManager>().FadeIn(0.7f);
+				GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
 				_isCardPreview = true;
             }
             else
             {
-                GameClient.Get<ICameraManager>().FadeOut(null);
+                GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
                 Sequence sequence = DOTween.Sequence();
                 sequence.Append(_cardPreview.DOScale(_cardPreviewOriginal.localScale, .3f));
@@ -187,15 +187,15 @@ namespace GrandDevs.CZB
 			foreach (Transform cardObj in _cardsContainer)
 			{
 				Sequence animationSequence5 = DOTween.Sequence();
-				animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 7, .3f));
+				animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
 				animationSequence5.OnComplete(() =>
 				{
 					MonoBehaviour.Destroy(cardObj.gameObject);
 				});
 			}
-			_lock = false;
-			foreach (Transform item in _packItemContent.transform)
-				item.GetComponent<DragableObject>().locked = _lock;
+            if (_playerManager.LocalUser.packsCount > 0)
+			    _lock = false;
+		    _packsObject.GetComponent<DragableObject>().locked = _lock;
 			_dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
 			_cardsTurned = 0;
         }
@@ -216,11 +216,13 @@ namespace GrandDevs.CZB
 
 			_lock = false;
 
-			if (_playerManager.LocalUser.packsCount > 0)
+            if (_playerManager.LocalUser.packsCount > 0)
             {
-				_packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
-				_packsObject.GetComponent<DragableObject>().locked = _lock;
+                _packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
             }
+            else
+                _lock = true;
+            _packsObject.GetComponent<DragableObject>().locked = _lock;
         }
 
         #region button handlers

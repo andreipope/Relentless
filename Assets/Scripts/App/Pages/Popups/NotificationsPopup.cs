@@ -44,7 +44,7 @@ namespace GrandDevs.CZB
             _notificationManager = GameClient.Get<INotificationManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/NotificationsPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _notificationObject = new NotificationObject(_selfPage.transform.Find("Panel_TopNotification").gameObject);
             _notificationObject.NotificationObjectClosedEvent += NotificationObjectClosedEventHandler;

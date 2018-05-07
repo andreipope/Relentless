@@ -128,7 +128,8 @@ namespace GrandDevs.CZB
                 i++;
 			}
             _createDeckButtonPersist = false;
-            AddCreationDeckButton();
+            for (i = _dataManager.CachedDecksData.decks.Count; i < 8; i++)
+                AddCreationDeckButton();
             ActivatePlayButton(false);
 
             //_selectedDeck.gameObject.SetActive(false);
@@ -145,15 +146,11 @@ namespace GrandDevs.CZB
 
         private void AddCreationDeckButton()
         {
-            if (_dataManager.CachedDecksData.decks.Count < 8 && !_createDeckButtonPersist)
-            {
-                Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItemCreate")).transform;
-                deckObject.SetParent(_decksContainer, false);
-                deckObject.GetComponent<Button>().onClick.AddListener(CreateDeck);
-                _createDeckButtonPersist = true;
-            }
+            Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItemCreate")).transform;
+            deckObject.SetParent(_decksContainer, false);
+            deckObject.GetComponent<Button>().onClick.AddListener(CreateDeck);
+            _createDeckButtonPersist = true;
         }
-
         private void ActivatePlayButton(bool isActive)
         {
             _buttonPlay.enabled = isActive;

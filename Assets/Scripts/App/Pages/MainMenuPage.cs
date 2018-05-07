@@ -63,6 +63,10 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+            if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.T))
+            {
+                GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
+            }
         }
 
         public void Show()

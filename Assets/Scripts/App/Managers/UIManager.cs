@@ -15,7 +15,9 @@ namespace GrandDevs.CZB
         public IUIElement CurrentPage { get; set; }
 
         public CanvasScaler CanvasScaler { get; set; }
-        public GameObject Canvas { get; set; }
+		public GameObject Canvas { get; set; }
+		public GameObject Canvas2 { get; set; }
+		public GameObject Canvas3 { get; set; }
 
         public void Dispose()
         {
@@ -28,7 +30,9 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
-            Canvas = GameObject.Find("Canvas");
+			Canvas = GameObject.Find("Canvas1");
+			Canvas2 = GameObject.Find("Canvas2");
+			Canvas3 = GameObject.Find("Canvas3");
             CanvasScaler = Canvas.GetComponent<CanvasScaler>();
 
             _uiPages = new List<IUIElement>();

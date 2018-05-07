@@ -504,8 +504,8 @@ public class DemoHumanPlayer : DemoPlayer
         }
         handWidth -= spacing;
 
-        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.54f, 0.05f, 0.0f)); // changed by Basil
-        var totalTwist = -20f;
+        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.555f, 0.05f, 0.0f)); // changed by Basil
+        var totalTwist = -10f;
         if (playerHandCards.Count == 1)
         {
             totalTwist = 0;

@@ -12,7 +12,7 @@ namespace GrandDevs.CZB.Gameplay
         private IUIManager _uiManager;
         private ITimerManager _timerManager;
 
-        private CanvasGroup _fadeImageGroup;
+		private CanvasGroup[] _fadeImageGroups;
 
         private float _fadeSpeed = 10f,
                       _fadeThreshold = 0.01f,
@@ -47,62 +47,75 @@ namespace GrandDevs.CZB.Gameplay
         {
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _fadeImageGroups = new CanvasGroup[3];
+			//            _selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
 
-            _fadeImageGroup = _uiManager.Canvas.transform.Find("Image_Fade").GetComponent<CanvasGroup>();
-            _fadeImageGroup.alpha = 0f;
+			_fadeImageGroups[0] = GameObject.Find("Canvas1/Image_Fade").GetComponent<CanvasGroup>();
+			_fadeImageGroups[1] = GameObject.Find("Canvas2/Image_Fade").GetComponent<CanvasGroup>();
+			_fadeImageGroups[2] = GameObject.Find("Canvas3/Image_Fade").GetComponent<CanvasGroup>();
+			_fadeImageGroups[0].alpha = 0f;
+			_fadeImageGroups[1].alpha = 0f;
+			_fadeImageGroups[2].alpha = 0f;
+			_fadeImageGroups[0].gameObject.SetActive(false);
+			_fadeImageGroups[1].gameObject.SetActive(false);
+			_fadeImageGroups[2].gameObject.SetActive(false);
+                                   
         }
 
         public void Update()
         {
         }
 
-        public void FadeIn(Action callback = null)
+        public void FadeIn(Action callback = null, int level = 0)
         {
 			_fadeGoalValue = 1f;
-			PrepareFading(true);
-            _timerManager.AddTimer(Fade, new object[] { true, callback }, _fadeDelay, true);
+			PrepareFading(true, level);
+            _timerManager.AddTimer(Fade, new object[] { true, callback, level }, _fadeDelay, true);
         }
 
-		public void FadeIn(float fadeValue)
+		public void FadeIn(float fadeValue, int level = 0)
 		{
             _fadeGoalValue = fadeValue;
-			PrepareFading(true);
-			_timerManager.AddTimer(Fade, new object[] { true, null }, _fadeDelay, true);
+			PrepareFading(true, level);
+			_timerManager.AddTimer(Fade, new object[] { true, null, level }, _fadeDelay, true);
 		}
 
-        public void FadeOut(Action callback = null)
+        public void FadeOut(Action callback = null, int level = 0)
         {
-            PrepareFading(false);
-            _timerManager.AddTimer(Fade, new object[] { false, callback }, _fadeDelay, true);
+			if (_timerManager == null)
+				return;
+            PrepareFading(false, level);
+            _timerManager.AddTimer(Fade, new object[] { false, callback, level }, _fadeDelay, true);
         }
 
-        private void PrepareFading(bool fadeIn)
+        private void PrepareFading(bool fadeIn, int level)
         {
             _timerManager.StopTimer(Fade);
-            _fadeImageGroup.alpha = fadeIn ? 0f : _fadeGoalValue;
-            _fadeImageGroup.transform.SetAsLastSibling();
-            _fadeImageGroup.gameObject.SetActive(true);
+            _fadeImageGroups[level].alpha = fadeIn ? 0f : _fadeGoalValue;
+            _fadeImageGroups[level].transform.SetAsLastSibling();
+            _fadeImageGroups[level].gameObject.SetActive(true);
             _isFading = true;
         }
 
         private void Fade(object[] param)
         {
             bool fadeIn = (bool)param[0];
+            int level = (int)param[2];
             Action callback = (param[1] == null) ? null : (Action)param[1];
 
             float speed = Time.deltaTime * _fadeSpeed;
             float to = fadeIn ? _fadeGoalValue : 0f;
 
-            _fadeImageGroup.alpha = Mathf.Lerp(_fadeImageGroup.alpha, to, speed);
+            _fadeImageGroups[level].alpha = Mathf.Lerp(_fadeImageGroups[level].alpha, to, speed);
 
-            if (Mathf.Abs(_fadeImageGroup.alpha - to) < _fadeThreshold)
+            if (Mathf.Abs(_fadeImageGroups[level].alpha - to) < _fadeThreshold)
             {
                 _currentFadeState = fadeIn ? Enumerators.FadeState.FADED : Enumerators.FadeState.DEFAULT;
 
                 if (_currentFadeState == Enumerators.FadeState.DEFAULT)
-                    _fadeImageGroup.gameObject.SetActive(false);
+                    _fadeImageGroups[level].gameObject.SetActive(false);
 
-                _fadeImageGroup.alpha = to;
+                _fadeImageGroups[level].alpha = to;
                 _isFading = false;
                 _timerManager.StopTimer(Fade);
 

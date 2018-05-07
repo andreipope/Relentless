@@ -22,7 +22,6 @@ namespace GrandDevs.CZB
         private GameObject _selfPage;
 
         //private TextMeshProUGUI _description;
-        private Text _amount;
         private MenuButtonNoGlow _yesButton,
                                 _noButton;
 		private TextMeshProUGUI _buttonText;
@@ -37,7 +36,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _yesButton = _selfPage.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
             _noButton = _selfPage.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
@@ -46,7 +45,6 @@ namespace GrandDevs.CZB
 			_noButton.onClickEvent.AddListener(CloseDesintegratePopup);
 
 			//_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
-			_amount = _selfPage.transform.Find("QuestionArea/Amount/Value").GetComponent<Text>();
 
             Hide();
         }
@@ -58,17 +56,20 @@ namespace GrandDevs.CZB
 
         private void CloseDesintegratePopup()
         {
-            (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
+			_uiManager.DrawPopup<CardInfoPopup>(libraryCard);
+
+			//(_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
             Hide();
         }
 
 		public void Hide()
 		{
-            if (cardTransform != null)
+            /*if (cardTransform != null)
             {
                 cardTransform.DOKill();
                 cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
-            }
+            }*/
             _selfPage.SetActive(false);
 		}
 
@@ -85,7 +86,6 @@ namespace GrandDevs.CZB
         {
             _cardData =  data as CollectionCardData;
             //_description.text = _card.description;
-            _amount.text = _cardData.amount.ToString();
             if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             else
@@ -105,11 +105,10 @@ namespace GrandDevs.CZB
             _cardData.amount--;
             if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            _amount.text = _cardData.amount.ToString();
             GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_cardData.amount);
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
-            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 25 * ((int)libraryCard.cardRarity + 1);
+            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 5 * ((int)libraryCard.cardRarity + 1);
 
 			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();
 		}

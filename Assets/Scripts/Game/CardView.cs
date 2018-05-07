@@ -70,19 +70,15 @@ public class CardView : MonoBehaviour
         this.card = card;
 
         libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
         nameText.text = libraryCard.name;
         bodyText.text = libraryCard.description;
         costText.text = libraryCard.cost.ToString();
 
         isNewCard = true;
 
-
-
         manaCost = libraryCard.cost;
 
-       var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
-
+        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
         backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
 
@@ -101,9 +97,9 @@ public class CardView : MonoBehaviour
 
         manaCost = libraryCard.cost;
 
-        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
+		var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 
-        backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
+		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
 		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
     }
 

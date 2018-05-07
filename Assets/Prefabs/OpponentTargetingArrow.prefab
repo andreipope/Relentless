@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4117665145847118}
   - component: {fileID: 114056447653713018}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: OpponentTargetingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,5 +53,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetType: 0
   material: {fileID: 2100000, guid: d485273af9b3ac04ab7a10fb00b593a7, type: 2}
-  headTexture: {fileID: 2800000, guid: 76d7d20540375a445863ea109ba14359, type: 3}
+  headPrefab: {fileID: 0}
+  middlePrefab: {fileID: 0}
+  startPrefab: {fileID: 0}
   targetTexture: {fileID: 2800000, guid: 5a3a04e5ec43c4c4c9cef153be98af0c, type: 3}
+  coef: 0

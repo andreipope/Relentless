@@ -24,7 +24,7 @@ public class BaseScene : MonoBehaviour
     public void Awake()
     {
         canvas = GameClient.Get<IUIManager>().Canvas.GetComponent<Canvas>();
-        panelCanvasGroup = canvas.transform.Find("Panel").GetComponent<CanvasGroup>();
+        //panelCanvasGroup = canvas.transform.Find("Panel").GetComponent<CanvasGroup>();
     }
 
     public void OpenPopup<T>(string name, Action<T> onOpened = null, bool darkenBackground = true) where T : Popup
@@ -38,9 +38,9 @@ public class BaseScene : MonoBehaviour
         {
             Destroy(currentPopup);
             currentPopup = null;
-            panelCanvasGroup.blocksRaycasts = false;
-            panelCanvasGroup.GetComponent<Image>().DOKill();
-            panelCanvasGroup.GetComponent<Image>().DOFade(0.0f, 0.2f);
+            //panelCanvasGroup.blocksRaycasts = false;
+            //panelCanvasGroup.GetComponent<Image>().DOKill();
+            //panelCanvasGroup.GetComponent<Image>().DOFade(0.0f, 0.2f);
         }
     }
 
@@ -58,9 +58,9 @@ public class BaseScene : MonoBehaviour
         currentPopup.GetComponent<Popup>().parentScene = this;
         if (darkenBackground)
         {
-            panelCanvasGroup.blocksRaycasts = true;
-            panelCanvasGroup.GetComponent<Image>().DOKill();
-            panelCanvasGroup.GetComponent<Image>().DOFade(0.5f, 0.5f);
+            //panelCanvasGroup.blocksRaycasts = true;
+            //panelCanvasGroup.GetComponent<Image>().DOKill();
+            //panelCanvasGroup.GetComponent<Image>().DOFade(0.5f, 0.5f);
         }
 
         if (onOpened != null)
@@ -72,8 +72,8 @@ public class BaseScene : MonoBehaviour
     public void OnPopupClosed(Popup popup)
     {
         Debug.Log("OnPopupClosed");
-        panelCanvasGroup.blocksRaycasts = false;
-        panelCanvasGroup.GetComponent<Image>().DOKill();
-        panelCanvasGroup.GetComponent<Image>().DOFade(0.0f, 0.25f);
+        //panelCanvasGroup.blocksRaycasts = false;
+        //panelCanvasGroup.GetComponent<Image>().DOKill();
+        //panelCanvasGroup.GetComponent<Image>().DOFade(0.0f, 0.25f);
     }
 }

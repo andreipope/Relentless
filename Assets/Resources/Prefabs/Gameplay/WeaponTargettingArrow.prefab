@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4043859479835438}
   - component: {fileID: 114711935683512436}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: WeaponTargettingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

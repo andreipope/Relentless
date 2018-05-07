@@ -32,7 +32,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/QuestionPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
 			_button1 = _selfPage.transform.Find("Button1").GetComponent<MenuButton>();
 			_button2 = _selfPage.transform.Find("Button2").GetComponent<MenuButton>();

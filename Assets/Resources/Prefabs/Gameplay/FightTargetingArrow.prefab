@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4117665145847118}
   - component: {fileID: 114717098265375600}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FightTargetingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

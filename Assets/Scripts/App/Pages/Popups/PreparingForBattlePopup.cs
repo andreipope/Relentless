@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using GrandDevs.CZB.Gameplay;
 
 namespace GrandDevs.CZB
 {
@@ -27,7 +28,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
 
             Hide();
@@ -42,7 +43,8 @@ namespace GrandDevs.CZB
         {
             OnHidePopupEvent?.Invoke();
             _selfPage.SetActive(false);
-        }
+			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+		}
 
         public void SetMainPriority()
         {
@@ -50,6 +52,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);
         }
 

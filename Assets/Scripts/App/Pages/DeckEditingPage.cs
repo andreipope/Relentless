@@ -102,7 +102,7 @@ namespace GrandDevs.CZB
 
             _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
-            _buttonBack = _selfPage.transform.Find("Panel_Header/Button_Back").GetComponent<MenuButtonNoGlow>();
+            _buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
             //_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
             _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<MenuButtonNoGlow>();
@@ -184,7 +184,7 @@ namespace GrandDevs.CZB
 
             _cardsListScrollRect.verticalNormalizedPosition = 1f;
             _cardsListScrollRect.CalculateLayoutInputVertical();
-            _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            //_uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
         }
 
         public void Hide()
@@ -200,7 +200,7 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(card.gameObject);
             }
             MonoBehaviour.Destroy(_cardPlaceholders);
-            _uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
+            //_uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
             WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
         }
 
@@ -286,7 +286,6 @@ namespace GrandDevs.CZB
 
         public void MoveCardsPage(int direction)
         {
-            Debug.Log(numPages);
             currentPage += direction;
 
             if (currentPage < 0)

@@ -6,7 +6,9 @@ namespace GrandDevs.CZB
 {
     public interface IUIManager
     {
-        GameObject Canvas { get; set; }
+		GameObject Canvas { get; set; }
+		GameObject Canvas2 { get; set; }
+		GameObject Canvas3 { get; set; }
         CanvasScaler CanvasScaler { get; set; }
 
         IUIElement CurrentPage { get; set; }

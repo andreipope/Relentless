@@ -26,11 +26,8 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         get { return _interactable; }
         set { _interactable = value;
-            Debug.Log(_interactable);
             if (!_interactable)
             {
-                Debug.Log("DO FADE");
-
                 onHoverOverlay.DOKill();
                 onClickOverlay.DOKill();
                 onHoverOverlay.DOFade(0.0f, 0.3f);

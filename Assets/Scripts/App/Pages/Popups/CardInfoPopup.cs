@@ -21,8 +21,8 @@ namespace GrandDevs.CZB
         private IUIManager _uiManager;
         private GameObject _selfPage;
 
-        private TextMeshProUGUI _description;
-        private Text _amount;
+        private TextMeshProUGUI _description,
+                                _amountAward;
         private MenuButtonNoGlow _backButton,
                                 _desintegrateButton;
 		private TextMeshProUGUI _buttonText;
@@ -37,7 +37,7 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
 			_desintegrateButton = _selfPage.transform.Find("DesintegrateArea/DesintegrateButton").GetComponent<MenuButtonNoGlow>();
 			_backButton = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
@@ -49,7 +49,7 @@ namespace GrandDevs.CZB
 
 
 			_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
-			_amount = _selfPage.transform.Find("DesintegrateArea/Amount/Value").GetComponent<Text>();
+			_amountAward = _selfPage.transform.Find("DesintegrateArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
 
             Hide();
         }
@@ -77,6 +77,9 @@ namespace GrandDevs.CZB
         {
             _card = data as Card;
             _description.text = _card.description;
+
+            _amountAward.text = (5 * ((int)_card.cardRarity + 1)).ToString();
+
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.id);
             UpdateCardAmount();
             Show();
@@ -93,7 +96,6 @@ namespace GrandDevs.CZB
 				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
 			else
 				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
-			_amount.text = _cardData.amount.ToString();
 		}
 
         private void DesintegrateButtonHandler()
@@ -104,8 +106,9 @@ namespace GrandDevs.CZB
             //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
             else
             {
-                cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);
+                /*cardTransform.DOKill();
+                cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);*/
+                Hide();
                 _uiManager.DrawPopup<DesintigrateCardPopup>(_cardData);
                 (_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
             }   
