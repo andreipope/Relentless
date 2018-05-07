@@ -403,10 +403,8 @@ namespace GrandDevs.CZB
                 //cardListItem.cardNameText.text = libraryCard.name;
                 //cardListItem.cardAmountText.text = "x" + card.amount.ToString();
                 //cardListItem.count = card.amount;
-                int maxCount = _collectionData.GetCardData(libraryCard.id).amount;// + card.amount;
-                cardListItem.Init(deck, libraryCard, card.amount, maxCount);
+                cardListItem.Init(deck, libraryCard, card.amount, GetMaxCopiesValue(libraryCard.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
-               
 
 
                 _collectionData.GetCardData(card.cardId).amount -= card.amount;
@@ -439,24 +437,8 @@ namespace GrandDevs.CZB
 
             var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
 
-            uint maxCopies = 0;
+            uint maxCopies = GetMaxCopiesValue(card.cardRarity);
             var cardRarity = "You cannot have more than ";
-
-            switch (card.cardRarity)
-            {
-                case Enumerators.CardRarity.COMMON:
-                    maxCopies = Constants.CARD_COMMON_MAX_COPIES;
-                    break;
-                case Enumerators.CardRarity.RARE:
-                    maxCopies = Constants.CARD_RARE_MAX_COPIES;
-                    break;
-                case Enumerators.CardRarity.LEGENDARY:
-                    maxCopies = Constants.CARD_LEGENDARY_MAX_COPIES;
-                    break;
-                case Enumerators.CardRarity.EPIC:
-                    maxCopies = Constants.CARD_EPIC_MAX_COPIES;
-                    break;
-            }
 
             if (existingCards != null && existingCards.amount == maxCopies)
             {
@@ -492,12 +474,33 @@ namespace GrandDevs.CZB
                 //cardListItem.cardNameText.text = card.name;
                 
                 int maxCount = _collectionData.GetCardData(card.id).amount + 1;
-                cardListItem.Init(_currentDeck, card, 1, maxCount);
+                cardListItem.Init(_currentDeck, card, 1, GetMaxCopiesValue(card.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
             }
 
             _currentDeck.AddCard(card.id); 
+        }
+
+        public uint GetMaxCopiesValue(Enumerators.CardRarity rarity)
+        {
+            uint maxCopies = 0;
+            switch (rarity)
+            {
+                case Enumerators.CardRarity.COMMON:
+                    maxCopies = Constants.CARD_COMMON_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.RARE:
+                    maxCopies = Constants.CARD_RARE_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.LEGENDARY:
+                    maxCopies = Constants.CARD_LEGENDARY_MAX_COPIES;
+                    break;
+                case Enumerators.CardRarity.EPIC:
+                    maxCopies = Constants.CARD_EPIC_MAX_COPIES;
+                    break;
+            }
+            return maxCopies;
         }
 
         public void UpdateCardAmount(int cardId, int amount)

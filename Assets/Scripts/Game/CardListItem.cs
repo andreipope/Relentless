@@ -24,11 +24,11 @@ public class CardListItem : MonoBehaviour
 
     private Transform panelCardCount;
 
-    private int _maxCount;
+    private uint _maxCount;
 
     private List<CardInDeckAmountItem> _cardAmount;
 
-    public void Init(Deck deck, Card card, int count, int maxCount)
+    public void Init(Deck deck, Card card, int count, uint maxCount)
     {
         deckButton = deck;
         this.card = card;

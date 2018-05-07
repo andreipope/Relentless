@@ -23,6 +23,7 @@ namespace GrandDevs.CZB
                         _buttonItem4;
 
         private MenuButtonNoGlow _buttonOpen,
+                            _buttonCollection,
                             _buttonBack,
                             _buttonBuy;
 
@@ -72,6 +73,8 @@ namespace GrandDevs.CZB
 
             _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<MenuButtonNoGlow>();
             _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<MenuButtonNoGlow>();
+            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
 
             _buttonItem1.onClick.AddListener(() => ChooseItemHandler(0));
             _buttonItem2.onClick.AddListener(() => ChooseItemHandler(1));
@@ -80,6 +83,8 @@ namespace GrandDevs.CZB
 
             _buttonBack.onClickEvent.AddListener(BackButtonhandler);
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
+            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
+            _buttonCollection.onClickEvent.AddListener(CollectionButtonHandler);
 
             _itemYstartPos = _buttonItem1.gameObject.transform.position.y;
 
@@ -142,6 +147,10 @@ namespace GrandDevs.CZB
         public void OpenButtonHandler()
         {
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+        }
+        public void CollectionButtonHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
         }
         private void BackButtonhandler()
         {

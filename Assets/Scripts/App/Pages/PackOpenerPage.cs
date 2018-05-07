@@ -27,6 +27,9 @@ namespace GrandDevs.CZB
 
         private Button _buttonBack;
 
+        private MenuButtonNoGlow _buttonBuy,
+                                _buttonCollection;
+
         private fsSerializer serializer = new fsSerializer();
 
         private GameObject _packItemPrefab,
@@ -48,6 +51,8 @@ namespace GrandDevs.CZB
 
         private GameObject _packsObject;
 
+        private TextMeshProUGUI _packsAmount;
+
         private int _cardsTurned = 0;
 
         private Transform _cardPreview, _cardPreviewOriginal;
@@ -68,12 +73,20 @@ namespace GrandDevs.CZB
             //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
+
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+
             _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/packOpenVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
 			_packsObject = _selfPage.transform.Find("PackItem").gameObject;
 
+            _packsAmount = _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>();
+
             _buttonBack.onClick.AddListener(BackButtonHandler);
+            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
+            _buttonCollection.onClickEvent.AddListener(CollectionButtonHandler);
 
             Hide();
         }
@@ -208,11 +221,11 @@ namespace GrandDevs.CZB
         private void InitObjects()
         {
             _cardsContainer = new GameObject("CardsContainer").transform;
-            _centerPos = new Vector3(3.2f, -0.5f, 10);
+            _centerPos = new Vector3(2.5f, -0.5f, 10);
             _cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
 
             var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
-			_packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>().text = packsCount.ToString();
+            _packsAmount.text = packsCount.ToString();
 
 			_lock = false;
 
@@ -234,12 +247,23 @@ namespace GrandDevs.CZB
             GameClient.Get<IAppStateManager>().BackAppState();
         }
 
+        private void BuyButtonHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
+        }
+
+        private void CollectionButtonHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
+        }
+
         private void PackOpenButtonHandler(GameObject go)
         {
             if (_cardsContainer.transform.childCount == 0 && !_lock)
             {
                 _playerManager.LocalUser.packsCount--;
-                _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>().text = _playerManager.LocalUser.packsCount.ToString();
+                var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
+                _packsAmount.text = packsCount.ToString();
                 _lock = true;
 				_packsObject.GetComponent<DragableObject>().locked = _lock;
 
@@ -315,7 +339,7 @@ namespace GrandDevs.CZB
         {
             int id = 0;
             var rarity = (Enumerators.CardRarity)IsChanceFit(0);
-            var cards = _dataManager.CachedCardsLibraryData.Cards.Where((item) => item.cardRarity == rarity).ToList();
+            var cards = _dataManager.CachedCardsLibraryData.Cards.Where((item) => item.cardRarity == rarity && item.cardSetType != Enumerators.SetType.OTHERS).ToList();
             Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
             return card;
         }
