@@ -568,7 +568,7 @@
           "damage": 10,
           "health": 0,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rarity": "RARE",
 				  "abilities": [ 
 					  {
 		          "type": "DAMAGE_TARGET_ADJUSTMENTS",
