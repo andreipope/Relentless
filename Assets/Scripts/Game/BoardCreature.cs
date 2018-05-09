@@ -26,26 +26,17 @@ public class BoardCreature : MonoBehaviour
     [SerializeField]
     protected SpriteRenderer glowSprite;
 
-    [SerializeField]
-    protected SpriteRenderer shadowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldGlowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldShadowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldSprite;
+	[SerializeField]
+	protected SpriteRenderer frameSprite;
 
     [SerializeField]
     protected SpriteRenderer pictureSprite;
 
     [SerializeField]
-    protected SpriteRenderer frozenSprite;
+    protected Transform pictureMaskTransform;
 
     [SerializeField]
-    protected TextMeshPro nameText;
+    protected SpriteRenderer frozenSprite;
 
     [SerializeField]
     protected TextMeshPro attackText;
@@ -55,6 +46,9 @@ public class BoardCreature : MonoBehaviour
 
     [SerializeField]
     protected ParticleSystem sleepingParticles;
+
+    [SerializeField]
+    protected Sprite[] frameSprites;
 
    
 
@@ -109,12 +103,7 @@ public class BoardCreature : MonoBehaviour
     protected virtual void Awake()
     {
         Assert.IsNotNull(glowSprite);
-        Assert.IsNotNull(shadowSprite);
-        Assert.IsNotNull(shieldGlowSprite);
-        Assert.IsNotNull(shieldShadowSprite);
-        Assert.IsNotNull(shieldSprite);
         Assert.IsNotNull(pictureSprite);
-        Assert.IsNotNull(nameText);
         Assert.IsNotNull(attackText);
         Assert.IsNotNull(healthText);
         Assert.IsNotNull(sleepingParticles);
@@ -131,10 +120,10 @@ public class BoardCreature : MonoBehaviour
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
         this.card = card;
+
+        frameSprite.sprite = frameSprites[0];
           
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-        nameText.text = libraryCard.name;
 
         var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
@@ -167,14 +156,14 @@ public class BoardCreature : MonoBehaviour
         if (hasProvoke)
         {
             glowSprite.gameObject.SetActive(false);
-            shadowSprite.gameObject.SetActive(false);
-            shieldGlowSprite.gameObject.SetActive(true);
-            shieldShadowSprite.gameObject.SetActive(true);
-            shieldSprite.gameObject.SetActive(true);
+            pictureMaskTransform.localScale = new Vector3(110, 115, 1);
+            frameSprite.sprite = frameSprites[2];
         }
         SetHighlightingEnabled(false);
         if (hasImpetus)
         {
+            pictureMaskTransform.localScale = new Vector3(100, 115, 1);
+            frameSprite.sprite = frameSprites[1];
             StopSleepingParticles();
             if (ownerPlayer != null)
                 SetHighlightingEnabled(true);
@@ -253,17 +242,8 @@ public class BoardCreature : MonoBehaviour
 
     public void SetHighlightingEnabled(bool enabled)
     {
-        if (hasProvoke)
-        {
-            shieldGlowSprite.enabled = enabled;
-            shieldShadowSprite.enabled = !enabled;
-        }
-        else
-        {
-            glowSprite.enabled = enabled;
-            shadowSprite.enabled = !enabled;
-        }
-    }
+		glowSprite.enabled = enabled;
+	}
 
     public void StopSleepingParticles()
     {

@@ -75,7 +75,7 @@ namespace GrandDevs.CZB
             if (cardToDestroy != null)
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
-                                               cardToDestroy.transform.Find("PictureMask/Picture").GetComponent<SpriteRenderer>().sprite));
+                                               cardToDestroy.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite));
                 GameObject.Destroy(cardToDestroy.gameObject);
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
             }

@@ -638,7 +638,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < playerBoardCards.Count; i++)
         {
             var card = playerBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.4f));
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.0f));
             pivot.x += boardWidth / playerBoardCards.Count;
         }
 
@@ -983,8 +983,6 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 var boardCreature = Instantiate(boardCreaturePrefab);
 
-                SetCardType(libraryCard, boardCreature);
-
                 var board = GameObject.Find("PlayerBoard");
                 boardCreature.tag = "PlayerOwned";
                 boardCreature.transform.parent = board.transform;
@@ -1219,18 +1217,6 @@ public class DemoHumanPlayer : DemoPlayer
         gameUI.endTurnButton.SetEnabled(true);
     }
 
-    private void SetCardType(GrandDevs.CZB.Data.Card card, GameObject cardobject)
-    {
-        if (card.cardType != Enumerators.CardType.FERAL)
-        {
-            cardobject.transform.Find("TypeIcon").gameObject.SetActive(false);
-        }
-        if (card.cardType == Enumerators.CardType.HEAVY)
-        {
-            cardobject.transform.Find("Armor").gameObject.SetActive(true);
-        }
-    }
-
     protected void UpdateHandCardsHighlight()
     {
         foreach (var card in playerHandCards)
@@ -1338,7 +1324,6 @@ public class DemoHumanPlayer : DemoPlayer
             effectSolver.SetDestroyConditions(runtimeCard);
             effectSolver.SetTriggers(runtimeCard);
             var boardCreature = Instantiate(boardCreaturePrefab);
-            SetCardType(libraryCard, boardCreature);
             boardCreature.tag = "OpponentOwned";
             boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(runtimeCard, cardSetName);
             boardCreature.transform.parent = GameObject.Find("OpponentBoard").transform;
