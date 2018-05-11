@@ -255,7 +255,7 @@ public class BoardCreature : MonoBehaviour
     {
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
             if (targetingArrow != null)
             {
                 targetingArrow.OnCardSelected(this);
@@ -267,7 +267,7 @@ public class BoardCreature : MonoBehaviour
     {
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
             if (targetingArrow != null)
             {
                 targetingArrow.OnCardUnselected(this);

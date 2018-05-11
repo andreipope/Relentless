@@ -106,9 +106,30 @@ namespace GrandDevs.CZB
             _playerAvatarShine.SetActive(true);
         }
 
+        public void ImmediatelyAttack(object target)
+        {
+            if (target == null)
+                return;
+
+            if (target is PlayerAvatar)
+                _player = target as PlayerAvatar;
+            else if (target is BoardCreature)
+                _creature = target as BoardCreature;
+            else
+                return;
+
+            if (!_isOpponentWeapon)
+            {
+                _onMouseHandler.OnMouseDownEvent += OnMouseDownEventHandler;
+                _onMouseHandler.OnMouseUpEvent += OnMouseUpEventHandler;
+            }
+
+            Attack();
+        }
+
         private void OnMouseDownEventHandler(GameObject obj)
         {
-            EnableTargettig();
+            EnableTargetting();
         }
 
         private void OnMouseUpEventHandler(GameObject obj)
@@ -116,7 +137,7 @@ namespace GrandDevs.CZB
 
         }
 
-        public void EnableTargettig()
+        public void EnableTargetting()
         {
             if (_targettingArrow != null)
                 DisableTargettig();
@@ -187,8 +208,11 @@ namespace GrandDevs.CZB
 
             _owner.AlreadyAttackedInThisTurn = true;
 
-            _onMouseHandler.OnMouseDownEvent -= OnMouseDownEventHandler;
-            _onMouseHandler.OnMouseUpEvent -= OnMouseUpEventHandler;
+            if (!_isOpponentWeapon)
+            {
+                _onMouseHandler.OnMouseDownEvent -= OnMouseDownEventHandler;
+                _onMouseHandler.OnMouseUpEvent -= OnMouseUpEventHandler;
+            }
 
             DisableTargettig();
 

@@ -234,9 +234,9 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                            //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(25);
-                            //else
+                        //    if (Constants.DEV_MODE)
+                        //        msgDefaultDeck.Add(13);
+                        //    else
                                 msgDefaultDeck.Add(card.cardId);
                         }
                     }
@@ -248,7 +248,10 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                            msgDefaultDeck.Add(card.cardId);
+                            //if (Constants.DEV_MODE)
+                            //    msgDefaultDeck.Add(27);
+                            //else
+                                msgDefaultDeck.Add(card.cardId);
                         }
                     }
                     var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];

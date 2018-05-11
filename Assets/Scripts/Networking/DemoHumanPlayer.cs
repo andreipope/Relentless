@@ -257,10 +257,13 @@ public class DemoHumanPlayer : DemoPlayer
         opponentHandZone.onCardRemoved += card =>
         {
             var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
-            var randomCard = opponentHandCards[randomIndex];
-            opponentHandCards.Remove(randomCard);
-            Destroy(randomCard);
-            RearrangeOpponentHand(true);
+            if (randomIndex < opponentHandCards.Count)
+            {
+                var randomCard = opponentHandCards[randomIndex];
+                opponentHandCards.Remove(randomCard);
+                Destroy(randomCard);
+                RearrangeOpponentHand(true);
+            }
         };
 
         opponentBoardZone = opponentInfo.namedZones["Board"];
@@ -505,7 +508,7 @@ public class DemoHumanPlayer : DemoPlayer
         handWidth -= spacing;
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.50f, 0.05f, 0.0f)); // changed by Basil, x was 0.555
-        var pivot = new Vector3(1.115f, -8.25f, 0f);
+        var pivot = new Vector3(6f, -8.05f, 0f); //1.115f, -8.05f, 0f
         var totalTwist = -10f;
         if (playerHandCards.Count == 1)
         {
@@ -543,7 +546,7 @@ public class DemoHumanPlayer : DemoPlayer
         handWidth -= spacing;
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
-        var pivot = new Vector3(0f, 7.75f, 0f);
+        var pivot = new Vector3(-2.5f, 7.95f, 0f);
         var totalTwist = -20f;
         if (opponentHandCards.Count == 1)
         {
@@ -568,7 +571,7 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 if (i == opponentHandCards.Count - 1 && isNewCard)
                 {
-                    card.transform.position = new Vector3(4.5f, 4.15f, 0);
+                    card.transform.position = new Vector3(-8.2f, 5.7f, 0); // OPPONENT DECK START POINT
                     card.transform.eulerAngles = Vector3.forward * 90f;
                 }
                 card.transform.DOMove(movePosition, 0.5f);
@@ -585,7 +588,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    protected virtual void RearrangeTopBoard(Action onComplete = null)
+    public virtual void RearrangeTopBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
         var spacing = -0.2f;
@@ -604,6 +607,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         var newPositions = new List<Vector2>(opponentBoardCards.Count);
         var pivot = GameObject.Find("OpponentBoard").transform.position;
+
         for (var i = 0; i < opponentBoardCards.Count; i++)
         {
             var card = opponentBoardCards[i];
@@ -641,6 +645,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         var newPositions = new List<Vector2>(playerBoardCards.Count);
         var pivot = GameObject.Find("PlayerBoard").transform.position;
+
         for (var i = 0; i < playerBoardCards.Count; i++)
         {
             var card = playerBoardCards[i];
@@ -1060,14 +1065,16 @@ public class DemoHumanPlayer : DemoPlayer
         });
 
         Sequence animationSequence2 = DOTween.Sequence();
-        animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
-        
+        //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(-5.8f, -1, 0), .5f));
+
         animationSequence2.OnComplete(() =>
         {
             sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 1;
             Sequence animationSequence5 = DOTween.Sequence();
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f));
+            //animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f)); // Changed by Basil: card aftermove position
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.8f, -3.4f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
                 MonoBehaviour.Destroy(go);
@@ -1084,7 +1091,8 @@ public class DemoHumanPlayer : DemoPlayer
         var sortingGroup = go.GetComponent<SortingGroup>();
 
         Sequence animationSequence3 = DOTween.Sequence();
-        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, 90), .2f));
+        //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, 90), .2f));
+        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -90), .2f));
         go.transform.DOScale(new Vector3(1, 1, 1), .2f);
         animationSequence3.OnComplete(() =>
         {
@@ -1096,14 +1104,15 @@ public class DemoHumanPlayer : DemoPlayer
         });
 
         Sequence animationSequence2 = DOTween.Sequence();
-        animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
+        //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(5.5f, 8f, 0), .6f));
 
         animationSequence2.OnComplete(() =>
         {
             sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 1;
             Sequence animationSequence5 = DOTween.Sequence();
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-4.85f, 4, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(6.3f, 7.5f, 0), .5f));
             animationSequence5.OnComplete(() =>
             {
                 MonoBehaviour.Destroy(go);
@@ -1178,6 +1187,7 @@ public class DemoHumanPlayer : DemoPlayer
 
                     activeAbility.ability.SelectedTargetAction(true);
 
+                    RearrangeBottomBoard();
                     //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
                 }
             }
@@ -1207,6 +1217,8 @@ public class DemoHumanPlayer : DemoPlayer
 
             activeAbility.ability.SelectedTargetAction(true);
         }
+
+        RearrangeBottomBoard();
     }
 
     private void CallCardPlay(CardView card)
@@ -1364,6 +1376,8 @@ public class DemoHumanPlayer : DemoPlayer
                     }
                 }
 
+
+             
                 bool createTargetArrow = false;
 
                 if(libraryCard.abilities != null && libraryCard.abilities.Count > 0)

@@ -50,15 +50,15 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: {x: 4.61, y: -3.92, z: 7}
+        value: {x: 6.29, y: -4.23, z: 7}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.33333334
         value: {x: 4.61, y: -3.92, z: 7}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 0, y: 0, z: 0}
+        inSlope: {x: -0.77419287, y: 2.3999996, z: 0}
+        outSlope: {x: -0.77419287, y: 2.3999996, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.51666665
@@ -80,7 +80,7 @@ AnimationClip:
         tangentMode: 0
       - serializedVersion: 2
         time: 1.3333334
-        value: {x: -0.26, y: -0.37, z: -2}
+        value: {x: 0, y: -0.37, z: -2}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -218,15 +218,15 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: 4.61
+        value: 6.29
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.33333334
         value: 4.61
-        inSlope: 0
-        outSlope: 0
+        inSlope: -0.77419287
+        outSlope: -0.77419287
         tangentMode: 136
       - serializedVersion: 2
         time: 0.51666665
@@ -248,7 +248,7 @@ AnimationClip:
         tangentMode: 136
       - serializedVersion: 2
         time: 1.3333334
-        value: -0.26
+        value: 0
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -264,15 +264,15 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: -3.92
+        value: -4.23
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.33333334
         value: -3.92
-        inSlope: 0
-        outSlope: 0
+        inSlope: 2.3999996
+        outSlope: 2.3999996
         tangentMode: 136
       - serializedVersion: 2
         time: 0.51666665

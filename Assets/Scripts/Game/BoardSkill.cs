@@ -350,17 +350,26 @@ public class BoardSkill : MonoBehaviour
         {
             var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
             _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+
+            if (ownerPlayer.playerBoardCardsList.Contains(cruature))
+                ownerPlayer.playerBoardCardsList.Remove(cruature);
         }
         else
         {
             var boardRuntimeCard = _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
             _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+
+            if (ownerPlayer.opponentBoardCardsList.Contains(cruature))
+                ownerPlayer.opponentBoardCardsList.Remove(cruature);
         }
         //Remove RuntimeCard from hand
         playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(cruature.card);
 
         GameObject.Destroy(cruature.gameObject);
         CreateAirVFX(cruature.transform.position);
+
+        (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
+        (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
     }
 
     public PlayerInfo GetOwnerOfCreature(BoardCreature creature)

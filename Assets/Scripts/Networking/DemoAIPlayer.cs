@@ -441,8 +441,21 @@ public class DemoAIPlayer : DemoPlayer
 
     protected void TryToUseBoardWeapon()
     {
-        //TryToAttackViaWeapon(2);
-        // implement fucntionality that the player has weapon.. also network logic
+        if (CurrentBoardWeapon != null && CurrentBoardWeapon.CanAttack)
+        {
+            var target = GetRandomOpponentCreature();
+
+            if (target != null)
+            {
+                var creature = opponentBoardCardsList.Find(x => x.card.instanceId == target.instanceId);
+
+                CurrentBoardWeapon.ImmediatelyAttack(creature);
+            }
+            else
+            {
+                CurrentBoardWeapon.ImmediatelyAttack(GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>());
+            }
+        }
     }
 
     protected bool TryToPlayCard(RuntimeCard card)
@@ -491,7 +504,8 @@ public class DemoAIPlayer : DemoPlayer
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                         {
-                            if (opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1)
+                            if (opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1
+                                 || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 0))
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -500,7 +514,8 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                         {
-                            if (playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                            if (playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL
+                                || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && playerInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 0))
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);

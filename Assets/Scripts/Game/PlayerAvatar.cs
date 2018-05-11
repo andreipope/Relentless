@@ -44,9 +44,11 @@ public class PlayerAvatar : MonoBehaviour
         Debug.Log(collider);
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            Debug.Log(collider+ "11111");
+            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
             if (targetingArrow != null)
             {
+                Debug.Log(111);
                 targetingArrow.OnPlayerSelected(this);
             }
         }
@@ -56,7 +58,7 @@ public class PlayerAvatar : MonoBehaviour
     {
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
             if (targetingArrow != null)
             {
                 targetingArrow.OnPlayerUnselected(this);

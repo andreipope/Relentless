@@ -221,7 +221,7 @@ namespace GrandDevs.CZB
         public CardInGraveyard(GameObject gameObject, Sprite sprite = null)
         {
             selfObject = gameObject;
-            image = selfObject.GetComponent<Image>();
+            image = selfObject.transform.Find("Image").GetComponent<Image>();
 
             if (sprite != null)
                 image.sprite = sprite;

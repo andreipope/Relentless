@@ -78,6 +78,7 @@ public class TargetingArrow : MonoBehaviour
     {
         _arrowContainer = new GameObject("ArrowContainer");
         _arrowContainer.transform.SetParent(transform, false);
+        //_arrowContainer = gameObject;
         _arrowContainer.transform.position = initialPos;
 
         _middleBlockContainer = new GameObject("MiddleBlockContainer");
@@ -123,7 +124,7 @@ public class TargetingArrow : MonoBehaviour
     {
         startedDrag = true;
         initialPos = pos;
-        initialPos.z = -5f;
+        //initialPos.z = -5f;
         Init();
         var rb = headArrow.GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
@@ -131,7 +132,8 @@ public class TargetingArrow : MonoBehaviour
 
     public void UpdateLength(Vector3 pos)
     {
-        pos.z = -5f;
+        //pos.z = -5f;
+        _distanceBettwenPoints = Vector3.Distance(_startPosition, pos);
 
         _deltaMove = headArrow.transform.position - pos;
 
@@ -206,7 +208,6 @@ public class TargetingArrow : MonoBehaviour
         }
         else
         {
-            _distanceBettwenPoints = Vector3.Distance(_startPosition, pos);
             if (_distanceBettwenPoints < 3)
                 _speedMove = (_startSpeed * _distanceBettwenPoints) / _startDistance;
             else if(_speedMove != _startSpeed)
@@ -289,8 +290,8 @@ public class TargetingArrow : MonoBehaviour
         //float sin = Mathf.Sin(Mathf.Clamp01(coef) * Mathf.PI) * 2;//Mathf.Sin(coef);
         //newPosition.z = sin;
         var coef = 1 - (1 / disCenter * disCur);
-        newPosition.z = 3f * coef;
-
+        newPosition.z = _distanceBettwenPoints / 4f * coef;
+        //Vector3.Distance(_startPosition, _endPosition));
 
         Vector3 targetPosition = headArrow.transform.position;
 
