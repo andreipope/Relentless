@@ -1102,7 +1102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 297ef749f5a299f40b5c72abc1f2fb1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isToggleEnabled: 1
+  isToggleEnabled: 0
   onHoverOverlayToggleDisabled: {fileID: 114687284680475448}
   onClickOverlayToggleDisabled: {fileID: 114650221880427384}
   onHoverOverlayToggleEnabled: {fileID: 114485035402006916}

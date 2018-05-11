@@ -20,9 +20,15 @@ public class PlayerManaBar : MonoBehaviour
         for (var i = 0; i < manaIcons.Count; i++)
         {
             if (i < mana)
+            {
                 manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
+                manaIcons[i].transform.Find("ManaIconBlue/goobottle_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
+            }
             else
+            {
                 manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
+                manaIcons[i].transform.Find("ManaIconBlue/goobottle_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
+            }
 
             if(i < manaRows)
                 manaIcons[i].transform.Find("ManaIconGrey").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);

@@ -11,6 +11,7 @@ namespace GrandDevs.CZB
         void ReportAction(Enumerators.TutorialReportAction action);
         int CurrentStep { get; }
         bool IsTutorial { get; }
+        bool IsBubbleShow { get; set; }
         void ActivateSelectTarget();
         void DeactivateSelectTarget();
         //void StopTimer(Action<object[]> handler);

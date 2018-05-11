@@ -156,13 +156,13 @@ public class BoardCreature : MonoBehaviour
         if (hasProvoke)
         {
             glowSprite.gameObject.SetActive(false);
-            pictureMaskTransform.localScale = new Vector3(110, 115, 1);
+            pictureMaskTransform.localScale = new Vector3(50, 55, 1);
             frameSprite.sprite = frameSprites[2];
         }
         SetHighlightingEnabled(false);
         if (hasImpetus)
         {
-            pictureMaskTransform.localScale = new Vector3(100, 115, 1);
+            pictureMaskTransform.localScale = new Vector3(48, 55, 1);
             frameSprite.sprite = frameSprites[1];
             StopSleepingParticles();
             if (ownerPlayer != null)

@@ -41,6 +41,7 @@ public class PlayerAvatar : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        Debug.Log(collider);
         if (collider.transform.parent != null)
         {
             var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();

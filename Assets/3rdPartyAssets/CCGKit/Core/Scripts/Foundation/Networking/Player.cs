@@ -323,16 +323,20 @@ namespace CCGKit
         {
             var server = GetServer();
 
-            playerInfo.namedStats[stat].maxValue += value;
+            playerInfo.namedStats[stat].maxValue = Mathf.Clamp(playerInfo.namedStats[stat].maxValue + value, 0, max);
             playerInfo.namedStats[stat].baseValue = playerInfo.namedStats[stat].maxValue;
             playerInfo.namedStats[stat].PermanentUpdateValue();
 
-            server.gameState.currentPlayer.namedStats[stat].maxValue += value;
+           // server.gameState.currentPlayer.namedStats[stat].maxValue += value;
+
+            server.gameState.currentPlayer.namedStats[stat].maxValue = Mathf.Clamp(server.gameState.currentPlayer.namedStats[stat].maxValue + value, 0, max);
             server.gameState.currentPlayer.namedStats[stat].baseValue = server.gameState.currentPlayer.namedStats[stat].maxValue;
 
 
-            if(!(this is DemoHumanPlayer))
+            if (!(this is DemoHumanPlayer))
             {
+              //  Debug.LogError(value + " value " + stat);
+
                 var humanPlayer = NetworkingUtils.GetHumanLocalPlayer();
 
                 humanPlayer.opponentInfo.namedStats[stat].maxValue = playerInfo.namedStats[stat].maxValue;
@@ -373,8 +377,12 @@ namespace CCGKit
 
                 if (GameManager.Instance.tutorial)
                     ModificateStatMaxValue(Constants.TAG_MANA, 8, 10);
-                else   if (playerState.id == player.Key.id && isNewTurn)
+                else if (playerState.id == player.Key.id && isNewTurn)
+                {
                     ModificateStatMaxValue(Constants.TAG_MANA, 1, 10);
+
+                  //  Debug.LogError("playerState " + playerState.id);
+                }
 
                 foreach (var zone in player.Key.staticZones)
                 {

@@ -64,7 +64,8 @@ public class TargetingArrow : MonoBehaviour
 
     private int _blockCount = 0;
 
-    private GameObject _middleBlockContainer;
+    private GameObject _middleBlockContainer,
+                       _arrowContainer;
 
     private bool _isStartMove = false;
 
@@ -75,20 +76,24 @@ public class TargetingArrow : MonoBehaviour
 
     protected void Init()
     {
+        _arrowContainer = new GameObject("ArrowContainer");
+        _arrowContainer.transform.SetParent(transform, false);
+        _arrowContainer.transform.position = initialPos;
+
         _middleBlockContainer = new GameObject("MiddleBlockContainer");
-        _middleBlockContainer.transform.SetParent(transform, false);
+        _middleBlockContainer.transform.SetParent(_arrowContainer.transform, false);
 
         _sizeMiddleBlock = middlePrefab.GetComponent<MeshRenderer>().bounds.size;
         _sizeHeadBlock = headPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
         _sizeStartBlock = startPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
 
-        var position = initialPos + new Vector3(0, _sizeStartBlock.z / 2, 0.02f);
+        var position = initialPos + new Vector3(0, _sizeStartBlock.z / 1, 0.02f);
 
-        startArrow = MonoBehaviour.Instantiate(startPrefab, transform);
+        startArrow = MonoBehaviour.Instantiate(startPrefab, _arrowContainer.transform);
         startArrow.transform.position = position;
-        _startPosition = position + Vector3.up * _sizeMiddleBlock.z;
+        _startPosition = position + Vector3.up * _sizeMiddleBlock.z * 1.5f;
 
-        headArrow = MonoBehaviour.Instantiate(headPrefab, transform);
+        headArrow = MonoBehaviour.Instantiate(headPrefab, _arrowContainer.transform);
         headArrow.transform.position = initialPos;
 
         head = headArrow.transform.Find("ArrowObj").gameObject;
@@ -118,7 +123,7 @@ public class TargetingArrow : MonoBehaviour
     {
         startedDrag = true;
         initialPos = pos;
-        initialPos.z = -5f; 
+        initialPos.z = -5f;
         Init();
         var rb = headArrow.GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
@@ -146,13 +151,22 @@ public class TargetingArrow : MonoBehaviour
             Vector3 segment = new Vector3(_endPosition.x - _startPosition.x, _endPosition.y - _startPosition.y) / countTemp;
             int count = Mathf.CeilToInt(countTemp) -1;
 
-            var angle = Mathf.Atan2(pos.y - _startPosition.y, pos.x - _startPosition.x) * 180 / Mathf.PI;
+            if (Vector3.Distance(initialPos, _endPosition) < 1.5f)
+                startArrow.SetActive(false);
+            else
+                startArrow.SetActive(true);
+
+            var angle = Mathf.Atan2(pos.y - initialPos.y, pos.x - initialPos.x) * 180 / Mathf.PI;
             var rotation = Quaternion.Euler(0, 180, -(angle - 90));
-            startArrow.transform.rotation = rotation;
-            headArrow.transform.rotation = rotation;
+
+            //startArrow.transform.rotation = rotation;
+            //headArrow.transform.rotation = rotation;
 
             _middleBlockContainer.transform.position = _endPosition;
-            _middleBlockContainer.transform.localRotation = rotation;
+            _middleBlockContainer.transform.localPosition = new Vector3(0, _middleBlockContainer.transform.localPosition.y, 0);
+            headArrow.transform.localPosition = new Vector3(0, headArrow.transform.localPosition.y, 0);
+            //_middleBlockContainer.transform.localRotation = rotation;
+            _arrowContainer.transform.rotation = rotation;
 
             if (count != _blockCount)
             {

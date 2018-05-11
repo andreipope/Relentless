@@ -56,6 +56,7 @@ namespace GrandDevs.CZB
         private GameObject _cardPlaceholders;
         private GameObject _cardListItemPrefab;
         private GameObject _cardListContent;
+        private GameObject _cardListItemEnd;
 
         private GameObject _backgroundCanvasPrefab,
                            _backgroundCanvas;
@@ -73,6 +74,8 @@ namespace GrandDevs.CZB
         {
             set { _currentHeroId = value; }
         }
+
+        private string _currentSetName;
 
         private List<DeckBuilderCard> _currentCards;
 
@@ -116,7 +119,7 @@ namespace GrandDevs.CZB
 
             _cardsListScrollRect = _selfPage.transform.Find("Panel_CardsList").GetComponent<ScrollRect>();
 
-            _currentSetPageCountText = _selfPage.transform.Find("Text_Count").GetComponent<TextMeshProUGUI>();
+            _currentSetPageCountText = _selfPage.transform.Find("Text_Count").GetComponent<TextMeshProUGUI>();           
 
             _buttonBack.onClickEvent.AddListener(BackButtonHandler);
             _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
@@ -330,7 +333,7 @@ namespace GrandDevs.CZB
             _currentCards.Clear();
 			var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
 			var cards = set.cards;
-
+            _currentSetName = set.name;
             _currentSetPageCountText.text = string.Format("{0} Elements Cards {1}/{2}", Utilites.FirstCharToUpper(set.name), (currentPage + 1).ToString(), numPages.ToString()); 
 
             var startIndex = page * cardPositions.Count;
@@ -391,6 +394,7 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(item.gameObject);
             }
 
+            _cardListItemEnd = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardListItemEnd"), _cardListContent.transform, false);
 
             foreach (var card in deck.cards)
             {
@@ -398,6 +402,7 @@ namespace GrandDevs.CZB
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
                 var cardListItem = go.GetComponent<CardListItem>();
+                _cardListItemEnd.transform.SetAsLastSibling();
                 //cardListItem.deckButton = deck;
                 //cardListItem.card = libraryCard;
                 //cardListItem.cardNameText.text = libraryCard.name;
@@ -409,6 +414,8 @@ namespace GrandDevs.CZB
 
                 _collectionData.GetCardData(card.cardId).amount -= card.amount;
             }
+            if (_cardListContent.transform.childCount < 8)
+                _cardListItemEnd.SetActive(false);
             UpdateNumCardsText();
         }
 
@@ -417,6 +424,8 @@ namespace GrandDevs.CZB
             var collectionCardData = _collectionData.GetCardData(cardId);
             collectionCardData.amount++;
             UpdateCardAmount(cardId, collectionCardData.amount);
+            if (_cardListContent.transform.childCount <= 8)
+                _cardListItemEnd.SetActive(false);
         }
 
         public void AddCardToDeck(Card card)
@@ -469,10 +478,14 @@ namespace GrandDevs.CZB
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
                 var cardListItem = go.GetComponent<CardListItem>();
+                _cardListItemEnd.transform.SetAsLastSibling();
                 //cardListItem.deckButton = _currentDeck;
                 //cardListItem.card = card;
                 //cardListItem.cardNameText.text = card.name;
-                
+                if (_cardListContent.transform.childCount >= 8)
+                    _cardListItemEnd.SetActive(true);
+
+
                 int maxCount = _collectionData.GetCardData(card.id).amount + 1;
                 cardListItem.Init(_currentDeck, card, 1, GetMaxCopiesValue(card.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;

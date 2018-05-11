@@ -27,7 +27,8 @@ namespace GrandDevs.CZB
 
         private MenuButtonNoGlow _buttonOk;
 
-        private Image _selectHeroImage;
+        private Image _selectHeroImage,
+                      _winPackImage;
 
         private TextMeshProUGUI _nameHeroText;
 
@@ -40,6 +41,7 @@ namespace GrandDevs.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _selectHeroImage = _selfPage.transform.Find("Image_SelectHero").GetComponent<Image>();
+            _winPackImage = _selfPage.transform.Find("Image_WinPack").GetComponent<Image>();
             _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
             _buttonOk = _selfPage.transform.Find("Button_Ok").GetComponent<MenuButtonNoGlow>();
             _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
@@ -74,6 +76,8 @@ namespace GrandDevs.CZB
             _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
             _nameHeroText.text = heroName + " Hero";
+
+            _winPackImage.gameObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
         }
 
         public void Show(object data)

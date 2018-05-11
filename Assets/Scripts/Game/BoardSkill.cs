@@ -217,7 +217,7 @@ public class BoardSkill : MonoBehaviour
             {
                 var targetPlayer = fightTargetingArrow.selectedPlayer;
                 DoSkillAction(targetPlayer);
-                
+
                 GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
             }
 
@@ -227,12 +227,12 @@ public class BoardSkill : MonoBehaviour
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
-					DoSkillAction(targetCard);
+                    DoSkillAction(targetCard);
                 }
             }
             CancelTargetingArrows();
             fightTargetingArrow = null;
-        }       
+        }
     }
 
     private void DoSkillAction(object target)
@@ -267,19 +267,19 @@ public class BoardSkill : MonoBehaviour
         }
         //TODO for heroes
     }
-	private void ToxicDamageAction(object target)
-	{
-		Debug.Log("POISON HIM");
-        AttackWithModifiers(target,Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+    private void ToxicDamageAction(object target)
+    {
+        Debug.Log("POISON HIM");
+        AttackWithModifiers(target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
     }
-	private void FireDamageAction(object target)
-	{
-		Debug.Log("BURN HIM");
+    private void FireDamageAction(object target)
+    {
+        Debug.Log("BURN HIM");
         AttackWithModifiers(target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
-	}
-	private void HealAnyAction(object target)
-	{
-		Debug.Log("HEAL ANY");
+    }
+    private void HealAnyAction(object target)
+    {
+        Debug.Log("HEAL ANY");
         if (target is PlayerAvatar)
         {
             var player = target as PlayerAvatar;
@@ -298,17 +298,21 @@ public class BoardSkill : MonoBehaviour
             CreateHealVFX(cruature.transform.position);
         }
     }
-	private void CardReturnAction(object target)
-	{
+    private void CardReturnAction(object target)
+    {
         var cruature = target as BoardCreature;
 
         Debug.Log("RETURN CARD");
 
         //if (cardCaller.playerInfo.netId == cardCaller.netId)
 
-        PlayerInfo playerInfo = ownerPlayer.playerInfo;
+
+        PlayerInfo playerInfo = GetOwnerOfCreature(cruature);
+
         if (ownerPlayer == null)
             playerInfo = ownerPlayer.opponentInfo;
+
+        Debug.Log("playerInfo " + ownerPlayer.GetType().ToString());
 
         //Get server access
         Server _server = null;
@@ -325,7 +329,10 @@ public class BoardSkill : MonoBehaviour
         var card = CreateRuntimeCard(playerInfo, cruature);
 
         //Add RuntimeCard to hand on server
-        _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+        if (playerInfo == ownerPlayer.playerInfo)
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+        else
+            _server.gameState.currentOpponent.namedZones[Constants.ZONE_HAND].cards.Add(card);
 
         //Create Visual process of creating new card at the hand (simulation turn back)
         var netCard = CreateNetCard(card);
@@ -339,13 +346,29 @@ public class BoardSkill : MonoBehaviour
         cardCaller.EffectSolver.SetTriggers(card);*/
 
         //Remove RuntimeCard on server
-        var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
-        _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+        if (playerInfo == ownerPlayer.playerInfo)
+        {
+            var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
+            _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+        }
+        else
+        {
+            var boardRuntimeCard = _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == cruature.card.instanceId);
+            _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+        }
         //Remove RuntimeCard from hand
         playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(cruature.card);
 
         GameObject.Destroy(cruature.gameObject);
         CreateAirVFX(cruature.transform.position);
+    }
+
+    public PlayerInfo GetOwnerOfCreature(BoardCreature creature)
+    {
+        if (ownerPlayer.playerBoardCardsList.Contains(creature))
+            return ownerPlayer.playerInfo;
+
+        return ownerPlayer.opponentInfo;
     }
 
     private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo, BoardCreature cruature)

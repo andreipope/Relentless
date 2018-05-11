@@ -9,6 +9,7 @@ using GrandDevs.CZB.Data;
 using System;
 using GrandDevs.CZB;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CardListItem : MonoBehaviour
 {
@@ -24,12 +25,16 @@ public class CardListItem : MonoBehaviour
 
     private Transform panelCardCount;
 
+    private Image logoImage; 
+
     private uint _maxCount;
 
     private List<CardInDeckAmountItem> _cardAmount;
 
     public void Init(Deck deck, Card card, int count, uint maxCount)
     {
+        logoImage = transform.Find("Image_LogoMask/Image_Logo").GetComponent<Image>();
+        logoImage.sprite = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/CardsDeckEditing/Elements/" + card.cardSetType + "/" + card.name);
         deckButton = deck;
         this.card = card;
         this.count = count;

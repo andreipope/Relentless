@@ -48,6 +48,7 @@ namespace GrandDevs.CZB
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, .3f, null, true);
+                GameClient.Get<ISoundManager>().SetMusicVolume(0);
             }
         }
 

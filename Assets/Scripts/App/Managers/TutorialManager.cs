@@ -20,7 +20,8 @@ namespace GrandDevs.CZB
 
         private List<TutorialStep> _steps;
 
-        private bool _tutorialStarted;
+        private bool _tutorialStarted,
+                     _isBubbleShow;
 
         private TutorialTargetingArrow _targettingArrow;
 
@@ -36,6 +37,12 @@ namespace GrandDevs.CZB
         public bool IsTutorial
         {
             get { return _tutorialStarted; }
+        }
+
+        public bool IsBubbleShow
+        {
+            get { return _isBubbleShow; }
+            set { _isBubbleShow = value; }
         }
 
         public void Dispose()
@@ -124,7 +131,7 @@ namespace GrandDevs.CZB
 
         public void StartTutorial()
         {
-            
+            _isBubbleShow = true;
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
@@ -166,6 +173,7 @@ namespace GrandDevs.CZB
                     _currentStep == 15 ||
                     _currentStep == 18 ||
                     _currentStep == 20 ||
+                    _currentStep == 22 ||
                     _currentStep == 24 ||
 					_currentStep == 25 ||
 					_currentStep == 26 ||
@@ -183,6 +191,9 @@ namespace GrandDevs.CZB
         
         public void NextStep()
         {
+            if (!_isBubbleShow)
+                return;
+
             if (_currentStep >= _steps.Count - 1)
             {
 				//var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
@@ -210,6 +221,10 @@ namespace GrandDevs.CZB
             }
             if (_currentStep == 11)
                 GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
+
+
+                Debug.Log(_currentStep); 
+
 			//if (_currentStep == 11)
 			//	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
 
@@ -219,6 +234,11 @@ namespace GrandDevs.CZB
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+
+            //if(_currentStep == 22)
+            //{
+            //    _isBubbleShow = false;
+            //}
         }  
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
@@ -239,7 +259,7 @@ namespace GrandDevs.CZB
                 _popup.HideTutorialFocus();
                 if (_currentStep == 3)
                     _popup.ShowQuestion();
-                else if(_currentStep != 12 && _currentStep != 17 && _currentStep != 22 )
+                else if(_currentStep != 12 && _currentStep != 17 )
                     _popup.ShowNextButton();
             }
         }
@@ -255,7 +275,7 @@ namespace GrandDevs.CZB
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.END_TURN:
-                    if (_currentStep == 10 || _currentStep == 12 || _currentStep == 16 || _currentStep == 17 || _currentStep == 21 || _currentStep == 22)
+                    if (_currentStep == 10 || _currentStep == 12 || _currentStep == 16 || _currentStep == 17 || _currentStep == 21)
                         NextStep();
                     break;
                 case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:

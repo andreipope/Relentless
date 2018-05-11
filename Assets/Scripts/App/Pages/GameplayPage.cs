@@ -107,8 +107,6 @@ namespace GrandDevs.CZB
             int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
             int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
 
-
-
             var _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
             _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
             _skillsIcons.Add(Enumerators.SkillType.HEAL, "Images/hero_power_02");
@@ -121,22 +119,24 @@ namespace GrandDevs.CZB
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
-          
+
+            //Hero avatars changed by Basil
+            // old path: Images/Hero_" + currentPlayerHero.element.ToString()
+            
             if (currentPlayerHero != null)
             {
                 gameUI.SetPlayerName(currentPlayerHero.name);
 				_playerSkill = new PlayerSkillItem(GameObject.Find("Player/Spell"), currentPlayerHero.skill, _skillsIcons[currentPlayerHero.skill.skillType]);
                 GameObject.Find("Player/Avatar/Icon").GetComponent<SpriteRenderer>().sprite = 
-                    GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Avatar_" + currentPlayerHero.element.ToString());
+                    GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Hero_" + currentPlayerHero.element.ToString());
             }
             if (currentOpponentHero != null)
             {
                 gameUI.SetOpponentName(currentOpponentHero.name);
                 _opponentSkill = new PlayerSkillItem(GameObject.Find("Opponent/Spell"), currentOpponentHero.skill, _skillsIcons[currentOpponentHero.skill.skillType]);
-				GameObject.Find("Opponent/Avatar/Icon").GetComponent<SpriteRenderer>().sprite =
-					GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Avatar_" + currentOpponentHero.element.ToString());
+                GameObject.Find("Opponent/Avatar/Icon").GetComponent<SpriteRenderer>().sprite =
+					GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Hero_" + currentOpponentHero.element.ToString());
             }
-            
         }
 
         public void Update()

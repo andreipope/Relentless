@@ -504,7 +504,8 @@ public class DemoHumanPlayer : DemoPlayer
         }
         handWidth -= spacing;
 
-        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.555f, 0.05f, 0.0f)); // changed by Basil
+        //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.50f, 0.05f, 0.0f)); // changed by Basil, x was 0.555
+        var pivot = new Vector3(1.115f, -8.25f, 0f);
         var totalTwist = -10f;
         if (playerHandCards.Count == 1)
         {
@@ -541,7 +542,8 @@ public class DemoHumanPlayer : DemoPlayer
         }
         handWidth -= spacing;
 
-        var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
+        //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
+        var pivot = new Vector3(0f, 7.75f, 0f);
         var totalTwist = -20f;
         if (opponentHandCards.Count == 1)
         {
@@ -590,6 +592,10 @@ public class DemoHumanPlayer : DemoPlayer
         var cardWidth = 0.0f;
         foreach (var card in opponentBoardCards)
         {
+            // warning!
+            if (card == null && !card)
+                continue;
+
             cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
             boardWidth += cardWidth;
             boardWidth += spacing;
@@ -601,7 +607,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < opponentBoardCards.Count; i++)
         {
             var card = opponentBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 0.2f));
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.3f));
             pivot.x += boardWidth / opponentBoardCards.Count;
         }
 
@@ -638,7 +644,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < playerBoardCards.Count; i++)
         {
             var card = playerBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.0f));
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f)); // Edited by Basil y pos
             pivot.x += boardWidth / playerBoardCards.Count;
         }
 

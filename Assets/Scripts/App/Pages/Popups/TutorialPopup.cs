@@ -16,12 +16,14 @@ namespace GrandDevs.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
+        private ITutorialManager _tutorialManager;
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
 		private GameObject _yesnoObject;
 		private GameObject _nextObject;
         private GameObject _focusedObject;
+        private GameObject _bubbleObject;
 
         private List<GameObject> _focusObjects;
 
@@ -29,10 +31,13 @@ namespace GrandDevs.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
             //_selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _bubbleObject = _selfPage.transform.Find("Description").gameObject;
 
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
@@ -75,9 +80,22 @@ namespace GrandDevs.CZB
 
         public void Show(object data)
         {
+            if(_tutorialManager.CurrentStep == 22)
+            {
+                Debug.LogError(22);
+                _bubbleObject.SetActive(false);
+                _tutorialManager.IsBubbleShow = false;
+                GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 11f, false);
+            }
             _text.text = (string)data;
 
             Show();
+        }
+
+        public void ShowBubble(object[] param)
+        {
+            _bubbleObject.SetActive(true);
+            _tutorialManager.IsBubbleShow = true;
         }
 
         public void SetPosition(Vector2 position)
