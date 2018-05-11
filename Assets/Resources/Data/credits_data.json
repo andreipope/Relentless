@@ -1,0 +1,180 @@
+{
+  "creditsInfo": [
+    {
+      "subsectionType": "Main",
+      "credits": [
+        {
+          "FullName": "Luke Zhang",
+		  "Post": "Co-Founder and Executive Producer",
+        },
+		{
+          "FullName": "Matthew Campbell",
+		  "Post": "Co-Founder and Executive Producer",
+        },
+		{
+          "FullName": "James Duffy",
+		  "Post": "Co-Founder and Executive Producer",
+        },
+		{
+          "FullName": "Roy Shapira",
+		  "Post": "Game Director",
+        },
+		{
+          "FullName": "Diana Shapira",
+		  "Post": "Senior Producer",
+        },
+		{
+          "FullName": "Stanislav Sorokin",
+		  "Post": "Senior Programmer",
+        },
+      ]
+    },
+	{
+      "subsectionType": "2D Art Team",
+      "credits": [
+	  	{
+          "FullName": "Janette Ramos",
+		  "Post": "Lead 2D Artist",
+        },
+		{
+          "FullName": "Wilfred Dajotoy",
+		  "Post": "Senior 2D Artist",
+        },
+		{
+		  "FullName": "Karen Manalastas",
+		  "Post": "Senior 2D Artist",
+		},
+		{
+		  "FullName": "Roger Luzardo",
+		  "Post": "Senior 2D Artist",
+		},
+		{
+		  "FullName": "Ricardo Dos Santos",
+		  "Post": "Senior 2D Artist",
+		},
+		{
+		  "FullName": "Niles Arguelles",
+		  "Post": "Senior 2D Artist",
+		},
+		{
+		  "FullName": "Martina Esposito",
+		  "Post": "2D Artist and Animator",
+		},
+		{
+		  "FullName": "Jamie Geolina",
+		  "Post": "2D Artist and Animator",
+		},
+		{
+		  "FullName": "Cheese Roca",
+		  "Post": "2D Artist",
+		},
+		{
+		  "FullName": "Pat Sevilla",
+		  "Post": "Junior 2D Artist",
+		},
+      ]
+    },
+	{
+      "subsectionType": "Backend programmers",
+      "credits": [
+        {
+          "FullName": "name",
+		  "Post": "Lead Programmer",
+        },
+		{
+          "FullName": "name",
+		  "Post": "Senior Programmer",
+        },
+		{
+          "FullName": "name",
+		  "Post": "Programmer",
+        },
+		{
+          "FullName": "name",
+		  "Post": "Junior Programmer",
+        },
+		{
+          "FullName": "name",
+		  "Post": "Intern Programmer",
+        },
+      ]
+    },
+	{
+      "subsectionType": "Marketing",
+      "credits": [
+        {
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+      ]
+    },
+	{
+      "subsectionType": "Human Resources",
+      "credits": [
+        {
+          "FullName": "Molly",
+		  "Post": "title",
+        },
+		{
+          "FullName": "Macy",
+		  "Post": "title",
+        },
+      ]
+    },
+	{
+      "subsectionType": "Localization",
+      "credits": [
+        {
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+      ]
+    },
+	{
+      "subsectionType": "Other Departments",
+      "credits": [
+        {
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+      ]
+    },
+	{
+      "subsectionType": "Special Thanks",
+      "credits": [
+        {
+          "FullName": "name",
+		  "Post": "title",
+        },
+		{
+          "FullName": "name",
+		  "Post": "title",
+        },
+      ]
+    },
+  ]
+}
