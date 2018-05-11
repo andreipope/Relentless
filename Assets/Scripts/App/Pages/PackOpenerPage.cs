@@ -243,7 +243,8 @@ namespace GrandDevs.CZB
         private void BackButtonHandler()
         {
             DOTween.KillAll();
-            MonoBehaviour.Destroy(_cardsContainer.gameObject);
+            if (_cardsContainer != null)
+                MonoBehaviour.Destroy(_cardsContainer.gameObject);
             GameClient.Get<IAppStateManager>().BackAppState();
         }
 

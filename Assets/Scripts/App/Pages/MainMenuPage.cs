@@ -16,11 +16,14 @@ namespace GrandDevs.CZB
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow _buttonPlay,
-                            _buttonCollection,
-                            _buttonCredits,
-                            _buttonBuy,
-                            _buttonOpen;
+        private MenuButtonNoGlow //_buttonPlay,
+                            _buttonCollection;
+        //_buttonCredits;
+        //_buttonBuy,
+        //_buttonOpen;
+
+        private Button _buttonPlay, _buttonBuy, _buttonOpen,
+                       _buttonCredits;
 
         private MenuButtonToggle _buttonMusic,
                                  _buttonSFX;
@@ -39,21 +42,25 @@ namespace GrandDevs.CZB
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
 
-            _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<MenuButtonNoGlow>();
+            _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
-            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<MenuButtonNoGlow>();
-            _buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
-            _buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
-            
+            //_buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<MenuButtonNoGlow>();
+            _buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<Button>();
+            _buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<Button>();
 
+
+            _buttonCredits = _selfPage.transform.Find("Button_Credit").GetComponent<Button>();
+
+            Debug.Log(_buttonCredits);
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
-            _buttonPlay.onClickEvent.AddListener(OnClickPlay);
+            _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonCollection.onClickEvent.AddListener(OnClickCollection);
-            _buttonCredits.onClickEvent.AddListener(OnClickCredits);
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
+            //_buttonCredits.onClickEvent.AddListener(OnClickCredits);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
 
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
@@ -72,6 +79,8 @@ namespace GrandDevs.CZB
         public void Show()
         {
             _selfPage.SetActive(true);
+
+            _buttonCollection.interactable = true;
         }
 
         public void Hide()
@@ -111,6 +120,12 @@ namespace GrandDevs.CZB
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
+        }
+
+        private void CreditsButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.CREDITS);
         }
 
         private void OpenButtonHandler()

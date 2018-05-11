@@ -2,6 +2,7 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using DG.Tweening;
 using GrandDevs.CZB;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ public class HandCard : MonoBehaviour
     protected bool startedDrag;
     protected Vector3 initialPos;
 
-    private bool _isHandCard = true;
+    private bool _isHandCard = true,
+                 _isReturnToHand = false;
 
     private void Awake()
     {
@@ -49,7 +51,7 @@ public class HandCard : MonoBehaviour
     public void OnSelected()
     {
         if (ownerPlayer.isActivePlayer &&
-            cardView.CanBePlayed(ownerPlayer))
+            cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand)
         {
             startedDrag = true;
             initialPos = transform.position;
@@ -64,22 +66,35 @@ public class HandCard : MonoBehaviour
             return;
         }
 
+        Debug.Log(1111);
         startedDrag = false;
         ownerPlayer.isCardSelected = false;
-
-        if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
+        if (cardView.CanBeBuyed(ownerPlayer))
         {
-            _isHandCard = false;
-            ownerPlayer.PlayCard(cardView);
-            cardView.SetHighlightingEnabled(false);
+            Debug.Log(2222);
+            if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
+            {
+                _isHandCard = false;
+                ownerPlayer.PlayCard(cardView);
+                cardView.SetHighlightingEnabled(false);
+            }
+            else
+            {
+                transform.position = initialPos;
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                }
+            }
         }
         else
         {
-            transform.position = initialPos;
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            Debug.Log(333);
+            _isReturnToHand = true;
+            transform.DOMove(initialPos, 0.5f).OnComplete(() => 
             {
-                GameClient.Get<ITutorialManager>().ActivateSelectTarget();
-            }
+                _isReturnToHand = false;
+            });
         }
     }
 

@@ -21,6 +21,8 @@ namespace GrandDevs.CZB
 
 		private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
+        public event Action OnLoadCacheCompletedEvent;
+
         public UserLocalData CachedUserLocalData { get; set; }
 		public CardsLibraryData CachedCardsLibraryData { get; set; }
         public HeroesData CachedHeroesData { get; set; }
@@ -29,6 +31,8 @@ namespace GrandDevs.CZB
         public OpponentDecksData CachedOpponentDecksData { get; set; }
 
         public ActionData CachedActionsLibraryData { get; set;}
+
+        public CreditsData CachedCreditsData { get; set; }
 
         private int _currentDeckIndex;
 		private int _currentAIDeckIndex;
@@ -58,6 +62,7 @@ namespace GrandDevs.CZB
             CachedDecksData = new DecksData();
             CachedOpponentDecksData = new OpponentDecksData();
             CachedActionsLibraryData = new ActionData();
+            CachedCreditsData = new CreditsData();
         }
 
         public void Dispose()
@@ -96,6 +101,8 @@ namespace GrandDevs.CZB
                 CachedUserLocalData.tutorial = false;
 
             GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
+
+            OnLoadCacheCompletedEvent?.Invoke();
         }
 
         public void Update()
@@ -170,6 +177,11 @@ namespace GrandDevs.CZB
                         File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedActionsLibraryData));
                     }
                     break;
+                case Enumerators.CacheDataType. CREDITS_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
+                    }
+                    break;
                 default: break;
             }
         }
@@ -225,6 +237,12 @@ namespace GrandDevs.CZB
                             CachedActionsLibraryData = DeserializeObjectFromPath<ActionData>(_cacheDataPathes[type]);
                     }
                     break;
+                case Enumerators.CacheDataType.CREDITS_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPathes[type]);
+                    }
+                    break;
                 default: break;
             }
         }
@@ -238,7 +256,8 @@ namespace GrandDevs.CZB
                 CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(Resources.Load("Data/collection_data").ToString());
                 CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(Resources.Load("Data/opponent_decks_data").ToString());
-                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());//ParseData
+                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());
+                CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(Resources.Load("Data/credits_data").ToString());
             }
         }
 
@@ -252,6 +271,7 @@ namespace GrandDevs.CZB
             _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_DECKS_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_OPPONENT_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_DECKS_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.CREDITS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_CREDITS_DATA_FILE_PATH));
         }
 
         private T DeserializeObjectFromPath<T>(string path)

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using GrandDevs.CZB.Data;
 using GrandDevs.CZB.Common;
+using System;
 
 namespace GrandDevs.CZB
 {
     public interface IDataManager
     {
+        event Action OnLoadCacheCompletedEvent;
+
         UserLocalData CachedUserLocalData { get; set; }
         CardsLibraryData CachedCardsLibraryData { get; set; }
         HeroesData CachedHeroesData { get; set; }
@@ -13,6 +16,7 @@ namespace GrandDevs.CZB
         DecksData CachedDecksData { get; set; }
         OpponentDecksData CachedOpponentDecksData { get; set; }
         ActionData CachedActionsLibraryData { get; set; }
+        CreditsData CachedCreditsData { get; set; }
 
         void StartLoadCache();
         void SaveAllCache();

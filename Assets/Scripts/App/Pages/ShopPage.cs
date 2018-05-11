@@ -158,6 +158,12 @@ namespace GrandDevs.CZB
         }
         private void BuyButtonHandler()
         {
+            if (_currentPackId >= _costs.Length || _currentPackId < 0)
+            {
+                Debug.LogError("No pack chosen");
+                return;
+            }
+
             _playerManager.LocalUser.wallet -= _costs[_currentPackId];
             _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
             GameObject prefab = null;

@@ -46,6 +46,7 @@ namespace GrandDevs.CZB
             _uiPages.Add(new ShopPage());
             _uiPages.Add(new GameplayPage());
             _uiPages.Add(new PackOpenerPage());
+            _uiPages.Add(new CreditsPage());
 
             foreach (var page in _uiPages)
                 page.Init();
@@ -60,6 +61,7 @@ namespace GrandDevs.CZB
             _uiPopups.Add(new YouLosePopup());
             _uiPopups.Add(new YouWonPopup());
             _uiPopups.Add(new YourTurnPopup());
+            _uiPopups.Add(new ConfirmationPopup());
 
             foreach (var popup in _uiPopups)
                 popup.Init();

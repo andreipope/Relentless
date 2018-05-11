@@ -137,6 +137,11 @@ namespace GrandDevs.CZB
                         };*/
                     }
                     break;
+                case Enumerators.AppState.CREDITS:
+                    {
+                        _uiManager.SetPage<CreditsPage>();
+                    }
+                    break;
                 default:
                     throw new NotImplementedException("Not Implemented " + stateTo.ToString() + " state!");
             }

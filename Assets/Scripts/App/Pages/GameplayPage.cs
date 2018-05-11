@@ -7,6 +7,7 @@ using CCGKit;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using System;
 
 namespace GrandDevs.CZB
 {
@@ -105,7 +106,7 @@ namespace GrandDevs.CZB
             GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
 
             int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
+            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = UnityEngine.Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
 
             var _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
             _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
@@ -167,24 +168,26 @@ namespace GrandDevs.CZB
         #region Buttons Handlers
         public void OnBackButtonClick()
         {
-            if (NetworkingUtils.GetLocalPlayer().isServer)
+            Action callback = () =>
             {
-                GameNetworkManager.Instance.StopHost();
-            }
-            else
-            {
-                GameNetworkManager.Instance.StopClient();
-            }
+                if (NetworkingUtils.GetLocalPlayer().isServer)
+                {
+                    GameNetworkManager.Instance.StopHost();
+                }
+                else
+                {
+                    GameNetworkManager.Instance.StopClient();
+                }
 
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-            {
-                GameClient.Get<ITutorialManager>().CancelTutorial();
-            }
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().CancelTutorial();
+                }
 
-            //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-            //scene.ClosePopup();
-            _uiManager.HidePopup<YourTurnPopup>();
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
+                _uiManager.HidePopup<YourTurnPopup>();
+                GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
+            };
+            _uiManager.DrawPopup<ConfirmationPopup>(callback);
         }
         
         #endregion

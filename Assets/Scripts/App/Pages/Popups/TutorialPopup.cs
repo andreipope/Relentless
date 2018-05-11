@@ -85,7 +85,7 @@ namespace GrandDevs.CZB
                 Debug.LogError(22);
                 _bubbleObject.SetActive(false);
                 _tutorialManager.IsBubbleShow = false;
-                GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 11f, false);
+                GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 7f, false);
             }
             _text.text = (string)data;
 

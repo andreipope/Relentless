@@ -162,7 +162,14 @@ public class CardView : MonoBehaviour
     {
         if (Constants.DEV_MODE)
             return true;
-        return owner.isActivePlayer && owner.manaStat.effectiveValue >= manaCost;
+        return owner.isActivePlayer;// && owner.manaStat.effectiveValue >= manaCost;
+    }
+
+    public virtual bool CanBeBuyed(DemoHumanPlayer owner)
+    {
+        if (Constants.DEV_MODE)
+            return true;
+        return owner.manaStat.effectiveValue >= manaCost;
     }
 
     public bool IsHighlighted()

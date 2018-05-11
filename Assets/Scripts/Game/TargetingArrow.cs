@@ -88,7 +88,7 @@ public class TargetingArrow : MonoBehaviour
         _sizeHeadBlock = headPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
         _sizeStartBlock = startPrefab.transform.Find("ArrowObj").GetComponent<MeshRenderer>().bounds.size;
 
-        var position = initialPos + new Vector3(0, _sizeStartBlock.z / 1, 0.02f);
+        var position = initialPos + new Vector3(0, _sizeStartBlock.z * 1.5f, 0.02f);
 
         startArrow = MonoBehaviour.Instantiate(startPrefab, _arrowContainer.transform);
         startArrow.transform.position = position;
@@ -290,7 +290,7 @@ public class TargetingArrow : MonoBehaviour
         //float sin = Mathf.Sin(Mathf.Clamp01(coef) * Mathf.PI) * 2;//Mathf.Sin(coef);
         //newPosition.z = sin;
         var coef = 1 - (1 / disCenter * disCur);
-        newPosition.z = _distanceBettwenPoints / 4f * coef;
+        newPosition.z = _distanceBettwenPoints / 5f * coef;
         //Vector3.Distance(_startPosition, _endPosition));
 
         Vector3 targetPosition = headArrow.transform.position;

@@ -74,7 +74,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i,
 						            _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -4.6f, 0), new Vector3(0, -3.0f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(4.5f, -6.8f, 0), new Vector3(1.5f, -3f, 0)));
 			_steps.Add(new TutorialStep(ref i,
 									_contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i,
@@ -96,7 +96,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 2.5f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));//card vs player
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
@@ -112,11 +112,11 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -4.6f, 0), new Vector3(0, -3.0f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(4.5f, -6.8f, 0), new Vector3(1.5f, -3f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 2.5f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));
             _steps.Add(new TutorialStep(ref i,
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(1.5f, -3.0f, 0), new Vector3(0.4f, 2.5f, 0)));
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -4.4f, 0), new Vector3(0, 3.4f, 0)));
             _steps.Add(new TutorialStep(ref i,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i,

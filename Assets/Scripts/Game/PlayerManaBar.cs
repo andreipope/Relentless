@@ -16,7 +16,7 @@ public class PlayerManaBar : MonoBehaviour
 
     public void SetMana(int manaRows, int mana)
     {
-        manaText.text = mana + "\n       /\n              10";
+        manaText.text = mana.ToString();
         for (var i = 0; i < manaIcons.Count; i++)
         {
             if (i < mana)

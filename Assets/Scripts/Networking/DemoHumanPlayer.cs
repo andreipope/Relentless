@@ -499,7 +499,7 @@ public class DemoHumanPlayer : DemoPlayer
     {
         
         var handWidth = 0.0f;
-        var spacing = -1.0f;
+        var spacing = -2.0f; // -1
         foreach (var card in playerHandCards)
         {
             handWidth += card.GetComponent<SpriteRenderer>().bounds.size.x;
@@ -547,7 +547,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
         var pivot = new Vector3(-2.5f, 7.95f, 0f);
-        var totalTwist = -20f;
+        var totalTwist = -10f; // was -20
         if (opponentHandCards.Count == 1)
         {
             totalTwist = 0;
@@ -565,7 +565,7 @@ public class DemoHumanPlayer : DemoPlayer
             nudge *= scalingFactor;
 
             movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
-            rotatePosition = new Vector3(0, 0, -twist);
+            rotatePosition = new Vector3(0, 0, twist); // added multiplier, was: 0,0, twist
 
             if (isMove)
             {
@@ -591,7 +591,7 @@ public class DemoHumanPlayer : DemoPlayer
     public virtual void RearrangeTopBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
-        var spacing = -0.2f;
+        var spacing = 0.2f;
         var cardWidth = 0.0f;
         foreach (var card in opponentBoardCards)
         {
@@ -633,7 +633,7 @@ public class DemoHumanPlayer : DemoPlayer
     public virtual void RearrangeBottomBoard(Action onComplete = null)
     {
         var boardWidth = 0.0f;
-        var spacing = -0.2f;
+        var spacing = 0.2f; // -0.2
         var cardWidth = 0.0f;
         foreach (var card in playerBoardCards)
         {
@@ -1054,13 +1054,16 @@ public class DemoHumanPlayer : DemoPlayer
         var sortingGroup = card.GetComponent<SortingGroup>();
 
         Sequence animationSequence3 = DOTween.Sequence();
-        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
-        go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
+        //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
+        animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .2f));
+        //go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
+        go.transform.DOScale(new Vector3(.18f, .18f, .18f), .2f);
         animationSequence3.OnComplete(() =>
         {
             go.transform.Find("BackgroundBack").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
-            animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+            //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+            animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 90f), .3f));
             //animationSequence4.AppendInterval(2f);
         });
 
@@ -1074,7 +1077,7 @@ public class DemoHumanPlayer : DemoPlayer
             sortingGroup.sortingOrder = 1;
             Sequence animationSequence5 = DOTween.Sequence();
             //animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f)); // Changed by Basil: card aftermove position
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.8f, -3.4f, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.7f, -3.4f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
                 MonoBehaviour.Destroy(go);
@@ -1346,6 +1349,9 @@ public class DemoHumanPlayer : DemoPlayer
             boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(runtimeCard, cardSetName);
             boardCreature.transform.parent = GameObject.Find("OpponentBoard").transform;
             opponentBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
+
+            boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
+
             RearrangeTopBoard(() =>
             {
                 opponentHandZone.numCards -= 1;

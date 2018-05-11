@@ -14,7 +14,8 @@
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
-            PACK_OPENER
+            PACK_OPENER,
+            CREDITS
         }
 
         public enum ButtonState
@@ -63,7 +64,8 @@
             DECKS_DATA,
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
-            OPPONENT_ACTIONS_LIBRARY_DATA
+            OPPONENT_ACTIONS_LIBRARY_DATA,
+            CREDITS_DATA
         }
 
         public enum NotificationButtonState

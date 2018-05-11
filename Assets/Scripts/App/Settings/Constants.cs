@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.703.ver";
+        internal const string CURRENT_VERSION = "0.0.801.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -13,6 +13,7 @@
 		internal const string LOCAL_DECKS_DATA_FILE_PATH = "decks_data.json";
         internal const string LOCAL_OPPONENT_DECKS_DATA_FILE_PATH = "opponent_decks_data.json";
         internal const string LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH = "action_library_data.json";
+        internal const string LOCAL_CREDITS_DATA_FILE_PATH = "credits_data.json";
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
@@ -49,7 +50,7 @@
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
-        internal const bool DEV_MODE = true;
+        internal const bool DEV_MODE = false;
 
     }
 }
