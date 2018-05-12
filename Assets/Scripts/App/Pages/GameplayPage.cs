@@ -23,7 +23,7 @@ namespace GrandDevs.CZB
                            _cardGraveyard,  
                            _playedCardPrefab;
 
-        private MenuButtonNoGlow _buttonBack;
+        private Button _buttonBack;
 
         private List<CardInGraveyard> _cards;
         private PlayerSkillItem _playerSkill,
@@ -47,9 +47,10 @@ namespace GrandDevs.CZB
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-            
-            _buttonBack = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonBack.onClickEvent.AddListener(OnBackButtonClick);
+
+            _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
+
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
             _cardGraveyard = _selfPage.transform.Find("CardGraveyard").gameObject;
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
@@ -166,7 +167,7 @@ namespace GrandDevs.CZB
         }
 
         #region Buttons Handlers
-        public void OnBackButtonClick()
+        public void BackButtonOnClickHandler()
         {
             Action callback = () =>
             {

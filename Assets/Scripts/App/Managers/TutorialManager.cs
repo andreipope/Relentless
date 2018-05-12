@@ -233,13 +233,19 @@ namespace GrandDevs.CZB
             GameManager.Instance.tutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-            _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+            if (_currentStep == 22)
+                GameClient.Get<ITimerManager>().AddTimer((x) => {
+                    _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+                }, null, 6f, false);
+            else
+                _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+
 
             //if(_currentStep == 22)
             //{
             //    _isBubbleShow = false;
             //}
-        }  
+        }
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
         {

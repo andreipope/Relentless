@@ -229,7 +229,7 @@ public class BoardCreature : MonoBehaviour
         }
         else
         {
-            if(stat.name == Constants.TAG_LIFE)
+            if (stat.statId == 1)
                 text.color = Color.white;
             else
                 text.color = Color.black;

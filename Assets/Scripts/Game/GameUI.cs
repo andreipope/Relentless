@@ -18,14 +18,6 @@ using GrandDevs.CZB.Common;
 /// </summary>
 public class GameUI : MonoBehaviour
 {
-    //public GameObject playerActiveBackground;
-    //public GameObject playerInactiveBackground;
-    //public GameObject opponentActiveBackground;
-    //public GameObject opponentInactiveBackground;
-    //public GameObject playerAvatarBorder;
-    //public GameObject playerAvatarGlow;
-    //public GameObject opponentAvatarBorder;
-    //public GameObject opponentAvatarGlow;
 
     public TextMeshPro playerNameText;
     public TextMeshPro opponentNameText;
@@ -35,17 +27,13 @@ public class GameUI : MonoBehaviour
 
     public TextMeshPro playerDeckText;
     public TextMeshPro opponentDeckText;
-    //public TextMeshPro playerHandText;
-    //public TextMeshPro opponentHandText;
-    //public TextMeshPro playerGraveyardText;
-    //public TextMeshPro opponentGraveyardText;
 
     public PlayerManaBar playerManaBar;
     public PlayerManaBar opponentManaBar;
 
-    public SpriteRenderer endTurnSprite;
-    public TextMeshPro endTurnTitleText;
-    public TextMeshPro endTurnTimeText;
+    //public SpriteRenderer endTurnSprite;
+    //public TextMeshPro endTurnTitleText;
+    //public TextMeshPro endTurnTimeText;
     public EndTurnButton endTurnButton;
 
     public SpriteRenderer opponentDeckCardView;
@@ -53,29 +41,17 @@ public class GameUI : MonoBehaviour
 
     private void Awake()
     {
-        //Assert.IsNotNull(playerActiveBackground);
-        //Assert.IsNotNull(playerInactiveBackground);
-        //Assert.IsNotNull(opponentActiveBackground);
-        //Assert.IsNotNull(opponentInactiveBackground);
-        //Assert.IsNotNull(playerAvatarBorder);
-        //Assert.IsNotNull(playerAvatarGlow);
-        //Assert.IsNotNull(opponentAvatarBorder);
-        //Assert.IsNotNull(opponentAvatarGlow);
         Assert.IsNotNull(playerNameText);
         Assert.IsNotNull(opponentNameText);
         Assert.IsNotNull(playerHealthText);
         Assert.IsNotNull(opponentHealthText);
         Assert.IsNotNull(playerDeckText);
         Assert.IsNotNull(opponentDeckText);
-        //Assert.IsNotNull(playerHandText);
-        //Assert.IsNotNull(opponentHandText);
-        //Assert.IsNotNull(playerGraveyardText);
-        //Assert.IsNotNull(opponentGraveyardText);
         Assert.IsNotNull(playerManaBar);
         Assert.IsNotNull(opponentManaBar);
-        Assert.IsNotNull(endTurnSprite);
-        Assert.IsNotNull(endTurnTitleText);
-        Assert.IsNotNull(endTurnTimeText);
+        //Assert.IsNotNull(endTurnSprite);
+        //Assert.IsNotNull(endTurnTitleText);
+        //Assert.IsNotNull(endTurnTimeText);
         Assert.IsNotNull(endTurnButton);
         Assert.IsNotNull(opponentDeckCardView);
         Assert.IsNotNull(playerDeckCardView);
@@ -83,18 +59,10 @@ public class GameUI : MonoBehaviour
 
     public void SetPlayerActive(bool active)
     {
-        //playerActiveBackground.SetActive(active);
-        //playerInactiveBackground.SetActive(!active);
-        //playerAvatarBorder.SetActive(active);
-        //playerAvatarGlow.SetActive(active);
     }
 
     public void SetOpponentActive(bool active)
     {
-        //opponentActiveBackground.SetActive(active);
-        //opponentInactiveBackground.SetActive(!active);
-        //opponentAvatarBorder.SetActive(active);
-        //opponentAvatarGlow.SetActive(active);
     }
 
     public void SetPlayerName(string text)
@@ -126,12 +94,10 @@ public class GameUI : MonoBehaviour
 
     public void SetPlayerHandCards(int cards)
     {
-        //playerHandText.text = cards.ToString();
     }
 
     public void SetPlayerGraveyardCards(int cards)
     {
-        //playerGraveyardText.text = cards.ToString();
     }
 
     public void SetOpponentDeckCards(int cards)
@@ -143,12 +109,10 @@ public class GameUI : MonoBehaviour
 
     public void SetOpponentHandCards(int cards)
     {
-        //opponentHandText.text = cards.ToString();
     }
 
     public void SetOpponentGraveyardCards(int cards)
     {
-        //opponentGraveyardText.text = cards.ToString();
     }
 
     public void SetPlayerMana(int manaRows, int mana)
@@ -159,9 +123,7 @@ public class GameUI : MonoBehaviour
     public void SetOpponentMana(int manaRows, int mana)
     {
         opponentManaBar.SetMana(manaRows, mana);
-
-        //opponentManaText.text = mana + "/10";
-    }
+     }
 
     public void SetEndTurnButtonEnabled(bool enabled)
     {
@@ -170,24 +132,24 @@ public class GameUI : MonoBehaviour
 
     public void StartTurnCountdown(int time)
     {
-        endTurnSprite.DOFade(1.0f, 0.3f);
-        endTurnTitleText.DOFade(1.0f, 0.3f);
-        endTurnTimeText.DOFade(1.0f, 0.3f);
+        //endTurnSprite.DOFade(1.0f, 0.3f);
+        //endTurnTitleText.DOFade(1.0f, 0.3f);
+        //endTurnTimeText.DOFade(1.0f, 0.3f);
         StartCoroutine(StartCountdown(time));
     }
 
     public void HideTurnCountdown()
     {
-        endTurnSprite.DOFade(0.0f, 0.2f);
-        endTurnTitleText.DOFade(0.0f, 0.2f);
-        endTurnTimeText.DOFade(0.0f, 0.2f);
+        //endTurnSprite.DOFade(0.0f, 0.2f);
+        //endTurnTitleText.DOFade(0.0f, 0.2f);
+        //endTurnTimeText.DOFade(0.0f, 0.2f);
     }
 
     private IEnumerator StartCountdown(int time)
     {
         while (time >= 0)
         {
-            endTurnTimeText.text = time.ToString();
+            //endTurnTimeText.text = time.ToString();
             yield return new WaitForSeconds(1.0f);
             time -= 1;
         }

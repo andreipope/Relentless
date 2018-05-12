@@ -32,7 +32,11 @@ namespace GrandDevs.CZB
         private List<Enumerators.AbilityTargetType> _targets;
 
         private TextMeshPro _healthText,
-                            _damageHealth;
+                            _damageText;
+
+        private GameObject _healthObject,
+                            _damageObject,
+                            _siloObject;
 
         private PlayerAvatar _player;
         private BoardCreature _creature;
@@ -52,13 +56,22 @@ namespace GrandDevs.CZB
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
 
-            _healthText = _selfObject.transform.Find("Health/Text").GetComponent<TextMeshPro>();
-            _damageHealth = _selfObject.transform.Find("Attack/Text").GetComponent<TextMeshPro>();
+            _healthObject = _selfObject.transform.Find("Health").gameObject;
+            _damageObject = _selfObject.transform.Find("Attack").gameObject;
+
+            _siloObject = _selfObject.transform.Find("silo_mask").gameObject;
+
+            _healthText = _healthObject.transform.Find("Text").GetComponent<TextMeshPro>();
+            _damageText = _damageObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
             _currentPlayerAvatar = _selfObject.transform.parent.Find("Avatar").gameObject;
             _playerAvatarShine = _currentPlayerAvatar.transform.Find("Shine").gameObject;
 
             _onMouseHandler = _currentPlayerAvatar.GetComponent<OnMouseHandler>();
+
+            _healthObject.SetActive(true);
+            _damageObject.SetActive(true);
+            _siloObject.SetActive(false);
         }
 
         public void InitWeapon(int damage, int health, Player owner, List<Enumerators.AbilityTargetType> targets)
@@ -172,7 +185,7 @@ namespace GrandDevs.CZB
         private void UpdateUI()
         {
             _healthText.text = _health.ToString();
-            _damageHealth.text = _damage.ToString();
+            _damageText.text = _damage.ToString();
         }
 
         private void Attack()
@@ -193,8 +206,12 @@ namespace GrandDevs.CZB
             }
             else if (_creature != null)
             {
+                int damageToUs = _creature.attackStat.effectiveValue;
+
                 CreateVFX(_creature.transform.position);
                 _owner.FightCreatureBySkill(_damage, _creature.card);
+                _owner.playerInfo.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
+                _owner.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
             }
             else
             {
@@ -269,6 +286,9 @@ namespace GrandDevs.CZB
         public void Destroy()
         {
             _selfObject.SetActive(false);
+            _healthObject.SetActive(false);
+            _damageObject.SetActive(false);
+            _siloObject.SetActive(true);
         }
     }
 }

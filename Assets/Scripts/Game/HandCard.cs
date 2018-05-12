@@ -17,8 +17,11 @@ public class HandCard : MonoBehaviour
     protected bool startedDrag;
     protected Vector3 initialPos;
 
-    private bool _isHandCard = true,
-                 _isReturnToHand = false;
+    private bool _isHandCard = true;
+
+    private bool _isReturnToHand = false;
+    private bool _alreadySelected = false;
+                
 
     private void Awake()
     {
@@ -51,11 +54,12 @@ public class HandCard : MonoBehaviour
     public void OnSelected()
     {
         if (ownerPlayer.isActivePlayer &&
-            cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand)
+            cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected)
         {
             startedDrag = true;
             initialPos = transform.position;
             ownerPlayer.isCardSelected = true;
+            _alreadySelected = true;
         }
     }
 
@@ -65,13 +69,11 @@ public class HandCard : MonoBehaviour
         {
             return;
         }
-
-        Debug.Log(1111);
+        _alreadySelected = false;
         startedDrag = false;
         ownerPlayer.isCardSelected = false;
         if (cardView.CanBeBuyed(ownerPlayer))
         {
-            Debug.Log(2222);
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {
                 _isHandCard = false;
@@ -89,10 +91,10 @@ public class HandCard : MonoBehaviour
         }
         else
         {
-            Debug.Log(333);
             _isReturnToHand = true;
             transform.DOMove(initialPos, 0.5f).OnComplete(() => 
             {
+                transform.position = initialPos;
                 _isReturnToHand = false;
             });
         }
