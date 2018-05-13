@@ -287,5 +287,14 @@
             TIME_BLITZ_AI,
             MIXED_DEFENSE_AI,
         }
+
+        public enum TutorialJanePoses
+		{
+			NORMAL,
+			THINKING,
+			POINTING,
+			THUMBSUP,
+			KISS,
+		}
     }
 }

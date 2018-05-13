@@ -441,8 +441,6 @@ namespace GrandDevs.CZB
                 OpenAlertDialog("You don't have enough cards of this type. \n Buy or earn new packs to get more cards!");
                 return;
             }
-            collectionCardData.amount--;
-            UpdateCardAmount(card.id, collectionCardData.amount);
 
             var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
 
@@ -472,6 +470,9 @@ namespace GrandDevs.CZB
                     break;
                 }
             }
+
+			collectionCardData.amount--;
+			UpdateCardAmount(card.id, collectionCardData.amount);
 
             if (!itemFound)
             {

@@ -23,9 +23,11 @@ namespace GrandDevs.CZB
 		private GameObject _yesnoObject;
 		private GameObject _nextObject;
         private GameObject _focusedObject;
-        private GameObject _bubbleObject;
+		private GameObject _bubbleObject;
+		private Image _janeImage;
 
-        private List<GameObject> _focusObjects;
+		private List<GameObject> _focusObjects;
+		private Sprite[] _janePoses;
 
         public void Init()
         {
@@ -45,6 +47,9 @@ namespace GrandDevs.CZB
 			_nextObject = _selfPage.transform.Find("Description/NextButton").gameObject;
 			_yesnoObject = _selfPage.transform.Find("Description/Question").gameObject;
 
+            _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
+
+            _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
 			_focusObjects = new List<GameObject>();
 
@@ -88,8 +93,12 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f, false);
             }
             _text.text = (string)data;
-
             Show();
+        }
+
+        public void UpdatePose(Enumerators.TutorialJanePoses pose)
+        {
+            _janeImage.sprite = _janePoses[(int)pose];
         }
 
         public void ShowBubble(object[] param)

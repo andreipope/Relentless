@@ -7,6 +7,7 @@ using UnityEngine.Assertions;
 
 using TMPro;
 using CCGKit;
+using GrandDevs.CZB.Common;
 
 public class CreatureCardView : CardView
 {
@@ -60,7 +61,9 @@ public class CreatureCardView : CardView
         attackText.text = attackStat.effectiveValue.ToString();
         defenseText.text = defenseStat.effectiveValue.ToString();
 
-        attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
+        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+
+		attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
         defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
     }
 
@@ -70,6 +73,7 @@ public class CreatureCardView : CardView
 
         attackText.text = card.damage.ToString();
         defenseText.text = card.health.ToString();
-        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.cardType + "_icon"));
+
+		typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.cardType + "_icon"));
     }
 }

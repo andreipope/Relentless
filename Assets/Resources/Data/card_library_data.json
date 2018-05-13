@@ -70,7 +70,7 @@
           "picture": "Gargantua",
           "damage": 6,
           "health": 6,
-          "type": "HEAVY",
+          "type": "WALKER",
           "rarity": "EPIC",
 		      "abilities": [
             {
@@ -420,13 +420,14 @@
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 8,
-          "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
+          "description": "",
+          //"description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
           "picture": "Shammann",
           "damage": 5,
           "health": 6,
           "type": "WALKER",
           "rarity": "EPIC",
-		  "abilities": [
+		      /*"abilities": [
             {
               "type": "SUMMON",
               "activityType": "passive",
@@ -434,7 +435,7 @@
               "targetType": "NONE",
               "value": 33
             }
-          ]
+          ]*/
         }
       ]
     },
