@@ -12,6 +12,7 @@ namespace GrandDevs.CZB.Data
         public string name;
         public int cost;
         public string description;
+        public string flavorText; // new
         public string picture;
         public int damage;
         public int health;

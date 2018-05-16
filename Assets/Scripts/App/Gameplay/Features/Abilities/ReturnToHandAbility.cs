@@ -70,9 +70,9 @@ namespace GrandDevs.CZB
             cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
 
             //MAYBE use that on future
-            /*playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
-            cardCaller.EffectSolver.SetDestroyConditions(card);
-            cardCaller.EffectSolver.SetTriggers(card);*/
+            //playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
+            //cardCaller.EffectSolver.SetDestroyConditions(card);
+            //cardCaller.EffectSolver.SetTriggers(card);
 
             //Remove RuntimeCard on server
             if (playerInfo == cardCaller.playerInfo)

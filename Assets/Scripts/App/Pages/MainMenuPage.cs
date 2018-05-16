@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 using CCGKit;
+using TMPro;
 
 namespace GrandDevs.CZB
 {
@@ -13,6 +14,7 @@ namespace GrandDevs.CZB
 		private ILocalizationManager _localizationManager;
 		private IAppStateManager _stateManager;
 		private ISoundManager _soundManager;
+        private IPlayerManager _playerManager;
 
         private GameObject _selfPage;
 
@@ -28,6 +30,7 @@ namespace GrandDevs.CZB
         private MenuButtonToggle _buttonMusic,
                                  _buttonSFX;
 
+        private TextMeshProUGUI _packsCount;
 
         public void Init()
         {
@@ -36,11 +39,10 @@ namespace GrandDevs.CZB
 			_localizationManager = GameClient.Get<ILocalizationManager>();
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-
+            _playerManager = GameClient.Get<IPlayerManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
@@ -48,10 +50,11 @@ namespace GrandDevs.CZB
             _buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<Button>();
             _buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<Button>();
 
+            _packsCount = _selfPage.transform.Find("OpenButton/Count").GetComponent<TextMeshProUGUI>();
 
             _buttonCredits = _selfPage.transform.Find("Button_Credit").GetComponent<Button>();
 
-            Debug.Log(_buttonCredits);
+            //Debug.Log(_buttonCredits);
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
@@ -79,8 +82,9 @@ namespace GrandDevs.CZB
         public void Show()
         {
             _selfPage.SetActive(true);
-
             _buttonCollection.interactable = true;
+
+            _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
         }
 
         public void Hide()

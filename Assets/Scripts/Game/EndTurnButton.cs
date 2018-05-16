@@ -14,36 +14,36 @@ public class EndTurnButton : MonoBehaviour
     [HideInInspector]
     public DemoHumanPlayer player;
 
-    //[SerializeField]
-    //private SpriteRenderer shineSprite;
-
-    //[SerializeField]
-    //private SpriteRenderer hoverSprite;
-
-    //[SerializeField]
-    //private SpriteRenderer disabledSprite;
+    [SerializeField]
+    private Sprite defaultSprite, pressedSprite;
 
     [SerializeField]
     private TextMeshPro buttonText;
 
+    [SerializeField]
+    private Vector3 textPressedPosition = new Vector3(0, -0.12f, 0),
+                    textDefaultPosition = new Vector3(0, -0.00f, 0);
+
+    private bool hovering = false;
     private bool active;
+    private SpriteRenderer thisRenderer;
 
     private void Awake()
     {
-        //Assert.IsNotNull(shineSprite);
-        //Assert.IsNotNull(hoverSprite);
-        //Assert.IsNotNull(disabledSprite);
+        Assert.IsNotNull(defaultSprite);
+        Assert.IsNotNull(pressedSprite);
+        thisRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void SetEnabled(bool enabled)
     {
-        //disabledSprite.gameObject.SetActive(!enabled);
         active = enabled;
         buttonText.text = enabled ? "END\nTURN" : "WAIT";
     }
 
     private void OnMouseEnter()
     {
+        hovering = true;
         //if (active)
         //{
         //    shineSprite.DOKill();
@@ -55,6 +55,9 @@ public class EndTurnButton : MonoBehaviour
 
     private void OnMouseExit()
     {
+        hovering = false;
+        thisRenderer.sprite = defaultSprite;
+        buttonText.transform.localPosition = textDefaultPosition;
         //if (active)
         //{
         //    shineSprite.DOKill();
@@ -66,11 +69,20 @@ public class EndTurnButton : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!active) return;
+
+        thisRenderer.sprite = pressedSprite;
+        buttonText.transform.localPosition = textPressedPosition;
+    }
+
+    // was OnMouseDown
+    private void OnMouseUp()
+    {
         if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 10 && 
                                                               GameClient.Get<ITutorialManager>().CurrentStep != 16 &&
                                                               GameClient.Get<ITutorialManager>().CurrentStep != 21))
             return;
-        if (active)
+        if (active && hovering)
         {
             player.StopTurn();
             //shineSprite.DOKill();
@@ -83,5 +95,8 @@ public class EndTurnButton : MonoBehaviour
             //hoverSprite.color = newColor;
             SetEnabled(false);
         }
+
+        thisRenderer.sprite = defaultSprite;
+        buttonText.transform.localPosition = textDefaultPosition;
     }
 }

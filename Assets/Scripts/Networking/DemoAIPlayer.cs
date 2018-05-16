@@ -63,6 +63,8 @@ public class DemoAIPlayer : DemoPlayer
 
     public Enumerators.AIType aiType;
 
+    private List<int> _attackedCreatureTargets;
+
     /// <summary>
     /// Unity's Awake.
     /// </summary>
@@ -76,7 +78,7 @@ public class DemoAIPlayer : DemoPlayer
         fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
 
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
-
+        _attackedCreatureTargets = new List<int>();
     }
 
     /// <summary>
@@ -171,6 +173,8 @@ public class DemoAIPlayer : DemoPlayer
             AlreadyAttackedInThisTurn = false;
             CurrentBoardWeapon.ActivateWeapon(true);
         }
+
+        _attackedCreatureTargets.Clear();
 
         // Simulate 'thinking' time. This could be random or dependent on the
         // complexity of the board state for increased realism.
@@ -466,14 +470,18 @@ public class DemoAIPlayer : DemoPlayer
 
         if ((libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack) || Constants.DEV_MODE)
         {
-
             List<int> target = GetAbilityTarget(card);
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
+                //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
+                //    if (target.Count == 0)
+                //        return false;
+
                 playerInfo.namedZones["Hand"].RemoveCard(card);
                 playerInfo.namedZones["Board"].AddCard(card);
                 numTurnsOnBoard[card.instanceId] = 0;
                 PlayCreatureCard(card, target);
+
                 AddCardInfo(card);
             }
             else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
@@ -549,9 +557,9 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     case Enumerators.AbilityType.CARD_RETURN:
                         {
-                            if(!AddRandomTargetCreature(true, ref targetInfo))
+                            if(!AddRandomTargetCreature(true, ref targetInfo, false, true))
                             {
-                                AddRandomTargetCreature(false, ref targetInfo);
+                                AddRandomTargetCreature(false, ref targetInfo, true, true);
                             }
                         }
                         break;
@@ -659,18 +667,21 @@ public class DemoAIPlayer : DemoPlayer
         }
     }
 
-    private bool AddRandomTargetCreature(bool opponent, ref List<int> targetInfo)
+    private bool AddRandomTargetCreature(bool opponent, ref List<int> targetInfo, bool lowHP = false, bool addAttackIgnore = false)
     {
         RuntimeCard target = null;
 
         if (opponent)
             target = GetRandomOpponentCreature();
         else
-            target = GetRandomCreature();
+            target = GetRandomCreature(lowHP);
 
         if (target != null)
         {
             targetInfo.Add(target.instanceId);
+
+            if (addAttackIgnore)
+                _attackedCreatureTargets.Add(target.instanceId);
 
             return true;
         }
@@ -705,7 +716,14 @@ public class DemoAIPlayer : DemoPlayer
         go.transform.position = new Vector3(-6, 0, 0);
         go.transform.localScale = Vector3.one * .3f;
         cardView.SetHighlightingEnabled(false);
-        GameClient.Get<ITimerManager>().AddTimer((x) => { Destroy(go); }, null, 2, false);
+
+        GameClient.Get<ITimerManager>().StopTimer(DestroyCardInfo);
+        GameClient.Get<ITimerManager>().AddTimer(DestroyCardInfo, new object[] { go }, 2, false);
+    }
+
+    protected void DestroyCardInfo(object[] param)
+    {
+        Destroy((GameObject)param[0]);
     }
 
     protected int GetPlayerAttackingPower()
@@ -771,7 +789,7 @@ public class DemoAIPlayer : DemoPlayer
         cards.Reverse();
 
         foreach (var item in cards)
-            sortedList.Add(list.Find(x => x.cardId == item.id));
+            sortedList.Add(list.Find(x => x.cardId == item.id && !sortedList.Contains(x)));
 
         list.Clear();
         cards.Clear();
@@ -791,10 +809,16 @@ public class DemoAIPlayer : DemoPlayer
         return eligibleCreatures;
     }
 
-    protected RuntimeCard GetRandomCreature()
+    protected RuntimeCard GetRandomCreature(bool lowHP = false)
     {
         var board = playerInfo.namedZones["Board"].cards;
-        var eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
+        List<RuntimeCard> eligibleCreatures = null;
+
+        if(!lowHP)
+            eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0 && !_attackedCreatureTargets.Contains(x.instanceId));
+        else
+            eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue < x.namedStats["HP"].baseValue && !_attackedCreatureTargets.Contains(x.instanceId));
+
         if (eligibleCreatures.Count > 0)
         {
             return eligibleCreatures[Random.Range(0, eligibleCreatures.Count)];
@@ -825,7 +849,7 @@ public class DemoAIPlayer : DemoPlayer
     {
         var board = opponentInfo.namedZones["Board"].cards;
 
-        var eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0);
+        var eligibleCreatures = board.FindAll(x => x.namedStats["HP"].effectiveValue > 0 && !_attackedCreatureTargets.Contains(x.instanceId));
         if (eligibleCreatures.Count > 0)
         {
             return eligibleCreatures[Random.Range(0, eligibleCreatures.Count)];

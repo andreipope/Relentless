@@ -447,6 +447,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  isHovered: 1
 --- !u!114 &114497288264327418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -558,7 +559,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 32.10387, y: 0, z: 43.56949, w: 0}
   m_textInfo:
     textComponent: {fileID: 114657259042770146}
     characterCount: 29
@@ -566,7 +567,7 @@ MonoBehaviour:
     spaceCount: 5
     wordCount: 6
     linkCount: 0
-    lineCount: 1
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 1
@@ -747,6 +748,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  isHovered: 1
 --- !u!114 &114787220601823404
 MonoBehaviour:
   m_ObjectHideFlags: 1

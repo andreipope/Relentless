@@ -7,7 +7,8 @@ using System;
 
 namespace GrandDevs.CZB.Data
 {
-    public class CardsLibraryData {
+    public class CardsLibraryData
+    {
         public List<CardSet> sets;
 
         private List<Card> _allCards;

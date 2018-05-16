@@ -76,7 +76,7 @@ namespace GrandDevs.CZB
         public void Show(object data)
         {
             _card = data as Card;
-            _description.text = _card.description;
+            _description.text = _card.flavorText;
 
             _amountAward.text = (5 * ((int)_card.cardRarity + 1)).ToString();
 

@@ -223,11 +223,25 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
 
 
-                Debug.Log(_currentStep); 
+                Debug.Log(_currentStep);
 
-			//if (_currentStep == 11)
-			//	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
+            //if (_currentStep == 11)
+            //	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
 
+            if (_currentStep != 29)
+                NextStepCommonEndActions();
+            else
+                GameClient.Get<ITimerManager>().AddTimer((x) => { NextStepCommonEndActions(); }, time:2f);
+
+
+            //if(_currentStep == 22)
+            //{
+            //    _isBubbleShow = false;
+            //}
+        }
+
+        private void NextStepCommonEndActions()
+        {
             _steps[_currentStep].finished = true;
             _currentStep++;
             GameManager.Instance.tutorialStep = _currentStep;
@@ -239,12 +253,6 @@ namespace GrandDevs.CZB
                 }, null, 6f, false);
             else
                 _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
-
-
-            //if(_currentStep == 22)
-            //{
-            //    _isBubbleShow = false;
-            //}
         }
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
@@ -310,7 +318,8 @@ namespace GrandDevs.CZB
 
         public void DeactivateSelectTarget()
         {
-            _targettingArrow.Deactivate();
+            if (_targettingArrow != null)
+                _targettingArrow.Deactivate();
         }
 
 

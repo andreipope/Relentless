@@ -21,9 +21,9 @@ namespace GrandDevs.CZB
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
-        private MenuButton _button;
+        //private MenuButton _button;
         private MenuButtonNoGlow _closeButton;
-		private TextMeshProUGUI _buttonText;
+		//private TextMeshProUGUI _buttonText;
 
         public void Init()
         {
@@ -33,10 +33,10 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-			_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
-			_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
+			//_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
+			_closeButton = _selfPage.transform.Find("Button_Yes").GetComponent<MenuButtonNoGlow>();
 
-			_button.onClickEvent.AddListener(Hide);
+			//_button.onClickEvent.AddListener(Hide);
 			_closeButton.onClickEvent.AddListener(Hide);
 
 			_text = _selfPage.transform.Find("Text").GetComponent<TextMeshProUGUI>();

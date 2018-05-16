@@ -142,6 +142,11 @@ namespace GrandDevs.CZB
             _currentDeckId = -1;
 
             _selectedDeck.Find("Deck").gameObject.SetActive(false);
+
+            if (_dataManager.CachedUserLocalData.lastSelectedDeckId > -1)
+            {
+                ChooseDeckById(_dataManager.CachedUserLocalData.lastSelectedDeckId);
+            }
         }
 
         private void AddCreationDeckButton()
@@ -193,11 +198,16 @@ namespace GrandDevs.CZB
         private void ChooseDeckHandler(Transform deck)
         {
             int id = GetDeckId(deck);
+            ChooseDeckById(id);
+        }
+
+        private void ChooseDeckById(int id)
+        {
             if (id == _currentDeckId)
                 return;
-            
+
             if (_currentDeckId > -1)
-				SetActive(_currentDeckId, false);
+                SetActive(_currentDeckId, false);
             _currentDeckId = id;
             //_selectedDeck.gameObject.SetActive(true);
             SetActive(id, true);
@@ -210,6 +220,9 @@ namespace GrandDevs.CZB
             }
             else
                 ActivatePlayButton(true);
+
+            _dataManager.CachedUserLocalData.lastSelectedDeckId = _currentDeckId;
+            _dataManager.SaveAllCache();
         }
 
         private void EditDeckHandler(Transform deck)

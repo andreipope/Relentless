@@ -1016,6 +1016,12 @@ public class DemoHumanPlayer : DemoPlayer
                     CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay, true);
                 });
 
+                //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
+                if (libraryCard.cardType == Enumerators.CardType.HEAVY)
+                {
+                    PlayHeavyAnimation(boardCreature, -1.55f);
+                }
+
             }
             else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
@@ -1043,6 +1049,51 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
+    //by Basil
+    /// <summary>
+    /// Plays Heavy type creature animation
+    /// </summary>
+    /// <param name="target">Which sprite and X pos to use</param>
+    /// <param name="yPos">For Player it is -1.7f and for AI it is 1.7f</param>
+    private void PlayHeavyAnimation(GameObject target, float yPos)
+    {
+        List<GameObject> activeObjects = new List<GameObject>();
+        GameObject go = null;
+
+        target.GetComponent<SpriteRenderer>().enabled = false;
+
+        for (int i = 0; i < target.transform.childCount; i++)
+        {
+            go = target.transform.GetChild(i).gameObject;
+            if (go.activeSelf)
+            {
+                activeObjects.Add(go);
+                go.SetActive(false);
+            }
+        }
+
+        GameClient.Get<ITimerManager>().AddTimer((creat) =>
+        {
+            GameObject creature = (GameObject)creat[0];
+            HeavyArrivalAnimation heavyAnim = new HeavyArrivalAnimation(
+                    creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
+                    creature.transform);
+            
+            heavyAnim.AddOnCompleteCallback((objects) =>
+            {
+                GameObject mainObj = (GameObject)objects[1];
+                mainObj.GetComponent<SpriteRenderer>().enabled = true;
+                List<GameObject> obs = (List<GameObject>)objects[0];
+                foreach (var item in obs)
+                {
+                    item.SetActive(true);
+                }
+            }, new object[] { activeObjects, creature });
+
+
+        }, new object[] { target, activeObjects }, 0.41f);
+    }
+
     private void RemoveCard(object[] param)
     {
         CardView card = param[0] as CardView;
@@ -1055,7 +1106,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         Sequence animationSequence3 = DOTween.Sequence();
         //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
-        animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .2f));
+        animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .3f));
         //go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
         go.transform.DOScale(new Vector3(.18f, .18f, .18f), .2f);
         animationSequence3.OnComplete(() =>
@@ -1063,21 +1114,21 @@ public class DemoHumanPlayer : DemoPlayer
             go.transform.Find("BackgroundBack").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
             //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
-            animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 90f), .3f));
+            animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .75f));
             //animationSequence4.AppendInterval(2f);
         });
 
         Sequence animationSequence2 = DOTween.Sequence();
         //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
-        animationSequence2.Append(go.transform.DOMove(new Vector3(-5.8f, -1, 0), .5f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(-6.8f, -1, 0), 1f));
 
         animationSequence2.OnComplete(() =>
         {
             sortingGroup.sortingLayerName = "Default";
-            sortingGroup.sortingOrder = 1;
+            //sortingGroup.sortingOrder = 1;
             Sequence animationSequence5 = DOTween.Sequence();
             //animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f)); // Changed by Basil: card aftermove position
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.7f, -3.4f, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.9f, -3.3f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
                 MonoBehaviour.Destroy(go);
@@ -1336,7 +1387,6 @@ public class DemoHumanPlayer : DemoPlayer
                 cardSetName = cardSet.name;
         }
 
-
         var opponentBoard = opponentInfo.namedZones[Constants.ZONE_BOARD];
         var runtimeCard = opponentBoard.cards[opponentBoard.cards.Count - 1];
 
@@ -1382,8 +1432,11 @@ public class DemoHumanPlayer : DemoPlayer
                     }
                 }
 
+                if (libraryCard.cardType == Enumerators.CardType.HEAVY)
+                {
+                    PlayHeavyAnimation(boardCreature, 1.95f);
+                }
 
-             
                 bool createTargetArrow = false;
 
                 if(libraryCard.abilities != null && libraryCard.abilities.Count > 0)

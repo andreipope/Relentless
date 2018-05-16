@@ -44,7 +44,7 @@ namespace GrandDevs.CZB
         private OnMouseHandler _onMouseHandler;
 
         private bool _isOpponentWeapon = false;
-
+        private Animator _siloAnimator;
 
         public bool CanAttack { get; set; }
 
@@ -57,9 +57,11 @@ namespace GrandDevs.CZB
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
 
             _healthObject = _selfObject.transform.Find("Health").gameObject;
-            _damageObject = _selfObject.transform.Find("Attack").gameObject;
+            //_damageObject = _selfObject.transform.Find("Attack").gameObject;
+            _damageObject = _selfObject.transform.parent.Find("Avatar/Weapon_Attack").gameObject;
 
             _siloObject = _selfObject.transform.Find("silo_mask").gameObject;
+            _siloAnimator = _siloObject.GetComponent<Animator>();
 
             _healthText = _healthObject.transform.Find("Text").GetComponent<TextMeshPro>();
             _damageText = _damageObject.transform.Find("Text").GetComponent<TextMeshPro>();
@@ -71,7 +73,8 @@ namespace GrandDevs.CZB
 
             _healthObject.SetActive(true);
             _damageObject.SetActive(true);
-            _siloObject.SetActive(false);
+            //_siloObject.SetActive(false);
+            _siloAnimator.SetBool("Active", true);
         }
 
         public void InitWeapon(int damage, int health, Player owner, List<Enumerators.AbilityTargetType> targets)
@@ -102,6 +105,7 @@ namespace GrandDevs.CZB
 
             DisableTargettig();
             _playerAvatarShine.SetActive(false);
+            _siloAnimator.SetBool("Active", false);
         }
 
         public void ActivateWeapon(bool opponent)
@@ -117,6 +121,7 @@ namespace GrandDevs.CZB
             }
 
             _playerAvatarShine.SetActive(true);
+            _siloAnimator.SetBool("Active", true);
         }
 
         public void ImmediatelyAttack(object target)
@@ -188,6 +193,16 @@ namespace GrandDevs.CZB
             _damageText.text = _damage.ToString();
         }
 
+        private void PlayAttackAnimationOnTarget(GameObject target, Action onHitAction)
+        {
+            CombatAnimation.PlayFightAnimation(_currentPlayerAvatar, target, 0.5f, () =>
+            {
+                CreateVFX(target.transform.position);
+                UpdateUI();
+                if (onHitAction != null) onHitAction();
+            }, null);
+        }
+
         private void Attack()
         {
             BoardWeaponStartedAttackEvent?.Invoke();
@@ -197,21 +212,29 @@ namespace GrandDevs.CZB
             //todo change on animated attack and other attack type
             if (_player != null)
             {
-                CreateVFX(_player.transform.position);
+                PlayAttackAnimationOnTarget(_player.gameObject, () =>
+                {
+                    if (_player.playerInfo.netId == _owner.netId)
+                        _owner.FightPlayerBySkill(_damage, false);
+                    else
+                        _owner.FightPlayerBySkill(_damage);
+                });
+                //CreateVFX(_player.transform.position);
 
-                if (_player.playerInfo.netId == _owner.netId)
-                    _owner.FightPlayerBySkill(_damage, false);
-                else
-                    _owner.FightPlayerBySkill(_damage);
+                
             }
             else if (_creature != null)
             {
                 int damageToUs = _creature.attackStat.effectiveValue;
 
-                CreateVFX(_creature.transform.position);
-                _owner.FightCreatureBySkill(_damage, _creature.card);
-                _owner.playerInfo.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
-                _owner.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
+                PlayAttackAnimationOnTarget(_creature.gameObject, () =>
+                {
+                    _owner.FightCreatureBySkill(_damage, _creature.card);
+                    _owner.playerInfo.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
+                    _owner.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
+                });
+                //CreateVFX(_creature.transform.position);
+                
             }
             else
             {
@@ -235,7 +258,7 @@ namespace GrandDevs.CZB
 
             _playerAvatarShine.SetActive(false);
 
-            UpdateUI();
+            //UpdateUI();
 
             CheckIsDie();
 
@@ -285,10 +308,11 @@ namespace GrandDevs.CZB
 
         public void Destroy()
         {
-            _selfObject.SetActive(false);
+            //_selfObject.SetActive(false);
             _healthObject.SetActive(false);
             _damageObject.SetActive(false);
-            _siloObject.SetActive(true);
+            //_siloObject.SetActive(true);
+            _siloAnimator.SetBool("Active", false);
         }
     }
 }

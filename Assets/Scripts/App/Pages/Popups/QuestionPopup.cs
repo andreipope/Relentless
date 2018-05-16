@@ -21,9 +21,11 @@ namespace GrandDevs.CZB
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
-        private MenuButton _button1,
-                            _button2;
-        private MenuButtonNoGlow _closeButton;
+        //private MenuButton _button1,
+        //                    _button2;
+        private MenuButtonNoGlow //_closeButton,
+                                 _buttonYes,
+                                 _buttonNo;
 		private TextMeshProUGUI _buttonText;
 
         public void Init()
@@ -34,13 +36,13 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/QuestionPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-			_button1 = _selfPage.transform.Find("Button1").GetComponent<MenuButton>();
-			_button2 = _selfPage.transform.Find("Button2").GetComponent<MenuButton>();
-			_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
+            _buttonYes = _selfPage.transform.Find("Button_Yes").GetComponent<MenuButtonNoGlow>();
+            _buttonNo = _selfPage.transform.Find("Button_No").GetComponent<MenuButtonNoGlow>();
+			//_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
 
-			_closeButton.onClickEvent.AddListener(Hide);
-			_button1.onClickEvent.AddListener(Hide);
-			_button2.onClickEvent.AddListener(ConfirmationButtonHandler);
+			//_closeButton.onClickEvent.AddListener(Hide);
+            _buttonYes.onClickEvent.AddListener(Hide);
+            _buttonNo.onClickEvent.AddListener(ConfirmationButtonHandler);
 
 
 			_text = _selfPage.transform.Find("Text").GetComponent<TextMeshProUGUI>();
