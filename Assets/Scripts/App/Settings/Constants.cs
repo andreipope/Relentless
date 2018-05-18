@@ -29,6 +29,9 @@
 		internal static uint CARD_EPIC_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
+        internal static uint MAX_BOARD_CREATURES = 6;
+
+
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";

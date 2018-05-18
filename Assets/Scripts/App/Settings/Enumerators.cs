@@ -2,6 +2,13 @@
 {
     public class Enumerators
     {
+        public enum CardSound
+        {
+            PLAY,
+            ATTACK,
+            DEATH,
+        }
+
         public enum AppState
         {
             NONE,
@@ -27,7 +34,7 @@
         public enum SoundType : int
         {
             CLICK,
-          //  OTHER,
+            OTHER,
             BACKGROUND,
             TUTORIAL
         }

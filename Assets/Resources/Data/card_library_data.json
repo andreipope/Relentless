@@ -439,15 +439,15 @@
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 8,
-          "description": "",
-          //"description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
+          //"description": "",
+          "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
 		  "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
           "picture": "Shammann",
           "damage": 5,
           "health": 6,
           "type": "WALKER",
           "rarity": "EPIC",
-		      /*"abilities": [
+		      "abilities": [
             {
               "type": "SUMMON",
               "activityType": "passive",
@@ -455,7 +455,7 @@
               "targetType": "NONE",
               "value": 33
             }
-          ]*/
+          ]
         }
       ]
     },

@@ -471,7 +471,7 @@ public class DemoAIPlayer : DemoPlayer
         if ((libraryCard.cost <= availableMana && CurrentTurn > _minTurnForAttack) || Constants.DEV_MODE)
         {
             List<int> target = GetAbilityTarget(card);
-            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE && playerBoardCards.Count < Constants.MAX_BOARD_CREATURES)
             {
                 //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                 //    if (target.Count == 0)

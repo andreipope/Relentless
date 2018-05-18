@@ -15,6 +15,8 @@ using CCGKit;
 
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB;
+using System.Collections.Generic;
+using GrandDevs.CZB.Helpers;
 
 public class BoardCreature : MonoBehaviour
 {
@@ -113,6 +115,9 @@ public class BoardCreature : MonoBehaviour
     {
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
+
+        InternalTools.PlayCardSound(Enumerators.CardSound.DEATH, card.cardId);
+
         if (ownerPlayer != null)
             CreatureOnDieEvent?.Invoke();
     }
@@ -328,7 +333,9 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-				//sortingGroup.sortingOrder = 100;
+                InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, card.cardId);
+
+                //sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
                     Debug.Log("CreatureOnAttackEvent?.Invoke(targetPlayer)");

@@ -200,7 +200,7 @@ namespace GrandDevs.CZB
                 CreateVFX(target.transform.position);
                 UpdateUI();
                 if (onHitAction != null) onHitAction();
-            }, null);
+            }, () => { _siloAnimator.SetBool("Active", false); });
         }
 
         private void Attack()

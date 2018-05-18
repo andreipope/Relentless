@@ -133,8 +133,8 @@ namespace GrandDevs.CZB
         }
 
         //NEW
-        public AudioSource PlaySound(List<AudioClip> clips, Enumerators.SoundType soundType, int clipIndex = 0, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool returnHashCode = false)
+        public AudioSource PlaySound(List<AudioClip> clips, Enumerators.SoundType soundType, int clipIndex = 0, int priority = 128, float volume = 1f, Transform parent = null, bool isLoop = false,
+                             bool isPlaylist = false, bool dropOldBackgroundMusic = false, bool returnHashCode = false)
         {
             if (dropOldBackgroundMusic)
             {

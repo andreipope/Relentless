@@ -4,6 +4,7 @@ using System.Reflection;
 using GrandDevs.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace GrandDevs.CZB.Helpers
 {
@@ -52,6 +53,23 @@ namespace GrandDevs.CZB.Helpers
                 return "";
 
             return data.Replace(LINE_BREAK, "\n");
+        }
+
+        public static void PlayCardSound(Enumerators.CardSound type, int cardId)
+        {
+            //  Play a card sound >>
+
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(cardId);
+            string soundFolder = type.ToString().Substring(0, 1) + type.ToString().Substring(1).ToLower();
+            string soundPath = "Sounds/Cards/" + libraryCard.cardSetType.ToString().ToUpper() + "/" + libraryCard.name + "/" + soundFolder;
+            var clips = Resources.LoadAll<AudioClip>(soundPath);
+
+            if (clips.Length > 0)
+                GameClient.Get<ISoundManager>().PlaySound(new List<AudioClip>() { clips[UnityEngine.Random.Range(0, clips.Length)] }, Enumerators.SoundType.OTHER);
+            else
+                Debug.Log("<color=yellow>Wanted to play a card sound: " + soundPath + ", but didn't find it.</color>");
+
+            //  << play a card sound
         }
     }
 }

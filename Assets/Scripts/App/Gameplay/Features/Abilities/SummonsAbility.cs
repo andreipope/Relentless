@@ -45,7 +45,7 @@ namespace GrandDevs.CZB
             if (abilityCallType != Enumerators.AbilityCallType.TURN_START || !cardCaller.isActivePlayer)
                 return;
 
-            if (cardCaller.boardZone.cards.Count > 6)
+            if (cardCaller.boardZone.cards.Count >= Constants.MAX_BOARD_CREATURES)
                 return;
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(value);
@@ -57,15 +57,19 @@ namespace GrandDevs.CZB
                     cardSetName = cardSet.name;
             }
             //Get server access
-            GetServer();
+
+            _server = cardCaller.GetServer();
 
             //PlayerInfo playerInfo = cardCaller.playerInfo;
             //if (cardCaller == null)
-              var  playerInfo = cardCaller.playerInfo;
+            var playerInfo = cardCaller.playerInfo;
 
             var card = CreateRuntimeCard(libraryCard, playerInfo);
 
             var creature = CreateBoardCreature(card, cardSetName);
+
+            // if (!cardCaller.boardZone.cards.Contains(card))
+            cardCaller.boardZone.AddCard(card);
 
             playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(creature.card);
 
@@ -78,10 +82,10 @@ namespace GrandDevs.CZB
         {
             var cardObject = GameObject.Instantiate(_boardCreaturePrefab);
             var board = GameObject.Find("PlayerBoard");
-            cardObject.tag = "PlayerOwned";
+            cardObject.tag = cardCaller is DemoHumanPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
             cardObject.transform.parent = board.transform;
-            cardObject.transform.position = new Vector2(1.9f * cardCaller.boardZone.cards.Count, 0);
-            cardObject.transform.Find("TypeIcon").gameObject.SetActive(false);
+            cardObject.transform.position = new Vector2(1.9f * cardCaller.playerBoardCardsList.Count, 0);
+        //    cardObject.transform.Find("TypeIcon").gameObject.SetActive(false);
 
             var boardCreature = cardObject.GetComponent<BoardCreature>();
             boardCreature.ownerPlayer = cardCaller;
@@ -90,8 +94,9 @@ namespace GrandDevs.CZB
 
             cardCaller.playerBoardCardsList.Add(boardCreature);
 
-            if(cardCaller is DemoHumanPlayer)// WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
-                (cardCaller as DemoHumanPlayer).RearrangeBottomBoard();
+            var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
+            localPlayer.RearrangeBottomBoard();
+            localPlayer.RearrangeTopBoard();
 
             return boardCreature;
         }
@@ -129,18 +134,6 @@ namespace GrandDevs.CZB
             cardCaller.EffectSolver.SetTriggers(card);
 
             return card;
-        }
-
-        private void GetServer()
-        {
-            if (_server == null)
-            {
-                var server = GameObject.Find("Server");
-                if (server != null)
-                {
-                    _server = server.GetComponent<Server>();
-                }
-            }
         }
     }
 }

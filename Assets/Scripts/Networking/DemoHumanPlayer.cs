@@ -18,6 +18,7 @@ using TMPro;
 using CCGKit;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Helpers;
 
 /// <summary>
 /// The demo player is a subclass of the core HumanPlayer type which extends it with demo-specific
@@ -990,6 +991,8 @@ public class DemoHumanPlayer : DemoPlayer
             card.transform.DORotate(Vector3.zero, .1f);
             card.GetComponent<HandCard>().enabled = false;
 
+            InternalTools.PlayCardSound(Enumerators.CardSound.PLAY, card.card.cardId);
+
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 var boardCreature = Instantiate(boardCreaturePrefab);
@@ -1108,27 +1111,57 @@ public class DemoHumanPlayer : DemoPlayer
         //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
         animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .3f));
         //go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
-        go.transform.DOScale(new Vector3(.18f, .18f, .18f), .2f);
+        go.transform.DOScale(new Vector3(.195f, .195f, .195f), .2f);
         animationSequence3.OnComplete(() =>
         {
             go.transform.Find("BackgroundBack").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
             //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
-            animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .75f));
+            animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .45f));
             //animationSequence4.AppendInterval(2f);
+
+
+            //Changing layers to all child objects to set them Behind the Graveyard Card
+            sortingGroup.sortingLayerName = "Foreground";
+            sortingGroup.sortingOrder = 7;
+
+            sortingGroup.gameObject.layer = 0;
+
+            for (int i = 0; i < sortingGroup.transform.childCount; i++)
+            {
+                Transform child = sortingGroup.transform.GetChild(i);
+                
+                if (child.name != "BackgroundBack")
+                {
+                    child.gameObject.SetActive(false);
+                }
+                else
+                {
+                    child.gameObject.layer = 0;
+                }
+            }
         });
 
         Sequence animationSequence2 = DOTween.Sequence();
         //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
-        animationSequence2.Append(go.transform.DOMove(new Vector3(-6.8f, -1, 0), 1f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(-6.57f, -1, 0), 0.7f));
+
 
         animationSequence2.OnComplete(() =>
         {
-            sortingGroup.sortingLayerName = "Default";
-            //sortingGroup.sortingOrder = 1;
+            for (int i = 0; i < sortingGroup.transform.childCount; i++)
+            {
+                Transform child = sortingGroup.transform.GetChild(i);
+
+                if (child.name == "BackgroundBack")
+                {
+                    child.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                }
+            }
+
             Sequence animationSequence5 = DOTween.Sequence();
             //animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f)); // Changed by Basil: card aftermove position
-            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.9f, -3.3f, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(-6.57f, -4.352f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
                 MonoBehaviour.Destroy(go);
@@ -1146,27 +1179,31 @@ public class DemoHumanPlayer : DemoPlayer
 
         Sequence animationSequence3 = DOTween.Sequence();
         //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, 90), .2f));
-        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -90), .2f));
+        animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -30f), .4f));
         go.transform.DOScale(new Vector3(1, 1, 1), .2f);
-        animationSequence3.OnComplete(() =>
-        {
-            if (go.transform.Find("BackgroundBack") != null)
-                go.transform.Find("BackgroundBack").gameObject.SetActive(true);
-            Sequence animationSequence4 = DOTween.Sequence();
-            //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
-            //animationSequence4.AppendInterval(2f);
-        });
+        //animationSequence3.OnComplete(() =>
+        //{
+        //    if (go.transform.Find("BackgroundBack") != null)
+        //        go.transform.Find("BackgroundBack").gameObject.SetActive(true);
+        //    //Sequence animationSequence4 = DOTween.Sequence();
+        //    //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+        //    //animationSequence4.AppendInterval(2f);
+        //});
 
         Sequence animationSequence2 = DOTween.Sequence();
         //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
-        animationSequence2.Append(go.transform.DOMove(new Vector3(5.5f, 8f, 0), .6f));
+        animationSequence2.Append(go.transform.DOMove(new Vector3(6.535f, 14f, 0), .6f));
 
         animationSequence2.OnComplete(() =>
         {
-            sortingGroup.sortingLayerName = "Default";
-            sortingGroup.sortingOrder = 1;
+            //sortingGroup.sortingLayerName = "Default";
+            sortingGroup.sortingOrder = 7; // Foreground layer
+
+            Sequence animationSequence4 = DOTween.Sequence();
+            animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0f, 0f), .2f));
+
             Sequence animationSequence5 = DOTween.Sequence();
-            animationSequence5.Append(go.transform.DOMove(new Vector3(6.3f, 7.5f, 0), .5f));
+            animationSequence5.Append(go.transform.DOMove(new Vector3(6.535f, 6.306f, 0), .5f));
             animationSequence5.OnComplete(() =>
             {
                 MonoBehaviour.Destroy(go);
@@ -1389,6 +1426,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         var opponentBoard = opponentInfo.namedZones[Constants.ZONE_BOARD];
         var runtimeCard = opponentBoard.cards[opponentBoard.cards.Count - 1];
+
+        InternalTools.PlayCardSound(Enumerators.CardSound.PLAY, msg.card.cardId);
 
         if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
