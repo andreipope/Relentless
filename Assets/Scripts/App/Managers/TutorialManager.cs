@@ -112,7 +112,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(4.5f, -6.8f, 0), new Vector3(1.5f, -3f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(3f, -6f, 0), new Vector3(1.5f, -3f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,

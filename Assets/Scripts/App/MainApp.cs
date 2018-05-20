@@ -37,7 +37,7 @@ namespace GrandDevs.CZB
             if (Instance == this)
             {
                 GameClient.Instance.InitServices();
-				
+				/*
                 if (Constants.DEV_MODE)
                 {
                     GameClient.Get<IDataManager>().StartLoadCache();
@@ -45,6 +45,12 @@ namespace GrandDevs.CZB
                 }
                 else
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+
+*/
+
+				GameClient.Get<IDataManager>().StartLoadCache();
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, .3f, null, true);

@@ -47,7 +47,7 @@
           "cost": 5,
           "description": "<b>Enter:</b> Damage a target for 2 damage",
 		  "flavorText": "Hot, so very hot - all the time!",
-          "picture": "Cynderman",
+          "picture": "сynderman",
           "damage": 4,
           "health": 3,
           "type": "WALKER",
@@ -559,7 +559,7 @@
       ]
     },
     {
-      "name": "Items",
+      "name": "Item",
       "cards": [
         {
           "id": 24,

@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 224143680395415516}
   - component: {fileID: 222781276948562072}
   - component: {fileID: 114098188771557008}
+  - component: {fileID: 114495600031714604}
   m_Layer: 5
   m_Name: CardsAmountText
   m_TagString: Untagged
@@ -623,7 +624,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 39620fd89514f0e4aa9d023fcf18dde7, type: 3}
+    m_Font: {fileID: 12800000, guid: abfcf0fbb419ca24d91c2e7978616da7, type: 3}
     m_FontSize: 80
     m_FontStyle: 0
     m_BestFit: 1
@@ -655,7 +656,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 2b6f91f18fda1a248b4be625a4a01f95, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b99698427f69bad46b1414033adbf98e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1211,6 +1212,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114495600031714604
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1005100619208774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 3, y: 3}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114558847943963714
 MonoBehaviour:
   m_ObjectHideFlags: 1

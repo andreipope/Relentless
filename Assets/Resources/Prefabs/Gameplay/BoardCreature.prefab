@@ -715,7 +715,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1313522117
+  randomSeed: 372946006
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -867,7 +867,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.1
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -908,7 +908,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.4
+      scalar: 1.2
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1617,7 +1617,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0, b: 0, a: 1}
+        key0: {r: 0.47794116, g: 0.4744269, b: 0.4744269, a: 1}
         key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -1625,15 +1625,15 @@ ParticleSystem:
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
-        ctime0: 8096
-        ctime1: 65535
+        ctime0: 0
+        ctime1: 24479
         ctime2: 65535
         ctime3: 0
         ctime4: 0
         ctime5: 0
         ctime6: 0
         ctime7: 0
-        atime0: 7903
+        atime0: 47802
         atime1: 65495
         atime2: 65535
         atime3: 0
@@ -1642,7 +1642,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 2
+        m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -1815,7 +1815,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.8
+      scalar: 1.3
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4254,7 +4254,7 @@ SpriteRenderer:
   m_Size: {x: 2.02, y: 2.86}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212842527273433324
 SpriteRenderer:
@@ -4298,7 +4298,7 @@ SpriteRenderer:
   m_Size: {x: 2.94, y: 3.85}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212937100386636934
 SpriteRenderer:

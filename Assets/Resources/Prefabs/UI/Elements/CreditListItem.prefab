@@ -82,8 +82,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Co-Founder and Executive Producer
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 03fa9e8989fc342c291183d83ef884be, type: 2}
-  m_sharedMaterial: {fileID: 21906236892420676, guid: 03fa9e8989fc342c291183d83ef884be,
+  m_fontAsset: {fileID: 11400000, guid: 82356db5a5e5f1d468125eb62285c598, type: 2}
+  m_sharedMaterial: {fileID: 21431480145053772, guid: 82356db5a5e5f1d468125eb62285c598,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -214,8 +214,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6411651ffb5a64dc9852fe87495edc86, type: 2}
-  m_sharedMaterial: {fileID: 21441220326157840, guid: 6411651ffb5a64dc9852fe87495edc86,
+  m_fontAsset: {fileID: 11400000, guid: 82356db5a5e5f1d468125eb62285c598, type: 2}
+  m_sharedMaterial: {fileID: 21431480145053772, guid: 82356db5a5e5f1d468125eb62285c598,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

@@ -260,6 +260,7 @@ namespace GrandDevs.CZB
 
         private void PackOpenButtonHandler(GameObject go)
         {
+            if(_cardsContainer != null)
             if (_cardsContainer.transform.childCount == 0 && !_lock)
             {
                 _playerManager.LocalUser.packsCount--;

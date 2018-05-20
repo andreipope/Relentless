@@ -15,7 +15,7 @@ namespace GrandDevs.CZB
 		private TMP_InputField _usernameInputField,
                                 _passwordInputField;
 
-        private MenuButton _signUpButton,
+        private MenuButtonNoGlow _signUpButton,
                             _loginButton;
 
 
@@ -31,10 +31,10 @@ namespace GrandDevs.CZB
 			_usernameInputField = _selfPage.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
 			_passwordInputField = _selfPage.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
 			
-            _signUpButton = _selfPage.transform.Find("SignUpButton").GetComponent<MenuButton>();
-			_loginButton = _selfPage.transform.Find("LogInButton").GetComponent<MenuButton>();
+            _signUpButton = _selfPage.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
+			_loginButton = _selfPage.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
 
-			_signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
+            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
             _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
 
             Hide();

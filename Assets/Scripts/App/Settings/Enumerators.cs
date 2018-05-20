@@ -235,7 +235,7 @@
             AIR,
             LIFE,
             TOXIC,
-			ITEMS,
+			ITEM,
 			OTHERS,
 
             NONE

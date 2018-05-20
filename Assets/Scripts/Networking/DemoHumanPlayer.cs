@@ -500,7 +500,7 @@ public class DemoHumanPlayer : DemoPlayer
     {
         
         var handWidth = 0.0f;
-        var spacing = -2.0f; // -1
+        var spacing = -1.5f; // -1
         foreach (var card in playerHandCards)
         {
             handWidth += card.GetComponent<SpriteRenderer>().bounds.size.x;
@@ -510,28 +510,29 @@ public class DemoHumanPlayer : DemoPlayer
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.50f, 0.05f, 0.0f)); // changed by Basil, x was 0.555
         var pivot = new Vector3(6f, -8.05f, 0f); //1.115f, -8.05f, 0f
-        var totalTwist = -10f;
-        if (playerHandCards.Count == 1)
+        var totalTwist = -25f;
+        /*if (playerHandCards.Count == 1)
         {
             totalTwist = 0;
-        }
+        }*/
         var twistPerCard = totalTwist / playerHandCards.Count;
-        float startTwist = -1f * (totalTwist / 2);
-        var scalingFactor = 0.06f;
+        float startTwist = ((totalTwist - twistPerCard) / 2f);
+        var scalingFactor = 0.04f;
         Vector2 moveToPosition = Vector2.zero;
         for (var i = 0; i < playerHandCards.Count; i++)
         {
             var card = playerHandCards[i];
-            var twist = startTwist + (i * twistPerCard);
+            var twist = startTwist - (i * twistPerCard);
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
-            moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
+			moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
+			//moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
             //card.transform.DOMove(moveToPosition, 0.5f);
             //card.transform.DORotate(Vector3.forward * twist, 0.5f);
             card.RearrangeHand(moveToPosition, Vector3.forward * twist);
             pivot.x += handWidth / playerHandCards.Count;
             card.GetComponent<SortingGroup>().sortingLayerName = "HandCards";
-            card.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count - (i + 1);
+            card.GetComponent<SortingGroup>().sortingOrder = i;
         }
     }
 
@@ -549,10 +550,10 @@ public class DemoHumanPlayer : DemoPlayer
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
         var pivot = new Vector3(-2.5f, 7.95f, 0f);
         var totalTwist = -10f; // was -20
-        if (opponentHandCards.Count == 1)
+        /*if (opponentHandCards.Count == 1)
         {
             totalTwist = 0;
-        }
+        }*/
         var twistPerCard = totalTwist / opponentHandCards.Count;
         float startTwist = -1f * (totalTwist / 2);
         var scalingFactor = 0.06f;
@@ -565,7 +566,8 @@ public class DemoHumanPlayer : DemoPlayer
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
 
-            movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
+			//movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
+			movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
             rotatePosition = new Vector3(0, 0, twist); // added multiplier, was: 0,0, twist
 
             if (isMove)
@@ -825,7 +827,7 @@ public class DemoHumanPlayer : DemoPlayer
                         if (!isPreviewActive || topmostCardView.card.instanceId != currentPreviewedCardId)
                         {
                             DestroyCardPreview();
-                            CreateCardPreview(topmostCardView.card, topmostCardView.transform.position, topmostCardView.IsHighlighted());
+                            CreateCardPreview(topmostCardView.card, topmostCardView.transform.position, true);
                         }
                     }
                 }
@@ -1608,6 +1610,8 @@ public class DemoHumanPlayer : DemoPlayer
         var attackingCard = opponentBoardCards.Find(x => x.card.instanceId == msg.attackingCardInstanceId);
         if (attackingCard != null)
         {
+            InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, attackingCard.card.cardId);
+
             var avatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>(); ;
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, avatar.gameObject, 0.1f, () =>
             {
@@ -1619,11 +1623,15 @@ public class DemoHumanPlayer : DemoPlayer
 
     public override void OnCreatureAttacked(CreatureAttackedMessage msg)
     {
+
         base.OnCreatureAttacked(msg);
         var attackingCard = opponentBoardCards.Find(x => x.card.instanceId == msg.attackingCardInstanceId);
         var attackedCard = playerBoardCards.Find(x => x.card.instanceId == msg.attackedCardInstanceId);
+
         if (attackingCard != null && attackedCard != null)
         {
+            InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, attackingCard.card.cardId);
+
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
                 effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);

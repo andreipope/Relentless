@@ -96,7 +96,7 @@ namespace GrandDevs.CZB
 
             var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
             localPlayer.RearrangeBottomBoard();
-            localPlayer.RearrangeTopBoard();
+//            localPlayer.RearrangeTopBoard();
 
             return boardCreature;
         }

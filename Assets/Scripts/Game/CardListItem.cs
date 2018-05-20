@@ -34,7 +34,7 @@ public class CardListItem : MonoBehaviour
     public void Init(Deck deck, Card card, int count, uint maxCount)
     {
         logoImage = transform.Find("Image_LogoMask/Image_Logo").GetComponent<Image>();
-        logoImage.sprite = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/CardsDeckEditing/Elements/" + card.cardSetType + "/" + card.name);
+        logoImage.sprite = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/CardsDeckEditingIcons/" + card.name.ToLower());
         deckButton = deck;
         this.card = card;
         this.count = count;

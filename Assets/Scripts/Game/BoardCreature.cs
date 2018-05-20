@@ -130,9 +130,9 @@ public class BoardCreature : MonoBehaviour
           
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
+        var rarity = Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
+        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), libraryCard.picture.ToLower()));
 
 		attackStat = card.namedStats["DMG"];
 		healthStat = card.namedStats["HP"];

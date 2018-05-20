@@ -208,7 +208,7 @@ namespace GrandDevs.CZB
             _loader = GameClient.Get<ILoadObjectsManager>();
             selfObject = gameObject;
            // this.skill = skill;
-            icon = selfObject.transform.Find("SpellIcon/Icon").GetComponent<SpriteRenderer>();
+            icon = selfObject.transform.Find("Icon").GetComponent<SpriteRenderer>();
             costText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
             Sprite sp = _loader.GetObjectByPath<Sprite>(iconPath);

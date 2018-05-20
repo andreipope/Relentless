@@ -15,8 +15,8 @@ public class CardView : MonoBehaviour
 {
     public RuntimeCard card { get; private set; }
 
-    [SerializeField]
-    protected SpriteRenderer glowSprite;
+    //[SerializeField]
+    //protected SpriteRenderer glowSprite;
 
     [SerializeField]
     protected SpriteRenderer pictureSprite;
@@ -55,7 +55,7 @@ public class CardView : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Assert.IsNotNull(glowSprite);
+        //Assert.IsNotNull(glowSprite);
         Assert.IsNotNull(pictureSprite);
         Assert.IsNotNull(costText);
         Assert.IsNotNull(nameText);
@@ -78,9 +78,12 @@ public class CardView : MonoBehaviour
 
         manaCost = libraryCard.cost;
 
-        var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
-        backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, libraryCard.picture));
+
+		var rarity = Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
+
+		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), libraryCard.picture.ToLower()));
+
 
         removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -98,10 +101,11 @@ public class CardView : MonoBehaviour
 
         manaCost = libraryCard.cost;
 
-		var backgroundPicture = "Rarity_" + Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
+		var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 
-		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, backgroundPicture));
-		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Elements/{0}/{1}", setName, card.picture));
+		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+
+		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
     }
 
 
@@ -172,13 +176,13 @@ public class CardView : MonoBehaviour
         return owner.manaStat.effectiveValue >= manaCost;
     }
 
-    public bool IsHighlighted()
+    public void IsHighlighted()
     {
-        return glowSprite.enabled;
+        //return glowSprite.enabled;
     }
 
     public void SetHighlightingEnabled(bool enabled)
     {
-        glowSprite.enabled = enabled;
+        //glowSprite.enabled = enabled;
     }
 }

@@ -369,7 +369,7 @@ public class BoardSkill : MonoBehaviour
         CreateAirVFX(cruature.transform.position);
 
         (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
-        (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
+//        (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
     }
 
     public PlayerInfo GetOwnerOfCreature(BoardCreature creature)

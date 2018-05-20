@@ -39,7 +39,7 @@ namespace GrandDevs.CZB
             _confirmButton.onClickEvent.AddListener(ConfirmButtonOnClickHandler);
             _cancelButton.onClickEvent.AddListener(CancelButtonOnClickHandler);
 
-            _text = _selfPage.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 
             Hide();
         }

@@ -102,7 +102,7 @@ namespace GrandDevs.CZB
 
 
             (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
+            //(NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
         }
 
         private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo)
