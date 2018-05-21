@@ -52,7 +52,7 @@ namespace GrandDevs.CZB
 
             _packsCount = _selfPage.transform.Find("OpenButton/Count").GetComponent<TextMeshProUGUI>();
 
-            _buttonCredits = _selfPage.transform.Find("Button_Credit").GetComponent<Button>();
+            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<Button>();
 
             //Debug.Log(_buttonCredits);
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();

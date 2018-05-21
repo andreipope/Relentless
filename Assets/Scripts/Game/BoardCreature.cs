@@ -339,7 +339,9 @@ public class BoardCreature : MonoBehaviour
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
                     Debug.Log("CreatureOnAttackEvent?.Invoke(targetPlayer)");
-                    ownerPlayer.FightPlayer(card);
+					(ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, targetPlayer.transform.position, attackStat.effectiveValue);
+
+					ownerPlayer.FightPlayer(card);
                     CreatureOnAttackEvent?.Invoke(targetPlayer);
                 },
                 () =>
@@ -348,7 +350,7 @@ public class BoardCreature : MonoBehaviour
                     fightTargetingArrow = null;
                 });
             }
-            if (fightTargetingArrow.selectedCard != null)
+            if (fightTargetingArrow.selectedCard != null)                                                                                 
             {
                 var targetCard = fightTargetingArrow.selectedCard;
                 SetHighlightingEnabled(false);
@@ -361,7 +363,9 @@ public class BoardCreature : MonoBehaviour
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
                         Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
-                        ownerPlayer.FightCreature(card, targetCard.card);
+                        (ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, targetCard.transform.position, attackStat.effectiveValue);
+
+						ownerPlayer.FightCreature(card, targetCard.card);
                         CreatureOnAttackEvent?.Invoke(targetCard);
                     },
                     () =>

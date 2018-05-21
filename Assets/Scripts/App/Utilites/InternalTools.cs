@@ -65,7 +65,7 @@ namespace GrandDevs.CZB.Helpers
             var clips = Resources.LoadAll<AudioClip>(soundPath);
 
             if (clips.Length > 0)
-                GameClient.Get<ISoundManager>().PlaySound(new List<AudioClip>() { clips[UnityEngine.Random.Range(0, clips.Length)] }, Enumerators.SoundType.OTHER);
+                GameClient.Get<ISoundManager>().PlaySound(new List<AudioClip>() { clips[UnityEngine.Random.Range(0, clips.Length)] }, Enumerators.SoundType.OTHER, 0, 128, 0.15f);
             else
                 Debug.Log("<color=yellow>Wanted to play a card sound: " + soundPath + ", but didn't find it.</color>");
 

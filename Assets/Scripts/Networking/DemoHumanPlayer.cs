@@ -510,12 +510,14 @@ public class DemoHumanPlayer : DemoPlayer
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.50f, 0.05f, 0.0f)); // changed by Basil, x was 0.555
         var pivot = new Vector3(6f, -8.05f, 0f); //1.115f, -8.05f, 0f
-        var totalTwist = -25f;
-        /*if (playerHandCards.Count == 1)
-        {
-            totalTwist = 0;
-        }*/
-        var twistPerCard = totalTwist / playerHandCards.Count;
+        var twistPerCard = -5;
+
+		if (playerHandCards.Count == 1)
+		{
+			twistPerCard = 0;
+		}
+
+        var totalTwist = twistPerCard * playerHandCards.Count;
         float startTwist = ((totalTwist - twistPerCard) / 2f);
         var scalingFactor = 0.04f;
         Vector2 moveToPosition = Vector2.zero;
@@ -526,9 +528,6 @@ public class DemoHumanPlayer : DemoPlayer
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
 			moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
-			//moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
-            //card.transform.DOMove(moveToPosition, 0.5f);
-            //card.transform.DORotate(Vector3.forward * twist, 0.5f);
             card.RearrangeHand(moveToPosition, Vector3.forward * twist);
             pivot.x += handWidth / playerHandCards.Count;
             card.GetComponent<SortingGroup>().sortingLayerName = "HandCards";
@@ -548,47 +547,46 @@ public class DemoHumanPlayer : DemoPlayer
         handWidth -= spacing;
 
         //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
-        var pivot = new Vector3(-2.5f, 7.95f, 0f);
-        var totalTwist = -10f; // was -20
-        /*if (opponentHandCards.Count == 1)
-        {
-            totalTwist = 0;
-        }*/
-        var twistPerCard = totalTwist / opponentHandCards.Count;
-        float startTwist = -1f * (totalTwist / 2);
-        var scalingFactor = 0.06f;
-        Vector3 movePosition = Vector3.zero;
-        Vector3 rotatePosition = Vector3.zero;
-        for (var i = 0; i < opponentHandCards.Count; i++)
-        {
-            var card = opponentHandCards[i];
-            var twist = startTwist + (i * twistPerCard);
-            var nudge = Mathf.Abs(twist);
-            nudge *= scalingFactor;
+        var pivot = new Vector3(-3.2f, 8.5f, 0f);
+		var twistPerCard = 5;
 
-			//movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y + nudge);
+		if (opponentHandCards.Count == 1)
+		{
+			twistPerCard = 0;
+		}
+
+		var totalTwist = twistPerCard * opponentHandCards.Count;
+		float startTwist = ((totalTwist - twistPerCard) / 2f);
+		var scalingFactor = 0.04f;
+		Vector3 movePosition = Vector3.zero;
+		Vector3 rotatePosition = Vector3.zero;
+		for (var i = 0; i < opponentHandCards.Count; i++)
+		{
+			var card = opponentHandCards[i];
+			var twist = startTwist - (i * twistPerCard);
+			var nudge = Mathf.Abs(twist);
+			nudge *= scalingFactor;
 			movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
-            rotatePosition = new Vector3(0, 0, twist); // added multiplier, was: 0,0, twist
+			rotatePosition = new Vector3(0, 0, twist); // added multiplier, was: 0,0, twist
 
-            if (isMove)
-            {
-                if (i == opponentHandCards.Count - 1 && isNewCard)
-                {
-                    card.transform.position = new Vector3(-8.2f, 5.7f, 0); // OPPONENT DECK START POINT
-                    card.transform.eulerAngles = Vector3.forward * 90f;
-                }
-                card.transform.DOMove(movePosition, 0.5f);
-                card.transform.DORotate(rotatePosition, 0.5f);
-            }
-            else
-            {
-                card.transform.position = movePosition;
-                card.transform.rotation = Quaternion.Euler(rotatePosition);
-            }
-
-            pivot.x += handWidth / opponentHandCards.Count;
-            card.GetComponent<SortingGroup>().sortingOrder = i;
-        }
+			if (isMove)
+			{
+				if (i == opponentHandCards.Count - 1 && isNewCard)
+				{
+					card.transform.position = new Vector3(-8.2f, 5.7f, 0); // OPPONENT DECK START POINT
+					card.transform.eulerAngles = Vector3.forward * 90f;
+				}
+				card.transform.DOMove(movePosition, 0.5f);
+				card.transform.DORotate(rotatePosition, 0.5f);
+			}
+			else
+			{
+				card.transform.position = movePosition;
+				card.transform.rotation = Quaternion.Euler(rotatePosition);
+			}
+			pivot.x += handWidth / opponentHandCards.Count;
+			card.GetComponent<SortingGroup>().sortingOrder = i;
+		}
     }
 
     public virtual void RearrangeTopBoard(Action onComplete = null)
@@ -1022,10 +1020,7 @@ public class DemoHumanPlayer : DemoPlayer
                 });
 
                 //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                if (libraryCard.cardType == Enumerators.CardType.HEAVY)
-                {
-                    PlayHeavyAnimation(boardCreature, -1.55f);
-                }
+                PlayArrivalAnimation(boardCreature, libraryCard.cardType);
 
             }
             else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
@@ -1054,13 +1049,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    //by Basil
-    /// <summary>
-    /// Plays Heavy type creature animation
-    /// </summary>
-    /// <param name="target">Which sprite and X pos to use</param>
-    /// <param name="yPos">For Player it is -1.7f and for AI it is 1.7f</param>
-    private void PlayHeavyAnimation(GameObject target, float yPos)
+    private void PlayArrivalAnimation(GameObject target, Enumerators.CardType type)
     {
         List<GameObject> activeObjects = new List<GameObject>();
         GameObject go = null;
@@ -1077,23 +1066,61 @@ public class DemoHumanPlayer : DemoPlayer
             }
         }
 
+
         GameClient.Get<ITimerManager>().AddTimer((creat) =>
         {
             GameObject creature = (GameObject)creat[0];
-            HeavyArrivalAnimation heavyAnim = new HeavyArrivalAnimation(
-                    creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
-                    creature.transform);
-            
-            heavyAnim.AddOnCompleteCallback((objects) =>
+
+            if (type == Enumerators.CardType.HEAVY)
             {
-                GameObject mainObj = (GameObject)objects[1];
-                mainObj.GetComponent<SpriteRenderer>().enabled = true;
-                List<GameObject> obs = (List<GameObject>)objects[0];
-                foreach (var item in obs)
+                HeavyArrivalAnimation heavyAnim = new HeavyArrivalAnimation(
+                        creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
+                        creature.transform);
+				heavyAnim.AddOnCompleteCallback((objects) =>
+				{
+					GameObject mainObj = (GameObject)objects[1];
+					mainObj.GetComponent<SpriteRenderer>().enabled = true;
+					List<GameObject> obs = (List<GameObject>)objects[0];
+					foreach (var item in obs)
+					{
+						item.SetActive(true);
+					}
+				}, new object[] { activeObjects, creature });
+			}
+            else if (type == Enumerators.CardType.FERAL)
+			{
+				FeralArrivalAnimation feralfAnim = new FeralArrivalAnimation(
+						creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
+						creature.transform);
+				feralfAnim.AddOnCompleteCallback((objects) =>
+				{
+					GameObject mainObj = (GameObject)objects[1];
+					mainObj.GetComponent<SpriteRenderer>().enabled = true;
+					List<GameObject> obs = (List<GameObject>)objects[0];
+					foreach (var item in obs)
+					{
+						item.SetActive(true);
+					}
+				}, new object[] { activeObjects, creature });
+			}
+            else
                 {
-                    item.SetActive(true);
+				WalkerArrivalAnimation walkerAnim = new WalkerArrivalAnimation(
+					creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
+					creature.transform);
+				walkerAnim.AddOnCompleteCallback((objects) =>
+				{
+					GameObject mainObj = (GameObject)objects[1];
+					mainObj.GetComponent<SpriteRenderer>().enabled = true;
+					List<GameObject> obs = (List<GameObject>)objects[0];
+					foreach (var item in obs)
+					{
+						item.SetActive(true);
+					}
+				}, new object[] { activeObjects, creature });
                 }
-            }, new object[] { activeObjects, creature });
+            
+
 
 
         }, new object[] { target, activeObjects }, 0.41f);
@@ -1442,7 +1469,7 @@ public class DemoHumanPlayer : DemoPlayer
             opponentBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
 
             boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
+            PlayArrivalAnimation(boardCreature, libraryCard.cardType);
             RearrangeTopBoard(() =>
             {
                 opponentHandZone.numCards -= 1;
@@ -1473,10 +1500,8 @@ public class DemoHumanPlayer : DemoPlayer
                     }
                 }
 
-                if (libraryCard.cardType == Enumerators.CardType.HEAVY)
-                {
-                    PlayHeavyAnimation(boardCreature, 1.95f);
-                }
+
+                //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
 
                 bool createTargetArrow = false;
 
@@ -1615,7 +1640,9 @@ public class DemoHumanPlayer : DemoPlayer
             var avatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>(); ;
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, avatar.gameObject, 0.1f, () =>
             {
-                effectSolver.FightPlayer(msg.attackingPlayerNetId, msg.attackingCardInstanceId);
+				PlayAttackVFX(attackingCard.card.type, avatar.transform.position, attackingCard.attackStat.effectiveValue);
+
+				effectSolver.FightPlayer(msg.attackingPlayerNetId, msg.attackingCardInstanceId);
                 attackingCard.CreatureOnAttack(avatar);
             });
         }
@@ -1634,11 +1661,78 @@ public class DemoHumanPlayer : DemoPlayer
 
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
-                effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);
+                PlayAttackVFX(attackingCard.card.type, attackedCard.transform.position, attackingCard.attackStat.effectiveValue);
+
+				effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);
                 attackingCard.CreatureOnAttack(attackedCard);
             });
         }
     }
+
+	public void PlayAttackVFX(Enumerators.CardType type, Vector3 target, int damage)
+	{
+		GameObject effect;
+		GameObject vfxPrefab;
+
+		if (type == Enumerators.CardType.FERAL)
+		{
+			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
+			effect = GameObject.Instantiate(vfxPrefab);
+			effect.transform.position = target;
+			if (damage > 3 && damage < 7)
+			{
+				GameClient.Get<ITimerManager>().AddTimer((a) =>
+				{
+					effect = GameObject.Instantiate(vfxPrefab);
+					effect.transform.position = target;
+					effect.transform.localScale = new Vector3(-1, 1, 1);
+				}, null, 0.5f, false);
+			}
+			if (damage > 6)
+			{
+				GameClient.Get<ITimerManager>().AddTimer((a) =>
+				{
+					effect = GameObject.Instantiate(vfxPrefab);
+					effect.transform.position = target - Vector3.right;
+					effect.transform.eulerAngles = Vector3.forward * 90;
+				}, null, 1.0f, false);
+			}
+
+		}
+		else if (type == Enumerators.CardType.HEAVY)
+		{
+			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/HeavyAttackVFX");
+			effect = GameObject.Instantiate(vfxPrefab);
+			effect.transform.position = target;
+			if (damage > 4)
+			{
+				GameClient.Get<ITimerManager>().AddTimer((a) =>
+			   {
+				   effect = GameObject.Instantiate(vfxPrefab);
+				   effect.transform.position = target + Vector3.right;
+			   }, null, 0.5f, false);
+			}
+		}
+		else
+		{
+			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
+			effect = GameObject.Instantiate(vfxPrefab);
+			effect.transform.position = target;
+			if (damage > 4)
+			{
+				GameClient.Get<ITimerManager>().AddTimer((a) =>
+			   {
+				   effect = GameObject.Instantiate(vfxPrefab);
+				   effect.transform.position = target;
+
+				   effect.transform.localScale = new Vector3(-1, 1, 1);
+			   }, null, 0.5f, false);
+			}
+		}
+
+	}
+
+
 
     public override void OnReceiveChatText(NetworkInstanceId senderNetId, string text)
     {

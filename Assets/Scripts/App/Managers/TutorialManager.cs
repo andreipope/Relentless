@@ -74,7 +74,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 						            _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(4.5f, -6.8f, 0), new Vector3(1.5f, -3f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5.9f, -7.1f, 0), new Vector3(1.5f, -3.2f, 0)));
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -112,11 +112,11 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(3f, -6f, 0), new Vector3(1.5f, -3f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5.9f, -7.1f, 0), new Vector3(1.5f, -3.2f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
                                     _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -4.4f, 0), new Vector3(0, 3.4f, 0)));
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0.5f, 3.2f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -222,9 +222,6 @@ namespace GrandDevs.CZB
             if (_currentStep == 11)
                 GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
 
-
-                Debug.Log(_currentStep);
-
             //if (_currentStep == 11)
             //	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
 
@@ -281,7 +278,6 @@ namespace GrandDevs.CZB
 
         public void ReportAction(Enumerators.TutorialReportAction action)
         {
-            Debug.Log(action + "_" + _currentStep);
             if(_tutorialStarted)
             switch(action)
             {
