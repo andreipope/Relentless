@@ -50,6 +50,9 @@
         internal const string CONTENT_FOLDER_NAME = "SpreadsheetsData/";
         internal const string SPREADSHEET_FILE_FORMAT = ".csv";
 
+        internal const string CARD_SOUND_PLAY = "1P";
+        internal const string CARD_SOUND_ATTACK = "2A";
+        internal const string CARD_SOUND_DEATH = "3D";
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 

@@ -2,13 +2,6 @@
 {
     public class Enumerators
     {
-        public enum CardSound
-        {
-            PLAY,
-            ATTACK,
-            DEATH,
-        }
-
         public enum AppState
         {
             NONE,
@@ -36,7 +29,8 @@
             CLICK,
             OTHER,
             BACKGROUND,
-            TUTORIAL
+            TUTORIAL,
+            CARDS
         }
 
         public enum NotificationType

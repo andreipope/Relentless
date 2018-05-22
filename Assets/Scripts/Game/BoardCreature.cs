@@ -116,8 +116,6 @@ public class BoardCreature : MonoBehaviour
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
 
-        InternalTools.PlayCardSound(Enumerators.CardSound.DEATH, card.cardId);
-
         if (ownerPlayer != null)
             CreatureOnDieEvent?.Invoke();
     }
@@ -333,7 +331,8 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-                InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, card.cardId);
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, 0.3f);
 
                 //sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>

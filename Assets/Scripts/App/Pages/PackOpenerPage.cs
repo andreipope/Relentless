@@ -142,10 +142,10 @@ namespace GrandDevs.CZB
 				{
 					if (hit.collider.gameObject == card.gameObject)
 					{
-                        if (card.transform.Find("BackgroundBack").gameObject.activeSelf)
+                        if (card.transform.Find("Back").gameObject.activeSelf)
                             CardSelected(card);
                         else
-                        {
+                        {                                 
                             _cardPreviewOriginal = card.transform;
 							CardPreview(true);
                         }
@@ -317,14 +317,12 @@ namespace GrandDevs.CZB
                 }
 
                 go.transform.SetParent(_cardsContainer);
-                go.transform.Find("BackgroundBack").gameObject.SetActive(true);
+                go.transform.Find("Back").gameObject.SetActive(true);
                 go.transform.Find("Amount").gameObject.SetActive(false);
                 var cardView = go.GetComponent<CardView>();
                 cardView.PopulateWithLibraryInfo(card, cardSetName);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = _centerPos;
-                cardView.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
-                cardView.GetComponent<SpriteRenderer>().sortingOrder = 1;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
                 cardView.GetComponent<SortingGroup>().sortingOrder = 1;
 
@@ -362,7 +360,7 @@ namespace GrandDevs.CZB
 		{
             var go = card.gameObject;
 
-            if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
+            if (!go.transform.Find("Back").gameObject.activeSelf)
                 return;
 
 
@@ -372,7 +370,7 @@ namespace GrandDevs.CZB
             animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
 			animationSequence3.OnComplete(() =>
 			{                            
-				go.transform.Find("BackgroundBack").gameObject.SetActive(false);
+				go.transform.Find("Back").gameObject.SetActive(false);
 				Sequence animationSequence4 = DOTween.Sequence();
 				animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
                 animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));

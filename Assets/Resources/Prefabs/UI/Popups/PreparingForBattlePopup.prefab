@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224221494587579970}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 224566477979640566}
   - component: {fileID: 222761404821232206}
   - component: {fileID: 114379817482307574}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_GooRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 224804222745430958}
   - component: {fileID: 222164233074587470}
   - component: {fileID: 114208926919807034}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_GooLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224497661587014842}
   - component: {fileID: 222427529674453900}
   - component: {fileID: 114444643010571468}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 224562738377591764}
   - component: {fileID: 222728268131171750}
   - component: {fileID: 114818301081603240}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 222827847115902898}
   - component: {fileID: 114999657315332700}
   - component: {fileID: 95259734895716350}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 222394578910143392}
   - component: {fileID: 114887385281602790}
   - component: {fileID: 95412370827332038}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 222920193179686754}
   - component: {fileID: 114659895676428470}
   - component: {fileID: 95225691318732970}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 224654744170441290}
   - component: {fileID: 222866514698968286}
   - component: {fileID: 114942724780920230}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224878884625411394}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Loading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 224837333138702260}
   - component: {fileID: 222353221449597706}
   - component: {fileID: 114758203804120920}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Machine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224927076997222258}
   - component: {fileID: 114861339686514012}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: PreparingForBattlePopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 224362376227759074}
   - component: {fileID: 222532850479473990}
   - component: {fileID: 114272010021180978}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_NeedleShadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 224020256686390824}
   - component: {fileID: 222731596243780980}
   - component: {fileID: 114821840173458840}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 224911299334325198}
   - component: {fileID: 222028156520218202}
   - component: {fileID: 114614481701961536}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Needle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 224619844912187646}
   - component: {fileID: 222520021248259624}
   - component: {fileID: 114962059879769800}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 224795106814003014}
   - component: {fileID: 222756413041638056}
   - component: {fileID: 114966614259624040}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_NeedleCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}

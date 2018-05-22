@@ -135,7 +135,7 @@ namespace GrandDevs.CZB
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-            _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, 0, 128, 1f, null, false, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0,1);
             _tutorialStarted = true;            
         }
 
@@ -196,25 +196,6 @@ namespace GrandDevs.CZB
 
             if (_currentStep >= _steps.Count - 1)
             {
-				//var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-                //scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
-                //{
-                //	popup.text.text = "You win!";
-                //	popup.buttonText.text = "Exit";
-                //	popup.button.onClickEvent.AddListener(() =>
-                //	{
-                //		if (NetworkingUtils.GetLocalPlayer().isServer)
-                //		{
-                //			NetworkManager.singleton.StopHost();
-                //		}
-                //		else
-                //		{
-                //			NetworkManager.singleton.StopClient();
-                //		}
-                //		scene.ClosePopup();
-                //		GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-                //	});
-                //});
                 GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
                 GameClient.Get<ITutorialManager>().StopTutorial();
 				return;
@@ -222,19 +203,10 @@ namespace GrandDevs.CZB
             if (_currentStep == 11)
                 GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
 
-            //if (_currentStep == 11)
-            //	GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 0.5f, false);
-
             if (_currentStep != 29)
                 NextStepCommonEndActions();
             else
                 GameClient.Get<ITimerManager>().AddTimer((x) => { NextStepCommonEndActions(); }, time:2f);
-
-
-            //if(_currentStep == 22)
-            //{
-            //    _isBubbleShow = false;
-            //}
         }
 
         private void NextStepCommonEndActions()
@@ -246,10 +218,10 @@ namespace GrandDevs.CZB
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (_currentStep == 22)
                 GameClient.Get<ITimerManager>().AddTimer((x) => {
-                    _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, 1);
                 }, null, 6f, false);
             else
-                _soundManager.PlaySound(new List<AudioClip>(), Enumerators.SoundType.TUTORIAL, _currentStep, 128, 1f, null, false, false, false);
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, 1);
         }
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)

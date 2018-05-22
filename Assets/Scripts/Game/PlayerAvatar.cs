@@ -5,6 +5,7 @@
 using UnityEngine;
 
 using CCGKit;
+using DG.Tweening;
 
 /// <summary>
 /// This class holds information about a player avatar from the game scene, which can be clicked
@@ -16,6 +17,13 @@ public class PlayerAvatar : MonoBehaviour
     public PlayerInfo playerInfo;
     public bool IsBottom;
     public int index { get { return IsBottom ? 0 : 1; } }
+
+    public GameObject avatarObject;
+
+    private void Start()
+    {
+        avatarObject = transform.Find("Hero_Object").gameObject;
+    }
 
     private Player GetTargetPlayer()
     {
@@ -41,14 +49,11 @@ public class PlayerAvatar : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log(collider);
         if (collider.transform.parent != null)
         {
-            Debug.Log(collider+ "11111");
             var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
             if (targetingArrow != null)
             {
-                Debug.Log(111);
                 targetingArrow.OnPlayerSelected(this);
             }
         }
@@ -63,6 +68,16 @@ public class PlayerAvatar : MonoBehaviour
             {
                 targetingArrow.OnPlayerUnselected(this);
             }
+        }
+    }
+
+    public void OnAvatarDie() // todo finalize
+    {
+        Sequence sequnce;
+        for (int i =0; i < avatarObject.transform.childCount; i++)
+        {
+            sequnce = DOTween.Sequence();
+            sequnce.Append(avatarObject.transform.GetChild(i).DOMove(new Vector3(0, .3f, 5), 0.5f));
         }
     }
 }

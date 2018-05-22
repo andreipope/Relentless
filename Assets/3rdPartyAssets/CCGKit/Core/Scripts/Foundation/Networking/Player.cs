@@ -47,6 +47,9 @@ namespace CCGKit
         /// </summary>
         public bool gameStarted;
 
+        public bool gameEnded;
+
+
         /// <summary>
         /// Index of this player in the game.
         /// </summary>
@@ -290,6 +293,7 @@ namespace CCGKit
 
         public virtual void OnEndGame(EndGameMessage msg)
         {
+            gameEnded = true;
         }
 
         public virtual void OnStartTurn(StartTurnMessage msg)

@@ -11,15 +11,15 @@ public class SpellCardView : CardView
 	{
 		base.PopulateWithInfo(card, setName);
 
-		bodyText.transform.position -= UnityEngine.Vector3.up;
-        nameText.transform.position -= UnityEngine.Vector3.up * 0.8f;
+		//bodyText.transform.position -= UnityEngine.Vector3.up;
+       // nameText.transform.position -= UnityEngine.Vector3.up * 0.8f;
 	}
 
     public override void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
     {
         base.PopulateWithLibraryInfo(card, setName, amount);
-
-		bodyText.transform.position -= UnityEngine.Vector3.up;
-		nameText.transform.position -= UnityEngine.Vector3.up * 0.8f;
+        //
+		//bodyText.transform.position -= UnityEngine.Vector3.up;
+		//nameText.transform.position -= UnityEngine.Vector3.up * 0.8f;
 	}
 }

@@ -27,10 +27,6 @@ public class DemoAIPlayer : DemoPlayer
     protected Player humanPlayer;
 
     private int _minTurnForAttack;
-    /// <summary>
-    /// True if the current game has ended; false otherwise.
-    /// </summary>
-    protected bool gameEnded;
 
     protected Dictionary<int, int> numTurnsOnBoard = new Dictionary<int, int>();
 
@@ -112,7 +108,6 @@ public class DemoAIPlayer : DemoPlayer
     public override void OnEndGame(EndGameMessage msg)
     {
         base.OnEndGame(msg);
-        gameEnded = true;
         StopAllCoroutines();
     }
 

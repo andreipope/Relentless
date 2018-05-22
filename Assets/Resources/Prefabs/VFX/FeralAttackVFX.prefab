@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4803054549542490}
   - component: {fileID: 212139815529702966}
   - component: {fileID: 95178765028203294}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FeralAttackVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

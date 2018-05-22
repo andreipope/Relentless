@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224756221103893008}
   - component: {fileID: 222258874881263780}
   - component: {fileID: 114323509041451192}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Machine_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224110893932395954}
   - component: {fileID: 222415411192198376}
   - component: {fileID: 114360104247692722}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224105063942864248}
   - component: {fileID: 222159028944091932}
   - component: {fileID: 114867390935889538}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224645419427305200}
   - component: {fileID: 222260578593440572}
   - component: {fileID: 114774875493940318}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224027149060277208}
   - component: {fileID: 222951669119645970}
   - component: {fileID: 114183421248704818}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Machine_Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 224636325921337564}
   - component: {fileID: 222073426416884070}
   - component: {fileID: 114937709118029694}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Machine_Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224349481947632096}
   - component: {fileID: 114341755886067576}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: NoButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 224591508482099394}
   - component: {fileID: 222428911229575148}
   - component: {fileID: 114437248323304552}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 224109425904765450}
   - component: {fileID: 222504337694550742}
   - component: {fileID: 114772670864802122}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 224452227264958394}
   - component: {fileID: 222809788869033556}
   - component: {fileID: 114910524947488410}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 224141780792749984}
   - component: {fileID: 222304413322812764}
   - component: {fileID: 114122401101335922}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: DesintegrateCardPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 224808881803671296}
   - component: {fileID: 222867022542629790}
   - component: {fileID: 114143506864738544}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 224574551769838084}
   - component: {fileID: 222611648033022424}
   - component: {fileID: 114902710635710434}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 224381745374236612}
   - component: {fileID: 222393576568783236}
   - component: {fileID: 114682512148373708}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224031396960870574}
   - component: {fileID: 114882123331357868}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: YesButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224549328819198420}
   - component: {fileID: 114502936293149820}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 224388990567705890}
   - component: {fileID: 222196328646863714}
   - component: {fileID: 114869053144187720}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,7 +307,7 @@ GameObject:
   - component: {fileID: 224544780409491322}
   - component: {fileID: 222197304187937634}
   - component: {fileID: 114580546309955460}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 224302633396330664}
   - component: {fileID: 222791911418961318}
   - component: {fileID: 114958600948201772}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 224841491427544436}
   - component: {fileID: 222232656684037104}
   - component: {fileID: 114372166666029152}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: QuestionArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 224514796541697804}
   - component: {fileID: 222773214976118542}
   - component: {fileID: 114330376771003036}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 224626858454846642}
   - component: {fileID: 222435543042459524}
   - component: {fileID: 114535639240031182}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -622,6 +622,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  isHovered: 1
 --- !u!114 &114360104247692722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -723,6 +724,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  isHovered: 1
 --- !u!114 &114535639240031182
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1105,6 +1107,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  isHovered: 1
 --- !u!114 &114902710635710434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1571,10 +1574,10 @@ RectTransform:
   m_Father: {fileID: 224841491427544436}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: -200}
+  m_SizeDelta: {x: 600, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224549328819198420
 RectTransform:

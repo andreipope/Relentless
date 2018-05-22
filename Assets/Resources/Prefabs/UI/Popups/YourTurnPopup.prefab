@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224657468749691338}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Panel_YourTurnText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 224866106295065642}
   - component: {fileID: 222439312542622618}
   - component: {fileID: 114775266471155620}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_PanelYourTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 224900472715311518}
   - component: {fileID: 222989235345201880}
   - component: {fileID: 114611717119192410}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: ImageTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224350258934775818}
   - component: {fileID: 222289128212559444}
   - component: {fileID: 114648401827158824}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Splat1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 224555245724274142}
   - component: {fileID: 222120891353311754}
   - component: {fileID: 114792440513998048}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Splat2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 224349589535021904}
   - component: {fileID: 222524998682460900}
   - component: {fileID: 114115471902235598}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Shine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224557750109747858}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: YourTurnPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 224934073097224290}
   - component: {fileID: 222127491341878348}
   - component: {fileID: 114098372434691538}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Your
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 224800178242419540}
   - component: {fileID: 222102131053228274}
   - component: {fileID: 114862059580308846}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

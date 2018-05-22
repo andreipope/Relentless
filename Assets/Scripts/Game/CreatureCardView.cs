@@ -12,13 +12,7 @@ using GrandDevs.CZB.Common;
 public class CreatureCardView : CardView
 {
     [SerializeField]
-    protected SpriteRenderer attackSprite;
-
-    [SerializeField]
     protected TextMeshPro attackText;
-
-    [SerializeField]
-    protected SpriteRenderer defenseSprite;
 
 	[SerializeField]
 	protected SpriteRenderer typeSprite;
@@ -32,9 +26,7 @@ public class CreatureCardView : CardView
     protected override void Awake()
     {
         base.Awake();
-        Assert.IsNotNull(attackSprite);
         Assert.IsNotNull(attackText);
-        Assert.IsNotNull(defenseSprite);
         Assert.IsNotNull(defenseText);
     }
 

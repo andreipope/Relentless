@@ -44,7 +44,7 @@ namespace GrandDevs.CZB
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
-			_nextObject = _selfPage.transform.Find("Description/NextButton").gameObject;
+			_nextObject = _selfPage.transform.Find("Description/NextButtonFrame/NextButton").gameObject;
 			_yesnoObject = _selfPage.transform.Find("Description/Question").gameObject;
 
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();

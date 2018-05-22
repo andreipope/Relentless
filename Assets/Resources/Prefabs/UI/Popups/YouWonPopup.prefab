@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224008320474589452}
   - component: {fileID: 222415622135551426}
   - component: {fileID: 114038318280635370}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Bentpole4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224927492027250872}
   - component: {fileID: 222994393358589884}
   - component: {fileID: 114535292389912090}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224722180459204004}
   - component: {fileID: 222603626532436402}
   - component: {fileID: 114868582768091986}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Text_NameHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224299737397933174}
   - component: {fileID: 222413963385380584}
   - component: {fileID: 114319105092552632}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_FlagRight2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224387308185861050}
   - component: {fileID: 222708331829906258}
   - component: {fileID: 114724278665317052}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 224689530832110844}
   - component: {fileID: 222413092361016126}
   - component: {fileID: 114308237858049954}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 224762438688508008}
   - component: {fileID: 222931443888419510}
   - component: {fileID: 114420868675117738}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 224165920752258262}
   - component: {fileID: 222207490832356134}
   - component: {fileID: 114091918865444706}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224221746836182028}
   - component: {fileID: 222244859527261790}
   - component: {fileID: 114309535205275068}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_FrontPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 224038622622488516}
   - component: {fileID: 222704690428247260}
   - component: {fileID: 114912869030671906}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_WinPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 224867478046094698}
   - component: {fileID: 222997981583449862}
   - component: {fileID: 114744521174809282}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_lose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 224603304132999064}
   - component: {fileID: 222497526760968768}
   - component: {fileID: 114516636496186966}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Bentpole2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224437116407013570}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: YouWonPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 224771603145184330}
   - component: {fileID: 222495848126698090}
   - component: {fileID: 114794604474822012}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Benttrumpet2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 224036060294992672}
   - component: {fileID: 222183260221500920}
   - component: {fileID: 114577512855234268}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_FlagRight1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 224044768212574884}
   - component: {fileID: 222556063337905880}
   - component: {fileID: 114640019573072124}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_SelectHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 224175159763615304}
   - component: {fileID: 222650470881699834}
   - component: {fileID: 114908622728061556}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_FlagLeft1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 224813472015036896}
   - component: {fileID: 222370403731586782}
   - component: {fileID: 114638036577480512}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Bentpole1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 224015219103966370}
   - component: {fileID: 222616191920940518}
   - component: {fileID: 114276328051420618}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_TextLose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -342,7 +342,7 @@ GameObject:
   - component: {fileID: 224447676573226268}
   - component: {fileID: 222183258538383186}
   - component: {fileID: 114395459749976126}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 224764950889290964}
   - component: {fileID: 222650637723350146}
   - component: {fileID: 114203514660229178}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Bentpole3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 224985912197836106}
   - component: {fileID: 222607909676444604}
   - component: {fileID: 114760401437616430}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_FlagLeft2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -392,7 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224743364609387202}
   - component: {fileID: 114980861936749818}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Button_Ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 224851980477431570}
   - component: {fileID: 222658509769499148}
   - component: {fileID: 114711170099459960}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_RedGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 224712207057237664}
   - component: {fileID: 222757231647218048}
   - component: {fileID: 114481793768268592}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Benttrumpet1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 224882728283946028}
   - component: {fileID: 222140340867215808}
   - component: {fileID: 114972457177073766}
-  m_Layer: 5
+  m_Layer: 12
   m_Name: Image_Bandage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

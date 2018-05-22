@@ -121,7 +121,6 @@ public class DemoHumanPlayer : DemoPlayer
 
         //chatPopup = GameObject.Find("PopupChat").GetComponent<PopupChat>();
 
-        //changed by Basil
         GameClient.Get<IPlayerManager>().PlayerGraveyardCards = playerGraveyardCards;
         GameClient.Get<IPlayerManager>().OpponentGraveyardCards = opponentGraveyardCards;
 
@@ -209,24 +208,31 @@ public class DemoHumanPlayer : DemoPlayer
         boardZone = playerInfo.namedZones["Board"];
         boardZone.onCardRemoved += card =>
         {
-            //Changed by Basil to destroy card
             var graveyardPos = GameObject.Find("GraveyardPlayer").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = playerBoardCards.Find(x => x.card == card);
             if (boardCard != null)
             {
-                playerGraveyardCards.Add(boardCard);
-                playerBoardCards.Remove(boardCard);
+                if (!gameEnded)
+                {
+                    var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
+                }
                 boardCard.transform.DOKill();
+                playerGraveyardCards.Add(boardCard);
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    RearrangeBottomBoard();
+                }, null, 1);
+                playerBoardCards.Remove(boardCard);
                 //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                RearrangeBottomBoard();
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
-            {
+            {                                           
                 currentSpellCard.SetHighlightingEnabled(false);
                 currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 currentSpellCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
@@ -270,14 +276,22 @@ public class DemoHumanPlayer : DemoPlayer
         opponentBoardZone = opponentInfo.namedZones["Board"];
         opponentBoardZone.onCardRemoved += card =>
         {
-            //Changed by Basil to destroy card
             var graveyardPos = GameObject.Find("GraveyardOpponent").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = opponentBoardCards.Find(x => x.card == card);
             if (boardCard != null)
             {
-                opponentGraveyardCards.Add(boardCard);
-                opponentBoardCards.Remove(boardCard);
+                if (!gameEnded)
+                {
+                    var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
+                }
                 boardCard.transform.DOKill();
+                opponentGraveyardCards.Add(boardCard);
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    RearrangeTopBoard();
+                }, null, 1);
+                opponentBoardCards.Remove(boardCard);
                 //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
@@ -503,12 +517,10 @@ public class DemoHumanPlayer : DemoPlayer
         var spacing = -1.5f; // -1
         foreach (var card in playerHandCards)
         {
-            handWidth += card.GetComponent<SpriteRenderer>().bounds.size.x;
             handWidth += spacing;
         }
         handWidth -= spacing;
 
-        //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.50f, 0.05f, 0.0f)); // changed by Basil, x was 0.555
         var pivot = new Vector3(6f, -8.05f, 0f); //1.115f, -8.05f, 0f
         var twistPerCard = -5;
 
@@ -541,12 +553,10 @@ public class DemoHumanPlayer : DemoPlayer
         var spacing = -1.0f;
         foreach (var card in opponentHandCards)
         {
-            handWidth += card.GetComponent<SpriteRenderer>().bounds.size.x;
             handWidth += spacing;
         }
         handWidth -= spacing;
 
-        //var pivot = Camera.main.ViewportToWorldPoint(new Vector3(0.53f, 0.99f, 0.0f)); // changed by Basil
         var pivot = new Vector3(-3.2f, 8.5f, 0f);
 		var twistPerCard = 5;
 
@@ -650,7 +660,7 @@ public class DemoHumanPlayer : DemoPlayer
         for (var i = 0; i < playerBoardCards.Count; i++)
         {
             var card = playerBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f)); // Edited by Basil y pos
+            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
             pivot.x += boardWidth / playerBoardCards.Count;
         }
 
@@ -991,7 +1001,7 @@ public class DemoHumanPlayer : DemoPlayer
             card.transform.DORotate(Vector3.zero, .1f);
             card.GetComponent<HandCard>().enabled = false;
 
-            InternalTools.PlayCardSound(Enumerators.CardSound.PLAY, card.card.cardId);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, 0.3f);
 
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1081,11 +1091,12 @@ public class DemoHumanPlayer : DemoPlayer
 					GameObject mainObj = (GameObject)objects[1];
 					mainObj.GetComponent<SpriteRenderer>().enabled = true;
 					List<GameObject> obs = (List<GameObject>)objects[0];
-					foreach (var item in obs)
-					{
-						item.SetActive(true);
-					}
-				}, new object[] { activeObjects, creature });
+                    foreach (var item in obs)
+                    {
+                        item.SetActive(true);
+                    }
+
+                }, new object[] { activeObjects, creature });
 			}
             else if (type == Enumerators.CardType.FERAL)
 			{
@@ -1101,7 +1112,10 @@ public class DemoHumanPlayer : DemoPlayer
 					{
 						item.SetActive(true);
 					}
-				}, new object[] { activeObjects, creature });
+
+                    creature.GetComponent<BoardCreature>().StopSleepingParticles();
+
+                }, new object[] { activeObjects, creature });
 			}
             else
                 {
@@ -1143,6 +1157,7 @@ public class DemoHumanPlayer : DemoPlayer
         go.transform.DOScale(new Vector3(.195f, .195f, .195f), .2f);
         animationSequence3.OnComplete(() =>
         {
+            if(go.transform.Find("BackgroundBack") != null)
             go.transform.Find("BackgroundBack").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
             //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
@@ -1189,7 +1204,6 @@ public class DemoHumanPlayer : DemoPlayer
             }
 
             Sequence animationSequence5 = DOTween.Sequence();
-            //animationSequence5.Append(go.transform.DOMove(new Vector3(-4.67f, -3.66f, 0), .5f)); // Changed by Basil: card aftermove position
             animationSequence5.Append(go.transform.DOMove(new Vector3(-6.57f, -4.352f, 0), .5f));
             animationSequence5.OnComplete(() => 
             {
@@ -1374,33 +1388,6 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.OnEndGame(msg);
 
-        //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-        //scene.OpenPopup<PopupOneButton>("PopupOneButton", popup =>
-        //{
-        //    if (msg.winnerPlayerIndex == playerInfo.netId)
-        //    {
-        //        popup.text.text = "You win!";
-        //    }
-        //    else
-        //    {
-        //        popup.text.text = "You lose!";
-        //    }
-        //    popup.buttonText.text = "Exit";
-        //    popup.button.onClickEvent.AddListener(() =>
-        //    {
-        //        scene.ClosePopup();
-        //        if (NetworkingUtils.GetLocalPlayer().isServer)
-        //        {
-        //            NetworkManager.singleton.StopHost();
-        //        }
-        //        else
-        //        {
-        //            NetworkManager.singleton.StopClient();
-        //        }
-        //        GameClient.Get<ITutorialManager>().StopTutorial();
-        //        GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-        //    });
-        //});
         if (msg.winnerPlayerIndex == playerInfo.netId)
         {
             _uiManager.DrawPopup<YouWonPopup>();
@@ -1456,7 +1443,7 @@ public class DemoHumanPlayer : DemoPlayer
         var opponentBoard = opponentInfo.namedZones[Constants.ZONE_BOARD];
         var runtimeCard = opponentBoard.cards[opponentBoard.cards.Count - 1];
 
-        InternalTools.PlayCardSound(Enumerators.CardSound.PLAY, msg.card.cardId);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, 0.3f);
 
         if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
@@ -1635,8 +1622,6 @@ public class DemoHumanPlayer : DemoPlayer
         var attackingCard = opponentBoardCards.Find(x => x.card.instanceId == msg.attackingCardInstanceId);
         if (attackingCard != null)
         {
-            InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, attackingCard.card.cardId);
-
             var avatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>(); ;
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, avatar.gameObject, 0.1f, () =>
             {
@@ -1657,7 +1642,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         if (attackingCard != null && attackedCard != null)
         {
-            InternalTools.PlayCardSound(Enumerators.CardSound.ATTACK, attackingCard.card.cardId);
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attackingCard.card.cardId);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, 0.3f);
 
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {

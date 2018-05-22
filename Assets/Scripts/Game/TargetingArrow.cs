@@ -385,8 +385,10 @@ public class TargetingArrow : MonoBehaviour
     {
     }
 
-    protected void CreateTarget(Vector2 pos)
+    protected void CreateTarget(Vector3 pos)
     {
+        pos.z = -0.2f;
+
         Destroy(target);
         var rect = new Rect(0, 0, targetTexture.width, targetTexture.height);
         var targetSprite = Sprite.Create(targetTexture, rect, new Vector2(0.5f, 0.5f));

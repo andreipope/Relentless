@@ -72,103 +72,66 @@ namespace GrandDevs.CZB
             }
         }
 
-        public int PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool returnHashCode = false)
+        public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false)
+        {
+            PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic);
+        }
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false )
+        {
+            CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle);
+        }
+
+        public void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false )
+        {
+            CreateSound(soundType, volume, null, isLoop, false, clipIndex);
+        }
+
+        public void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
+                             bool isPlaylist = false, bool dropOldBackgroundMusic = false)
         {
             if (dropOldBackgroundMusic)
+                StopBackroundMusic();
+
+            CreateSound(soundType, volume, parent, isLoop, isPlaylist);
+        }
+
+        private void StopBackroundMusic()
+        {
+            var oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+
+            foreach (var oldCotainer in oldContainers)
             {
-                var oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
-
-                foreach (var oldCotainer in oldContainers)
-                {
-                    oldCotainer.audioSource.Stop();
-                    oldCotainer.forceClose = true;
-                }
+                oldCotainer.audioSource.Stop();
+                oldCotainer.forceClose = true;
             }
+        }
 
-
+        private void CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
+                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "")
+        {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();
             SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
 
             soundParam.isBackground = soundType.ToString().Contains("BACKGROUND") ? true : false;
+
             soundParam.audioClips = soundTypeList.audioTypeClips;
+            if (!string.IsNullOrEmpty(clipTitle))
+                soundParam.audioClips = soundParam.audioClips.Where((clip) => clip.name.Contains(clipTitle)).ToList();
+
+            // small hack to ignore missing audio clips
+            if (soundParam.audioClips.Count == 0)
+                return;
+
             soundParam.isLoop = isLoop;
             soundParam.isMute = false;
             soundParam.playOnAwake = false;
-            //soundParam.priority = priority;
 
-            //if (volume == -1)
-            //    soundParam.volume = soundParam.isBackground ? MM.PlayerManager.GetPlayerData.volumeMusic : MM.PlayerManager.GetPlayerData.volumeSound;
-            //else
-            //{
-            //    float tempVolume = soundParam.isBackground ? MM.PlayerManager.GetPlayerData.volumeMusic : MM.PlayerManager.GetPlayerData.volumeSound;
-
-            //    if (tempVolume > 0)
-            //        soundParam.volume = volume;
-            //    else
-            //        soundParam.volume = soundParam.isBackground ? MM.PlayerManager.GetPlayerData.volumeMusic : MM.PlayerManager.GetPlayerData.volumeSound;
-            //}
             soundParam.priority = 128;
             if (volume < 0)
                 soundParam.volume = _sfxVolume;
             else
                 soundParam.volume = volume;
-
-            //for better audibility Tutorial dictor
-            if (soundParam.isBackground)
-            {
-                soundParam.volume = 0.15f;
-            }
-            soundParam.startPosition = 0f;
-
-            container.Init(_soundsRoot, soundType, soundParam, isPlaylist);
-
-            if (parent != null)
-                container.container.transform.SetParent(parent);
-
-            _soundContainers.Add(container);
-
-            return container.GetHashCode();
-        }
-
-        //NEW
-        public AudioSource PlaySound(List<AudioClip> clips, Enumerators.SoundType soundType, int clipIndex = 0, int priority = 128, float volume = 1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, bool dropOldBackgroundMusic = false, bool returnHashCode = false)
-        {
-            if (dropOldBackgroundMusic)
-            {
-                var oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
-
-                foreach (var oldCotainer in oldContainers)
-                {
-                    oldCotainer.audioSource.Stop();
-                    oldCotainer.forceClose = true;
-                }
-            }
-
-
-            SoundParam soundParam = new SoundParam();
-            SoundContainer container = new SoundContainer();
-            SoundTypeList soundTypeList = new SoundTypeList();
-            soundTypeList.soundType = soundType;
-            if (soundType != Enumerators.SoundType.TUTORIAL)
-                soundTypeList.audioTypeClips = clips;
-
-            else
-                soundTypeList.audioTypeClips = _gameSounds[(int)Enumerators.SoundType.TUTORIAL].audioTypeClips;
-
-            soundParam.isBackground = soundType.ToString().Contains("BACKGROUND") ? true : false;
-            soundParam.audioClips = soundTypeList.audioTypeClips;
-            soundParam.isLoop = isLoop;
-            soundParam.isMute = false;
-            soundParam.playOnAwake = false;
-            soundParam.priority = 128;
-            if (volume < 0)
-                soundParam.volume = _sfxVolume;
-            else
-                soundParam.volume = volume;
-
 
             soundParam.startPosition = 0f;
 
@@ -178,8 +141,6 @@ namespace GrandDevs.CZB
                 container.container.transform.SetParent(parent);
 
             _soundContainers.Add(container);
-
-            return container.audioSource;
         }
 
         public void SetMusicVolume(float value)
@@ -279,16 +240,15 @@ namespace GrandDevs.CZB
             string pathToSoundsLibrary = "Sounds/";
 
             switch (soundType)
-            { 
-                default: break;
-            }
-            if (soundType != Enumerators.SoundType.TUTORIAL)
-                list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
-
-            else
             {
-                pathToSoundsLibrary = "Sounds/" + soundType.ToString();
-                list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
+                case Enumerators.SoundType.TUTORIAL:
+                case Enumerators.SoundType.CARDS:
+                    pathToSoundsLibrary = "Sounds/" + soundType.ToString();
+                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
+                    break;
+                default:
+                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
+                    break;
             }
             return list;
         }

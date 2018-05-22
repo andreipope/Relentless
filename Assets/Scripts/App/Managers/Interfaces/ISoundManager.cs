@@ -6,9 +6,10 @@ namespace GrandDevs.CZB
 {
     public interface ISoundManager
     {
-        int PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool returnHashCode = false);
-        AudioSource PlaySound(List<AudioClip> clips, Enumerators.SoundType soundType, int clipIndex = 0, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool returnHashCode = false);
+        void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, bool dropOldBackgroundMusic = true);
+        void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false);
+        void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false);
+        void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false);
 
         void SetMusicVolume(float value);
         void SetSoundVolume(float value);

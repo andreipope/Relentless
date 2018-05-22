@@ -78,7 +78,10 @@ namespace GrandDevs.CZB
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
                                                cardToDestroy.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite));
-                GameObject.Destroy(cardToDestroy.gameObject);
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    GameObject.Destroy(cardToDestroy.gameObject);
+                }, null, 1);
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
             }
         }
@@ -122,22 +125,38 @@ namespace GrandDevs.CZB
             Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
 
-            //Hero avatars changed by Basil
-            // old path: Images/Hero_" + currentPlayerHero.element.ToString()
-            
             if (currentPlayerHero != null)
             {
                 gameUI.SetPlayerName(currentPlayerHero.name);
 				_playerSkill = new PlayerSkillItem(GameObject.Find("Player/Spell"), currentPlayerHero.skill, _skillsIcons[currentPlayerHero.skill.skillType]);
-                GameObject.Find("Player/Avatar/Icon").GetComponent<SpriteRenderer>().sprite = 
-                    GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Hero_" + currentPlayerHero.element.ToString());
+
+                var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + currentPlayerHero.element.ToString() + "_EXP");
+
+                var transfHeroObject = GameObject.Find("Player/Avatar/Hero_Object").transform;
+
+                for (int i = 0; i < transfHeroObject.childCount; i++)
+                    transfHeroObject.GetChild(i).GetComponent<Renderer>().material.mainTexture = heroTexture;
+
+                var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
+                    ("Images/Heroes/CZB_2D_Hero_Decor_" + currentPlayerHero.element.ToString() + "_EXP");
+                GameObject.Find("Player/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
             }
             if (currentOpponentHero != null)
             {
                 gameUI.SetOpponentName(currentOpponentHero.name);
                 _opponentSkill = new PlayerSkillItem(GameObject.Find("Opponent/Spell"), currentOpponentHero.skill, _skillsIcons[currentOpponentHero.skill.skillType]);
-                GameObject.Find("Opponent/Avatar/Icon").GetComponent<SpriteRenderer>().sprite =
-					GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/Hero_" + currentOpponentHero.element.ToString());
+
+                var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + currentOpponentHero.element.ToString() + "_EXP");
+
+                var transfHeroObject = GameObject.Find("Opponent/Avatar/Hero_Object").transform;
+
+                for (int i = 0; i < transfHeroObject.childCount; i++)
+                    transfHeroObject.GetChild(i).GetComponent<Renderer>().material.mainTexture = heroTexture;
+
+               var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
+                  ("Images/Heroes/CZB_2D_Hero_Decor_" + currentOpponentHero.element.ToString() + "_EXP");
+
+                GameObject.Find("Opponent/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
             }
         }
 
