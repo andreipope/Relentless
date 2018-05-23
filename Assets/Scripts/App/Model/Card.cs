@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using Newtonsoft.Json;
+using UnityEngine;
+using GrandDevs.CZB.Helpers;
 
 namespace GrandDevs.CZB.Data
 {
@@ -19,6 +21,7 @@ namespace GrandDevs.CZB.Data
         public string rarity;
         public string type;
         public List<AbilityData> abilities = new List<AbilityData>();
+        public CardViewInfo cardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
         public Enumerators.CardRarity cardRarity;
@@ -30,5 +33,11 @@ namespace GrandDevs.CZB.Data
         public Card()
         {
         }
+    }
+
+    public class CardViewInfo
+    {
+        public FloatVector3 position = FloatVector3.zero;
+        public FloatVector3 scale = new FloatVector3(0.38f);
     }
 }

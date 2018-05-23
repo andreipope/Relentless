@@ -72,12 +72,13 @@ namespace GrandDevs.CZB
             _heroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_water"));
 
             _selectedHeroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
-            _selectedHeroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_AIR"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_EARTH"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_FIRE"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_LIFE"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_TOXIC"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/HERO_WATER"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_air"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_earth"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_fire"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_life"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_toxic"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_water"));
+
             Hide();  
         }
 
@@ -189,6 +190,7 @@ namespace GrandDevs.CZB
             if(active)
             {
                 _selectedHeroIcon.sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.heroes[id].element];
+                
                 _selectedHeroSkillIcon.sprite = _skillsIcons[_dataManager.CachedHeroesData.heroes[id].skill.skillType];
                 //_selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
             }

@@ -20,9 +20,14 @@ public class PlayerAvatar : MonoBehaviour
 
     public GameObject avatarObject;
 
+    public GameObject avatarTypeHighlight;
+
+    public Animator avatarAnimator;
+
     private void Start()
     {
         avatarObject = transform.Find("Hero_Object").gameObject;
+        avatarAnimator.enabled = false;
     }
 
     private Player GetTargetPlayer()
@@ -71,13 +76,10 @@ public class PlayerAvatar : MonoBehaviour
         }
     }
 
-    public void OnAvatarDie() // todo finalize
+    public void OnAvatarDie()
     {
-        Sequence sequnce;
-        for (int i =0; i < avatarObject.transform.childCount; i++)
-        {
-            sequnce = DOTween.Sequence();
-            sequnce.Append(avatarObject.transform.GetChild(i).DOMove(new Vector3(0, .3f, 5), 0.5f));
-        }
+        avatarAnimator.enabled = true;
+        avatarTypeHighlight.SetActive(false);
+        avatarAnimator.Play(0);
     }
 }

@@ -20,10 +20,14 @@ namespace GrandDevs.CZB
         private QuestionPopup _questionPopup;
 
 		private GameObject _selfPage;
-        private Transform _selectedDeck;                     
+        private Transform _selectedDeck;
+
+        private Dictionary<Enumerators.ElementType, Sprite> 
+                                                    _selectedHeroIcons,
+                                                    _selectedHeroIconsBig;
 
         //private MenuButtonNoGlow _buttonBuy,
-								//_buttonOpen,
+        //_buttonOpen,
         //                        _buttonCollection;
         private Button _buttonCreateDeck,
                        _buttonPlay,
@@ -76,6 +80,22 @@ namespace GrandDevs.CZB
             _buttonPlay.enabled = false;
             //_buttonPlay.transform.Find("Button").GetComponent<Image>().color = new Color(1,1,1,.5f);
 
+            _selectedHeroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
+            _selectedHeroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_air"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_earth"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_fire"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_life"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_toxic"));
+            _selectedHeroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection2_water"));
+
+            _selectedHeroIconsBig = new Dictionary<Enumerators.ElementType, Sprite>();
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_air"));
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_earth"));
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_fire"));
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_life"));
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_toxic"));
+            _selectedHeroIconsBig.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/DeckSelection/deck_selection1_water"));
+
             Hide();
         }
 
@@ -114,7 +134,9 @@ namespace GrandDevs.CZB
                 Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
                 deckObject.SetParent(_decksContainer, false);
                 deckObject.Find("Glow").gameObject.SetActive(false);
-                deckObject.Find("HeroImage").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
+                Debug.Log(_dataManager.CachedHeroesData.heroes[deck.heroId].element);
+                Debug.Log(_selectedHeroIcons[_dataManager.CachedHeroesData.heroes[deck.heroId].element]);
+                deckObject.Find("HeroImage").GetComponent<Image>().sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.heroes[deck.heroId].element];
                 //deckObject.Find("ActiveCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
                 deckObject.Find("Frame/CardsAmount/CardsAmountText").GetComponent<Text>().text = deck.GetNumCards().ToString();
                 deckObject.Find("Frame/Name").GetComponent<Text>().text = deck.name;
@@ -285,7 +307,8 @@ namespace GrandDevs.CZB
 
             if (active)
             {
-                _selectedDeckIcon.sprite = activatedDeck.Find("HeroImage").GetComponent<Image>().sprite;
+                int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+                _selectedDeckIcon.sprite = _selectedHeroIconsBig[_dataManager.CachedHeroesData.heroes[heroId].element];
                 _selectedDeck.Find("Deck").gameObject.SetActive(true);
 
                 Transform selectedCardAmountObject = _decksContainer.GetChild(id).Find("Frame/CardsAmount/CardsAmountText");

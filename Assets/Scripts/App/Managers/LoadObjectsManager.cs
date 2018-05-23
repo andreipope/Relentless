@@ -35,5 +35,18 @@ namespace GrandDevs.CZB
         {
             return Resources.Load<T>(path);
         }
+
+        public T[] GetObjectsByPath<T>(string path) where T : UnityEngine.Object
+        {
+            if (_loadFromResources)
+                return LoadAllFromResources<T>(path);
+            else
+                return LoadAllFromResources<T>(path); // ToDo change into other load type
+        }
+
+        private T[] LoadAllFromResources<T>(string path) where T : UnityEngine.Object
+        {
+            return Resources.LoadAll<T>(path);
+        }
     }
 }

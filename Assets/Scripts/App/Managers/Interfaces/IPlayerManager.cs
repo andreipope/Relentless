@@ -8,6 +8,9 @@ namespace GrandDevs.CZB
 {
     public interface IPlayerManager
     {
+        event Action<int> OnPlayerGraveyardUpdatedEvent;
+        event Action<int> OnOpponentGraveyardUpdatedEvent;
+
         Action OnLocalPlayerSetUp { get; set; }
         Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
         User LocalUser { get; set; }
@@ -15,5 +18,9 @@ namespace GrandDevs.CZB
         List<BoardCreature> OpponentGraveyardCards { get; set; }
         PlayerInfo playerInfo { get; set; }
         PlayerInfo opponentInfo { get; set; }
+
+
+        void UpdatePlayerGraveyard(int index);
+        void UpdateOpponentGraveyard(int index);
     }
 }

@@ -21,7 +21,7 @@ public static class CombatAnimation
         sortingGroup.sortingLayerName = "BoardCards";
         sortingGroup.sortingOrder = 1000;
 
-        Vector3 partWay = Vector3.Lerp(originalPos, target.transform.position, 0.7f);
+        Vector3 partWay = Vector3.Lerp(originalPos, target.transform.position, 0.5f);
         //var partWay = (target.transform.position - originalPos) * 1.1f;
 
         source.transform.DOMove(partWay, 0.35f).SetEase(Ease.InSine).OnComplete(() =>

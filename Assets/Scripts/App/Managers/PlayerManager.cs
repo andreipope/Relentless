@@ -10,6 +10,9 @@ namespace GrandDevs.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {
+        public event Action<int> OnPlayerGraveyardUpdatedEvent;
+        public event Action<int> OnOpponentGraveyardUpdatedEvent;
+
         public Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
         public Action OnLocalPlayerSetUp { get; set; }
 
@@ -35,6 +38,15 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+        }
+
+        public void UpdatePlayerGraveyard(int index)
+        {
+            OnPlayerGraveyardUpdatedEvent?.Invoke(index);
+        }
+        public void UpdateOpponentGraveyard(int index)
+        {
+            OnOpponentGraveyardUpdatedEvent?.Invoke(index);
         }
     }
 }

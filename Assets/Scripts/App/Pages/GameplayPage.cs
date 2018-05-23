@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using System;
+using System.Linq;
 
 namespace GrandDevs.CZB
 {
@@ -29,6 +30,14 @@ namespace GrandDevs.CZB
         private PlayerSkillItem _playerSkill,
                                 _opponentSkill;
 
+        private List<CardZoneStatus> _deckStatus,
+                             _graveyardStatus;
+
+        private SpriteRenderer _playerDeckStatusTexture,
+                               _opponentDeckStatusTexture,
+                               _playerGraveyardStatusTexture,
+                               _opponentGraveyardStatusTexture;
+
 		private int _currentDeckId;
 
         public int CurrentDeckId
@@ -37,13 +46,15 @@ namespace GrandDevs.CZB
             get { return _currentDeckId; }
         }
 
+        private bool _isPlayerInited = false;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
-			_playerManager = GameClient.Get<IPlayerManager>();
-			_dataManager = GameClient.Get<IDataManager>();
+            _playerManager = GameClient.Get<IPlayerManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -61,8 +72,110 @@ namespace GrandDevs.CZB
 
             Hide();
 
+            _deckStatus = new List<CardZoneStatus>();
+            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, null, 0));
+            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_single"), 15));
+            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_couple"), 40));
+            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_bunch"), 60));
+            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_full"), 80));
 
+            _graveyardStatus = new List<CardZoneStatus>();
+            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, null, 0));
+            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_single"), 10));
+            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
+            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
+            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
             //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
+
+            _playerManager.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardZoneChanged;
+            _playerManager.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardZoneChanged;
+        }
+
+        private void OnPlayerDeckZoneChanged(int index)
+        {
+            if (!_isPlayerInited)
+                return;
+
+            if (index == 0)
+                _playerDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+            else
+            {
+                int percent = GetPercentFromMaxDeck(index);
+
+                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).First();
+
+                _playerDeckStatusTexture.sprite = nearest.statusSprite;
+            }
+        }
+
+        private void OnPlayerGraveyardZoneChanged(int index)
+        {
+            if (!_isPlayerInited)
+                return;
+
+            if (index == 0)
+                _playerGraveyardStatusTexture.sprite = _graveyardStatus.Find(x => x.percent == index).statusSprite;
+            else
+            {
+                int percent = GetPercentFromMaxDeck(index);
+
+                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).ToList();
+
+                CardZoneStatus nearest = null;
+
+                if (nearestObjects[0].percent > 0)
+                    nearest = nearestObjects[0];
+                else
+                    nearest = nearestObjects[1];
+
+                _playerGraveyardStatusTexture.sprite = nearest.statusSprite;
+            }
+        }
+
+        private void OnOpponentDeckZoneChanged(int index)
+        {
+            if (!_isPlayerInited)
+                return;
+
+            if (index == 0)
+                _opponentDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+            else
+            {
+                int percent = GetPercentFromMaxDeck(index);
+
+                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).First();
+
+                _opponentDeckStatusTexture.sprite = nearest.statusSprite;
+            }
+        }
+
+        private void OnOpponentGraveyardZoneChanged(int index)
+        {
+            if (!_isPlayerInited)
+                return;
+
+            if (index == 0)
+                _opponentGraveyardStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+            else
+            {
+                int percent = GetPercentFromMaxDeck(index);
+
+                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).ToList();
+
+                CardZoneStatus nearest = null;
+
+                if (nearestObjects[0].percent > 0)
+                    nearest = nearestObjects[0];
+                else
+                    nearest = nearestObjects[1];
+
+                _opponentGraveyardStatusTexture.sprite = nearest.statusSprite;
+            }
+        }
+
+        private int GetPercentFromMaxDeck(int index)
+        {
+            return 100 * index / (int)Constants.DECK_MAX_SIZE;
         }
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
@@ -77,11 +190,18 @@ namespace GrandDevs.CZB
             if (cardToDestroy != null)
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
-                                               cardToDestroy.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite));
+                                               cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
+
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
+                }, null, 1f);
+
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
                     GameObject.Destroy(cardToDestroy.gameObject);
-                }, null, 1);
+
+                }, null, 2f);
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
             }
         }
@@ -107,6 +227,11 @@ namespace GrandDevs.CZB
 
         private void SetUpPlayer()
         {
+            var player = NetworkingUtils.GetHumanLocalPlayer();
+
+            player.deckZone.onZoneChanged += OnPlayerDeckZoneChanged;
+            player.opponentDeckZone.onZoneChanged += OnOpponentDeckZoneChanged;
+
             GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
 
             int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
@@ -119,8 +244,6 @@ namespace GrandDevs.CZB
             _skillsIcons.Add(Enumerators.SkillType.FREEZE, "Images/hero_power_04");
             _skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, "Images/hero_power_05");
             _skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, "Images/hero_power_06");
-
-
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
@@ -158,6 +281,14 @@ namespace GrandDevs.CZB
 
                 GameObject.Find("Opponent/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
             }
+
+
+            _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
+            _opponentDeckStatusTexture = GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
+            _playerGraveyardStatusTexture = GameObject.Find("Player/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
+            _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
+
+            _isPlayerInited = true;
         }
 
         public void Update()
@@ -178,6 +309,8 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(false);
             ClearGraveyard();
+
+            _isPlayerInited = false;
         }
 
         public void Dispose()
@@ -254,6 +387,20 @@ namespace GrandDevs.CZB
         {
             if (selfObject != null)
                 GameObject.Destroy(selfObject);
+        }
+    }
+
+    public class CardZoneStatus
+    {
+        public Enumerators.CardZoneType cardZone;
+        public int percent;
+        public Sprite statusSprite;
+
+        public CardZoneStatus( Enumerators.CardZoneType cardZone, Sprite statusSprite, int percent)
+        {
+            this.cardZone = cardZone;
+            this.statusSprite = statusSprite;
+            this.percent = percent;
         }
     }
 }

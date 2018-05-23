@@ -26,16 +26,7 @@ public class BoardCreature : MonoBehaviour
     public GameObject fightTargetingArrowPrefab;
 
     [SerializeField]
-    protected SpriteRenderer glowSprite;
-
-	[SerializeField]
-	protected SpriteRenderer frameSprite;
-
-    [SerializeField]
     protected SpriteRenderer pictureSprite;
-
-    [SerializeField]
-    protected Transform pictureMaskTransform;
 
     [SerializeField]
     protected SpriteRenderer frozenSprite;
@@ -48,11 +39,6 @@ public class BoardCreature : MonoBehaviour
 
     [SerializeField]
     protected ParticleSystem sleepingParticles;
-
-    [SerializeField]
-    protected Sprite[] frameSprites;
-
-   
 
     [HideInInspector]
     public Player ownerPlayer;
@@ -81,6 +67,15 @@ public class BoardCreature : MonoBehaviour
 
     private Server _server;
 
+
+    public AnimationEventTriggering arrivalAnimationEventHandler;
+
+    public GameObject creatureContentObject;
+
+    public Animator creatureAnimator;
+
+    public List<CreatureAnimatorInfo> animatorControllers;
+
     public bool IsPlayable
     {
         set{
@@ -104,11 +99,16 @@ public class BoardCreature : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Assert.IsNotNull(glowSprite);
-        Assert.IsNotNull(pictureSprite);
+      //Assert.IsNotNull(glowSprite);
+     //   Assert.IsNotNull(pictureSprite);
         Assert.IsNotNull(attackText);
         Assert.IsNotNull(healthText);
         Assert.IsNotNull(sleepingParticles);
+        Assert.IsNotNull(arrivalAnimationEventHandler);
+        Assert.IsNotNull(creatureContentObject);
+        Assert.IsNotNull(creatureAnimator);
+
+        arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
     }
 
     protected virtual void OnDestroy()
@@ -120,19 +120,28 @@ public class BoardCreature : MonoBehaviour
             CreatureOnDieEvent?.Invoke();
     }
 
+    public virtual void ArrivalAnimationEventHandler(string param)
+    {
+        if (param.Equals("ArrivalAnimationDone"))
+            creatureContentObject.SetActive(true);
+    }
+
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
         this.card = card;
-
-        frameSprite.sprite = frameSprites[0];
-          
+         
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
         var rarity = Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
 
         pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), libraryCard.picture.ToLower()));
 
-		attackStat = card.namedStats["DMG"];
+        pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(libraryCard.cardViewInfo.position);
+        pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(libraryCard.cardViewInfo.scale);
+
+        creatureAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == libraryCard.cardType).animator;
+
+        attackStat = card.namedStats["DMG"];
 		healthStat = card.namedStats["HP"];
 
         attackText.text = attackStat.effectiveValue.ToString();
@@ -158,20 +167,23 @@ public class BoardCreature : MonoBehaviour
           
         if (hasProvoke)
         {
-            glowSprite.gameObject.SetActive(false);
-            pictureMaskTransform.localScale = new Vector3(50, 55, 1);
-            frameSprite.sprite = frameSprites[2];
+         //   glowSprite.gameObject.SetActive(false);
+          //  pictureMaskTransform.localScale = new Vector3(50, 55, 1);
+           // frameSprite.sprite = frameSprites[2];
         }
         SetHighlightingEnabled(false);
         if (hasImpetus)
         {
-            pictureMaskTransform.localScale = new Vector3(48, 55, 1);
-            frameSprite.sprite = frameSprites[1];
+          //  pictureMaskTransform.localScale = new Vector3(48, 55, 1);
+          //  frameSprite.sprite = frameSprites[1];
             StopSleepingParticles();
-            if (ownerPlayer != null)
-                SetHighlightingEnabled(true);
+            //if (ownerPlayer != null)
+            //    SetHighlightingEnabled(true);
             IsPlayable = true;
         }
+
+        creatureAnimator.StopPlayback();
+        creatureAnimator.Play(0);
     }
 
     public void OnStartTurn()
@@ -245,7 +257,7 @@ public class BoardCreature : MonoBehaviour
 
     public void SetHighlightingEnabled(bool enabled)
     {
-		glowSprite.enabled = enabled;
+		//glowSprite.enabled = enabled;
 	}
 
     public void StopSleepingParticles()
@@ -388,4 +400,12 @@ public class BoardCreature : MonoBehaviour
     {
         CreatureOnAttackEvent?.Invoke(target);
     }
+
+}
+
+[Serializable]
+public class CreatureAnimatorInfo
+{
+    public Enumerators.CardType cardType;
+    public RuntimeAnimatorController animator;
 }

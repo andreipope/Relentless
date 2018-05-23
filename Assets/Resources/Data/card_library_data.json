@@ -8,8 +8,8 @@
           "kind": "CREATURE",
           "name": "Pyromaz",
           "cost": 1,
-          "description": "Attack: 1 additional damage to life zombie",
-		  "flavorText": "He's really into that old Prodigy song... Firestarter...",
+          "description": "<b>Attack:</b> 1 additional damage to life zombie",
+          "flavorText": "He's really into that old Prodigy song... Firestarter...",
           "picture": "Pyromaz",
           "damage": 1,
           "health": 1,
@@ -22,10 +22,22 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-			  "setType": "life",
-			  "value": 1,
+              "setType": "life",
+              "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.15,
+              "y": 0,
+              "z":  0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 1,
@@ -33,20 +45,32 @@
           "name": "Burrrnn",
           "cost": 3,
           "description": "Feral",
-		  "flavorText": "So he likes all the pretty bright colors, can you blame him?",
+          "flavorText": "So he likes all the pretty bright colors, can you blame him?",
           "picture": "Burrrnn",
           "damage": 2,
           "health": 2,
           "type": "FERAL",
-          "rarity": "RARE"
+          "rarity": "RARE",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.15,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 2,
           "kind": "CREATURE",
           "name": "Cynderman",
           "cost": 5,
-          "description": "Enter: damage a target for 2 damage",
-		  "flavorText": "Hot, so very hot - all the time!",
+          "description": "<b>Enter:</b> damage a target for 2 damage",
+          "flavorText": "Hot, so very hot - all the time!",
           "picture": "сynderman",
           "damage": 4,
           "health": 3,
@@ -60,23 +84,35 @@
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 2,
-			  "effectType": "TARGET_FIRE"
+              "effectType": "TARGET_FIRE"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 3,
           "kind": "CREATURE",
           "name": "Gargantua",
           "cost": 8,
-          "description": "Entry: Damage ALL enemy zombies for 2 Damage",
-		  "flavorText": "(sing) Under pressure... coming down on you... ",
+          "description": "<b>Entry:</b> Damage ALL enemy zombies for 2 Damage",
+          "flavorText": "(sing) Under pressure... coming down on you... ",
           "picture": "Gargantua",
           "damage": 6,
           "health": 6,
           "type": "WALKER",
           "rarity": "EPIC",
-		      "abilities": [
+          "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
@@ -86,7 +122,19 @@
               "value": 2,
               "effectType": "MASSIVE_FIRE"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         }
       ]
     },
@@ -98,8 +146,8 @@
           "kind": "CREATURE",
           "name": "Izze",
           "cost": 1,
-          "description": "Attack: disable enemy for 1 turn",
-		  "flavorText": "It would be a-lot Izzier if you just stay put!",
+          "description": "<b>Attack:</b> disable enemy for 1 turn",
+          "flavorText": "It would be a-lot Izzier if you just stay put!",
           "picture": "Izze",
           "damage": 1,
           "health": 1,
@@ -113,40 +161,64 @@
               "targetType": "opponent_card|opponent",
               "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.28,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 5,
           "kind": "CREATURE",
           "name": "Jetter",
           "cost": 3,
-          "description": "Attack: extra 1 damage to fire zombies",
-		  "flavorText": "Most welcomed during hot summer days on the busy city streets.",
+          "description": "<b>Attack:</b> extra 1 damage to fire zombies",
+          "flavorText": "Most welcomed during hot summer days on the busy city streets.",
           "picture": "Jetter",
           "damage": 3,
           "health": 3,
           "type": "WALKER",
           "rarity": "RARE",
-		  "abilities": [
+          "abilities": [
             {
               "type": "MODIFICATOR_STATS",
               "activityType": "passive",
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-			  "setType": "fire",
-			  "value": 1,
-			  "effectType": "STUN_FREEZES"
+              "setType": "fire",
+              "value": 1,
+              "effectType": "STUN_FREEZES"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.64,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.4,
+              "y": 0.4,
+              "z": 0.4
+            }
+          }
         },
         {
           "id": 6,
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 6,
-          "description": "Entry: freeze target and 2 adjacent targets for 1 turn, if frozen add 3 damage",
-		  "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
+          "description": "<b>Entry:</b> freeze target and 2 adjacent targets for 1 turn, if frozen add 3 damage",
+          "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
           "picture": "Freezzee",
           "damage": 4,
           "health": 4,
@@ -161,32 +233,56 @@
               "value": 3,
               "effectType": "STUN_OR_DAMAGE_FREEZES"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0.7,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 7,
           "kind": "CREATURE",
           "name": "Tsunami",
           "cost": 9,
-          "description": "Entry: attack ALL enemy zombies for 2 damage",
-		  "flavorText": "Bringing a nice, big shower, cleaning an entire city at a time.",
+          "description": "<b>Entry:</b> attack ALL enemy zombies for 2 damage",
+          "flavorText": "Bringing a nice, big shower, cleaning an entire city at a time.",
           "picture": "Tsunami",
           "damage": 8,
           "health": 7,
           "type": "WALKER",
           "rarity": "EPIC",
-				  "abilities": [
-		            {
-		              "type": "MASSIVE_DAMAGE",
-		              "activityType": "PASSIVE",
-		              "callType": "at_start",
-		              "targetType": "OPPONENT_ALL_CARDS | opponent",
-		              "affectObjectType": "none",
-		              "value": 2,
-					  "effectType": "MASSIVE_WATER_WAVE"
-		            }
-		          ]
-		        }
+          "abilities": [
+            {
+              "type": "MASSIVE_DAMAGE",
+              "activityType": "PASSIVE",
+              "callType": "at_start",
+              "targetType": "OPPONENT_ALL_CARDS | opponent",
+              "affectObjectType": "none",
+              "value": 2,
+              "effectType": "MASSIVE_WATER_WAVE"
+            }
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.09,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
+        }
 		      ]
     },
     {
@@ -197,24 +293,36 @@
           "kind": "CREATURE",
           "name": "Rockky",
           "cost": 1,
-          "description": "Attack: extra 1 damage for water zombies",
-		  "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
+          "description": "<b>Attack:</b> extra 1 damage for water zombies",
+          "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
           "picture": "Rockky",
           "damage": 1,
           "health": 1,
           "type": "WALKER",
           "rarity": "COMMON",
-		  "abilities": [
+          "abilities": [
             {
               "type": "MODIFICATOR_STATS",
               "activityType": "passive",
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-			  "setType": "water",
-			  "value": 1,
+              "setType": "water",
+              "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.12,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 9,
@@ -222,20 +330,32 @@
           "name": "Golem",
           "cost": 4,
           "description": "Heavy",
-		  "flavorText": "mmMMWhaaaaat?",
+          "flavorText": "mmMMWhaaaaat?",
           "picture": "Golem",
           "damage": 2,
           "health": 6,
           "type": "HEAVY",
-          "rarity": "RARE"
+          "rarity": "RARE",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.45,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 10,
           "kind": "CREATURE",
           "name": "Bolderr",
           "cost": 5,
-          "description": "Entry: attack target for 3 damage",
-		  "flavorText": "One more step, just one more step!",
+          "description": "<b>Entry:</b> attack target for 3 damage",
+          "flavorText": "One more step, just one more step!",
           "picture": "Bolderr",
           "damage": 3,
           "health": 5,
@@ -249,31 +369,55 @@
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 3,
-			  "effectType": "TARGET_ROCK"
+              "effectType": "TARGET_ROCK"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0.11,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 11,
           "kind": "CREATURE",
           "name": "Mountain",
           "cost": 10,
-          "description": "Heavy, Attack: damage 2 adjacent targets for 4 dmg",
-		  "flavorText": "When the mountain comes to you... you'll run!",
+          "description": "<b>Heavy, Attack:</b> damage 2 adjacent targets for 4 dmg",
+          "flavorText": "When the mountain comes to you... you'll run!",
           "picture": "Mountain",
           "damage": 8,
           "health": 8,
           "type": "HEAVY",
           "rarity": "EPIC",
-		  "abilities": [
+          "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "passive",
               "callType": "AT_ATTACK",
               "targetType": "none",
-              "value": 4,
+              "value": 4
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         }
       ]
     },
@@ -286,41 +430,65 @@
           "name": "Whizpar",
           "cost": 2,
           "description": "Feral",
-		  "flavorText": "The unfriendly ghost...",
+          "flavorText": "The unfriendly ghost...",
           "picture": "Whizpar",
           "damage": 1,
           "health": 1,
           "type": "FERAL",
-          "rarity": "COMMON"
+          "rarity": "COMMON",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.06,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
         },
         {
           "id": 13,
           "kind": "CREATURE",
           "name": "Pushhh",
           "cost": 3,
-          "description": "Entry: return target zombie to hand",
-		  "flavorText": "Like any adolescent child that wishes you to leave him be... so GO AWAY!!",
+          "description": "<b>Entry:</b> return target zombie to hand",
+          "flavorText": "Like any adolescent child that wishes you to leave him be... so GO AWAY!!",
           "picture": "Pushhh",
           "damage": 3,
           "health": 3,
           "type": "WALKER",
           "rarity": "RARE",
-		  "abilities": [
+          "abilities": [
             {
               "type": "CARD_RETURN",
               "activityType": "active",
               "callType": "at_start",
-              "targetType": "player_card|opponent_card",
+              "targetType": "player_card|opponent_card"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.07,
+              "y": -0.05,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 14,
           "kind": "CREATURE",
           "name": "Stormcaller",
           "cost": 6,
-          "description": "Entry: attack target and 2 adjacent zombies for 1 damage",
-		  "flavorText": "Thor's best student just got a little angrier...",
+          "description": "<b>Entry:</b> attack target and 2 adjacent zombies for 1 damage",
+          "flavorText": "Thor's best student just got a little angrier...",
           "picture": "Stormcaller",
           "damage": 4,
           "health": 5,
@@ -333,32 +501,56 @@
               "callType": "at_start",
               "targetType": "player_card|opponent_card",
               "value": 1,
-			  "effectType": "TARGET_ADJUSTMENTS_AIR"
+              "effectType": "TARGET_ADJUSTMENTS_AIR"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.36,
+              "y": 0.36,
+              "z": 0.36
+            }
+          }
         },
         {
           "id": 15,
           "kind": "CREATURE",
           "name": "Zeuz",
           "cost": 10,
-          "description": "Entry: damage 3 to ALL enemy zombies",
-		  "flavorText": "From mount Zolimpus in the sky - fear Ze-might of ZeuZ!",
+          "description": "<b>Entry:</b> damage 3 to ALL enemy zombies",
+          "flavorText": "From mount Zolimpus in the sky - fear Ze-might of ZeuZ!",
           "picture": "Zeuz",
           "damage": 8,
           "health": 7,
           "type": "WALKER",
           "rarity": "EPIC",
-		  "abilities": [
+          "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
               "callType": "at_start",
               "targetType": "OPPONENT_ALL_CARDS",
               "value": 3,
-			  "effectType": "MASSIVE_LIGHTNING"
+              "effectType": "MASSIVE_LIGHTNING"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": -0.03,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
         }
       ]
     },
@@ -370,32 +562,44 @@
           "kind": "CREATURE",
           "name": "Azuraz",
           "cost": 1,
-          "description": "Attack: 1 additional damage to life zombies",
-		  "flavorText": "Beeee yourself!",
+          "description": "<b>Attack:</b> 1 additional damage to life zombies",
+          "flavorText": "Beeee yourself!",
           "picture": "Azuraz",
           "damage": 1,
           "health": 1,
           "type": "WALKER",
           "rarity": "COMMON",
-		  "abilities": [
+          "abilities": [
             {
               "type": "MODIFICATOR_STATS",
               "activityType": "passive",
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-			  "setType": "life",
-			  "value": 1,
+              "setType": "life",
+              "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0.3,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.36,
+              "y": 0.36,
+              "z": 0.36
+            }
+          }
         },
         {
           "id": 17,
           "kind": "CREATURE",
           "name": "Shroom",
           "cost": 4,
-          "description": "Entry: 2 damage to target",
-		  "flavorText": "Some like to grow flowers, others grow hallucinogenic poison mushrooms...",
+          "description": "<b>Entry:</b> 2 damage to target",
+          "flavorText": "Some like to grow flowers, others grow hallucinogenic poison mushrooms...",
           "picture": "Shroom",
           "damage": 4,
           "health": 2,
@@ -408,17 +612,29 @@
               "callType": "at_start",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 2,
-			  "effectType": "TARGET_LIFE"
+              "effectType": "TARGET_LIFE"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0.77,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 18,
           "kind": "CREATURE",
           "name": "Vindrom",
           "cost": 6,
-          "description": "Attack: disable enemy for 1 turn",
-		  "flavorText": "BDSM much?!",
+          "description": "<b>Attack:</b> disable enemy for 1 turn",
+          "flavorText": "BDSM much?!",
           "picture": "Vindrom",
           "damage": 5,
           "health": 5,
@@ -432,7 +648,19 @@
               "targetType": "opponent_card|opponent",
               "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.06,
+              "y": 0.34,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
         },
         {
           "id": 19,
@@ -440,14 +668,14 @@
           "name": "Shammann",
           "cost": 8,
           //"description": "",
-          "description": "Turn: summons a 1/1 zombie minion start of each turn",
-		  "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
+          "description": "<b>Turn:</b> summons a 1/1 zombie minion start of each turn",
+          "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
           "picture": "Shammann",
           "damage": 5,
           "health": 6,
           "type": "WALKER",
           "rarity": "EPIC",
-		      "abilities": [
+          "abilities": [
             {
               "type": "SUMMON",
               "activityType": "passive",
@@ -455,7 +683,19 @@
               "targetType": "NONE",
               "value": 33
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         }
       ]
     },
@@ -467,8 +707,8 @@
           "kind": "CREATURE",
           "name": "Poizom",
           "cost": 1,
-          "description": "Attack: 1 additional damage to life zombie",
-		  "flavorText": "Just like any frat boy, after the Friday night bash - bloated, gassy, puking and generally unpleasant to be around... ",
+          "description": "<b>Attack:</b> 1 additional damage to life zombie",
+          "flavorText": "Just like any frat boy, after the Friday night bash - bloated, gassy, puking and generally unpleasant to be around... ",
           "picture": "Poizom",
           "damage": 1,
           "health": 1,
@@ -482,17 +722,29 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "life",
-              "value": 1,
+              "value": 1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0.15,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 21,
           "kind": "CREATURE",
           "name": "Ghoul",
           "cost": 2,
-          "description": "Attack: looses 1 DMG (not HP)",
-		  "flavorText": "Being dead has its perks, but in this case time and humidity has not been kind - the rotting flesh is literally sapping off the bone on this one.",
+          "description": "<b>Attack:</b> looses 1 DMG (not HP)",
+          "flavorText": "Being dead has its perks, but in this case time and humidity has not been kind - the rotting flesh is literally sapping off the bone on this one.",
           "picture": "Ghoul",
           "damage": 3,
           "health": 2,
@@ -505,9 +757,21 @@
               "callType": "AT_ATTACK",
               "targetType": "none",
               "statType": "damage",
-              "value": -1,
+              "value": -1
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.13,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 22,
@@ -515,22 +779,34 @@
           "name": "Hazmaz",
           "cost": 4,
           "description": "Feral",
-		  "flavorText": "Being cooped up inside a plastic suit is no fun - now time this by a 1,000 with all the extra gases, something's gotta give...",
+          "flavorText": "Being cooped up inside a plastic suit is no fun - now time this by a 1,000 with all the extra gases, something's gotta give...",
           "picture": "Hazmaz",
           "damage": 3,
           "health": 3,
           "type": "FERAL",
           "rarity": "LEGENDARY",
           "abilities": [
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 23,
           "kind": "CREATURE",
           "name": "Cherno-bill",
           "cost": 7,
-          "description": "Heavy, Death: damage 2 to ALL zombies and heroes",
-		  "flavorText": "Lumbering around in a world made of butter gets old real fast, maybe that's why he's sooo angry!",
+          "description": "<b>Heavy, Death:</b> damage 2 to ALL zombies and heroes",
+          "flavorText": "Lumbering around in a world made of butter gets old real fast, maybe that's why he's sooo angry!",
           "picture": "Cherno-bill",
           "damage": 8,
           "health": 8,
@@ -544,9 +820,21 @@
               "targetType": "player|PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
-			  "effectType": "MASSIVE_TOXIC_ALL"
+              "effectType": "MASSIVE_TOXIC_ALL"
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.15,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.45,
+              "y": 0.45,
+              "z": 0.45
+            }
+          }
         }
       ]
     },
@@ -558,54 +846,78 @@
           "kind": "SPELL",
           "name": "Stapler",
           "cost": 4,
-          "description": "Entry: Heals a Target for 4 HP",
-		  "flavorText": "Quick and dirty, but it will hold just until the end of the match",
+          "description": "<b>Entry:</b> Heals a Target for 4 HP",
+          "flavorText": "Quick and dirty, but it will hold just until the end of the match",
           "picture": "Stapler",
           "damage": 0,
           "health": 0,
           "type": "WALKER",
           "rarity": "COMMON",
-				  "abilities": [ 
-					  {
-						"type": "heal",
-						"activityType": "active",
-						"callType": "at_start",
-						"targetType": "player_card|opponent_card|player|opponent",
-						"value": 4,
-						"effectType": "HEAL"
-					  }
-				  ]
+          "abilities": [
+            {
+              "type": "heal",
+              "activityType": "active",
+              "callType": "at_start",
+              "targetType": "player_card|opponent_card|player|opponent",
+              "value": 4,
+              "effectType": "HEAL"
+            }
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 25,
           "kind": "SPELL",
           "name": "Nail Bomb",
           "cost": 4,
-          "description": "Entry: Damage target and 2 adjacent zombies for 5 damage",
-		  "flavorText": "When you really want to nail it!",
+          "description": "<b>Entry:</b> Damage target and 2 adjacent zombies for 5 damage",
+          "flavorText": "When you really want to nail it!",
           "picture": "NailBomb",
-          "damage": 10,
+          "damage": 5,
           "health": 0,
           "type": "WALKER",
           "rarity": "RARE",
-				  "abilities": [ 
-					  {
-		          "type": "DAMAGE_TARGET_ADJUSTMENTS",
-							"activityType": "active",
-							"callType": "at_start",
-							"targetType": "player_card|opponent_card|player|opponent",
-							"value": 4,
-							"effectType": "TARGET_ADJUSTMENTS_BOMB"
-					  }
-				  ]
+          "abilities": [
+            {
+              "type": "DAMAGE_TARGET_ADJUSTMENTS",
+              "activityType": "active",
+              "callType": "at_start",
+              "targetType": "player_card|opponent_card|player|opponent",
+              "value": 5,
+              "effectType": "TARGET_ADJUSTMENTS_BOMB"
+            }
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 26,
           "kind": "SPELL",
           "name": "Goo Bottle",
           "cost": 0,
-          "description": "Entry: Adds 2 full Goo vials",
-		  "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
+          "description": "<b>Entry:</b> Adds 2 full Goo vials",
+          "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
           "picture": "GooBottles",
           "damage": 0,
           "health": 0,
@@ -617,17 +929,29 @@
               "activityType": "passive",
               "callType": "at_start",
               "targetType": "none",
-              "value": 2,
+              "value": 2
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 27,
           "kind": "SPELL",
           "name": "Chainsaw",
           "cost": 5,
-          "description": "Attack: Loses 1 HP",
-		  "flavorText": "Cutting through flesh, bone and even steel, it's easy to see why this is a fan-favorite!",
+          "description": "<b>Attack:</b> Loses 1 HP",
+          "flavorText": "Cutting through flesh, bone and even steel, it's easy to see why this is a fan-favorite!",
           "picture": "Chainsaw",
           "damage": 7,
           "health": 2,
@@ -642,7 +966,19 @@
               "damage": 7,
               "health": 2
             }
-          ]
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         }
       ]
     },
@@ -659,7 +995,19 @@
           "damage": 8,
           "health": 8,
           "type": "WALKER",
-          "rarity": "EPIC"
+          "rarity": "EPIC",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 29,
@@ -671,10 +1019,22 @@
           "damage": 6,
           "health": 2,
           "type": "FERAL",
-          "rarity": "COMMON"
-            
+          "rarity": "COMMON",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
+
         },
-		{
+        {
           "id": 30,
           "kind": "CREATURE",
           "name": "Hazmaz",
@@ -684,9 +1044,21 @@
           "damage": 1,
           "health": 4,
           "type": "WALKER",
-          "rarity": "COMMON"
+          "rarity": "COMMON",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
-		{
+        {
           "id": 31,
           "kind": "CREATURE",
           "name": "Stormcaller",
@@ -696,7 +1068,19 @@
           "damage": 4,
           "health": 5,
           "type": "WALKER",
-          "rarity": "LEGENDARY"
+          "rarity": "LEGENDARY",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
         {
           "id": 32,
@@ -708,9 +1092,21 @@
           "damage": 5,
           "health": 5,
           "type": "HEAVY",
-          "rarity": "RARE"
+          "rarity": "RARE",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
-		{
+        {
           "id": 33,
           "kind": "CREATURE",
           "name": "Zombie",
@@ -721,6 +1117,18 @@
           "health": 1,
           "type": "WALKER",
           "rarity": "COMMON",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.38,
+              "y": 0.38,
+              "z": 0.38
+            }
+          }
         },
       ]
     }

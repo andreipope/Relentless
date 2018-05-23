@@ -61,6 +61,8 @@ public class DemoAIPlayer : DemoPlayer
 
     private List<int> _attackedCreatureTargets;
 
+    private bool _enabledAIBrain = true;
+
     /// <summary>
     /// Unity's Awake.
     /// </summary>
@@ -178,133 +180,145 @@ public class DemoAIPlayer : DemoPlayer
         StartCoroutine(PerformMove());
     }
 
+    
+
     /// <summary>
     /// This methods performs the actual AI logic.
     /// </summary>
     /// <returns>The AI logic coroutine.</returns>
     protected virtual IEnumerator PerformMove()
     {
-        foreach (var creature in GetCreatureCardsInHand())
+        if (!_enabledAIBrain)
         {
-            if (TryToPlayCard(creature))
-            {
-                yield return new WaitForSeconds(2.0f);
-            }
-        }
-
-        foreach (var spell in GetSpellCardsInHand())
-        {
-            if (TryToPlayCard(spell))
-            {
-                yield return new WaitForSeconds(2.0f);
-            }
-        }
-		if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep == 11)
-		{
-			(GameClient.Get<ITutorialManager>() as TutorialManager).paused = true;
-		}
-		else
-		{
-	        yield return new WaitForSeconds(2.0f); 
-
-	        var boardCreatures = new List<RuntimeCard>();
-	        foreach (var creature in GetBoardCreatures())
-	        {
-	            boardCreatures.Add(creature);
-	        }
-
-	        var usedCreatures = new List<RuntimeCard>();
-
-	        if (OpponentHasProvokeCreatures())
-	        {
-	            foreach (var creature in boardCreatures)
-	            {
-	                if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-	                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
-	                {
-	                    var attackedCreature = GetTargetOpponentCreature();
-	                    if (attackedCreature != null)
-	                    {
-	                        FightCreature(creature, attackedCreature);
-	                        usedCreatures.Add(creature);
-	                        yield return new WaitForSeconds(2.0f);
-	                        if (!OpponentHasProvokeCreatures())
-	                        {
-	                            break;
-	                        }
-	                    }
-	                }
-	            }
-	        }
-
-	        foreach (var creature in usedCreatures)
-	        {
-	            boardCreatures.Remove(creature);
-	        }
-
-	        var totalPower = GetPlayerAttackingPower();
-	        if (totalPower >= opponentInfo.namedStats["Life"].effectiveValue ||
-	            (aiType == Enumerators.AIType.BLITZ_AI || 
-	             aiType == Enumerators.AIType.TIME_BLITZ_AI))
-	        {
-	            foreach (var creature in boardCreatures)
-	            {
-	                if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-	                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
-	                {
-	                    FightPlayer(creature);
-	                    yield return new WaitForSeconds(2.0f);
-	                }
-	            }
-	        }
-	        else
-	        {
-	            foreach (var creature in boardCreatures)
-	            {
-	                if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
-	                    (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
-	                {
-	                    var playerPower = GetPlayerAttackingPower();
-	                    var opponentPower = GetOpponentAttackingPower();
-	                    if (playerPower > opponentPower)
-	                    {
-	                        FightPlayer(creature);
-	                        yield return new WaitForSeconds(2.0f);
-	                    }
-	                    else
-	                    {
-	                        var attackedCreature = GetRandomOpponentCreature();
-	                        if (attackedCreature != null)
-	                        {
-	                            FightCreature(creature, attackedCreature);
-	                            yield return new WaitForSeconds(2.0f);
-	                        }
-	                        else
-	                        {
-	                            FightPlayer(creature);
-	                            yield return new WaitForSeconds(2.0f);
-	                        }
-	                    }
-	                }
-	            }
-	        }
-
-
-
-            yield return new WaitForSeconds(1.0f);
-
-            TryToUseBoardSkill();
-
-            yield return new WaitForSeconds(1.0f);
-
-            TryToUseBoardWeapon();
-
-            yield return new WaitForSeconds(1.0f);
-
             if (!GameClient.Get<ITutorialManager>().IsTutorial)
                 boardSkill.OnEndTurn();
 
             StopTurn();
+        }
+        else
+        {
+            foreach (var creature in GetCreatureCardsInHand())
+            {
+                if (TryToPlayCard(creature))
+                {
+                    yield return new WaitForSeconds(2.0f);
+                }
+            }
+
+            foreach (var spell in GetSpellCardsInHand())
+            {
+                if (TryToPlayCard(spell))
+                {
+                    yield return new WaitForSeconds(2.0f);
+                }
+            }
+            if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep == 11)
+            {
+                (GameClient.Get<ITutorialManager>() as TutorialManager).paused = true;
+            }
+            else
+            {
+                yield return new WaitForSeconds(2.0f);
+
+                var boardCreatures = new List<RuntimeCard>();
+                foreach (var creature in GetBoardCreatures())
+                {
+                    boardCreatures.Add(creature);
+                }
+
+                var usedCreatures = new List<RuntimeCard>();
+
+                if (OpponentHasProvokeCreatures())
+                {
+                    foreach (var creature in boardCreatures)
+                    {
+                        if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
+                            (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
+                        {
+                            var attackedCreature = GetTargetOpponentCreature();
+                            if (attackedCreature != null)
+                            {
+                                FightCreature(creature, attackedCreature);
+                                usedCreatures.Add(creature);
+                                yield return new WaitForSeconds(2.0f);
+                                if (!OpponentHasProvokeCreatures())
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (var creature in usedCreatures)
+                {
+                    boardCreatures.Remove(creature);
+                }
+
+                var totalPower = GetPlayerAttackingPower();
+                if (totalPower >= opponentInfo.namedStats["Life"].effectiveValue ||
+                    (aiType == Enumerators.AIType.BLITZ_AI ||
+                     aiType == Enumerators.AIType.TIME_BLITZ_AI))
+                {
+                    foreach (var creature in boardCreatures)
+                    {
+                        if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
+                            (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
+                        {
+                            FightPlayer(creature);
+                            yield return new WaitForSeconds(2.0f);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var creature in boardCreatures)
+                    {
+                        if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
+                            (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
+                        {
+                            var playerPower = GetPlayerAttackingPower();
+                            var opponentPower = GetOpponentAttackingPower();
+                            if (playerPower > opponentPower)
+                            {
+                                FightPlayer(creature);
+                                yield return new WaitForSeconds(2.0f);
+                            }
+                            else
+                            {
+                                var attackedCreature = GetRandomOpponentCreature();
+                                if (attackedCreature != null)
+                                {
+                                    FightCreature(creature, attackedCreature);
+                                    yield return new WaitForSeconds(2.0f);
+                                }
+                                else
+                                {
+                                    FightPlayer(creature);
+                                    yield return new WaitForSeconds(2.0f);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+                yield return new WaitForSeconds(1.0f);
+
+                TryToUseBoardSkill();
+
+                yield return new WaitForSeconds(1.0f);
+
+                TryToUseBoardWeapon();
+
+                yield return new WaitForSeconds(1.0f);
+
+                if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    boardSkill.OnEndTurn();
+
+                StopTurn();
+            }
         }
     }
 

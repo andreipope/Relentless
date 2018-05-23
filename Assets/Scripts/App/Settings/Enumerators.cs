@@ -297,5 +297,11 @@
 			THUMBSUP,
 			KISS,
 		}
+
+        public enum CardZoneType
+        {
+            DECK,
+            GRAVEYARD
+        }
     }
 }
