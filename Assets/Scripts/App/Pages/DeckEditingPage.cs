@@ -368,8 +368,6 @@ namespace GrandDevs.CZB
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
                 cardView.transform.localScale = Vector3.one * 0.3f;
-                cardView.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
-                cardView.GetComponent<SpriteRenderer>().sortingOrder = 1;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
                 cardView.GetComponent<SortingGroup>().sortingOrder = 1;
 

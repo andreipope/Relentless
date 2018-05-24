@@ -18,16 +18,19 @@ public class PlayerAvatar : MonoBehaviour
     public bool IsBottom;
     public int index { get { return IsBottom ? 0 : 1; } }
 
-    public GameObject avatarObject;
+    public GameObject avatarObject, avatarDeathObject;
 
     public GameObject avatarTypeHighlight;
 
-    public Animator avatarAnimator;
+    public Animator avatarAnimator, deathAnimamtor;
 
     private void Start()
     {
-        avatarObject = transform.Find("Hero_Object").gameObject;
-        avatarAnimator.enabled = false;
+		//avatarObject = transform.Find("Hero_Object").gameObject;
+		//avatarDeathObject = transform.Find("HeroDeath").gameObject;
+        avatarDeathObject.SetActive(false);
+		avatarAnimator.enabled = false;
+		deathAnimamtor.enabled = false;
     }
 
     private Player GetTargetPlayer()
@@ -78,8 +81,11 @@ public class PlayerAvatar : MonoBehaviour
 
     public void OnAvatarDie()
     {
-        avatarAnimator.enabled = true;
+		avatarDeathObject.SetActive(true);
+		avatarAnimator.enabled = true;
+        deathAnimamtor.enabled = true;
         avatarTypeHighlight.SetActive(false);
-        avatarAnimator.Play(0);
+		avatarAnimator.Play(0);
+		deathAnimamtor.Play(0);
     }
 }

@@ -123,7 +123,17 @@ public class BoardCreature : MonoBehaviour
     public virtual void ArrivalAnimationEventHandler(string param)
     {
         if (param.Equals("ArrivalAnimationDone"))
+        {
             creatureContentObject.SetActive(true);
+			if (hasImpetus)
+			{
+				//  frameSprite.sprite = frameSprites[1];
+				StopSleepingParticles();
+				//if (ownerPlayer != null)
+				//    SetHighlightingEnabled(true);
+				IsPlayable = true;
+			}
+        }
     }
 
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
@@ -140,6 +150,10 @@ public class BoardCreature : MonoBehaviour
         pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(libraryCard.cardViewInfo.scale);
 
         creatureAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == libraryCard.cardType).animator;
+        if(libraryCard.cardType == Enumerators.CardType.WALKER)
+        {
+            sleepingParticles.transform.position += Vector3.up * 0.7f;
+        }
 
         attackStat = card.namedStats["DMG"];
 		healthStat = card.namedStats["HP"];
@@ -172,15 +186,6 @@ public class BoardCreature : MonoBehaviour
            // frameSprite.sprite = frameSprites[2];
         }
         SetHighlightingEnabled(false);
-        if (hasImpetus)
-        {
-          //  pictureMaskTransform.localScale = new Vector3(48, 55, 1);
-          //  frameSprite.sprite = frameSprites[1];
-            StopSleepingParticles();
-            //if (ownerPlayer != null)
-            //    SetHighlightingEnabled(true);
-            IsPlayable = true;
-        }
 
         creatureAnimator.StopPlayback();
         creatureAnimator.Play(0);

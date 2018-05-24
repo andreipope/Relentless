@@ -244,12 +244,11 @@ public class DemoHumanPlayer : DemoPlayer
                     var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
                     GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
                 }
-                boardCard.transform.DOKill();
                 playerGraveyardCards.Add(boardCard);
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
                     RearrangeBottomBoard();
-                }, null, 3f);
+				}, null, 2f);
                 playerBoardCards.Remove(boardCard);
                 //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
@@ -312,17 +311,15 @@ public class DemoHumanPlayer : DemoPlayer
                     var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
                     GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
                 }
-                boardCard.transform.DOKill();
                 opponentGraveyardCards.Add(boardCard);
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
-                    RearrangeTopBoard();
-                }, null, 3f);
+					RearrangeTopBoard();
+				}, null, 2f);
                 opponentBoardCards.Remove(boardCard);
                 //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                RearrangeTopBoard();
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
@@ -1094,87 +1091,6 @@ public class DemoHumanPlayer : DemoPlayer
         {
             card.GetComponent<HandCard>().ResetToInitialPosition();
         }
-    }
-
-    private void PlayArrivalAnimation(GameObject target, Enumerators.CardType type)
-    {
-        List<GameObject> activeObjects = new List<GameObject>();
-        GameObject go = null;
-
-        target.GetComponent<SpriteRenderer>().enabled = false;
-
-        for (int i = 0; i < target.transform.childCount; i++)
-        {
-            go = target.transform.GetChild(i).gameObject;
-            if (go.activeSelf)
-            {
-                activeObjects.Add(go);
-                go.SetActive(false);
-            }
-        }
-
-
-        GameClient.Get<ITimerManager>().AddTimer((creat) =>
-        {
-            GameObject creature = (GameObject)creat[0];
-
-            if (type == Enumerators.CardType.HEAVY)
-            {
-                HeavyArrivalAnimation heavyAnim = new HeavyArrivalAnimation(
-                        creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
-                        creature.transform);
-				heavyAnim.AddOnCompleteCallback((objects) =>
-				{
-					GameObject mainObj = (GameObject)objects[1];
-					mainObj.GetComponent<SpriteRenderer>().enabled = true;
-					List<GameObject> obs = (List<GameObject>)objects[0];
-                    foreach (var item in obs)
-                    {
-                        item.SetActive(true);
-                    }
-
-                }, new object[] { activeObjects, creature });
-			}
-            else if (type == Enumerators.CardType.FERAL)
-			{
-				FeralArrivalAnimation feralfAnim = new FeralArrivalAnimation(
-						creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
-						creature.transform);
-				feralfAnim.AddOnCompleteCallback((objects) =>
-				{
-					GameObject mainObj = (GameObject)objects[1];
-					mainObj.GetComponent<SpriteRenderer>().enabled = true;
-					List<GameObject> obs = (List<GameObject>)objects[0];
-					foreach (var item in obs)
-					{
-						item.SetActive(true);
-					}
-
-                    creature.GetComponent<BoardCreature>().StopSleepingParticles();
-
-                }, new object[] { activeObjects, creature });
-			}
-            else
-                {
-				WalkerArrivalAnimation walkerAnim = new WalkerArrivalAnimation(
-					creature.transform.Find("Picture").GetComponent<SpriteRenderer>().sprite,
-					creature.transform);
-				walkerAnim.AddOnCompleteCallback((objects) =>
-				{
-					GameObject mainObj = (GameObject)objects[1];
-					mainObj.GetComponent<SpriteRenderer>().enabled = true;
-					List<GameObject> obs = (List<GameObject>)objects[0];
-					foreach (var item in obs)
-					{
-						item.SetActive(true);
-					}
-				}, new object[] { activeObjects, creature });
-                }
-            
-
-
-
-        }, new object[] { target, activeObjects }, 0.41f);
     }
 
     private void RemoveCard(object[] param)

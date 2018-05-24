@@ -681,7 +681,7 @@
               "activityType": "passive",
               "callType": "TURN_START",
               "targetType": "NONE",
-              "value": 33
+              "value": 50
             }
           ],
           "cardViewInfo": {
@@ -986,133 +986,12 @@
       "name": "Others",
       "cards": [
         {
-          "id": 28,
-          "kind": "CREATURE",
-          "name": "Mountain",
-          "cost": 1,
-          "description": "",
-          "picture": "Mountain",
-          "damage": 8,
-          "health": 8,
-          "type": "WALKER",
-          "rarity": "EPIC",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.38,
-              "y": 0.38,
-              "z": 0.38
-            }
-          }
-        },
-        {
-          "id": 29,
-          "kind": "CREATURE",
-          "name": "Hazmaz",
-          "cost": 1,
-          "description": "",
-          "picture": "Hazmaz",
-          "damage": 6,
-          "health": 2,
-          "type": "FERAL",
-          "rarity": "COMMON",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.38,
-              "y": 0.38,
-              "z": 0.38
-            }
-          }
-
-        },
-        {
-          "id": 30,
-          "kind": "CREATURE",
-          "name": "Hazmaz",
-          "cost": 1,
-          "description": "",
-          "picture": "Hazmaz",
-          "damage": 1,
-          "health": 4,
-          "type": "WALKER",
-          "rarity": "COMMON",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.38,
-              "y": 0.38,
-              "z": 0.38
-            }
-          }
-        },
-        {
-          "id": 31,
-          "kind": "CREATURE",
-          "name": "Stormcaller",
-          "cost": 1,
-          "description": "",
-          "picture": "Stormcaller",
-          "damage": 4,
-          "health": 5,
-          "type": "WALKER",
-          "rarity": "LEGENDARY",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.38,
-              "y": 0.38,
-              "z": 0.38
-            }
-          }
-        },
-        {
-          "id": 32,
-          "kind": "CREATURE",
-          "name": "Vindrom Clone",
-          "cost": 1,
-          "description": "",
-          "picture": "Vindrom",
-          "damage": 5,
-          "health": 5,
-          "type": "HEAVY",
-          "rarity": "RARE",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.38,
-              "y": 0.38,
-              "z": 0.38
-            }
-          }
-        },
-        {
-          "id": 33,
+          "id": 50,
           "kind": "CREATURE",
           "name": "Zombie",
           "cost": 1,
           "description": "",
-          "picture": "Pyromaz",
+          "picture": "Zombie",
           "damage": 1,
           "health": 1,
           "type": "WALKER",

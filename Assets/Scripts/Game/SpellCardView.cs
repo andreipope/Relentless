@@ -49,7 +49,7 @@ public class SpellCardView : CardView
         }
 
         if (libraryCard.health == 0)
-            attackText.gameObject.SetActive(false);
+            defenseText.gameObject.SetActive(false);
         else
         {
             defenseStat = new Stat();

@@ -4,6 +4,7 @@
 
 using DG.Tweening;
 using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 using UnityEngine;
 
 [RequireComponent(typeof(CardView))]
@@ -72,7 +73,14 @@ public class HandCard : MonoBehaviour
         _alreadySelected = false;
         startedDrag = false;
         ownerPlayer.isCardSelected = false;
-        if (cardView.CanBeBuyed(ownerPlayer))
+
+        bool playable = true;
+
+        if (!cardView.CanBeBuyed(ownerPlayer) || (cardView.libraryCard.cardKind == GrandDevs.CZB.Common.Enumerators.CardKind.CREATURE &&
+                                                     ownerPlayer.boardZone.cards.Count >= Constants.MAX_BOARD_CREATURES))
+            playable = false;
+        
+        if(playable)
         {
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {

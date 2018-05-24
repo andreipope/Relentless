@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.10.2.ver";
+        internal const string CURRENT_VERSION = "0.0.10.3.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";

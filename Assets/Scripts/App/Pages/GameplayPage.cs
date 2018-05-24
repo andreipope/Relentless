@@ -199,7 +199,8 @@ namespace GrandDevs.CZB
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
-                    GameObject.Destroy(cardToDestroy.gameObject);
+					cardToDestroy.transform.DOKill();
+					GameObject.Destroy(cardToDestroy.gameObject);
 
                 }, null, 2f);
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);

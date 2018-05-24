@@ -23,12 +23,14 @@ namespace GrandDevs.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
-        private GameObject _selfPage;
+        private GameObject _selfPage,
+                            _winTutorialPackObject,
+                            _winPackObject;
 
         private MenuButtonNoGlow _buttonOk;
 
-        private Image _selectHeroImage,
-                      _winPackImage;
+        private Image _selectHeroImage;
+
 
         private TextMeshProUGUI _nameHeroText;
 
@@ -41,7 +43,8 @@ namespace GrandDevs.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _selectHeroImage = _selfPage.transform.Find("Image_SelectHero").GetComponent<Image>();
-            _winPackImage = _selfPage.transform.Find("Image_WinPack").GetComponent<Image>();
+            _winTutorialPackObject = _selfPage.transform.Find("WinPackTutorial").gameObject;
+            _winPackObject = _selfPage.transform.Find("WinPack").gameObject;
             _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
             _buttonOk = _selfPage.transform.Find("Button_Ok").GetComponent<MenuButtonNoGlow>();
             _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
@@ -77,8 +80,9 @@ namespace GrandDevs.CZB
             heroName = Utilites.FirstCharToUpper(heroName);
             _nameHeroText.text = heroName + " Hero";
 
-            _winPackImage.gameObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
-        }
+            _winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
+			_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
+		}
 
         public void Show(object data)
         {
