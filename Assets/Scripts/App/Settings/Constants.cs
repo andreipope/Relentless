@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.10.3.ver";
+        internal const string CURRENT_VERSION = "0.0.10.5.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -47,14 +47,26 @@
         internal const string TAG_HP = "HP";
         internal const string TAG_MANA = "Mana";
 
+        internal const string STAT_DAMAGE = "DMG";
+        internal const string STAT_HP = "HP";
+
         internal const string CONTENT_FOLDER_NAME = "SpreadsheetsData/";
         internal const string SPREADSHEET_FILE_FORMAT = ".csv";
 
-        internal const string CARD_SOUND_PLAY = "1P";
-        internal const string CARD_SOUND_ATTACK = "2A";
-        internal const string CARD_SOUND_DEATH = "3D";
+        internal const string CARD_SOUND_PLAY = "P";
+        internal const string CARD_SOUND_ATTACK = "A";
+        internal const string CARD_SOUND_DEATH = "D";
 
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
+
+
+        internal static float ZOMBIES_SOUND_VOLUME = 0.02f;
+        internal static float TUTORIAL_SOUND_VOLUME = 1f;
+        internal static float ARRIVAL_SOUND_VOLUME = 0.05f;
+        internal static float CREATURE_ATTACK_SOUND_VOLUME = 0.05f;
+        internal static float END_TURN_CLICK_SOUND_VOLUME = 0.05f;
+        internal static float HERO_DEATH_SOUND_VOLUME = 0.1f;
+        internal static float CARDS_MOVE_SOUND_VOLUME = 0.025f;
 
         internal const bool DEV_MODE = false;
     }

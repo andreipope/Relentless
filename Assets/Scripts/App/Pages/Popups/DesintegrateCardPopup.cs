@@ -23,7 +23,9 @@ namespace GrandDevs.CZB
 
         //private TextMeshProUGUI _description;
         private MenuButtonNoGlow _yesButton,
-                                _noButton;
+                                _noButton,
+                                _backButton;
+
 		private TextMeshProUGUI _buttonText;
 
 		public Transform cardTransform;
@@ -40,11 +42,13 @@ namespace GrandDevs.CZB
 
             _yesButton = _selfPage.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
             _noButton = _selfPage.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
+            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>(); 
 
-			_yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
+            _yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
 			_noButton.onClickEvent.AddListener(CloseDesintegratePopup);
+            _backButton.onClickEvent.AddListener(CloseDesintegratePopup);
 
-			//_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
+            //_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
 
             Hide();
         }

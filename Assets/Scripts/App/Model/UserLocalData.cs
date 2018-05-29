@@ -7,6 +7,7 @@ namespace GrandDevs.CZB.Data
         public Enumerators.Language appLanguage;
         public bool tutorial = true;
         public int lastSelectedDeckId;
+        public bool openedFirstPack = false;
 
         public UserLocalData()
         {
@@ -17,6 +18,7 @@ namespace GrandDevs.CZB.Data
         {
             appLanguage = Enumerators.Language.NONE;
             lastSelectedDeckId = -1;
+            openedFirstPack = false;
         }
     }
 }

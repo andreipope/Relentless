@@ -181,16 +181,35 @@ namespace GrandDevs.CZB
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
         public void AddCardToGraveyard(CCGKit.RuntimeCard card)
         {
+            var localPlayer = NetworkingUtils.GetHumanLocalPlayer();
+
             //Debug.Log("AddCardToGraveyard for player: "+card.ownerPlayer.id);
 
             BoardCreature cardToDestroy = _playerManager.PlayerGraveyardCards.Find(x => x.card == card);
+
             if (cardToDestroy == null)
+            {
                 cardToDestroy = _playerManager.OpponentGraveyardCards.Find(x => x.card == card);
+
+                if (cardToDestroy == null)
+                {
+                    // optimize it!! fix for summonned zombie
+                    cardToDestroy = localPlayer.opponentBoardCardsList.Find(x => x.card == card && card.namedStats[Constants.TAG_HP].effectiveValue <= 0);
+
+                    if (cardToDestroy != null)
+                    {
+                        localPlayer.opponentBoardCardsList.Remove(cardToDestroy);
+                    }
+                }
+            }
 
             if (cardToDestroy != null)
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
                                                cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
+
+                for (int j = _cards.Count-1; j >= 0; j--)
+                    _cards[j].selfObject.transform.SetAsLastSibling();
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {

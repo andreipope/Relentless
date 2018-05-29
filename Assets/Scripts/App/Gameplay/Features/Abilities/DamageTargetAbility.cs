@@ -78,13 +78,13 @@ namespace GrandDevs.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                        cardCaller.FightPlayerBySkill(value, false);
+                    if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                        playerCallerOfAbility.FightPlayerBySkill(value, false);
                     else
-                        cardCaller.FightPlayerBySkill(value);
+                        playerCallerOfAbility.FightPlayerBySkill(value);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    cardCaller.FightCreatureBySkill(value, targetCreature.card);
+                    playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
                     break;
                 default: break;
             }

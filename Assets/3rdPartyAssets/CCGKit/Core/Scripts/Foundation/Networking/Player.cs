@@ -237,9 +237,9 @@ namespace CCGKit
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
-                        //    if (Constants.DEV_MODE)
-                        //        msgDefaultDeck.Add(13);
-                        //    else
+                            //if (Constants.DEV_MODE)
+                           //     msgDefaultDeck.Add(1);
+                           // else
                                 msgDefaultDeck.Add(card.cardId);
                         }
                     }
@@ -252,7 +252,7 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(27);
+                            //    msgDefaultDeck.Add(19);
                             //else
                                 msgDefaultDeck.Add(card.cardId);
                         }
@@ -776,7 +776,7 @@ namespace CCGKit
             client.Send(NetworkProtocol.PlayEffect, msg);
         }
 
-        public virtual void AddWeapon()
+        public virtual void AddWeapon(GrandDevs.CZB.Data.Card card)
         {
            
         }

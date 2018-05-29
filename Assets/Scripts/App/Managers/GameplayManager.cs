@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CCGKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,23 @@ namespace GrandDevs.CZB
         {
             _controllers = new List<IController>();
             _controllers.Add(new AbilitiesController());
+        }
+
+        public string GetCardSet(Data.Card card)
+        {
+            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            {
+                if (cardSet.cards.IndexOf(card) > -1)
+                    return cardSet.name;
+            }
+
+            return string.Empty;
+        }
+
+        public void RearrangeHands()
+        {
+            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
+            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
         }
     }
 }

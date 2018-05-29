@@ -116,8 +116,17 @@ public class BoardCreature : MonoBehaviour
         healthStat.onValueChanged -= onHealthStatChangedDelegate;
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
 
-        if (ownerPlayer != null)
+       // if (ownerPlayer != null)
+        {
             CreatureOnDieEvent?.Invoke();
+        }
+
+        if (_server != null && _server)
+        {
+            var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
+            localPlayer.RearrangeTopBoard();
+            localPlayer.RearrangeBottomBoard();
+        }
     }
 
     public virtual void ArrivalAnimationEventHandler(string param)
@@ -133,8 +142,12 @@ public class BoardCreature : MonoBehaviour
 				//    SetHighlightingEnabled(true);
 				IsPlayable = true;
 			}
+
+            InternalTools.SetLayerRecursively(gameObject, 0);
         }
     }
+
+
 
     public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
     {
@@ -174,11 +187,20 @@ public class BoardCreature : MonoBehaviour
         };
         healthStat.onValueChanged += onHealthStatChangedDelegate;
 
-        if(libraryCard.cardType == Enumerators.CardType.FERAL)
-            hasImpetus = true;
-        else if (libraryCard.cardType == Enumerators.CardType.HEAVY)
-			hasProvoke = true;
-          
+
+        switch (libraryCard.cardType)
+        {
+            case Enumerators.CardType.FERAL:
+                hasImpetus = true;
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false);
+                break;
+            case Enumerators.CardType.HEAVY:
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false);
+                hasProvoke = true;
+                break;
+            default: break;
+        }
+
         if (hasProvoke)
         {
          //   glowSprite.gameObject.SetActive(false);
@@ -349,12 +371,11 @@ public class BoardCreature : MonoBehaviour
                 IsPlayable = false;
 
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, 0.3f);
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME);
 
                 //sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
-                    Debug.Log("CreatureOnAttackEvent?.Invoke(targetPlayer)");
 					(ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, targetPlayer.transform.position, attackStat.effectiveValue);
 
 					ownerPlayer.FightPlayer(card);
@@ -372,7 +393,11 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-				//sortingGroup.sortingOrder = 100;
+
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME);
+
+                //sortingGroup.sortingOrder = 100;
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
@@ -383,6 +408,13 @@ public class BoardCreature : MonoBehaviour
 
 						ownerPlayer.FightCreature(card, targetCard.card);
                         CreatureOnAttackEvent?.Invoke(targetCard);
+
+                        // play sound when target creature attack more than our
+                        if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
+                        {
+                            libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
+                            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME);
+                        }
                     },
                     () =>
                     {

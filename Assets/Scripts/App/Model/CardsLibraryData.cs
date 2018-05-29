@@ -34,12 +34,12 @@ namespace GrandDevs.CZB.Data
         public void FillAllCards()
         {
             _allCards = new List<Card>();
-            int id = 0;
+          //  int id = 0;
             foreach (var set in sets)
             {
                 foreach (var card in set.cards)
                 {
-                    card.id = id;
+                   // card.id = card.id;
                     card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
                     if(card.kind != null)
@@ -52,7 +52,7 @@ namespace GrandDevs.CZB.Data
                     foreach (var ability in card.abilities)
                         ability.ParseData();
                     _allCards.Add(card);
-                    id++;
+                   // id++;
                 }
             }
         }

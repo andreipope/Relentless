@@ -69,23 +69,23 @@ namespace GrandDevs.CZB
                     rightAdjastment = null;
 
             int targetIndex = -1;
-            for (int i = 0; i < cardCaller.opponentBoardCardsList.Count; i++)
+            for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
             {
-                if (cardCaller.opponentBoardCardsList[i] == creature)
+                if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
                     targetIndex = i;
             }
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
-                    leftAdjustment = cardCaller.opponentBoardCardsList[targetIndex - 1];
-                if (targetIndex + 1 < cardCaller.opponentBoardCardsList.Count)
-                    rightAdjastment = cardCaller.opponentBoardCardsList[targetIndex + 1];
+                    leftAdjustment = playerCallerOfAbility.opponentBoardCardsList[targetIndex - 1];
+                if (targetIndex + 1 < playerCallerOfAbility.opponentBoardCardsList.Count)
+                    rightAdjastment = playerCallerOfAbility.opponentBoardCardsList[targetIndex + 1];
             }
 
             if (leftAdjustment != null)
             {
                 if (leftAdjustment.IsStun)
-                    cardCaller.FightCreatureBySkill(value, leftAdjustment.card);
+                    playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card);
                 else
                     leftAdjustment.Stun(1);
                 //CreateVFX(leftAdjustment..transform.position);
@@ -94,14 +94,14 @@ namespace GrandDevs.CZB
             if (rightAdjastment != null)
             {
                 if (rightAdjastment.IsStun)
-                    cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
+                    playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card);
                 else
                     rightAdjastment.Stun(1);
                 //CreateVFX(targetCreature.transform.position);
             }
 
             if (creature.IsStun)
-                cardCaller.FightCreatureBySkill(value, creature.card);
+                playerCallerOfAbility.FightCreatureBySkill(value, creature.card);
             else
                 creature.Stun(1);
         }

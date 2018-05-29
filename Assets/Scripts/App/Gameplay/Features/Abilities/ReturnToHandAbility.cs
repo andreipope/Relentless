@@ -49,7 +49,7 @@ namespace GrandDevs.CZB
             PlayerInfo playerInfo = GetOwnerOfCreature(targetCreature);
 
             if (targetCreature.ownerPlayer == null)
-                playerInfo = cardCaller.opponentInfo;
+                playerInfo = playerCallerOfAbility.opponentInfo;
 
             //Get server access
             GetServer();
@@ -58,7 +58,7 @@ namespace GrandDevs.CZB
             var card = CreateRuntimeCard(playerInfo);
 
             //Add RuntimeCard to hand on server
-            if (playerInfo == cardCaller.playerInfo)
+            if (playerInfo == playerCallerOfAbility.playerInfo)
                 _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
             else
                 _server.gameState.currentOpponent.namedZones[Constants.ZONE_HAND].cards.Add(card);
@@ -67,7 +67,7 @@ namespace GrandDevs.CZB
             var netCard = CreateNetCard(card);
 
             //Put netCard to hand
-            cardCaller.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
+            playerCallerOfAbility.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
 
             //MAYBE use that on future
             //playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
@@ -75,21 +75,21 @@ namespace GrandDevs.CZB
             //cardCaller.EffectSolver.SetTriggers(card);
 
             //Remove RuntimeCard on server
-            if (playerInfo == cardCaller.playerInfo)
+            if (playerInfo == playerCallerOfAbility.playerInfo)
             {
                 var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == targetCreature.card.instanceId);
                 _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
 
-                if (cardCaller.playerBoardCardsList.Contains(targetCreature))
-                    cardCaller.playerBoardCardsList.Remove(targetCreature);
+                if (playerCallerOfAbility.playerBoardCardsList.Contains(targetCreature))
+                    playerCallerOfAbility.playerBoardCardsList.Remove(targetCreature);
             }
             else
             {
                 var boardRuntimeCard = _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == targetCreature.card.instanceId);
                 _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
 
-                if (cardCaller.opponentBoardCardsList.Contains(targetCreature))
-                    cardCaller.opponentBoardCardsList.Remove(targetCreature);
+                if (playerCallerOfAbility.opponentBoardCardsList.Contains(targetCreature))
+                    playerCallerOfAbility.opponentBoardCardsList.Remove(targetCreature);
             }
 
             
@@ -100,9 +100,7 @@ namespace GrandDevs.CZB
             GameObject.Destroy(targetCreature.gameObject);
             CreateVFX(targetCreature.transform.position);
 
-
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
-            //(NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
+            GameClient.Get<IGameplayManager>().RearrangeHands();
         }
 
         private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo)
@@ -156,10 +154,10 @@ namespace GrandDevs.CZB
 
         public PlayerInfo GetOwnerOfCreature(BoardCreature creature)
         {
-            if (cardCaller.playerBoardCardsList.Contains(creature))
-                return cardCaller.playerInfo;
+            if (playerCallerOfAbility.playerBoardCardsList.Contains(creature))
+                return playerCallerOfAbility.playerInfo;
 
-            return cardCaller.opponentInfo;
+            return playerCallerOfAbility.opponentInfo;
         }
     }
 }

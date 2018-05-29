@@ -6,6 +6,8 @@ using UnityEngine;
 
 using CCGKit;
 using DG.Tweening;
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 /// <summary>
 /// This class holds information about a player avatar from the game scene, which can be clicked
@@ -18,7 +20,7 @@ public class PlayerAvatar : MonoBehaviour
     public bool IsBottom;
     public int index { get { return IsBottom ? 0 : 1; } }
 
-    public GameObject avatarObject, avatarDeathObject;
+    public GameObject avatarObject, avatarDeathObject, spellObject, weaponObject;
 
     public GameObject avatarTypeHighlight;
 
@@ -85,7 +87,11 @@ public class PlayerAvatar : MonoBehaviour
 		avatarAnimator.enabled = true;
         deathAnimamtor.enabled = true;
         avatarTypeHighlight.SetActive(false);
-		avatarAnimator.Play(0);
+        spellObject.SetActive(false);
+        weaponObject.SetActive(false);
+        avatarAnimator.Play(0);
 		deathAnimamtor.Play(0);
+
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HERO_DEATH_SOUND_VOLUME, false, false);
     }
 }

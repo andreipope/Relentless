@@ -12,5 +12,9 @@ namespace GrandDevs.CZB
         int OpponentHeroId { get; set; }
 
         T GetController<T>() where T : IController;
+
+        string GetCardSet(Data.Card card);
+
+        void RearrangeHands();
     }    
 }

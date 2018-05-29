@@ -238,6 +238,7 @@ public class DemoAIPlayer : DemoPlayer
                             var attackedCreature = GetTargetOpponentCreature();
                             if (attackedCreature != null)
                             {
+                                PlayCreatureAttackSound(creature);
                                 FightCreature(creature, attackedCreature);
                                 usedCreatures.Add(creature);
                                 yield return new WaitForSeconds(2.0f);
@@ -265,6 +266,7 @@ public class DemoAIPlayer : DemoPlayer
                         if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                             (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                         {
+                            PlayCreatureAttackSound(creature);
                             FightPlayer(creature);
                             yield return new WaitForSeconds(2.0f);
                         }
@@ -281,6 +283,7 @@ public class DemoAIPlayer : DemoPlayer
                             var opponentPower = GetOpponentAttackingPower();
                             if (playerPower > opponentPower)
                             {
+                                PlayCreatureAttackSound(creature);
                                 FightPlayer(creature);
                                 yield return new WaitForSeconds(2.0f);
                             }
@@ -289,11 +292,13 @@ public class DemoAIPlayer : DemoPlayer
                                 var attackedCreature = GetRandomOpponentCreature();
                                 if (attackedCreature != null)
                                 {
+                                    PlayCreatureAttackSound(creature);
                                     FightCreature(creature, attackedCreature);
                                     yield return new WaitForSeconds(2.0f);
                                 }
                                 else
                                 {
+                                    PlayCreatureAttackSound(creature);
                                     FightPlayer(creature);
                                     yield return new WaitForSeconds(2.0f);
                                 }
@@ -320,6 +325,12 @@ public class DemoAIPlayer : DemoPlayer
                 StopTurn();
             }
         }
+    }
+
+    private void PlayCreatureAttackSound(RuntimeCard card)
+    {
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME);
     }
 
     protected void TryToUseBoardSkill()
@@ -773,7 +784,7 @@ public class DemoAIPlayer : DemoPlayer
 
         foreach(var item in list)
         {
-            if (item.namedStats[Constants.TAG_HP].effectiveValue < item.namedStats[Constants.TAG_HP].maxValue)
+            if (item.namedStats[Constants.TAG_HP].effectiveValue < item.namedStats[Constants.TAG_HP].baseValue)
                 finalList.Add(item);
         }
 
@@ -878,9 +889,9 @@ public class DemoAIPlayer : DemoPlayer
         return false;
     }
 
-    public override void AddWeapon()
+    public override void AddWeapon(GrandDevs.CZB.Data.Card card)
     {
-        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Opponent").transform.Find("Weapon").gameObject);
+        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Opponent").transform.Find("Weapon").gameObject, card);
     }
 
     public override void DestroyWeapon()

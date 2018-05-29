@@ -33,8 +33,10 @@ namespace GrandDevs.CZB
 
         public Enumerators.CardKind cardKind;
 
+        public Data.Card cardOwnerOfAbility;
+
         public BoardCreature boardCreature;
-        public Player cardCaller;
+        public Player playerCallerOfAbility;
         public BoardSpell boardSpell;
 
         public BoardCreature targetCreature;
@@ -82,7 +84,7 @@ namespace GrandDevs.CZB
             else if (this.cardKind == Enumerators.CardKind.SPELL)
                 _targettingArrow.Begin(selectedPlayer.transform.position);//(boardSpell.transform.position);
             else
-                _targettingArrow.Begin(cardCaller.transform.position);
+                _targettingArrow.Begin(playerCallerOfAbility.transform.position);
 
             _targettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
             _targettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
@@ -115,8 +117,8 @@ namespace GrandDevs.CZB
         {
             _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
 
-            cardCaller.OnEndTurnEvent += OnEndTurnEventHandler;
-            cardCaller.OnStartTurnEvent += OnStartTurnEventHandler;
+            playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
+            playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
@@ -131,7 +133,7 @@ namespace GrandDevs.CZB
             else if (this.cardKind == Enumerators.CardKind.SPELL)
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
 
-            if (cardCaller is DemoHumanPlayer)
+            if (playerCallerOfAbility is DemoHumanPlayer)
                 selectedPlayer = playerAvatar;
             else
                 selectedPlayer = opponenentAvatar;
@@ -143,8 +145,8 @@ namespace GrandDevs.CZB
 
         public virtual void Dispose()
         {
-            cardCaller.OnEndTurnEvent -= OnEndTurnEventHandler;
-            cardCaller.OnStartTurnEvent -= OnStartTurnEventHandler;
+            playerCallerOfAbility.OnEndTurnEvent -= OnEndTurnEventHandler;
+            playerCallerOfAbility.OnStartTurnEvent -= OnStartTurnEventHandler;
 
             DeactivateSelectTarget();
         }

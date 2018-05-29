@@ -22,6 +22,8 @@ namespace GrandDevs.CZB
                            _playerAvatarShine,
                            _vfxObject;
 
+        private SpriteRenderer _weaponIcon;
+
 
         private WeaponTargettingArrow _targettingArrow;
         private Player _owner;
@@ -46,15 +48,23 @@ namespace GrandDevs.CZB
         private bool _isOpponentWeapon = false;
         private Animator _siloAnimator;
 
+        private Data.Card _weaponCard;
+
+
+
         public bool CanAttack { get; set; }
 
-        public BoardWeapon(GameObject objectOnBoard)
+        public BoardWeapon(GameObject objectOnBoard, Data.Card card)
         {
+            _weaponCard = card;
+
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _selfObject = objectOnBoard;
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+
+            _weaponIcon = _selfObject.transform.Find("Icon").GetComponent<SpriteRenderer>();
 
             _healthObject = _selfObject.transform.Find("Health").gameObject;
             //_damageObject = _selfObject.transform.Find("Attack").gameObject;
@@ -70,6 +80,9 @@ namespace GrandDevs.CZB
             _playerAvatarShine = _currentPlayerAvatar.transform.Find("Shine").gameObject;
 
             _onMouseHandler = _currentPlayerAvatar.GetComponent<OnMouseHandler>();
+
+            _weaponIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", 
+                GameClient.Get<IGameplayManager>().GetCardSet(_weaponCard).ToLower(), _weaponCard.rarity.ToLower(), _weaponCard.picture.ToLower()));
 
             _healthObject.SetActive(true);
             _damageObject.SetActive(true);
@@ -198,6 +211,7 @@ namespace GrandDevs.CZB
             CombatAnimation.PlayFightAnimation(_currentPlayerAvatar, target, 0.5f, () =>
             {
                 CreateVFX(target.transform.position);
+
                 UpdateUI();
                 if (onHitAction != null) onHitAction();
             }, () => { _siloAnimator.SetBool("Active", false); });

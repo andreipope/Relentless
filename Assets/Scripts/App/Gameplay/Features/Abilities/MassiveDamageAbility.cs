@@ -48,15 +48,14 @@ namespace GrandDevs.CZB
 
 			foreach (var target in abilityTargetTypes)
 			{
-				Debug.Log("target - " + target);
 				switch (target)
 				{
 					case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-						BoardCreature[] creatures = new BoardCreature[cardCaller.opponentBoardCardsList.Count];
-                        cardCaller.opponentBoardCardsList.CopyTo(creatures);
+						BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
+                        playerCallerOfAbility.opponentBoardCardsList.CopyTo(creatures);
 						foreach (var cardOpponent in creatures)
 						{
-							cardCaller.FightCreatureBySkill(value, cardOpponent.card);
+							playerCallerOfAbility.FightCreatureBySkill(value, cardOpponent.card);
 							
 						}
                         CreateVFX(Vector3.up * 1.5f);
@@ -64,11 +63,11 @@ namespace GrandDevs.CZB
 						creatures = null;
 						break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-						RuntimeCard[] cards = new RuntimeCard[cardCaller.boardZone.cards.Count];
-						cardCaller.boardZone.cards.CopyTo(cards);
+						RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
+						playerCallerOfAbility.boardZone.cards.CopyTo(cards);
 						foreach (var cardPlayer in cards)
 						{
-							cardCaller.FightCreatureBySkill(value, cardPlayer);
+							playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
 							//CreateVFX(cardPlayer.transform.position);
 						}
 						Array.Clear(cards, 0, cards.Length);
@@ -79,11 +78,11 @@ namespace GrandDevs.CZB
 
 						break;
 					case Enumerators.AbilityTargetType.OPPONENT:
-						cardCaller.FightPlayerBySkill(value);
+						playerCallerOfAbility.FightPlayerBySkill(value);
 						//CreateVFX(targetCreature.transform.position);
 						break;
 					case Enumerators.AbilityTargetType.PLAYER:
-						cardCaller.FightPlayerBySkill(value, false);
+						playerCallerOfAbility.FightPlayerBySkill(value, false);
 						//CreateVFX(targetCreature.transform.position);
 						break;
 					default: break;
@@ -93,7 +92,7 @@ namespace GrandDevs.CZB
 
         protected override void CreateVFX(Vector3 pos)
         {
-            int playerPos = cardCaller is DemoHumanPlayer ? 1 : -1;
+            int playerPos = playerCallerOfAbility is DemoHumanPlayer ? 1 : -1;
             
             switch (abilityEffectType)
             {

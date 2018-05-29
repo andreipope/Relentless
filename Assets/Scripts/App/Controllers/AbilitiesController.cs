@@ -60,7 +60,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller)
+        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner)
         {
             lock (_lock)
             {
@@ -70,8 +70,10 @@ namespace GrandDevs.CZB
                     ability = CreateAbilityByType(kind, ability)
                 };
 
-                activeAbility.ability.cardCaller = caller;
-                if(kind == Enumerators.CardKind.CREATURE)
+                activeAbility.ability.playerCallerOfAbility = caller;
+                activeAbility.ability.cardOwnerOfAbility = cardOwner;
+
+                if (kind == Enumerators.CardKind.CREATURE)
                     activeAbility.ability.boardCreature = boardObject as BoardCreature;
                 else
                     activeAbility.ability.boardSpell = boardObject as BoardSpell;

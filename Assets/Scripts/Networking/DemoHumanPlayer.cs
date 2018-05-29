@@ -117,6 +117,7 @@ public class DemoHumanPlayer : DemoPlayer
     public Player opponent;
 
     private IUIManager _uiManager;
+    private ISoundManager _soundManager;
 
     protected override void Awake()
     {
@@ -151,6 +152,7 @@ public class DemoHumanPlayer : DemoPlayer
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
 
         _uiManager = GameClient.Get<IUIManager>();
+        _soundManager = GameClient.Get<ISoundManager>();
     }
 
     public override void OnStartLocalPlayer()
@@ -242,7 +244,7 @@ public class DemoHumanPlayer : DemoPlayer
                 if (!gameEnded)
                 {
                     var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME);
                 }
                 playerGraveyardCards.Add(boardCard);
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
@@ -309,9 +311,10 @@ public class DemoHumanPlayer : DemoPlayer
                 if (!gameEnded)
                 {
                     var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, 0.3f);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME);
                 }
                 opponentGraveyardCards.Add(boardCard);
+
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
 					RearrangeTopBoard();
@@ -1025,7 +1028,8 @@ public class DemoHumanPlayer : DemoPlayer
             card.transform.DORotate(Vector3.zero, .1f);
             card.GetComponent<HandCard>().enabled = false;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, 0.3f);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME);
 
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1095,12 +1099,15 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void RemoveCard(object[] param)
     {
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+
         CardView card = param[0] as CardView;
 
         var go = card.gameObject;
 
         //if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
         //    return;
+
         var sortingGroup = card.GetComponent<SortingGroup>();
 
         Sequence animationSequence3 = DOTween.Sequence();
@@ -1115,7 +1122,6 @@ public class DemoHumanPlayer : DemoPlayer
             //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
             animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .45f));
             //animationSequence4.AppendInterval(2f);
-
 
             //Changing layers to all child objects to set them Behind the Graveyard Card
             sortingGroup.sortingLayerName = "Foreground";
@@ -1155,6 +1161,7 @@ public class DemoHumanPlayer : DemoPlayer
                 }
             }
 
+
             Sequence animationSequence5 = DOTween.Sequence();
             animationSequence5.Append(go.transform.DOMove(new Vector3(-6.57f, -4.352f, 0), .5f));
             animationSequence5.OnComplete(() => 
@@ -1166,6 +1173,8 @@ public class DemoHumanPlayer : DemoPlayer
 
     private void RemoveOpponentCard(object[] param)
     {
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+
         GameObject go = param[0] as GameObject;
 
         //if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
@@ -1191,6 +1200,12 @@ public class DemoHumanPlayer : DemoPlayer
 
         animationSequence2.OnComplete(() =>
         {
+            go.layer = 0;
+            for (int i = 0; i < go.transform.childCount; i++)
+            {
+                go.transform.GetChild(i).gameObject.layer = 0;
+            }
+
             //sortingGroup.sortingLayerName = "Default";
             sortingGroup.sortingOrder = 7; // Foreground layer
 
@@ -1212,7 +1227,7 @@ public class DemoHumanPlayer : DemoPlayer
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
         {
-            activeAbility = _abilitiesController.CreateActiveAbility(item, kind, boardObject, isPlayer ? this : opponent);
+            activeAbility = _abilitiesController.CreateActiveAbility(item, kind, boardObject, isPlayer ? this : opponent, libraryCard);
             //Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
             if (_abilitiesController.IsAbilityCanActivateTargetAtStart(item))
                 canUseAbility = true;
@@ -1407,7 +1422,7 @@ public class DemoHumanPlayer : DemoPlayer
         var opponentBoard = opponentInfo.namedZones[Constants.ZONE_BOARD];
         var runtimeCard = opponentBoard.cards[opponentBoard.cards.Count - 1];
 
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, 0.3f);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME);
 
         if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
         {
@@ -1607,7 +1622,7 @@ public class DemoHumanPlayer : DemoPlayer
         if (attackingCard != null && attackedCard != null)
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attackingCard.card.cardId);
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, 0.3f);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME);
 
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
@@ -1636,7 +1651,7 @@ public class DemoHumanPlayer : DemoPlayer
 					effect = GameObject.Instantiate(vfxPrefab);
 					effect.transform.position = target;
 					effect.transform.localScale = new Vector3(-1, 1, 1);
-				}, null, 0.5f, false);
+                }, null, 0.5f, false);
 			}
 			if (damage > 6)
 			{
@@ -1645,10 +1660,14 @@ public class DemoHumanPlayer : DemoPlayer
 					effect = GameObject.Instantiate(vfxPrefab);
 					effect.transform.position = target - Vector3.right;
 					effect.transform.eulerAngles = Vector3.forward * 90;
-				}, null, 1.0f, false);
-			}
 
-		}
+                }, null, 1.0f, false);
+			}
+            GameClient.Get<ITimerManager>().AddTimer((a) =>
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false);
+            }, null, 0.75f, false);
+        }
 		else if (type == Enumerators.CardType.HEAVY)
 		{
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/HeavyAttackVFX");
@@ -1689,9 +1708,9 @@ public class DemoHumanPlayer : DemoPlayer
         //chatPopup.SendText(senderNetId, text);
     }
 
-    public override void AddWeapon()
+    public override void AddWeapon(GrandDevs.CZB.Data.Card card)
     {
-        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Player").transform.Find("Weapon").gameObject);
+        CurrentBoardWeapon = new BoardWeapon(GameObject.Find("Player").transform.Find("Weapon").gameObject, card);
     }
 
     public override void DestroyWeapon()

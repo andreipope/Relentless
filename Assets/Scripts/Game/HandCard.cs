@@ -100,6 +100,9 @@ public class HandCard : MonoBehaviour
         else
         {
             _isReturnToHand = true;
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+
             transform.DOMove(initialPos, 0.5f).OnComplete(() => 
             {
                 transform.position = initialPos;

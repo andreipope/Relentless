@@ -47,11 +47,11 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
-            cardCaller.AddWeapon();
-            cardCaller.CurrentBoardWeapon.InitWeapon(damage, health, cardCaller, abilityTargetTypes);
+            playerCallerOfAbility.AddWeapon(cardOwnerOfAbility);
+            playerCallerOfAbility.CurrentBoardWeapon.InitWeapon(damage, health, playerCallerOfAbility, abilityTargetTypes);
 
-            if (!cardCaller.AlreadyAttackedInThisTurn)
-                cardCaller.CurrentBoardWeapon.ActivateWeapon(!(cardCaller is DemoHumanPlayer));
+            if (!playerCallerOfAbility.AlreadyAttackedInThisTurn)
+                playerCallerOfAbility.CurrentBoardWeapon.ActivateWeapon(!(playerCallerOfAbility is DemoHumanPlayer));
         }
     }
 }

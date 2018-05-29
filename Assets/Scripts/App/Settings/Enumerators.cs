@@ -30,7 +30,20 @@
             OTHER,
             BACKGROUND,
             TUTORIAL,
-            CARDS
+            CARDS,
+            END_TURN,
+
+            FERAL_ARRIVAL,
+            FERAL_ATTACK,
+            HEAVY_ARRIVAL,
+
+            HERO_DEATH,
+
+            CARD_BATTLEGROUND_TO_TRASH,
+            CARD_DECK_TO_HAND_MULTIPLE,
+            CARD_DECK_TO_HAND_SINGLE,
+            CARD_FLY_HAND,
+            CARD_FLY_HAND_TO_BATTLEGROUND
         }
 
         public enum NotificationType
@@ -302,6 +315,11 @@
         {
             DECK,
             GRAVEYARD
+        }
+
+        public enum CardPackType
+        {
+            DEFAULT
         }
     }
 }

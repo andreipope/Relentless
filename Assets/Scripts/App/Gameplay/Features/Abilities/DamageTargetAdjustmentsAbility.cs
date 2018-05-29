@@ -45,10 +45,10 @@ namespace GrandDevs.CZB
                 switch (affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
-                        if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                            CreateAndMoveParticle(() => cardCaller.FightPlayerBySkill(value, false), targetPlayer.transform.position);
+                        if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                            CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         else
-                            CreateAndMoveParticle(() => cardCaller.FightPlayerBySkill(value), targetPlayer.transform.position);
+                            CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetCreature);
@@ -56,12 +56,15 @@ namespace GrandDevs.CZB
                         //cardCaller.FightCreatureBySkill(value, targetCreature.card);
                         //CreateVFX(cardCaller.transform.position);
                         //CreateAndMoveParticle(targetCreature);
-                        CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, targetCreature.card), targetCreature.transform.position);
+                        CreateAndMoveParticle(() =>
+                        {
+                            playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+
+                        }, targetCreature.transform.position);
+                
                         break;
                     default: break;
                 }
-
-                
             }
         }
         public override void Action(object info = null)
@@ -75,25 +78,25 @@ namespace GrandDevs.CZB
 
             int targetIndex = -1;
             List<BoardCreature> list = null;
-            for (int i = 0; i < cardCaller.opponentBoardCardsList.Count; i++)
+            for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
             {
-                if (cardCaller.opponentBoardCardsList[i] == creature)
+                if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
                 {
                     targetIndex = i;
-                    list = cardCaller.opponentBoardCardsList;
+                    list = playerCallerOfAbility.opponentBoardCardsList;
                     break;
                 }
             }
-            if(targetIndex == -1)
-            for (int i = 0; i < cardCaller.playerBoardCardsList.Count; i++)
-            {
-                if (cardCaller.playerBoardCardsList[i] == creature)
+            if (targetIndex == -1)
+                for (int i = 0; i < playerCallerOfAbility.playerBoardCardsList.Count; i++)
                 {
-                    targetIndex = i;
-                    list = cardCaller.playerBoardCardsList;
-                    break;
+                    if (playerCallerOfAbility.playerBoardCardsList[i] == creature)
+                    {
+                        targetIndex = i;
+                        list = playerCallerOfAbility.playerBoardCardsList;
+                        break;
+                    }
                 }
-            }
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -105,13 +108,13 @@ namespace GrandDevs.CZB
             if (leftAdjustment != null)
             {
                 //CreateVFX(cardCaller.transform.position);
-                CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
+                CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
             }
 
             if (rightAdjastment != null)
             {
                 //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-                CreateAndMoveParticle(() => cardCaller.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
+                CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
             }
         }
 
@@ -141,6 +144,8 @@ namespace GrandDevs.CZB
                 CreateVFX(targetCreature.transform.position);
                 callback();
             }
+
+            GameClient.Get<IGameplayManager>().RearrangeHands();
         }
 
         private void DestroyParticle(GameObject particleObj, bool isDirectly = false, float time = 3f)

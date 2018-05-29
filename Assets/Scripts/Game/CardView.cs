@@ -128,6 +128,8 @@ public class CardView : MonoBehaviour
         {
             cardAnimator.enabled = true;
             cardAnimator.SetTrigger("DeckToHand");
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
         }
         isNewCard = false;
     }
@@ -147,6 +149,8 @@ public class CardView : MonoBehaviour
             cardAnimator.SetFloat("Id", 2);
         else
             cardAnimator.SetFloat("Id", id);
+
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
     }
 
     public virtual void UpdateAnimation(string name)

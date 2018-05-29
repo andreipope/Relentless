@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61870492389612540}
   - component: {fileID: 114167742620587972}
   - component: {fileID: 212900485830979230}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BoardCreature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4253924273742690}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Other
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4909128077770586}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PictureRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 23574640033598664}
   - component: {fileID: 222440711333125652}
   - component: {fileID: 114237072823793518}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AttackText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4282314086428842}
   - component: {fileID: 212036912216946320}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CreaturePicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4139738174481226}
   - component: {fileID: 212937100386636934}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Frozen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068433927507908}
   - component: {fileID: 212033224140385392}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AttackAndDefence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 4438927445716912}
   - component: {fileID: 198444090158676314}
   - component: {fileID: 199444919018197114}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SleepingParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 23708933626436178}
   - component: {fileID: 222077132704830462}
   - component: {fileID: 114067830030761014}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DefenceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4214101591420356}
   - component: {fileID: 212279200954417382}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Object_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 212947227149899860}
   - component: {fileID: 95053775628529078}
   - component: {fileID: 114439385163186342}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GraphicsAnimation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4153403202907724}
   - component: {fileID: 212734587401998824}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Object_Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4234922927314236}
   - component: {fileID: 331591932167527904}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PictureMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ Transform:
   m_GameObject: {fileID: 1733510564187506}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.1, y: 0.545, z: 0}
-  m_LocalScale: {x: 1.12, y: 1.12, z: 1.12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4234922927314236}
   - {fileID: 4909128077770586}
@@ -500,7 +500,7 @@ Animator:
   m_GameObject: {fileID: 1733510564187506}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4aa4f54d6d782431bb65425812d5daf2, type: 2}
+  m_Controller: {fileID: 9100000, guid: 70ce61ecd1a35d64f8c9afc5b95eb09b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

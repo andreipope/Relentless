@@ -41,8 +41,8 @@ namespace GrandDevs.CZB
 			//_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
 
 			//_closeButton.onClickEvent.AddListener(Hide);
-            _buttonYes.onClickEvent.AddListener(Hide);
-            _buttonNo.onClickEvent.AddListener(ConfirmationButtonHandler);
+            _buttonYes.onClickEvent.AddListener(ConfirmationButtonHandler);
+            _buttonNo.onClickEvent.AddListener(Hide);
 
 
 			_text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();

@@ -135,7 +135,7 @@ namespace GrandDevs.CZB
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0,1);
+            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0, Constants.TUTORIAL_SOUND_VOLUME);
             _tutorialStarted = true;            
         }
 
@@ -218,10 +218,10 @@ namespace GrandDevs.CZB
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (_currentStep == 22)
                 GameClient.Get<ITimerManager>().AddTimer((x) => {
-                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, 1);
+                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, Constants.TUTORIAL_SOUND_VOLUME);
                 }, null, 6f, false);
             else
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, 1);
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, Constants.TUTORIAL_SOUND_VOLUME);
         }
 
         private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)

@@ -145,8 +145,12 @@ namespace GrandDevs.CZB
                 default:
                     throw new NotImplementedException("Not Implemented " + stateTo.ToString() + " state!");
             }
-            if(AppState != Enumerators.AppState.SHOP)
+
+            if (AppState != Enumerators.AppState.SHOP)
                 _previouseState = AppState;
+            else
+                _previouseState = Enumerators.AppState.MAIN_MENU;
+
             AppState = stateTo;
         }
 

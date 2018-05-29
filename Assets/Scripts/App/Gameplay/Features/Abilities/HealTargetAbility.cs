@@ -44,14 +44,14 @@ namespace GrandDevs.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    if (targetPlayer.playerInfo.netId == cardCaller.netId)
-                        CreateAndMoveParticle(() => { cardCaller.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
+                    if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                        CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
                     else
-                        CreateAndMoveParticle(() => { cardCaller.HealPlayerBySkill(value); }, targetPlayer.transform.position);
+                        CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
 
-                    CreateAndMoveParticle(() => { cardCaller.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
+                    CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
                     break;
                 default: break;
             }

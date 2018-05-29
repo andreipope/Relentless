@@ -12,6 +12,7 @@ using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
 using GrandDevs.Internal;
 using GrandDevs.CZB.Gameplay;
+using Random = UnityEngine.Random;
 
 namespace GrandDevs.CZB
 {
@@ -57,6 +58,8 @@ namespace GrandDevs.CZB
 
         private Transform _cardPreview, _cardPreviewOriginal;
 
+        private bool _activatedTemporaryPack = false;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -80,7 +83,7 @@ namespace GrandDevs.CZB
             _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/packOpenVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
-			_packsObject = _selfPage.transform.Find("PackItem").gameObject;
+            _packsObject = _selfPage.transform.Find("PackItem").gameObject;
 
             _packsAmount = _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>();
 
@@ -94,26 +97,32 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
-			if (_selfPage.activeInHierarchy)
-			{
-				if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
-				{
-					if (Input.GetMouseButtonDown(0))
-					{
+            if (_selfPage.activeInHierarchy)
+            {
+                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
                         if (_isCardPreview)
                             CardPreview(false);
                         else
                             CardClickeCheck();
-					}
-				}
-			}
+                    }
+
+                    if((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.W))
+                    {
+                        _activatedTemporaryPack = true;
+                    }
+
+                }
+            }
         }
 
         public void Show()
         {
             _selfPage.SetActive(true);
             InitObjects();
-            
+
         }
 
         public void Hide()
@@ -129,56 +138,56 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(card.gameObject);
             }
             MonoBehaviour.Destroy(_backgroundCanvas);
-			MonoBehaviour.Destroy(_cardPlaceholders);
-		}
+            MonoBehaviour.Destroy(_cardPlaceholders);
+        }
 
         private void CardClickeCheck()
         {
-			var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			var hit = Physics2D.Raycast(mousePos, Vector2.zero);
-			if (hit.collider != null)
-			{
-				foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-				{
-					if (hit.collider.gameObject == card.gameObject)
-					{
+            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var hit = Physics2D.Raycast(mousePos, Vector2.zero);
+            if (hit.collider != null)
+            {
+                foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+                {
+                    if (hit.collider.gameObject == card.gameObject)
+                    {
                         if (card.transform.Find("Back").gameObject.activeSelf)
                             CardSelected(card);
                         else
-                        {                                 
+                        {
                             _cardPreviewOriginal = card.transform;
-							CardPreview(true);
+                            CardPreview(true);
                         }
-					}
-				}
-			}
-			else if (_cardsTurned == 5)
-				MoveCardsToBottomAndDestroy();
+                    }
+                }
+            }
+            else if (_cardsTurned == 5)
+                MoveCardsToBottomAndDestroy();
         }
 
         private void CardPreview(bool isOpen)
         {
-            if(isOpen)
+            if (isOpen)
             {
-                
+
                 _cardPreview = MonoBehaviour.Instantiate(_cardPreviewOriginal.gameObject).transform;
-				_cardPreview.name = "CardPreview";
-				Utilites.SetLayerRecursively(_cardPreview.gameObject, 11);
+                _cardPreview.name = "CardPreview";
+                Utilites.SetLayerRecursively(_cardPreview.gameObject, 11);
 
-				Sequence mySequence = DOTween.Sequence();
-				mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
-				mySequence.Append(_cardPreview.DORotate(new Vector3(0, 0, 0), .4f));
+                Sequence mySequence = DOTween.Sequence();
+                mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
+                mySequence.Append(_cardPreview.DORotate(new Vector3(0, 0, 0), .4f));
 
-				Sequence mySequence2 = DOTween.Sequence();
-				mySequence2.Append(_cardPreview.DOMove(new Vector3(0, .3f, 5), .4f));
-				mySequence2.Append(_cardPreview.DOMove(new Vector3(0, -0.3f, 5), .2f));
+                Sequence mySequence2 = DOTween.Sequence();
+                mySequence2.Append(_cardPreview.DOMove(new Vector3(0, .3f, 5), .4f));
+                mySequence2.Append(_cardPreview.DOMove(new Vector3(0, -0.3f, 5), .2f));
 
-				Sequence mySequence3 = DOTween.Sequence();
-				mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
-				mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
+                Sequence mySequence3 = DOTween.Sequence();
+                mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
+                mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
-				GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
-				_isCardPreview = true;
+                GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+                _isCardPreview = true;
             }
             else
             {
@@ -188,8 +197,9 @@ namespace GrandDevs.CZB
                 sequence.Append(_cardPreview.DOScale(_cardPreviewOriginal.localScale, .3f));
                 sequence.Join(_cardPreview.DOMove(_cardPreviewOriginal.position, .3f));
                 sequence.Join(_cardPreview.DORotate(_cardPreviewOriginal.eulerAngles, .3f));
-                sequence.OnComplete(() => {
-                    MonoBehaviour.Destroy(_cardPreview.gameObject); 
+                sequence.OnComplete(() =>
+                {
+                    MonoBehaviour.Destroy(_cardPreview.gameObject);
                     _isCardPreview = false;
                 });
             }
@@ -197,20 +207,20 @@ namespace GrandDevs.CZB
 
         private void MoveCardsToBottomAndDestroy()
         {
-			foreach (Transform cardObj in _cardsContainer)
-			{
-				Sequence animationSequence5 = DOTween.Sequence();
-				animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
-				animationSequence5.OnComplete(() =>
-				{
-					MonoBehaviour.Destroy(cardObj.gameObject);
-				});
-			}
+            foreach (Transform cardObj in _cardsContainer)
+            {
+                Sequence animationSequence5 = DOTween.Sequence();
+                animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
+                animationSequence5.OnComplete(() =>
+                {
+                    MonoBehaviour.Destroy(cardObj.gameObject);
+                });
+            }
             if (_playerManager.LocalUser.packsCount > 0)
-			    _lock = false;
-		    _packsObject.GetComponent<DragableObject>().locked = _lock;
-			_dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
-			_cardsTurned = 0;
+                _lock = false;
+            _packsObject.GetComponent<DragableObject>().locked = _lock;
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+            _cardsTurned = 0;
         }
 
         private void OpenAlertDialog(string msg)
@@ -227,7 +237,7 @@ namespace GrandDevs.CZB
             var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
             _packsAmount.text = packsCount.ToString();
 
-			_lock = false;
+            _lock = false;
 
             if (_playerManager.LocalUser.packsCount > 0)
             {
@@ -239,7 +249,7 @@ namespace GrandDevs.CZB
         }
 
         #region button handlers
- 
+
         private void BackButtonHandler()
         {
             DOTween.KillAll();
@@ -260,17 +270,17 @@ namespace GrandDevs.CZB
 
         private void PackOpenButtonHandler(GameObject go)
         {
-            if(_cardsContainer != null)
-            if (_cardsContainer.transform.childCount == 0 && !_lock)
-            {
-                _playerManager.LocalUser.packsCount--;
-                var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
-                _packsAmount.text = packsCount.ToString();
-                _lock = true;
-				_packsObject.GetComponent<DragableObject>().locked = _lock;
+            if (_cardsContainer != null)
+                if (_cardsContainer.transform.childCount == 0 && !_lock)
+                {
+                    _playerManager.LocalUser.packsCount--;
+                    var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
+                    _packsAmount.text = packsCount.ToString();
+                    _lock = true;
+                    _packsObject.GetComponent<DragableObject>().locked = _lock;
 
-				DetachAndAnimatePackItem(go);
-            }
+                    DetachAndAnimatePackItem(go);
+                }
         }
 
         #endregion
@@ -284,7 +294,8 @@ namespace GrandDevs.CZB
             _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
             _packOpenVFX.transform.position = _centerPos;
 
-            animationSequence.OnComplete(() => {
+            animationSequence.OnComplete(() =>
+            {
                 MonoBehaviour.Destroy(go);
                 PackItemAnimationComplete();
             });
@@ -292,11 +303,23 @@ namespace GrandDevs.CZB
 
         private void PackItemAnimationComplete()
         {
+            var cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
+
+            if (!_dataManager.CachedUserLocalData.openedFirstPack)
+            {
+                _activatedTemporaryPack = true;
+                _dataManager.CachedUserLocalData.openedFirstPack = true;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            }
+
+            var cardsInPack = cardPack.OpenPack(_activatedTemporaryPack);
+
+            _activatedTemporaryPack = false;
+
             for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
             {
                 var n = i;
-
-                var card = GenerateNewCard();
+                var card = cardsInPack[i];
 
                 string cardSetName = string.Empty;
                 //var sets = _dataManager.CachedCardsLibraryData.sets.Where(set => set.name != "Others");
@@ -305,7 +328,7 @@ namespace GrandDevs.CZB
                     if (cardSet.cards.IndexOf(card) > -1)
                         cardSetName = cardSet.name;
                 }
-              
+
                 GameObject go = null;
                 if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
                 {
@@ -326,7 +349,7 @@ namespace GrandDevs.CZB
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
                 cardView.GetComponent<SortingGroup>().sortingOrder = 1;
 
-				Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
+                Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
                 Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
 
                 go.transform.localScale = Vector3.one * .35f;
@@ -335,18 +358,84 @@ namespace GrandDevs.CZB
             }
         }
 
+
+        private void CardSelected(CardView card)
+        {
+            var go = card.gameObject;
+
+            if (!go.transform.Find("Back").gameObject.activeSelf)
+                return;
+
+
+            Vector3 rotation = go.transform.eulerAngles;
+            Sequence animationSequence3 = DOTween.Sequence();
+            animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
+            animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
+            animationSequence3.OnComplete(() =>
+            {
+                go.transform.Find("Back").gameObject.SetActive(false);
+                Sequence animationSequence4 = DOTween.Sequence();
+                animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
+                animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
+                animationSequence4.AppendInterval(2f);
+
+                _cardsTurned++;
+                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.id, 1);
+            });
+        }
+    }
+
+    public class CardPack
+    {
+        private IDataManager _dataManager;
+        private List<Card> _cardsInPack;
+
+        public Enumerators.CardPackType cardPackType;
+
+        public CardPack()
+        {
+            Init(Enumerators.CardPackType.DEFAULT);
+        }
+
+        public CardPack(Enumerators.CardPackType type)
+        {
+            Init(type);
+        }
+
+        private void Init(Enumerators.CardPackType type)
+        {
+            _dataManager = GameClient.Get<IDataManager>();
+
+            cardPackType = type;
+
+            _cardsInPack = new List<Card>();
+        }
+
+
+        public List<Card> OpenPack(bool isTemporary = false)
+        {
+            if (isTemporary)
+                GetSpecialCardPack();
+            else
+            {
+                for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
+                    _cardsInPack.Add(GenerateNewCard());
+            }
+
+            return _cardsInPack;
+        }
+
         private Card GenerateNewCard()
         {
-            int id = 0;
             var rarity = (Enumerators.CardRarity)IsChanceFit(0);
-            var cards = _dataManager.CachedCardsLibraryData.Cards.Where((item) => item.cardRarity == rarity && item.cardSetType != Enumerators.SetType.OTHERS).ToList();
-            Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
+            var cards = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardRarity == rarity && item.cardSetType != Enumerators.SetType.OTHERS);
+            Card card = cards[Random.Range(0, cards.Count)];
             return card;
         }
 
         private int IsChanceFit(int rarity)
         {
-            int random = UnityEngine.Random.Range(0, 100);
+            int random = Random.Range(0, 100);
             if (random > 90)
             {
                 rarity++;
@@ -356,29 +445,19 @@ namespace GrandDevs.CZB
                 return rarity;
         }
 
-		private void CardSelected(CardView card)
-		{
-            var go = card.gameObject;
+        // TEMPORARY OR SPECIAL
+        private void GetSpecialCardPack()
+        {
+            var fullColection = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardSetType != Enumerators.SetType.OTHERS);
 
-            if (!go.transform.Find("Back").gameObject.activeSelf)
-                return;
+            var legendary = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.LEGENDARY);
+            var epic = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.EPIC);
 
-
-            Vector3 rotation = go.transform.eulerAngles;
-			Sequence animationSequence3 = DOTween.Sequence();
-			animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
-            animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
-			animationSequence3.OnComplete(() =>
-			{                            
-				go.transform.Find("Back").gameObject.SetActive(false);
-				Sequence animationSequence4 = DOTween.Sequence();
-				animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
-                animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
-                animationSequence4.AppendInterval(2f);
-
-                _cardsTurned++;
-                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.id, 1);
-			});
+            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
+            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
+            _cardsInPack.Add(epic[Random.Range(0, epic.Count)]);
+            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
+            _cardsInPack.Add(legendary[Random.Range(0, legendary.Count)]);
         }
     }
 }
