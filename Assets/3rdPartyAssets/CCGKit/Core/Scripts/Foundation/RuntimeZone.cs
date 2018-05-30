@@ -97,6 +97,19 @@ namespace CCGKit
             }
         }
 
+        public void AddCardSilent(RuntimeCard card)
+        {
+            if (cards.Count < maxCards && !cards.Contains(card))
+            {
+                cards.Add(card);
+                _numCards += 1;
+                if (onZoneChanged != null)
+                {
+                    onZoneChanged(numCards);
+                }
+            }
+        }
+
         /// <summary>
         /// Removes a card from this zone.
         /// </summary>

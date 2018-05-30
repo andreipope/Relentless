@@ -199,5 +199,10 @@ namespace CCGKit
         {
             onValueChanged?.Invoke(effectiveValue, effectiveValue);
         }
+
+        public Stat Clone()
+        {
+            return MemberwiseClone() as Stat;
+        }
     }
 }

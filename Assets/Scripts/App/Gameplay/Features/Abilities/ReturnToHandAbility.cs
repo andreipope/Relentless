@@ -11,8 +11,6 @@ namespace GrandDevs.CZB
     {
         public int value = 1;
 
-        private Server _server;
-
         public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             this.value = ability.value;
@@ -42,80 +40,54 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
+            Player creatureOwner = GetOwnerOfCreature(targetCreature);
+            RuntimeCard returningCard = targetCreature.card;
 
-            Debug.Log("Return To Hand");
-            //if (cardCaller.playerInfo.netId == cardCaller.netId)
-      
-            PlayerInfo playerInfo = GetOwnerOfCreature(targetCreature);
+           // Debug.LogError("<color=white>------return card of " + creatureOwner.GetType() + "; human " + creatureOwner.isHuman + "; to hand-------</color>");
+           // Debug.LogError("<color=white>------returning card " + returningCard.instanceId + " to hand-------</color>");
 
-            if (targetCreature.ownerPlayer == null)
-                playerInfo = playerCallerOfAbility.opponentInfo;
+            // STEP 1 - REMOVE CREATURE FROM BOARD
+            if (creatureOwner.playerBoardCardsList.Contains(targetCreature)) // hack
+                creatureOwner.playerBoardCardsList.Remove(targetCreature);
 
-            //Get server access
-            GetServer();
-
-            //create RuntimeCard
-            var card = CreateRuntimeCard(playerInfo);
-
-            //Add RuntimeCard to hand on server
-            if (playerInfo == playerCallerOfAbility.playerInfo)
-                _server.gameState.currentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
-            else
-                _server.gameState.currentOpponent.namedZones[Constants.ZONE_HAND].cards.Add(card);
-
-            //Create Visual process of creating new card at the hand (simulation turn back)
-            var netCard = CreateNetCard(card);
-
-            //Put netCard to hand
-            playerCallerOfAbility.CreateAndPutToHandRuntimeCard(netCard, playerInfo);
-
-            //MAYBE use that on future
-            //playerInfo.namedZones[Constants.ZONE_HAND].AddCard(card);
-            //cardCaller.EffectSolver.SetDestroyConditions(card);
-            //cardCaller.EffectSolver.SetTriggers(card);
-
-            //Remove RuntimeCard on server
-            if (playerInfo == playerCallerOfAbility.playerInfo)
-            {
-                var boardRuntimeCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == targetCreature.card.instanceId);
-                _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
-
-                if (playerCallerOfAbility.playerBoardCardsList.Contains(targetCreature))
-                    playerCallerOfAbility.playerBoardCardsList.Remove(targetCreature);
-            }
-            else
-            {
-                var boardRuntimeCard = _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == targetCreature.card.instanceId);
-                _server.gameState.currentOpponent.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
-
-                if (playerCallerOfAbility.opponentBoardCardsList.Contains(targetCreature))
-                    playerCallerOfAbility.opponentBoardCardsList.Remove(targetCreature);
-            }
-
-            
-
-            //Remove RuntimeCard from hand
-            playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(targetCreature.card);
-
-            GameObject.Destroy(targetCreature.gameObject);
+            // STEP 2 - DESTROY CREATURE ON THE BOARD OR ANIMATE
             CreateVFX(targetCreature.transform.position);
+            MonoBehaviour.Destroy(targetCreature.gameObject);
 
+            // STEP 3 - REMOVE RUNTIME CARD FROM BOARD
+            creatureOwner.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(returningCard);
+            creatureOwner.boardZone.RemoveCard(returningCard);
+
+            var serverCurrentPlayer = creatureOwner.Equals(playerCallerOfAbility) ? creatureOwner.GetServer().gameState.currentPlayer : creatureOwner.GetServer().gameState.currentOpponent;
+
+            // STEP 4 - REMOVE CARD FROM SERVER BOARD
+            var boardRuntimeCard = serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == returningCard.instanceId);
+            serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+
+            // STEP 5 - CREATE AND ADD TO SERVER NEW RUNTIME CARD FOR HAND
+            var card = CreateRuntimeCard(creatureOwner.playerInfo, returningCard.instanceId);
+            serverCurrentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+
+            // STEP 6 - CREATE NET CARD AND SIMULATE ANIMATION OF RETURNING CARD TO HAND
+            var netCard = CreateNetCard(card);
+            creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo);
+
+            // STEP 7 - REARRANGE CREATURES ON THE BOARD
             GameClient.Get<IGameplayManager>().RearrangeHands();
         }
 
-        private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo)
+        private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo, int instanceId)
         {
             var card = new RuntimeCard();
             card.cardId = targetCreature.card.cardId;
-            card.instanceId = playerInfo.currentCardInstanceId++;
+            card.instanceId = instanceId;// playerInfo.currentCardInstanceId++;
             card.ownerPlayer = playerInfo;
             card.stats[0] = targetCreature.card.stats[0];
             card.stats[1] = targetCreature.card.stats[1];
-            card.namedStats["DMG"] = targetCreature.card.namedStats["DMG"];
-            card.namedStats["HP"] = targetCreature.card.namedStats["HP"];
-
-            card.namedStats["DMG"].baseValue = card.namedStats["DMG"].originalValue;
-            card.namedStats["HP"].baseValue = card.namedStats["HP"].originalValue;
+            card.namedStats[Constants.STAT_DAMAGE] = targetCreature.card.namedStats[Constants.STAT_DAMAGE].Clone();
+            card.namedStats[Constants.STAT_HP] = targetCreature.card.namedStats[Constants.STAT_HP].Clone();
+            card.namedStats[Constants.STAT_DAMAGE].baseValue = card.namedStats[Constants.STAT_DAMAGE].originalValue;
+            card.namedStats[Constants.STAT_HP].baseValue = card.namedStats[Constants.STAT_HP].originalValue;
             return card;
         }
 
@@ -125,39 +97,35 @@ namespace GrandDevs.CZB
             netCard.cardId = card.cardId;
             netCard.instanceId = card.instanceId;
             netCard.stats = new NetStat[card.stats.Count];
+
             var idx = 0;
+
             foreach (var entry in card.stats)
-            {
                 netCard.stats[idx++] = NetworkingUtils.GetNetStat(entry.Value);
-            }
+
             netCard.keywords = new NetKeyword[card.keywords.Count];
+
             idx = 0;
+
             foreach (var entry in card.keywords)
-            {
                 netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
-            }
+
             netCard.connectedAbilities = card.connectedAbilities.ToArray();
+
             return netCard;
         }
 
-        private void GetServer()
-        {
-            if (_server == null)
-            {
-                var server = GameObject.Find("Server");
-                if (server != null)
-                {
-                    _server = server.GetComponent<Server>();
-                }
-            }
-        }
-
-        public PlayerInfo GetOwnerOfCreature(BoardCreature creature)
+        private Player GetOwnerOfCreature(BoardCreature creature)
         {
             if (playerCallerOfAbility.playerBoardCardsList.Contains(creature))
-                return playerCallerOfAbility.playerInfo;
-
-            return playerCallerOfAbility.opponentInfo;
+                return playerCallerOfAbility;
+            else
+            {
+                if (playerCallerOfAbility is DemoHumanPlayer)
+                    return DemoAIPlayer.Instance;
+                else
+                    return NetworkingUtils.GetHumanLocalPlayer();
+            }
         }
     }
 }

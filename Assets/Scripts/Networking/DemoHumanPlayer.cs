@@ -537,7 +537,7 @@ public class DemoHumanPlayer : DemoPlayer
         CallOnStartTurnEvent();
     }
 
-    protected virtual void RearrangeHand()
+    public virtual void RearrangeHand()
     {
         
         var handWidth = 0.0f;
@@ -574,7 +574,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    protected virtual void RearrangeOpponentHand(bool isMove = false ,bool isNewCard = false)
+    public virtual void RearrangeOpponentHand(bool isMove = false ,bool isNewCard = false)
     {
         var handWidth = 0.0f;
         var spacing = -1.0f;
@@ -959,7 +959,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    protected virtual void AddCardToHand(RuntimeCard card)
+    public virtual void AddCardToHand(RuntimeCard card)
     {
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
@@ -1001,7 +1001,7 @@ public class DemoHumanPlayer : DemoPlayer
         //go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
     }
 
-    protected virtual void AddCardToOpponentHand()
+    public virtual void AddCardToOpponentHand()
     {
         var go = Instantiate(opponentCardPrefab as GameObject);
         opponentHandCards.Add(go);

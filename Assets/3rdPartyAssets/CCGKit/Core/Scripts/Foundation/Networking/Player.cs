@@ -65,6 +65,7 @@ namespace CCGKit
         public int CurrentTurn;
 
         private AbilitiesController abilitiesController;
+        private Server _server;
 
 
         public EffectSolver EffectSolver
@@ -238,8 +239,8 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                           //     msgDefaultDeck.Add(1);
-                           // else
+                            //    msgDefaultDeck.Add(13);
+                            //else
                                 msgDefaultDeck.Add(card.cardId);
                         }
                     }
@@ -252,7 +253,7 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(19);
+                            //    msgDefaultDeck.Add(13);
                             //else
                                 msgDefaultDeck.Add(card.cardId);
                         }
@@ -318,12 +319,14 @@ namespace CCGKit
 
         public Server GetServer()
         {
-            var server = GameObject.Find("Server");
-            if (server != null)
+            if (_server == null)
             {
-                return server.GetComponent<Server>();
+                var server = GameObject.Find("Server");
+
+                if (server)
+                    _server = server.GetComponent<Server>();
             }
-            return null;
+            return _server;
         }
 
         public void ModificateStatMaxValue(string stat, int value, int max)
@@ -481,7 +484,8 @@ namespace CCGKit
             }
         }
 
-        public void CreateAndPutToHandRuntimeCard(NetCard card, PlayerInfo player)
+
+        public RuntimeCard InitializeRuntimeCard(NetCard card, PlayerInfo player)
         {
             var runtimeCard = CreateRuntimeCard();
             runtimeCard.cardId = card.cardId;
@@ -505,8 +509,39 @@ namespace CCGKit
             {
                 runtimeCard.ConnectAbility(abilityId);
             }
+            return runtimeCard;
+        }
+
+
+        public void CreateAndPutToHandRuntimeCard(NetCard card, PlayerInfo player)
+        {
+            var runtimeCard = InitializeRuntimeCard(card, player);
 
             player.namedZones[Constants.ZONE_HAND].AddCard(runtimeCard);
+            EffectSolver.SetDestroyConditions(runtimeCard);
+            EffectSolver.SetTriggers(runtimeCard);
+        }
+
+        public virtual void ReturnToHandRuntimeCard(NetCard card, PlayerInfo player)
+        {
+            var runtimeCard = InitializeRuntimeCard(card, player);
+            player.namedZones[Constants.ZONE_HAND].AddCardSilent(runtimeCard);
+
+            if(this is DemoHumanPlayer)
+            {
+                // call animation add card to demo human player
+
+                (this as DemoHumanPlayer).AddCardToHand(runtimeCard);
+                (this as DemoHumanPlayer).RearrangeHand();
+            }
+            else if(this is DemoAIPlayer)
+            {
+                // call animation add card to demo ai player
+                
+                (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).AddCardToOpponentHand();
+                (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeOpponentHand(true, true);
+            }
+
             EffectSolver.SetDestroyConditions(runtimeCard);
             EffectSolver.SetTriggers(runtimeCard);
         }

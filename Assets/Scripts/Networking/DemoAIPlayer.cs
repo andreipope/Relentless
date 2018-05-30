@@ -164,7 +164,6 @@ public class DemoAIPlayer : DemoPlayer
         {
             yield return null;
         }
-
         if (CurrentBoardWeapon != null && !isPlayerStunned)
         {
             AlreadyAttackedInThisTurn = false;
@@ -568,7 +567,7 @@ public class DemoAIPlayer : DemoPlayer
             var targetInfo = new List<int>();
             foreach (var ability in abilitiesWithTarget)
             {
-                switch(ability.abilityType)
+                switch (ability.abilityType)
                 {
                     case Enumerators.AbilityType.ADD_GOO_VIAL:
                         {
@@ -577,7 +576,7 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     case Enumerators.AbilityType.CARD_RETURN:
                         {
-                            if(!AddRandomTargetCreature(true, ref targetInfo, false, true))
+                            if (!AddRandomTargetCreature(true, ref targetInfo, false, true))
                             {
                                 AddRandomTargetCreature(false, ref targetInfo, true, true);
                             }
@@ -619,7 +618,7 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     case Enumerators.AbilityType.CHANGE_STAT:
                         {
-                            if(ability.value > 0)
+                            if (ability.value > 0)
                                 AddRandomTargetCreature(false, ref targetInfo);
                             else
                                 AddRandomTargetCreature(true, ref targetInfo);
@@ -650,8 +649,8 @@ public class DemoAIPlayer : DemoPlayer
                             var creatures = GetCreaturesWithLowHP();
 
                             if (creatures.Count > 0)
-                            { 
-                               targetInfo.Add(creatures[Random.Range(0, creatures.Count)].instanceId);
+                            {
+                                targetInfo.Add(creatures[Random.Range(0, creatures.Count)].instanceId);
                             }
                             else
                             {
@@ -666,7 +665,10 @@ public class DemoAIPlayer : DemoPlayer
                         break;
                     default: break;
                 }
+
+                return targetInfo; // hack to handle only one ability
             }
+
             return targetInfo;
         }
         else
