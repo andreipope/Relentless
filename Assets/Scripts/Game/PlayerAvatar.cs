@@ -28,11 +28,11 @@ public class PlayerAvatar : MonoBehaviour
 
     private void Start()
     {
-		//avatarObject = transform.Find("Hero_Object").gameObject;
-		//avatarDeathObject = transform.Find("HeroDeath").gameObject;
+        //avatarObject = transform.Find("Hero_Object").gameObject;
+        //avatarDeathObject = transform.Find("HeroDeath").gameObject;
         avatarDeathObject.SetActive(false);
-		avatarAnimator.enabled = false;
-		deathAnimamtor.enabled = false;
+        avatarAnimator.enabled = false;
+        deathAnimamtor.enabled = false;
     }
 
     private Player GetTargetPlayer()
@@ -78,6 +78,20 @@ public class PlayerAvatar : MonoBehaviour
             {
                 targetingArrow.OnPlayerUnselected(this);
             }
+        }
+    }
+
+    private void OnHealthChangedHandler(int was, int now)
+    {
+        if (now <= 0)
+            OnAvatarDie();
+    }
+
+    public void SetupTutorial()
+    {
+        if (GameClient.Get<ITutorialManager>().IsTutorial)
+        {
+            playerInfo.namedStats[Constants.TAG_LIFE].onValueChanged += OnHealthChangedHandler;
         }
     }
 

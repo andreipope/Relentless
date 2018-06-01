@@ -62,12 +62,14 @@ namespace GrandDevs.CZB
 
 		public void OnSignupButtonPressed()
 		{
-			//parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
             OpenAlertDialog("Will be available on full version");
 		}
 
 		public void OnLoginButtonPressed()
 		{
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             var usernameText = _usernameInputField.text;
 			var passwordText = _passwordInputField.text;
 

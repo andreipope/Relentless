@@ -42,6 +42,7 @@ namespace GrandDevs.CZB
 
             Player creatureOwner = GetOwnerOfCreature(targetCreature);
             RuntimeCard returningCard = targetCreature.card;
+            Vector3 creaturePosition = targetCreature.transform.position;
 
            // Debug.LogError("<color=white>------return card of " + creatureOwner.GetType() + "; human " + creatureOwner.isHuman + "; to hand-------</color>");
            // Debug.LogError("<color=white>------returning card " + returningCard.instanceId + " to hand-------</color>");
@@ -51,7 +52,7 @@ namespace GrandDevs.CZB
                 creatureOwner.playerBoardCardsList.Remove(targetCreature);
 
             // STEP 2 - DESTROY CREATURE ON THE BOARD OR ANIMATE
-            CreateVFX(targetCreature.transform.position);
+            CreateVFX(creaturePosition);
             MonoBehaviour.Destroy(targetCreature.gameObject);
 
             // STEP 3 - REMOVE RUNTIME CARD FROM BOARD
@@ -70,7 +71,7 @@ namespace GrandDevs.CZB
 
             // STEP 6 - CREATE NET CARD AND SIMULATE ANIMATION OF RETURNING CARD TO HAND
             var netCard = CreateNetCard(card);
-            creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo);
+            creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo, creaturePosition);
 
             // STEP 7 - REARRANGE CREATURES ON THE BOARD
             GameClient.Get<IGameplayManager>().RearrangeHands();

@@ -33,9 +33,16 @@
             CARDS,
             END_TURN,
 
+            WALKER_ARRIVAL,
             FERAL_ARRIVAL,
-            FERAL_ATTACK,
             HEAVY_ARRIVAL,
+
+            FERAL_ATTACK,
+            HEAVY_ATTACK_1,
+            HEAVY_ATTACK_2,
+            WALKER_ATTACK_1,
+            WALKER_ATTACK_2,
+
 
             HERO_DEATH,
 
@@ -43,7 +50,18 @@
             CARD_DECK_TO_HAND_MULTIPLE,
             CARD_DECK_TO_HAND_SINGLE,
             CARD_FLY_HAND,
-            CARD_FLY_HAND_TO_BATTLEGROUND
+            CARD_FLY_HAND_TO_BATTLEGROUND,
+
+            CHANGE_SCREEN,
+
+            DECKEDITING_ADD_CARD,
+            DECKEDITING_REMOVE_CARD,
+
+            LOST_POPUP,
+            WON_POPUP,
+            WON_REWARD_POPUP,
+            YOURTURN_POPUP
+
         }
 
         public enum NotificationType

@@ -234,24 +234,29 @@ namespace GrandDevs.CZB
 
         private void BuyButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
 		private void OpenButtonHandler()
 		{
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         }
 		private void BackButtonHandler()
 		{
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 		}
 
 		private void ArrowLeftButtonHandler()
 		{
-			MoveCardsPage(-1);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            MoveCardsPage(-1);
 		}
 
         private void ArrowRightButtonHandler()
 		{
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             MoveCardsPage(1);
 		}
 

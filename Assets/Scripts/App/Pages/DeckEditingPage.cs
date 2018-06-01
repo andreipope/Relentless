@@ -251,6 +251,7 @@ namespace GrandDevs.CZB
 
         private void BackButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             if (Constants.DEV_MODE)
                 OnDoneButtonPressed();
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
@@ -258,30 +259,36 @@ namespace GrandDevs.CZB
 
         private void BuyButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
 
         private void CollectionButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
         }
 
         private void OpenButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         }
         private void SaveButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             OnDoneButtonPressed();
         }
 
         private void ArrowLeftButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             MoveCardsPage(-1);
         }
 
         private void ArrowRightButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             MoveCardsPage(1);
         }
 
@@ -419,6 +426,7 @@ namespace GrandDevs.CZB
 
         private void DeleteCardHandler(int cardId)
         {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
             var collectionCardData = _collectionData.GetCardData(cardId);
             collectionCardData.amount++;
             UpdateCardAmount(cardId, collectionCardData.amount);
@@ -469,7 +477,8 @@ namespace GrandDevs.CZB
                 }
             }
 
-			collectionCardData.amount--;
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
+            collectionCardData.amount--;
 			UpdateCardAmount(card.id, collectionCardData.amount);
 
             if (!itemFound)

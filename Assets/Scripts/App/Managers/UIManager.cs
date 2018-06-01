@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandDevs.CZB.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -105,6 +106,7 @@ namespace GrandDevs.CZB
                 }
             }
             CurrentPage.Show();
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
         public void DrawPopup<T>(object message = null, bool setMainPriority = false) where T : IUIPopup

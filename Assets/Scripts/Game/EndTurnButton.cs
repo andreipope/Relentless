@@ -74,7 +74,7 @@ public class EndTurnButton : MonoBehaviour
 
         thisRenderer.sprite = pressedSprite;
         buttonText.transform.localPosition = textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(GrandDevs.CZB.Common.Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, null);
+        GameClient.Get<ISoundManager>().PlaySound(GrandDevs.CZB.Common.Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown

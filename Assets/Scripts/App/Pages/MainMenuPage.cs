@@ -101,7 +101,7 @@ namespace GrandDevs.CZB
 #region Buttons Handlers
         public void OnClickPlay()
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
             {
                 (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = 0;
@@ -142,14 +142,14 @@ namespace GrandDevs.CZB
         private void OnValueChangedEventMusic(bool value)
 		{
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
-            _soundManager.SetMusicVolume(value ? .5f : 0);
+            _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
 
 
         }
         private void OnValueChangedEventSFX(bool value)
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
-            _soundManager.SetSoundVolume(value ? 1 : 0);
+            _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
         }
         #endregion
 

@@ -80,7 +80,7 @@ namespace GrandDevs.CZB
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
 
-            _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/packOpenVFX");
+            _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _packsObject = _selfPage.transform.Find("PackItem").gameObject;
@@ -252,6 +252,7 @@ namespace GrandDevs.CZB
 
         private void BackButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             DOTween.KillAll();
             if (_cardsContainer != null)
                 MonoBehaviour.Destroy(_cardsContainer.gameObject);
@@ -260,11 +261,13 @@ namespace GrandDevs.CZB
 
         private void BuyButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
 
         private void CollectionButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
         }
 
@@ -289,7 +292,7 @@ namespace GrandDevs.CZB
         {
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
-            animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
+            //animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
 
             _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
             _packOpenVFX.transform.position = _centerPos;

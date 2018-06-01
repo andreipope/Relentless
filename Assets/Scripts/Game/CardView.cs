@@ -40,7 +40,7 @@ public class CardView : MonoBehaviour
 
     protected Animator cardAnimator;
 
-    protected bool isNewCard = false;
+    public bool isNewCard = false;
 
     public GrandDevs.CZB.Data.Card libraryCard;
 

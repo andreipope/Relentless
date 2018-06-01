@@ -8,13 +8,15 @@ namespace GrandDevs.CZB
 {
     public class SoundManager : ISoundManager, IService
     {
-
         private List<SoundTypeList> _gameSounds;
         private List<SoundContainer> _soundContainers,
                                      _containersToRemove;
         private Transform _soundsRoot;
 
         private float _sfxVolume;
+
+        private Queue<QueuedSoundElement> _queuedSoundElements;
+        private QueuedSoundElement _currentActiveQueuedSoundElement;
 
         public void Dispose()
         {
@@ -30,6 +32,9 @@ namespace GrandDevs.CZB
 
             _soundContainers = new List<SoundContainer>();
             _containersToRemove = new List<SoundContainer>();
+            _queuedSoundElements = new Queue<QueuedSoundElement>();
+
+            _currentActiveQueuedSoundElement = null;
 
             InitializeSounds();
         }
@@ -70,29 +75,38 @@ namespace GrandDevs.CZB
                     _containersToRemove.Clear();
                 }
             }
+
+            //if (_queuedSoundElements.Count > 0)
+            //{
+            //    if (_soundContainers.FindAll(x => x.isInQueue && x.audioSource.isPlaying).Count == 0)
+            //    {
+            //        _currentActiveQueuedSoundElement = _queuedSoundElements.Dequeue();
+            //        _currentActiveQueuedSoundElement.DoAction();
+            //    }
+            //}
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false)
+        public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
-            PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic);
+            PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue: isInQueue);
         }
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false )
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false, bool isInQueue = false)
         {
-            CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle);
+            CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle, isInQueue: isInQueue);
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false )
+        public void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false, bool isInQueue = false)
         {
-            CreateSound(soundType, volume, null, isLoop, false, clipIndex);
+            CreateSound(soundType, volume, null, isLoop, false, clipIndex, isInQueue: isInQueue);
         }
 
         public void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, bool dropOldBackgroundMusic = false)
+                             bool isPlaylist = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
             if (dropOldBackgroundMusic)
                 StopBackroundMusic();
 
-            CreateSound(soundType, volume, parent, isLoop, isPlaylist);
+            CreateSound(soundType, volume, parent, isLoop, isPlaylist, isInQueue: isInQueue);
         }
 
         private void StopBackroundMusic()
@@ -107,7 +121,21 @@ namespace GrandDevs.CZB
         }
 
         private void CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "")
+                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false)
+        {
+            //if (isInQueue)
+            //{
+            //    Debug.LogError("added sounds in queue " + soundType.ToString());
+            //    _queuedSoundElements.Enqueue(new QueuedSoundElement(() => { DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue); }));
+
+            //    Debug.LogError(_queuedSoundElements.Count + " _queuedSoundElements count");
+            //}
+            //else 
+            DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue);
+        }
+
+        private void DoSoundContainer(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
+                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false)
         {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();
@@ -135,12 +163,15 @@ namespace GrandDevs.CZB
 
             soundParam.startPosition = 0f;
 
+            container.isInQueue = isInQueue;
+
             container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
 
             if (parent != null)
                 container.container.transform.SetParent(parent);
 
             _soundContainers.Add(container);
+
         }
 
         public void SetMusicVolume(float value)
@@ -277,6 +308,8 @@ namespace GrandDevs.CZB
         public bool forceClose;
         public int currentSoundIndex;
 
+        public bool isInQueue = false;
+
         public SoundContainer() { }
 
         public void Init(Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled, int soundIndex = 0)
@@ -342,5 +375,22 @@ namespace GrandDevs.CZB
         public List<AudioClip> audioClips;
 
         public SoundParam() { }
+    }
+
+
+    public class QueuedSoundElement
+    {
+        public Action action;
+        public SoundContainer container;
+
+        public QueuedSoundElement(Action action)
+        {
+            this.action = action;
+        }
+
+        public void DoAction()
+        {
+            action?.Invoke();
+        }
     }
 }

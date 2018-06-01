@@ -80,6 +80,7 @@ namespace GrandDevs.CZB
 
         private void ConfirmButtonOnClickHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             _callback?.Invoke();
             _callback = null;
             Hide();
@@ -87,6 +88,7 @@ namespace GrandDevs.CZB
 
         private void CancelButtonOnClickHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             Hide();
         }
     }

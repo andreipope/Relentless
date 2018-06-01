@@ -139,10 +139,12 @@ namespace GrandDevs.CZB
 
 		private void BackButtonHandler()
 		{
-			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
 		}
         public void ContinueButtonHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             (_uiManager.GetPage<DeckEditingPage>() as DeckEditingPage).CurrentHeroId = _currentHeroId;
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_EDITING);
            // OpenAlertDialog("You will have this chance soon ;) ");

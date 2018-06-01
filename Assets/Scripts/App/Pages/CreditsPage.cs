@@ -114,6 +114,7 @@ namespace GrandDevs.CZB
 
         private void BackButtonOnClickHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
         }
     }

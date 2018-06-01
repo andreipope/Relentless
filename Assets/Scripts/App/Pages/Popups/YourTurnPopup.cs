@@ -58,6 +58,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YOURTURN_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);
 
@@ -89,6 +90,7 @@ namespace GrandDevs.CZB
 
         private void OnClickOkButtonEventHandler()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             if (NetworkingUtils.GetLocalPlayer().isServer)
             {
                 NetworkManager.singleton.StopHost();

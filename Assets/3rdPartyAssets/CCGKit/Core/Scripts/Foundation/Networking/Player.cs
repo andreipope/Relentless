@@ -239,7 +239,7 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(13);
+                            //    msgDefaultDeck.Add(1);
                             //else
                                 msgDefaultDeck.Add(card.cardId);
                         }
@@ -253,7 +253,7 @@ namespace CCGKit
                         for (var i = 0; i < card.amount; i++)
                         {
                             //if (Constants.DEV_MODE)
-                            //    msgDefaultDeck.Add(13);
+                            //    msgDefaultDeck.Add(1);
                             //else
                                 msgDefaultDeck.Add(card.cardId);
                         }
@@ -522,24 +522,25 @@ namespace CCGKit
             EffectSolver.SetTriggers(runtimeCard);
         }
 
-        public virtual void ReturnToHandRuntimeCard(NetCard card, PlayerInfo player)
+        public virtual void ReturnToHandRuntimeCard(NetCard card, PlayerInfo player, Vector3 cardPosition)
         {
             var runtimeCard = InitializeRuntimeCard(card, player);
             player.namedZones[Constants.ZONE_HAND].AddCardSilent(runtimeCard);
 
-            if(this is DemoHumanPlayer)
-            {
-                // call animation add card to demo human player
+            DemoHumanPlayer controlPlayer = this is DemoHumanPlayer ? this as DemoHumanPlayer : (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer);
 
-                (this as DemoHumanPlayer).AddCardToHand(runtimeCard);
-                (this as DemoHumanPlayer).RearrangeHand();
+            if (this is DemoHumanPlayer)
+            {
+                var createdHandCard = controlPlayer.AddCardToHand(runtimeCard);
+                createdHandCard.transform.position = cardPosition;
+                createdHandCard.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
+                controlPlayer.RearrangeHand(true);
             }
             else if(this is DemoAIPlayer)
             {
-                // call animation add card to demo ai player
-                
-                (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).AddCardToOpponentHand();
-                (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeOpponentHand(true, true);
+                var createdHandCard = controlPlayer.AddCardToOpponentHand();
+                createdHandCard.transform.position = cardPosition;               
+                controlPlayer.RearrangeOpponentHand(true, false);
             }
 
             EffectSolver.SetDestroyConditions(runtimeCard);
