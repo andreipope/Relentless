@@ -161,6 +161,7 @@ namespace GrandDevs.CZB
 				SetActive(  _currentHeroId, false);
 			  _currentHeroId = id;
             SetActive(id, true);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
         }
 		
         private int GetHeroId(Transform hero)

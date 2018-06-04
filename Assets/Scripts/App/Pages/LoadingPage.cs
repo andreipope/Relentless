@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 
@@ -11,7 +12,7 @@ namespace GrandDevs.CZB
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
 
-        private GameObject _selfPage;
+        private GameObject _selfPage, _loginForm;
 
         private Transform _progressBar;
 
@@ -25,6 +26,12 @@ namespace GrandDevs.CZB
 		private bool _isLoaded;
 		private Vector2 _fillSize;
         private Color _pressAnyTextColor;
+
+        private TMP_InputField _usernameInputField,
+                                _passwordInputField;
+
+        private MenuButtonNoGlow _signUpButton,
+                            _loginButton;
 
         private int a = 0;
         public void Init()
@@ -46,6 +53,17 @@ namespace GrandDevs.CZB
 
             _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<Text>();
 
+            _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
+
+            _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
+            _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
+
+            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
+            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
+
+            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
+            _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
+
             _fillSize = _loaderBar.rectTransform.sizeDelta;
 			_fullFillWidth = _fillSize.x;
             _fillSize.x = 0;
@@ -57,6 +75,7 @@ namespace GrandDevs.CZB
 			_loadingText.text = "Loading...";
 
             _pressAnyText.gameObject.SetActive(false);
+            _loginForm.SetActive(false);
 
             Hide();
         }
@@ -64,7 +83,7 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
-            if (_selfPage.activeInHierarchy)
+            if (_selfPage.activeInHierarchy && GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT)
             {
                 if (!_isLoaded)
                 {
@@ -83,6 +102,9 @@ namespace GrandDevs.CZB
                     _pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
                     if (Input.GetMouseButtonUp(0))
                     {
+                        _loginForm.SetActive(true);
+                        _pressAnyText.gameObject.SetActive(false);
+
                         GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
                         /*a++;
                         if(a == 1)
@@ -93,15 +115,16 @@ namespace GrandDevs.CZB
 							GameNetworkManager.Instance.StartHost();
 						}
 */
-						
+
                     }
-                        //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+                    //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
                 }
             }
         }
 
         public void Show()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
             _selfPage.SetActive(true);
         }
 
@@ -124,6 +147,80 @@ namespace GrandDevs.CZB
 		{
 			//  _loginText.text = _localizationManager.GetUITranslation("KEY_START_SCREEN_LOGIN");
 		}
+
+        public void OnSignupButtonPressed()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
+            OpenAlertDialog("Will be available on full version");
+        }
+
+        public void OnLoginButtonPressed()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            var usernameText = _usernameInputField.text;
+            var passwordText = _passwordInputField.text;
+
+            // Perform some basic validation of the user input locally prior to calling the
+            // remote login method. This is a good way to avoid some unnecessary network
+            // traffic.
+            if (string.IsNullOrEmpty(usernameText))
+            {
+                OpenAlertDialog("Please enter your username.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(passwordText))
+            {
+                OpenAlertDialog("Please enter your password.");
+                return;
+            }
+
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            /*ClientAPI.Login(usernameText, passwordText,
+				() =>
+				{
+					GameManager.Instance.isPlayerLoggedIn = true;
+					GameManager.Instance.playerName = ClientAPI.masterServerClient.username;
+					Close();
+				},
+				error =>
+				{
+					var errorMsg = "";
+					switch (error)
+					{
+						case LoginError.DatabaseConnectionError:
+							errorMsg = "There was an error connecting to the database.";
+							break;
+
+						case LoginError.NonexistingUser:
+							errorMsg = "This user does not exist.";
+							break;
+
+						case LoginError.InvalidCredentials:
+							errorMsg = "Invalid credentials.";
+							break;
+
+						case LoginError.ServerFull:
+							errorMsg = "The server is full.";
+							break;
+
+						case LoginError.AuthenticationRequired:
+							errorMsg = "Authentication is required.";
+							break;
+
+						case LoginError.UserAlreadyLoggedIn:
+							errorMsg = "This user is already logged in.";
+							break;
+					}
+					OpenAlertDialog(errorMsg);
+				});*/
+        }
+
+        private void OpenAlertDialog(string msg)
+        {
+            _uiManager.DrawPopup<WarningPopup>(msg);
+        }
 
     }
 }

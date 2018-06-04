@@ -209,6 +209,7 @@ namespace GrandDevs.CZB
 
         private void OpenAlertDialog(string msg)
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN);
             foreach (var card in _currentCards)
             {
                 card.isActive = false;
@@ -244,6 +245,7 @@ namespace GrandDevs.CZB
 
         private void CardSetsSliderOnValueChangedHandler(float value)
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN);
             currentPage = 0;
             currentSet = (int)value;
             LoadCards(0, (int)value);
@@ -296,6 +298,7 @@ namespace GrandDevs.CZB
 
         public void MoveCardsPage(int direction)
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN);
             currentPage += direction;
 
             if (currentPage < 0)
@@ -374,7 +377,7 @@ namespace GrandDevs.CZB
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-                cardView.transform.localScale = Vector3.one * 0.3f;
+                cardView.transform.localScale = Vector3.one * 0.28f;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
                 cardView.GetComponent<SortingGroup>().sortingOrder = 1;
 

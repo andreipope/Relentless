@@ -45,6 +45,7 @@
 
 
             HERO_DEATH,
+            LOGO_APPEAR,
 
             CARD_BATTLEGROUND_TO_TRASH,
             CARD_DECK_TO_HAND_MULTIPLE,

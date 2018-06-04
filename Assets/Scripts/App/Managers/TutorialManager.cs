@@ -159,37 +159,38 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+        }
+        
+        public void NextButtonClickHandler()
+        {
             if (!_tutorialStarted)
                 return;
-            if(Input.anyKeyDown)
-            {
-                if (_currentStep == 0 ||
-                    _currentStep == 1 ||
-                    _currentStep == 2 ||
-                    _currentStep == 3 ||
-                    _currentStep == 4 ||
-                    _currentStep == 5 ||
-                    _currentStep == 6 ||
-                    _currentStep == 7 ||
-					_currentStep == 9 ||
-                    _currentStep == 14 ||
-                    _currentStep == 15 ||
-                    _currentStep == 18 ||
-                    _currentStep == 20 ||
-                    _currentStep == 22 ||
-                    _currentStep == 24 ||
-					_currentStep == 25 ||
-					_currentStep == 26 ||
-                    _currentStep == 30 ||
-                    _currentStep == 31 ||
-                    _currentStep == 32 ||
-                    _currentStep == 33 ||
-                    _currentStep == 34
-                    )
-                    NextStep();
-                if (_currentStep == 11 && paused)
-                    NextStep();
-            }
+            if (_currentStep == 0 ||
+                _currentStep == 1 ||
+                _currentStep == 2 ||
+                _currentStep == 3 ||
+                _currentStep == 4 ||
+                _currentStep == 5 ||
+                _currentStep == 6 ||
+                _currentStep == 7 ||
+				_currentStep == 9 ||
+                _currentStep == 14 ||
+                _currentStep == 15 ||
+                _currentStep == 18 ||
+                _currentStep == 20 ||
+                _currentStep == 22 ||
+                _currentStep == 24 ||
+				_currentStep == 25 ||
+				_currentStep == 26 ||
+                _currentStep == 30 ||
+                _currentStep == 31 ||
+                _currentStep == 32 ||
+                _currentStep == 33 ||
+                _currentStep == 34
+                )
+                NextStep();
+            if (_currentStep == 11 && paused)
+                NextStep();
         }      
         
         public void NextStep()

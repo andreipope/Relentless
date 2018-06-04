@@ -32,6 +32,10 @@ namespace GrandDevs.CZB
 
         private TextMeshProUGUI _packsCount;
 
+        private Animator _logoAnimator;
+
+        private bool _logoShowed;
+
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -57,6 +61,8 @@ namespace GrandDevs.CZB
             //Debug.Log(_buttonCredits);
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
+
+            _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonCollection.onClickEvent.AddListener(OnClickCollection);
@@ -86,6 +92,15 @@ namespace GrandDevs.CZB
             _buttonCollection.interactable = true;
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
+
+            if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
+                _logoAnimator.SetBool("LogoShow", true);
+
+            if (!_logoShowed)
+            {
+                GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
+                _logoShowed = true;
+            }
         }
 
         public void Hide()

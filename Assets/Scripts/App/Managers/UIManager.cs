@@ -38,7 +38,6 @@ namespace GrandDevs.CZB
 
             _uiPages = new List<IUIElement>();
 			_uiPages.Add(new LoadingPage());
-			_uiPages.Add(new LoginPage());
 			_uiPages.Add(new MainMenuPage());
 			_uiPages.Add(new HeroSelectionPage());
 			_uiPages.Add(new DeckSelectionPage());

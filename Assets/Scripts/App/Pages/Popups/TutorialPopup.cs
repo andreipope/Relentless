@@ -21,7 +21,7 @@ namespace GrandDevs.CZB
 
 		private TextMeshProUGUI _text;
 		private GameObject _yesnoObject;
-		private GameObject _nextObject;
+		private Button _nextButton, _playButton, _skipButton;
         private GameObject _focusedObject;
 		private GameObject _bubbleObject;
 		private Image _janeImage;
@@ -44,10 +44,15 @@ namespace GrandDevs.CZB
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
-			_nextObject = _selfPage.transform.Find("Description/NextButtonFrame").gameObject;
-			_yesnoObject = _selfPage.transform.Find("Description/Question").gameObject;
+            _nextButton = _selfPage.transform.Find("NextButton").GetComponent<Button>();
+            _playButton = _selfPage.transform.Find("PlayButton").GetComponent<Button>();
+            _skipButton = _selfPage.transform.Find("SkipButton").GetComponent<Button>();
 
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
+
+            _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _skipButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
 
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
@@ -58,8 +63,9 @@ namespace GrandDevs.CZB
                 _focusObjects.Add(obj.gameObject);
             }
 
-			_nextObject.SetActive(false);
-			_yesnoObject.SetActive(false);
+            _nextButton.gameObject.SetActive(false);
+            _playButton.gameObject.SetActive(false);
+            _skipButton.gameObject.SetActive(false);
 
             Hide();
         }
@@ -87,7 +93,6 @@ namespace GrandDevs.CZB
         {
             if(_tutorialManager.CurrentStep == 22)
             {
-                Debug.LogError(22);
                 _bubbleObject.SetActive(false);
                 _tutorialManager.IsBubbleShow = false;
                 GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f, false);
@@ -124,25 +129,25 @@ namespace GrandDevs.CZB
             foreach (var obj in _focusObjects)
                 if (obj.activeSelf)
                     obj.SetActive(false);
-			_nextObject.SetActive(false);
-			_yesnoObject.SetActive(false);
+            _nextButton.gameObject.SetActive(false);
+            _playButton.gameObject.SetActive(false);
+            _skipButton.gameObject.SetActive(false);
         }
 
         public void ShowNextButton()
         {
-		    _nextObject.SetActive(true);
+            _nextButton.gameObject.SetActive(true);
         }
 
         public void ShowQuestion()
         {
-			_yesnoObject.SetActive(true);
-
-		}
+            _playButton.gameObject.SetActive(true);
+            _skipButton.gameObject.SetActive(true);
+        }
 
         public void Update()
         {
 
         }
-
     }
 }

@@ -37,7 +37,7 @@ namespace GrandDevs.CZB
             _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<MenuButtonNoGlow>();
 
             //_button.onClickEvent.AddListener(Hide);
-            _gotItButton.onClickEvent.AddListener(Hide);
+            _gotItButton.onClickEvent.AddListener(CloseButtonHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 
@@ -49,7 +49,13 @@ namespace GrandDevs.CZB
 		{
 		}
 
-		public void Hide()
+        public void CloseButtonHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            Hide();
+        }
+
+        public void Hide()
         {
             OnHidePopupEvent?.Invoke();
             _selfPage.SetActive(false);

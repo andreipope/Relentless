@@ -69,10 +69,7 @@ namespace GrandDevs.CZB
                     }
                     break;
                 case Enumerators.AppState.LOGIN:
-					{
-                        _uiManager.SetPage<LoginPage>();
-					}
-					break;
+                    break;
                 case Enumerators.AppState.MAIN_MENU:
                     {
 						//GameObject.Find("MainApp/Camera").SetActive(true);
