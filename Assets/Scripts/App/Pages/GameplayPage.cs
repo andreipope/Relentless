@@ -21,8 +21,8 @@ namespace GrandDevs.CZB
 		private IDataManager _dataManager;
 
         private GameObject _selfPage,
-                           _cardGraveyard,  
                            _playedCardPrefab;
+        private VerticalLayoutGroup _cardGraveyard;
 
         private Button _buttonBack;
 
@@ -38,6 +38,10 @@ namespace GrandDevs.CZB
                                _playerGraveyardStatusTexture,
                                _opponentGraveyardStatusTexture;
 
+        private GameObject _zippingVFX;
+
+        private int _graveYardTopOffset;
+
 		private int _currentDeckId;
 
         public int CurrentDeckId
@@ -47,6 +51,7 @@ namespace GrandDevs.CZB
         }
 
         private bool _isPlayerInited = false;
+        private int topOffset;
 
         public void Init()
         {
@@ -63,7 +68,7 @@ namespace GrandDevs.CZB
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
-            _cardGraveyard = _selfPage.transform.Find("CardGraveyard").gameObject;
+            _cardGraveyard = _selfPage.transform.Find("CardGraveyard").GetComponent<VerticalLayoutGroup>();
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
             _cards = new List<CardInGraveyard>();
 
@@ -89,6 +94,8 @@ namespace GrandDevs.CZB
 
             _playerManager.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardZoneChanged;
             _playerManager.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardZoneChanged;
+
+            _graveYardTopOffset = 0;
         }
 
         private void OnPlayerDeckZoneChanged(int index)
@@ -207,9 +214,12 @@ namespace GrandDevs.CZB
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
                                                cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
-
-                for (int j = _cards.Count-1; j >= 0; j--)
-                    _cards[j].selfObject.transform.SetAsLastSibling();
+                if(_cards.Count > 4)
+                {
+                    _graveYardTopOffset = -66 - 120 * (_cards.Count - 5);
+                }
+                //for (int j = _cards.Count-1; j >= 0; j--)
+                //_cards[j].selfObject.transform.SetAsLastSibling();
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
@@ -251,6 +261,7 @@ namespace GrandDevs.CZB
 
             player.deckZone.onZoneChanged += OnPlayerDeckZoneChanged;
             player.opponentDeckZone.onZoneChanged += OnOpponentDeckZoneChanged;
+            player.OnStartTurnEvent += OnStartTurnEventHandler;
 
             GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
 
@@ -316,12 +327,22 @@ namespace GrandDevs.CZB
             if (!_selfPage.activeSelf)
                 return;
 
+            if (_cardGraveyard.padding.top > _graveYardTopOffset)
+            {
+                float offset = Mathf.Lerp((float)_cardGraveyard.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 2);
+                _cardGraveyard.padding = new RectOffset(0, 0, Mathf.FloorToInt(offset), 0);
+            }
             //Debug.Log("Player id: " + _playerManager.playerInfo.id);
             //Debug.Log("Opponent id: " + _playerManager.opponentInfo.id);
         }
 
         public void Show()
         {
+            if (_zippingVFX == null)
+            {
+                _zippingVFX = GameObject.Find("Background/Zapping").gameObject;
+                _zippingVFX.SetActive(false);
+            }
             _selfPage.SetActive(true);
         }
 
@@ -363,8 +384,13 @@ namespace GrandDevs.CZB
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
         }
-        
+
         #endregion
+
+        private void OnStartTurnEventHandler()
+        {
+            _zippingVFX.SetActive(NetworkingUtils.GetHumanLocalPlayer().isActivePlayer);
+        }
     }
 
     public class PlayerSkillItem
