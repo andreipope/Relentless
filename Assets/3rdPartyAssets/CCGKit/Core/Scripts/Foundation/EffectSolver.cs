@@ -328,7 +328,7 @@ namespace CCGKit
                     {
                         if (statCondition.IsTrue(card))
                         {
-                            MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
+                            MoveCard(card.ownerPlayer.netId, card, Constants.ZONE_BOARD, Constants.ZONE_GRAVEYARD);
                             GameClient.Get<IPlayerManager>().OnBoardCardKilled(card);
                         }
                     };

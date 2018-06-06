@@ -202,6 +202,9 @@ public class DemoAIPlayer : DemoPlayer
                 {
                     yield return new WaitForSeconds(2.0f);
                 }
+
+                if (Constants.DEV_MODE)
+                    break;
             }
 
             foreach (var spell in GetSpellCardsInHand())
@@ -256,9 +259,9 @@ public class DemoAIPlayer : DemoPlayer
                 }
 
                 var totalPower = GetPlayerAttackingPower();
-                if (totalPower >= opponentInfo.namedStats["Life"].effectiveValue ||
+                if ((totalPower >= opponentInfo.namedStats["Life"].effectiveValue ||
                     (aiType == Enumerators.AIType.BLITZ_AI ||
-                     aiType == Enumerators.AIType.TIME_BLITZ_AI))
+                     aiType == Enumerators.AIType.TIME_BLITZ_AI)) && !GameClient.Get<ITutorialManager>().IsTutorial)
                 {
                     foreach (var creature in boardCreatures)
                     {
@@ -280,7 +283,7 @@ public class DemoAIPlayer : DemoPlayer
                         {
                             var playerPower = GetPlayerAttackingPower();
                             var opponentPower = GetOpponentAttackingPower();
-                            if (playerPower > opponentPower)
+                            if (playerPower > opponentPower && !GameClient.Get<ITutorialManager>().IsTutorial)
                             {
                                 PlayCreatureAttackSound(creature);
                                 FightPlayer(creature);
@@ -502,6 +505,10 @@ public class DemoAIPlayer : DemoPlayer
                 PlayCreatureCard(card, target);
 
                 AddCardInfo(card);
+
+                if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 9)
+                    FightCreatureBySkill(1, card);
+
             }
             else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
@@ -518,7 +525,7 @@ public class DemoAIPlayer : DemoPlayer
 
     protected List<int> GetAbilityTarget(RuntimeCard card)
     {
-        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+        /*var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
         var abilitiesWithTarget = new List<GrandDevs.CZB.Data.AbilityData>();
 
@@ -672,20 +679,21 @@ public class DemoAIPlayer : DemoPlayer
             return targetInfo;
         }
         else
-        {
+        {        */
             return null;
-        }
+        //}
     }
 
     private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref List<int> targetInfo)
     {
         if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
         {
-            AddRandomTargetCreature(true, ref targetInfo);
+           // AddRandomTargetCreature(true, ref targetInfo);
         }
         else if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
         {
-            targetInfo.Add(0);
+            //if (!GameClient.Get<ITutorialManager>().IsTutorial)
+             //   targetInfo.Add(0);
         }
     }
 

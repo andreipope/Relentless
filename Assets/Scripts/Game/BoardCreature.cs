@@ -123,9 +123,9 @@ public class BoardCreature : MonoBehaviour
 
         if (_server != null && _server)
         {
-            var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
-            localPlayer.RearrangeTopBoard();
-            localPlayer.RearrangeBottomBoard();
+            //var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
+            //localPlayer.RearrangeTopBoard();
+            //localPlayer.RearrangeBottomBoard();
         }
     }
 
@@ -148,7 +148,16 @@ public class BoardCreature : MonoBehaviour
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+            if(libraryCard.cardRarity == Enumerators.CardRarity.EPIC)
+            {
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME/2f, false, true);
+            }
+            else
+            {
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+            }
+
 
             if (libraryCard.name.Equals("Freezzee"))
             {
@@ -451,6 +460,14 @@ public class BoardCreature : MonoBehaviour
                 if (targetCard != GetComponent<BoardCreature>() &&
                     targetCard.GetComponent<HandCard>() == null)
                 {
+
+                    // play sound when target creature attack more than our
+                    if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
+                    {
+                        libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
+                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    }
+
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {
                         Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
@@ -458,13 +475,6 @@ public class BoardCreature : MonoBehaviour
 
 						ownerPlayer.FightCreature(card, targetCard.card);
                         CreatureOnAttackEvent?.Invoke(targetCard);
-
-                        // play sound when target creature attack more than our
-                        if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
-                        {
-                            libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
-                            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                        }
                     },
                     () =>
                     {

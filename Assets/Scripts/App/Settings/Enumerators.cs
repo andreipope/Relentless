@@ -65,6 +65,14 @@
 
         }
 
+        public enum CardSoundType
+        {
+            NONE,
+            ATTACK,
+            DEATH,
+            PLAY
+        }
+
         public enum NotificationType
         {
             LOG,

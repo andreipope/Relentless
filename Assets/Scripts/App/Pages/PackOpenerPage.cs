@@ -231,7 +231,7 @@ namespace GrandDevs.CZB
         private void InitObjects()
         {
             _cardsContainer = new GameObject("CardsContainer").transform;
-            _centerPos = new Vector3(2.5f, -0.5f, 10);
+            _centerPos = new Vector3(2.3f, -0.5f, 10);
             _cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
 
             var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
@@ -294,13 +294,18 @@ namespace GrandDevs.CZB
             animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
             //animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
 
-            _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
-            _packOpenVFX.transform.position = _centerPos;
+            
 
             animationSequence.OnComplete(() =>
             {
+                _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
+                _packOpenVFX.transform.position = _centerPos;
+
                 MonoBehaviour.Destroy(go);
-                PackItemAnimationComplete();
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    PackItemAnimationComplete();
+                }, null, 0.4f);
             });
         }
 
@@ -355,7 +360,7 @@ namespace GrandDevs.CZB
                 Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
                 Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
 
-                go.transform.localScale = Vector3.one * .35f;
+                go.transform.localScale = Vector3.one * .28f;
                 go.transform.DOMove(pos, 1.0f);
                 go.transform.DORotate(rotation, 1.0f);
             }

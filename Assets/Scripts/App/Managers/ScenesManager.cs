@@ -82,7 +82,7 @@ namespace GrandDevs.CZB
             if(CurrentAppStateScene == Enumerators.AppState.GAMEPLAY)
             {
                 _uiManager.SetPage<GameplayPage>();
-                _uiManager.DrawPopup<PreparingForBattlePopup>();
+              //  _uiManager.DrawPopup<PreparingForBattlePopup>();
             }
 
 

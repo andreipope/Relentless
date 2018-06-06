@@ -16,23 +16,30 @@ using GrandDevs.CZB.Common;
 /// </summary>
 public class PlayerAvatar : MonoBehaviour
 {
+    private bool _isDead = false;
+
     public PlayerInfo playerInfo;
     public bool IsBottom;
     public int index { get { return IsBottom ? 0 : 1; } }
 
-    public GameObject avatarObject, avatarDeathObject, spellObject, weaponObject;
+    public GameObject avatarObject,
+                     avatarDeathObject,
+                     spellObject,
+                     weaponObject;
 
     public GameObject avatarTypeHighlight;
 
     public Animator avatarAnimator, deathAnimamtor;
 
+    public FadeTool manaBarFadeTool;
+
     private void Start()
     {
         //avatarObject = transform.Find("Hero_Object").gameObject;
         //avatarDeathObject = transform.Find("HeroDeath").gameObject;
-        avatarDeathObject.SetActive(false);
         avatarAnimator.enabled = false;
         deathAnimamtor.enabled = false;
+       // deathAnimamtor.StopPlayback();
     }
 
     private Player GetTargetPlayer()
@@ -83,8 +90,12 @@ public class PlayerAvatar : MonoBehaviour
 
     private void OnHealthChangedHandler(int was, int now)
     {
-        if (now <= 0)
+        if (now <= 0 && !_isDead)
+        {
             OnAvatarDie();
+
+            _isDead = true;
+        }
     }
 
     public void SetupTutorial()
@@ -97,9 +108,10 @@ public class PlayerAvatar : MonoBehaviour
 
     public void OnAvatarDie()
     {
-		avatarDeathObject.SetActive(true);
+        manaBarFadeTool.FadeIn();
+
 		avatarAnimator.enabled = true;
-        deathAnimamtor.enabled = true;
+     //   deathAnimamtor.enabled = true;
         avatarTypeHighlight.SetActive(false);
         spellObject.SetActive(false);
         weaponObject.SetActive(false);

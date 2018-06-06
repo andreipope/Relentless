@@ -9,6 +9,7 @@ using DG.Tweening;
 using TMPro;
 using System;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace GrandDevs.CZB
 {
@@ -188,6 +189,8 @@ namespace GrandDevs.CZB
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
         public void AddCardToGraveyard(CCGKit.RuntimeCard card)
         {
+            bool isOpponentCard = false;
+
             var localPlayer = NetworkingUtils.GetHumanLocalPlayer();
 
             //Debug.Log("AddCardToGraveyard for player: "+card.ownerPlayer.id);
@@ -208,9 +211,11 @@ namespace GrandDevs.CZB
                         localPlayer.opponentBoardCardsList.Remove(cardToDestroy);
                     }
                 }
+
+                isOpponentCard = true;
             }
 
-            if (cardToDestroy != null)
+            if (cardToDestroy != null && cardToDestroy.gameObject)
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
                                                cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
@@ -221,17 +226,66 @@ namespace GrandDevs.CZB
                 //for (int j = _cards.Count-1; j >= 0; j--)
                 //_cards[j].selfObject.transform.SetAsLastSibling();
 
+
+                cardToDestroy.GetComponent<SortingGroup>().sortingOrder = 1;
+                cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
+
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
-                    cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
+                    if(cardToDestroy.gameObject)
+                        cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
+
+
+                    var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+                    string cardDeathSoundName = libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
+
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
+
+                    float soundLength = GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+
+                    GameClient.Get<ITimerManager>().AddTimer((t) =>
+                    {
+                        if (isOpponentCard)
+                        {
+                            if (DemoAIPlayer.Instance.playerBoardCardsList.Contains(cardToDestroy))
+                                DemoAIPlayer.Instance.playerBoardCardsList.Remove(cardToDestroy);
+
+                            (localPlayer as DemoHumanPlayer).opponentBoardCardsList.Remove(cardToDestroy);
+                        }
+                        else
+                        {
+                            if (DemoAIPlayer.Instance.opponentBoardCardsList.Contains(cardToDestroy))
+                                DemoAIPlayer.Instance.opponentBoardCardsList.Remove(cardToDestroy);
+
+                            (localPlayer as DemoHumanPlayer).playerBoardCardsList.Remove(cardToDestroy);
+                        }
+
+                        if (cardToDestroy.gameObject)
+                        {
+                            cardToDestroy.transform.DOKill();
+                            GameObject.Destroy(cardToDestroy.gameObject);
+                        }
+
+                        GameClient.Get<ITimerManager>().AddTimer((f) =>
+                        {
+                            (localPlayer as DemoHumanPlayer).RearrangeTopBoard();
+                            (localPlayer as DemoHumanPlayer).RearrangeBottomBoard();
+                        }, null, Time.deltaTime, false);
+
+                    }, null, soundLength);
+
                 }, null, 1f);
 
-                GameClient.Get<ITimerManager>().AddTimer((x) =>
-                {
-					cardToDestroy.transform.DOKill();
-					GameObject.Destroy(cardToDestroy.gameObject);
 
-                }, null, 2f);
+              //  if (!gameEnded)
+               // {
+
+                 //   GameClient.Get<ITimerManager>().AddTimer((x) =>
+                  //  {
+                                       //  }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
+                //}
+
+               
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
             }
         }

@@ -16,7 +16,8 @@ namespace GrandDevs.CZB
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
-		private IDataManager _dataManager;
+        private IDataManager _dataManager;
+
         private QuestionPopup _questionPopup;
 
 		private GameObject _selfPage;
@@ -214,7 +215,15 @@ namespace GrandDevs.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
             (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = _currentDeckId;
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
+
+            _uiManager.HideAllPages();
+            _uiManager.DrawPopup<PreparingForBattlePopup>();
+
+            // small hack untill we will optimize the game because app stuck on this state.
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
+            }, null, Time.deltaTime, false);
         }
 		private void CreateDeck()
 		{

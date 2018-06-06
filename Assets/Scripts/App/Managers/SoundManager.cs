@@ -86,10 +86,32 @@ namespace GrandDevs.CZB
             //}
         }
 
+        public float GetSoundLength(Enumerators.SoundType soundType, string namePattern)
+        {
+            var soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+
+            AudioClip clip = soundTypeList.audioTypeClips.Find(x => x.name.Contains(namePattern));
+
+            return clip != null ? clip.length : 0f;
+        }
+
+
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+        {
+            foreach (var item in _soundContainers)
+            {
+                if (cardSoundType.ToString().Equals(item.tag))
+                    return;
+            }
+
+            CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
+        }
+
         public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
             PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue: isInQueue);
         }
+
         public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false, bool isInQueue = false)
         {
             CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle, isInQueue: isInQueue);
@@ -121,7 +143,7 @@ namespace GrandDevs.CZB
         }
 
         private void CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false)
+                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
         {
             //if (isInQueue)
             //{
@@ -131,11 +153,11 @@ namespace GrandDevs.CZB
             //    Debug.LogError(_queuedSoundElements.Count + " _queuedSoundElements count");
             //}
             //else 
-            DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue);
+            DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
         }
 
         private void DoSoundContainer(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
-                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false)
+                             bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
         {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();
@@ -164,7 +186,7 @@ namespace GrandDevs.CZB
             soundParam.startPosition = 0f;
 
             container.isInQueue = isInQueue;
-
+            container.tag = tag;
             container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
 
             if (parent != null)
@@ -309,6 +331,7 @@ namespace GrandDevs.CZB
         public int currentSoundIndex;
 
         public bool isInQueue = false;
+        public string tag;
 
         public SoundContainer() { }
 

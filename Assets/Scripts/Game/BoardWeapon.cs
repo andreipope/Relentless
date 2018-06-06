@@ -214,7 +214,7 @@ namespace GrandDevs.CZB
 
                 UpdateUI();
                 if (onHitAction != null) onHitAction();
-            }, () => { _siloAnimator.SetBool("Active", false); });
+            }, () => { _siloAnimator.SetBool("Active", false); }, false, 1f);
         }
 
         private void Attack()

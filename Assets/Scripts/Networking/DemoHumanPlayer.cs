@@ -247,24 +247,27 @@ public class DemoHumanPlayer : DemoPlayer
             var boardCard = playerBoardCards.Find(x => x.card == card);
             if (boardCard != null)
             {
-                if (!gameEnded)
+              /*  if (!gameEnded)
                 {
                     GameClient.Get<ITimerManager>().AddTimer((x) =>
                     {
                         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, 
+                            libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
 
                     }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
-                }
+                } */
 
                 boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
                 playerGraveyardCards.Add(boardCard);
-                GameClient.Get<ITimerManager>().AddTimer((x) =>
-                {
-                    RearrangeBottomBoard();
-				}, null, 2f);
-                playerBoardCards.Remove(boardCard);
+    //            GameClient.Get<ITimerManager>().AddTimer((x) =>
+    //            {
+    //                RearrangeBottomBoard();
+				//}, null, 2f);
+
+             //   playerBoardCards.Remove(boardCard); //-------------------------------
+
                 //boardCard.transform.DOMove(graveyardPos, 0.7f);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
@@ -321,7 +324,7 @@ public class DemoHumanPlayer : DemoPlayer
             var boardCard = opponentBoardCards.Find(x => x.card == card);
             if (boardCard != null)
             {
-                if (!gameEnded)
+               /* if (!gameEnded)
                 {
 
                     GameClient.Get<ITimerManager>().AddTimer((x) =>
@@ -330,23 +333,27 @@ public class DemoHumanPlayer : DemoPlayer
                         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                     }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
-                }
+                } */
 
-                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+            //    GameClient.Get<ITimerManager>().AddTimer((param) =>
+            //    {
+                    boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
-                opponentGraveyardCards.Add(boardCard);
+                    opponentGraveyardCards.Add(boardCard);
 
-                GameClient.Get<ITimerManager>().AddTimer((x) =>
-                {
-					RearrangeTopBoard();
-				}, null, 2f);
-                opponentBoardCards.Remove(boardCard);
-                //boardCard.transform.DOMove(graveyardPos, 0.7f);
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.StopSleepingParticles();
-                boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
-                Destroy(boardCard.GetComponent<BoxCollider2D>());
+                    //GameClient.Get<ITimerManager>().AddTimer((x) =>
+                    //{
+                    //    RearrangeTopBoard();
+                    //}, null, 2f);
+               //     opponentBoardCards.Remove(boardCard);
+                    //boardCard.transform.DOMove(graveyardPos, 0.7f);
+                    boardCard.SetHighlightingEnabled(false);
+                    boardCard.StopSleepingParticles();
+                    boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                    boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
+                    Destroy(boardCard.GetComponent<BoxCollider2D>());
+
+             //   }, null, 3f, false);
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {
@@ -1293,6 +1300,8 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 playerInfo.namedZones[Constants.ZONE_HAND].RemoveCard(runtimeCard);
                 playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(runtimeCard);
+
+                if(currentCreature != null)
                 currentCreature.fightTargetingArrowPrefab = fightTargetingArrowPrefab;
             }
             else
@@ -1365,6 +1374,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
 
         RearrangeBottomBoard();
+        RearrangeTopBoard();
     }
 
     private void CallCardPlay(CardView card)
@@ -1669,12 +1679,18 @@ public class DemoHumanPlayer : DemoPlayer
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attackingCard.card.cardId);
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
+
+            attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z - 0.2f);
+
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
+
                 PlayAttackVFX(attackingCard.card.type, attackedCard.transform.position, attackingCard.attackStat.effectiveValue);
 
 				effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);
                 attackingCard.CreatureOnAttack(attackedCard);
+
+                attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z + 0.2f);
             });
         }
     }
