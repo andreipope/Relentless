@@ -90,7 +90,7 @@ namespace GrandDevs.CZB
 			}
         }
 
-        protected override void CreateVFX(Vector3 pos)
+        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
         {
             int playerPos = playerCallerOfAbility is DemoHumanPlayer ? 1 : -1;
             
@@ -115,9 +115,9 @@ namespace GrandDevs.CZB
             }
             pos = pos * playerPos;
 
-            DestroyCurrentParticle();
+            ClearParticles();
 
-            base.CreateVFX(pos);
+            base.CreateVFX(pos, true, 5f);
         }
     }
 }

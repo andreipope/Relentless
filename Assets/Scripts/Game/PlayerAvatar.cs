@@ -39,7 +39,7 @@ public class PlayerAvatar : MonoBehaviour
         //avatarDeathObject = transform.Find("HeroDeath").gameObject;
         avatarAnimator.enabled = false;
         deathAnimamtor.enabled = false;
-       // deathAnimamtor.StopPlayback();
+        deathAnimamtor.StopPlayback();
     }
 
     private Player GetTargetPlayer()
@@ -111,7 +111,7 @@ public class PlayerAvatar : MonoBehaviour
         manaBarFadeTool.FadeIn();
 
 		avatarAnimator.enabled = true;
-     //   deathAnimamtor.enabled = true;
+        deathAnimamtor.enabled = true;
         avatarTypeHighlight.SetActive(false);
         spellObject.SetActive(false);
         weaponObject.SetActive(false);

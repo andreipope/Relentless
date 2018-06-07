@@ -12,6 +12,7 @@ namespace GrandDevs.CZB
         protected event Action PermanentInputEndEvent;
 
         protected AbilitiesController _abilitiesController;
+        protected ParticlesController _particlesController;
         protected ILoadObjectsManager _loadObjectsManager;
         protected AbilityTargetingArrow _targettingArrow;
         protected GameObject _vfxObject;
@@ -46,6 +47,8 @@ namespace GrandDevs.CZB
         private PlayerAvatar playerAvatar;
         private PlayerAvatar opponenentAvatar;
 
+        protected List<ulong> _particleIds;
+
         public AbilityTargetingArrow TargettingArrow
         {
             get
@@ -68,6 +71,8 @@ namespace GrandDevs.CZB
             opponenentAvatar = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
 
             PermanentInputEndEvent += OnInputEndEventHandler;
+
+            _particleIds = new List<ulong>();
         }
 
         public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
@@ -116,6 +121,7 @@ namespace GrandDevs.CZB
         public virtual void Activate()
         {
             _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+            _particlesController = GameClient.Get<IGameplayManager>().GetController<ParticlesController>();
 
             playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
@@ -149,6 +155,7 @@ namespace GrandDevs.CZB
             playerCallerOfAbility.OnStartTurnEvent -= OnStartTurnEventHandler;
 
             DeactivateSelectTarget();
+            ClearParticles();
         }
 
         protected virtual void OnCardSelectedEventHandler(BoardCreature obj)
@@ -175,12 +182,17 @@ namespace GrandDevs.CZB
             targetPlayer = null;
         }
 
-        protected virtual void CreateVFX(Vector3 pos) //todo make it async
+        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f) //todo make it async
         {
             if (_vfxObject != null)
             {
                 _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
                 _vfxObject.transform.position = (pos - Constants.VFX_OFFSET) + Vector3.forward;
+
+                ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
+                
+                if (!autoDestroy)
+                    _particleIds.Add(id);
             }
         }
 
@@ -273,6 +285,12 @@ namespace GrandDevs.CZB
         private void DestroyParticle(object[] param)
         {
             MonoBehaviour.Destroy(_vfxObject);
+        }
+
+        protected void ClearParticles()
+        {
+            foreach (var id in _particleIds)
+                _particlesController.DestoryParticle(id);
         }
     }
 }

@@ -119,8 +119,16 @@ namespace GrandDevs.CZB
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
             {
+                _uiManager.HideAllPages();
+                _uiManager.DrawPopup<PreparingForBattlePopup>();
+
                 (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = 0;
-                _stateManager.ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
+
+                // small hack untill we will optimize the game because app stuck on this state.
+                GameClient.Get<ITimerManager>().AddTimer((x) =>
+                {
+                    _stateManager.ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
+                }, null, Time.deltaTime, false);
             }
             else
                 _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);

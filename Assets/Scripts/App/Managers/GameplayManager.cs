@@ -41,6 +41,7 @@ namespace GrandDevs.CZB
         {
             _controllers = new List<IController>();
             _controllers.Add(new AbilitiesController());
+            _controllers.Add(new ParticlesController());            
         }
 
         public string GetCardSet(Data.Card card)

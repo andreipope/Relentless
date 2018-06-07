@@ -59,25 +59,27 @@ namespace GrandDevs.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 target)
         {
-           
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
                 Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+
                 CreateVFX(startPosition);
+
                 _vfxObject.transform.DOMove(target, 0.5f).OnComplete(() => {
-                    DestroyCurrentParticle(true);
+
+                    ClearParticles();
+
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-                    CreateVFX(target);
+
+                    CreateVFX(target, true);
                     callback();
-                    DestroyCurrentParticle();
                 });
             }
             else if(abilityEffectType == Enumerators.AbilityEffectType.HEAL_DIRECTLY)
             {
-                CreateVFX(target);
+                CreateVFX(target, true);
                 callback();
-                DestroyCurrentParticle();
             }
         }
     }

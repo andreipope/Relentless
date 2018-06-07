@@ -118,6 +118,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     private IUIManager _uiManager;
     private ISoundManager _soundManager;
+    private ParticlesController _particlesController;
 
     private bool _rearrangingTopBoard = false,
                  _rearrangingBottomBoard = false;
@@ -153,6 +154,8 @@ public class DemoHumanPlayer : DemoPlayer
         GameClient.Get<IPlayerManager>().OpponentGraveyardCards = opponentGraveyardCards;
 
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+        _particlesController = GameClient.Get<IGameplayManager>().GetController<ParticlesController>();
+
 
         _uiManager = GameClient.Get<IUIManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -1705,13 +1708,19 @@ public class DemoHumanPlayer : DemoPlayer
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
 			effect = GameObject.Instantiate(vfxPrefab);
 			effect.transform.position = target;
-			if (damage > 3 && damage < 7)
+
+            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+            if (damage > 3 && damage < 7)
 			{
 				GameClient.Get<ITimerManager>().AddTimer((a) =>
 				{
 					effect = GameObject.Instantiate(vfxPrefab);
 					effect.transform.position = target;
 					effect.transform.localScale = new Vector3(-1, 1, 1);
+                    _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+
                 }, null, 0.5f, false);
 			}
 			if (damage > 6)
@@ -1721,6 +1730,8 @@ public class DemoHumanPlayer : DemoPlayer
 					effect = GameObject.Instantiate(vfxPrefab);
 					effect.transform.position = target - Vector3.right;
 					effect.transform.eulerAngles = Vector3.forward * 90;
+
+                    _particlesController.RegisterParticleSystem(effect, true, 5f);
 
                 }, null, 1.0f, false);
 			}
@@ -1741,6 +1752,9 @@ public class DemoHumanPlayer : DemoPlayer
             vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(prefabName);
             effect = GameObject.Instantiate(vfxPrefab);
             effect.transform.position = target;
+
+            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
             _soundManager.PlaySound(soundType, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
            /* GameClient.Get<ITimerManager>().AddTimer((a) =>
                 {
@@ -1751,7 +1765,10 @@ public class DemoHumanPlayer : DemoPlayer
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
 			effect = GameObject.Instantiate(vfxPrefab);
 			effect.transform.position = target;
-			if (damage > 4)
+
+            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+            if (damage > 4)
 			{
 				GameClient.Get<ITimerManager>().AddTimer((a) =>
 			   {
@@ -1759,7 +1776,10 @@ public class DemoHumanPlayer : DemoPlayer
 				   effect.transform.position = target;
 
 				   effect.transform.localScale = new Vector3(-1, 1, 1);
-			   }, null, 0.5f, false);
+                   _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+
+               }, null, 0.5f, false);
                 GameClient.Get<ITimerManager>().AddTimer((a) =>
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);

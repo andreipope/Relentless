@@ -46,9 +46,8 @@ namespace GrandDevs.CZB
 
         }
 
-        protected override void CreateVFX(Vector3 pos)
+        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
         {
-            
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
@@ -68,9 +67,15 @@ namespace GrandDevs.CZB
             }
             //base.CreateVFX(pos);
             var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.transform.position;
+
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
             _vfxObject.transform.position = boardCreature.transform.position;
             _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+
+            ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
+
+            if(!autoDestroy)
+                _particleIds.Add(id);
         }
 
         private void ActionCompleted()
@@ -90,7 +95,9 @@ namespace GrandDevs.CZB
             }
 
             var targetPosition = _vfxObject.transform.position;
-            DestroyCurrentParticle(true);
+
+            ClearParticles();
+
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
@@ -110,7 +117,7 @@ namespace GrandDevs.CZB
             }
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
             _vfxObject.transform.position = targetPosition;
-            DestroyCurrentParticle();
+            _particlesController.RegisterParticleSystem(_vfxObject, true);
         }
     }
 }

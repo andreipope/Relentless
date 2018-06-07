@@ -1009,6 +1009,30 @@
             }
           }
         },
+        {
+          "id": 51,
+          "kind": "CREATURE",
+          "name": "Armageddon",
+          "cost": 0,
+          "description": "MEGA KILLER",
+          "picture": "Zombie",
+          "damage": 30,
+          "health": 30,
+          "type": "FERAL",
+          "rarity": "EPIC",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.18,
+              "y": -0.03,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.45,
+              "y": 0.45,
+              "z": 0.45
+            }
+          }
+        }
       ]
     }
   ]
