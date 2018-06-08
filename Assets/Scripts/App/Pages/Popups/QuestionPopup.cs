@@ -83,7 +83,7 @@ namespace GrandDevs.CZB
 
         private void ConfirmationButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             if (ConfirmationEvent != null)
 				ConfirmationEvent();
             Hide();

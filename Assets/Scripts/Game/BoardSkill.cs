@@ -53,8 +53,8 @@ public class BoardSkill : MonoBehaviour
     private void Start()
     {
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-        _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
-        _healVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+        _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FireDamageVFX");
+        _healVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
         _airPickUpCardVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
         _toxicVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
         _frozenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
@@ -303,6 +303,8 @@ public class BoardSkill : MonoBehaviour
         var targetCreature = target as BoardCreature;
 
         Debug.Log("RETURN CARD");
+
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
         Player creatureOwner = GetOwnerOfCreature(targetCreature);
         RuntimeCard returningCard = targetCreature.card;

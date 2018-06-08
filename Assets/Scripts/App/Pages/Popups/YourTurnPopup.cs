@@ -90,7 +90,7 @@ namespace GrandDevs.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             if (NetworkingUtils.GetLocalPlayer().isServer)
             {
                 NetworkManager.singleton.StopHost();

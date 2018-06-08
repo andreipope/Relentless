@@ -275,14 +275,14 @@ public class DemoHumanPlayer : DemoPlayer
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
+                //boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
             {                                           
                 currentSpellCard.SetHighlightingEnabled(false);
                 currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                currentSpellCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
+                //currentSpellCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
                 Destroy(currentSpellCard.GetComponent<BoxCollider2D>());
                 //currentSpellCard.transform.DOMove(graveyardPos - Vector3.right * 5, 0.5f);
                 //currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f);
@@ -353,7 +353,7 @@ public class DemoHumanPlayer : DemoPlayer
                     boardCard.SetHighlightingEnabled(false);
                     boardCard.StopSleepingParticles();
                     boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
+                    //boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                     Destroy(boardCard.GetComponent<BoxCollider2D>());
 
              //   }, null, 3f, false);
@@ -362,7 +362,7 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 currentSpellCard.SetHighlightingEnabled(false);
                 currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                currentSpellCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
+                //currentSpellCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
                 Destroy(currentSpellCard.GetComponent<BoxCollider2D>());
                 var sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
@@ -1412,6 +1412,8 @@ public class DemoHumanPlayer : DemoPlayer
     public override void OnEndGame(EndGameMessage msg)
     {
         base.OnEndGame(msg);
+
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
 
         if (msg.winnerPlayerIndex == playerInfo.netId)
             GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();

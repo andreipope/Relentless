@@ -124,7 +124,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR, Constants.SFX_SOUND_VOLUME, false, false, true);
             _selfPage.SetActive(true);
         }
 
@@ -150,14 +150,14 @@ namespace GrandDevs.CZB
 
         public void OnSignupButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
             OpenAlertDialog("Will be available on full version");
         }
 
         public void OnLoginButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             var usernameText = _usernameInputField.text;
             var passwordText = _passwordInputField.text;
 

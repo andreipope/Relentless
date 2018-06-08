@@ -226,8 +226,6 @@ namespace GrandDevs.CZB
                 //for (int j = _cards.Count-1; j >= 0; j--)
                 //_cards[j].selfObject.transform.SetAsLastSibling();
 
-
-                cardToDestroy.GetComponent<SortingGroup>().sortingOrder = 1;
                 cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
@@ -436,7 +434,7 @@ namespace GrandDevs.CZB
                 GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
             };
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
         #endregion

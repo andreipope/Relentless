@@ -66,14 +66,15 @@ namespace GrandDevs.CZB
                     {
                         _uiManager.SetPage<LoadingPage>();
                         _dataManager.StartLoadCache();
+                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                     }
                     break;
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
                     {
-						//GameObject.Find("MainApp/Camera").SetActive(true);
-						//GameObject.Find("MainApp/Camera2").SetActive(true);
+                        //GameObject.Find("MainApp/Camera").SetActive(true);
+                        //GameObject.Find("MainApp/Camera2").SetActive(true);
                         _uiManager.SetPage<MainMenuPage>();
                     }
                     break;
@@ -126,6 +127,7 @@ namespace GrandDevs.CZB
 
                         MatchMaker.Instance.StartMatch();
 
+                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                         //_scenesManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
                         /*MainApp.Instance.OnLevelWasLoadedEvent += (param) => {
 							GameNetworkManager.Instance.StartMatchMaker();

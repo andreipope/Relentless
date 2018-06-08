@@ -4,7 +4,7 @@
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.12.1.ver";
+        internal const string CURRENT_VERSION = "0.0.12.2.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -60,14 +60,14 @@
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
         // SOUNDS VOLUME'S
-        internal static float ZOMBIES_SOUND_VOLUME = 0.1f;
+        internal static float ZOMBIES_SOUND_VOLUME = 0.05f;
         internal static float TUTORIAL_SOUND_VOLUME = 1f;
         internal static float ARRIVAL_SOUND_VOLUME = 0.1f;
-        internal static float CREATURE_ATTACK_SOUND_VOLUME = 0.1f;
+        internal static float CREATURE_ATTACK_SOUND_VOLUME = 0.05f;
         internal static float END_TURN_CLICK_SOUND_VOLUME = 0.1f;
         internal static float HERO_DEATH_SOUND_VOLUME = 0.1f;
         internal static float CARDS_MOVE_SOUND_VOLUME = 0.025f;
-        internal static float BACKGROUND_SOUND_VOLUME = 0.15f;
+        internal static float BACKGROUND_SOUND_VOLUME = 0.05f;
         internal static float SFX_SOUND_VOLUME = 0.15f;
 
 

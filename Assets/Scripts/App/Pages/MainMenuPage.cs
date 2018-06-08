@@ -93,14 +93,16 @@ namespace GrandDevs.CZB
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
 
-            if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
+            _logoAnimator.SetBool("LogoShow", true);
+
+            /*if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
                 _logoAnimator.SetBool("LogoShow", true);
 
             if (!_logoShowed)
             {
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
                 _logoShowed = true;
-            }
+            } */
         }
 
         public void Hide()
@@ -116,7 +118,7 @@ namespace GrandDevs.CZB
 #region Buttons Handlers
         public void OnClickPlay()
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
             {
                 _uiManager.HideAllPages();
@@ -135,43 +137,43 @@ namespace GrandDevs.CZB
         }
 		private void OnClickCollection()
 		{
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.COLLECTION);
 		}
 		private void OnClickCredits()
 		{
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             OpenAlertDialog("Coming Soon");
 		}
 
         private void BuyButtonHandler()
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.CREDITS);
         }
 
         private void OpenButtonHandler()
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)
 		{
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
 
 
         }
         private void OnValueChangedEventSFX(bool value)
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, dropOldBackgroundMusic: false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
         }
         #endregion

@@ -1,4 +1,5 @@
 ﻿using CCGKit;
+using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace GrandDevs.CZB
         public void Init()
         {
             InitControllers();
+
+            if(!GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            {
+                Constants.ZOMBIES_SOUND_VOLUME *= 3;
+                Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
+            }
         }
 
         public void Update()

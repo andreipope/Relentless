@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 297ef749f5a299f40b5c72abc1f2fb1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isToggleEnabled: 0
+  isToggleEnabled: 1
   onHoverOverlayToggleDisabled: {fileID: 114816536953848758}
   onClickOverlayToggleDisabled: {fileID: 114718690955872212}
   onHoverOverlayToggleEnabled: {fileID: 114228111898594034}

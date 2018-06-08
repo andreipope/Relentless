@@ -47,8 +47,6 @@ namespace GrandDevs.CZB
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
    
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-                GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
-                GameClient.Get<ISoundManager>().SetMusicVolume(0);
             }
         }
 

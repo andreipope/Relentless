@@ -20,6 +20,9 @@ public static class CombatAnimation
         var oldSortingOrder = sortingGroup.sortingOrder;
         var oldsortingLayerName = sortingGroup.sortingLayerName;
 
+
+        Debug.Log("!@#!@#!@#!@!#!@");
+
             sortingGroup.sortingLayerName = "BoardCards";
             sortingGroup.sortingOrder = 1000;
 

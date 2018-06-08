@@ -29,6 +29,7 @@
             CLICK,
             OTHER,
             BACKGROUND,
+            BATTLEGROUND,
             TUTORIAL,
             CARDS,
             END_TURN,

@@ -100,7 +100,7 @@ namespace GrandDevs.CZB
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK);
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             int amount = _cardData.amount;
             if (amount == 0)
                 _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
