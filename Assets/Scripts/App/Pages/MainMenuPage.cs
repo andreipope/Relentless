@@ -84,6 +84,19 @@ namespace GrandDevs.CZB
                 GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
                 GameManager.Instance.tutorial = true;
             }
+
+            /*  FOR TESTING
+            if(Input.GetKeyUp(KeyCode.Z))
+            {
+                Debug.Log("BATTLEGROUND");
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                Debug.Log("BACKGROUND");
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+            }
+            */
         }
 
         public void Show()

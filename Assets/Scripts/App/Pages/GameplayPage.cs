@@ -432,6 +432,7 @@ namespace GrandDevs.CZB
 
                 _uiManager.HidePopup<YourTurnPopup>();
                 GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
+                GameClient.Get<ISoundManager>().CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);

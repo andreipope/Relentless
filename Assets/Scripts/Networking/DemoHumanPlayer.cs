@@ -123,6 +123,8 @@ public class DemoHumanPlayer : DemoPlayer
     private bool _rearrangingTopBoard = false,
                  _rearrangingBottomBoard = false;
 
+    private bool _battleDynamic = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -199,6 +201,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         lifeStat.onValueChanged += (oldValue, newValue) =>
         {
+            CheckGameDynamic();
             gameUI.SetPlayerHealth(lifeStat.effectiveValue);
         };
         manaStat.onValueChanged += (oldValue, newValue) =>
@@ -209,6 +212,7 @@ public class DemoHumanPlayer : DemoPlayer
 
         opponentLifeStat.onValueChanged += (oldValue, newValue) =>
         {
+            CheckGameDynamic();
             gameUI.SetOpponentHealth(opponentLifeStat.effectiveValue);
         };
         opponentManaStat.onValueChanged += (oldValue, newValue) =>
@@ -380,6 +384,22 @@ public class DemoHumanPlayer : DemoPlayer
         {
             gameUI.SetOpponentGraveyardCards(numCards);
         };
+    }
+
+    private void CheckGameDynamic()
+    {
+        if (opponentLifeStat.effectiveValue > 9 && lifeStat.effectiveValue > 9)
+        {
+            if (_battleDynamic)
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+            _battleDynamic = false;
+        }
+        else
+        {
+            if(!_battleDynamic)
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+            _battleDynamic = true;
+        }
     }
 
     public override void OnStartGame(StartGameMessage msg)
@@ -1431,6 +1451,8 @@ public class DemoHumanPlayer : DemoPlayer
                 _uiManager.DrawPopup<YouLosePopup>();
             }
         }, null, 4f);
+        _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+
 
         EffectSolver.EffectActivateEvent -= EffectActivateEventHandler;
     }

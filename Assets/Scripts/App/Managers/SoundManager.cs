@@ -122,6 +122,17 @@ namespace GrandDevs.CZB
             CreateSound(soundType, volume, null, isLoop, false, clipIndex, isInQueue: isInQueue);
         }
 
+        public void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false)
+        {
+            var oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+            var volumeStep = oldContainers[0].audioSource.volume / 15f;
+            FadeSound(oldContainers, volumeStep: volumeStep);
+
+            var soundContainer = CreateSound(soundType, 0, parent, isLoop);
+            soundContainer.audioSource.time = oldContainers[0].audioSource.time;
+            FadeSound(soundContainer, true, volumeStep, oldContainers[0].audioSource.volume);
+        }
+
         public void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false,
                              bool isPlaylist = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
@@ -142,7 +153,41 @@ namespace GrandDevs.CZB
             }
         }
 
-        private void CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
+        private void FadeSound(SoundContainer soundContainer, bool isIn = false, float volumeStep = 0, float targetVolume = 0)
+        {
+            var list = new List<SoundContainer>();
+            list.Add(soundContainer);
+            FadeSound(list, isIn, volumeStep, targetVolume);
+        }
+
+        private void FadeSound(List<SoundContainer> soundcontainers, bool isIn = false, float volumeStep = 0.05f, float targetVolume = 1)
+        {
+            GameClient.Get<ITimerManager>().AddTimer((x) => {
+                bool stop = false;
+                foreach (var container in soundcontainers)
+                {
+
+                    container.audioSource.volume += volumeStep * (isIn ? 1 : -1);
+                    Debug.Log("Vol: " + container.audioSource.volume);
+
+                    if (container.audioSource.volume == 0 && !isIn)
+                    {
+                        container.audioSource.Stop();
+                        container.forceClose = true;
+                        stop = true;
+                    }
+                    else if(isIn && container.audioSource.volume >= targetVolume)
+                    {
+                        container.audioSource.volume = targetVolume;
+                        stop = true;
+                    }
+                }
+                if (!stop)
+                    FadeSound(soundcontainers, isIn, volumeStep, targetVolume);
+            }, null, .1f);
+        }
+
+        private SoundContainer CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
                              bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
         {
             //if (isInQueue)
@@ -153,17 +198,26 @@ namespace GrandDevs.CZB
             //    Debug.LogError(_queuedSoundElements.Count + " _queuedSoundElements count");
             //}
             //else 
-            DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
+            return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
         }
 
-        private void DoSoundContainer(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
+        private SoundContainer DoSoundContainer(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
                              bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
         {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();
             SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
 
-            soundParam.isBackground = soundType.ToString().Contains("BACKGROUND") ? true : false;
+            switch(soundType)
+            {
+                case Enumerators.SoundType.BACKGROUND:
+                case Enumerators.SoundType.BATTLEGROUND:
+                    soundParam.isBackground = true;
+                    break;
+                default:
+                    soundParam.isBackground = false;
+                    break;
+            }
 
             soundParam.audioClips = soundTypeList.audioTypeClips;
             if (!string.IsNullOrEmpty(clipTitle))
@@ -171,7 +225,7 @@ namespace GrandDevs.CZB
 
             // small hack to ignore missing audio clips
             if (soundParam.audioClips.Count == 0)
-                return;
+                return null;
 
             soundParam.isLoop = isLoop;
             soundParam.isMute = false;
@@ -193,7 +247,7 @@ namespace GrandDevs.CZB
                 container.container.transform.SetParent(parent);
 
             _soundContainers.Add(container);
-
+            return container;
         }
 
         public void SetMusicVolume(float value)

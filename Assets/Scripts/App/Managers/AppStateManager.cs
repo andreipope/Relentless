@@ -127,7 +127,7 @@ namespace GrandDevs.CZB
 
                         MatchMaker.Instance.StartMatch();
 
-                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+                        //GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                         //_scenesManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
                         /*MainApp.Instance.OnLevelWasLoadedEvent += (param) => {
 							GameNetworkManager.Instance.StartMatchMaker();

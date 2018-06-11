@@ -78,11 +78,19 @@ public class GameUI : MonoBehaviour
     public void SetPlayerHealth(int health)
     {
         playerHealthText.text = health.ToString();
+        if (health > 9)
+            playerHealthText.color = Color.white;
+        else
+            playerHealthText.color = Color.red;
     }
 
     public void SetOpponentHealth(int health)
     {
         opponentHealthText.text = health.ToString();
+        if (health > 9)
+            opponentHealthText.color = Color.white;
+        else
+            opponentHealthText.color = Color.red;
     }
 
     public void SetPlayerDeckCards(int cards)

@@ -14,6 +14,8 @@ namespace GrandDevs.CZB
         void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false, bool isInQueue = false);
         void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false, bool isInQueue = false);
 
+        void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false);
+
         void SetMusicVolume(float value);
         void SetSoundVolume(float value);
 
