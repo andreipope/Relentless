@@ -2,6 +2,7 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using GrandDevs.CZB.Common;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -178,6 +179,9 @@ namespace CCGKit
             }
             else
                 gameState.currentOpponent.stats[0].baseValue = 8;
+
+            if (Constants.DEV_MODE)
+                gameState.currentOpponent.stats[0].baseValue = 1;
 
             // Send a StartGame message to all the connected players.
             for (var i = 0; i < players.Count; i++)

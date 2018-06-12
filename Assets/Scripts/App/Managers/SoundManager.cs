@@ -167,8 +167,9 @@ namespace GrandDevs.CZB
                 foreach (var container in soundcontainers)
                 {
 
+                    if (container.audioSource == null)
+                        break;
                     container.audioSource.volume += volumeStep * (isIn ? 1 : -1);
-                    Debug.Log("Vol: " + container.audioSource.volume);
 
                     if (container.audioSource.volume == 0 && !isIn)
                     {

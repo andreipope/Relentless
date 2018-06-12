@@ -39,6 +39,8 @@ namespace GrandDevs.CZB
                                _playerGraveyardStatusTexture,
                                _opponentGraveyardStatusTexture;
 
+        private Dictionary<Enumerators.SkillType, string> _skillsIcons;
+
         private GameObject _zippingVFX;
 
         private int _graveYardTopOffset;
@@ -92,6 +94,14 @@ namespace GrandDevs.CZB
             _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
             //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
+
+            _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
+            _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
+            _skillsIcons.Add(Enumerators.SkillType.HEAL, "Images/hero_power_02");
+            _skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, "Images/hero_power_03");
+            _skillsIcons.Add(Enumerators.SkillType.FREEZE, "Images/hero_power_04");
+            _skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, "Images/hero_power_05");
+            _skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, "Images/hero_power_06");
 
             _playerManager.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardZoneChanged;
             _playerManager.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardZoneChanged;
@@ -314,64 +324,6 @@ namespace GrandDevs.CZB
             player.deckZone.onZoneChanged += OnPlayerDeckZoneChanged;
             player.opponentDeckZone.onZoneChanged += OnOpponentDeckZoneChanged;
             player.OnStartTurnEvent += OnStartTurnEventHandler;
-
-            GameUI gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
-
-            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = UnityEngine.Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
-
-            var _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
-            _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
-            _skillsIcons.Add(Enumerators.SkillType.HEAL, "Images/hero_power_02");
-            _skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, "Images/hero_power_03");
-            _skillsIcons.Add(Enumerators.SkillType.FREEZE, "Images/hero_power_04");
-            _skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, "Images/hero_power_05");
-            _skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, "Images/hero_power_06");
-
-            Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
-
-            if (currentPlayerHero != null)
-            {
-                gameUI.SetPlayerName(currentPlayerHero.name);
-				_playerSkill = new PlayerSkillItem(GameObject.Find("Player/Spell"), currentPlayerHero.skill, _skillsIcons[currentPlayerHero.skill.skillType]);
-
-                var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + currentPlayerHero.element.ToString() + "_EXP");
-
-                var transfHeroObject = GameObject.Find("Player/Avatar/Hero_Object").transform;
-
-                for (int i = 0; i < transfHeroObject.childCount; i++)
-                    transfHeroObject.GetChild(i).GetComponent<Renderer>().material.mainTexture = heroTexture;
-
-                var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
-                    ("Images/Heroes/CZB_2D_Hero_Decor_" + currentPlayerHero.element.ToString() + "_EXP");
-                GameObject.Find("Player/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
-            }
-            if (currentOpponentHero != null)
-            {
-                gameUI.SetOpponentName(currentOpponentHero.name);
-                _opponentSkill = new PlayerSkillItem(GameObject.Find("Opponent/Spell"), currentOpponentHero.skill, _skillsIcons[currentOpponentHero.skill.skillType]);
-
-                var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + currentOpponentHero.element.ToString() + "_EXP");
-
-                var transfHeroObject = GameObject.Find("Opponent/Avatar/Hero_Object").transform;
-
-                for (int i = 0; i < transfHeroObject.childCount; i++)
-                    transfHeroObject.GetChild(i).GetComponent<Renderer>().material.mainTexture = heroTexture;
-
-               var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
-                  ("Images/Heroes/CZB_2D_Hero_Decor_" + currentOpponentHero.element.ToString() + "_EXP");
-
-                GameObject.Find("Opponent/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
-            }
-
-
-            _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
-            _opponentDeckStatusTexture = GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
-            _playerGraveyardStatusTexture = GameObject.Find("Player/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
-            _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
-
-            _isPlayerInited = true;
         }
 
         public void Update()
@@ -396,6 +348,50 @@ namespace GrandDevs.CZB
                 _zippingVFX.SetActive(false);
             }
             _selfPage.SetActive(true);
+            StartGame();
+        }
+
+        public void StartGame()
+        {
+            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = UnityEngine.Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
+
+            Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
+
+            if (currentPlayerHero != null)
+            {
+                SetHeroInfo(currentPlayerHero, "Player");
+            }
+            if (currentOpponentHero != null)
+            {
+                SetHeroInfo(currentOpponentHero, "Opponent");
+            }
+
+            _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
+            _opponentDeckStatusTexture = GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
+            _playerGraveyardStatusTexture = GameObject.Find("Player/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
+            _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
+
+            _isPlayerInited = true;
+        }
+        public void SetHeroInfo(Hero hero, string objectName)
+        {
+            GameObject.Find("GameUI").GetComponent<GameUI>().SetPlayerName(hero.name);
+            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, _skillsIcons[hero.skill.skillType]);
+
+            var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.element.ToString() + "_EXP");
+            var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
+
+            Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
+            heroAvatarMaterial.mainTexture = heroTexture;
+
+            for (int i = 0; i < transfHeroObject.childCount; i++)
+                transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
+
+            var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
+                ("Images/Heroes/CZB_2D_Hero_Decor_" + hero.element.ToString() + "_EXP");
+            GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
         }
 
         public void Hide()

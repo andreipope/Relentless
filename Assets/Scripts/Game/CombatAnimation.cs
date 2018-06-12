@@ -20,12 +20,8 @@ public static class CombatAnimation
         var oldSortingOrder = sortingGroup.sortingOrder;
         var oldsortingLayerName = sortingGroup.sortingLayerName;
 
-
-        Debug.Log("!@#!@#!@#!@!#!@");
-
-            sortingGroup.sortingLayerName = "BoardCards";
-            sortingGroup.sortingOrder = 1000;
-
+        sortingGroup.sortingLayerName = "BoardCards";
+        sortingGroup.sortingOrder = 1000;
 
         Vector3 partWay = Vector3.zero;
 
@@ -33,8 +29,6 @@ public static class CombatAnimation
             partWay = Vector3.Lerp(originalPos, target.transform.position, 0.5f);
         else
             partWay = Vector3.Lerp(originalPos, target.transform.position, 0.7f);
-
-        //var partWay = (target.transform.position - originalPos) * 1.1f;
 
         source.transform.DOMove(partWay, 0.35f).SetEase(Ease.InSine).OnComplete(() =>
         {

@@ -5617,43 +5617,6 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 2300000, guid: 6796eccd65baa3d418f217211dbada93,
     type: 3}
   m_PrefabInternal: {fileID: 649183668}
---- !u!114 &649183696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 649183670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e919cbfe0cce5f43ae923f9a17a0040, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers:
-  - {fileID: 649183695}
-  - {fileID: 649183694}
-  - {fileID: 649183693}
-  - {fileID: 649183692}
-  - {fileID: 649183691}
-  - {fileID: 649183690}
-  - {fileID: 649183689}
-  - {fileID: 649183688}
-  - {fileID: 649183687}
-  - {fileID: 649183686}
-  - {fileID: 649183685}
-  - {fileID: 649183684}
-  - {fileID: 649183683}
-  - {fileID: 649183682}
-  - {fileID: 649183681}
-  - {fileID: 649183680}
-  - {fileID: 649183679}
-  - {fileID: 649183678}
-  - {fileID: 649183677}
-  - {fileID: 649183676}
-  - {fileID: 649183675}
-  - {fileID: 649183674}
-  - {fileID: 649183673}
-  - {fileID: 649183672}
-  sourceMaterial: {fileID: 2100000, guid: 705034760f963db45aabc8407f24cf1d, type: 2}
 --- !u!114 &649183697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16016,43 +15979,6 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 2300000, guid: 6796eccd65baa3d418f217211dbada93,
     type: 3}
   m_PrefabInternal: {fileID: 1913746949}
---- !u!114 &1913746977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1913746951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e919cbfe0cce5f43ae923f9a17a0040, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers:
-  - {fileID: 1913746976}
-  - {fileID: 1913746975}
-  - {fileID: 1913746974}
-  - {fileID: 1913746973}
-  - {fileID: 1913746972}
-  - {fileID: 1913746971}
-  - {fileID: 1913746970}
-  - {fileID: 1913746969}
-  - {fileID: 1913746968}
-  - {fileID: 1913746967}
-  - {fileID: 1913746966}
-  - {fileID: 1913746965}
-  - {fileID: 1913746964}
-  - {fileID: 1913746963}
-  - {fileID: 1913746962}
-  - {fileID: 1913746961}
-  - {fileID: 1913746960}
-  - {fileID: 1913746959}
-  - {fileID: 1913746958}
-  - {fileID: 1913746957}
-  - {fileID: 1913746956}
-  - {fileID: 1913746955}
-  - {fileID: 1913746954}
-  - {fileID: 1913746953}
-  sourceMaterial: {fileID: 2100000, guid: 705034760f963db45aabc8407f24cf1d, type: 2}
 --- !u!114 &1913746978
 MonoBehaviour:
   m_ObjectHideFlags: 0

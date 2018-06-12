@@ -525,7 +525,7 @@ public class DemoAIPlayer : DemoPlayer
 
     protected List<int> GetAbilityTarget(RuntimeCard card)
     {
-        /*var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
         var abilitiesWithTarget = new List<GrandDevs.CZB.Data.AbilityData>();
 
@@ -679,22 +679,21 @@ public class DemoAIPlayer : DemoPlayer
             return targetInfo;
         }
         else
-        {        */
+        {        
             return null;
-        //}
+        }
     }
 
     private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref List<int> targetInfo)
     {
         if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
         {
-           // AddRandomTargetCreature(true, ref targetInfo);
+            AddRandomTargetCreature(true, ref targetInfo);
         }
         else if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
         {
-            //if (!GameClient.Get<ITutorialManager>().IsTutorial)
-             //   targetInfo.Add(0);
-        }
+            targetInfo.Add(0);
+        }                       
     }
 
     private bool AddRandomTargetCreature(bool opponent, ref List<int> targetInfo, bool lowHP = false, bool addAttackIgnore = false)
