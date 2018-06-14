@@ -137,27 +137,6 @@
             FADED
         }
 
-        public enum ElementType
-        {
-            FIRE,
-            WATER,
-            EARTH,
-            AIR,
-            LIFE,
-            TOXIC,
-            ITEMS
-        }
-
-        public enum SkillType
-        {
-            FREEZE,
-            TOXIC_DAMAGE,
-            FIRE_DAMAGE,
-            HEAL_ANY,
-            HEAL,
-            CARD_RETURN
-        }
-
         public enum SkillTargetType
         {
             NONE,

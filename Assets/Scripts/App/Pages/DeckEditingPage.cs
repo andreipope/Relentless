@@ -66,6 +66,16 @@ namespace GrandDevs.CZB
         private int _currentDeckId;
         private int _currentHeroId;
 
+        private Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
+        {
+                { Enumerators.SetType.FIRE, Enumerators.SetType.WATER},
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE},
+                { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC},
+                { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE},
+                { Enumerators.SetType.AIR, Enumerators.SetType.EARTH},
+                { Enumerators.SetType.WATER, Enumerators.SetType.AIR},
+        };
+
         public int CurrentDeckId
         {
             set { _currentDeckId = value; }
@@ -441,6 +451,12 @@ namespace GrandDevs.CZB
         {
             if (_currentDeck == null)
             {
+                return;
+            }
+            
+            if (_against[_dataManager.CachedHeroesData.heroes[_currentHeroId].element] == card.cardSetType)
+            {
+                OpenAlertDialog("It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
                 return;
             }
 

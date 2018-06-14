@@ -108,6 +108,8 @@ public class BoardCreature : MonoBehaviour
         Assert.IsNotNull(creatureContentObject);
         Assert.IsNotNull(creatureAnimator);
 
+        fightTargetingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
+
         arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
     }
 
@@ -316,6 +318,9 @@ public class BoardCreature : MonoBehaviour
 
     private void UpdateStatText(TextMeshPro text, Stat stat)
     {
+        if (text == null || !text || !gameObject)
+            return;
+
         text.text = stat.effectiveValue.ToString();
         if (stat.effectiveValue > stat.originalValue)
         {
@@ -375,8 +380,10 @@ public class BoardCreature : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (fightTargetingArrowPrefab == null)
-            return;
+        //if (fightTargetingArrowPrefab == null)
+        //    return;
+
+        //Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
 
         if (ownerPlayer != null && ownerPlayer.isActivePlayer && IsPlayable)
         {

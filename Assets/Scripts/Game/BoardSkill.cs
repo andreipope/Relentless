@@ -44,11 +44,13 @@ public class BoardSkill : MonoBehaviour
 
     public int manaCost;
     private int _skillPower;
-    public Enumerators.SkillType skillType;
+    public Enumerators.SetType skillType;
     private ILoadObjectsManager _loadObjectsManager;
 
     public bool isUsed;
     public bool isOpponent = false;
+
+
 
     private void Start()
     {
@@ -86,7 +88,6 @@ public class BoardSkill : MonoBehaviour
         }
 
         manaCost = skill.cost;
-        skillType = skill.skillType;
         _skillPower = skill.value;
     }
 
@@ -139,7 +140,7 @@ public class BoardSkill : MonoBehaviour
         if (isUsed)
             return;
 
-        if (skillType != Enumerators.SkillType.HEAL)
+        if (skillType != Enumerators.SetType.EARTH)
         {
             if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
             {
@@ -147,7 +148,7 @@ public class BoardSkill : MonoBehaviour
                 {
                     fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
                     fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
-                    if (skillType == Enumerators.SkillType.CARD_RETURN)
+                    if (skillType == Enumerators.SetType.AIR)
                         fightTargetingArrow.targetType = EffectTarget.TargetCard;
 
                     fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
@@ -185,7 +186,7 @@ public class BoardSkill : MonoBehaviour
                 }
             }
 
-            if (skillType == Enumerators.SkillType.HEAL)
+            if (skillType == Enumerators.SetType.EARTH)
             {
                 if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
                     DoSkillAction(null);
@@ -485,22 +486,22 @@ public class BoardSkill : MonoBehaviour
 
         switch (skillType)
         {
-            case Enumerators.SkillType.FREEZE:
+            case Enumerators.SetType.WATER:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
                 break;
-            case Enumerators.SkillType.TOXIC_DAMAGE:
+            case Enumerators.SetType.TOXIC:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                 break;
-            case Enumerators.SkillType.FIRE_DAMAGE:
+            case Enumerators.SetType.FIRE:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                 break;
-            case Enumerators.SkillType.HEAL_ANY:
+            case Enumerators.SetType.LIFE:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
                 break;
-            case Enumerators.SkillType.HEAL:
+            case Enumerators.SetType.EARTH:
                 HealAction();
                 break;
-            case Enumerators.SkillType.CARD_RETURN:
+            case Enumerators.SetType.AIR:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                 break;
             default:
@@ -533,19 +534,19 @@ public class BoardSkill : MonoBehaviour
 
         switch (skillType)
         {
-            case Enumerators.SkillType.FREEZE:
+            case Enumerators.SetType.WATER:
                 FreezeAction(target);
                 break;
-            case Enumerators.SkillType.TOXIC_DAMAGE:
+            case Enumerators.SetType.TOXIC:
                 ToxicDamageAction(target);
                 break;
-            case Enumerators.SkillType.FIRE_DAMAGE:
+            case Enumerators.SetType.FIRE:
                 FireDamageAction(target);
                 break;
-            case Enumerators.SkillType.HEAL_ANY:
+            case Enumerators.SetType.LIFE:
                 HealAnyAction(target);
                 break;
-            case Enumerators.SkillType.CARD_RETURN:
+            case Enumerators.SetType.AIR:
                 CardReturnAction(target);
                 break;
             default:

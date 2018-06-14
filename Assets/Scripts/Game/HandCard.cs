@@ -56,18 +56,10 @@ public class HandCard : MonoBehaviour
 
     public void OnSelected()
     {
-        Debug.Log(ownerPlayer.isActivePlayer);
-        Debug.Log(cardView.CanBePlayed(ownerPlayer));
-        Debug.Log(_isReturnToHand);
-        Debug.Log(_alreadySelected);
         if (ownerPlayer.isActivePlayer &&
             cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected)
         {
             startedDrag = true;
-            Debug.Log("startedDrag " + startedDrag);
-            Debug.Log("initialPos " + initialPos);
-            Debug.Log(_handInd);
-
             initialPos = transform.position;
             ownerPlayer.isCardSelected = true;
             _alreadySelected = true;
@@ -76,12 +68,6 @@ public class HandCard : MonoBehaviour
 
     public void OnMouseUp()
     {
-        Debug.Log("OnMouseUp");
-        Debug.Log("startedDrag " + startedDrag);
-        Debug.Log("initialPos " + initialPos);
-        Debug.Log(_handInd);
-
-
         if (!startedDrag)
         {
             return;
@@ -94,9 +80,6 @@ public class HandCard : MonoBehaviour
         if (!cardView.CanBeBuyed(ownerPlayer) || (cardView.libraryCard.cardKind == GrandDevs.CZB.Common.Enumerators.CardKind.CREATURE &&
                                                      ownerPlayer.boardZone.cards.Count >= Constants.MAX_BOARD_CREATURES))
             playable = false;
-
-
-        Debug.Log("!!! " + playable);
 
         if (playable)
         {

@@ -42,11 +42,11 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroImage = _selfPage.transform.Find("Image_SelectHero").GetComponent<Image>();
-            _winTutorialPackObject = _selfPage.transform.Find("WinPackTutorial").gameObject;
-            _winPackObject = _selfPage.transform.Find("WinPack").gameObject;
+            _selectHeroImage = _selfPage.transform.Find("Panel_Objects/Image_SelectHero").GetComponent<Image>();
+            _winTutorialPackObject = _selfPage.transform.Find("Panel_Objects/WinPackTutorial").gameObject;
+            _winPackObject = _selfPage.transform.Find("Panel_Objects/WinPack").gameObject;
             _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
-            _buttonOk = _selfPage.transform.Find("Button_Ok").GetComponent<MenuButtonNoGlow>();
+            _buttonOk = _selfPage.transform.Find("Panel_Objects/Button_Ok").GetComponent<MenuButtonNoGlow>();
             _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
 
             Hide();
@@ -77,7 +77,7 @@ namespace GrandDevs.CZB
             int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId;
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
-            _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_" + heroName.ToLower());
+            _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
             _nameHeroText.text = heroName + " Hero";
 

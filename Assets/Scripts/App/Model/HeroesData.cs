@@ -19,7 +19,7 @@ namespace GrandDevs.CZB.Data
         public int heroId;
         public string icon;
         public string name;
-        public Enumerators.ElementType element;
+        public Enumerators.SetType element;
         public HeroSkill skill;
 
         public Hero()
@@ -30,7 +30,6 @@ namespace GrandDevs.CZB.Data
     public class HeroSkill
     {
         public string title;
-        public Enumerators.SkillType skillType;
         public Enumerators.SkillTargetType skillTargetType;
         public int cost;
         public int value;

@@ -119,7 +119,15 @@ namespace GrandDevs.CZB
             _currentTime -= Time.deltaTime;
             if (_currentTime < 0)
             {
-                _handler(parameters);
+                try
+                {
+                    _handler(parameters);
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogError(ex.Message + " : " + ex.StackTrace);
+                }
+
                 if (_loop)
                     _currentTime = _time;
                 else

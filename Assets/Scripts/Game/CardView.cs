@@ -95,7 +95,6 @@ public class CardView : MonoBehaviour
         libraryCard = card;
         nameText.text = card.name;
         bodyText.text = card.description;
-        Debug.Log("Body Text = " + bodyText.text);
         amountText.text = amount.ToString();
         costText.text = card.cost.ToString();
 

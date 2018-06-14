@@ -39,8 +39,6 @@ namespace GrandDevs.CZB
                                _playerGraveyardStatusTexture,
                                _opponentGraveyardStatusTexture;
 
-        private Dictionary<Enumerators.SkillType, string> _skillsIcons;
-
         private GameObject _zippingVFX;
 
         private int _graveYardTopOffset;
@@ -94,14 +92,6 @@ namespace GrandDevs.CZB
             _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
             //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
-
-            _skillsIcons = new Dictionary<Enumerators.SkillType, string>();
-            _skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, "Images/hero_power_01");
-            _skillsIcons.Add(Enumerators.SkillType.HEAL, "Images/hero_power_02");
-            _skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, "Images/hero_power_03");
-            _skillsIcons.Add(Enumerators.SkillType.FREEZE, "Images/hero_power_04");
-            _skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, "Images/hero_power_05");
-            _skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, "Images/hero_power_06");
 
             _playerManager.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardZoneChanged;
             _playerManager.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardZoneChanged;
@@ -240,7 +230,7 @@ namespace GrandDevs.CZB
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
-                    if(cardToDestroy.gameObject)
+                    if(cardToDestroy != null && cardToDestroy.gameObject)
                         cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
 
 
@@ -268,7 +258,7 @@ namespace GrandDevs.CZB
                             (localPlayer as DemoHumanPlayer).playerBoardCardsList.Remove(cardToDestroy);
                         }
 
-                        if (cardToDestroy.gameObject)
+                        if (cardToDestroy != null && cardToDestroy.gameObject)
                         {
                             cardToDestroy.transform.DOKill();
                             GameObject.Destroy(cardToDestroy.gameObject);
@@ -378,7 +368,7 @@ namespace GrandDevs.CZB
         public void SetHeroInfo(Hero hero, string objectName)
         {
             GameObject.Find("GameUI").GetComponent<GameUI>().SetPlayerName(hero.name);
-            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, _skillsIcons[hero.skill.skillType]);
+            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, "Images/HeroesIcons/hero_icon_" + hero.element.ToString());
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.element.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;

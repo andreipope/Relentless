@@ -38,17 +38,14 @@ namespace GrandDevs.CZB
             {
                 GameClient.Instance.InitServices();
 
-                /*if (Constants.DEV_MODE)
+                if (Constants.DEV_MODE)
                 {
+                    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                     GameClient.Get<IDataManager>().StartLoadCache();
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
                 }
                 else
-                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);   */
-
-                GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
-                GameClient.Get<IDataManager>().StartLoadCache();
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             }

@@ -28,10 +28,6 @@ namespace GrandDevs.CZB
         //private Text _selectedHeroName;
         private int _currentHeroId;
 
-		private Dictionary<Enumerators.SkillType, Sprite> _skillsIcons;
-        private Dictionary<Enumerators.ElementType, Sprite> _heroIcons,
-                                                            _selectedHeroIcons;
-
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -54,30 +50,6 @@ namespace GrandDevs.CZB
             //_selectedHeroName = _selfPage.transform.Find("SelectedHero/Name/Text").GetComponent<Text>();
 
             _heroesContainer = _selfPage.transform.Find("HeroesContainer");
-
-            _skillsIcons = new Dictionary<Enumerators.SkillType, Sprite>();
-			_skillsIcons.Add(Enumerators.SkillType.FIRE_DAMAGE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_01"));
-			_skillsIcons.Add(Enumerators.SkillType.HEAL, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_02"));
-			_skillsIcons.Add(Enumerators.SkillType.CARD_RETURN, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_03"));
-			_skillsIcons.Add(Enumerators.SkillType.FREEZE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_04"));
-			_skillsIcons.Add(Enumerators.SkillType.TOXIC_DAMAGE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_05"));
-			_skillsIcons.Add(Enumerators.SkillType.HEAL_ANY, _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_power_06"));
-
-            _heroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
-            _heroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_air"));
-            _heroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_earth"));
-            _heroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_fire"));
-            _heroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_life"));
-            _heroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_toxic"));
-            _heroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/SelectedHeroes/selecthero_water"));
-
-            _selectedHeroIcons = new Dictionary<Enumerators.ElementType, Sprite>();
-            _selectedHeroIcons.Add(Enumerators.ElementType.AIR, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_air"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.EARTH, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_earth"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.FIRE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_fire"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.LIFE, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_life"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.TOXIC, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_toxic"));
-            _selectedHeroIcons.Add(Enumerators.ElementType.WATER, _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_water"));
 
             Hide();  
         }
@@ -117,7 +89,7 @@ namespace GrandDevs.CZB
 
                 if (i < _dataManager.CachedHeroesData.heroes.Count)
                 {
-					icon.sprite = _heroIcons[_dataManager.CachedHeroesData.heroes[i].element];
+					icon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + _dataManager.CachedHeroesData.heroes[i].element);
                     heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     heroObject.Find("LockedIcon").gameObject.SetActive(false);
                     heroObject.GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
@@ -192,9 +164,9 @@ namespace GrandDevs.CZB
 
             if(active)
             {
-                _selectedHeroIcon.sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.heroes[id].element];
-                
-                _selectedHeroSkillIcon.sprite = _skillsIcons[_dataManager.CachedHeroesData.heroes[id].skill.skillType];
+                var element = _dataManager.CachedHeroesData.heroes[id].element;
+                _selectedHeroIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_" + element);
+                _selectedHeroSkillIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + element);
                 //_selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
             }
 		}

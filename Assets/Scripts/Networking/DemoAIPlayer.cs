@@ -350,13 +350,13 @@ public class DemoAIPlayer : DemoPlayer
 
             switch(boardSkill.skillType)
             {
-                case Enumerators.SkillType.HEAL:
+                case Enumerators.SetType.EARTH:
                     {
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
                         target = 1;
                     }
                     break;
-                case Enumerators.SkillType.HEAL_ANY:
+                case Enumerators.SetType.LIFE:
                     {
                         target = 1;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -370,9 +370,9 @@ public class DemoAIPlayer : DemoPlayer
                         }
                     }
                     break;
-                case Enumerators.SkillType.FIRE_DAMAGE:
-                case Enumerators.SkillType.TOXIC_DAMAGE:
-                case Enumerators.SkillType.FREEZE:
+                case Enumerators.SetType.FIRE:
+                case Enumerators.SetType.TOXIC:
+                case Enumerators.SetType.WATER:
                     {
                         target = 0;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -386,7 +386,7 @@ public class DemoAIPlayer : DemoPlayer
                         }
                     }
                     break;
-                case Enumerators.SkillType.CARD_RETURN:
+                case Enumerators.SetType.AIR:
                     {
                         var creatures = GetCreaturesWithLowHP();
 

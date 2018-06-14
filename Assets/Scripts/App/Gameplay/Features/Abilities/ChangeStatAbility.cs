@@ -65,7 +65,15 @@ namespace GrandDevs.CZB
 			var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
 
 			boardCreature.card.namedStats[statName].baseValue = newValue;
-			netCard.namedStats[statName].baseValue = newValue;
+
+            try
+            {
+                netCard.namedStats[statName].baseValue = newValue;
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
 
 			//CreateVFX(boardCreature.transform.position);
         }

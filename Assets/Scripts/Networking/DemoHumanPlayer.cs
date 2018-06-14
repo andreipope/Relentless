@@ -118,6 +118,7 @@ public class DemoHumanPlayer : DemoPlayer
 
     private IUIManager _uiManager;
     private ISoundManager _soundManager;
+    private ITimerManager _timerManager;
     private ParticlesController _particlesController;
 
     private bool _rearrangingTopBoard = false,
@@ -155,12 +156,14 @@ public class DemoHumanPlayer : DemoPlayer
         GameClient.Get<IPlayerManager>().PlayerGraveyardCards = playerGraveyardCards;
         GameClient.Get<IPlayerManager>().OpponentGraveyardCards = opponentGraveyardCards;
 
+
         _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
         _particlesController = GameClient.Get<IGameplayManager>().GetController<ParticlesController>();
 
 
         _uiManager = GameClient.Get<IUIManager>();
         _soundManager = GameClient.Get<ISoundManager>();
+        _timerManager = GameClient.Get<ITimerManager>();
     }
 
     public override void OnStartLocalPlayer()
@@ -610,14 +613,14 @@ public class DemoHumanPlayer : DemoPlayer
         var totalTwist = twistPerCard * playerHandCards.Count;
         float startTwist = ((totalTwist - twistPerCard) / 2f);
         var scalingFactor = 0.04f;
-        Vector2 moveToPosition = Vector2.zero;
+        Vector3 moveToPosition = Vector3.zero;
         for (var i = 0; i < playerHandCards.Count; i++)
         {
             var card = playerHandCards[i];
             var twist = startTwist - (i * twistPerCard);
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
-            moveToPosition = new Vector2(pivot.x - handWidth / 2, pivot.y - nudge);
+            moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, card.transform.position.z + (playerHandCards.Count - i) * 0.1f);
 
             if (isMove)
                 card.isNewCard = false;
@@ -685,7 +688,14 @@ public class DemoHumanPlayer : DemoPlayer
     public virtual void RearrangeTopBoard(Action onComplete = null)
     {
         if (_rearrangingTopBoard)
+        {
+            _timerManager.AddTimer((x) =>
+            {
+                RearrangeTopBoard(onComplete);
+            }, null, 1f, false);
+
             return;
+        }
 
         _rearrangingTopBoard = true;
 
@@ -726,15 +736,24 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 onComplete();
             }
-
-            _rearrangingTopBoard = false;
         });
+
+        _timerManager.AddTimer((x) =>
+        {
+            _rearrangingTopBoard = false;
+        }, null, 1.5f, false);
     }
 
     public virtual void RearrangeBottomBoard(Action onComplete = null)
     {
         if (_rearrangingBottomBoard)
+        {
+            _timerManager.AddTimer((x) =>
+            {
+                RearrangeBottomBoard(onComplete);
+            }, null, 1f, false);
             return;
+        }
 
         _rearrangingBottomBoard = true;
 
@@ -771,9 +790,12 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 onComplete();
             }
-
-            _rearrangingBottomBoard = false;
         });
+
+        _timerManager.AddTimer((x) =>
+        {
+            _rearrangingBottomBoard = false;
+        }, null, 1.5f, false);
     }
 
     public override void OnEndTurn(EndTurnMessage msg)
@@ -877,7 +899,7 @@ public class DemoHumanPlayer : DemoPlayer
                 if (hitCards.Count > 0)
                 {
                     DestroyCardPreview();
-                    hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
+                    hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
                     var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<CardView>();
                     var topmostHandCard = topmostCardView.GetComponent<HandCard>();
                     if (topmostHandCard != null)
@@ -1108,6 +1130,17 @@ public class DemoHumanPlayer : DemoPlayer
 
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
+                int indexOfCard = 0;
+                float newCreatureCardPosition = card.transform.position.x;
+
+                // set correct position on board depends from card view position
+                for(int i = 0; i < playerBoardCards.Count; i++)
+                {
+                    if (newCreatureCardPosition > playerBoardCards[i].transform.position.x)
+                        indexOfCard = i+1;
+                    else break;
+                }
+
                 var boardCreature = Instantiate(boardCreaturePrefab);
 
                 var board = GameObject.Find("PlayerBoard");
@@ -1119,7 +1152,7 @@ public class DemoHumanPlayer : DemoPlayer
 
                 playerHandCards.Remove(card);
                 RearrangeHand();
-                playerBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
+                playerBoardCards.Insert(indexOfCard, boardCreature.GetComponent<BoardCreature>());
 
                 GameClient.Get<ITimerManager>().AddTimer((creat) =>
                 {
@@ -1732,6 +1765,7 @@ public class DemoHumanPlayer : DemoPlayer
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
 			effect = GameObject.Instantiate(vfxPrefab);
 			effect.transform.position = target;
+            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
 
             _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -1759,12 +1793,12 @@ public class DemoHumanPlayer : DemoPlayer
 
                 }, null, 1.0f, false);
 			}
-            GameClient.Get<ITimerManager>().AddTimer((a) =>
-            {
-                _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-            }, null, 0.75f, false);
+            //GameClient.Get<ITimerManager>().AddTimer((a) =>
+            //{
+            //    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+            //}, null, 0.75f, false);
         }
-		else if (type == Enumerators.CardType.HEAVY)
+        else if (type == Enumerators.CardType.HEAVY)
 		{
             var soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
             var prefabName = "Prefabs/VFX/HeavyAttackVFX";
@@ -1804,17 +1838,17 @@ public class DemoHumanPlayer : DemoPlayer
 
 
                }, null, 0.5f, false);
-                GameClient.Get<ITimerManager>().AddTimer((a) =>
-                {
+              //  GameClient.Get<ITimerManager>().AddTimer((a) =>
+              //  {
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                }, null, 0.75f, false);
+               // }, null, 0.75f, false);
             }
             else
             {
-                GameClient.Get<ITimerManager>().AddTimer((a) =>
-                {
+            //    GameClient.Get<ITimerManager>().AddTimer((a) =>
+             //   {
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                }, null, 0.75f, false);
+           //     }, null, 0.75f, false);
             }
 		}
 
@@ -1851,7 +1885,6 @@ public class DemoHumanPlayer : DemoPlayer
             case Enumerators.EffectActivateType.PLAY_SKILL_EFFECT:
                 {
                     PlayerInfo player = (PlayerInfo)param[0];
-                    Enumerators.SkillType skillType = (Enumerators.SkillType)(int)param[1];
                     int from = (int)param[2];
                     int to = (int)param[3];
                     int toType = (int)param[4];

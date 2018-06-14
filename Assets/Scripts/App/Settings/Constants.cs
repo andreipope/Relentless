@@ -1,10 +1,12 @@
-﻿namespace GrandDevs.CZB.Common
+﻿using System.Collections.Generic;
+
+namespace GrandDevs.CZB.Common
 {
     public class Constants
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.12.2.ver";
+        internal const string CURRENT_VERSION = "0.0.13.1.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -73,6 +75,6 @@
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
 
-        internal const bool DEV_MODE = true;
+        internal const bool DEV_MODE = false;
     }
 }
