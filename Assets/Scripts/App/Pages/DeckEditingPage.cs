@@ -454,7 +454,7 @@ namespace GrandDevs.CZB
                 return;
             }
             
-            if (_against[_dataManager.CachedHeroesData.heroes[_currentHeroId].element] == card.cardSetType)
+            if (_against[_dataManager.CachedHeroesData.Heroes[_currentHeroId].heroElement] == card.cardSetType)
             {
                 OpenAlertDialog("It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
                 return;

@@ -45,7 +45,7 @@ namespace GrandDevs.CZB
 
 			_desintegrateButton.onClickEvent.AddListener(DesintegrateButtonHandler);
 			_backButton.onClickEvent.AddListener(Hide);
-			_selfPage.GetComponent<Button>().onClick.AddListener(Hide);
+			_selfPage.GetComponent<Button>().onClick.AddListener(ClosePopup);
 
 
 			_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
@@ -70,6 +70,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
             _selfPage.SetActive(true);
         }
 
@@ -88,6 +89,12 @@ namespace GrandDevs.CZB
         public void Update()
         {
 
+        }
+
+        private void ClosePopup()
+        {
+            Hide();
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
 		public void UpdateCardAmount()

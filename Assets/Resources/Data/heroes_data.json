@@ -4,7 +4,7 @@
       "heroId": 0,
       "icon": "asdasd",
       "name": "Golem Hero",
-      "element": 2,
+      "element": "EARTH",
       "skill": {
         "title": "Deffence",
         "skillType": 4,
@@ -17,7 +17,7 @@
       "heroId": 1,
       "icon": "asdasd",
       "name": "Pyro Hero",
-      "element": 0,
+      "element": "FIRE",
       "skill": {
         "title": "Fireball",
         "skillType": 2,
@@ -30,7 +30,7 @@
       "heroId": 2,
       "icon": "asdasd",
       "name": "Water Hero",
-      "element": 1,
+      "element": "WATER",
       "skill": {
         "title": "Freeze target for 1 turn",
         "skillType": 0,
@@ -43,7 +43,7 @@
       "heroId": 3,
       "icon": "asdasd",
       "name": "Air Hero",
-      "element": 3,
+      "element": "AIR",
       "skill": {
         "title": "Return Zombie",
         "skillType": 5,
@@ -56,7 +56,7 @@
       "heroId": 4,
       "icon": "asdasd",
       "name": "Toxic Hero",
-      "element": 5,
+      "element": "TOXIC",
       "skill": {
         "title": "Toxic Damage",
         "skillType": 1,
@@ -69,7 +69,7 @@
       "heroId": 5,
       "icon": "asdasd",
       "name": "Life Hero",
-      "element": 4,
+      "element": "LIFE",
       "skill": {
         "title": "Healing",
         "skillType": 3,

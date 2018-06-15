@@ -85,15 +85,14 @@ namespace GrandDevs.CZB
                 Transform heroObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/HeroItem")).transform;
                 heroObject.SetParent(_heroesContainer, false);
 				var icon = heroObject.Find("HeroIcon").GetComponent<Image>();
-                
 
-                if (i < _dataManager.CachedHeroesData.heroes.Count)
+                if (i < _dataManager.CachedHeroesData.Heroes.Count)
                 {
-					icon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + _dataManager.CachedHeroesData.heroes[i].element);
+					icon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + _dataManager.CachedHeroesData.Heroes[i].element);
                     heroObject.Find("SelectedIcon").gameObject.SetActive(false);
                     heroObject.Find("LockedIcon").gameObject.SetActive(false);
                     heroObject.GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
-                    heroObject.Find("Name").GetComponent<Text>().text = _dataManager.CachedHeroesData.heroes[i].name;
+                    heroObject.Find("Name").GetComponent<Text>().text = _dataManager.CachedHeroesData.Heroes[i].name;
                 }
                 else
                 {
@@ -164,10 +163,10 @@ namespace GrandDevs.CZB
 
             if(active)
             {
-                var element = _dataManager.CachedHeroesData.heroes[id].element;
+                var element = _dataManager.CachedHeroesData.Heroes[id].element;
                 _selectedHeroIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_" + element);
                 _selectedHeroSkillIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + element);
-                //_selectedHeroName.text = _dataManager.CachedHeroesData.heroes[id].name;
+                //_selectedHeroName.text = _dataManager.CachedHeroesData.Heroes[id].name;
             }
 		}
     }

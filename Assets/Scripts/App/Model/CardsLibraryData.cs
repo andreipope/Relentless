@@ -4,6 +4,7 @@ using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
 using Newtonsoft.Json;
 using System;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB.Data
 {
@@ -43,11 +44,11 @@ namespace GrandDevs.CZB.Data
                     card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
                     if(card.kind != null)
-                        card.cardKind = CastStringTuEnum<Enumerators.CardKind>(card.kind);
+                        card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
                     if (card.rarity != null)
-                        card.cardRarity = CastStringTuEnum<Enumerators.CardRarity>(card.rarity);
+                        card.cardRarity = Utilites.CastStringTuEnum<Enumerators.CardRarity>(card.rarity);
                     if (card.type != null)
-                        card.cardType = CastStringTuEnum<Enumerators.CardType>(card.type);
+                        card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
 
                     foreach (var ability in card.abilities)
                         ability.ParseData();
@@ -55,12 +56,6 @@ namespace GrandDevs.CZB.Data
                    // id++;
                 }
             }
-        }
-
-        private T CastStringTuEnum<T>(string data)
-        {
-            //UnityEngine.Debug.Log(typeof(T) + " | " + data);
-            return (T)Enum.Parse(typeof(T), data.ToUpper());
         }
     }
 

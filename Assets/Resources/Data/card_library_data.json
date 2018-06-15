@@ -164,7 +164,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.38,
+              "x": 0.1,
               "y": 0,
               "z": 0
             },
@@ -217,7 +217,7 @@
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 6,
-          "description": "<b>Entry:</b> freeze target and 2 adjacent targets for 1 turn, if frozen add 3 damage",
+          "description": "<b>Entry:</b> freeze target and 2 adjacent zombies, if frozen 3 damage",
           "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
           "picture": "Freezzee",
           "damage": 4,
@@ -236,7 +236,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.72,
+              "x": -0.3,
               "y": 0,
               "z": 0
             },
@@ -272,7 +272,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.09,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },

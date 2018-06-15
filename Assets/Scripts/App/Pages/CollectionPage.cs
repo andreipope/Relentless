@@ -187,7 +187,6 @@ namespace GrandDevs.CZB
 
         private void CardSelected(CardView card)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
             ChangeStatePopup(true);
             _selectedCollectionCard = card;
             _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();

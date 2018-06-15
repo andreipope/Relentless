@@ -130,12 +130,12 @@ namespace GrandDevs.CZB
 			foreach (var deck in _dataManager.CachedDecksData.decks)
 			{
                 var ind = i;
-                string heroType = _dataManager.CachedHeroesData.heroes[deck.heroId].element.ToString();
+                string heroType = _dataManager.CachedHeroesData.Heroes[deck.heroId].element.ToString();
 
                 Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
                 deckObject.SetParent(_decksContainer, false);
                 deckObject.Find("Glow").gameObject.SetActive(false);
-                deckObject.Find("HeroImage").GetComponent<Image>().sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.heroes[deck.heroId].element];
+                deckObject.Find("HeroImage").GetComponent<Image>().sprite = _selectedHeroIcons[_dataManager.CachedHeroesData.Heroes[deck.heroId].heroElement];
                 //deckObject.Find("ActiveCard/Icon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/hero_" + heroType);
                 deckObject.Find("Frame/CardsAmount/CardsAmountText").GetComponent<Text>().text = deck.GetNumCards().ToString();
                 deckObject.Find("Frame/Name").GetComponent<Text>().text = deck.name;
@@ -321,7 +321,7 @@ namespace GrandDevs.CZB
             if (active)
             {
                 int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-                _selectedDeckIcon.sprite = _selectedHeroIconsBig[_dataManager.CachedHeroesData.heroes[heroId].element];
+                _selectedDeckIcon.sprite = _selectedHeroIconsBig[_dataManager.CachedHeroesData.Heroes[heroId].heroElement];
                 _selectedDeck.Find("Deck").gameObject.SetActive(true);
 
                 Transform selectedCardAmountObject = _decksContainer.GetChild(id).Find("Frame/CardsAmount/CardsAmountText");

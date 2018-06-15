@@ -98,7 +98,8 @@ namespace CCGKit
         public RuntimeZone opponentBoardZone;
         public RuntimeZone opponentGraveyardZone;
 
-        public int deckId;
+        public int heroDeckId;
+        public int opponentDeckId;
 
         public BoardSkill boardSkill { get; protected set; }
 
@@ -233,8 +234,23 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
-                    deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
+                    var deckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
                     foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
+                    {
+                        for (var i = 0; i < card.amount; i++)
+                        {
+                            if (Constants.DEV_MODE)
+                            {
+                                //card.cardId = 19;
+                            }
+                            msgDefaultDeck.Add(card.cardId);
+                        }
+                    }
+                }
+                else
+                {
+                    var deckId = GameClient.Get<IGameplayManager>().OpponentDeckId;
+                    foreach (var card in GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].cards)
                     {
                         for (var i = 0; i < card.amount; i++)
                         {
@@ -245,23 +261,7 @@ namespace CCGKit
                             msgDefaultDeck.Add(card.cardId);
                         }
                     }
-                }
-                else
-                {
-                    deckId = UnityEngine.Random.Range(0, GameClient.Get<IDataManager>().CachedOpponentDecksData.decks.Count);
-                    foreach (var card in GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].cards)
-                    {
-                        for (var i = 0; i < card.amount; i++)
-                        {
-                            if (Constants.DEV_MODE)
-                            {
-                                //card.cardId = 2;
-                            }
-                            msgDefaultDeck.Add(card.cardId);
-                        }
-                    }
                     var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];
-                    GameClient.Get<IGameplayManager>().OpponentHeroId = deck.heroId;
                 }
             }
 

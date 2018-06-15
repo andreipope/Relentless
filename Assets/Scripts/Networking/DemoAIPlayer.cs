@@ -97,7 +97,9 @@ public class DemoAIPlayer : DemoPlayer
 
             boardSkill = GameObject.Find("Opponent/Spell").GetComponent<BoardSkill>();
             boardSkill.ownerPlayer = this;
-            boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.heroes[GameClient.Get<IGameplayManager>().OpponentHeroId].skill);
+            
+            var heroId = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId].heroId;
+            boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId]);
 
             SetAITypeByDeck();
         }
@@ -150,7 +152,7 @@ public class DemoAIPlayer : DemoPlayer
 
     private void SetAITypeByDeck()
     {
-        var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];
+        var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId];
         aiType = (Enumerators.AIType)System.Enum.Parse(typeof(Enumerators.AIType), deck.type);
     }
 
@@ -265,6 +267,11 @@ public class DemoAIPlayer : DemoPlayer
                 {
                     foreach (var creature in boardCreatures)
                     {
+                        Debug.Log(creature != null);
+                        Debug.Log(creature.namedStats["HP"].effectiveValue);
+                        Debug.Log(numTurnsOnBoard[creature.instanceId] >= 1);
+                        Debug.Log(creature.type == Enumerators.CardType.FERAL);
+                        Debug.Log(creature.isPlayable);
                         if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                             (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                         {
@@ -278,9 +285,15 @@ public class DemoAIPlayer : DemoPlayer
                 {
                     foreach (var creature in boardCreatures)
                     {
+                        Debug.Log(creature != null);
+                        Debug.Log(creature.namedStats["HP"].effectiveValue);
+                        Debug.Log(numTurnsOnBoard[creature.instanceId] >= 1);
+                        Debug.Log(creature.type == Enumerators.CardType.FERAL);
+                        Debug.Log(creature.isPlayable);
                         if (creature != null && creature.namedStats["HP"].effectiveValue > 0 &&
                             (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.isPlayable)
                         {
+                            Debug.Log("Should Attack");
                             var playerPower = GetPlayerAttackingPower();
                             var opponentPower = GetOpponentAttackingPower();
                             if (playerPower > opponentPower && !GameClient.Get<ITutorialManager>().IsTutorial)
@@ -934,7 +947,7 @@ public class DemoAIPlayer : DemoPlayer
     {
         allActions = new List<ActionItem>();
 
-        var allActionsType = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].opponentActions;
+        var allActionsType = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId].opponentActions;
         allActions = GameClient.Get<IDataManager>().CachedActionsLibraryData.GetActions(allActionsType.ToArray());
     }
 }

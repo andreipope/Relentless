@@ -6,7 +6,7 @@ namespace GrandDevs.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.13.1.ver";
+        internal const string CURRENT_VERSION = "0.0.13.2.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -27,8 +27,8 @@ namespace GrandDevs.CZB.Common
 		internal static uint DECK_MAX_SIZE = 30;
 		internal static uint CARD_COMMON_MAX_COPIES = 4;
 		internal static uint CARD_RARE_MAX_COPIES = 2;
-		internal static uint CARD_LEGENDARY_MAX_COPIES = 2;
-		internal static uint CARD_EPIC_MAX_COPIES = 1;
+        internal static uint CARD_EPIC_MAX_COPIES = 2;
+        internal static uint CARD_LEGENDARY_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
         internal static uint MAX_BOARD_CREATURES = 6;

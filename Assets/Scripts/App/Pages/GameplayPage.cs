@@ -18,8 +18,8 @@ namespace GrandDevs.CZB
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
         private ILocalizationManager _localizationManager;
-		private IPlayerManager _playerManager;
-		private IDataManager _dataManager;
+        private IPlayerManager _playerManager;
+        private IDataManager _dataManager;
 
         private GameObject _selfPage,
                            _playedCardPrefab;
@@ -43,11 +43,11 @@ namespace GrandDevs.CZB
 
         private int _graveYardTopOffset;
 
-		private int _currentDeckId;
+        private int _currentDeckId;
 
         public int CurrentDeckId
-		{
-			set { _currentDeckId = value; }
+        {
+            set { _currentDeckId = value; }
             get { return _currentDeckId; }
         }
 
@@ -110,7 +110,7 @@ namespace GrandDevs.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).First();
+                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).First();
 
                 _playerDeckStatusTexture.sprite = nearest.statusSprite;
             }
@@ -127,7 +127,7 @@ namespace GrandDevs.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).ToList();
+                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
 
                 CardZoneStatus nearest = null;
 
@@ -151,7 +151,7 @@ namespace GrandDevs.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).First();
+                var nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).First();
 
                 _opponentDeckStatusTexture.sprite = nearest.statusSprite;
             }
@@ -168,7 +168,7 @@ namespace GrandDevs.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).ToList();
+                var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
 
                 CardZoneStatus nearest = null;
 
@@ -219,7 +219,7 @@ namespace GrandDevs.CZB
             {
                 _cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
                                                cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
-                if(_cards.Count > 4)
+                if (_cards.Count > 4)
                 {
                     _graveYardTopOffset = -66 - 120 * (_cards.Count - 5);
                 }
@@ -230,7 +230,7 @@ namespace GrandDevs.CZB
 
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
                 {
-                    if(cardToDestroy != null && cardToDestroy.gameObject)
+                    if (cardToDestroy != null && cardToDestroy.gameObject)
                         cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
 
 
@@ -275,15 +275,15 @@ namespace GrandDevs.CZB
                 }, null, 1f);
 
 
-              //  if (!gameEnded)
-               // {
+                //  if (!gameEnded)
+                // {
 
-                 //   GameClient.Get<ITimerManager>().AddTimer((x) =>
-                  //  {
-                                       //  }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
+                //   GameClient.Get<ITimerManager>().AddTimer((x) =>
+                //  {
+                //  }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
                 //}
 
-               
+
                 //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
             }
         }
@@ -295,7 +295,7 @@ namespace GrandDevs.CZB
             {
                 cardToDestroy.transform.DOKill();
                 GameObject.Destroy(cardToDestroy.gameObject);
-            } 
+            }
         }
 
         public void ClearGraveyard()
@@ -343,11 +343,14 @@ namespace GrandDevs.CZB
 
         public void StartGame()
         {
-            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-            int opponentHeroId = GameClient.Get<IGameplayManager>().OpponentHeroId = UnityEngine.Random.Range(0, _dataManager.CachedHeroesData.heroes.Count);
+            int deckId = GameClient.Get<IGameplayManager>().PlayerDeckId = _currentDeckId;
+            int opponentdeckId = GameClient.Get<IGameplayManager>().OpponentDeckId = UnityEngine.Random.Range(0, GameClient.Get<IDataManager>().CachedOpponentDecksData.decks.Count);
 
-            Hero currentPlayerHero = _dataManager.CachedHeroesData.heroes[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.heroes[opponentHeroId];
+            int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+            int hopponentId = _dataManager.CachedOpponentDecksData.decks[opponentdeckId].heroId;
+
+            Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[hopponentId];
 
             if (currentPlayerHero != null)
             {
@@ -368,9 +371,10 @@ namespace GrandDevs.CZB
         public void SetHeroInfo(Hero hero, string objectName)
         {
             GameObject.Find("GameUI").GetComponent<GameUI>().SetPlayerName(hero.name);
-            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, "Images/HeroesIcons/hero_icon_" + hero.element.ToString());
 
-            var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.element.ToString() + "_EXP");
+            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, "Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+
+            var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
 
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -380,7 +384,7 @@ namespace GrandDevs.CZB
                 transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
 
             var heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>
-                ("Images/Heroes/CZB_2D_Hero_Decor_" + hero.element.ToString() + "_EXP");
+                ("Images/Heroes/CZB_2D_Hero_Decor_" + hero.heroElement.ToString() + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
         }
 
@@ -445,13 +449,13 @@ namespace GrandDevs.CZB
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
             selfObject = gameObject;
-           // this.skill = skill;
+            // this.skill = skill;
             icon = selfObject.transform.Find("Icon").GetComponent<SpriteRenderer>();
             costText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
             Sprite sp = _loader.GetObjectByPath<Sprite>(iconPath);
             if (sp != null)
-                icon.sprite = sp;    
+                icon.sprite = sp;
         }
     }
 
@@ -482,7 +486,7 @@ namespace GrandDevs.CZB
         public int percent;
         public Sprite statusSprite;
 
-        public CardZoneStatus( Enumerators.CardZoneType cardZone, Sprite statusSprite, int percent)
+        public CardZoneStatus(Enumerators.CardZoneType cardZone, Sprite statusSprite, int percent)
         {
             this.cardZone = cardZone;
             this.statusSprite = statusSprite;

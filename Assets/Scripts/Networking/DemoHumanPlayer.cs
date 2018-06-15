@@ -473,7 +473,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         boardSkill = GameObject.Find("Player/Spell").GetComponent<BoardSkill>();
         boardSkill.ownerPlayer = this;
-        boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.heroes[GameClient.Get<IGameplayManager>().PlayerHeroId].skill);
+        var heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[GameClient.Get<IGameplayManager>().PlayerDeckId].heroId;
+        boardSkill.SetSkill(GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId]);
 
         if (!opponentInfo.isHuman)
         {
@@ -620,7 +621,7 @@ public class DemoHumanPlayer : DemoPlayer
             var twist = startTwist - (i * twistPerCard);
             var nudge = Mathf.Abs(twist);
             nudge *= scalingFactor;
-            moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, card.transform.position.z + (playerHandCards.Count - i) * 0.1f);
+            moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (playerHandCards.Count - i) * 0.1f);
 
             if (isMove)
                 card.isNewCard = false;

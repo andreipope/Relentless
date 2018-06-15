@@ -135,6 +135,7 @@ public class BoardCreature : MonoBehaviour
     {
         if (param.Equals("ArrivalAnimationDone"))
         {
+            Debug.Log("hasImpetus = " + hasImpetus);
             creatureContentObject.SetActive(true);
             if (hasImpetus)
             {
@@ -142,7 +143,6 @@ public class BoardCreature : MonoBehaviour
                 StopSleepingParticles();
                 //if (ownerPlayer != null)
                 //    SetHighlightingEnabled(true);
-                IsPlayable = true;
             }
 
 
@@ -247,7 +247,9 @@ public class BoardCreature : MonoBehaviour
         switch (libraryCard.cardType)
         {
             case Enumerators.CardType.FERAL:
+                Debug.Log("hasImpetus = true");
                 hasImpetus = true;
+                IsPlayable = true;
                 GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                 break;
             case Enumerators.CardType.HEAVY:
