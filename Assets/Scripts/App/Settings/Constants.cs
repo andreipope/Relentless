@@ -62,7 +62,7 @@ namespace GrandDevs.CZB.Common
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
         // SOUNDS VOLUME'S
-        internal static float ZOMBIES_SOUND_VOLUME = 0.05f;
+        internal static float ZOMBIES_SOUND_VOLUME = 0.5f;//0.05f;
         internal static float TUTORIAL_SOUND_VOLUME = 1f;
         internal static float ARRIVAL_SOUND_VOLUME = 0.1f;
         internal static float CREATURE_ATTACK_SOUND_VOLUME = 0.05f;

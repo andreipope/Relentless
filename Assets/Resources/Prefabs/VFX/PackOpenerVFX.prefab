@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4351402029425164}
   - component: {fileID: 212721244383901248}
   - component: {fileID: 95064302808212274}
-  m_Layer: 11
+  m_Layer: 10
   m_Name: PackOpenerVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

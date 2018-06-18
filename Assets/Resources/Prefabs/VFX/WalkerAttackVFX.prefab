@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4096219312231448}
   - component: {fileID: 212618410687734444}
   - component: {fileID: 95855817111163886}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: WalkerAttackVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -132,7 +132,7 @@ namespace GrandDevs.CZB
                     if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                     {
                         DestroyParticle(particleMain, true);
-                        var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/NailBombVFX");
                         var particle  = MonoBehaviour.Instantiate(prefab);
                         particle.transform.position = targetPosition + Vector3.forward;
                         DestroyParticle(particle);

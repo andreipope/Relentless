@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 19882528}
   - component: {fileID: 19954304}
   - component: {fileID: 11462252}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 477712}
   - component: {fileID: 19884868}
   - component: {fileID: 19940160}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: WhirlwindSides
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 451182}
   - component: {fileID: 19855538}
   - component: {fileID: 19926098}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: WhirlwindSharp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - component: {fileID: 406048}
   - component: {fileID: 19872470}
   - component: {fileID: 19907854}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: WhirlwindVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4326169153140456}
   - component: {fileID: 199996723747399918}
   - component: {fileID: 198516720198699592}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: FireDamageVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4481356136389092}
   - component: {fileID: 198519380488572844}
   - component: {fileID: 199021816219424930}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4723445375561864}
   - component: {fileID: 198070648493289090}
   - component: {fileID: 199374473867079548}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

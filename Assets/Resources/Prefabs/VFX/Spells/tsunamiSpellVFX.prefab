@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4212069534892436}
   - component: {fileID: 198766682417243920}
   - component: {fileID: 199960582860756600}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4727133326307762}
   - component: {fileID: 198123385446156930}
   - component: {fileID: 199848888850118224}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4397956168287026}
   - component: {fileID: 198366965190214990}
   - component: {fileID: 199053924544797180}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4728483298027006}
   - component: {fileID: 198196470698926918}
   - component: {fileID: 199813298512167838}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4987974335190978}
   - component: {fileID: 198169873730675446}
   - component: {fileID: 199408543304469052}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4613607347543408}
   - component: {fileID: 198486416243602484}
   - component: {fileID: 199548947355823580}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4847145098765018}
   - component: {fileID: 198117844282933226}
   - component: {fileID: 199502349035613700}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 4481188835995226}
   - component: {fileID: 198241150670295192}
   - component: {fileID: 199466326736644810}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4243483414469662}
   - component: {fileID: 198786725938648724}
   - component: {fileID: 199811699781826524}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 4799037176044308}
   - component: {fileID: 198533301114701792}
   - component: {fileID: 199910747141445796}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4763925333435088}
   - component: {fileID: 198112766919504908}
   - component: {fileID: 199421597932939138}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 4995901235685750}
   - component: {fileID: 199742254983522746}
   - component: {fileID: 198923121944150354}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: tsunamiSpellVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4635723146057140}
   - component: {fileID: 198088456282767590}
   - component: {fileID: 199853394845397832}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224107666034889174}
   - component: {fileID: 222129471332273108}
   - component: {fileID: 114027868140607116}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Image_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224244984919992490}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: NotificationsPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 222096523391671414}
   - component: {fileID: 114383397778352518}
   - component: {fileID: 114027703948087660}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Panel_TopNotification
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 224604645148989912}
   - component: {fileID: 222287550804420090}
   - component: {fileID: 114287306121088302}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Text_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}

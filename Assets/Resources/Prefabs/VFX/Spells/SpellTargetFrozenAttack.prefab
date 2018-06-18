@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4456861240035980}
   - component: {fileID: 198340749103020606}
   - component: {fileID: 199645149391025654}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: SpellTargetFrozenAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4702357729162852}
   - component: {fileID: 108862677709166292}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Point light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 4354916768703030}
   - component: {fileID: 198564979846698066}
   - component: {fileID: 199658775747512636}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Sparkles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 4713009347280616}
   - component: {fileID: 198109449907628760}
   - component: {fileID: 199267566571098386}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Long
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224432697533280686}
   - component: {fileID: 222391642221556042}
   - component: {fileID: 114779701995711226}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224980015583244324}
   - component: {fileID: 222943533730894286}
   - component: {fileID: 114783929046550360}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224008377076260304}
   - component: {fileID: 222031841585753972}
   - component: {fileID: 114285519750224982}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224485489713062884}
   - component: {fileID: 222001821214513960}
   - component: {fileID: 114347930589479202}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: QuestionPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224454781294825564}
   - component: {fileID: 222399982885521590}
   - component: {fileID: 114748043466417536}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 224954698505751574}
   - component: {fileID: 222709033125076048}
   - component: {fileID: 114340183889777808}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 224210162428777892}
   - component: {fileID: 222442174954392604}
   - component: {fileID: 114896376216313450}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 224203935340169770}
   - component: {fileID: 222092624279807918}
   - component: {fileID: 114356485515620630}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224300923666928894}
   - component: {fileID: 222626744629017710}
   - component: {fileID: 114104040068691464}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 224224088827438400}
   - component: {fileID: 222279319075806286}
   - component: {fileID: 114601986096500802}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 224780569034960266}
   - component: {fileID: 222110810123757044}
   - component: {fileID: 114911409316833584}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 224443079559831592}
   - component: {fileID: 222699188314254564}
   - component: {fileID: 114151464299506162}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224621126113424960}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 224724112682445898}
   - component: {fileID: 222055474660331788}
   - component: {fileID: 114359874155800152}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 224440938724220506}
   - component: {fileID: 222060465201356956}
   - component: {fileID: 114538091885149330}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Text_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224301512978651836}
   - component: {fileID: 114052853138050582}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button_No
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224623371054444828}
   - component: {fileID: 114278010401296136}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button_Yes
   m_TagString: Untagged
   m_Icon: {fileID: 0}

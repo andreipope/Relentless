@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4511720761895192}
   - component: {fileID: 198997784972810262}
   - component: {fileID: 199675257773978152}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4239359268974322}
   - component: {fileID: 199050145969711144}
   - component: {fileID: 198411760873674820}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: fireSpellVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4235915456684692}
   - component: {fileID: 198115668407731634}
   - component: {fileID: 199931755644353344}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

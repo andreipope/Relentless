@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4392684783703514}
   - component: {fileID: 198917454404950452}
   - component: {fileID: 199759928933458180}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Rings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4488356796593144}
   - component: {fileID: 212191334314473908}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 61233471539279008}
   - component: {fileID: 114787990692723090}
   - component: {fileID: 95593763973511800}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: CreatureCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4346061700400162}
   - component: {fileID: 331742716017425180}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: PictureMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 23784765185513504}
   - component: {fileID: 222665104268720386}
   - component: {fileID: 114083119978115550}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: BodyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 23664848181325000}
   - component: {fileID: 222631524603812088}
   - component: {fileID: 114194192734091838}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: GooText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4254025122534444}
   - component: {fileID: 212845471859003336}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4031342463060154}
   - component: {fileID: 212213418068117782}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4769598164437718}
   - component: {fileID: 212248563305759700}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: AmountIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4882842410358972}
   - component: {fileID: 212354709365083140}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Amount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 4599604279092380}
   - component: {fileID: 198696284417336436}
   - component: {fileID: 199366847512020102}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4626977937760620}
   - component: {fileID: 212113793571295122}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: TypeIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4691618690719116}
   - component: {fileID: 198530675766933558}
   - component: {fileID: 199520202058637326}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: VolumetricGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 23194448386565302}
   - component: {fileID: 222741073733211278}
   - component: {fileID: 114205881431891664}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: TitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 4691540307211100}
   - component: {fileID: 198324271745725134}
   - component: {fileID: 199056939964867562}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: RemoveCardParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 4739526436358648}
   - component: {fileID: 198064557685165898}
   - component: {fileID: 199764613694172334}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 23629801404308190}
   - component: {fileID: 222170514689824498}
   - component: {fileID: 114022644767269646}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 23104964982895082}
   - component: {fileID: 222925599171655514}
   - component: {fileID: 114457476883109078}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: DeffensText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 23574457080099502}
   - component: {fileID: 222401922838476084}
   - component: {fileID: 114699361652476394}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: AttackText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1515,6 +1515,7 @@ MonoBehaviour:
   nameText: {fileID: 114205881431891664}
   bodyText: {fileID: 114083119978115550}
   amountText: {fileID: 114022644767269646}
+  isNewCard: 0
   isPreview: 0
   attackText: {fileID: 114699361652476394}
   typeSprite: {fileID: 212113793571295122}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224604256829395216}
   - component: {fileID: 222770497159773696}
   - component: {fileID: 114657259042770146}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224197738114467666}
   - component: {fileID: 222448678889514930}
   - component: {fileID: 114790506988184182}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224361355371889732}
   - component: {fileID: 222230521673880116}
   - component: {fileID: 114787220601823404}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224100245399132920}
   - component: {fileID: 222178173898119678}
   - component: {fileID: 114389621701117266}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: DesintegrateArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224193602530908468}
   - component: {fileID: 222245588336435740}
   - component: {fileID: 114472225725943008}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 224997468960319012}
   - component: {fileID: 222816910071030508}
   - component: {fileID: 114002442516723300}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 224121069726267574}
   - component: {fileID: 222323519183200312}
   - component: {fileID: 114294651116200978}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: GooAward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224616257487199224}
   - component: {fileID: 114488340344555134}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224600972863731408}
   - component: {fileID: 114759197794601214}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: DesintegrateButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 222120658313706682}
   - component: {fileID: 114474271616162396}
   - component: {fileID: 114866662574145434}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: CardInfoPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 224815553880697506}
   - component: {fileID: 222498174037179176}
   - component: {fileID: 114674461045945010}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 224374585840903646}
   - component: {fileID: 222002291823591376}
   - component: {fileID: 114364642740840006}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 224050462901584996}
   - component: {fileID: 222329713069048266}
   - component: {fileID: 114882339772834254}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: DesentegrateFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 224094633815446944}
   - component: {fileID: 222220327238970400}
   - component: {fileID: 114713357020755620}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 224355712327289268}
   - component: {fileID: 222754041526731196}
   - component: {fileID: 114497288264327418}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}

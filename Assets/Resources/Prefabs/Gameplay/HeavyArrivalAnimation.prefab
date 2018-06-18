@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4820680558204896}
   - component: {fileID: 212638403660364952}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4172689313614412}
   - component: {fileID: 212289015831521314}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Shine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4961596083227508}
   - component: {fileID: 331310003205110676}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: PictureMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4668240183612376}
   - component: {fileID: 212474768963319846}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 4140636545302854}
   - component: {fileID: 212191751572577064}
   - component: {fileID: 95031756804289838}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: HeavyArrivalAnimation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

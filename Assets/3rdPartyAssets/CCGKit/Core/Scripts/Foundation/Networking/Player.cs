@@ -241,7 +241,7 @@ namespace CCGKit
                         {
                             if (Constants.DEV_MODE)
                             {
-                                //card.cardId = 19;
+                                card.cardId = 19;
                             }
                             msgDefaultDeck.Add(card.cardId);
                         }
@@ -256,7 +256,7 @@ namespace CCGKit
                         {
                             if (Constants.DEV_MODE)
                             {
-                                card.cardId = 1;
+                                //card.cardId = 1;
                             }
                             msgDefaultDeck.Add(card.cardId);
                         }

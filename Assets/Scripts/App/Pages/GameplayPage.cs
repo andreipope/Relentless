@@ -236,6 +236,7 @@ namespace GrandDevs.CZB
 
                     var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
                     string cardDeathSoundName = libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
+                    Debug.Log(cardDeathSoundName);
 
                     GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
 

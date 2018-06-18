@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4890732921956930}
   - component: {fileID: 198318534374897274}
   - component: {fileID: 199853196183014304}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4926875885248428}
   - component: {fileID: 198290035385483236}
   - component: {fileID: 199105804155151622}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4953508731408226}
   - component: {fileID: 198983178044700644}
   - component: {fileID: 199980435027086434}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4037952646805326}
   - component: {fileID: 198723070061137920}
   - component: {fileID: 199397429970050790}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4737001437460488}
   - component: {fileID: 198532307843336356}
   - component: {fileID: 199074049305324648}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4736726392733242}
   - component: {fileID: 198496562637125906}
   - component: {fileID: 199863998082914326}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4898378140664228}
   - component: {fileID: 198135396375472410}
   - component: {fileID: 199919182384190804}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 4460964480571822}
   - component: {fileID: 198661430608977600}
   - component: {fileID: 199914118188831130}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4121276101275756}
   - component: {fileID: 198791828503280672}
   - component: {fileID: 199413872248250726}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 4115229058033084}
   - component: {fileID: 198032515377121594}
   - component: {fileID: 199144450461038094}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4519248168424924}
   - component: {fileID: 198876713534010214}
   - component: {fileID: 199803929747680502}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 4368545993367262}
   - component: {fileID: 198623745055091062}
   - component: {fileID: 199938106056182038}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4085763908368640}
   - component: {fileID: 198947484590479858}
   - component: {fileID: 199220761054655734}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 4224063167695056}
   - component: {fileID: 198570050693555838}
   - component: {fileID: 199818533683777494}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 4167533619084726}
   - component: {fileID: 198926524098066900}
   - component: {fileID: 199669964897247922}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 4512332058300356}
   - component: {fileID: 198756506000275102}
   - component: {fileID: 199489876231737370}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 4925624077501698}
   - component: {fileID: 198588404330999236}
   - component: {fileID: 199379297846235438}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 4444230668353432}
   - component: {fileID: 198969382451247682}
   - component: {fileID: 199896116460596176}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 4403971609197430}
   - component: {fileID: 198600696639064948}
   - component: {fileID: 199600665809453952}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 4123417889765562}
   - component: {fileID: 198961477319282000}
   - component: {fileID: 199818842792129842}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -361,7 +361,7 @@ GameObject:
   - component: {fileID: 4501830343020044}
   - component: {fileID: 198499562639203604}
   - component: {fileID: 199927432086252728}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 4194569136646986}
   - component: {fileID: 198408919270062876}
   - component: {fileID: 199685596951753242}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 4428261039467068}
   - component: {fileID: 198941960529305058}
   - component: {fileID: 199832326544355784}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,7 +412,7 @@ GameObject:
   - component: {fileID: 4158549502147352}
   - component: {fileID: 198799186366659788}
   - component: {fileID: 199661041029395982}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 4460422493720026}
   - component: {fileID: 198483466691752776}
   - component: {fileID: 199595123998567964}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -446,7 +446,7 @@ GameObject:
   - component: {fileID: 4887761239302840}
   - component: {fileID: 198311474282694360}
   - component: {fileID: 199261892422291516}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -463,7 +463,7 @@ GameObject:
   - component: {fileID: 4993302228711300}
   - component: {fileID: 198603894403367664}
   - component: {fileID: 199114508519165746}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 4378230101270276}
   - component: {fileID: 198469907651039386}
   - component: {fileID: 199006712378055382}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 4653289437282428}
   - component: {fileID: 198415361549351440}
   - component: {fileID: 199068551023218598}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: VerticalStrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -514,7 +514,7 @@ GameObject:
   - component: {fileID: 4088753303996530}
   - component: {fileID: 198995439430650938}
   - component: {fileID: 199667586230307492}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 4052899987127936}
   - component: {fileID: 198781111651874674}
   - component: {fileID: 199208195967426536}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LongLightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 4237056349659142}
   - component: {fileID: 198063320310789082}
   - component: {fileID: 199698626196121548}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LightningStrikeTall (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -565,7 +565,7 @@ GameObject:
   - component: {fileID: 4229362508095274}
   - component: {fileID: 198117481654569884}
   - component: {fileID: 199036653774869192}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

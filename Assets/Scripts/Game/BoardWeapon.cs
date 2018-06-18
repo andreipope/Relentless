@@ -62,7 +62,7 @@ namespace GrandDevs.CZB
 
             _selfObject = objectOnBoard;
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ChainsawVFX");
 
             _weaponIcon = _selfObject.transform.Find("Icon").GetComponent<SpriteRenderer>();
 
@@ -208,10 +208,10 @@ namespace GrandDevs.CZB
 
         private void PlayAttackAnimationOnTarget(GameObject target, Action onHitAction)
         {
+            CreateVFX(target.transform.position + Vector3.forward * 10 - Vector3.up * 2);
+
             CombatAnimation.PlayFightAnimation(_currentPlayerAvatar, target, 0.5f, () =>
             {
-                CreateVFX(target.transform.position);
-
                 UpdateUI();
                 if (onHitAction != null) onHitAction();
             }, () => { _siloAnimator.SetBool("Active", false); }, false, 1f);

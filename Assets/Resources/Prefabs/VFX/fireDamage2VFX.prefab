@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4443556536318476}
   - component: {fileID: 198848107207496694}
   - component: {fileID: 199979680571438642}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4360177161426276}
   - component: {fileID: 198615045056537632}
   - component: {fileID: 199683110116540276}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: FireDamage2VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4206640332624780}
   - component: {fileID: 198764781573737336}
   - component: {fileID: 199364086387622360}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: FireCurve
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4720080360800922}
   - component: {fileID: 198389754610599244}
   - component: {fileID: 199177047355153806}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: CloudBurst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4648625706567494}
   - component: {fileID: 198932350445788428}
   - component: {fileID: 199281477039261236}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4909763360736762}
   - component: {fileID: 198004803482621162}
   - component: {fileID: 199513789544867082}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: FireBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

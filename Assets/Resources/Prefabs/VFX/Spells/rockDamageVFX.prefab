@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114249057255281014}
   - component: {fileID: 199550812416996044}
   - component: {fileID: 198624190360596928}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: rockDamageVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4069443530490506}
   - component: {fileID: 198426687382029298}
   - component: {fileID: 199090622976305596}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 4920277240449196}
   - component: {fileID: 198282406022061204}
   - component: {fileID: 199664144998695550}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
