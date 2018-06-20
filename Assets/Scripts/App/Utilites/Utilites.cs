@@ -389,5 +389,10 @@ namespace GrandDevs.Internal
             return input;
 
         }
+
+        public static Vector3 CastVFXPosition(Vector3 position)
+        {
+            return new Vector3(position.x, position.z, position.y);
+        }
     }
 }

@@ -5,6 +5,7 @@ using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -59,17 +60,16 @@ namespace GrandDevs.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 target)
         {
+            target = Utilites.CastVFXPosition(target);
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
                 Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVFX(startPosition);
-
                 _vfxObject.transform.DOMove(target, 0.5f).OnComplete(() => {
 
                     ClearParticles();
-
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
                     CreateVFX(target, true);

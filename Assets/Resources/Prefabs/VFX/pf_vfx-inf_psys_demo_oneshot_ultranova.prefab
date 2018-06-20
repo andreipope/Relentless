@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114129076319356970}
   - component: {fileID: 199500287010124756}
   - component: {fileID: 198647322450533066}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: pf_vfx-inf_psys_demo_oneshot_ultranova
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4475284558320394}
   - component: {fileID: 198933190608382430}
   - component: {fileID: 199063770092383860}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 4713508469680328}
   - component: {fileID: 198132909820120758}
   - component: {fileID: 199720880629533542}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

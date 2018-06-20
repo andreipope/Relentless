@@ -5,6 +5,7 @@ using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -69,7 +70,8 @@ namespace GrandDevs.CZB
             var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.transform.position;
 
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-            _vfxObject.transform.position = boardCreature.transform.position;
+            _vfxObject.transform.position = Utilites.CastVFXPosition(boardCreature.transform.position);
+            targetPosition = Utilites.CastVFXPosition(targetPosition);
             _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
 
             ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);

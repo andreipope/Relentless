@@ -5,6 +5,7 @@ using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -125,7 +126,7 @@ namespace GrandDevs.CZB
             {
                 //CreateVFX(cardCaller.transform.position);
                 var particleMain = MonoBehaviour.Instantiate(_vfxObject);
-                particleMain.transform.position = startPosition + Vector3.forward;
+                particleMain.transform.position = Utilites.CastVFXPosition(startPosition + Vector3.forward);
                 particleMain.transform.DOMove(targetPosition, 0.5f).OnComplete(() => 
                 {
                     callback();
@@ -134,7 +135,7 @@ namespace GrandDevs.CZB
                         DestroyParticle(particleMain, true);
                         var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/NailBombVFX");
                         var particle  = MonoBehaviour.Instantiate(prefab);
-                        particle.transform.position = targetPosition + Vector3.forward;
+                        particle.transform.position = Utilites.CastVFXPosition(targetPosition + Vector3.forward);
                         DestroyParticle(particle);
                     }
                 });

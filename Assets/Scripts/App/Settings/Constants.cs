@@ -75,6 +75,6 @@ namespace GrandDevs.CZB.Common
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
 
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;
     }
 }

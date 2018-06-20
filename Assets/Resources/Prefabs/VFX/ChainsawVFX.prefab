@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4581373904636064}
   - component: {fileID: 198648737878277946}
   - component: {fileID: 199226441722211136}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: ChainsawVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4735860442082988}
   - component: {fileID: 198224641798679086}
   - component: {fileID: 199386058843072790}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: splatter01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4999263941335492}
   - component: {fileID: 198729597420924446}
   - component: {fileID: 199461947244077968}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4737100147284492}
   - component: {fileID: 198673528968372238}
   - component: {fileID: 199605606400408428}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4757674054018142}
   - component: {fileID: 198507203345021894}
   - component: {fileID: 199779487377435730}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4701279704826448}
   - component: {fileID: 198491699641102960}
   - component: {fileID: 199688276932458468}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Blood_Creek
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4096569734185292}
   - component: {fileID: 198224677820198928}
   - component: {fileID: 199743406234609396}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 4873016440149378}
   - component: {fileID: 198758056016140796}
   - component: {fileID: 199829380082109502}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4575043450583334}
   - component: {fileID: 198137663379109738}
   - component: {fileID: 199660320701210946}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: BLoodFlying
   m_TagString: Untagged
   m_Icon: {fileID: 0}

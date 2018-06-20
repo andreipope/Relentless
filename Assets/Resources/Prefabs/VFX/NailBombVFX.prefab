@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4115613593093096}
   - component: {fileID: 198295978370573442}
   - component: {fileID: 199550646296657818}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4036868310236224}
   - component: {fileID: 198135400293365722}
   - component: {fileID: 199435917287666264}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4753248995053362}
   - component: {fileID: 198454317961185078}
   - component: {fileID: 199035641535968282}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4532239385093492}
   - component: {fileID: 198011600161098132}
   - component: {fileID: 199432662065620868}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Fire_base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4006484541933970}
   - component: {fileID: 198651383035917810}
   - component: {fileID: 199110410534344204}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: NailBombVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4561974945439682}
   - component: {fileID: 198190836088650388}
   - component: {fileID: 199388121627769616}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Explosion_Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4329150112563802}
   - component: {fileID: 198474152318247028}
   - component: {fileID: 199522496202364996}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 4169736652201450}
   - component: {fileID: 198504922592991668}
   - component: {fileID: 199631907723724422}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4957342865896108}
   - component: {fileID: 198972924938940096}
   - component: {fileID: 199470320046382840}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: X_damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 4150677502984752}
   - component: {fileID: 198170418423822592}
   - component: {fileID: 199878518740991480}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Nails
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4077657135521820}
   - component: {fileID: 198985068697168482}
   - component: {fileID: 199975807502097282}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 4082456522629106}
   - component: {fileID: 198105217752012758}
   - component: {fileID: 199332920531100208}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Smoke_Chunks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4838090804941370}
   - component: {fileID: 198476189231675944}
   - component: {fileID: 199052366208787426}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Floating_Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 4355325688954330}
   - component: {fileID: 198437819445875212}
   - component: {fileID: 199747232410302752}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 4198575660542608}
   - component: {fileID: 198414489838752718}
   - component: {fileID: 199756199000911286}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 4866371384717394}
   - component: {fileID: 198036672572608616}
   - component: {fileID: 199116378719954448}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Turbine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 4778641579907134}
   - component: {fileID: 198666060225183090}
   - component: {fileID: 199509058111898126}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 4152387607594524}
   - component: {fileID: 198372304663380602}
   - component: {fileID: 199396417173342138}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 4202548768767306}
   - component: {fileID: 198669576718868302}
   - component: {fileID: 199726992909050752}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 4158661789391390}
   - component: {fileID: 198805307894283828}
   - component: {fileID: 199575808631080038}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Lingering_Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}

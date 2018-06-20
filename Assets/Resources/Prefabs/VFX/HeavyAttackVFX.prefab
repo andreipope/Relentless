@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4126329919828548}
   - component: {fileID: 212101580203132052}
   - component: {fileID: 95877474563987044}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: HeavyAttackVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

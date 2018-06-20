@@ -19,6 +19,7 @@ using CCGKit;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Helpers;
+using GrandDevs.Internal;
 
 /// <summary>
 /// The demo player is a subclass of the core HumanPlayer type which extends it with demo-specific
@@ -556,6 +557,8 @@ public class DemoHumanPlayer : DemoPlayer
                 CurrentBoardWeapon.ActivateWeapon(false);
             }
 
+            boardSkill.OnStartTurn();
+
             //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
             //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
             _uiManager.DrawPopup<YourTurnPopup>();
@@ -581,7 +584,7 @@ public class DemoHumanPlayer : DemoPlayer
             gameUI.HideTurnCountdown();
         }
 
-   
+        
 
         if (opponent != null)
         {
@@ -955,7 +958,7 @@ public class DemoHumanPlayer : DemoPlayer
                         if (!isPreviewActive || topmostCardView.card.instanceId != currentPreviewedCardId)
                         {
                             DestroyCardPreview();
-                            CreateCardPreview(topmostCardView.card, topmostCardView.transform.position, true);
+                            CreateCardPreview(topmostCardView.card, topmostCardView.transform.position, isActivePlayer);
                         }
                     }
                 }
@@ -969,7 +972,7 @@ public class DemoHumanPlayer : DemoPlayer
                     if (!isPreviewActive || selectedBoardCreature.card.instanceId != currentPreviewedCardId)
                     {
                         DestroyCardPreview();
-                        CreateCardPreview(selectedBoardCreature.card, selectedBoardCreature.transform.position);
+                        CreateCardPreview(selectedBoardCreature.card, selectedBoardCreature.transform.position, false);
                     }
                 }
             }
@@ -980,7 +983,7 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    public virtual void CreateCardPreview(RuntimeCard card, Vector3 pos, bool highlight = false)
+    public virtual void CreateCardPreview(RuntimeCard card, Vector3 pos, bool highlight = true)
     {
         isPreviewActive = true;
         currentPreviewedCardId = card.instanceId;
@@ -1011,6 +1014,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         var cardView = currentCardPreview.GetComponent<CardView>();
         cardView.PopulateWithInfo(card, cardSetName);
+        if (highlight)
+            highlight = cardView.CanBePlayed(this) && cardView.CanBeBuyed(this);
         cardView.SetHighlightingEnabled(highlight);
         cardView.isPreview = true;
 
@@ -1106,7 +1111,7 @@ public class DemoHumanPlayer : DemoPlayer
         return go;
     }
 
-    public void PlayCard(CardView card)
+    public void PlayCard(CardView card, HandCard handCard)
     {
         if (card.CanBePlayed(this))
         {
@@ -1127,7 +1132,7 @@ public class DemoHumanPlayer : DemoPlayer
             card.GetComponent<HandCard>().enabled = false;
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-           // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+            // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
             if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1135,10 +1140,10 @@ public class DemoHumanPlayer : DemoPlayer
                 float newCreatureCardPosition = card.transform.position.x;
 
                 // set correct position on board depends from card view position
-                for(int i = 0; i < playerBoardCards.Count; i++)
+                for (int i = 0; i < playerBoardCards.Count; i++)
                 {
                     if (newCreatureCardPosition > playerBoardCards[i].transform.position.x)
-                        indexOfCard = i+1;
+                        indexOfCard = i + 1;
                     else break;
                 }
 
@@ -1162,9 +1167,21 @@ public class DemoHumanPlayer : DemoPlayer
 
                 //Destroy(card.gameObject);
                 card.removeCardParticle.Play();
-                GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] { card }, 0.5f, false);
+
 
                 currentCreature = boardCreature.GetComponent<BoardCreature>();
+
+
+                Sequence animationSequence = DOTween.Sequence();
+                animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                animationSequence.OnComplete(() =>
+                {
+                    RemoveCard(new object[] { card });
+                    _timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { boardCreature.GetComponent<BoardCreature>() }, 0.1f, false);
+                });
+
+                //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
+                //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
 
                 RearrangeBottomBoard(() =>
                 {
@@ -1183,22 +1200,16 @@ public class DemoHumanPlayer : DemoPlayer
                 //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
                 //sequence.Play().OnComplete(() =>
                 //{ 
-                    card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    card.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                GameClient.Get<ITimerManager>().AddTimer((creat) =>
-                {
-                    GraveyardCardsCount++;
-                }, null, 1f);
+                card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                card.GetComponent<SortingGroup>().sortingOrder = 1000;
 
                 var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-                    Debug.Log(card.name);
-                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true);
 
-                    card.removeCardParticle.Play();
-                    GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] { card }, 0.5f, false);
+                Debug.Log(card.name);
+
+                CallAbility(libraryCard, card, card.card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, handCard: handCard);
                 //});
-            }              
+            }
         }
         else
         {
@@ -1211,6 +1222,9 @@ public class DemoHumanPlayer : DemoPlayer
         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
         CardView card = param[0] as CardView;
+        //BoardCreature currentCreature = null;
+        //if (param.Length > 1)
+        //    currentCreature = param[1] as BoardCreature;
 
         var go = card.gameObject;
 
@@ -1219,6 +1233,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         var sortingGroup = card.GetComponent<SortingGroup>();
 
+        
+
         Sequence animationSequence3 = DOTween.Sequence();
         //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
         animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .3f));
@@ -1226,6 +1242,7 @@ public class DemoHumanPlayer : DemoPlayer
         go.transform.DOScale(new Vector3(.195f, .195f, .195f), .2f);
         animationSequence3.OnComplete(() =>
         {
+           
             go.transform.Find("Back").gameObject.SetActive(true);
             Sequence animationSequence4 = DOTween.Sequence();
             //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
@@ -1260,6 +1277,8 @@ public class DemoHumanPlayer : DemoPlayer
 
         animationSequence2.OnComplete(() =>
         {
+
+
             for (int i = 0; i < sortingGroup.transform.childCount; i++)
             {
                 Transform child = sortingGroup.transform.GetChild(i);
@@ -1280,11 +1299,24 @@ public class DemoHumanPlayer : DemoPlayer
         });
     }
 
+    private void PlayArrivalAnimationDelay(object[] param)
+    {
+        BoardCreature currentCreature = null;
+        if (param != null)
+        {
+            currentCreature = param[0] as BoardCreature;
+            currentCreature.PlayArrivalAnimation();
+        }
+    }
+
     private void RemoveOpponentCard(object[] param)
     {
         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
         GameObject go = param[0] as GameObject;
+        BoardCreature currentCreature = null;
+        if (param.Length > 1)
+            currentCreature = param[1] as BoardCreature;
 
         //if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
         //    return;
@@ -1294,14 +1326,15 @@ public class DemoHumanPlayer : DemoPlayer
         //animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, 90), .2f));
         animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -30f), .4f));
         go.transform.DOScale(new Vector3(1, 1, 1), .2f);
-        //animationSequence3.OnComplete(() =>
-        //{
-        //    if (go.transform.Find("BackgroundBack") != null)
-        //        go.transform.Find("BackgroundBack").gameObject.SetActive(true);
-        //    //Sequence animationSequence4 = DOTween.Sequence();
-        //    //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
-        //    //animationSequence4.AppendInterval(2f);
-        //});
+        animationSequence3.OnComplete(() =>
+        {
+
+            //    if (go.transform.Find("BackgroundBack") != null)
+            //        go.transform.Find("BackgroundBack").gameObject.SetActive(true);
+            //    //Sequence animationSequence4 = DOTween.Sequence();
+            //    //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
+            //    //animationSequence4.AppendInterval(2f);
+        });
 
         Sequence animationSequence2 = DOTween.Sequence();
         //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
@@ -1330,8 +1363,13 @@ public class DemoHumanPlayer : DemoPlayer
         });
     }
 
-    private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, RuntimeCard runtimeCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, object target = null)
+    private void CallAbility(GrandDevs.CZB.Data.Card libraryCard, CardView card, RuntimeCard runtimeCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, object target = null, HandCard handCard = null)
     {
+        Vector3 postionOfCardView = Vector3.zero;
+
+        if(card != null)
+            postionOfCardView = card.transform.position;
+
         bool canUseAbility = false;
         ActiveAbility activeAbility = null;
         foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
@@ -1368,7 +1406,15 @@ public class DemoHumanPlayer : DemoPlayer
             }
         }
 
-        effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, runtimeCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+        if (kind != Enumerators.CardKind.SPELL)
+            effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, runtimeCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+        else
+        {
+            if (handCard != null && isPlayer)
+            {
+                handCard.gameObject.SetActive(false);
+            }
+        }
 
         if (canUseAbility)
         {
@@ -1382,12 +1428,42 @@ public class DemoHumanPlayer : DemoPlayer
                 {
                     activeAbility.ability.ActivateSelectTarget(callback: () =>
                     {
+                        if (kind == Enumerators.CardKind.SPELL && isPlayer)
+                        {         
+                            handCard.gameObject.SetActive(true);
+                            card.removeCardParticle.Play(); // move it when card should call hide action
+
+                            effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, runtimeCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+
+                            GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] { card }, 0.5f, false);
+
+                            GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                            {
+                                GraveyardCardsCount++;
+                            }, null, 1.5f);
+                        }
+
                         action?.Invoke(card);
                     },
                     failedCallback: () =>
                     {
-                        Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
-                        action?.Invoke(card);
+                        if (kind == Enumerators.CardKind.SPELL && isPlayer)
+                        {
+                            handCard.gameObject.SetActive(true);
+                            handCard.ResetToHandAnimation();
+                            handCard.CheckStatusOfHighlight();
+
+                            isCardSelected = false;
+                            currentSpellCard = null;
+                            gameUI.endTurnButton.SetEnabled(true);
+
+                            RearrangeHand(true);
+                        }
+                        else
+                        {
+                            Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
+                            action?.Invoke(card);
+                        }
                     });
                 }
                 else
@@ -1450,9 +1526,17 @@ public class DemoHumanPlayer : DemoPlayer
 
     protected void UpdateHandCardsHighlight()
     {
+        if (boardSkill != null && isActivePlayer)
+        {
+            if (manaStat.effectiveValue >= boardSkill.manaCost)
+                boardSkill.SetHighlightingEnabled(true);
+            else
+                boardSkill.SetHighlightingEnabled(false);
+        }
+
         foreach (var card in playerHandCards)
         {
-            if (card.CanBePlayed(this))
+            if (card.CanBePlayed(this) && card.CanBeBuyed(this))
             {
                 card.SetHighlightingEnabled(true);
             }
@@ -1501,19 +1585,29 @@ public class DemoHumanPlayer : DemoPlayer
 
         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
-        randomCard.transform.DOMove(Vector3.up * 2.5f, 0.5f).OnComplete(() => 
+        randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(() => 
         {
             //GameClient.Get<ITimerManager>().AddTimer(DestroyRandomCard, new object[] { randomCard }, 1f, false);
             //randomCard.GetComponent<Animator>().SetTrigger("RemoveCard");
             randomCard.transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>().Play();
-            GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 1f, false);
-            OnMovedCardCompleted(msg);
-            GameClient.Get<ITimerManager>().AddTimer((creat) =>
+            
+            
+
+            randomCard.transform.DOScale(Vector3.one * 1.2f, 0.6f).OnComplete(() =>
             {
-                OpponentGraveyardCardsCount++;
-            }, null, 1f);
+                RemoveOpponentCard(new object[] { randomCard });
+
+                GameClient.Get<ITimerManager>().AddTimer(OnMovedCardCompleted, new object[] { msg }, 0.1f);
+
+                GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                {
+                    OpponentGraveyardCardsCount++;
+                }, null, 1f);
+
+                
+            });
         });
-        randomCard.transform.DOScale(Vector3.one * 1.3f, 0.5f);
+        
         randomCard.transform.DORotate(Vector3.zero, 0.5f);
 
         RearrangeOpponentHand(true);
@@ -1526,8 +1620,10 @@ public class DemoHumanPlayer : DemoPlayer
         Destroy(randomCard);
     }
 
-    private void OnMovedCardCompleted(CardMovedMessage msg)
+    private void OnMovedCardCompleted(object[] param)
     {
+        CardMovedMessage msg = param[0] as CardMovedMessage;
+
         var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(msg.card.cardId);
 
         string cardSetName = string.Empty;
@@ -1583,8 +1679,6 @@ public class DemoHumanPlayer : DemoPlayer
                 }
 
 
-                //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
                 bool createTargetArrow = false;
 
                 if(libraryCard.abilities != null && libraryCard.abilities.Count > 0)
@@ -1609,6 +1703,10 @@ public class DemoHumanPlayer : DemoPlayer
                     CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreature.GetComponent<BoardCreature>(), null, false);
                 }
             });
+
+
+            boardCreature.GetComponent<BoardCreature>().PlayArrivalAnimation();
+            //GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 0.1f, false);
         }
         else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
         {
@@ -1677,6 +1775,8 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 CallAbility(libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false);
             }
+
+            //GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 0.1f, false);
         }
     }
 
@@ -1738,13 +1838,15 @@ public class DemoHumanPlayer : DemoPlayer
         if (attackingCard != null && attackedCard != null)
         {
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attackingCard.card.cardId);
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+    //        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
 
             attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z - 0.2f);
 
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
             {
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
 
                 PlayAttackVFX(attackingCard.card.type, attackedCard.transform.position, attackingCard.attackStat.effectiveValue);
 
@@ -1760,8 +1862,9 @@ public class DemoHumanPlayer : DemoPlayer
 	{
 		GameObject effect;
 		GameObject vfxPrefab;
+        target = Utilites.CastVFXPosition(target);
 
-		if (type == Enumerators.CardType.FERAL)
+        if (type == Enumerators.CardType.FERAL)
 		{
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
 			effect = GameObject.Instantiate(vfxPrefab);

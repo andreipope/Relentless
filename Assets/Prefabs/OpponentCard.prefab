@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4647619605206126}
   - component: {fileID: 212438586241415814}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: cardback_enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4663214935620766}
   - component: {fileID: 198194981035209816}
   - component: {fileID: 199748150736262322}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 4280767400574554}
   - component: {fileID: 198709552676682440}
   - component: {fileID: 199889272220154916}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 4361328653322354}
   - component: {fileID: 198927495503383746}
   - component: {fileID: 199966811910576338}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: VolumetricGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 4692051662950842}
   - component: {fileID: 198883811374629776}
   - component: {fileID: 199719558898916240}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Rings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 4255248939533920}
   - component: {fileID: 210214275810986876}
   - component: {fileID: 95363435309499624}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: OpponentCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4419701163752272}
   - component: {fileID: 198563700161923746}
   - component: {fileID: 199157330491937016}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: RemoveCardParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

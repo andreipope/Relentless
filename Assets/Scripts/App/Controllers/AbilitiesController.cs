@@ -182,7 +182,7 @@ namespace GrandDevs.CZB
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
                             {
-                                if (localPlayer.opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 1)
+                                if (localPlayer.opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Count > 0)
                                     available = true;
                             }
                             break;

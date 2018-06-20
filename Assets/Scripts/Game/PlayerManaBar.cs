@@ -23,11 +23,13 @@ public class PlayerManaBar : MonoBehaviour
             {
                 //manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
                 manaIcons[i].transform.Find("ManaIconBlue/goobottle_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
+                manaIcons[i].transform.Find("ManaIconBlue/glow_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(1.0f, 0.5f);
             }
             else
             {
                 //manaIcons[i].transform.Find("ManaIconBlue").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
                 manaIcons[i].transform.Find("ManaIconBlue/goobottle_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
+                manaIcons[i].transform.Find("ManaIconBlue/glow_goo").gameObject.GetComponent<SpriteRenderer>().DOFade(0.0f, 0.5f);
             }
 
             //if(i < manaRows)

@@ -241,7 +241,7 @@ namespace CCGKit
                         {
                             if (Constants.DEV_MODE)
                             {
-                                card.cardId = 19;
+                                //card.cardId = 27;
                             }
                             msgDefaultDeck.Add(card.cardId);
                         }

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4576363227795484}
   - component: {fileID: 198665739520986262}
   - component: {fileID: 199177140814848908}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4018152254125380}
   - component: {fileID: 198224604828526930}
   - component: {fileID: 199787630636117512}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Cloud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 199321973467466780}
   - component: {fileID: 108930681706349430}
   - component: {fileID: 114831843580003202}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: ToxicAttackVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 4438760246629622}
   - component: {fileID: 198314937499143076}
   - component: {fileID: 199956982160888306}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: SoulRelease
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 4310681618216584}
   - component: {fileID: 198750968099897428}
   - component: {fileID: 199657784497247110}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Poof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

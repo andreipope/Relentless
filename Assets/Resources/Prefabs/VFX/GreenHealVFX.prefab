@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4737203250451232}
   - component: {fileID: 198115924985300918}
   - component: {fileID: 199947973411170186}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: MagicDust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4268736337543812}
   - component: {fileID: 198771699250250180}
   - component: {fileID: 199438130266947054}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: GreenHealVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

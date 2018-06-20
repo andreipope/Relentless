@@ -1,6 +1,7 @@
 ﻿using CCGKit;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
+using GrandDevs.Internal;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -96,6 +97,7 @@ namespace GrandDevs.CZB
             _targettingArrow.OnPlayerSelectedEvent += OnPlayerSelectedHandler;
             _targettingArrow.OnPlayerUnselectedEvent += OnPlayerUnselectedHandler;
             _targettingArrow.OnInputEndEvent += OnInputEndEventHandler;
+            _targettingArrow.OnInputCancelEvent += OnInputCancelEventHandler;
         }
 
         public void DeactivateSelectTarget()
@@ -107,6 +109,7 @@ namespace GrandDevs.CZB
                 _targettingArrow.OnPlayerSelectedEvent -= OnPlayerSelectedHandler;
                 _targettingArrow.OnPlayerUnselectedEvent -= OnPlayerUnselectedHandler;
                 _targettingArrow.OnInputEndEvent -= OnInputEndEventHandler;
+                _targettingArrow.OnInputCancelEvent -= OnInputCancelEventHandler;
 
                 MonoBehaviour.Destroy(_targettingArrow.gameObject);
                 _targettingArrow = null;
@@ -199,6 +202,14 @@ namespace GrandDevs.CZB
         protected virtual void OnInputEndEventHandler()
         {
             SelectedTargetAction();
+            DeactivateSelectTarget();
+        }
+
+        protected virtual void OnInputCancelEventHandler()
+        {
+            OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
+            OnObjectSelectFailedByTargettingArrowCallback = null;
+
             DeactivateSelectTarget();
         }
 

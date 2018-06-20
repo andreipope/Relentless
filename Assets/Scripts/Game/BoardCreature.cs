@@ -17,6 +17,7 @@ using GrandDevs.CZB.Common;
 using GrandDevs.CZB;
 using System.Collections.Generic;
 using GrandDevs.CZB.Helpers;
+using GrandDevs.Internal;
 
 public class BoardCreature : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class BoardCreature : MonoBehaviour
 
     [SerializeField]
     protected ParticleSystem sleepingParticles;
+
+    [SerializeField]
+    protected SpriteRenderer glowSprite;
 
     [HideInInspector]
     public Player ownerPlayer;
@@ -99,7 +103,7 @@ public class BoardCreature : MonoBehaviour
 
     protected virtual void Awake()
     {
-      //Assert.IsNotNull(glowSprite);
+        Assert.IsNotNull(glowSprite);
      //   Assert.IsNotNull(pictureSprite);
         Assert.IsNotNull(attackText);
         Assert.IsNotNull(healthText);
@@ -141,8 +145,8 @@ public class BoardCreature : MonoBehaviour
             {
                 //  frameSprite.sprite = frameSprites[1];
                 StopSleepingParticles();
-                //if (ownerPlayer != null)
-                //    SetHighlightingEnabled(true);
+                if (ownerPlayer != null)
+                    SetHighlightingEnabled(true);
             }
 
 
@@ -180,7 +184,7 @@ public class BoardCreature : MonoBehaviour
     private void CreateFrozenVFX(Vector3 pos)
     {
        var _frozenVFX = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
-        _frozenVFX.transform.position = pos + Vector3.forward;
+        _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_frozenVFX);
     }
 
@@ -273,6 +277,11 @@ public class BoardCreature : MonoBehaviour
         creatureAnimator.Play(0);
     }
 
+    public void PlayArrivalAnimation()
+    {
+        creatureAnimator.SetTrigger("Active");
+    }
+
     public void OnStartTurn()
     {
         numTurnsOnBoard += 1;
@@ -347,7 +356,7 @@ public class BoardCreature : MonoBehaviour
 
     public void SetHighlightingEnabled(bool enabled)
     {
-		//glowSprite.enabled = enabled;
+		glowSprite.enabled = enabled;
 	}
 
     public void StopSleepingParticles()
@@ -436,11 +445,13 @@ public class BoardCreature : MonoBehaviour
                 IsPlayable = false;
 
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+       //         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                 //sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
                     Vector3 positionOfVFX = targetPlayer.transform.position;
                     positionOfVFX.y = 4.45f;
 

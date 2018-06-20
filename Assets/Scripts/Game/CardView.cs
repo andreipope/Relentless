@@ -15,8 +15,8 @@ public class CardView : MonoBehaviour
 {
     public RuntimeCard card { get; private set; }
 
-    //[SerializeField]
-    //protected SpriteRenderer glowSprite;
+    [SerializeField]
+    protected SpriteRenderer glowSprite;
 
     [SerializeField]
     protected SpriteRenderer pictureSprite;
@@ -55,7 +55,7 @@ public class CardView : MonoBehaviour
 
     protected virtual void Awake()
     {
-        //Assert.IsNotNull(glowSprite);
+        Assert.IsNotNull(glowSprite);
         Assert.IsNotNull(pictureSprite);
         Assert.IsNotNull(costText);
         Assert.IsNotNull(nameText);
@@ -186,6 +186,6 @@ public class CardView : MonoBehaviour
 
     public void SetHighlightingEnabled(bool enabled)
     {
-        //glowSprite.enabled = enabled;
+        glowSprite.enabled = enabled;
     }
 }

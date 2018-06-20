@@ -33,14 +33,7 @@ public class HandCard : MonoBehaviour
 
     private void Start()
     {
-        if (cardView.CanBePlayed(ownerPlayer))
-        {
-            cardView.SetHighlightingEnabled(true);
-        }
-        else
-        {
-            cardView.SetHighlightingEnabled(false);
-        }
+        CheckStatusOfHighlight();
     }
 
     private void Update()
@@ -66,6 +59,18 @@ public class HandCard : MonoBehaviour
         }
     }
 
+    public void CheckStatusOfHighlight()
+    {
+        if (cardView.CanBePlayed(ownerPlayer) && cardView.CanBeBuyed(ownerPlayer))
+        {
+            cardView.SetHighlightingEnabled(true);
+        }
+        else
+        {
+            cardView.SetHighlightingEnabled(false);
+        }
+    }
+
     public void OnMouseUp()
     {
         if (!startedDrag)
@@ -86,7 +91,7 @@ public class HandCard : MonoBehaviour
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                ownerPlayer.PlayCard(cardView);
+                ownerPlayer.PlayCard(cardView, this);
                 cardView.SetHighlightingEnabled(false);
             }
             else
@@ -115,5 +120,22 @@ public class HandCard : MonoBehaviour
     public void ResetToInitialPosition()
     {
         transform.position = initialPos;
+    }
+
+    public void ResetToHandAnimation()
+    {
+        enabled = true;
+        _alreadySelected = false;
+        startedDrag = false;
+        _isReturnToHand = true;
+        _isHandCard = true;
+
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+
+        transform.DOMove(initialPos, 0.5f).OnComplete(() =>
+        {
+            transform.position = initialPos;
+            _isReturnToHand = false;
+        });
     }
 }

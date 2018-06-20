@@ -7,6 +7,7 @@ using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using TMPro;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -77,7 +78,7 @@ namespace GrandDevs.CZB
             _damageText = _damageObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
             _currentPlayerAvatar = _selfObject.transform.parent.Find("Avatar").gameObject;
-            _playerAvatarShine = _currentPlayerAvatar.transform.Find("Shine").gameObject;
+            _playerAvatarShine = _selfObject.transform.parent.Find("Shine").gameObject;
 
             _onMouseHandler = _currentPlayerAvatar.GetComponent<OnMouseHandler>();
 
@@ -282,7 +283,7 @@ namespace GrandDevs.CZB
         private void CreateVFX(Vector3 position)
         {
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-            _vfxObject.transform.position = (position - Constants.VFX_OFFSET) + Vector3.forward;
+            _vfxObject.transform.position = Utilites.CastVFXPosition((position - Constants.VFX_OFFSET) + Vector3.forward + Vector3.up*2);
         }
 
         private void OnInputEndEventHandler()

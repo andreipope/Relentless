@@ -13,10 +13,13 @@ namespace GrandDevs.CZB
         public event Action<PlayerAvatar> OnPlayerSelectedEvent;
         public event Action<PlayerAvatar> OnPlayerUnselectedEvent;
         public event Action OnInputEndEvent;
+        public event Action OnInputCancelEvent;
 
         private IInputManager _inputManager;
 
         private int _onMouseDownInputIndex;
+        private int _onRightMouseDownInputIndex;
+        private int _onEscapeInputIndex;
 
         public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
         public BoardCreature selfBoardCreature;
@@ -27,11 +30,15 @@ namespace GrandDevs.CZB
             _inputManager = GameClient.Get<IInputManager>();
 
             _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, null, OnMouseButtonDownHandler, null);
+            _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, null, OnRightMouseButtonDownHandler, null);
+            _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonDownHandler, null);
         }
 
         protected void OnDestroy()
         {
             _inputManager.UnregisterInputHandler(_onMouseDownInputIndex);
+            _inputManager.UnregisterInputHandler(_onRightMouseDownInputIndex);
+            _inputManager.UnregisterInputHandler(_onEscapeInputIndex);
         }
 
         protected override void Update()
@@ -100,5 +107,14 @@ namespace GrandDevs.CZB
                 OnInputEndEvent?.Invoke();
             }
         }
+
+        protected void OnRightMouseButtonDownHandler()
+        {
+            if (startedDrag)
+            {
+                startedDrag = false;
+                OnInputCancelEvent?.Invoke();
+            }
+        }  
     }
 }

@@ -15,6 +15,7 @@ using CCGKit;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Data;
+using GrandDevs.Internal;
 
 public class BoardSkill : MonoBehaviour
 {
@@ -50,16 +51,20 @@ public class BoardSkill : MonoBehaviour
     private bool _isUsed;
     private bool _isOpponent = false;
 
+    private SpriteRenderer _glow;
 
 
     private void Start()
     {
         _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-        _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FireDamageVFX");
+        _fireDamageVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FIreBall_Impact");
         _healVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
         _airPickUpCardVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
-        _toxicVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
+        _toxicVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Toxic_Impact");
         _frozenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+
+        _glow = transform.Find("Glow").GetComponent<SpriteRenderer>();
+        _glow.gameObject.SetActive(false);
     }
 
     public void SetSkill(Hero hero = null)
@@ -69,10 +74,22 @@ public class BoardSkill : MonoBehaviour
         skillType = hero.heroElement;
     }
 
+    public void OnStartTurn()
+    {
+        if (ownerPlayer.isActivePlayer && ownerPlayer.playerInfo.namedStats["Mana"].effectiveValue >= manaCost)
+            SetHighlightingEnabled(true);
+    }
+
     public void OnEndTurn()
     {
         _isUsed = false;
         CancelTargetingArrows();
+        SetHighlightingEnabled(false);
+    }
+
+    public void SetHighlightingEnabled(bool isActive)
+    {
+        _glow.gameObject.SetActive(isActive);
     }
 
     public void CancelTargetingArrows()
@@ -220,7 +237,7 @@ public class BoardSkill : MonoBehaviour
             ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].baseValue -= manaCost;
 
         CreateVFX(target);
-
+        SetHighlightingEnabled(false);
         _isUsed = true;
     }
 
@@ -426,34 +443,34 @@ public class BoardSkill : MonoBehaviour
     private void CreateFireAttackVFX(Vector3 pos)
     {
         _fireDamageVFX = MonoBehaviour.Instantiate(_fireDamageVFXprefab);
-        _fireDamageVFX.transform.position = pos + Vector3.forward;
+        _fireDamageVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_fireDamageVFX);
     }
     private void CreateHealVFX(Vector3 pos)
     {
         _healVFX = MonoBehaviour.Instantiate(_healVFXprefab);
-        _healVFX.transform.position = pos + Vector3.forward;
+        _healVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_healVFX);
     }
 
     private void CreateAirVFX(Vector3 pos)
     {
         _airPickUpCardVFX = MonoBehaviour.Instantiate(_airPickUpCardVFXprefab);
-        _airPickUpCardVFX.transform.position = pos + Vector3.forward;
+        _airPickUpCardVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_airPickUpCardVFX);
     }
 
     private void CreateToxicAttackVFX(Vector3 pos)
     {
         _toxicVFX = MonoBehaviour.Instantiate(_toxicVFXprefab);
-        _toxicVFX.transform.position = pos + Vector3.forward;
+        _toxicVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_toxicVFX);
     }
 
     private void CreateFrozenVFX(Vector3 pos)
     {
         _frozenVFX = MonoBehaviour.Instantiate(_frozenVFXprefab);
-        _frozenVFX.transform.position = pos + Vector3.forward;
+        _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
         DestroyCurrentParticle(_frozenVFX);
     }
 
@@ -468,10 +485,10 @@ public class BoardSkill : MonoBehaviour
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
                 break;
             case Enumerators.SetType.TOXIC:
-                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/Toxic_Bullet_08");//SpellTargetToxicAttack
                 break;
             case Enumerators.SetType.FIRE:
-                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/fireBall_03");
                 break;
             case Enumerators.SetType.LIFE:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
@@ -490,19 +507,28 @@ public class BoardSkill : MonoBehaviour
             return;
 
         _firstParticle = MonoBehaviour.Instantiate(prefab);
-        _firstParticle.transform.position = transform.position + Vector3.forward;
+        _firstParticle.transform.position = Utilites.CastVFXPosition(transform.position + Vector3.forward);
 
         if (target is PlayerAvatar)
         {
             var player = target as PlayerAvatar;
-            _firstParticle.transform.DOMove(player.transform.position, .5f).OnComplete(() => ActionCompleted(target));
+            //_firstParticle.transform.localEulerAngles = new Vector3(-90,0,AngleBetweenVector2(_firstParticle.transform.position, player.transform.position));
+            _firstParticle.transform.DOMove(Utilites.CastVFXPosition(player.transform.position), .5f).OnComplete(() => ActionCompleted(target));
         }
         else if (target is BoardCreature)
         {
             var cruature = target as BoardCreature;
-            _firstParticle.transform.DOMove(cruature.transform.position, .5f).OnComplete(() => ActionCompleted(target));
-        }
 
+            //_firstParticle.transform.localEulerAngles = new Vector3(-90, 0, AngleBetweenVector2(_firstParticle.transform.position, cruature.transform.position));
+            _firstParticle.transform.DOMove(Utilites.CastVFXPosition(cruature.transform.position), .5f).OnComplete(() => ActionCompleted(target));
+        }
+    }
+
+    private float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)
+    {
+        Vector2 diference = vec2 - vec1;
+        float sign = (vec2.x > vec1.x) ? -1.0f : 1.0f;
+        return (180 + Vector2.Angle(Vector2.up, diference)) * sign;
     }
 
     private void ActionCompleted(object target)

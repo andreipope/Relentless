@@ -90,6 +90,7 @@ namespace GrandDevs.CZB
             var boardCreature = cardObject.GetComponent<BoardCreature>();
             boardCreature.ownerPlayer = playerCallerOfAbility;
             boardCreature.PopulateWithInfo(card, cardSetName);
+            boardCreature.PlayArrivalAnimation();
             boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
 
             playerCallerOfAbility.playerBoardCardsList.Add(boardCreature);

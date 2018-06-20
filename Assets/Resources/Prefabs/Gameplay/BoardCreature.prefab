@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61870492389612540}
   - component: {fileID: 114167742620587972}
   - component: {fileID: 212900485830979230}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: BoardCreature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4253924273742690}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Other
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4909128077770586}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: PictureRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 23574640033598664}
   - component: {fileID: 222440711333125652}
   - component: {fileID: 114237072823793518}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: AttackText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4282314086428842}
   - component: {fileID: 212036912216946320}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: CreaturePicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4139738174481226}
   - component: {fileID: 212937100386636934}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Frozen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068433927507908}
   - component: {fileID: 212033224140385392}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: AttackAndDefence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 4438927445716912}
   - component: {fileID: 198444090158676314}
   - component: {fileID: 199444919018197114}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: SleepingParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 23708933626436178}
   - component: {fileID: 222077132704830462}
   - component: {fileID: 114067830030761014}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: DefenceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4214101591420356}
   - component: {fileID: 212279200954417382}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Object_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 212947227149899860}
   - component: {fileID: 95053775628529078}
   - component: {fileID: 114439385163186342}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: GraphicsAnimation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,8 +206,24 @@ GameObject:
   m_Component:
   - component: {fileID: 4153403202907724}
   - component: {fileID: 212734587401998824}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Object_Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1762901629825720
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4813071863247916}
+  - component: {fileID: 212714226890055168}
+  m_Layer: 9
+  m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4234922927314236}
   - component: {fileID: 331591932167527904}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: PictureMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,6 +327,7 @@ Transform:
   - {fileID: 4068433927507908}
   - {fileID: 4438927445716912}
   - {fileID: 4139738174481226}
+  - {fileID: 4813071863247916}
   m_Father: {fileID: 4667740357418434}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -369,6 +386,19 @@ Transform:
   - {fileID: 4253924273742690}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4813071863247916
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1762901629825720}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.25, z: 0}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_Children: []
+  m_Father: {fileID: 4253924273742690}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4909128077770586
 Transform:
@@ -638,6 +668,7 @@ MonoBehaviour:
   attackText: {fileID: 114237072823793518}
   healthText: {fileID: 114067830030761014}
   sleepingParticles: {fileID: 198444090158676314}
+  glowSprite: {fileID: 212714226890055168}
   ownerPlayer: {fileID: 0}
   abilitiesTargetingArrow: {fileID: 0}
   fightTargetingArrow: {fileID: 0}
@@ -838,7 +869,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1094114345
+  randomSeed: 2065900619
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4331,6 +4362,50 @@ SpriteRenderer:
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.98, y: 1.59}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+--- !u!212 &212714226890055168
+SpriteRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1762901629825720}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1277327807
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 3.27, y: 3.59}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

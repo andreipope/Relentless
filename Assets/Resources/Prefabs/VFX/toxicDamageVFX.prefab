@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4498556259240058}
   - component: {fileID: 198645929692181238}
   - component: {fileID: 199988665924676646}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Droplets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4656506930210026}
   - component: {fileID: 198626507769532840}
   - component: {fileID: 199252229433386934}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Skull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4299163249582676}
   - component: {fileID: 198183372092660842}
   - component: {fileID: 199420787280315246}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: CloudBurst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4515202805544446}
   - component: {fileID: 198956425906206580}
   - component: {fileID: 199283634578869040}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: toxicDamageVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

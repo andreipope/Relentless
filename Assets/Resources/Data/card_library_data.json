@@ -100,6 +100,56 @@
             }
           }
         },
+		{
+          "id": 2,
+          "kind": "CREATURE",
+          "name": "Fire-Maw",
+          "cost": 6,
+          "description": "NR Feral, Flash",
+          "flavorText": "Hot, so very hot - all the time!",
+          "picture": "fire-maw",
+          "damage": 3,
+          "health": 3,
+          "type": "FERAL",
+          "rarity": "EPIC",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
+        },
+		{
+          "id": 3,
+          "kind": "CREATURE",
+          "name": "Cerberus",
+          "cost": 8,
+          "description": "NR Feral, Can attack 3 different targets a turn",
+          "flavorText": "(sing) Under pressure... coming down on you... ",
+          "picture": "Cerberus",
+          "damage": 6,
+          "health": 6,
+          "type": "FERAL",
+          "rarity": "LEGENDARY",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
+        },
         {
           "id": 3,
           "kind": "CREATURE",
@@ -618,6 +668,31 @@
           "cardViewInfo": {
             "position": {
               "x": 0.85,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
+        },
+		{
+          "id": 17,
+          "kind": "CREATURE",
+          "name": "Puffer",
+          "cost": 3,
+          "description": "NR <b>Entry:</b> add 1 attack to all life zombies on the Battleground",
+          "flavorText": "Some like to grow flowers, others grow hallucinogenic poison mushrooms...",
+          "picture": "Puffer",
+          "damage": 2,
+          "health": 2,
+          "type": "WALKER",
+          "rarity": "RARE",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
               "y": 0,
               "z": 0
             },

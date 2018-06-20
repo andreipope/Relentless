@@ -299,7 +299,7 @@ namespace GrandDevs.CZB
             animationSequence.OnComplete(() =>
             {
                 _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
-                _packOpenVFX.transform.position = _centerPos;
+                _packOpenVFX.transform.position = Utilites.CastVFXPosition(_centerPos);
 
                 MonoBehaviour.Destroy(go);
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
