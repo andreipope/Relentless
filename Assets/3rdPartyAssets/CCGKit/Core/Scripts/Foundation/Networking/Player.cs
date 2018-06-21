@@ -212,19 +212,19 @@ namespace CCGKit
             {
                 if (isHuman)
                 {
+                    msgDefaultDeck.Add(21);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
+                    msgDefaultDeck.Add(1);
                     msgDefaultDeck.Add(18);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(16);
                 }
                 else
                 {
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(5);
-                    msgDefaultDeck.Add(9);
-                    msgDefaultDeck.Add(8);
-                    msgDefaultDeck.Add(8); 
+                    msgDefaultDeck.Add(10);
+                    msgDefaultDeck.Add(7);
+                    msgDefaultDeck.Add(11);
+                    msgDefaultDeck.Add(10);
+                    msgDefaultDeck.Add(10); 
                 }
                 //int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
                // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId = 1;

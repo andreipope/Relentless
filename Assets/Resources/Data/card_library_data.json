@@ -101,7 +101,7 @@
           }
         },
 		{
-          "id": 2,
+          "id": 3,
           "kind": "CREATURE",
           "name": "Fire-Maw",
           "cost": 6,
@@ -126,7 +126,7 @@
           }
         },
 		{
-          "id": 3,
+          "id": 4,
           "kind": "CREATURE",
           "name": "Cerberus",
           "cost": 8,
@@ -151,7 +151,7 @@
           }
         },
         {
-          "id": 3,
+          "id": 5,
           "kind": "CREATURE",
           "name": "Gargantua",
           "cost": 8,
@@ -192,7 +192,7 @@
       "name": "Water",
       "cards": [
         {
-          "id": 4,
+          "id": 6,
           "kind": "CREATURE",
           "name": "Izze",
           "cost": 1,
@@ -226,7 +226,7 @@
           }
         },
         {
-          "id": 5,
+          "id": 7,
           "kind": "CREATURE",
           "name": "Jetter",
           "cost": 3,
@@ -263,7 +263,7 @@
           }
         },
         {
-          "id": 6,
+          "id": 8,
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 6,
@@ -298,7 +298,7 @@
           }
         },
         {
-          "id": 7,
+          "id": 9,
           "kind": "CREATURE",
           "name": "Tsunami",
           "cost": 9,
@@ -339,7 +339,7 @@
       "name": "Earth",
       "cards": [
         {
-          "id": 8,
+          "id": 10,
           "kind": "CREATURE",
           "name": "Rockky",
           "cost": 1,
@@ -375,7 +375,7 @@
           }
         },
         {
-          "id": 9,
+          "id": 11,
           "kind": "CREATURE",
           "name": "Golem",
           "cost": 4,
@@ -400,7 +400,7 @@
           }
         },
         {
-          "id": 10,
+          "id": 12,
           "kind": "CREATURE",
           "name": "Bolderr",
           "cost": 5,
@@ -436,7 +436,7 @@
           }
         },
         {
-          "id": 11,
+          "id": 13,
           "kind": "CREATURE",
           "name": "Mountain",
           "cost": 10,
@@ -475,7 +475,7 @@
       "name": "Air",
       "cards": [
         {
-          "id": 12,
+          "id": 14,
           "kind": "CREATURE",
           "name": "Whizpar",
           "cost": 2,
@@ -500,7 +500,7 @@
           }
         },
         {
-          "id": 13,
+          "id": 15,
           "kind": "CREATURE",
           "name": "Pushhh",
           "cost": 3,
@@ -533,7 +533,7 @@
           }
         },
         {
-          "id": 14,
+          "id": 16,
           "kind": "CREATURE",
           "name": "Stormcaller",
           "cost": 6,
@@ -568,7 +568,7 @@
           }
         },
         {
-          "id": 15,
+          "id": 17,
           "kind": "CREATURE",
           "name": "Zeuz",
           "cost": 10,
@@ -608,7 +608,7 @@
       "name": "Life",
       "cards": [
         {
-          "id": 16,
+          "id": 18,
           "kind": "CREATURE",
           "name": "Azuraz",
           "cost": 1,
@@ -644,7 +644,7 @@
           }
         },
         {
-          "id": 17,
+          "id": 19,
           "kind": "CREATURE",
           "name": "Shroom",
           "cost": 4,
@@ -679,7 +679,7 @@
           }
         },
 		{
-          "id": 17,
+          "id": 20,
           "kind": "CREATURE",
           "name": "Puffer",
           "cost": 3,
@@ -704,7 +704,7 @@
           }
         },
         {
-          "id": 18,
+          "id": 21,
           "kind": "CREATURE",
           "name": "Vindrom",
           "cost": 6,
@@ -738,7 +738,7 @@
           }
         },
         {
-          "id": 19,
+          "id": 22,
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 8,
@@ -778,7 +778,7 @@
       "name": "Toxic",
       "cards": [
         {
-          "id": 20,
+          "id": 23,
           "kind": "CREATURE",
           "name": "Poizom",
           "cost": 1,
@@ -814,7 +814,7 @@
           }
         },
         {
-          "id": 21,
+          "id": 24,
           "kind": "CREATURE",
           "name": "Ghoul",
           "cost": 2,
@@ -849,7 +849,7 @@
           }
         },
         {
-          "id": 22,
+          "id": 25,
           "kind": "CREATURE",
           "name": "Hazmaz",
           "cost": 4,
@@ -876,7 +876,7 @@
           }
         },
         {
-          "id": 23,
+          "id": 26,
           "kind": "CREATURE",
           "name": "Cherno-bill",
           "cost": 7,
@@ -917,7 +917,7 @@
       "name": "Item",
       "cards": [
         {
-          "id": 24,
+          "id": 27,
           "kind": "SPELL",
           "name": "Stapler",
           "cost": 4,
@@ -952,7 +952,7 @@
           }
         },
         {
-          "id": 25,
+          "id": 28,
           "kind": "SPELL",
           "name": "Nail Bomb",
           "cost": 4,
@@ -987,7 +987,7 @@
           }
         },
         {
-          "id": 26,
+          "id": 29,
           "kind": "SPELL",
           "name": "Goo Bottle",
           "cost": 0,
@@ -1021,7 +1021,7 @@
           }
         },
         {
-          "id": 27,
+          "id": 30,
           "kind": "SPELL",
           "name": "Chainsaw",
           "cost": 5,

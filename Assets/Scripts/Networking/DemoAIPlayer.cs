@@ -519,7 +519,7 @@ public class DemoAIPlayer : DemoPlayer
 
                 AddCardInfo(card);
 
-                if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 9)
+                if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 11)
                     FightCreatureBySkill(1, card);
 
             }
