@@ -16,6 +16,8 @@ namespace GrandDevs.CZB
         public int OpponentDeckId { get; set; }
 
 
+        public Player CurrentPlayerOwnerOfTurn { get; set; }
+
         public void Dispose()
         {
             foreach (var item in _controllers)
@@ -48,7 +50,8 @@ namespace GrandDevs.CZB
         {
             _controllers = new List<IController>();
             _controllers.Add(new AbilitiesController());
-            _controllers.Add(new ParticlesController());            
+            _controllers.Add(new ParticlesController());
+            _controllers.Add(new ActionsQueueController());
         }
 
         public string GetCardSet(Data.Card card)

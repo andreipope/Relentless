@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using Newtonsoft.Json;
 using System;
-using GrandDevs.CZB.Common;
 
 namespace GrandDevs.CZB.Data
 {
@@ -32,11 +31,14 @@ namespace GrandDevs.CZB.Data
         public Enumerators.SetType abilitySetType;
         [JsonIgnore]
         public Enumerators.AbilityEffectType abilityEffectType;
-        
+        [JsonIgnore]
+        public Enumerators.AttackInfoType attackInfoType;
+
         public int value;
 
         public int damage;
         public int health;
+        public string attackInfo;
 
         public AbilityData()
         {
@@ -45,17 +47,22 @@ namespace GrandDevs.CZB.Data
 
         public void ParseData()
         {
-            abilityType             =  CastStringTuEnum<Enumerators.AbilityType>(type);
-            abilityActivityType     =  CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
-            abilityCallType         =  CastStringTuEnum<Enumerators.AbilityCallType>(callType);
-            abilityTargetTypes      =  CastList<Enumerators.AbilityTargetType>(targetType);
-            if(statType != null)
-                abilityStatType     =  CastStringTuEnum<Enumerators.StatType>(statType);
-            if (setType != null)
-                abilitySetType      =  CastStringTuEnum<Enumerators.SetType>(setType);
+            abilityType = CastStringTuEnum<Enumerators.AbilityType>(type);
+            abilityActivityType = CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
+            abilityCallType = CastStringTuEnum<Enumerators.AbilityCallType>(callType);
+            abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
 
-            if (effectType != null)
+            if (!string.IsNullOrEmpty(statType))
+                abilityStatType = CastStringTuEnum<Enumerators.StatType>(statType);
+
+            if (!string.IsNullOrEmpty(setType))
+                abilitySetType = CastStringTuEnum<Enumerators.SetType>(setType);
+
+            if (!string.IsNullOrEmpty(effectType))
                 abilityEffectType = CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
+
+            if (!string.IsNullOrEmpty(attackInfo))
+                attackInfoType = CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
         }
 
         private T CastStringTuEnum<T>(string data)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CCGKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace GrandDevs.CZB
     {
         int PlayerDeckId { get; set; }
         int OpponentDeckId { get; set; }
+        Player CurrentPlayerOwnerOfTurn { get; set; }
 
         T GetController<T>() where T : IController;
 

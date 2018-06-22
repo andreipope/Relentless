@@ -238,9 +238,12 @@ namespace GrandDevs.CZB
                     string cardDeathSoundName = libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
                     Debug.Log(cardDeathSoundName);
 
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
 
-                    float soundLength = GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                    float soundLength = 0f;
+
+                    if (cardToDestroy.ownerPlayer == GameClient.Get<IGameplayManager>().CurrentPlayerOwnerOfTurn)
+                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
+                    else soundLength = GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
 
                     GameClient.Get<ITimerManager>().AddTimer((t) =>
                     {

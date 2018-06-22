@@ -529,6 +529,9 @@ public class DemoHumanPlayer : DemoPlayer
 
         opponent.isActivePlayer = !msg.isRecipientTheActivePlayer;
 
+
+        GameClient.Get<IGameplayManager>().CurrentPlayerOwnerOfTurn = !msg.isRecipientTheActivePlayer ? opponent : this;
+
         if (msg.isRecipientTheActivePlayer)
         {
             UpdateHandCardsHighlight();
@@ -1168,8 +1171,9 @@ public class DemoHumanPlayer : DemoPlayer
                 //Destroy(card.gameObject);
                 card.removeCardParticle.Play();
 
+                var newCreatedCreature = boardCreature.GetComponent<BoardCreature>(); ;
 
-                currentCreature = boardCreature.GetComponent<BoardCreature>();
+                currentCreature = newCreatedCreature;
 
 
                 Sequence animationSequence = DOTween.Sequence();
@@ -1185,7 +1189,7 @@ public class DemoHumanPlayer : DemoPlayer
 
                 RearrangeBottomBoard(() =>
                 {
-                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay, true);
+                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, newCreatedCreature, CallCardPlay, true);
                 });
 
                 //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
@@ -1869,6 +1873,8 @@ public class DemoHumanPlayer : DemoPlayer
 			vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
 			effect = GameObject.Instantiate(vfxPrefab);
 			effect.transform.position = target;
+
+            // whoes turn???????
             _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
 
             _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -1917,6 +1923,8 @@ public class DemoHumanPlayer : DemoPlayer
 
             _particlesController.RegisterParticleSystem(effect, true, 5f);
 
+
+            // whoes turn???????
             _soundManager.PlaySound(soundType, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
            /* GameClient.Get<ITimerManager>().AddTimer((a) =>
                 {
@@ -1942,16 +1950,20 @@ public class DemoHumanPlayer : DemoPlayer
 
 
                }, null, 0.5f, false);
-              //  GameClient.Get<ITimerManager>().AddTimer((a) =>
-              //  {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                //  GameClient.Get<ITimerManager>().AddTimer((a) =>
+                //  {
+
+                // whoes turn???????
+                _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
                // }, null, 0.75f, false);
             }
             else
             {
-            //    GameClient.Get<ITimerManager>().AddTimer((a) =>
-             //   {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                //    GameClient.Get<ITimerManager>().AddTimer((a) =>
+                //   {
+
+                // whoes turn???????
+                _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
            //     }, null, 0.75f, false);
             }
 		}

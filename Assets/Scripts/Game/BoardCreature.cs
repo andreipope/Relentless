@@ -30,6 +30,9 @@ public class BoardCreature : MonoBehaviour
     protected SpriteRenderer pictureSprite;
 
     [SerializeField]
+    protected SpriteRenderer animationSprite;
+
+    [SerializeField]
     protected SpriteRenderer frozenSprite;
 
     [SerializeField]
@@ -62,6 +65,10 @@ public class BoardCreature : MonoBehaviour
     [HideInInspector]
     public int numTurnsOnBoard;
 
+    private int animationSpriteOrder = 2,
+                pictureSpriteOrder = 1;
+
+
     protected Action<int, int> onAttackStatChangedDelegate;
     protected Action<int, int> onHealthStatChangedDelegate;
 	public event Action CreatureOnDieEvent;
@@ -79,6 +86,10 @@ public class BoardCreature : MonoBehaviour
     public Animator creatureAnimator;
 
     public List<CreatureAnimatorInfo> animatorControllers;
+
+    public List<object> attackedBoardObjectsThisTurn;
+
+    public Enumerators.AttackInfoType attackInfoType = Enumerators.AttackInfoType.ANY;
 
     public bool IsPlayable
     {
@@ -115,6 +126,11 @@ public class BoardCreature : MonoBehaviour
         fightTargetingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
 
         arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
+
+        animationSpriteOrder = animationSprite.sortingOrder;
+        pictureSpriteOrder = pictureSprite.sortingOrder;
+
+        attackedBoardObjectsThisTurn = new List<object>();
     }
 
     protected virtual void OnDestroy()
@@ -149,8 +165,10 @@ public class BoardCreature : MonoBehaviour
                     SetHighlightingEnabled(true);
             }
 
+            animationSprite.sortingOrder = animationSpriteOrder;
+            pictureSprite.sortingOrder = pictureSpriteOrder;
 
-            InternalTools.SetLayerRecursively(gameObject, 0);
+            InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { sleepingParticles.name });
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
@@ -178,6 +196,13 @@ public class BoardCreature : MonoBehaviour
                     }
                 }
             }
+        }
+        else if(param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
+        {
+            InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { sleepingParticles.name });
+
+            animationSprite.sortingOrder = -animationSprite.sortingOrder;
+            pictureSprite.sortingOrder = -pictureSprite.sortingOrder;
         }
     }
 
@@ -284,6 +309,8 @@ public class BoardCreature : MonoBehaviour
 
     public void OnStartTurn()
     {
+        attackedBoardObjectsThisTurn.Clear();
+
         numTurnsOnBoard += 1;
         StopSleepingParticles();
 
@@ -403,6 +430,9 @@ public class BoardCreature : MonoBehaviour
             fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
             fightTargetingArrow.Begin(transform.position);
 
+            if (attackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
+                fightTargetingArrow.ignoreBoardObjectsList = attackedBoardObjectsThisTurn;
+
             // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
             if (ownerPlayer is DemoHumanPlayer)
             {
@@ -433,6 +463,15 @@ public class BoardCreature : MonoBehaviour
         }
     }
 
+    public void ForceSetCreaturePlayable()
+    {
+        if (IsStun)
+            return;
+
+        SetHighlightingEnabled(true);
+        IsPlayable = true;
+    }
+
     public void ResolveCombat()
     {
         var sortingGroup = GetComponent<SortingGroup>();
@@ -444,12 +483,15 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
+                attackedBoardObjectsThisTurn.Add(targetPlayer);
+
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
        //         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                 //sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
+                    // whoes turn???????
                     GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                     Vector3 positionOfVFX = targetPlayer.transform.position;
@@ -458,6 +500,7 @@ public class BoardCreature : MonoBehaviour
                      (ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, positionOfVFX, attackStat.effectiveValue);
 
 					ownerPlayer.FightPlayer(card);
+
                     CreatureOnAttackEvent?.Invoke(targetPlayer);
                 },
                 () =>
@@ -472,7 +515,9 @@ public class BoardCreature : MonoBehaviour
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
+                attackedBoardObjectsThisTurn.Add(targetCard);
 
+                // whoes turn???????
                 var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
                 GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
@@ -481,12 +526,12 @@ public class BoardCreature : MonoBehaviour
                     targetCard.GetComponent<HandCard>() == null)
                 {
 
-                    // play sound when target creature attack more than our
-                    if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
-                    {
-                        libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
-                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                    }
+                    //// play sound when target creature attack more than our
+                    //if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
+                    //{
+                    //    libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
+                    //    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    //}
 
                     CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
                     {

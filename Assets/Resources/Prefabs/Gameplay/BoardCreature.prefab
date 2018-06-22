@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 4438927445716912}
   - component: {fileID: 198444090158676314}
   - component: {fileID: 199444919018197114}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: SleepingParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -664,6 +664,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fightTargetingArrowPrefab: {fileID: 0}
   pictureSprite: {fileID: 212036912216946320}
+  animationSprite: {fileID: 212947227149899860}
   frozenSprite: {fileID: 212937100386636934}
   attackText: {fileID: 114237072823793518}
   healthText: {fileID: 114067830030761014}

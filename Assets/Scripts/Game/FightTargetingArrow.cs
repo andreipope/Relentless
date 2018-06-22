@@ -3,10 +3,13 @@
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
 using CCGKit;
+using System.Collections.Generic;
 
 public class FightTargetingArrow : TargetingArrow
 {
     public RuntimeZone opponentBoardZone;
+
+    public List<object> ignoreBoardObjectsList;
 
     public void End(BoardCreature creature)
     {
@@ -24,6 +27,9 @@ public class FightTargetingArrow : TargetingArrow
     public override void OnCardSelected(BoardCreature creature)
     {
         if (GameManager.Instance.tutorial && (GameManager.Instance.tutorialStep == 19 || GameManager.Instance.tutorialStep == 27))
+            return;
+
+        if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(creature))
             return;
             
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
@@ -56,6 +62,10 @@ public class FightTargetingArrow : TargetingArrow
     {
         if (GameManager.Instance.tutorial && (GameManager.Instance.tutorialStep != 19 && GameManager.Instance.tutorialStep != 28 && GameManager.Instance.tutorialStep != 29))
             return;
+
+        if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(player))
+            return;
+
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetPlayer ||
             (targetType == EffectTarget.PlayerOrPlayerCreature && player.tag == "PlayerOwned") ||

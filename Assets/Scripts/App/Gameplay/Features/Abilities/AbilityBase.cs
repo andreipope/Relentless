@@ -15,6 +15,9 @@ namespace GrandDevs.CZB
         protected AbilitiesController _abilitiesController;
         protected ParticlesController _particlesController;
         protected ILoadObjectsManager _loadObjectsManager;
+        protected IDataManager _dataManager;
+
+
         protected AbilityTargetingArrow _targettingArrow;
         protected GameObject _vfxObject;
 
@@ -61,6 +64,7 @@ namespace GrandDevs.CZB
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
             this.cardKind = cardKind;
             this.abilityType = ability.abilityType;
@@ -131,7 +135,7 @@ namespace GrandDevs.CZB
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-				boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
+                boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
                 boardCreature.CreatureOnAttackEvent += CreatureOnAttackEventHandler;
 
 				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)

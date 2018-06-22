@@ -196,6 +196,8 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
+            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ATTACK_NUMBER_OF_TIMES_PER_TURN
         }
 
         public enum AbilityActivityType
@@ -327,6 +329,12 @@
         public enum CardPackType
         {
             DEFAULT
+        }
+
+        public enum AttackInfoType
+        {
+            ANY,
+            ONLY_DIFFERENT
         }
     }
 }
