@@ -33,7 +33,7 @@ namespace GrandDevs.CZB.Common
 
         internal static uint MAX_BOARD_CREATURES = 6;
 
-
+        internal static int DEFAULT_TURN_DURATION = 30;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";

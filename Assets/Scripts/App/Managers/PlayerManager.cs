@@ -13,7 +13,7 @@ namespace GrandDevs.CZB
         public event Action<int> OnPlayerGraveyardUpdatedEvent;
         public event Action<int> OnOpponentGraveyardUpdatedEvent;
 
-        public Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
+        public Action<BoardCreature> OnBoardCardKilled { get; set; }
         public Action OnLocalPlayerSetUp { get; set; }
 
         private IDataManager _dataManager;
@@ -22,8 +22,8 @@ namespace GrandDevs.CZB
 
         public List<BoardCreature> PlayerGraveyardCards { get; set; }
         public List<BoardCreature> OpponentGraveyardCards { get; set; }
-        public PlayerInfo playerInfo { get; set; }
-        public PlayerInfo opponentInfo { get; set; }
+        public Player PlayerInfo { get; set; }
+        public Player OpponentInfo { get; set; }
 
         public void Dispose()
         {

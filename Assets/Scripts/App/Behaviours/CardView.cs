@@ -7,185 +7,185 @@ using UnityEngine.Assertions;
 using TMPro;
 using System;
 using GrandDevs.CZB.Common;
-using GrandDevs.CZB;
-using CCGKit;
 using DG.Tweening;
+using GrandDevs.CZB.Data;
 
-public class CardView : MonoBehaviour
+namespace GrandDevs.CZB
 {
-    public RuntimeCard card { get; private set; }
-
-    [SerializeField]
-    protected SpriteRenderer glowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer pictureSprite;
-
-	[SerializeField]
-	protected SpriteRenderer backgroundSprite;
-
-    [SerializeField]
-    protected TextMeshPro costText;
-
-    [SerializeField]
-    protected TextMeshPro nameText;
-
-    [SerializeField]
-    protected TextMeshPro bodyText;
-
-    [SerializeField]
-    protected TextMeshPro amountText;
-
-    protected GameObject previewCard;
-
-    protected Animator cardAnimator;
-
-    public bool isNewCard = false;
-
-    public GrandDevs.CZB.Data.Card libraryCard;
-
-    public int manaCost { get; protected set; }
-
-    public ParticleSystem removeCardParticle { get; protected set; }
-
-    public int CurrentTurn { get; set; }
-
-    [HideInInspector]
-    public bool isPreview;
-
-    protected virtual void Awake()
+    public class CardView : MonoBehaviour
     {
-        Assert.IsNotNull(glowSprite);
-        Assert.IsNotNull(pictureSprite);
-        Assert.IsNotNull(costText);
-        Assert.IsNotNull(nameText);
-        Assert.IsNotNull(bodyText);
+        public Card Card { get; private set; }
 
-        cardAnimator = gameObject.GetComponent<Animator>();
-        cardAnimator.enabled = false;
-    }
+        [SerializeField]
+        protected SpriteRenderer glowSprite;
 
-    public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
-    {
-        this.card = card;
+        [SerializeField]
+        protected SpriteRenderer pictureSprite;
 
-        libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-        nameText.text = libraryCard.name;
-        bodyText.text = libraryCard.description;
-        costText.text = libraryCard.cost.ToString();
+        [SerializeField]
+        protected SpriteRenderer backgroundSprite;
 
-        isNewCard = true;
+        [SerializeField]
+        protected TextMeshPro costText;
 
-        manaCost = libraryCard.cost;
+        [SerializeField]
+        protected TextMeshPro nameText;
 
+        [SerializeField]
+        protected TextMeshPro bodyText;
 
-		var rarity = Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
+        [SerializeField]
+        protected TextMeshPro amountText;
 
-		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
-		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), libraryCard.picture.ToLower()));
+        protected GameObject previewCard;
 
+        protected Animator cardAnimator;
 
-        removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
+        public bool isNewCard = false;
 
-        amountText.transform.parent.gameObject.SetActive(false);
-    }
+        public int manaCost { get; protected set; }
 
-    public virtual void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
-    {
-        libraryCard = card;
-        nameText.text = card.name;
-        bodyText.text = card.description;
-        amountText.text = amount.ToString();
-        costText.text = card.cost.ToString();
+        public ParticleSystem removeCardParticle { get; protected set; }
 
-        manaCost = libraryCard.cost;
+        public int CurrentTurn { get; set; }
 
-		var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
+        [HideInInspector]
+        public bool isPreview;
 
-		backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
-
-		pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
-    }
-
-
-	public virtual void UpdateAmount(int amount)
-	{
-		amountText.text = amount.ToString();
-	}
-
-    protected Vector3 positionOnHand;
-    protected Vector3 rotationOnHand;
-    public virtual void RearrangeHand(Vector3 position, Vector3 rotation)
-    {
-        positionOnHand = position;
-        rotationOnHand = rotation;
-        if (!isNewCard)
+        protected virtual void Awake()
         {
-            UpdatePositionOnHand();
+            Assert.IsNotNull(glowSprite);
+            Assert.IsNotNull(pictureSprite);
+            Assert.IsNotNull(costText);
+            Assert.IsNotNull(nameText);
+            Assert.IsNotNull(bodyText);
+
+            cardAnimator = gameObject.GetComponent<Animator>();
+            cardAnimator.enabled = false;
         }
-        else if(CurrentTurn != 0)
+
+        public virtual void PopulateWithInfo(Card card, string setName = "")
+        {
+            Card = card;
+
+            nameText.text = Card.name;
+            bodyText.text = Card.description;
+            costText.text = Card.cost.ToString();
+
+            isNewCard = true;
+
+            manaCost = Card.cost;
+
+
+            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), Card.cardRarity);
+
+            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), Card.picture.ToLower()));
+
+
+            removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
+
+            amountText.transform.parent.gameObject.SetActive(false);
+        }
+
+        public virtual void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
+        {
+            Card = card;
+            nameText.text = card.name;
+            bodyText.text = card.description;
+            amountText.text = amount.ToString();
+            costText.text = card.cost.ToString();
+
+            manaCost = Card.cost;
+
+            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
+
+            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
+        }
+
+
+        public virtual void UpdateAmount(int amount)
+        {
+            amountText.text = amount.ToString();
+        }
+
+        protected Vector3 positionOnHand;
+        protected Vector3 rotationOnHand;
+        public virtual void RearrangeHand(Vector3 position, Vector3 rotation)
+        {
+            positionOnHand = position;
+            rotationOnHand = rotation;
+            if (!isNewCard)
+            {
+                UpdatePositionOnHand();
+            }
+            else if (CurrentTurn != 0)
+            {
+                cardAnimator.enabled = true;
+                cardAnimator.SetTrigger("DeckToHand");
+
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            }
+            isNewCard = false;
+        }
+
+        protected virtual void UpdatePositionOnHand()
+        {
+            transform.DOMove(positionOnHand, 0.5f);
+            transform.DORotate(rotationOnHand, 0.5f);
+        }
+
+        public virtual void SetDefaultAnimation(int id)
         {
             cardAnimator.enabled = true;
-            cardAnimator.SetTrigger("DeckToHand");
+            cardAnimator.SetTrigger("DeckToHandDefault");
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+                cardAnimator.SetFloat("Id", 2);
+            else
+                cardAnimator.SetFloat("Id", id);
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
         }
-        isNewCard = false;
-    }
 
-    protected virtual void UpdatePositionOnHand()
-    {
-        transform.DOMove(positionOnHand, 0.5f);
-        transform.DORotate(rotationOnHand, 0.5f);
-    }
-
-    public virtual void SetDefaultAnimation(int id)
-    {
-        cardAnimator.enabled = true;
-        cardAnimator.SetTrigger("DeckToHandDefault");
-
-        if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
-            cardAnimator.SetFloat("Id", 2);
-        else
-            cardAnimator.SetFloat("Id", id);
-
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-    }
-
-    public virtual void UpdateAnimation(string name)
-    {
-        switch (name)
+        public virtual void UpdateAnimation(string name)
         {
-            case "DeckToHandEnd":
-                cardAnimator.enabled = false;
-                UpdatePositionOnHand();
-                break;
-            default:
-                break;
+            switch (name)
+            {
+                case "DeckToHandEnd":
+                    cardAnimator.enabled = false;
+                    UpdatePositionOnHand();
+                    break;
+                default:
+                    break;
+            }
         }
-    }
 
-    public virtual bool CanBePlayed(DemoHumanPlayer owner)
-    {
-        if (Constants.DEV_MODE)
-            return true;
-        return owner.isActivePlayer;// && owner.manaStat.effectiveValue >= manaCost;
-    }
+        public virtual bool CanBePlayed(Player owner)
+        {
+            if (Constants.DEV_MODE)
+                return true;
 
-    public virtual bool CanBeBuyed(DemoHumanPlayer owner)
-    {
-        if (Constants.DEV_MODE)
-            return true;
-        return owner.manaStat.effectiveValue >= manaCost;
-    }
+            return GameClient.Get<IGameplayManager>().GetController<PlayerController>().IsActive;// && owner.manaStat.effectiveValue >= manaCost;
+        }
 
-    public void IsHighlighted()
-    {
-        //return glowSprite.enabled;
-    }
+        public virtual bool CanBeBuyed(Player owner)
+        {
+            if (Constants.DEV_MODE)
+                return true;
+            return owner.Mana >= manaCost;
+        }
 
-    public void SetHighlightingEnabled(bool enabled)
-    {
-        glowSprite.enabled = enabled;
+        public void IsHighlighted()
+        {
+            //return glowSprite.enabled;
+        }
+
+        public void SetHighlightingEnabled(bool enabled)
+        {
+            glowSprite.enabled = enabled;
+        }
     }
 }

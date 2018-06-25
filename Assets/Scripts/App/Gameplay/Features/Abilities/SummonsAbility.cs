@@ -91,7 +91,7 @@ namespace GrandDevs.CZB
             boardCreature.ownerPlayer = playerCallerOfAbility;
             boardCreature.PopulateWithInfo(card, cardSetName);
             boardCreature.PlayArrivalAnimation();
-            boardCreature.fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
+            boardCreature._fightTargetingArrowPrefab = _fightTargetingArrowPrefab;
 
             playerCallerOfAbility.playerBoardCardsList.Add(boardCreature);
 

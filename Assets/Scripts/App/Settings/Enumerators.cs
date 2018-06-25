@@ -328,5 +328,11 @@
         {
             DEFAULT
         }
+
+        public enum EndGameType
+        {
+            WIN,
+            LOSE
+        }
     }
 }

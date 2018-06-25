@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandDevs.CZB.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,22 +8,26 @@ namespace GrandDevs.CZB
 {
     public class BattlegrdController : IController
     {
+        private IGameplayManager _gameplayManager;
+        private ITimerManager _timerManager;
 
-        public int turnDuration { get; private set; }
-        protected int currentPlayerIndex;
-        public GameState gameState = new GameState();
-        public EffectSolver effectSolver { get; protected set; }
-        protected List<ServerHandler> handlers = new List<ServerHandler>();
-        protected int currentTurn;
-        protected bool gameFinished;
-        protected Coroutine turnCoroutine;
+        private Coroutine _turnCoroutine;
+
+        public int TurnDuration { get; private set; }
+        public int currentPlayerIndex;
+        public int currentTurn;
+        public bool gameFinished;
+
+
+
 
 
         public BattlegrdController()
         {
-            //LoadGameConfiguration();
-            //AddServerHandlers();
-            //RegisterServerHandlers();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+
+            LoadGameConfiguration();
         }
 
         public void Dispose()
@@ -33,12 +38,12 @@ namespace GrandDevs.CZB
         {
         }
 
-        protected virtual void LoadGameConfiguration()
+        private void LoadGameConfiguration()
         {
-            var gameConfig = GameManager.Instance.config;
-            turnDuration = gameConfig.properties.turnDuration;
-            if (GameManager.Instance.tutorial)
-                turnDuration = 100000;
+            TurnDuration = Constants.DEFAULT_TURN_DURATION;
+
+            if (_gameplayManager.IsTutorial)
+                TurnDuration = 100000;
         }
 
         public virtual void StartGame()
@@ -48,180 +53,76 @@ namespace GrandDevs.CZB
             // Start with turn 1.
             currentTurn = 1;
 
-            var players = gameState.players;
+            var players = _gameplayManager.PlayersInGame;
 
             // Create an array with all the player nicknames.
             var playerNicknames = new List<string>(players.Count);
             foreach (var player in players)
-            {
                 playerNicknames.Add(player.nickname);
-            }
 
-            // Set the current player and opponents.
-            gameState.currentPlayer = players[currentPlayerIndex];
-            gameState.currentOpponent = players.Find(x => x != gameState.currentPlayer);
-
-            var rngSeed = System.Environment.TickCount;
-            effectSolver = new EffectSolver(gameState, rngSeed);
-
-            foreach (var player in players)
+            if (!_gameplayManager.IsTutorial)
             {
-                effectSolver.SetTriggers(player);
-                foreach (var zone in player.zones)
-                {
-                    foreach (var card in zone.Value.cards)
-                    {
-                        effectSolver.SetDestroyConditions(card);
-                        effectSolver.SetTriggers(card);
-                    }
-                }
-            }
-
-            if (!GameManager.Instance.tutorial)
-            {
-                // Execute the game start actions.
-                foreach (var action in GameManager.Instance.config.properties.gameStartActions)
-                {
-                    ExecuteGameAction(action);
-                }
+                //// Execute the game start actions.
+                //foreach (var action in GameManager.Instance.config.properties.gameStartActions)
+                //{
+                //    ExecuteGameAction(action);
+                //}
             }
             else
-                gameState.currentOpponent.stats[0].baseValue = 8;
+                players.Find(x => !x.IsLocalPlayer).HP = 8;
 
             if (Constants.DEV_MODE)
-                gameState.currentOpponent.stats[0].baseValue = 100;
+                players.Find(x => !x.IsLocalPlayer).HP = 100;
 
-            // Send a StartGame message to all the connected players.
-            for (var i = 0; i < players.Count; i++)
-            {
-                var player = players[i];
-                var msg = new StartGameMessage();
-                msg.recipientNetId = player.netId;
-                msg.playerIndex = i;
-                msg.turnDuration = turnDuration;
-                msg.nicknames = playerNicknames.ToArray();
-                msg.player = GetPlayerNetworkState(player);
-                msg.opponent = GetOpponentNetworkState(players.Find(x => x != player));
-                msg.rngSeed = rngSeed;
 
-                SafeSendToClient(player, NetworkProtocol.StartGame, msg);
-            }
-
-            // Start running the turn sequence coroutine.
-            turnCoroutine = StartCoroutine(RunTurn());
+            _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
         }
 
-        public virtual void EndGame(PlayerInfo player, EndGameType type)
+        public virtual void EndGame(Player player, Enumerators.EndGameType type)
         {
-            if (GameManager.Instance.tutorial)
+            if (_gameplayManager.IsTutorial)
                 return;
+
             gameFinished = true;
-            var msg = new EndGameMessage();
+
             switch (type)
             {
-                case EndGameType.Win:
-                    msg.winnerPlayerIndex = player.netId;
+                case Enumerators.EndGameType.WIN:       
                     break;
 
-                case EndGameType.Loss:
-                    msg.winnerPlayerIndex = gameState.players.Find(x => x != player).netId;
+                case Enumerators.EndGameType.LOSE:
                     break;
             }
-            NetworkServer.SendToAll(NetworkProtocol.EndGame, msg);
         }
 
-        protected virtual IEnumerator RunTurn()
+        private IEnumerator RunTurn()
         {
             while (!gameFinished)
             {
                 StartTurn();
-                yield return new WaitForSeconds(turnDuration);
+                yield return new WaitForSeconds(TurnDuration);
                 EndTurn();
             }
         }
 
         protected virtual void StartTurn()
         {
-            Logger.Log("Start turn for player " + currentPlayerIndex + ".");
+            var players = _gameplayManager.PlayersInGame;
 
-            var players = gameState.players;
 
-            // Update the current player and opponents.
-            gameState.currentPlayer = players[currentPlayerIndex];
-            gameState.currentOpponent = players.Find(x => x != gameState.currentPlayer);
+            _gameplayManager.PlayersInGame.Find(x => x.IsLocalPlayer).turn++;
 
-            gameState.currentPlayer.numTurn += 1;
+            //// Execute the turn start actions.
+            //foreach (var action in GameManager.Instance.config.properties.turnStartActions)
+            //{
+            //    ExecuteGameAction(action);
+            //}
 
-            // Execute the turn start actions.
-            foreach (var action in GameManager.Instance.config.properties.turnStartActions)
-            {
-                ExecuteGameAction(action);
-            }
-
-            // Run any code that needs to be executed at turn start time.
-            PerformTurnStartStateInitialization();
-
-            // Let the server handlers know the turn has started.
-            for (var i = 0; i < handlers.Count; i++)
-            {
-                handlers[i].OnStartTurn();
-            }
-
-            effectSolver.OnTurnStarted();
-
-            // Send a StartTurn message to all the connected players.
-            for (var i = 0; i < players.Count; i++)
-            {
-                var player = players[i];
-                var msg = new StartTurnMessage();
-                msg.recipientNetId = player.netId;
-                msg.isRecipientTheActivePlayer = player == gameState.currentPlayer;
-                msg.turn = currentTurn;
-                msg.player = GetPlayerNetworkState(player);
-                msg.opponent = GetOpponentNetworkState(players.Find(x => x != player));
-                SafeSendToClient(player, NetworkProtocol.StartTurn, msg);
-            }
         }
 
         protected virtual void EndTurn()
         {
-            Logger.Log("End turn for player " + currentPlayerIndex + ".");
-
-            // Let the server handlers know the turn has ended.
-            for (var i = 0; i < handlers.Count; i++)
-                handlers[i].OnEndTurn();
-
-            effectSolver.OnTurnEnded();
-
-            var players = gameState.players;
-
-            foreach (var player in players)
-            {
-                foreach (var entry in player.stats)
-                {
-                    entry.Value.OnEndTurn();
-                }
-            }
-
-            foreach (var zone in players[currentPlayerIndex].zones)
-            {
-                foreach (var card in zone.Value.cards)
-                {
-                    foreach (var stat in card.stats)
-                    {
-                        stat.Value.OnEndTurn();
-                    }
-                }
-            }
-
-            // Send the EndTurn message to all players.
-            foreach (var player in players)
-            {
-                var msg = new EndTurnMessage();
-                msg.recipientNetId = player.netId;
-                msg.isRecipientTheActivePlayer = player == players[currentPlayerIndex];
-                SafeSendToClient(player, NetworkProtocol.EndTurn, msg);
-            }
+            var players = _gameplayManager.PlayersInGame;
 
             // Switch to next player.
             currentPlayerIndex += 1;
@@ -235,36 +136,201 @@ namespace GrandDevs.CZB
 
         public virtual void StopTurn()
         {
-            if (turnCoroutine != null)
-                StopCoroutine(turnCoroutine);
+            if (_turnCoroutine != null)
+                MainApp.Instance.StopCoroutine(_turnCoroutine);
+
             EndTurn();
-            //if (!GameManager.Instance.tutorial)
-            turnCoroutine = StartCoroutine(RunTurn());
+
+            _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
         }
 
-        protected void ExecuteGameAction(GameAction action)
+        public void RearrangeBottomBoard(Action onComplete = null)
         {
-            var targetPlayers = new List<PlayerInfo>();
-            switch (action.target)
+            if (_rearrangingBottomBoard)
             {
-                case GameActionTarget.CurrentPlayer:
-                    targetPlayers.Add(gameState.currentPlayer);
-                    break;
-
-                case GameActionTarget.CurrentOpponent:
-                    targetPlayers.Add(gameState.currentOpponent);
-                    break;
-
-                case GameActionTarget.AllPlayers:
-                    targetPlayers = gameState.players;
-                    break;
+                _timerManager.AddTimer((x) =>
+                {
+                    RearrangeBottomBoard(onComplete);
+                }, null, 1f, false);
+                return;
             }
 
-            foreach (var player in targetPlayers)
+            _rearrangingBottomBoard = true;
+
+            var boardWidth = 0.0f;
+            var spacing = 0.2f; // -0.2
+            var cardWidth = 0.0f;
+            foreach (var card in playerBoardCards)
             {
-                action.Resolve(gameState, player);
+                cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
+                boardWidth += cardWidth;
+                boardWidth += spacing;
+            }
+            boardWidth -= spacing;
+
+            var newPositions = new List<Vector2>(playerBoardCards.Count);
+            var pivot = GameObject.Find("PlayerBoard").transform.position;
+
+            for (var i = 0; i < playerBoardCards.Count; i++)
+            {
+                var card = playerBoardCards[i];
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
+                pivot.x += boardWidth / playerBoardCards.Count;
+            }
+
+            var sequence = DOTween.Sequence();
+            for (var i = 0; i < playerBoardCards.Count; i++)
+            {
+                var card = playerBoardCards[i];
+                sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+            }
+            sequence.OnComplete(() =>
+            {
+                if (onComplete != null)
+                {
+                    onComplete();
+                }
+            });
+
+            _timerManager.AddTimer((x) =>
+            {
+                _rearrangingBottomBoard = false;
+            }, null, 1.5f, false);
+        }
+
+
+        public void RearrangeTopBoard()
+        {
+            if (_rearrangingTopBoard)
+            {
+                _timerManager.AddTimer((x) =>
+                {
+                    RearrangeTopBoard(onComplete);
+                }, null, 1f, false);
+
+                return;
+            }
+
+            _rearrangingTopBoard = true;
+
+            var boardWidth = 0.0f;
+            var spacing = 0.2f;
+            var cardWidth = 0.0f;
+            foreach (var card in opponentBoardCards)
+            {
+                // warning!
+                if (card == null && !card)
+                    continue;
+
+                cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
+                boardWidth += cardWidth;
+                boardWidth += spacing;
+            }
+            boardWidth -= spacing;
+
+            var newPositions = new List<Vector2>(opponentBoardCards.Count);
+            var pivot = GameObject.Find("OpponentBoard").transform.position;
+
+            for (var i = 0; i < opponentBoardCards.Count; i++)
+            {
+                var card = opponentBoardCards[i];
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
+                pivot.x += boardWidth / opponentBoardCards.Count;
+            }
+
+            var sequence = DOTween.Sequence();
+            for (var i = 0; i < opponentBoardCards.Count; i++)
+            {
+                var card = opponentBoardCards[i];
+                sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+            }
+            sequence.OnComplete(() =>
+            {
+                if (onComplete != null)
+                {
+                    onComplete();
+                }
+            });
+
+            _timerManager.AddTimer((x) =>
+            {
+                _rearrangingTopBoard = false;
+            }, null, 1.5f, false);
+        }
+
+
+        public void CreateCardPreview(RuntimeCard card, Vector3 pos, bool highlight = true)
+        {
+            isPreviewActive = true;
+            currentPreviewedCardId = card.instanceId;
+            createPreviewCoroutine = StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
+        }
+
+        public IEnumerator CreateCardPreviewAsync(RuntimeCard card, Vector3 pos, bool highlight)
+        {
+            yield return new WaitForSeconds(0.3f);
+
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+            string cardSetName = string.Empty;
+            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            {
+                if (cardSet.cards.IndexOf(libraryCard) > -1)
+                    cardSetName = cardSet.name;
+            }
+
+            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
+                currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
+            }
+            else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            {
+                currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
+            }
+
+            var cardView = currentCardPreview.GetComponent<CardView>();
+            cardView.PopulateWithInfo(card, cardSetName);
+            if (highlight)
+                highlight = cardView.CanBePlayed(this) && cardView.CanBeBuyed(this);
+            cardView.SetHighlightingEnabled(highlight);
+            cardView.isPreview = true;
+
+            var newPos = pos;
+            newPos.y += 2.0f;
+            currentCardPreview.transform.position = newPos;
+            currentCardPreview.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            currentCardPreview.transform.localScale = new Vector2(.4f, .4f);
+            currentCardPreview.GetComponent<SortingGroup>().sortingOrder = 1000;
+            currentCardPreview.layer = LayerMask.NameToLayer("Ignore Raycast");
+            currentCardPreview.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
+        }
+
+        public void DestroyCardPreview()
+        {
+            StartCoroutine(DestroyCardPreviewAsync());
+            if (createPreviewCoroutine != null)
+            {
+                StopCoroutine(createPreviewCoroutine);
+            }
+            isPreviewActive = false;
+        }
+
+        public IEnumerator DestroyCardPreviewAsync()
+        {
+            if (currentCardPreview != null)
+            {
+                var oldCardPreview = currentCardPreview;
+                foreach (var renderer in oldCardPreview.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    renderer.DOFade(0.0f, 0.2f);
+                }
+                foreach (var text in oldCardPreview.GetComponentsInChildren<TextMeshPro>())
+                {
+                    text.DOFade(0.0f, 0.2f);
+                }
+                yield return new WaitForSeconds(0.5f);
+                Destroy(oldCardPreview.gameObject);
             }
         }
     }
-   
 }

@@ -691,115 +691,12 @@ public class DemoHumanPlayer : DemoPlayer
 
     public virtual void RearrangeTopBoard(Action onComplete = null)
     {
-        if (_rearrangingTopBoard)
-        {
-            _timerManager.AddTimer((x) =>
-            {
-                RearrangeTopBoard(onComplete);
-            }, null, 1f, false);
-
-            return;
-        }
-
-        _rearrangingTopBoard = true;
-
-        var boardWidth = 0.0f;
-        var spacing = 0.2f;
-        var cardWidth = 0.0f;
-        foreach (var card in opponentBoardCards)
-        {
-            // warning!
-            if (card == null && !card)
-                continue;
-
-            cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
-            boardWidth += cardWidth;
-            boardWidth += spacing;
-        }
-        boardWidth -= spacing;
-
-        var newPositions = new List<Vector2>(opponentBoardCards.Count);
-        var pivot = GameObject.Find("OpponentBoard").transform.position;
-
-        for (var i = 0; i < opponentBoardCards.Count; i++)
-        {
-            var card = opponentBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
-            pivot.x += boardWidth / opponentBoardCards.Count;
-        }
-
-        var sequence = DOTween.Sequence();
-        for (var i = 0; i < opponentBoardCards.Count; i++)
-        {
-            var card = opponentBoardCards[i];
-            sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-        }
-        sequence.OnComplete(() =>
-        {
-            if (onComplete != null)
-            {
-                onComplete();
-            }
-        });
-
-        _timerManager.AddTimer((x) =>
-        {
-            _rearrangingTopBoard = false;
-        }, null, 1.5f, false);
+       
     }
 
     public virtual void RearrangeBottomBoard(Action onComplete = null)
     {
-        if (_rearrangingBottomBoard)
-        {
-            _timerManager.AddTimer((x) =>
-            {
-                RearrangeBottomBoard(onComplete);
-            }, null, 1f, false);
-            return;
-        }
-
-        _rearrangingBottomBoard = true;
-
-        var boardWidth = 0.0f;
-        var spacing = 0.2f; // -0.2
-        var cardWidth = 0.0f;
-        foreach (var card in playerBoardCards)
-        {
-            cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
-            boardWidth += cardWidth;
-            boardWidth += spacing;
-        }
-        boardWidth -= spacing;
-
-        var newPositions = new List<Vector2>(playerBoardCards.Count);
-        var pivot = GameObject.Find("PlayerBoard").transform.position;
-
-        for (var i = 0; i < playerBoardCards.Count; i++)
-        {
-            var card = playerBoardCards[i];
-            newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
-            pivot.x += boardWidth / playerBoardCards.Count;
-        }
-
-        var sequence = DOTween.Sequence();
-        for (var i = 0; i < playerBoardCards.Count; i++)
-        {
-            var card = playerBoardCards[i];
-            sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-        }
-        sequence.OnComplete(() =>
-        {
-            if (onComplete != null)
-            {
-                onComplete();
-            }
-        });
-
-        _timerManager.AddTimer((x) =>
-        {
-            _rearrangingBottomBoard = false;
-        }, null, 1.5f, false);
+       
     }
 
     public override void OnEndTurn(EndTurnMessage msg)
@@ -983,79 +880,6 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
-    public virtual void CreateCardPreview(RuntimeCard card, Vector3 pos, bool highlight = true)
-    {
-        isPreviewActive = true;
-        currentPreviewedCardId = card.instanceId;
-        createPreviewCoroutine = StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
-    }
-
-    protected virtual IEnumerator CreateCardPreviewAsync(RuntimeCard card, Vector3 pos, bool highlight)
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-        string cardSetName = string.Empty;
-        foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-        {
-            if (cardSet.cards.IndexOf(libraryCard) > -1)
-                cardSetName = cardSet.name;
-        }
-
-        if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
-        {
-            currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
-        }
-        else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
-        {
-            currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
-        }
-
-        var cardView = currentCardPreview.GetComponent<CardView>();
-        cardView.PopulateWithInfo(card, cardSetName);
-        if (highlight)
-            highlight = cardView.CanBePlayed(this) && cardView.CanBeBuyed(this);
-        cardView.SetHighlightingEnabled(highlight);
-        cardView.isPreview = true;
-
-        var newPos = pos;
-        newPos.y += 2.0f;
-        currentCardPreview.transform.position = newPos;
-        currentCardPreview.transform.localRotation = Quaternion.Euler(Vector3.zero);
-        currentCardPreview.transform.localScale = new Vector2(.4f, .4f);
-        currentCardPreview.GetComponent<SortingGroup>().sortingOrder = 1000;
-        currentCardPreview.layer = LayerMask.NameToLayer("Ignore Raycast");
-        currentCardPreview.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
-    }
-
-    public virtual void DestroyCardPreview()
-    {
-        StartCoroutine(DestroyCardPreviewAsync());
-        if (createPreviewCoroutine != null)
-        {
-            StopCoroutine(createPreviewCoroutine);
-        }
-        isPreviewActive = false;
-    }
-
-    protected virtual IEnumerator DestroyCardPreviewAsync()
-    {
-        if (currentCardPreview != null)
-        {
-            var oldCardPreview = currentCardPreview;
-            foreach (var renderer in oldCardPreview.GetComponentsInChildren<SpriteRenderer>())
-            {
-                renderer.DOFade(0.0f, 0.2f);
-            }
-            foreach (var text in oldCardPreview.GetComponentsInChildren<TextMeshPro>())
-            {
-                text.DOFade(0.0f, 0.2f);
-            }
-            yield return new WaitForSeconds(0.5f);
-            Destroy(oldCardPreview.gameObject);
-        }
-    }
 
     public virtual GameObject AddCardToHand(RuntimeCard card)
     {
@@ -1111,111 +935,7 @@ public class DemoHumanPlayer : DemoPlayer
         return go;
     }
 
-    public void PlayCard(CardView card, HandCard handCard)
-    {
-        if (card.CanBePlayed(this))
-        {
-            gameUI.endTurnButton.SetEnabled(false);
-
-            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.card.cardId);
-
-            string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(libraryCard) > -1)
-                    cardSetName = cardSet.name;
-            }
-
-            card.transform.DORotate(Vector3.zero, .1f);
-            card.GetComponent<HandCard>().enabled = false;
-
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-            // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
-            {
-                int indexOfCard = 0;
-                float newCreatureCardPosition = card.transform.position.x;
-
-                // set correct position on board depends from card view position
-                for (int i = 0; i < playerBoardCards.Count; i++)
-                {
-                    if (newCreatureCardPosition > playerBoardCards[i].transform.position.x)
-                        indexOfCard = i + 1;
-                    else break;
-                }
-
-                var boardCreature = Instantiate(boardCreaturePrefab);
-
-                var board = GameObject.Find("PlayerBoard");
-                boardCreature.tag = "PlayerOwned";
-                boardCreature.transform.parent = board.transform;
-                boardCreature.transform.position = new Vector2(1.9f * playerBoardCards.Count, 0);
-                boardCreature.GetComponent<BoardCreature>().ownerPlayer = this;
-                boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card.card, cardSetName);
-
-                playerHandCards.Remove(card);
-                RearrangeHand();
-                playerBoardCards.Insert(indexOfCard, boardCreature.GetComponent<BoardCreature>());
-
-                GameClient.Get<ITimerManager>().AddTimer((creat) =>
-                {
-                    GraveyardCardsCount++;
-                }, null, 1f);
-
-                //Destroy(card.gameObject);
-                card.removeCardParticle.Play();
-
-
-                currentCreature = boardCreature.GetComponent<BoardCreature>();
-
-
-                Sequence animationSequence = DOTween.Sequence();
-                animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                animationSequence.OnComplete(() =>
-                {
-                    RemoveCard(new object[] { card });
-                    _timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { boardCreature.GetComponent<BoardCreature>() }, 0.1f, false);
-                });
-
-                //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
-
-                RearrangeBottomBoard(() =>
-                {
-                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay, true);
-                });
-
-                //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
-            }
-            else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
-            {
-                //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                //var sequence = DOTween.Sequence();
-                //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                //sequence.Play().OnComplete(() =>
-                //{ 
-                card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                card.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-
-                Debug.Log(card.name);
-
-                CallAbility(libraryCard, card, card.card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, handCard: handCard);
-                //});
-            }
-        }
-        else
-        {
-            card.GetComponent<HandCard>().ResetToInitialPosition();
-        }
-    }
+    
 
     private void RemoveCard(object[] param)
     {
@@ -1397,7 +1117,7 @@ public class DemoHumanPlayer : DemoPlayer
                 playerInfo.namedZones[Constants.ZONE_BOARD].AddCard(runtimeCard);
 
                 if(currentCreature != null)
-                currentCreature.fightTargetingArrowPrefab = fightTargetingArrowPrefab;
+                currentCreature._fightTargetingArrowPrefab = fightTargetingArrowPrefab;
             }
             else
             {
@@ -1820,7 +1540,7 @@ public class DemoHumanPlayer : DemoPlayer
             var avatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>(); ;
             CombatAnimation.PlayFightAnimation(attackingCard.gameObject, avatar.gameObject, 0.1f, () =>
             {
-				PlayAttackVFX(attackingCard.card.type, avatar.transform.position, attackingCard.attackStat.effectiveValue);
+				PlayAttackVFX(attackingCard.card.type, avatar.transform.position, attackingCard.Damage.effectiveValue);
 
 				effectSolver.FightPlayer(msg.attackingPlayerNetId, msg.attackingCardInstanceId);
                 attackingCard.CreatureOnAttack(avatar);
@@ -1848,7 +1568,7 @@ public class DemoHumanPlayer : DemoPlayer
                 GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
 
-                PlayAttackVFX(attackingCard.card.type, attackedCard.transform.position, attackingCard.attackStat.effectiveValue);
+                PlayAttackVFX(attackingCard.card.type, attackedCard.transform.position, attackingCard.Damage.effectiveValue);
 
 				effectSolver.FightCreature(msg.attackingPlayerNetId, attackingCard.card, attackedCard.card);
                 attackingCard.CreatureOnAttack(attackedCard);

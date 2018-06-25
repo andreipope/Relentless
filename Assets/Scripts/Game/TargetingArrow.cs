@@ -6,18 +6,20 @@ using System;
 
 using UnityEngine;
 
-using CCGKit;
 using System.Collections.Generic;
-using DG.Tweening;
 using System.Linq;
+using GrandDevs.CZB;
+using GrandDevs.CZB.Common;
 
 public class TargetingArrow : MonoBehaviour
 {
+    protected IGameplayManager _gameplayManager;
+
     [HideInInspector]
     public Target effectTarget;
 
     [HideInInspector]
-    public EffectTarget targetType;
+    public Enumerators.SkillTargetType targetType;
 
     public Action onTargetSelected;
 
@@ -76,6 +78,8 @@ public class TargetingArrow : MonoBehaviour
 
     protected void Init()
     {
+        _gameplayManager = GameClient.Get<IGameplayManager>();
+
         _arrowContainer = new GameObject("ArrowContainer");
         _arrowContainer.transform.SetParent(transform, false);
         //_arrowContainer = gameObject;
@@ -262,7 +266,7 @@ public class TargetingArrow : MonoBehaviour
     private Vector3 newPosition;
     private void MoveBlock(GameObject block)
     {
-        if (GameManager.Instance.tutorial)
+        if (GameClient.Get<IGameplayManager>().IsTutorial)
             return;
 
         oldPosition = block.transform.localPosition;

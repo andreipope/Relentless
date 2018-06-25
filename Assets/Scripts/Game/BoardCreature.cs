@@ -1,528 +1,519 @@
-﻿// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
-
-using System;
+﻿using System;
 
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 
 using DG.Tweening;
 using TMPro;
-
-using CCGKit;
-
 using GrandDevs.CZB.Common;
-using GrandDevs.CZB;
 using System.Collections.Generic;
 using GrandDevs.CZB.Helpers;
 using GrandDevs.Internal;
+using GrandDevs.CZB.Data;
 
-public class BoardCreature : MonoBehaviour
+namespace GrandDevs.CZB
 {
-    public RuntimeCard card { get; private set; }
-
-    [HideInInspector]
-    public GameObject fightTargetingArrowPrefab;
-
-    [SerializeField]
-    protected SpriteRenderer pictureSprite;
-
-    [SerializeField]
-    protected SpriteRenderer frozenSprite;
-
-    [SerializeField]
-    protected TextMeshPro attackText;
-
-    [SerializeField]
-    protected TextMeshPro healthText;
-
-    [SerializeField]
-    protected ParticleSystem sleepingParticles;
-
-    [SerializeField]
-    protected SpriteRenderer glowSprite;
-
-    [HideInInspector]
-    public Player ownerPlayer;
-    [HideInInspector]
-    public TargetingArrow abilitiesTargetingArrow;
-    [HideInInspector]
-    public FightTargetingArrow fightTargetingArrow;
-
-    public Stat attackStat { get; protected set; }
-    public Stat healthStat { get; protected set; }
-
-    [HideInInspector]
-    public bool hasImpetus;
-    [HideInInspector]
-    public bool hasProvoke;
-
-    [HideInInspector]
-    public int numTurnsOnBoard;
-
-    protected Action<int, int> onAttackStatChangedDelegate;
-    protected Action<int, int> onHealthStatChangedDelegate;
-	public event Action CreatureOnDieEvent;
-	public event Action<object> CreatureOnAttackEvent;
-
-    private int _stunTurns = 0;
-
-    private Server _server;
-
-
-    public AnimationEventTriggering arrivalAnimationEventHandler;
-
-    public GameObject creatureContentObject;
-
-    public Animator creatureAnimator;
-
-    public List<CreatureAnimatorInfo> animatorControllers;
-
-    public bool IsPlayable
+    public class BoardCreature : MonoBehaviour
     {
-        set{
-            card.isPlayable = value;
+        public event Action CreatureOnDieEvent;
+        public event Action<object> CreatureOnAttackEvent;
 
-            var netCard = GameClient.Get<IPlayerManager>().playerInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
-            if(netCard == null)
-                netCard = GameClient.Get<IPlayerManager>().opponentInfo.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == card.instanceId);
-            if(netCard != null)
-                netCard.isPlayable = value;
-        }
-        get{
-            return card.isPlayable;
-        }
-    }
+        public event Action<int, int> CreatureHPChangedEvent;
+        public event Action<int, int> CreatureDamageChangedEvent;
 
-    public bool IsStun
-    {
-        get{ return (_stunTurns > 0 ? true : false); }
-    }
+        private ILoadObjectsManager _loadObjectsManager;
+        private IGameplayManager _gameplayManager;
+        private PlayerController _playerController;
+        private BattlegrdController _battlegroundController;
 
-    protected virtual void Awake()
-    {
-        Assert.IsNotNull(glowSprite);
-     //   Assert.IsNotNull(pictureSprite);
-        Assert.IsNotNull(attackText);
-        Assert.IsNotNull(healthText);
-        Assert.IsNotNull(sleepingParticles);
-        Assert.IsNotNull(arrivalAnimationEventHandler);
-        Assert.IsNotNull(creatureContentObject);
-        Assert.IsNotNull(creatureAnimator);
+        private GameObject _fightTargetingArrowPrefab;
 
-        fightTargetingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
+        private GameObject _selfObject;
 
-        arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
-    }
+        private SpriteRenderer pictureSprite;
+        private SpriteRenderer frozenSprite;
+        private SpriteRenderer glowSprite;
 
-    protected virtual void OnDestroy()
-    {
-        healthStat.onValueChanged -= onHealthStatChangedDelegate;
-        attackStat.onValueChanged -= onAttackStatChangedDelegate;
+        private TextMeshPro attackText;
+        private TextMeshPro healthText;
 
-       // if (ownerPlayer != null)
+        private ParticleSystem sleepingParticles;
+
+        public Player ownerPlayer;
+
+        private TargetingArrow abilitiesTargetingArrow;
+        private FightTargetingArrow fightTargetingArrow;
+
+
+        public bool hasImpetus;
+        public bool hasProvoke;
+        public int numTurnsOnBoard;
+
+        protected Action<int, int> onAttackStatChangedDelegate;
+        protected Action<int, int> onHealthStatChangedDelegate;
+
+
+        private int _stunTurns = 0;
+
+        private AnimationEventTriggering arrivalAnimationEventHandler;
+
+        private GameObject creatureContentObject;
+
+        private Animator creatureAnimator;
+
+        public List<CreatureAnimatorInfo> animatorControllers;
+
+        public int Damage { get; protected set; }
+        public int HP { get; protected set; }
+
+        public int initialDamage;
+        public int initialHP;
+
+        public bool IsPlayable { get; set; }
+
+        public Card Card { get; private set; }
+
+        public int InstanceId { get; private set; }
+
+        public bool IsStun
         {
+            get { return (_stunTurns > 0 ? true : false); }
+        }
+
+        public BoardCreature(Transform parent)
+        {
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegrdController>();
+            _playerController = _gameplayManager.GetController<PlayerController>();
+
+            _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(""));
+            _selfObject.transform.SetParent(parent, false);
+
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
+
+            pictureSprite = _selfObject.transform.Find("").GetComponent<SpriteRenderer>();
+            frozenSprite = _selfObject.transform.Find("").GetComponent<SpriteRenderer>();
+            glowSprite = _selfObject.transform.Find("").GetComponent<SpriteRenderer>();
+
+            attackText = _selfObject.transform.Find("").GetComponent<TextMeshPro>();
+            healthText = _selfObject.transform.Find("").GetComponent<TextMeshPro>();
+
+            sleepingParticles = _selfObject.transform.Find("").GetComponent<ParticleSystem>();
+
+            creatureAnimator = _selfObject.transform.Find("").GetComponent<Animator>();
+
+            creatureContentObject = _selfObject.transform.Find("").gameObject;
+
+            arrivalAnimationEventHandler = _selfObject.transform.Find("").GetComponent<AnimationEventTriggering>();
+
+            arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
+
+            animatorControllers = new List<CreatureAnimatorInfo>();
+            for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
+            {
+                animatorControllers.Add(new CreatureAnimatorInfo()
+                {
+                    animator = _loadObjectsManager.GetObjectByPath<RuntimeAnimatorController>(""),
+                    cardType = (Enumerators.CardType)i
+                });
+            }
+        }
+
+        public void Die()
+        {
+            CreatureHPChangedEvent -= onHealthStatChangedDelegate;
+            CreatureDamageChangedEvent -= onAttackStatChangedDelegate;
+
             CreatureOnDieEvent?.Invoke();
         }
 
-        if (_server != null && _server)
+        public void ArrivalAnimationEventHandler(string param)
         {
-            //var localPlayer = NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer;
-            //localPlayer.RearrangeTopBoard();
-            //localPlayer.RearrangeBottomBoard();
-        }
-    }
-
-    public virtual void ArrivalAnimationEventHandler(string param)
-    {
-        if (param.Equals("ArrivalAnimationDone"))
-        {
-            Debug.Log("hasImpetus = " + hasImpetus);
-            creatureContentObject.SetActive(true);
-            if (hasImpetus)
+            if (param.Equals("ArrivalAnimationDone"))
             {
-                //  frameSprite.sprite = frameSprites[1];
-                StopSleepingParticles();
-                if (ownerPlayer != null)
-                    SetHighlightingEnabled(true);
-            }
-
-
-            InternalTools.SetLayerRecursively(gameObject, 0);
-
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-            if(libraryCard.cardRarity == Enumerators.CardRarity.EPIC)
-            {
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME/2f, false, true);
-            }
-            else
-            {
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-            }
-
-
-            if (libraryCard.name.Equals("Freezzee"))
-            {
-                var freezzees = GetEnemyCreaturesList(this).FindAll(x => x.card.cardId == card.cardId);
-
-                if (freezzees.Count > 0)
+                Debug.Log("hasImpetus = " + hasImpetus);
+                creatureContentObject.SetActive(true);
+                if (hasImpetus)
                 {
-                    foreach (var creature in freezzees)
+                    //  frameSprite.sprite = frameSprites[1];
+                    StopSleepingParticles();
+                    if (ownerPlayer != null)
+                        SetHighlightingEnabled(true);
+                }
+
+
+                InternalTools.SetLayerRecursively(gameObject, 0);
+
+                if (Card.cardRarity == Enumerators.CardRarity.EPIC)
+                {
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
+                }
+                else
+                {
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                }
+
+
+                if (Card.name.Equals("Freezzee"))
+                {
+                    var freezzees = GetEnemyCreaturesList(this).FindAll(x => x.Card.id == Card.id);
+
+                    if (freezzees.Count > 0)
                     {
-                        creature.Stun(1);
-                        CreateFrozenVFX(creature.transform.position);
+                        foreach (var creature in freezzees)
+                        {
+                            creature.Stun(1);
+                            CreateFrozenVFX(creature.transform.position);
+                        }
                     }
                 }
             }
         }
-    }
 
-    private void CreateFrozenVFX(Vector3 pos)
-    {
-       var _frozenVFX = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
-        _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
-        DestroyCurrentParticle(_frozenVFX);
-    }
-
-    private void DestroyCurrentParticle(GameObject currentParticle, bool isDirectly = false, float time = 5f)
-    {
-        if (isDirectly)
-            DestroyParticle(new object[] { currentParticle });
-        else
-            GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
-    }
-
-    private void DestroyParticle(object[] param)
-    {
-        GameObject particleObj = param[0] as GameObject;
-        MonoBehaviour.Destroy(particleObj);
-    }
-
-    private List<BoardCreature> GetEnemyCreaturesList(BoardCreature creature)
-    {
-        if (NetworkingUtils.GetHumanLocalPlayer().playerBoardCardsList.Contains(creature))
-            return NetworkingUtils.GetHumanLocalPlayer().opponentBoardCardsList;
-        return NetworkingUtils.GetHumanLocalPlayer().playerBoardCardsList;
-    }
-
-    public virtual void PopulateWithInfo(RuntimeCard card, string setName = "")
-    {
-        this.card = card;
-         
-        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-        var rarity = Enum.GetName(typeof(Enumerators.CardRarity), libraryCard.cardRarity);
-
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), libraryCard.picture.ToLower()));
-
-        pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(libraryCard.cardViewInfo.position);
-        pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(libraryCard.cardViewInfo.scale);
-
-        creatureAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == libraryCard.cardType).animator;
-        if(libraryCard.cardType == Enumerators.CardType.WALKER)
+        private void CreateFrozenVFX(Vector3 pos)
         {
-            sleepingParticles.transform.position += Vector3.up * 0.7f;
+            var _frozenVFX = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
+            _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
+            DestroyCurrentParticle(_frozenVFX);
         }
 
-        attackStat = card.namedStats["DMG"];
-		healthStat = card.namedStats["HP"];
-
-        attackText.text = attackStat.effectiveValue.ToString();
-        healthText.text = healthStat.effectiveValue.ToString();
-
-
-        onAttackStatChangedDelegate = (oldValue, newValue) =>
+        private void DestroyCurrentParticle(GameObject currentParticle, bool isDirectly = false, float time = 5f)
         {
-            UpdateStatText(attackText, attackStat);
-        };
-        attackStat.onValueChanged += onAttackStatChangedDelegate;
+            if (isDirectly)
+                DestroyParticle(new object[] { currentParticle });
+            else
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
+        }
 
-        onHealthStatChangedDelegate = (oldValue, newValue) =>
+        private void DestroyParticle(object[] param)
         {
-			UpdateStatText(healthText, healthStat);
-        };
-        healthStat.onValueChanged += onHealthStatChangedDelegate;
+            GameObject particleObj = param[0] as GameObject;
+            MonoBehaviour.Destroy(particleObj);
+        }
 
-
-        switch (libraryCard.cardType)
+        private List<BoardCreature> GetEnemyCreaturesList(BoardCreature creature)
         {
-            case Enumerators.CardType.FERAL:
-                Debug.Log("hasImpetus = true");
-                hasImpetus = true;
+            if (_gameplayManager.GetLocalPlayer().BoardCards.Contains(creature))
+                return _gameplayManager.GetAIPlayer().BoardCards;
+            return _gameplayManager.GetLocalPlayer().BoardCards;
+        }
+
+        public virtual void PopulateWithInfo(Card card, string setName = "")
+        {
+            Card = card;
+
+
+
+            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), Card.cardRarity);
+
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), Card.picture.ToLower()));
+
+            pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.cardViewInfo.position);
+            pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.cardViewInfo.scale);
+
+            creatureAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.cardType).animator;
+            if (Card.cardType == Enumerators.CardType.WALKER)
+            {
+                sleepingParticles.transform.position += Vector3.up * 0.7f;
+            }
+
+            Damage = card.damage;
+            HP = card.health;
+
+            initialDamage = Damage;
+            initialHP = HP;
+
+            attackText.text = Damage.ToString();
+            healthText.text = HP.ToString();
+
+
+            onAttackStatChangedDelegate = (oldValue, newValue) =>
+            {
+                UpdateStatText(attackText, Damage, initialDamage);
+            };
+
+            CreatureDamageChangedEvent += onAttackStatChangedDelegate;
+
+            onHealthStatChangedDelegate = (oldValue, newValue) =>
+            {
+                UpdateStatText(healthText, HP, initialHP);
+            };
+
+            CreatureHPChangedEvent += onHealthStatChangedDelegate;
+
+
+            switch (Card.cardType)
+            {
+                case Enumerators.CardType.FERAL:
+                    Debug.Log("hasImpetus = true");
+                    hasImpetus = true;
+                    IsPlayable = true;
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    break;
+                case Enumerators.CardType.HEAVY:
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    hasProvoke = true;
+                    break;
+                default:
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    break;
+            }
+
+            if (hasProvoke)
+            {
+                //   glowSprite.gameObject.SetActive(false);
+                //  pictureMaskTransform.localScale = new Vector3(50, 55, 1);
+                // frameSprite.sprite = frameSprites[2];
+            }
+            SetHighlightingEnabled(false);
+
+            creatureAnimator.StopPlayback();
+            creatureAnimator.Play(0);
+        }
+
+        public void PlayArrivalAnimation()
+        {
+            creatureAnimator.SetTrigger("Active");
+        }
+
+        public void OnStartTurn()
+        {
+            numTurnsOnBoard += 1;
+            StopSleepingParticles();
+
+            if (ownerPlayer != null && IsPlayable)
+                SetHighlightingEnabled(true);
+        }
+
+        public void OnEndTurn()
+        {
+            if (_stunTurns > 0)
+                _stunTurns--;
+            if (_stunTurns == 0)
+            {
                 IsPlayable = true;
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                break;
-            case Enumerators.CardType.HEAVY:
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                hasProvoke = true;
-                break;
-            default:
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                break;
+                frozenSprite.DOFade(0, 1);
+            }
+
+            CancelTargetingArrows();
         }
 
-        if (hasProvoke)
+        public void Stun(int turns)
         {
-         //   glowSprite.gameObject.SetActive(false);
-          //  pictureMaskTransform.localScale = new Vector3(50, 55, 1);
-           // frameSprite.sprite = frameSprites[2];
-        }
-        SetHighlightingEnabled(false);
+            Debug.Log("WAS STUNED");
+            if (turns > _stunTurns)
+                _stunTurns = turns;
+            IsPlayable = false;
 
-        creatureAnimator.StopPlayback();
-        creatureAnimator.Play(0);
-    }
-
-    public void PlayArrivalAnimation()
-    {
-        creatureAnimator.SetTrigger("Active");
-    }
-
-    public void OnStartTurn()
-    {
-        numTurnsOnBoard += 1;
-        StopSleepingParticles();
-
-        if (ownerPlayer != null && IsPlayable)
-            SetHighlightingEnabled(true);
-    }
-
-    public void OnEndTurn()
-    {
-        if(_stunTurns > 0)
-            _stunTurns--;
-        if (_stunTurns == 0)
-        {
-            IsPlayable = true;
-            frozenSprite.DOFade(0, 1);
+            frozenSprite.DOFade(1, 1);
+            //sleepingParticles.Play();
         }
 
-        CancelTargetingArrows();
-    }
-
-	public void Stun(int turns)
-	{
-        Debug.Log("WAS STUNED");
-        if(turns > _stunTurns)
-            _stunTurns = turns;
-        IsPlayable = false;
-
-        frozenSprite.DOFade(1, 1);
-        //sleepingParticles.Play();
-    }
-
-    public void CancelTargetingArrows()
-    {
-        if (abilitiesTargetingArrow != null)
+        public void CancelTargetingArrows()
         {
-            Destroy(abilitiesTargetingArrow.gameObject);
+            if (abilitiesTargetingArrow != null)
+            {
+                Destroy(abilitiesTargetingArrow.gameObject);
+            }
+            if (fightTargetingArrow != null)
+            {
+                Destroy(fightTargetingArrow.gameObject);
+            }
         }
-        if (fightTargetingArrow != null)
-        {
-            Destroy(fightTargetingArrow.gameObject);
-        }
-    }
 
-    private void UpdateStatText(TextMeshPro text, Stat stat)
-    {
-        if (text == null || !text || !gameObject)
-            return;
+        private void UpdateStatText(TextMeshPro text, int stat, int initialStat)
+        {
+            if (text == null || !text)
+                return;
 
-        text.text = stat.effectiveValue.ToString();
-        if (stat.effectiveValue > stat.originalValue)
-        {
-            text.color = Color.green;
-        }
-        else if (stat.effectiveValue < stat.originalValue)
-        {
-            text.color = Color.red;
-        }
-        else
-        {
-            if (stat.statId == 1)
-                text.color = Color.white;
+            text.text = stat.ToString();
+            if (stat > initialStat)
+            {
+                text.color = Color.green;
+            }
+            else if (stat < initialStat)
+            {
+                text.color = Color.red;
+            }
             else
-                text.color = Color.black;
-        }
-        var sequence = DOTween.Sequence();
-        sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
-        sequence.Append(text.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.2f));
-        sequence.Play();
-    }
-
-    public void SetHighlightingEnabled(bool enabled)
-    {
-		glowSprite.enabled = enabled;
-	}
-
-    public void StopSleepingParticles()
-    {
-        if(sleepingParticles != null)
-        sleepingParticles.Stop();
-    }
-
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (collider.transform.parent != null)
-        {
-            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
-            if (targetingArrow != null)
             {
-                targetingArrow.OnCardSelected(this);
+                // if (stat.statId == 1)
+                text.color = Color.white;
+                //  else
+                //    text.color = Color.black;
             }
+            var sequence = DOTween.Sequence();
+            sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
+            sequence.Append(text.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.2f));
+            sequence.Play();
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D collider)
-    {
-        if (collider.transform.parent != null)
+        public void SetHighlightingEnabled(bool enabled)
         {
-            var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
-            if (targetingArrow != null)
-            {
-                targetingArrow.OnCardUnselected(this);
-            }
+            glowSprite.enabled = enabled;
         }
-    }
 
-    private void OnMouseDown()
-    {
-        //if (fightTargetingArrowPrefab == null)
-        //    return;
-
-        //Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
-
-        if (ownerPlayer != null && ownerPlayer.isActivePlayer && IsPlayable)
+        public void StopSleepingParticles()
         {
-            fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
-            fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
-            fightTargetingArrow.opponentBoardZone = ownerPlayer.opponentBoardZone;
-            fightTargetingArrow.Begin(transform.position);
+            if (sleepingParticles != null)
+                sleepingParticles.Stop();
+        }
 
-            // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
-            if (ownerPlayer is DemoHumanPlayer)
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.transform.parent != null)
             {
-                (ownerPlayer as DemoHumanPlayer).DestroyCardPreview();
-                (ownerPlayer as DemoHumanPlayer).isCardSelected = true;
-
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                if (targetingArrow != null)
                 {
-                    GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
+                    targetingArrow.OnCardSelected(this);
                 }
             }
         }
-    }
 
-    private void OnMouseUp()
-    {
-        if (fightTargetingArrow != null)
+        private void OnTriggerExit2D(Collider2D collider)
         {
-            fightTargetingArrow.End(this);
-
-            // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
-            if (ownerPlayer is DemoHumanPlayer)
+            if (collider.transform.parent != null)
             {
-                (ownerPlayer as DemoHumanPlayer).isCardSelected = false;
-
-
+                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                if (targetingArrow != null)
+                {
+                    targetingArrow.OnCardUnselected(this);
+                }
             }
         }
-    }
 
-    public void ResolveCombat()
-    {
-        var sortingGroup = GetComponent<SortingGroup>();
-        if (fightTargetingArrow != null)
-        {	
-            if (fightTargetingArrow.selectedPlayer != null)
+        private void OnMouseDown()
+        {
+            //if (fightTargetingArrowPrefab == null)
+            //    return;
+
+            //Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
+
+            if (ownerPlayer != null && _playerController.IsActive && IsPlayable)
             {
-                var targetPlayer = fightTargetingArrow.selectedPlayer;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
+                fightTargetingArrow = Instantiate(_fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
+                fightTargetingArrow.targetType = EffectTarget.OpponentOrOpponentCreature;
+                fightTargetingArrow.BoardCards = ownerPlayer.BoardCards;
+                fightTargetingArrow.Begin(transform.position);
 
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-       //         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                //sortingGroup.sortingOrder = 100;
-                CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
+                // WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ONLY FOR PLAYER!!!!! IMPROVE IT
+                if (ownerPlayer.Equals(_gameplayManager.GetLocalPlayer()))
                 {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _battlegroundController.DestroyCardPreview();
+                    _playerController.IsCardSelected = true;
 
-                    Vector3 positionOfVFX = targetPlayer.transform.position;
-                    positionOfVFX.y = 4.45f;
-
-                     (ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, positionOfVFX, attackStat.effectiveValue);
-
-					ownerPlayer.FightPlayer(card);
-                    CreatureOnAttackEvent?.Invoke(targetPlayer);
-                },
-                () =>
-                {
-                    //sortingGroup.sortingOrder = 0;
-                    fightTargetingArrow = null;
-                });
-            }
-            if (fightTargetingArrow.selectedCard != null)                                                                                 
-            {
-                var targetCard = fightTargetingArrow.selectedCard;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
-
-
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                //sortingGroup.sortingOrder = 100;
-                if (targetCard != GetComponent<BoardCreature>() &&
-                    targetCard.GetComponent<HandCard>() == null)
-                {
-
-                    // play sound when target creature attack more than our
-                    if (targetCard.attackStat.effectiveValue > attackStat.effectiveValue)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial)
                     {
-                        libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(targetCard.card.cardId);
-                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                        GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
                     }
+                }
+            }
+        }
 
-                    CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
+        private void OnMouseUp()
+        {
+            if (fightTargetingArrow != null)
+            {
+                fightTargetingArrow.End(this);
+
+                if (ownerPlayer.Equals(_gameplayManager.GetLocalPlayer()))
+                {
+                    _playerController.IsCardSelected = false;
+                }
+            }
+        }
+
+        public void ResolveCombat()
+        {
+            var sortingGroup = GetComponent<SortingGroup>();
+            if (fightTargetingArrow != null)
+            {
+                if (fightTargetingArrow.selectedPlayer != null)
+                {
+                    var targetPlayer = fightTargetingArrow.selectedPlayer;
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+
+
+                    //         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                    //sortingGroup.sortingOrder = 100;
+                    CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                     {
-                        Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
-                        (ownerPlayer as DemoHumanPlayer).PlayAttackVFX(card.type, targetCard.transform.position, attackStat.effectiveValue);
+                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-						ownerPlayer.FightCreature(card, targetCard.card);
-                        CreatureOnAttackEvent?.Invoke(targetCard);
+                        Vector3 positionOfVFX = targetPlayer.transform.position;
+                        positionOfVFX.y = 4.45f;
+
+                        PlayAttackVFX(Card.cardType, positionOfVFX, Damage);
+
+                        ownerPlayer.FightPlayer(card);
+                        CreatureOnAttackEvent?.Invoke(targetPlayer);
                     },
                     () =>
                     {
-                        //sortingGroup.sortingOrder = 0;
-                        fightTargetingArrow = null;
+                    //sortingGroup.sortingOrder = 0;
+                    fightTargetingArrow = null;
                     });
                 }
-            }
-            if(fightTargetingArrow.selectedCard == null && fightTargetingArrow.selectedPlayer == null)
-            {
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                if (fightTargetingArrow.selectedCard != null)
                 {
-                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                    var targetCard = fightTargetingArrow.selectedCard;
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+
+
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                    //sortingGroup.sortingOrder = 100;
+                    if (targetCard != GetComponent<BoardCreature>() &&
+                        targetCard.GetComponent<HandCard>() == null)
+                    {
+
+                        // play sound when target creature attack more than our
+                        if (targetCard.Damage > Damage)
+                        {
+                            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                        }
+
+                        CombatAnimation.PlayFightAnimation(gameObject, targetCard.gameObject, 0.5f, () =>
+                        {
+                            Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
+                            PlayAttackVFX(Card.cardType, targetCard.transform.position, Damage);
+
+                            ownerPlayer.FightCreature(Card, targetCard.Card);
+                            CreatureOnAttackEvent?.Invoke(targetCard);
+                        },
+                        () =>
+                        {
+                        //sortingGroup.sortingOrder = 0;
+                        fightTargetingArrow = null;
+                        });
+                    }
+                }
+                if (fightTargetingArrow.selectedCard == null && fightTargetingArrow.selectedPlayer == null)
+                {
+                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                    }
                 }
             }
         }
+
+        public void CreatureOnAttack(object target)
+        {
+            CreatureOnAttackEvent?.Invoke(target);
+        }
     }
 
-    public void CreatureOnAttack(object target)
+    [Serializable]
+    public class CreatureAnimatorInfo
     {
-        CreatureOnAttackEvent?.Invoke(target);
+        public Enumerators.CardType cardType;
+        public RuntimeAnimatorController animator;
     }
-
-}
-
-[Serializable]
-public class CreatureAnimatorInfo
-{
-    public Enumerators.CardType cardType;
-    public RuntimeAnimatorController animator;
 }

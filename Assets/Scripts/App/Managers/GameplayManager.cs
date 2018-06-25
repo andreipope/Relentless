@@ -10,11 +10,26 @@ namespace GrandDevs.CZB
 {
     public class GameplayManager : IService, IGameplayManager
     {
+        public event Action OnGameStartedEvent;
+        public event Action OnGameEndedEvent;
+        public event Action OnTurnStartedEvent;
+        public event Action OnTurnEndedEvent;
+
         private List<IController> _controllers;
 
         public int PlayerDeckId { get; set; }
         public int OpponentDeckId { get; set; }
 
+
+        public bool GameStarted { get; set; }
+        public bool IsTutorial { get; set; }
+
+        public int TurnDuration { get; set; }
+        public int CurrentTurn { get; set; }
+
+        public int TutorialStep { get; set; }
+
+        public List<Player> PlayersInGame { get; set; }
 
         public void Dispose()
         {
@@ -48,7 +63,10 @@ namespace GrandDevs.CZB
         {
             _controllers = new List<IController>();
             _controllers.Add(new AbilitiesController());
-            _controllers.Add(new ParticlesController());            
+            _controllers.Add(new ParticlesController());
+            _controllers.Add(new PlayerController());
+            _controllers.Add(new ActionsQueueController());
+            _controllers.Add(new BattlegrdController());
         }
 
         public string GetCardSet(Data.Card card)
@@ -64,8 +82,34 @@ namespace GrandDevs.CZB
 
         public void RearrangeHands()
         {
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
+            GetController<BattlegrdController>().RearrangeBottomBoard();
+            GetController<BattlegrdController>().RearrangeTopBoard();
+        }
+
+        public void StartGameplay()
+        {
+            GameStarted = true;
+        }
+
+        public void StopGameplay()
+        {
+            GameStarted = false;
+        }
+
+
+        public void EndTurn()
+        {
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.END_TURN);
+        }
+
+        public Player GetLocalPlayer()
+        {
+            return PlayersInGame.Find(x => x.IsLocalPlayer);
+        }
+
+        public Player GetAIPlayer()
+        {
+            return PlayersInGame.Find(x => !x.IsLocalPlayer);
         }
     }
 }

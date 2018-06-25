@@ -118,14 +118,9 @@ namespace GrandDevs.CZB
 
                         // GameNetworkManager.Instance.onlineScene = "GAMEPLAY";
 
-                        if (MonoBehaviour.FindObjectOfType<GameNetworkManager>() == null)
-                            MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/GameNetworkManager"));
-
-                        GameNetworkManager.Instance.StartMatchMaker();
-                        GameNetworkManager.Instance.isSinglePlayer = true;
-                        GameNetworkManager.Instance.StartHost();
-
-                        MatchMaker.Instance.StartMatch();
+                        //MatchMaker.Instance.StartMatch();
+                        GameClient.Get<IGameplayManager>().StartGameplay();
+                
 
                         //GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                         //_scenesManager.ChangeScene(Enumerators.AppState.GAMEPLAY);

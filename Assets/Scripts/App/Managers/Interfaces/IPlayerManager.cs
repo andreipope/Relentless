@@ -12,12 +12,12 @@ namespace GrandDevs.CZB
         event Action<int> OnOpponentGraveyardUpdatedEvent;
 
         Action OnLocalPlayerSetUp { get; set; }
-        Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
+        Action<BoardCreature> OnBoardCardKilled { get; set; }
         User LocalUser { get; set; }
         List<BoardCreature> PlayerGraveyardCards { get; set; }
         List<BoardCreature> OpponentGraveyardCards { get; set; }
-        PlayerInfo playerInfo { get; set; }
-        PlayerInfo opponentInfo { get; set; }
+        Player PlayerInfo { get; set; }
+        Player OpponentInfo { get; set; }
 
 
         void UpdatePlayerGraveyard(int index);

@@ -240,7 +240,7 @@ namespace GrandDevs.CZB
             }
             else if (_creature != null)
             {
-                int damageToUs = _creature.attackStat.effectiveValue;
+                int damageToUs = _creature.Damage.effectiveValue;
 
                 PlayAttackAnimationOnTarget(_creature.gameObject, () =>
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandDevs.CZB.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,111 +7,50 @@ using UnityEngine;
 namespace GrandDevs.CZB
 {
     public class PlayerController : IController
-    {        1
+    {
         public event Action OnEndTurnEvent;
         public event Action OnStartTurnEvent;
 
-        /// <summary>
-        /// True if this player is the current active player in the game; false otherwise. 'Active' meaning
-        /// the current game turn is his turn.
-        /// </summary>
-        public bool isActivePlayer;
 
-        /// <summary>
-        /// True if this player is controlled by a human; false otherwise (AI).
-        /// </summary>
-        public bool isHuman;
+        private IGameplayManager _gameplayManager;
+        private IDataManager _dataManager;
+        private AbilitiesController _abilitiesController;
 
-        /// <summary>
-        /// Cached network client.
-        /// </summary>
-        protected NetworkClient client;
-
-        protected GameState gameState = new GameState();
-        public PlayerInfo playerInfo = new PlayerInfo();
-        public PlayerInfo opponentInfo = new PlayerInfo();
-
-        /// <summary>
-        /// True if the game has started; false otherwise.
-        /// </summary>
-        public bool gameStarted;
-
-        public bool gameEnded;
-
-
-        /// <summary>
-        /// Index of this player in the game.
-        /// </summary>
-        public int playerIndex;
-
-        /// <summary>
-        /// This game's turn duration (in seconds).
-        /// </summary>
-        public int turnDuration;
-
-        protected EffectSolver effectSolver;
-
-        public int CurrentTurn;
-
-        private AbilitiesController abilitiesController;
-        private Server _server;
-
-        public EffectSolver EffectSolver
-        {
-            get
-            {
-                return effectSolver;
-            }
-            set
-            {
-                effectSolver = value;
-            }
-        }
-
+        public Player PlayerInfo { get; protected set; }
 
         public BoardWeapon CurrentBoardWeapon { get; protected set; }
-        public bool AlreadyAttackedInThisTurn { get; set; }
-        public bool isPlayerStunned { get; set; }
-
-        public virtual List<BoardCreature> opponentBoardCardsList { get; set; }
-        public virtual List<BoardCreature> playerBoardCardsList { get; set; }
-
-        public RuntimeZone deckZone;
-        public RuntimeZone handZone;
-        public RuntimeZone boardZone;
-        public RuntimeZone graveyardZone;
-
-        public RuntimeZone opponentDeckZone;
-        public RuntimeZone opponentHandZone;
-        public RuntimeZone opponentBoardZone;
-        public RuntimeZone opponentGraveyardZone;
-
-        public int heroDeckId;
-        public int opponentDeckId;
-
         public BoardSkill boardSkill { get; protected set; }
 
-        protected virtual void Awake()
+
+        public bool AlreadyAttackedInThisTurn { get; set; }
+        public bool IsPlayerStunned { get; set; }
+        public bool IsCardSelected { get; set; }
+        public bool IsActive { get; set; }
+
+
+        public PlayerController()
         {
-            client = NetworkManager.singleton.client;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+
+            GameClient.Get<IPlayerManager>().PlayerInfo = PlayerInfo;
+
+
+            _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
+            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.OnTurnStartedEvent += OnTurnStartedEventHandler;
+            _gameplayManager.OnTurnEndedEvent += OnTurnEndedEventHandler;
         }
 
-        protected virtual void Awake()
+        public void Dispose()
         {
-            client = NetworkManager.singleton.client;
         }
 
-        protected virtual void Start()
+        public void Update()
         {
-            //plugin doesn't use id's at all... very strange
-            playerInfo.id = 0;
-            opponentInfo.id = 1;
-
-            GameClient.Get<IPlayerManager>().playerInfo = playerInfo;
-            GameClient.Get<IPlayerManager>().opponentInfo = opponentInfo;
-            abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
         }
-
 
         public void CallOnEndTurnEvent()
         {
@@ -122,135 +62,79 @@ namespace GrandDevs.CZB
             OnStartTurnEvent?.Invoke();
         }
 
-        public PlayerController()
+        public void InitializePlayer()
         {
-        }
+            var playerDeck = new List<int>();
 
-        public void Dispose()
-        {
-        }
-
-        public void Update()
-        {
-        }
-
-
-        protected virtual void RegisterWithServer()
-        {
-            var msgDefaultDeck = new List<int>();
-
-            //var defaultDeckIndex = isHuman ? PlayerPrefs.GetInt("default_deck") : PlayerPrefs.GetInt("default_ai_deck");
-
-            if (GameManager.Instance.tutorial)
+            if (_gameplayManager.IsTutorial)
             {
-                if (isHuman)
-                {
-                    msgDefaultDeck.Add(21);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(1);
-                    msgDefaultDeck.Add(18);
-                }
-                else
-                {
-                    msgDefaultDeck.Add(10);
-                    msgDefaultDeck.Add(7);
-                    msgDefaultDeck.Add(11);
-                    msgDefaultDeck.Add(10);
-                    msgDefaultDeck.Add(10);
-                }
-                //int deckId = (GameClient.Get<IUIManager>().GetPage<GameplayPage>() as GameplayPage).CurrentDeckId;
-                // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].heroId = 1;
-                // int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[deckId]. = 1;
+                playerDeck.Add(21);
+                playerDeck.Add(1);
+                playerDeck.Add(1);
+                playerDeck.Add(1);
+                playerDeck.Add(18);
+
+                // move to ai controller ------------------------------------------------------
+                /*   msgDefaultDeck.Add(10);
+                   msgDefaultDeck.Add(7);
+                   msgDefaultDeck.Add(11);
+                   msgDefaultDeck.Add(10);
+                   msgDefaultDeck.Add(10); */
             }
             else
             {
-                if (isHuman)
+                var deckId = _gameplayManager.PlayerDeckId;
+                foreach (var card in _dataManager.CachedDecksData.decks[deckId].cards)
                 {
-                    var deckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-                    foreach (var card in GameClient.Get<IDataManager>().CachedDecksData.decks[deckId].cards)
+                    for (var i = 0; i < card.amount; i++)
                     {
-                        for (var i = 0; i < card.amount; i++)
+                        if (Constants.DEV_MODE)
                         {
-                            if (Constants.DEV_MODE)
-                            {
-                                //card.cardId = 27;
-                            }
-                            msgDefaultDeck.Add(card.cardId);
+                            //card.cardId = 27; 
                         }
+
+                        playerDeck.Add(card.cardId);
                     }
                 }
-                else
-                {
-                    var deckId = GameClient.Get<IGameplayManager>().OpponentDeckId;
-                    foreach (var card in GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].cards)
-                    {
-                        for (var i = 0; i < card.amount; i++)
-                        {
-                            if (Constants.DEV_MODE)
-                            {
-                                //card.cardId = 1;
-                            }
-                            msgDefaultDeck.Add(card.cardId);
-                        }
-                    }
-                    var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId];
-                }
+
+                // move to ai controller ------------------------------------------------------
+                /*
+                   var deckId = GameClient.Get<IGameplayManager>().OpponentDeckId;
+                   foreach (var card in GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[deckId].cards)
+                   {
+                       for (var i = 0; i < card.amount; i++)
+                       {
+                           if (Constants.DEV_MODE)
+                           {
+                               //card.cardId = 1;
+                           }
+                           playerDeck.Add(card.cardId);
+                       }
+                   }
+                   */
             }
 
-            // Register the player to the game and send the server his information.
-            var msg = new RegisterPlayerMessage();
-            msg.netId = netId;
-            if (isHuman)
-            {
-                var playerName = PlayerPrefs.GetString("player_name");
-                msg.name = string.IsNullOrEmpty(playerName) ? "Unnamed Wizard" : playerName;
-            }
-            else
-            {
-                msg.name = "Turing Machine";
-            }
-            msg.isHuman = isHuman;
-            msg.deck = msgDefaultDeck.ToArray();
-            client.Send(NetworkProtocol.RegisterPlayer, msg);
+            PlayerInfo.CardsInDeck = playerDeck;
         }
 
-        public virtual void OnStartGame(StartGameMessage msg)
+        public virtual void OnGameStartedEventHandler()
         {
-            gameStarted = true;
-            playerIndex = msg.playerIndex;
-            turnDuration = msg.turnDuration;
-
-            effectSolver = new EffectSolver(gameState, msg.rngSeed);
-            effectSolver.SetTriggers(playerInfo);
-            effectSolver.SetTriggers(opponentInfo);
             LoadPlayerStates(msg.player, msg.opponent);
         }
 
 
-        public virtual void OnEndGame(EndGameMessage msg)
+        public virtual void OnGameEndedEventHandler()
         {
-            gameEnded = true;
+           
         }
 
-        public virtual void OnStartTurn(StartTurnMessage msg)
+        public virtual void OnStartTurn()
         {
-            if (msg.isRecipientTheActivePlayer)
-            {
-                isActivePlayer = true;
-                CleanupTurnLocalState();
 
-                gameState.currentPlayer = playerInfo;
-                gameState.currentOpponent = opponentInfo;
-            }
-            else
-            {
-                gameState.currentPlayer = opponentInfo;
-                gameState.currentOpponent = playerInfo;
-            }
-            EffectSolver.OnTurnStarted();
+            CleanupTurnLocalState();
+
+
             LoadPlayerStates(msg.player, msg.opponent, msg.isRecipientTheActivePlayer);
-            CurrentTurn = msg.turn;
         }
 
         public RuntimeCard InitializeRuntimeCard(NetCard card, PlayerInfo player)
@@ -306,54 +190,36 @@ namespace GrandDevs.CZB
             }
             else if (this is DemoAIPlayer)
             {
+                /* // move to ai controller
                 var createdHandCard = controlPlayer.AddCardToOpponentHand();
                 createdHandCard.transform.position = cardPosition;
-                controlPlayer.RearrangeOpponentHand(true, false);
+                controlPlayer.RearrangeOpponentHand(true, false); */
             }
-
-            EffectSolver.SetDestroyConditions(runtimeCard);
-            EffectSolver.SetTriggers(runtimeCard);
         }
 
-        public virtual void OnEndTurn(EndTurnMessage msg)
+        public void OnTurnEndedEventHandler()
         {
-            if (msg.isRecipientTheActivePlayer)
-            {
-                isActivePlayer = false;
-                CleanupTurnLocalState();
-            }
+            //foreach (var entry in gameState.currentPlayer.stats)
+            //{
+            //    entry.Value.OnEndTurn();
+            //}
 
-            EffectSolver.OnTurnEnded();
-
-            foreach (var entry in gameState.currentPlayer.stats)
-            {
-                entry.Value.OnEndTurn();
-            }
-
-            foreach (var zone in gameState.currentPlayer.zones)
-            {
-                foreach (var card in zone.Value.cards)
-                {
-                    foreach (var stat in card.stats)
-                    {
-                        stat.Value.OnEndTurn();
-                    }
-                }
-            }
+            //foreach (var zone in gameState.currentPlayer.zones)
+            //{
+            //    foreach (var card in zone.Value.cards)
+            //    {
+            //        foreach (var stat in card.stats)
+            //        {
+            //            stat.Value.OnEndTurn();
+            //        }
+            //    }
+            //}
         }
 
-        public virtual void StopTurn()
+        public void OnTurnStartedEventHandler()
         {
-            if (!isLocalPlayer)
-                return;
 
-            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.END_TURN);
-
-            isActivePlayer = false;
-            var msg = new StopTurnMessage();
-            client.Send(NetworkProtocol.StopTurn, msg);
         }
-
 
 
         public virtual void OnCardMoved(CardMovedMessage msg)
@@ -432,40 +298,40 @@ namespace GrandDevs.CZB
 
         public void PlayCreatureCard(RuntimeCard card, List<int> targetInfo = null)
         {
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+            var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
 
-            if (!Constants.DEV_MODE || (this is DemoAIPlayer))
-                playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
+            if (!Constants.DEV_MODE)
+                PlayerInfo.Mana -= libraryCard.cost;
 
-            var msg = new MoveCardMessage();
-            msg.playerNetId = netId;
-            msg.cardInstanceId = card.instanceId;
-            msg.originZoneId = playerInfo.namedZones["Hand"].zoneId;
-            msg.destinationZoneId = playerInfo.namedZones["Board"].zoneId;
-            if (targetInfo != null)
-            {
-                msg.targetInfo = targetInfo.ToArray();
-            }
-            client.Send(NetworkProtocol.MoveCard, msg);
+            //var msg = new MoveCardMessage();
+            //msg.playerNetId = netId;
+            //msg.cardInstanceId = card.instanceId;
+            //msg.originZoneId = playerInfo.namedZones["Hand"].zoneId;
+            //msg.destinationZoneId = playerInfo.namedZones["Board"].zoneId;
+            //if (targetInfo != null)
+            //{
+            //    msg.targetInfo = targetInfo.ToArray();
+            //}
+            //client.Send(NetworkProtocol.MoveCard, msg);
         }
 
         public void PlaySpellCard(RuntimeCard card, List<int> targetInfo = null)
         {
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+            var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
 
-            if (!Constants.DEV_MODE || (this is DemoAIPlayer))
-                playerInfo.namedStats["Mana"].baseValue -= libraryCard.cost;
+            if (!Constants.DEV_MODE)
+                PlayerInfo.Mana -= libraryCard.cost;
 
-            var msg = new MoveCardMessage();
-            msg.playerNetId = netId;
-            msg.cardInstanceId = card.instanceId;
-            msg.originZoneId = playerInfo.namedZones["Hand"].zoneId;
-            msg.destinationZoneId = playerInfo.namedZones["Board"].zoneId;
-            if (targetInfo != null)
-            {
-                msg.targetInfo = targetInfo.ToArray();
-            }
-            client.Send(NetworkProtocol.MoveCard, msg);
+            //var msg = new MoveCardMessage();
+            //msg.playerNetId = netId;
+            //msg.cardInstanceId = card.instanceId;
+            //msg.originZoneId = playerInfo.namedZones["Hand"].zoneId;
+            //msg.destinationZoneId = playerInfo.namedZones["Board"].zoneId;
+            //if (targetInfo != null)
+            //{
+            //    msg.targetInfo = targetInfo.ToArray();
+            //}
+            //client.Send(NetworkProtocol.MoveCard, msg);
         }
 
         public void FightPlayer(RuntimeCard attackingCard)
@@ -568,5 +434,112 @@ namespace GrandDevs.CZB
         public virtual void DestroyWeapon()
         {
         }
+
+        public void PlayCard(CardView card, HandCard handCard)
+        {
+            if (card.CanBePlayed(this))
+            {
+                gameUI.endTurnButton.SetEnabled(false);
+
+                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.card.cardId);
+
+                string cardSetName = string.Empty;
+                foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+                {
+                    if (cardSet.cards.IndexOf(libraryCard) > -1)
+                        cardSetName = cardSet.name;
+                }
+
+                card.transform.DORotate(Vector3.zero, .1f);
+                card.GetComponent<HandCard>().enabled = false;
+
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+                {
+                    int indexOfCard = 0;
+                    float newCreatureCardPosition = card.transform.position.x;
+
+                    // set correct position on board depends from card view position
+                    for (int i = 0; i < playerBoardCards.Count; i++)
+                    {
+                        if (newCreatureCardPosition > playerBoardCards[i].transform.position.x)
+                            indexOfCard = i + 1;
+                        else break;
+                    }
+
+                    var boardCreature = Instantiate(boardCreaturePrefab);
+
+                    var board = GameObject.Find("PlayerBoard");
+                    boardCreature.tag = "PlayerOwned";
+                    boardCreature.transform.parent = board.transform;
+                    boardCreature.transform.position = new Vector2(1.9f * playerBoardCards.Count, 0);
+                    boardCreature.GetComponent<BoardCreature>().ownerPlayer = this;
+                    boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card.card, cardSetName);
+
+                    playerHandCards.Remove(card);
+                    RearrangeHand();
+                    playerBoardCards.Insert(indexOfCard, boardCreature.GetComponent<BoardCreature>());
+
+                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                    {
+                        GraveyardCardsCount++;
+                    }, null, 1f);
+
+                    //Destroy(card.gameObject);
+                    card.removeCardParticle.Play();
+
+
+                    currentCreature = boardCreature.GetComponent<BoardCreature>();
+
+
+                    Sequence animationSequence = DOTween.Sequence();
+                    animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                    animationSequence.OnComplete(() =>
+                    {
+                        RemoveCard(new object[] { card });
+                        _timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { boardCreature.GetComponent<BoardCreature>() }, 0.1f, false);
+                    });
+
+                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
+                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
+
+                    RearrangeBottomBoard(() =>
+                    {
+                        CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay, true);
+                    });
+
+                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
+                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+
+                }
+                else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                {
+                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
+                    //var sequence = DOTween.Sequence();
+                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
+                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
+                    //sequence.Play().OnComplete(() =>
+                    //{ 
+                    card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                    card.GetComponent<SortingGroup>().sortingOrder = 1000;
+
+                    var boardSpell = card.gameObject.AddComponent<BoardSpell>();
+
+                    Debug.Log(card.name);
+
+                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, handCard: handCard);
+                    //});
+                }
+            }
+            else
+            {
+                card.GetComponent<HandCard>().ResetToInitialPosition();
+            }
+        }
     }
 }
+ 

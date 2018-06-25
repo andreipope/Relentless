@@ -61,9 +61,9 @@ namespace GrandDevs.CZB
                     if (targetCardInfo.cardSetType == setType || setType == Enumerators.SetType.NONE)
                     {
                         if (statType == Enumerators.StatType.DAMAGE)
-                            targetCreature.attackStat.AddModifier(new Modifier(value));
+                            targetCreature.Damage.AddModifier(new Modifier(value));
                         else if (statType == Enumerators.StatType.HEALTH)
-                            targetCreature.healthStat.AddModifier(new Modifier(value));
+                            targetCreature.HP.AddModifier(new Modifier(value));
 
                         CreateVFX(targetCreature.transform.position);
                     }
