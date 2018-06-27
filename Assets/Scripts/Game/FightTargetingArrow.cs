@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 namespace GrandDevs.CZB
 {
     public class FightTargetingArrow : TargetingArrow
@@ -25,15 +24,14 @@ namespace GrandDevs.CZB
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 19 || _gameplayManager.TutorialStep == 27))
                 return;
 
-            if (targetType == EffectTarget.AnyPlayerOrCreature ||
-                targetType == EffectTarget.TargetCard ||
-                (targetType == EffectTarget.PlayerOrPlayerCreature && creature.tag == "PlayerOwned") ||
-                (targetType == EffectTarget.OpponentOrOpponentCreature && creature.tag == "OpponentOwned") ||
-                (targetType == EffectTarget.PlayerCard && creature.tag == "PlayerOwned") ||
-                (targetType == EffectTarget.OpponentCard && creature.tag == "OpponentOwned"))
+            if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && creature.transform.CompareTag("PlayerOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && creature.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT) && creature.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && creature.transform.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && creature.Card.cardType == Common.Enumerators.CardType.HEAVY))
+                if (!opponentHasProvoke || (opponentHasProvoke && creature.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY))
                 {
                     selectedCard = creature;
                     selectedPlayer = null;
@@ -58,12 +56,11 @@ namespace GrandDevs.CZB
                                                 _gameplayManager.TutorialStep != 29))
                 return;
 
-            if (targetType == EffectTarget.AnyPlayerOrCreature ||
-                targetType == EffectTarget.TargetPlayer ||
-                (targetType == EffectTarget.PlayerOrPlayerCreature && player.tag == "PlayerOwned") ||
-                (targetType == EffectTarget.OpponentOrOpponentCreature && player.tag == "OpponentOwned") ||
-                (targetType == EffectTarget.Player && player.tag == "PlayerOwned") ||
-                (targetType == EffectTarget.Opponent && player.tag == "OpponentOwned"))
+            if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && player.transform.CompareTag("PlayerOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && player.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT) && player.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && player.transform.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke)
@@ -86,7 +83,7 @@ namespace GrandDevs.CZB
 
         protected bool OpponentBoardContainsProvokingCreatures()
         {
-            var provokeCards = BoardCards.FindAll(x => x.Card.cardType == Common.Enumerators.CardType.HEAVY);
+            var provokeCards = BoardCards.FindAll(x => x.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY);
             return provokeCards.Count > 0;
         }
     }

@@ -4,7 +4,6 @@ using GrandDevs.CZB.Common;
 using UnityEngine;
 using System.Collections.Generic;
 using GrandDevs.CZB.Data;
-using CCGKit;
 
 namespace GrandDevs.CZB
 {
@@ -13,7 +12,7 @@ namespace GrandDevs.CZB
         public event Action<int> OnPlayerGraveyardUpdatedEvent;
         public event Action<int> OnOpponentGraveyardUpdatedEvent;
 
-        public Action<BoardCreature> OnBoardCardKilled { get; set; }
+        public Action<WorkingCard> OnBoardCardKilled { get; set; }
         public Action OnLocalPlayerSetUp { get; set; }
 
         private IDataManager _dataManager;
@@ -40,13 +39,12 @@ namespace GrandDevs.CZB
         {
         }
 
-        public void UpdatePlayerGraveyard(int index)
+        public void UpdateGraveyard(int index, Player player)
         {
-            OnPlayerGraveyardUpdatedEvent?.Invoke(index);
-        }
-        public void UpdateOpponentGraveyard(int index)
-        {
-            OnOpponentGraveyardUpdatedEvent?.Invoke(index);
+            if (player.IsLocalPlayer)
+                OnPlayerGraveyardUpdatedEvent?.Invoke(index);
+            else
+                OnOpponentGraveyardUpdatedEvent?.Invoke(index);
         }
     }
 }

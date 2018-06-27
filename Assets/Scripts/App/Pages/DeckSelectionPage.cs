@@ -3,11 +3,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
-using CCGKit;
 using TMPro;
-using FullSerializer;
 using System.IO;
-
 
 namespace GrandDevs.CZB
 {
@@ -40,8 +37,6 @@ namespace GrandDevs.CZB
         private Image _selectedDeckIcon;
 
         //private TMP_Text _selectedDeckName;
-
-        private fsSerializer serializer = new fsSerializer();
 
         private int _deckToDelete;
 

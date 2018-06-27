@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 
+/*
 namespace CCGKit
 {
     /// <summary>
@@ -212,3 +213,4 @@ namespace CCGKit
         public int statId;
     }
 }
+*/

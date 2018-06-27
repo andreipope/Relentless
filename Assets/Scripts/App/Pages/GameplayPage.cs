@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 using GrandDevs.CZB.Data;
-using CCGKit;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
@@ -20,6 +19,9 @@ namespace GrandDevs.CZB
         private ILocalizationManager _localizationManager;
         private IPlayerManager _playerManager;
         private IDataManager _dataManager;
+        private IGameplayManager _gameplayManager;
+
+        private BattlegroundController _battlegroundController;
 
         private GameObject _selfPage,
                            _playedCardPrefab;
@@ -54,6 +56,9 @@ namespace GrandDevs.CZB
         private bool _isPlayerInited = false;
         private int topOffset;
 
+
+        private GameObject _endTurnButton;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -61,6 +66,9 @@ namespace GrandDevs.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -68,6 +76,9 @@ namespace GrandDevs.CZB
             _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+
+
+            _endTurnButton = GameObject.Find("");
 
             _cardGraveyard = _selfPage.transform.Find("CardGraveyard").GetComponent<VerticalLayoutGroup>();
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
@@ -97,6 +108,11 @@ namespace GrandDevs.CZB
             _playerManager.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardZoneChanged;
 
             _graveYardTopOffset = 0;
+        }
+
+        public void SetEndTurnButtonStatus(bool status)
+        {
+            _endTurnButton.SetActive(status);
         }
 
         private void OnPlayerDeckZoneChanged(int index)
@@ -187,28 +203,29 @@ namespace GrandDevs.CZB
         }
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
-        public void AddCardToGraveyard(CCGKit.RuntimeCard card)
+        public void AddCardToGraveyard(WorkingCard card)
         {
             bool isOpponentCard = false;
 
-            var localPlayer = NetworkingUtils.GetHumanLocalPlayer();
+            var localPlayer = _gameplayManager.GetLocalPlayer();
+            var opponentPlayer = _gameplayManager.GetOpponentPlayer();
 
             //Debug.Log("AddCardToGraveyard for player: "+card.ownerPlayer.id);
 
-            BoardCreature cardToDestroy = _playerManager.PlayerGraveyardCards.Find(x => x.card == card);
+            BoardCreature cardToDestroy = _playerManager.PlayerGraveyardCards.Find(x => x.Card == card);
 
             if (cardToDestroy == null)
             {
-                cardToDestroy = _playerManager.OpponentGraveyardCards.Find(x => x.card == card);
+                cardToDestroy = _playerManager.OpponentGraveyardCards.Find(x => x.Card == card);
 
                 if (cardToDestroy == null)
                 {
                     // optimize it!! fix for summonned zombie
-                    cardToDestroy = localPlayer.opponentBoardCardsList.Find(x => x.card == card && card.namedStats[Constants.TAG_HP].effectiveValue <= 0);
+                    cardToDestroy = localPlayer.BoardCards.Find(x => x.Card == card && card.health <= 0);
 
                     if (cardToDestroy != null)
                     {
-                        localPlayer.opponentBoardCardsList.Remove(cardToDestroy);
+                        localPlayer.BoardCards.Remove(cardToDestroy);
                     }
                 }
 
@@ -246,17 +263,11 @@ namespace GrandDevs.CZB
                     {
                         if (isOpponentCard)
                         {
-                            if (DemoAIPlayer.Instance.playerBoardCardsList.Contains(cardToDestroy))
-                                DemoAIPlayer.Instance.playerBoardCardsList.Remove(cardToDestroy);
-
-                            (localPlayer as DemoHumanPlayer).opponentBoardCardsList.Remove(cardToDestroy);
+                            opponentPlayer.BoardCards.Remove(cardToDestroy);
                         }
                         else
                         {
-                            if (DemoAIPlayer.Instance.opponentBoardCardsList.Contains(cardToDestroy))
-                                DemoAIPlayer.Instance.opponentBoardCardsList.Remove(cardToDestroy);
-
-                            (localPlayer as DemoHumanPlayer).playerBoardCardsList.Remove(cardToDestroy);
+                            localPlayer.BoardCards.Remove(cardToDestroy);
                         }
 
                         if (cardToDestroy != null && cardToDestroy.gameObject)
@@ -267,8 +278,8 @@ namespace GrandDevs.CZB
 
                         GameClient.Get<ITimerManager>().AddTimer((f) =>
                         {
-                            (localPlayer as DemoHumanPlayer).RearrangeTopBoard();
-                            (localPlayer as DemoHumanPlayer).RearrangeBottomBoard();
+                            _battlegroundController.RearrangeTopBoard();
+                            _battlegroundController.RearrangeBottomBoard();
                         }, null, Time.deltaTime, false);
 
                     }, null, soundLength);
@@ -310,10 +321,13 @@ namespace GrandDevs.CZB
 
         private void SetUpPlayer()
         {
-            var player = NetworkingUtils.GetHumanLocalPlayer();
+            var player = _gameplayManager.GetLocalPlayer();
+            var opponent = _gameplayManager.GetOpponentPlayer();
 
-            player.deckZone.onZoneChanged += OnPlayerDeckZoneChanged;
-            player.opponentDeckZone.onZoneChanged += OnOpponentDeckZoneChanged;
+            player.DeckChangedEvent += OnPlayerDeckZoneChanged;
+            opponent.DeckChangedEvent += OnOpponentDeckZoneChanged;
+
+
             player.OnStartTurnEvent += OnStartTurnEventHandler;
         }
 
@@ -407,15 +421,6 @@ namespace GrandDevs.CZB
         {
             Action callback = () =>
             {
-                if (NetworkingUtils.GetLocalPlayer().isServer)
-                {
-                    GameNetworkManager.Instance.StopHost();
-                }
-                else
-                {
-                    GameNetworkManager.Instance.StopClient();
-                }
-
                 if (GameClient.Get<ITutorialManager>().IsTutorial)
                 {
                     GameClient.Get<ITutorialManager>().CancelTutorial();
@@ -433,7 +438,7 @@ namespace GrandDevs.CZB
 
         private void OnStartTurnEventHandler()
         {
-            _zippingVFX.SetActive(NetworkingUtils.GetHumanLocalPlayer().isActivePlayer);
+            _zippingVFX.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
         }
     }
 

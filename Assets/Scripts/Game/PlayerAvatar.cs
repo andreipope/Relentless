@@ -1,24 +1,14 @@
-// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
-
 using UnityEngine;
 
-using CCGKit;
 using DG.Tweening;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
 
-/// <summary>
-/// This class holds information about a player avatar from the game scene, which can be clicked
-/// to select a target player for an effect or during combat (this will send the appropriate
-/// information to the server).
-/// </summary>
 public class PlayerAvatar : MonoBehaviour
 {
     private bool _isDead = false;
 
-    public PlayerInfo playerInfo;
+    public Player playerInfo;
     public bool IsBottom;
     public int index { get { return IsBottom ? 0 : 1; } }
 
@@ -44,12 +34,13 @@ public class PlayerAvatar : MonoBehaviour
 
     private Player GetTargetPlayer()
     {
-        var players = FindObjectsOfType<Player>();
+        var players = GameClient.Get<IGameplayManager>().PlayersInGame;
+
         if (IsBottom)
         {
             foreach (var player in players)
             {
-                if (player.isLocalPlayer && player.isHuman)
+                if (player.IsLocalPlayer)
                     return player;
             }
         }
@@ -57,7 +48,7 @@ public class PlayerAvatar : MonoBehaviour
         {
             foreach (var player in players)
             {
-                if (!player.isLocalPlayer || (player.isLocalPlayer && !player.isHuman))
+                if (!player.IsLocalPlayer)
                     return player;
             }
         }
@@ -102,7 +93,7 @@ public class PlayerAvatar : MonoBehaviour
     {
         if (GameClient.Get<ITutorialManager>().IsTutorial)
         {
-            playerInfo.namedStats[Constants.TAG_LIFE].onValueChanged += OnHealthChangedHandler;
+            playerInfo.PlayerHPChangedEvent += OnHealthChangedHandler;
         }
     }
 

@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine.Rendering;
 using System.IO;
 using System.Linq;
-using FullSerializer;
 using System.Collections.Generic;
 using DG.Tweening;
 using GrandDevs.CZB.Helpers;
@@ -30,8 +29,6 @@ namespace GrandDevs.CZB
 
         private MenuButtonNoGlow _buttonBuy,
                                 _buttonCollection;
-
-        private fsSerializer serializer = new fsSerializer();
 
         private GameObject _packItemPrefab,
                             _packItemContent,
@@ -388,7 +385,7 @@ namespace GrandDevs.CZB
                 animationSequence4.AppendInterval(2f);
 
                 _cardsTurned++;
-                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.id, 1);
+                _dataManager.CachedCollectionData.ChangeAmount(card.WorkingCard.libraryCard.id, 1);
             });
         }
     }

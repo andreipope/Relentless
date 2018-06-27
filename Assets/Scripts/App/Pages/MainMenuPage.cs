@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
-using CCGKit;
 using TMPro;
 
 namespace GrandDevs.CZB

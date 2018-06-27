@@ -1,13 +1,41 @@
-﻿using System;
+﻿using GrandDevs.CZB.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace GrandDevs.CZB
 {
     public class Player
     {
+        public event Action OnEndTurnEvent;
+        public event Action OnStartTurnEvent;
+
+        public event Action<int, int> PlayerHPChangedEvent;
+        public event Action<int, int> PlayerManaChangedEvent;
+        public event Action<int> DeckChangedEvent;
+        public event Action<int> HandChangedEvent;
+        public event Action<int> GraveyardChangedEvent;
+        public event Action<int> BoardChangedEvent;
+
+        private GameObject _playerObject;
+
+        private IDataManager _dataManager;
+        private IGameplayManager _gameplayManager;
+
+        private int _mana;
+        private int _health;
+        private int _graveyardCardsCount = 0;
+
+        private Hero _selfHero;
+
+        private List<WorkingCard> _cardsInDeck;
+        private List<WorkingCard> _CardsInGraveyard;
+        private List<WorkingCard> _cardsInHand;
+        private List<WorkingCard> _cardsInBoard;
+
         public int id;
         public int deckId;
 
@@ -15,15 +43,174 @@ namespace GrandDevs.CZB
 
         public string nickname;
 
-        public int HP { get; set; }
-        public int Mana { get; set; }
+        public int Mana
+        {
+            get
+            {
+                return _mana;
+            }
+            set
+            {
+                var oldMana = _mana;
+                _mana = value;
+
+                PlayerManaChangedEvent?.Invoke(oldMana, _mana);
+            }
+        }
+
+        public int HP
+        {
+            get
+            {
+                return _health;
+            }
+            set
+            {
+                var oldHealth = _health;
+                _health = value;
+
+                PlayerHPChangedEvent?.Invoke(oldHealth, _health);
+            }
+        }   
+
+        public int GraveyardCardsCount
+        {
+            get { return _graveyardCardsCount; }
+            set
+            {
+                _graveyardCardsCount = value;
+                GameClient.Get<IPlayerManager>().UpdateGraveyard(_graveyardCardsCount, this);
+            }
+        }
 
         public bool IsLocalPlayer { get; set; }
+        public bool AlreadyAttackedInThisTurn { get; set; }
 
-        public List<int> CardsInDeck { get; set; }
-        public List<int> CardsInGraveyard { get; set; }
-        public List<int> CardsInHand{ get; set; }
+        public List<BoardCreature> BoardCards { get; set; }
 
-        public List<BoardCreature> BoardCards { get; set; }   
+        public BoardWeapon CurrentBoardWeapon { get; set; }
+        public List<BoardSkill> BoardSkills { get; set; }
+
+        public List<WorkingCard> CardsInDeck { get; private set; }
+        public List<WorkingCard> CardsInGraveyard { get; private set; }
+        public List<WorkingCard> CardsInHand { get; private set; }
+        public List<WorkingCard> CardsOnBoard { get; private set; }
+
+        public Player(GameObject playerObject, bool isOpponent)
+        {
+            _playerObject = playerObject;
+
+            _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            int heroId = 0;
+
+            if(!isOpponent)
+                heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+            else
+                heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
+
+            _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
+
+            BoardSkills = new List<BoardSkill>();
+
+            var skill = _playerObject.transform.Find("Spell").GetComponent<BoardSkill>();
+            skill.ownerPlayer = this;
+            skill.SetSkill(_selfHero);
+
+            BoardSkills.Add(skill);
+        }
+
+        public void CallOnEndTurnEvent()
+        {
+            OnEndTurnEvent?.Invoke();
+        }
+
+        public void CallOnStartTurnEvent()
+        {
+            OnStartTurnEvent?.Invoke();
+        }
+
+        public void DestroyWeapon()
+        {
+            if (CurrentBoardWeapon != null)
+            {
+                CurrentBoardWeapon.Destroy();
+            }
+
+            CurrentBoardWeapon = null;
+        }
+
+        public void AddWeapon(Data.Card card)
+        {
+            CurrentBoardWeapon = new BoardWeapon(_playerObject.transform.Find("Weapon").gameObject, card);
+        }
+
+
+        public void AddCardToDeck(WorkingCard card)
+        {
+            CardsInDeck.Add(card);
+
+            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+        }
+
+        public void RemoveCardFromDeck(WorkingCard card)
+        {
+            CardsInDeck.Remove(card);
+
+            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+        }
+
+        public void AddCardToHand(WorkingCard card)
+        {
+            CardsInHand.Add(card);
+
+            HandChangedEvent?.Invoke(CardsInHand.Count);
+        }
+
+        public void RemoveCardFromHand(WorkingCard card)
+        {
+            CardsInHand.Remove(card);
+
+            HandChangedEvent?.Invoke(CardsInHand.Count);
+        }
+
+        public void AddCardToBoard(WorkingCard card)
+        {
+            CardsOnBoard.Add(card);
+
+            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+        }
+
+        public void RemoveCardFromBoard(WorkingCard card)
+        {
+            CardsOnBoard.Remove(card);
+
+            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+        }
+
+        public void AddCardToGraveyard(WorkingCard card)
+        {
+            CardsInGraveyard.Add(card);
+
+            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+        }
+
+        public void RemoveCardFromGraveyard(WorkingCard card)
+        {
+            CardsInGraveyard.Remove(card);
+
+            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+        }
+
+        public void SetDeck(List<int> cards)
+        {
+            CardsInDeck = new List<WorkingCard>();
+
+            foreach (var card in cards)
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+
+            DeckChangedEvent?.Invoke(CardsOnBoard.Count);
+        }
     }
 }

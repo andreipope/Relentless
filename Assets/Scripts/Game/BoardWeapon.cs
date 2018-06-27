@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using TMPro;
@@ -44,7 +43,7 @@ namespace GrandDevs.CZB
         private PlayerAvatar _player;
         private BoardCreature _creature;
 
-        private OnMouseHandler _onMouseHandler;
+        private OnBehaviourHandler _onMouseHandler;
 
         private bool _isOpponentWeapon = false;
         private Animator _siloAnimator;
@@ -80,7 +79,7 @@ namespace GrandDevs.CZB
             _currentPlayerAvatar = _selfObject.transform.parent.Find("Avatar").gameObject;
             _playerAvatarShine = _selfObject.transform.parent.Find("Shine").gameObject;
 
-            _onMouseHandler = _currentPlayerAvatar.GetComponent<OnMouseHandler>();
+            _onMouseHandler = _currentPlayerAvatar.GetComponent<OnBehaviourHandler>();
 
             _weaponIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", 
                 GameClient.Get<IGameplayManager>().GetCardSet(_weaponCard).ToLower(), _weaponCard.rarity.ToLower(), _weaponCard.picture.ToLower()));
@@ -229,7 +228,7 @@ namespace GrandDevs.CZB
             {
                 PlayAttackAnimationOnTarget(_player.gameObject, () =>
                 {
-                    if (_player.playerInfo.netId == _owner.netId)
+                    if (_player.playerInfo.id == _owner.id)
                         _owner.FightPlayerBySkill(_damage, false);
                     else
                         _owner.FightPlayerBySkill(_damage);
@@ -240,13 +239,12 @@ namespace GrandDevs.CZB
             }
             else if (_creature != null)
             {
-                int damageToUs = _creature.Damage.effectiveValue;
+                int damageToUs = _creature.Damage;
 
-                PlayAttackAnimationOnTarget(_creature.gameObject, () =>
+                PlayAttackAnimationOnTarget(_creature.transform.gameObject, () =>
                 {
-                    _owner.FightCreatureBySkill(_damage, _creature.card);
-                    _owner.playerInfo.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
-                    _owner.GetServer().gameState.currentPlayer.namedStats[Constants.TAG_LIFE].baseValue -= damageToUs;
+                    _owner.FightCreatureBySkill(_damage, _creature.Card);
+                    _owner.HP -= damageToUs;
                 });
                 //CreateVFX(_creature.transform.position);
                 

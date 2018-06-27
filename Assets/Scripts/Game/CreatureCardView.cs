@@ -6,66 +6,61 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 using TMPro;
-using CCGKit;
 using GrandDevs.CZB.Common;
 
-public class CreatureCardView : CardView
+namespace GrandDevs.CZB
 {
-    [SerializeField]
-    protected TextMeshPro attackText;
-
-	[SerializeField]
-	protected SpriteRenderer typeSprite;
-
-    [SerializeField]
-    protected TextMeshPro defenseText;
-
-    public Stat attackStat { get; protected set; }
-    public Stat defenseStat { get; protected set; }
-
-    protected override void Awake()
+    public class CreatureCardView : CardView
     {
-        base.Awake();
-        Assert.IsNotNull(attackText);
-        Assert.IsNotNull(defenseText);
-    }
+        [SerializeField]
+        protected TextMeshPro attackText;
 
-    public override void PopulateWithInfo(RuntimeCard card, string setName)
-    {
-        base.PopulateWithInfo(card, setName);
+        [SerializeField]
+        protected SpriteRenderer typeSprite;
 
-        attackStat = new Stat();
-        attackStat.statId = 0;
-        attackStat.name = "DMG";
-        attackStat.originalValue = libraryCard.damage;
-        attackStat.baseValue = libraryCard.damage;
-        attackStat.minValue = 0;
-        attackStat.maxValue = 99;
+        [SerializeField]
+        protected TextMeshPro defenseText;
 
-        defenseStat = new Stat();
-        defenseStat.statId = 1;
-        defenseStat.name = "HP";
-        defenseStat.originalValue = libraryCard.health;
-        defenseStat.baseValue = libraryCard.health;
-        defenseStat.minValue = 0;
-        defenseStat.maxValue = 99;
+        public int initialHealth,
+                   initialDamage;
 
-        attackText.text = attackStat.effectiveValue.ToString();
-        defenseText.text = defenseStat.effectiveValue.ToString();
+        public int health,
+                   damage;
 
-        typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+        protected override void Awake()
+        {
+            base.Awake();
+            Assert.IsNotNull(attackText);
+            Assert.IsNotNull(defenseText);
+        }
 
-		attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
-        defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
-    }
+        public override void PopulateWithInfo(WorkingCard card, string setName)
+        {
+            base.PopulateWithInfo(card, setName);
 
-    public override void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
-    {
-        base.PopulateWithLibraryInfo(card, setName, amount);
+            damage = card.libraryCard.damage;
+            initialDamage = card.libraryCard.damage;
 
-        attackText.text = card.damage.ToString();
-        defenseText.text = card.health.ToString();
+            health = card.libraryCard.health;
+            initialHealth = card.libraryCard.health;
 
-		typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.cardType + "_icon"));
+            attackText.text = damage.ToString();
+            defenseText.text = health.ToString();
+
+            typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+
+            attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
+            defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
+        }
+
+        public override void PopulateWithLibraryInfo(Data.Card card, string setName = "", int amount = 0)
+        {
+            base.PopulateWithLibraryInfo(card, setName, amount);
+
+            attackText.text = card.damage.ToString();
+            defenseText.text = card.health.ToString();
+
+            typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+        }
     }
 }

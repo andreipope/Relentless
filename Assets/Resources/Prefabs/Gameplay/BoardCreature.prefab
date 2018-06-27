@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4667740357418434}
   - component: {fileID: 210543035705380644}
   - component: {fileID: 61870492389612540}
-  - component: {fileID: 114167742620587972}
   - component: {fileID: 212900485830979230}
   m_Layer: 9
   m_Name: BoardCreature
@@ -44,7 +43,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1250995190643874
 GameObject:
   m_ObjectHideFlags: 1
@@ -651,40 +650,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114167742620587972
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1126236746470944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  pictureSprite: {fileID: 212036912216946320}
-  frozenSprite: {fileID: 212937100386636934}
-  attackText: {fileID: 114237072823793518}
-  healthText: {fileID: 114067830030761014}
-  sleepingParticles: {fileID: 198444090158676314}
-  glowSprite: {fileID: 212714226890055168}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 114439385163186342}
-  creatureContentObject: {fileID: 1218921986611938}
-  creatureAnimator: {fileID: 95053775628529078}
-  animatorControllers:
-  - cardType: 1
-    animator: {fileID: 9100000, guid: 22a84be89442840df9cb3487cd020c61, type: 2}
-  - cardType: 2
-    animator: {fileID: 9100000, guid: 70ce61ecd1a35d64f8c9afc5b95eb09b, type: 2}
-  - cardType: 0
-    animator: {fileID: 9100000, guid: 4aa4f54d6d782431bb65425812d5daf2, type: 2}
 --- !u!114 &114237072823793518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -869,7 +834,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 2065900619
+  randomSeed: -462527228
   InitialModule:
     serializedVersion: 3
     enabled: 1

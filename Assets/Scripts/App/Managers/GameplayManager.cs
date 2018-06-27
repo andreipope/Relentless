@@ -1,5 +1,4 @@
-﻿using CCGKit;
-using GrandDevs.CZB.Common;
+﻿using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,6 @@ namespace GrandDevs.CZB
 
         public int PlayerDeckId { get; set; }
         public int OpponentDeckId { get; set; }
-
 
         public bool GameStarted { get; set; }
         public bool IsTutorial { get; set; }
@@ -66,7 +64,8 @@ namespace GrandDevs.CZB
             _controllers.Add(new ParticlesController());
             _controllers.Add(new PlayerController());
             _controllers.Add(new ActionsQueueController());
-            _controllers.Add(new BattlegrdController());
+            _controllers.Add(new BattlegroundController());
+            _controllers.Add(new VFXController());  
         }
 
         public string GetCardSet(Data.Card card)
@@ -82,8 +81,8 @@ namespace GrandDevs.CZB
 
         public void RearrangeHands()
         {
-            GetController<BattlegrdController>().RearrangeBottomBoard();
-            GetController<BattlegrdController>().RearrangeTopBoard();
+            GetController<BattlegroundController>().RearrangeBottomBoard();
+            GetController<BattlegroundController>().RearrangeTopBoard();
         }
 
         public void StartGameplay()
@@ -107,7 +106,7 @@ namespace GrandDevs.CZB
             return PlayersInGame.Find(x => x.IsLocalPlayer);
         }
 
-        public Player GetAIPlayer()
+        public Player GetOpponentPlayer()
         {
             return PlayersInGame.Find(x => !x.IsLocalPlayer);
         }

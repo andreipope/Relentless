@@ -16,10 +16,7 @@ public class TargetingArrow : MonoBehaviour
     protected IGameplayManager _gameplayManager;
 
     [HideInInspector]
-    public Target effectTarget;
-
-    [HideInInspector]
-    public Enumerators.SkillTargetType targetType;
+    public List<Enumerators.SkillTargetType> targetsType;
 
     public Action onTargetSelected;
 

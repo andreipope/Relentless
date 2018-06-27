@@ -6,10 +6,7 @@ using System.Linq;
 using System.IO;
 using UnityEngine;
 using GrandDevs.Internal;
-using FullSerializer;
 using GrandDevs.CZB.Data;
-using CCGKit;
-
 
 namespace GrandDevs.CZB
 {
@@ -37,10 +34,7 @@ namespace GrandDevs.CZB
         private int _currentDeckIndex;
 		private int _currentAIDeckIndex;
 
-		private fsSerializer serializer = new fsSerializer();
-
         private DirectoryInfo dir;
-
 
         public int CurrentDeckInd
 		{
@@ -80,8 +74,6 @@ namespace GrandDevs.CZB
             CheckVersion();
             CheckFirstLaunch();
             FillCacheDataPathes();
-
-            GameNetworkManager.Instance.Initialize();
         }
 
         public void StartLoadCache()
@@ -100,7 +92,7 @@ namespace GrandDevs.CZB
             if (Constants.DEV_MODE)
                 CachedUserLocalData.tutorial = false;
 
-            GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
+            GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
 
             OnLoadCacheCompletedEvent?.Invoke();
         }

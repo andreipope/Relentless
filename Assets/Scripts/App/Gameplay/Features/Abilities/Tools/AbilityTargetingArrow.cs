@@ -1,5 +1,4 @@
-﻿using CCGKit;
-using GrandDevs.CZB.Common;
+﻿using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,8 +47,8 @@ namespace GrandDevs.CZB
 
         public override void OnCardSelected(BoardCreature creature)
         {
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && creature.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
-                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
+            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && creature.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
+                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 if (selfBoardCreature != creature)

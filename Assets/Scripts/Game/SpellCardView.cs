@@ -7,75 +7,73 @@ using UnityEngine.Assertions;
 
 using TMPro;
 
-
-using CCGKit;
-
-public class SpellCardView : CardView
+namespace GrandDevs.CZB
 {
 
-    [SerializeField]
-    protected TextMeshPro attackText;
-
-    [SerializeField]
-    protected TextMeshPro defenseText;
-
-    public Stat attackStat { get; protected set; }
-    public Stat defenseStat { get; protected set; }
-
-    protected override void Awake()
+    public class SpellCardView : CardView
     {
-        base.Awake();
-        Assert.IsNotNull(attackText);
-        Assert.IsNotNull(defenseText);
-    }
 
-    public override void PopulateWithInfo(RuntimeCard card, string setName)
-	{
-		base.PopulateWithInfo(card, setName);
+        [SerializeField]
+        protected TextMeshPro attackText;
 
-        if (libraryCard.damage == 0)
-            attackText.gameObject.SetActive(false);
-        else
+        [SerializeField]
+        protected TextMeshPro defenseText;
+
+        public int initialHealth,
+                   initialDamage;
+
+        public int health,
+                   damage;
+
+        protected override void Awake()
         {
-            attackStat = new Stat();
-            attackStat.statId = 0;
-            attackStat.name = "DMG";
-            attackStat.originalValue = libraryCard.damage;
-            attackStat.baseValue = libraryCard.damage;
-            attackStat.minValue = 0;
-            attackStat.maxValue = 99;
-            attackText.text = attackStat.effectiveValue.ToString();
-            attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
+            base.Awake();
+            Assert.IsNotNull(attackText);
+            Assert.IsNotNull(defenseText);
         }
 
-        if (libraryCard.health == 0)
-            defenseText.gameObject.SetActive(false);
-        else
+        public override void PopulateWithInfo(WorkingCard card, string setName)
         {
-            defenseStat = new Stat();
-            defenseStat.statId = 1;
-            defenseStat.name = "HP";
-            defenseStat.originalValue = libraryCard.health;
-            defenseStat.baseValue = libraryCard.health;
-            defenseStat.minValue = 0;
-            defenseStat.maxValue = 99;
-            defenseText.text = defenseStat.effectiveValue.ToString();
-            defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
+            base.PopulateWithInfo(card, setName);
+
+            if (card.libraryCard.damage == 0)
+                attackText.gameObject.SetActive(false);
+            else
+            {
+                damage = card.libraryCard.damage;
+                initialDamage = card.libraryCard.damage;
+
+                attackText.text = damage.ToString();
+
+                attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
+            }
+
+            if (card.libraryCard.health == 0)
+                defenseText.gameObject.SetActive(false);
+            else
+            {
+                health = card.libraryCard.health;
+                initialHealth = card.libraryCard.health;
+
+                defenseText.text = health.ToString();
+
+                defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
+            }
         }
-    }
 
-    public override void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
-    {
-        base.PopulateWithLibraryInfo(card, setName, amount);
+        public override void PopulateWithLibraryInfo(Data.Card card, string setName = "", int amount = 0)
+        {
+            base.PopulateWithLibraryInfo(card, setName, amount);
 
-        if (libraryCard.damage == 0)
-            attackText.gameObject.SetActive(false);
-        else
-            attackText.text = card.damage.ToString();
+            if (card.damage == 0)
+                attackText.gameObject.SetActive(false);
+            else
+                attackText.text = card.damage.ToString();
 
-        if (libraryCard.health == 0)
-            defenseText.gameObject.SetActive(false);
-        else
-            defenseText.text = card.health.ToString();
+            if (card.health == 0)
+                defenseText.gameObject.SetActive(false);
+            else
+                defenseText.text = card.health.ToString();
+        }
     }
 }

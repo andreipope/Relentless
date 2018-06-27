@@ -1,15 +1,21 @@
-﻿using GrandDevs.CZB.Common;
+﻿using DG.Tweening;
+using GrandDevs.CZB.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace GrandDevs.CZB
 {
-    public class BattlegrdController : IController
+    public class BattlegroundController : IController
     {
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
+        private ISoundManager _soundManager;
+
+        private bool _battleDynamic = false;
 
         private Coroutine _turnCoroutine;
 
@@ -18,14 +24,35 @@ namespace GrandDevs.CZB
         public int currentTurn;
         public bool gameFinished;
 
+        public GameObject currentCardPreview;
+        public int currentPreviewedCardId;
 
 
+        public bool _rearrangingBottomBoard,
+                    _rearrangingTopBoard,
+                    isPreviewActive;
+
+        public Coroutine createPreviewCoroutine;
+
+        public GameObject creatureCardViewPrefab,
+                          spellCardViewPrefab;
 
 
-        public BattlegrdController()
+        public List<CardView> playerHandCards = new List<CardView>();
+        public List<GameObject> opponentHandCards = new List<GameObject>();
+
+        public List<BoardCreature> playerBoardCards = new List<BoardCreature>();
+        public List<BoardCreature> opponentBoardCards = new List<BoardCreature>();
+
+        public List<BoardCreature> playerGraveyardCards = new List<BoardCreature>();
+        public List<BoardCreature> opponentGraveyardCards = new List<BoardCreature>();
+
+
+        public BattlegroundController()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             LoadGameConfiguration();
         }
@@ -46,7 +73,24 @@ namespace GrandDevs.CZB
                 TurnDuration = 100000;
         }
 
-        public virtual void StartGame()
+        private void CheckGameDynamic()
+        {
+            if (_gameplayManager.GetOpponentPlayer().HP > 9 && _gameplayManager.GetLocalPlayer().HP > 9)
+            {
+                if (_battleDynamic)
+                    _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+                _battleDynamic = false;
+            }
+            else
+            {
+                if (!_battleDynamic)
+                    _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+                _battleDynamic = true;
+            }
+        }
+
+
+        public void StartGame()
         {
             Debug.Log("Game has started.");
 
@@ -78,7 +122,7 @@ namespace GrandDevs.CZB
             _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
         }
 
-        public virtual void EndGame(Player player, Enumerators.EndGameType type)
+        public void EndGame(Player player, Enumerators.EndGameType type)
         {
             if (_gameplayManager.IsTutorial)
                 return;
@@ -134,7 +178,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public virtual void StopTurn()
+        public void StopTurn()
         {
             if (_turnCoroutine != null)
                 MainApp.Instance.StopCoroutine(_turnCoroutine);
@@ -155,6 +199,9 @@ namespace GrandDevs.CZB
                 return;
             }
 
+
+            var playerBoardCards = _gameplayManager.GetLocalPlayer().BoardCards;
+
             _rearrangingBottomBoard = true;
 
             var boardWidth = 0.0f;
@@ -162,7 +209,7 @@ namespace GrandDevs.CZB
             var cardWidth = 0.0f;
             foreach (var card in playerBoardCards)
             {
-                cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -199,7 +246,7 @@ namespace GrandDevs.CZB
         }
 
 
-        public void RearrangeTopBoard()
+        public void RearrangeTopBoard(Action onComplete = null)
         {
             if (_rearrangingTopBoard)
             {
@@ -211,6 +258,9 @@ namespace GrandDevs.CZB
                 return;
             }
 
+            var opponentBoardCards = _gameplayManager.GetOpponentPlayer().BoardCards;
+
+
             _rearrangingTopBoard = true;
 
             var boardWidth = 0.0f;
@@ -219,10 +269,10 @@ namespace GrandDevs.CZB
             foreach (var card in opponentBoardCards)
             {
                 // warning!
-                if (card == null && !card)
+                if (card == null)
                     continue;
 
-                cardWidth = card.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -259,39 +309,37 @@ namespace GrandDevs.CZB
         }
 
 
-        public void CreateCardPreview(RuntimeCard card, Vector3 pos, bool highlight = true)
+        public void CreateCardPreview(WorkingCard card, Vector3 pos, bool highlight = true)
         {
             isPreviewActive = true;
             currentPreviewedCardId = card.instanceId;
-            createPreviewCoroutine = StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
+            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
         }
 
-        public IEnumerator CreateCardPreviewAsync(RuntimeCard card, Vector3 pos, bool highlight)
+        public IEnumerator CreateCardPreviewAsync(WorkingCard card, Vector3 pos, bool highlight)
         {
             yield return new WaitForSeconds(0.3f);
-
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
 
             string cardSetName = string.Empty;
             foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
             {
-                if (cardSet.cards.IndexOf(libraryCard) > -1)
+                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
                     cardSetName = cardSet.name;
             }
 
-            if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab as GameObject);
+                currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab);
             }
-            else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab as GameObject);
+                currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab);
             }
 
             var cardView = currentCardPreview.GetComponent<CardView>();
             cardView.PopulateWithInfo(card, cardSetName);
             if (highlight)
-                highlight = cardView.CanBePlayed(this) && cardView.CanBeBuyed(this);
+                highlight = cardView.CanBePlayed(card.owner) && cardView.CanBeBuyed(card.owner);
             cardView.SetHighlightingEnabled(highlight);
             cardView.isPreview = true;
 
@@ -307,10 +355,10 @@ namespace GrandDevs.CZB
 
         public void DestroyCardPreview()
         {
-            StartCoroutine(DestroyCardPreviewAsync());
+            MainApp.Instance.StartCoroutine(DestroyCardPreviewAsync());
             if (createPreviewCoroutine != null)
             {
-                StopCoroutine(createPreviewCoroutine);
+                MainApp.Instance.StopCoroutine(createPreviewCoroutine);
             }
             isPreviewActive = false;
         }
@@ -329,7 +377,100 @@ namespace GrandDevs.CZB
                     text.DOFade(0.0f, 0.2f);
                 }
                 yield return new WaitForSeconds(0.5f);
-                Destroy(oldCardPreview.gameObject);
+                MonoBehaviour.Destroy(oldCardPreview.gameObject);
+            }
+        }
+
+        public void RearrangeHand(bool isMove = false)
+        {       
+            var handWidth = 0.0f;
+            var spacing = -1.5f; // -1
+            foreach (var card in playerHandCards)
+            {
+                handWidth += spacing;
+            }
+            handWidth -= spacing;
+
+            var pivot = new Vector3(6f, -7.5f, 0f); //1.115f, -8.05f, 0f
+            var twistPerCard = -5;
+
+            if (playerHandCards.Count == 1)
+            {
+                twistPerCard = 0;
+            }
+
+            var totalTwist = twistPerCard * playerHandCards.Count;
+            float startTwist = ((totalTwist - twistPerCard) / 2f);
+            var scalingFactor = 0.04f;
+            Vector3 moveToPosition = Vector3.zero;
+            for (var i = 0; i < playerHandCards.Count; i++)
+            {
+                var card = playerHandCards[i];
+                var twist = startTwist - (i * twistPerCard);
+                var nudge = Mathf.Abs(twist);
+                nudge *= scalingFactor;
+                moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (playerHandCards.Count - i) * 0.1f);
+
+                if (isMove)
+                    card.isNewCard = false;
+
+                card.RearrangeHand(moveToPosition, Vector3.forward * twist);
+
+                pivot.x += handWidth / playerHandCards.Count;
+                card.GetComponent<SortingGroup>().sortingLayerName = "HandCards";
+                card.GetComponent<SortingGroup>().sortingOrder = i;
+            }
+        }
+
+        public void RearrangeOpponentHand(bool isMove = false, bool isNewCard = false)
+        {
+            var handWidth = 0.0f;
+            var spacing = -1.0f;
+            foreach (var card in opponentHandCards)
+            {
+                handWidth += spacing;
+            }
+            handWidth -= spacing;
+
+            var pivot = new Vector3(-3.2f, 8.5f, 0f);
+            var twistPerCard = 5;
+
+            if (opponentHandCards.Count == 1)
+            {
+                twistPerCard = 0;
+            }
+
+            var totalTwist = twistPerCard * opponentHandCards.Count;
+            float startTwist = ((totalTwist - twistPerCard) / 2f);
+            var scalingFactor = 0.04f;
+            Vector3 movePosition = Vector3.zero;
+            Vector3 rotatePosition = Vector3.zero;
+            for (var i = 0; i < opponentHandCards.Count; i++)
+            {
+                var card = opponentHandCards[i];
+                var twist = startTwist - (i * twistPerCard);
+                var nudge = Mathf.Abs(twist);
+                nudge *= scalingFactor;
+                movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
+                rotatePosition = new Vector3(0, 0, twist); // added multiplier, was: 0,0, twist
+
+                if (isMove)
+                {
+                    if (i == opponentHandCards.Count - 1 && isNewCard)
+                    {
+                        card.transform.position = new Vector3(-8.2f, 5.7f, 0); // OPPONENT DECK START POINT
+                        card.transform.eulerAngles = Vector3.forward * 90f;
+                    }
+                    card.transform.DOMove(movePosition, 0.5f);
+                    card.transform.DORotate(rotatePosition, 0.5f);
+                }
+                else
+                {
+                    card.transform.position = movePosition;
+                    card.transform.rotation = Quaternion.Euler(rotatePosition);
+                }
+                pivot.x += handWidth / opponentHandCards.Count;
+                card.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }
     }

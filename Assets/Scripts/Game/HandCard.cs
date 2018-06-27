@@ -1,7 +1,3 @@
-// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
-
 using DG.Tweening;
 using GrandDevs.CZB;
 using GrandDevs.CZB.Common;
@@ -10,7 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(CardView))]
 public class HandCard : MonoBehaviour
 {
-    public DemoHumanPlayer ownerPlayer;
+    private IGameplayManager _gameplayManager;
+    private PlayerController _playerController;
+    private CardsController _cardsController;
+
+    public Player ownerPlayer;
     public GameObject boardZone;
 
     protected CardView cardView;
@@ -29,6 +29,11 @@ public class HandCard : MonoBehaviour
     {
         cardView = GetComponent<CardView>();
         _handInd = this.GetHashCode();
+
+
+        _gameplayManager = GameClient.Get<IGameplayManager>();
+        _playerController = _gameplayManager.GetController<PlayerController>();
+        _cardsController = _gameplayManager.GetController<CardsController>();
     }
 
     private void Start()
@@ -49,12 +54,12 @@ public class HandCard : MonoBehaviour
 
     public void OnSelected()
     {
-        if (ownerPlayer.isActivePlayer &&
+        if (_playerController.IsActive &&
             cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected)
         {
             startedDrag = true;
             initialPos = transform.position;
-            ownerPlayer.isCardSelected = true;
+            _playerController.IsCardSelected = true;
             _alreadySelected = true;
         }
     }
@@ -79,11 +84,11 @@ public class HandCard : MonoBehaviour
         }
         _alreadySelected = false;
         startedDrag = false;
-        ownerPlayer.isCardSelected = false;
+        _playerController.IsCardSelected = false;
 
         bool playable = true;
-        if (!cardView.CanBeBuyed(ownerPlayer) || (cardView.libraryCard.cardKind == GrandDevs.CZB.Common.Enumerators.CardKind.CREATURE &&
-                                                     ownerPlayer.boardZone.cards.Count >= Constants.MAX_BOARD_CREATURES))
+        if (!cardView.CanBeBuyed(ownerPlayer) || (cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
+                                                     ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_CREATURES))
             playable = false;
 
         if (playable)
@@ -91,7 +96,7 @@ public class HandCard : MonoBehaviour
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                ownerPlayer.PlayCard(cardView, this);
+                _cardsController.PlayCard(cardView, this);
                 cardView.SetHighlightingEnabled(false);
             }
             else

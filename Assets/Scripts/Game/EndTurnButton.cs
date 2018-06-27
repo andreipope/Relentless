@@ -12,9 +12,6 @@ using GrandDevs.CZB.Common;
 
 public class EndTurnButton : MonoBehaviour
 {
-    [HideInInspector]
-    public DemoHumanPlayer player;
-
     [SerializeField]
     private Sprite defaultSprite, pressedSprite;
 
@@ -86,7 +83,7 @@ public class EndTurnButton : MonoBehaviour
             return;
         if (active && hovering)
         {
-            player.StopTurn();
+            GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
             //shineSprite.DOKill();
             //hoverSprite.DOKill();
             //var newColor = shineSprite.color;

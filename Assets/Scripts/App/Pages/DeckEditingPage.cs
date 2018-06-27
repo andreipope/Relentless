@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
 using System.IO;
-using FullSerializer;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
@@ -37,8 +36,6 @@ namespace GrandDevs.CZB
         private TextMeshProUGUI _currentSetPageCountText;
 
         private Deck _currentDeck;
-
-        private fsSerializer serializer = new fsSerializer();
 
         private Slider _cardSetsSlider;
 
@@ -552,7 +549,7 @@ namespace GrandDevs.CZB
         {
             foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
             {
-                if (card.libraryCard.id == cardId)
+                if (card.WorkingCard.libraryCard.id == cardId)
                 {
                     card.UpdateAmount(amount);
                     break;

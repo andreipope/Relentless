@@ -14,7 +14,7 @@ namespace GrandDevs.CZB
 {
     public class CardView : MonoBehaviour
     {
-        public Card Card { get; private set; }
+        public WorkingCard WorkingCard { get; private set; }
 
         [SerializeField]
         protected SpriteRenderer glowSprite;
@@ -64,23 +64,23 @@ namespace GrandDevs.CZB
             cardAnimator.enabled = false;
         }
 
-        public virtual void PopulateWithInfo(Card card, string setName = "")
+        public virtual void PopulateWithInfo(WorkingCard card, string setName = "")
         {
-            Card = card;
+            WorkingCard = card;
 
-            nameText.text = Card.name;
-            bodyText.text = Card.description;
-            costText.text = Card.cost.ToString();
+            nameText.text = WorkingCard.libraryCard.name;
+            bodyText.text = WorkingCard.libraryCard.description;
+            costText.text = WorkingCard.libraryCard.cost.ToString();
 
             isNewCard = true;
 
-            manaCost = Card.cost;
+            manaCost = WorkingCard.libraryCard.cost;
 
 
-            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), Card.cardRarity);
+            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), WorkingCard.libraryCard.cardRarity);
 
             backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), Card.picture.ToLower()));
+            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
 
             removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
@@ -88,15 +88,14 @@ namespace GrandDevs.CZB
             amountText.transform.parent.gameObject.SetActive(false);
         }
 
-        public virtual void PopulateWithLibraryInfo(GrandDevs.CZB.Data.Card card, string setName = "", int amount = 0)
+        public virtual void PopulateWithLibraryInfo(Card card, string setName = "", int amount = 0)
         {
-            Card = card;
             nameText.text = card.name;
             bodyText.text = card.description;
             amountText.text = amount.ToString();
             costText.text = card.cost.ToString();
 
-            manaCost = Card.cost;
+            manaCost = WorkingCard.libraryCard.cost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 

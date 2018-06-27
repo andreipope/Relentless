@@ -17,6 +17,7 @@ namespace GrandDevs.CZB
         int PlayerDeckId { get; set; }
         int OpponentDeckId { get; set; }
 
+        bool GameStarted { get; set; }
         bool IsTutorial { get; set; }
 
         int TutorialStep { get; set; }
@@ -32,6 +33,6 @@ namespace GrandDevs.CZB
         void StartGameplay();
         void StopGameplay();
         Player GetLocalPlayer();
-        Player GetAIPlayer();   
+        Player GetOpponentPlayer();   
     }    
 }

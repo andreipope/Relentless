@@ -2,19 +2,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace GrandDevs.CZB
 {
     public class PlayerController : IController
     {
-        public event Action OnEndTurnEvent;
-        public event Action OnStartTurnEvent;
-
-
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
         private AbilitiesController _abilitiesController;
+        private CardsController _cardsController;
+        private BattlegroundController _battlegroundController;
 
         public Player PlayerInfo { get; protected set; }
 
@@ -27,6 +27,8 @@ namespace GrandDevs.CZB
         public bool IsCardSelected { get; set; }
         public bool IsActive { get; set; }
 
+        public GameObject currentSpellCard;
+        public GameObject currentBoardCreature;
 
         public PlayerController()
         {
@@ -34,6 +36,8 @@ namespace GrandDevs.CZB
             _dataManager = GameClient.Get<IDataManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             GameClient.Get<IPlayerManager>().PlayerInfo = PlayerInfo;
 
@@ -50,16 +54,122 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 8 &&
+                                                             GameClient.Get<ITutorialManager>().CurrentStep != 17 &&
+                                                             GameClient.Get<ITutorialManager>().CurrentStep != 19 &&
+                                                             GameClient.Get<ITutorialManager>().CurrentStep != 27))
+                return;
+
+
+            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (IsActive && currentSpellCard == null)
+                {
+                    var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+                    var hitCards = new List<GameObject>();
+                    foreach (var hit in hits)
+                    {
+                        if (hit.collider != null &&
+                            hit.collider.gameObject != null &&
+                            hit.collider.gameObject.GetComponent<CardView>() != null &&
+                            !hit.collider.gameObject.GetComponent<CardView>().isPreview &&
+                            hit.collider.gameObject.GetComponent<CardView>().CanBePlayed(PlayerInfo))
+                        {
+                            hitCards.Add(hit.collider.gameObject);
+                        }
+                    }
+                    if (hitCards.Count > 0)
+                    {
+                        _battlegroundController.DestroyCardPreview();
+                        hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
+                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<CardView>();
+                        var topmostHandCard = topmostCardView.GetComponent<HandCard>();
+                        if (topmostHandCard != null)
+                        {
+                            topmostCardView.GetComponent<HandCard>().OnSelected();
+                            if (GameClient.Get<ITutorialManager>().IsTutorial)
+                            {
+                                GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!IsCardSelected)
+            {
+                var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+                var hitCards = new List<GameObject>();
+                var hitHandCard = false;
+                var hitBoardCard = false;
+                foreach (var hit in hits)
+                {
+                    if (hit.collider != null &&
+                        hit.collider.gameObject != null &&
+                        hit.collider.gameObject.GetComponent<CardView>() != null)
+                    {
+                        hitCards.Add(hit.collider.gameObject);
+                        hitHandCard = true;
+                    }
+                }
+                if (!hitHandCard)
+                {
+                    foreach (var hit in hits)
+                    {
+                        if (hit.collider != null &&
+                            hit.collider.gameObject != null &&
+                            hit.collider.gameObject.GetComponent<BoardCreature>() != null)
+                        {
+                            hitCards.Add(hit.collider.gameObject);
+                            hitBoardCard = true;
+                        }
+                    }
+                }
+
+                if (hitHandCard)
+                {
+                    if (hitCards.Count > 0)
+                    {
+                        hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
+                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<CardView>();
+                        if (!topmostCardView.isPreview)
+                        {
+                            if (!_battlegroundController.isPreviewActive || topmostCardView.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
+                            {
+                                _battlegroundController.DestroyCardPreview();
+                                _battlegroundController.CreateCardPreview(topmostCardView.WorkingCard, topmostCardView.transform.position, IsActive);
+                            }
+                        }
+                    }
+                }
+                else if (hitBoardCard)
+                {
+                    if (hitCards.Count > 0)
+                    {
+                        hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
+                        var selectedBoardCreature = hitCards[hitCards.Count - 1].GetComponent<BoardCreature>();
+                        if (!_battlegroundController.isPreviewActive || selectedBoardCreature.Card.instanceId != _battlegroundController.currentPreviewedCardId)
+                        {
+                            _battlegroundController.DestroyCardPreview();
+                            _battlegroundController.CreateCardPreview(selectedBoardCreature.Card, selectedBoardCreature.transform.position, false);
+                        }
+                    }
+                }
+                else
+                {
+                    _battlegroundController.DestroyCardPreview();
+                }
+            }
         }
 
         public void CallOnEndTurnEvent()
         {
-            OnEndTurnEvent?.Invoke();
+            PlayerInfo.CallOnEndTurnEvent();
         }
 
         public void CallOnStartTurnEvent()
         {
-            OnStartTurnEvent?.Invoke();
+            PlayerInfo.CallOnStartTurnEvent();
         }
 
         public void InitializePlayer()
@@ -114,7 +224,7 @@ namespace GrandDevs.CZB
                    */
             }
 
-            PlayerInfo.CardsInDeck = playerDeck;
+            PlayerInfo.SetDeck(playerDeck);
         }
 
         public virtual void OnGameStartedEventHandler()
@@ -221,6 +331,28 @@ namespace GrandDevs.CZB
 
         }
 
+        public void UpdateHandCardsHighlight()
+        {
+            if (boardSkill != null && IsActive)
+            {
+                if (PlayerInfo.Mana >= boardSkill.manaCost)
+                    boardSkill.SetHighlightingEnabled(true);
+                else
+                    boardSkill.SetHighlightingEnabled(false);
+            }
+
+            foreach (var card in _battlegroundController.playerHandCards)
+            {
+                if (card.CanBePlayed(PlayerInfo) && card.CanBeBuyed(PlayerInfo))
+                {
+                    card.SetHighlightingEnabled(true);
+                }
+                else
+                {
+                    card.SetHighlightingEnabled(false);
+                }
+            }
+        }
 
         public virtual void OnCardMoved(CardMovedMessage msg)
         {
@@ -296,7 +428,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public void PlayCreatureCard(RuntimeCard card, List<int> targetInfo = null)
+        public void PlayCreatureCard(WorkingCard card, List<int> targetInfo = null)
         {
             var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
 
@@ -315,7 +447,7 @@ namespace GrandDevs.CZB
             //client.Send(NetworkProtocol.MoveCard, msg);
         }
 
-        public void PlaySpellCard(RuntimeCard card, List<int> targetInfo = null)
+        public void PlaySpellCard(WorkingCard card, List<int> targetInfo = null)
         {
             var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
 
@@ -334,7 +466,7 @@ namespace GrandDevs.CZB
             //client.Send(NetworkProtocol.MoveCard, msg);
         }
 
-        public void FightPlayer(RuntimeCard attackingCard)
+        public void FightPlayer(WorkingCard attackingCard)
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
             EffectSolver.FightPlayer(netId, attackingCard.instanceId);
@@ -370,7 +502,7 @@ namespace GrandDevs.CZB
             client.Send(NetworkProtocol.HealPlayerBySkill, msg);
         }
 
-        public void FightCreature(RuntimeCard attackingCard, RuntimeCard attackedCard)
+        public void FightCreature(WorkingCard attackingCard, WorkingCard attackedCard)
         {
             GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             EffectSolver.FightCreature(netId, attackingCard, attackedCard);
@@ -381,7 +513,7 @@ namespace GrandDevs.CZB
             msg.attackedCardInstanceId = attackedCard.instanceId;
             client.Send(NetworkProtocol.FightCreature, msg);
         }
-        public void FightCreatureBySkill(int attack, RuntimeCard attackedCard)
+        public void FightCreatureBySkill(int attack, WorkingCard attackedCard)
         {
             EffectSolver.FightCreatureBySkill(netId, attackedCard, attack);
 
@@ -393,7 +525,7 @@ namespace GrandDevs.CZB
             client.Send(NetworkProtocol.FightCreatureBySkill, msg);
         }
 
-        public void HealCreatureBySkill(int value, RuntimeCard card)
+        public void HealCreatureBySkill(int value, WorkingCard card)
         {
             EffectSolver.HealCreatureBySkill(netId, card, value);
 
@@ -433,112 +565,6 @@ namespace GrandDevs.CZB
         }
         public virtual void DestroyWeapon()
         {
-        }
-
-        public void PlayCard(CardView card, HandCard handCard)
-        {
-            if (card.CanBePlayed(this))
-            {
-                gameUI.endTurnButton.SetEnabled(false);
-
-                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.card.cardId);
-
-                string cardSetName = string.Empty;
-                foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-                {
-                    if (cardSet.cards.IndexOf(libraryCard) > -1)
-                        cardSetName = cardSet.name;
-                }
-
-                card.transform.DORotate(Vector3.zero, .1f);
-                card.GetComponent<HandCard>().enabled = false;
-
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
-                {
-                    int indexOfCard = 0;
-                    float newCreatureCardPosition = card.transform.position.x;
-
-                    // set correct position on board depends from card view position
-                    for (int i = 0; i < playerBoardCards.Count; i++)
-                    {
-                        if (newCreatureCardPosition > playerBoardCards[i].transform.position.x)
-                            indexOfCard = i + 1;
-                        else break;
-                    }
-
-                    var boardCreature = Instantiate(boardCreaturePrefab);
-
-                    var board = GameObject.Find("PlayerBoard");
-                    boardCreature.tag = "PlayerOwned";
-                    boardCreature.transform.parent = board.transform;
-                    boardCreature.transform.position = new Vector2(1.9f * playerBoardCards.Count, 0);
-                    boardCreature.GetComponent<BoardCreature>().ownerPlayer = this;
-                    boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card.card, cardSetName);
-
-                    playerHandCards.Remove(card);
-                    RearrangeHand();
-                    playerBoardCards.Insert(indexOfCard, boardCreature.GetComponent<BoardCreature>());
-
-                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
-                    {
-                        GraveyardCardsCount++;
-                    }, null, 1f);
-
-                    //Destroy(card.gameObject);
-                    card.removeCardParticle.Play();
-
-
-                    currentCreature = boardCreature.GetComponent<BoardCreature>();
-
-
-                    Sequence animationSequence = DOTween.Sequence();
-                    animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                    animationSequence.OnComplete(() =>
-                    {
-                        RemoveCard(new object[] { card });
-                        _timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { boardCreature.GetComponent<BoardCreature>() }, 0.1f, false);
-                    });
-
-                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
-
-                    RearrangeBottomBoard(() =>
-                    {
-                        CallAbility(libraryCard, card, card.card, Enumerators.CardKind.CREATURE, currentCreature, CallCardPlay, true);
-                    });
-
-                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
-                }
-                else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
-                {
-                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                    //var sequence = DOTween.Sequence();
-                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                    //sequence.Play().OnComplete(() =>
-                    //{ 
-                    card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    card.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                    var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-
-                    Debug.Log(card.name);
-
-                    CallAbility(libraryCard, card, card.card, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, handCard: handCard);
-                    //});
-                }
-            }
-            else
-            {
-                card.GetComponent<HandCard>().ResetToInitialPosition();
-            }
         }
     }
 }

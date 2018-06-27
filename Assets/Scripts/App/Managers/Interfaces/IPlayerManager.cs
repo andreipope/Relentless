@@ -1,5 +1,4 @@
-﻿using CCGKit;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,15 +11,13 @@ namespace GrandDevs.CZB
         event Action<int> OnOpponentGraveyardUpdatedEvent;
 
         Action OnLocalPlayerSetUp { get; set; }
-        Action<BoardCreature> OnBoardCardKilled { get; set; }
+        Action<WorkingCard> OnBoardCardKilled { get; set; }
         User LocalUser { get; set; }
         List<BoardCreature> PlayerGraveyardCards { get; set; }
         List<BoardCreature> OpponentGraveyardCards { get; set; }
         Player PlayerInfo { get; set; }
         Player OpponentInfo { get; set; }
 
-
-        void UpdatePlayerGraveyard(int index);
-        void UpdateOpponentGraveyard(int index);
+        void UpdateGraveyard(int index, Player player);
     }
 }

@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
-using CCGKit;
 using TMPro;
 
 
