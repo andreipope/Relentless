@@ -11,7 +11,7 @@ namespace GrandDevs.CZB
         private ulong _freeId = 0;
         private List<ParticleSystemElement> _particleSystemElements;
 
-        public ParticlesController()
+        public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
 

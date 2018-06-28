@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 
@@ -46,7 +45,7 @@ namespace GrandDevs.CZB
         private void Action()
         {
 
-			foreach (var target in abilityTargetTypes)
+		/*	foreach (var target in abilityTargetTypes)
 			{
 				switch (target)
 				{
@@ -87,12 +86,12 @@ namespace GrandDevs.CZB
 						break;
 					default: break;
 				}
-			}
+			} */
         }
 
         protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
         {
-            int playerPos = playerCallerOfAbility is DemoHumanPlayer ? 1 : -1;
+            int playerPos = playerCallerOfAbility.IsLocalPlayer ? 1 : -1;
             
             switch (abilityEffectType)
             {

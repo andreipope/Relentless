@@ -14,6 +14,7 @@ namespace GrandDevs.CZB
     {
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
+        private ILoadObjectsManager _loadObjectsManager;
 
         private BattlegroundController _battlgroundController;
         private VFXController _vfxController;
@@ -23,21 +24,30 @@ namespace GrandDevs.CZB
         private GameObject _opponentBoard;
 
 
-        private GameObject creatureCardViewPrefab,
+        private int _cardInstanceId = 0;
+
+        public GameObject creatureCardViewPrefab,
                            opponentCardPrefab,
                            spellCardViewPrefab;
 
-        private int _cardInstanceId = 0;
 
 
-        public CardsController()
+
+        public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
-            _timerManager =  GameClient.Get<ITimerManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _battlgroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+
+            creatureCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+            spellCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            opponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
+
+            _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
         }
 
         public void Dispose()
@@ -53,7 +63,7 @@ namespace GrandDevs.CZB
             return _cardInstanceId++;
         }
 
-        private void OnGameStarted()
+        private void OnGameStartedEventHandler()
         {
             _cardInstanceId = 0;
 
@@ -61,6 +71,12 @@ namespace GrandDevs.CZB
             _opponentBoard = GameObject.Find("OpponentBoard");
         }
 
+
+        public void AddCardToHand(Player player, WorkingCard card)
+        {
+            player.RemoveCardFromDeck(card);
+            player.AddCardToHand(card);
+        }
 
         public GameObject AddCardToHand(WorkingCard card)
         {
@@ -98,19 +114,22 @@ namespace GrandDevs.CZB
             handCard.boardZone = _playerBoard;
 
             cardView.transform.localScale = Vector3.one * .3f;
-            card.owner.CardsInHand.Add(card);
+            // card.owner.CardsInHand.Add(card);
 
             //go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
+
+            _battlgroundController.playerHandCards.Add(cardView);
 
             return go;
         }
 
-        public virtual GameObject AddCardToOpponentHand(WorkingCard card)
+        public GameObject AddCardToOpponentHand(WorkingCard card)
         {
             var opponent = _gameplayManager.GetOpponentPlayer();
             var go = MonoBehaviour.Instantiate(opponentCardPrefab);
-            opponent.CardsInHand.Add(card);
             go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
+
+            _battlgroundController.opponentHandCards.Add(go);
 
             return go;
         }
@@ -357,13 +376,13 @@ namespace GrandDevs.CZB
 
         private void CallCardPlay(CardView card)
         {
-            PlayCreatureCard(card.WorkingCard);
+           // PlayCreatureCard(card.WorkingCard);
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 
         private void CallSpellCardPlay(CardView card)
         {
-            PlaySpellCard(card.WorkingCard);
+          //  PlaySpellCard(card.WorkingCard);
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 

@@ -1,4 +1,5 @@
-﻿using GrandDevs.CZB.Data;
+﻿using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,9 @@ namespace GrandDevs.CZB
         private IDataManager _dataManager;
         private IGameplayManager _gameplayManager;
 
+        private CardsController _cardsController;
+        private BattlegroundController _battlegroundController;
+
         private int _mana;
         private int _health;
         private int _graveyardCardsCount = 0;
@@ -35,6 +39,9 @@ namespace GrandDevs.CZB
         private List<WorkingCard> _CardsInGraveyard;
         private List<WorkingCard> _cardsInHand;
         private List<WorkingCard> _cardsInBoard;
+
+
+        public GameObject PlayerObject { get { return _playerObject; } }
 
         public int id;
         public int deckId;
@@ -99,18 +106,36 @@ namespace GrandDevs.CZB
         public Player(GameObject playerObject, bool isOpponent)
         {
             _playerObject = playerObject;
+            IsLocalPlayer = !isOpponent;
+            id = isOpponent ? 1 : 0;
 
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
+            _cardsController = _gameplayManager.GetController<CardsController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
+            CardsInDeck = new List<WorkingCard>();
+            CardsInGraveyard = new List<WorkingCard>();
+            CardsInHand = new List<WorkingCard>();
+            CardsOnBoard = new List<WorkingCard>();
+            BoardCards = new List<BoardCreature>();
+
             int heroId = 0;
 
-            if(!isOpponent)
+            if (!isOpponent)
                 heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
             else
                 heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
+
+
+            nickname = _selfHero.name;
+            deckId = _gameplayManager.PlayerDeckId;
+
+            _health = Constants.DEFAULT_PLAYER_HP;
+            _mana = Constants.DEFAULT_PLAYER_MANA;
 
             BoardSkills = new List<BoardSkill>();
 
@@ -165,12 +190,34 @@ namespace GrandDevs.CZB
         {
             CardsInHand.Add(card);
 
+            if (IsLocalPlayer)
+            {
+                _cardsController.AddCardToHand(card);
+                _battlegroundController.RearrangeHand();
+            }
+
             HandChangedEvent?.Invoke(CardsInHand.Count);
         }
 
         public void RemoveCardFromHand(WorkingCard card)
         {
             CardsInHand.Remove(card);
+
+            if (IsLocalPlayer)
+            {
+                _battlegroundController.RearrangeHand();
+            }
+            else
+            {
+                var randomIndex = UnityEngine.Random.Range(0, _battlegroundController.opponentHandCards.Count);
+                if (randomIndex < _battlegroundController.opponentHandCards.Count)
+                {
+                    var randomCard = _battlegroundController.opponentHandCards[randomIndex];
+                    _battlegroundController.opponentHandCards.Remove(randomCard);
+                    MonoBehaviour.Destroy(randomCard);
+                    _battlegroundController.RearrangeOpponentHand(true);
+                }
+            }
 
             HandChangedEvent?.Invoke(CardsInHand.Count);
         }
@@ -185,6 +232,15 @@ namespace GrandDevs.CZB
         public void RemoveCardFromBoard(WorkingCard card)
         {
             CardsOnBoard.Remove(card);
+
+            if (IsLocalPlayer)
+            {
+                _battlegroundController.RemovePlayerCardFromBoardToGraveyard(card);
+            }
+            else
+            {
+                _battlegroundController.RemoveOpponentCardFromBoardToGraveyard(card);
+            }
 
             BoardChangedEvent?.Invoke(CardsOnBoard.Count);
         }
@@ -210,7 +266,7 @@ namespace GrandDevs.CZB
             foreach (var card in cards)
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
 
-            DeckChangedEvent?.Invoke(CardsOnBoard.Count);
+            DeckChangedEvent?.Invoke(CardsInDeck.Count);
         }
     }
 }

@@ -332,7 +332,16 @@
         public enum EndGameType
         {
             WIN,
-            LOSE
+            LOSE,
+            CANCEL
+        }
+
+        public enum MatchType
+        {
+            LOCAL,
+
+            PVP,
+            PVE
         }
     }
 }

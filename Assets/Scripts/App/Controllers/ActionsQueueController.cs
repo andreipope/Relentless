@@ -22,7 +22,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public ActionsQueueController()
+        public void Init()
         {
             _actionsToDo = new Queue<GameAction<object>>();
             _actionsReports = new List<GameActionReport>();
@@ -40,16 +40,16 @@ namespace GrandDevs.CZB
         /// <summary>
         /// AddNewActionInToQueue
         /// </summary>
-        /// <param name="actionToDo">action to do</param>
+        /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public void AddNewActionInToQueue(Action<object> actionToDo, object parameter, GameActionReport report = null)
+        public void AddNewActionInToQueue(Action<object, Action> actionToDo, object parameter, GameActionReport report = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Enqueue(gameAction);
 
-            if (_actionInProgress == null)
+            if (_actionInProgress == null && _actionsToDo.Count < 2)
                 TryCallNewActionFromQueue();
         }
 
@@ -69,6 +69,7 @@ namespace GrandDevs.CZB
 
         private void OnActionDoneEvent(GameAction<object> previousAction)
         {
+            if(previousAction.report != null)
             _actionsReports.Add(previousAction.report);
 
             GotNewActionReportEvent?.Invoke(previousAction.report);
@@ -92,14 +93,16 @@ namespace GrandDevs.CZB
     {
         public event Action<GameAction<T>> OnActionDoneEvent;
 
-        private Action _localAction;
+        private ITimerManager _timerManager;
 
-        public Action<T> action;
+        public Action<T, Action> action;
         public T parameter;
         public GameActionReport report;
 
-        public GameAction(Action<T> action, T parameter, GameActionReport report)
+        public GameAction(Action<T, Action> action, T parameter, GameActionReport report)
         {
+            _timerManager = GameClient.Get<ITimerManager>();
+
             this.action = action;
             this.parameter = parameter;
             this.report = report;
@@ -107,11 +110,16 @@ namespace GrandDevs.CZB
 
         public void DoAction()
         {
-            _localAction = () =>
+            action?.Invoke(parameter, ActionDoneCallback);
+        }
+
+        private void ActionDoneCallback()
+        {
+            //small delay between actions
+            _timerManager.AddTimer((x) =>
             {
-                action?.Invoke(parameter);
                 OnActionDoneEvent?.Invoke(this);
-            };
+            }, null, Constants.DELAY_BETWEEN_GAMEPALY_ACTIONS);
         }
     }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
@@ -85,13 +84,13 @@ namespace GrandDevs.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                        playerCallerOfAbility.FightPlayerBySkill(value, false);
-                    else
-                        playerCallerOfAbility.FightPlayerBySkill(value);
+                    //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                    //    playerCallerOfAbility.FightPlayerBySkill(value, false);
+                    //else
+                    //    playerCallerOfAbility.FightPlayerBySkill(value);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+                  //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
                     break;
                 default: break;
             }

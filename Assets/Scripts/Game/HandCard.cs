@@ -96,7 +96,7 @@ public class HandCard : MonoBehaviour
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayCard(cardView, this);
+                _cardsController.PlayCard(ownerPlayer, cardView, this);
                 cardView.SetHighlightingEnabled(false);
             }
             else

@@ -16,7 +16,7 @@ namespace GrandDevs.CZB
 
         private ParticlesController _particlesController;
 
-        public VFXController()
+        public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
         }

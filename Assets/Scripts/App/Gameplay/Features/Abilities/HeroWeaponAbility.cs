@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 
@@ -51,7 +50,7 @@ namespace GrandDevs.CZB
             playerCallerOfAbility.CurrentBoardWeapon.InitWeapon(damage, health, playerCallerOfAbility, abilityTargetTypes);
 
             if (!playerCallerOfAbility.AlreadyAttackedInThisTurn)
-                playerCallerOfAbility.CurrentBoardWeapon.ActivateWeapon(!(playerCallerOfAbility is DemoHumanPlayer));
+                playerCallerOfAbility.CurrentBoardWeapon.ActivateWeapon(!(playerCallerOfAbility.IsLocalPlayer));
         }
     }
 }

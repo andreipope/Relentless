@@ -20,7 +20,7 @@ namespace GrandDevs.CZB
         private ulong _castedAbilitiesIds = 0;
         private List<ActiveAbility> _activeAbilities;
 
-        public AbilitiesController()
+        public void Init()
         {
             _activeAbilities = new List<ActiveAbility>();
 

@@ -33,8 +33,16 @@ namespace GrandDevs.CZB
         private PlayerSkillItem _playerSkill,
                                 _opponentSkill;
 
+        private PlayerManaBarItem _playerManaBar,
+                                  _opponentManaBar;
+
         private List<CardZoneStatus> _deckStatus,
                              _graveyardStatus;
+
+        private TextMeshPro _playerHealthText,
+                            _opponentHealthText,
+                            _playerCardDeckCountText,
+                            _opponentCardDeckCountText;
 
         private SpriteRenderer _playerDeckStatusTexture,
                                _opponentDeckStatusTexture,
@@ -67,9 +75,7 @@ namespace GrandDevs.CZB
             _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
-            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-
+            
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
@@ -77,8 +83,6 @@ namespace GrandDevs.CZB
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
-
-            _endTurnButton = GameObject.Find("");
 
             _cardGraveyard = _selfPage.transform.Find("CardGraveyard").GetComponent<VerticalLayoutGroup>();
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
@@ -112,13 +116,16 @@ namespace GrandDevs.CZB
 
         public void SetEndTurnButtonStatus(bool status)
         {
-            _endTurnButton.SetActive(status);
+            _endTurnButton.GetComponent<EndTurnButton>().SetEnabled(status);
+           // _endTurnButton.SetActive(status);
         }
 
         private void OnPlayerDeckZoneChanged(int index)
         {
             if (!_isPlayerInited)
                 return;
+
+            _playerCardDeckCountText.text = index.ToString();
 
             if (index == 0)
                 _playerDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
@@ -161,6 +168,8 @@ namespace GrandDevs.CZB
             if (!_isPlayerInited)
                 return;
 
+            _opponentCardDeckCountText.text = index.ToString();
+
             if (index == 0)
                 _opponentDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
             else
@@ -195,6 +204,34 @@ namespace GrandDevs.CZB
 
                 _opponentGraveyardStatusTexture.sprite = nearest.statusSprite;
             }
+        }
+
+        private void OnPlayerHPChanged(int oldHealth, int health)
+        {
+            if (!_isPlayerInited)
+                return;
+            _playerHealthText.text = health.ToString();
+        }
+
+        private void OnPlayerManaChanged(int oldMana, int mana)
+        {
+            if (!_isPlayerInited)
+                return;
+            _playerManaBar.SetMana(mana);
+        }
+
+        private void OnOpponentHPChanged(int oldHealth, int health)
+        {
+            if (!_isPlayerInited)
+                return;
+            _opponentHealthText.text = health.ToString();
+        }
+
+        private void OnOpponentManaChanged(int oldMana, int mana)
+        {
+            if (!_isPlayerInited)
+                return;
+            _opponentManaBar.SetMana(mana);
         }
 
         private int GetPercentFromMaxDeck(int index)
@@ -325,8 +362,11 @@ namespace GrandDevs.CZB
             var opponent = _gameplayManager.GetOpponentPlayer();
 
             player.DeckChangedEvent += OnPlayerDeckZoneChanged;
+            player.PlayerHPChangedEvent += OnPlayerHPChanged;
+            player.PlayerManaChangedEvent += OnPlayerManaChanged;
             opponent.DeckChangedEvent += OnOpponentDeckZoneChanged;
-
+            opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
+            opponent.PlayerManaChangedEvent += OnOpponentManaChanged;
 
             player.OnStartTurnEvent += OnStartTurnEventHandler;
         }
@@ -358,6 +398,9 @@ namespace GrandDevs.CZB
 
         public void StartGame()
         {
+            if(_battlegroundController == null)
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
             int deckId = GameClient.Get<IGameplayManager>().PlayerDeckId = _currentDeckId;
             int opponentdeckId = GameClient.Get<IGameplayManager>().OpponentDeckId = UnityEngine.Random.Range(0, GameClient.Get<IDataManager>().CachedOpponentDecksData.decks.Count);
 
@@ -380,6 +423,15 @@ namespace GrandDevs.CZB
             _opponentDeckStatusTexture = GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _playerGraveyardStatusTexture = GameObject.Find("Player/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
             _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard").GetComponent<SpriteRenderer>();
+
+            _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            _opponentHealthText = GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+
+            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"));
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"));
+
+            _endTurnButton = GameObject.Find("EndTurnButton");
+
 
             _isPlayerInited = true;
         }
@@ -421,15 +473,13 @@ namespace GrandDevs.CZB
         {
             Action callback = () =>
             {
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    GameClient.Get<ITutorialManager>().CancelTutorial();
-                }
-
                 _uiManager.HidePopup<YourTurnPopup>();
-                GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.MAIN_MENU);
+
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU, true);
+
                 GameClient.Get<ISoundManager>().CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
+
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
@@ -497,6 +547,74 @@ namespace GrandDevs.CZB
             this.cardZone = cardZone;
             this.statusSprite = statusSprite;
             this.percent = percent;
+        }
+    }
+
+    public class PlayerManaBarItem
+    {
+        private GameObject selfObject;
+        private TextMeshPro _manaText;
+        private List<ManaBottleItem> _manaBottles;
+
+        public PlayerManaBarItem() { }
+
+        public PlayerManaBarItem(GameObject gameObject)
+        {
+            selfObject = gameObject;
+            _manaText = selfObject.transform.Find("ManaAmount/Text").GetComponent<TextMeshPro>();
+            _manaBottles = new List<ManaBottleItem>();
+            GameObject bottle = null;
+            for (int i = 0; i < selfObject.transform.childCount; i++)
+            {
+                bottle = selfObject.transform.GetChild(i).gameObject;
+                if (bottle.name.Contains("ManaIcon"))
+                    _manaBottles.Add(new ManaBottleItem(bottle));
+            }
+        }
+
+        public void SetMana(int mana)
+        {
+            _manaText.text = mana.ToString();
+            for (var i = 0; i < _manaBottles.Count; i++)
+            {
+                if (i < mana)
+                {
+                    _manaBottles[i].Active();
+                }
+                else
+                {
+                    _manaBottles[i].Disactive();
+                }
+            }
+        }
+    }
+
+    public class ManaBottleItem
+    {
+        public GameObject selfObject;
+
+        private SpriteRenderer _fullBoottle,
+                               _glowBottle; 
+
+        public ManaBottleItem() { }
+
+        public ManaBottleItem(GameObject gameObject)
+        {
+            selfObject = gameObject;
+            _fullBoottle = selfObject.transform.Find("ManaIconBlue/goobottle_goo").GetComponent<SpriteRenderer>();
+            _glowBottle = selfObject.transform.Find("ManaIconBlue/glow_goo").GetComponent<SpriteRenderer>();
+        }
+
+        public void Active()
+        {
+            _fullBoottle.DOFade(1.0f, 0.5f);
+            _glowBottle.DOFade(1.0f, 0.5f);
+        }
+
+        public void Disactive()
+        {
+            _fullBoottle.DOFade(0.0f, 0.5f);
+            _glowBottle.DOFade(0.0f, 0.5f);
         }
     }
 }

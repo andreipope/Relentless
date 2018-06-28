@@ -52,12 +52,12 @@ namespace GrandDevs.CZB
 
             string stat = Constants.TAG_MANA;
 
-            playerCallerOfAbility.playerInfo.namedStats[stat].maxValue = Mathf.Clamp(playerCallerOfAbility.playerInfo.namedStats[stat].maxValue + value, 0, 10);
-            playerCallerOfAbility.playerInfo.namedStats[stat].baseValue = playerCallerOfAbility.playerInfo.namedStats[stat].maxValue;
-            playerCallerOfAbility.playerInfo.namedStats[stat].PermanentUpdateValue();
+            //playerCallerOfAbility.playerInfo.namedStats[stat].maxValue = Mathf.Clamp(playerCallerOfAbility.playerInfo.namedStats[stat].maxValue + value, 0, 10);
+            //playerCallerOfAbility.playerInfo.namedStats[stat].baseValue = playerCallerOfAbility.playerInfo.namedStats[stat].maxValue;
+            //playerCallerOfAbility.playerInfo.namedStats[stat].PermanentUpdateValue();
 
-            playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue = Mathf.Clamp(playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue + value, 0, 10);
-            playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].baseValue = playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue;
+            //playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue = Mathf.Clamp(playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue + value, 0, 10);
+            //playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].baseValue = playerCallerOfAbility.GetServer().gameState.currentPlayer.namedStats[stat].maxValue;
         }
     }
 }

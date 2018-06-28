@@ -81,7 +81,8 @@ namespace GrandDevs.CZB
             if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.T))
             {
                 GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
-                GameManager.Instance.tutorial = true;
+
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
             }
 
             /*  FOR TESTING

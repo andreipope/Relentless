@@ -1,25 +1,3 @@
-// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Networking;
-using UnityEngine.Rendering;
-
-using DG.Tweening;
-using TMPro;
-
-using GrandDevs.CZB;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Helpers;
-using GrandDevs.Internal;
-
 
 /*
 /// <summary>
@@ -90,28 +68,6 @@ public class DemoHumanPlayer : DemoPlayer
         gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
         Assert.IsNotNull(gameUI);
 
-        foreach (var entry in playerInfo.stats)
-        {
-            if (entry.Value.name == "Life")
-            {
-                lifeStat = entry.Value;
-            }
-            else if (entry.Value.name == "Mana")
-            {
-                manaStat = entry.Value;
-            }
-        }
-        foreach (var entry in opponentInfo.stats)
-        {
-            if (entry.Value.name == "Life")
-            {
-                opponentLifeStat = entry.Value;
-            }
-            else if (entry.Value.name == "Mana")
-            {
-                opponentManaStat = entry.Value;
-            }
-        }
 
         lifeStat.onValueChanged += (oldValue, newValue) =>
         {
@@ -147,68 +103,17 @@ public class DemoHumanPlayer : DemoPlayer
         };
         handZone.onCardAdded += card =>
         {
-            //Debug.Log("%%%%%" + CurrentTurn);
-            AddCardToHand(card);
-            RearrangeHand();
+
         };
         handZone.onCardRemoved += card =>
         {
-            var handCard = playerHandCards.Find(x => x.card == card);
-            if (handCard != null)
-            {
-                playerHandCards.Remove(handCard);
-                RearrangeHand();
-            }
+
         };
 
         boardZone = playerInfo.namedZones["Board"];
         boardZone.onCardRemoved += card =>
         {
-            var graveyardPos = GameObject.Find("GraveyardPlayer").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            var boardCard = playerBoardCards.Find(x => x.card == card);
-            if (boardCard != null)
-            {
-                
-                //if (!gameEnded)
-                //{
-                //    GameClient.Get<ITimerManager>().AddTimer((x) =>
-                //    {
-                //        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                //        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, 
-                //            libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-
-                //    }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
-                //} 
-                
-
-                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
-
-                playerGraveyardCards.Add(boardCard);
-    //            GameClient.Get<ITimerManager>().AddTimer((x) =>
-    //            {
-    //                RearrangeBottomBoard();
-				//}, null, 2f);
-
-             //   playerBoardCards.Remove(boardCard); //-------------------------------
-
-                //boardCard.transform.DOMove(graveyardPos, 0.7f);
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.StopSleepingParticles();
-                boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                //boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
-                Destroy(boardCard.GetComponent<BoxCollider2D>());
-            }
-            else if (currentSpellCard != null && card == currentSpellCard.card)
-            {                                           
-                currentSpellCard.SetHighlightingEnabled(false);
-                currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                //currentSpellCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
-                Destroy(currentSpellCard.GetComponent<BoxCollider2D>());
-                //currentSpellCard.transform.DOMove(graveyardPos - Vector3.right * 5, 0.5f);
-                //currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f);
-                currentSpellCard.GetComponent<HandCard>().enabled = false;
-                currentSpellCard = null;
-            }
+           
         };
 
         graveyardZone = playerInfo.namedZones["Graveyard"];
@@ -230,71 +135,13 @@ public class DemoHumanPlayer : DemoPlayer
         };
         opponentHandZone.onCardRemoved += card =>
         {
-            var randomIndex = UnityEngine.Random.Range(0, opponentHandCards.Count);
-            if (randomIndex < opponentHandCards.Count)
-            {
-                var randomCard = opponentHandCards[randomIndex];
-                opponentHandCards.Remove(randomCard);
-                Destroy(randomCard);
-                RearrangeOpponentHand(true);
-            }
+
         };
 
         opponentBoardZone = opponentInfo.namedZones["Board"];
         opponentBoardZone.onCardRemoved += card =>
         {
-            var graveyardPos = GameObject.Find("GraveyardOpponent").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            var boardCard = opponentBoardCards.Find(x => x.card == card);
-            if (boardCard != null)
-            {
-          
-                //if (!gameEnded)
-                //{
 
-                //    GameClient.Get<ITimerManager>().AddTimer((x) =>
-                //    {
-                //        var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-                //        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                //    }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
-                //} 
-                
-
-            //    GameClient.Get<ITimerManager>().AddTimer((param) =>
-            //    {
-                    boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
-
-                    opponentGraveyardCards.Add(boardCard);
-
-                    //GameClient.Get<ITimerManager>().AddTimer((x) =>
-                    //{
-                    //    RearrangeTopBoard();
-                    //}, null, 2f);
-               //     opponentBoardCards.Remove(boardCard);
-                    //boardCard.transform.DOMove(graveyardPos, 0.7f);
-                    boardCard.SetHighlightingEnabled(false);
-                    boardCard.StopSleepingParticles();
-                    boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    //boardCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
-                    Destroy(boardCard.GetComponent<BoxCollider2D>());
-
-             //   }, null, 3f, false);
-            }
-            else if (currentSpellCard != null && card == currentSpellCard.card)
-            {
-                currentSpellCard.SetHighlightingEnabled(false);
-                currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                //currentSpellCard.GetComponent<SortingGroup>().sortingOrder = opponentGraveyardCards.Count;
-                Destroy(currentSpellCard.GetComponent<BoxCollider2D>());
-                var sequence = DOTween.Sequence();
-                sequence.PrependInterval(2.0f);
-                sequence.Append(currentSpellCard.transform.DOMove(graveyardPos, 0.5f));
-                sequence.Append(currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f));
-                sequence.OnComplete(() =>
-                {
-                    currentSpellCard = null;
-                });
-            }
         };
 
         opponentGraveyardZone = opponentInfo.namedZones["Graveyard"];
@@ -333,51 +180,6 @@ public class DemoHumanPlayer : DemoPlayer
         gameUI.SetOpponentGraveyardCards(opponentGraveyardZone.numCards);
         gameUI.SetOpponentDeckCards(opponentDeckZone.numCards);
 
-        // Set the player nicknames in the UI.
-        for (var i = 0; i < msg.nicknames.Length; i++)
-        {
-            var nickname = msg.nicknames[i];
-            if (i == msg.playerIndex)
-            {
-                gameUI.SetPlayerName(nickname);
-            }
-            else
-            {
-                gameUI.SetOpponentName(nickname);
-            }
-        }
-
-        var gameScene = GameObject.Find("GameScene");
-        if (gameScene != null)
-        {
-#if USING_MASTER_SERVER_KIT
-            if (gameScene.GetComponent<MSK_GameScene>() != null)
-            {
-                gameScene.GetComponent<MSK_GameScene>().CloseWaitingWindow();
-            }
-#else
-            //if (gameScene.GetComponent<GameScene>() != null)
-            //{
-            //    gameScene.GetComponent<GameScene>().CloseWaitingWindow();
-            //}
-            _uiManager.HidePopup<PreparingForBattlePopup>();
-#endif
-        }
-
-        var endTurnButton = GameObject.Find("EndTurnButton");
-        if (endTurnButton != null)
-        {
-            endTurnButton.GetComponent<EndTurnButton>().player = this;
-        }
-
-        GameClient.Get<IPlayerManager>().OnLocalPlayerSetUp();
-
-
-        if (!opponentInfo.isHuman)
-        {
-            opponent = DemoAIPlayer.Instance;
-            UpdateOpponentInfo();
-        }
 
         EffectSolver.EffectActivateEvent += EffectActivateEventHandler;
     }
@@ -401,86 +203,7 @@ public class DemoHumanPlayer : DemoPlayer
     public override void OnStartTurn(StartTurnMessage msg)
     {
         base.OnStartTurn(msg);
-
-        if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial && !GameClient.Get<ITutorialManager>().IsTutorial)
-            GameClient.Get<ITutorialManager>().StartTutorial();
-
-        gameUI.SetPlayerActive(msg.isRecipientTheActivePlayer);
-        gameUI.SetOpponentActive(!msg.isRecipientTheActivePlayer);
-        gameUI.SetEndTurnButtonEnabled(msg.isRecipientTheActivePlayer);
-
-        foreach (var card in opponentHandCards)
-        {
-            Destroy(card);
-        }
-        opponentHandCards.Clear();
-        for (var i = 0; i < opponentHandZone.numCards; i++)
-        {
-            if (i == opponentHandZone.numCards - 1)
-                RearrangeOpponentHand();
-
-            AddCardToOpponentHand();
-        }
-        RearrangeOpponentHand(!msg.isRecipientTheActivePlayer, true);
-
-        opponent.isActivePlayer = !msg.isRecipientTheActivePlayer;
-
-        if (msg.isRecipientTheActivePlayer)
-        {
-            UpdateHandCardsHighlight();
-
-            List<BoardCreature> creatures = new List<BoardCreature>();
-
-            foreach (var card in playerBoardCards)
-            {
-                if (!card || !card.gameObject)
-                {
-                    creatures.Add(card);
-                    continue;
-                }
-
-                card.OnStartTurn();
-            }
-
-            foreach (var item in creatures)
-                playerBoardCards.Remove(item);
-            creatures.Clear();
-            creatures = null;
-
-            if (CurrentBoardWeapon != null && !isPlayerStunned)
-            {
-                AlreadyAttackedInThisTurn = false;
-                CurrentBoardWeapon.ActivateWeapon(false);
-            }
-
-            boardSkill.OnStartTurn();
-
-            //var scene = GameObject.Find("GameScene").GetComponent<GameScene>();
-            //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
-            _uiManager.DrawPopup<YourTurnPopup>();
-
-            gameUI.StartTurnCountdown(turnDuration);
-        }
-        else
-        {
-            foreach (var card in opponentBoardCards)
-            {
-                card.OnStartTurn();
-            }
-
-            foreach (var card in playerHandCards)
-            {
-                card.SetHighlightingEnabled(false);
-            }
-            foreach (var card in playerBoardCards)
-            {
-                card.SetHighlightingEnabled(false);
-            }
-
-            gameUI.HideTurnCountdown();
-        }
-
-        
+     
 
         if (opponent != null)
         {
@@ -495,44 +218,6 @@ public class DemoHumanPlayer : DemoPlayer
     public override void OnEndTurn(EndTurnMessage msg)
     {
         base.OnEndTurn(msg);
-
-        if (msg.isRecipientTheActivePlayer)
-        {
-            gameUI.SetEndTurnButtonEnabled(false);
-
-            foreach (var card in playerBoardCards)
-            {
-                card.OnEndTurn();
-            }
-
-            GameObject.Find("Player/Spell").GetComponent<BoardSkill>().OnEndTurn();
-
-            if (currentCreature != null)
-            {
-                playerBoardCards.Remove(currentCreature);
-                RearrangeBottomBoard();
-
-                playerInfo.namedZones["Hand"].AddCard(currentCreature.card);
-                playerInfo.namedZones["Board"].RemoveCard(currentCreature.card);
-
-                Destroy(currentCreature.gameObject);
-                currentCreature = null;
-            }
-
-            if (currentSpellCard != null)
-            {
-                Destroy(currentSpellCard.GetComponent<BoardSpell>());
-                currentSpellCard = null;
-                RearrangeHand();
-            }
-        }
-        else
-        {
-            foreach (var card in opponentBoardCards)
-            {
-                card.OnEndTurn();
-            }
-        }
 
         if (isHuman)
             CallOnEndTurnEvent();
@@ -551,26 +236,6 @@ public class DemoHumanPlayer : DemoPlayer
     public override void OnEndGame(EndGameMessage msg)
     {
         base.OnEndGame(msg);
-
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
-
-        if (msg.winnerPlayerIndex == playerInfo.netId)
-            GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
-        else
-            GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
-
-        GameClient.Get<ITimerManager>().AddTimer((x) =>
-        {
-            if (msg.winnerPlayerIndex == playerInfo.netId)
-            {
-                _uiManager.DrawPopup<YouWonPopup>();
-            }
-            else
-            {
-                _uiManager.DrawPopup<YouLosePopup>();
-            }
-        }, null, 4f);
-        _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
 
 
         EffectSolver.EffectActivateEvent -= EffectActivateEventHandler;

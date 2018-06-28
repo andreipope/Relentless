@@ -131,40 +131,6 @@ public class GameUI : MonoBehaviour
     public void SetOpponentMana(int manaRows, int mana)
     {
         opponentManaBar.SetMana(manaRows, mana);
-     }
-
-    public void SetEndTurnButtonEnabled(bool enabled)
-    {
-        endTurnButton.SetEnabled(enabled);
     }
 
-    public void StartTurnCountdown(int time)
-    {
-        //endTurnSprite.DOFade(1.0f, 0.3f);
-        //endTurnTitleText.DOFade(1.0f, 0.3f);
-        //endTurnTimeText.DOFade(1.0f, 0.3f);
-        StartCoroutine(StartCountdown(time));
-    }
-
-    public void HideTurnCountdown()
-    {
-        //endTurnSprite.DOFade(0.0f, 0.2f);
-        //endTurnTitleText.DOFade(0.0f, 0.2f);
-        //endTurnTimeText.DOFade(0.0f, 0.2f);
-    }
-
-    private IEnumerator StartCountdown(int time)
-    {
-        while (time >= 0)
-        {
-            //endTurnTimeText.text = time.ToString();
-            yield return new WaitForSeconds(1.0f);
-            time -= 1;
-        }
-    }
-
-    public void StopCountdown()
-    {
-        StopAllCoroutines();
-    }
 }

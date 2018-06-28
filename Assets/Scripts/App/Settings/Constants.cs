@@ -6,7 +6,7 @@ namespace GrandDevs.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.13.2.ver";
+        internal const string CURRENT_VERSION = "0.0.14.1.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -20,8 +20,6 @@ namespace GrandDevs.CZB.Common
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
         internal static bool DATA_ENCRYPTION_ENABLED = false;
-            
-        internal static bool DEBUG_MODE = false;
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
@@ -36,6 +34,14 @@ namespace GrandDevs.CZB.Common
         internal static int DEFAULT_TURN_DURATION = 30;
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
+
+        internal static int DEFAULT_PLAYER_HP = 30;
+        internal static int DEFAULT_PLAYER_MANA = 0;
+        internal static int MAXIMUM_PLAYER_MANA = 10;
+
+        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 5;
+
+        internal static float DELAY_BETWEEN_GAMEPALY_ACTIONS = 0.01f;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
@@ -77,6 +83,6 @@ namespace GrandDevs.CZB.Common
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
 
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;
     }
 }

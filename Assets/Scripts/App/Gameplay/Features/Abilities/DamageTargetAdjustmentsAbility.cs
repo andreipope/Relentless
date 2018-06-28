@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
@@ -46,10 +45,10 @@ namespace GrandDevs.CZB
                 switch (affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
-                        if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                            CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
-                        else
-                            CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
+                        //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                        //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
+                        //else
+                        //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetCreature);
@@ -59,7 +58,7 @@ namespace GrandDevs.CZB
                         //CreateAndMoveParticle(targetCreature);
                         CreateAndMoveParticle(() =>
                         {
-                            playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+                           // playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
 
                         }, targetCreature.transform.position);
                 
@@ -72,51 +71,51 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
-            var creature = info as BoardCreature;
+            //var creature = info as BoardCreature;
 
-            BoardCreature leftAdjustment = null,
-                    rightAdjastment = null;
+            //BoardCreature leftAdjustment = null,
+            //        rightAdjastment = null;
 
-            int targetIndex = -1;
-            List<BoardCreature> list = null;
-            for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
-            {
-                if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
-                {
-                    targetIndex = i;
-                    list = playerCallerOfAbility.opponentBoardCardsList;
-                    break;
-                }
-            }
-            if (targetIndex == -1)
-                for (int i = 0; i < playerCallerOfAbility.playerBoardCardsList.Count; i++)
-                {
-                    if (playerCallerOfAbility.playerBoardCardsList[i] == creature)
-                    {
-                        targetIndex = i;
-                        list = playerCallerOfAbility.playerBoardCardsList;
-                        break;
-                    }
-                }
-            if (targetIndex > -1)
-            {
-                if (targetIndex - 1 > -1)
-                    leftAdjustment = list[targetIndex - 1];
-                if (targetIndex + 1 < list.Count)
-                    rightAdjastment = list[targetIndex + 1];
-            }
+            //int targetIndex = -1;
+            //List<BoardCreature> list = null;
+            //for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
+            //{
+            //    if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
+            //    {
+            //        targetIndex = i;
+            //        list = playerCallerOfAbility.opponentBoardCardsList;
+            //        break;
+            //    }
+            //}
+            //if (targetIndex == -1)
+            //    for (int i = 0; i < playerCallerOfAbility.playerBoardCardsList.Count; i++)
+            //    {
+            //        if (playerCallerOfAbility.playerBoardCardsList[i] == creature)
+            //        {
+            //            targetIndex = i;
+            //            list = playerCallerOfAbility.playerBoardCardsList;
+            //            break;
+            //        }
+            //    }
+            //if (targetIndex > -1)
+            //{
+            //    if (targetIndex - 1 > -1)
+            //        leftAdjustment = list[targetIndex - 1];
+            //    if (targetIndex + 1 < list.Count)
+            //        rightAdjastment = list[targetIndex + 1];
+            //}
 
-            if (leftAdjustment != null)
-            {
-                //CreateVFX(cardCaller.transform.position);
-                CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
-            }
+            //if (leftAdjustment != null)
+            //{
+            //    //CreateVFX(cardCaller.transform.position);
+            //    CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
+            //}
 
-            if (rightAdjastment != null)
-            {
-                //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-                CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
-            }
+            //if (rightAdjastment != null)
+            //{
+            //    //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
+            //    CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
+            //}
         }
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)

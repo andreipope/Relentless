@@ -10,9 +10,15 @@ namespace GrandDevs.CZB
     public class GameplayManager : IService, IGameplayManager
     {
         public event Action OnGameStartedEvent;
+        public event Action OnGameInitializedEvent;
         public event Action OnGameEndedEvent;
         public event Action OnTurnStartedEvent;
         public event Action OnTurnEndedEvent;
+
+        private IDataManager _dataManager;
+        private IMatchManager _matchManager;
+        private ISoundManager _soundManager;
+        private IUIManager _uiManager;
 
         private List<IController> _controllers;
 
@@ -29,6 +35,8 @@ namespace GrandDevs.CZB
 
         public List<Player> PlayersInGame { get; set; }
 
+        public Player WhoseTurn { get; set; }
+
         public void Dispose()
         {
             foreach (var item in _controllers)
@@ -37,9 +45,16 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
+            _dataManager = GameClient.Get<IDataManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+
+            PlayersInGame = new List<Player>();
+
             InitControllers();
 
-            if(!GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            if (!_dataManager.CachedUserLocalData.tutorial)
             {
                 Constants.ZOMBIES_SOUND_VOLUME *= 3;
                 Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
@@ -60,17 +75,23 @@ namespace GrandDevs.CZB
         private void InitControllers()
         {
             _controllers = new List<IController>();
-            _controllers.Add(new AbilitiesController());
+            _controllers.Add(new VFXController());
             _controllers.Add(new ParticlesController());
-            _controllers.Add(new PlayerController());
+            _controllers.Add(new AbilitiesController());
             _controllers.Add(new ActionsQueueController());
+            _controllers.Add(new PlayerController());
+            _controllers.Add(new AIController());
+            _controllers.Add(new CardsController());
             _controllers.Add(new BattlegroundController());
-            _controllers.Add(new VFXController());  
+
+
+            foreach (var controller in _controllers)
+                controller.Init();
         }
 
         public string GetCardSet(Data.Card card)
         {
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
             {
                 if (cardSet.cards.IndexOf(card) > -1)
                     return cardSet.name;
@@ -85,14 +106,40 @@ namespace GrandDevs.CZB
             GetController<BattlegroundController>().RearrangeTopBoard();
         }
 
+        public void EndGame(Enumerators.EndGameType endGameType)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+
+            if (endGameType == Enumerators.EndGameType.WIN)
+                GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
+            else if (endGameType == Enumerators.EndGameType.LOSE)
+                GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                if (endGameType == Enumerators.EndGameType.WIN)
+                    _uiManager.DrawPopup<YouWonPopup>();
+                else if (endGameType == Enumerators.EndGameType.LOSE)
+                    _uiManager.DrawPopup<YouLosePopup>();
+            }, null, 4f);
+
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+        }
+
         public void StartGameplay()
         {
             GameStarted = true;
+
+            OnGameStartedEvent?.Invoke();
+
+            StartInitializeGame();
         }
 
         public void StopGameplay()
         {
             GameStarted = false;
+
+            OnGameEndedEvent?.Invoke();
         }
 
 
@@ -109,6 +156,29 @@ namespace GrandDevs.CZB
         public Player GetOpponentPlayer()
         {
             return PlayersInGame.Find(x => !x.IsLocalPlayer);
+        }
+
+        public bool IsLocalPlayerTurn()
+        {
+            return WhoseTurn.Equals(GetLocalPlayer());
+        }
+
+        private void StartInitializeGame()
+        {
+            PlayersInGame.Clear();
+
+            //initialize players
+            GetController<PlayerController>().InitializePlayer();
+
+            if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+                GetController<AIController>().InitializePlayer();
+
+            WhoseTurn = GetLocalPlayer();// local player starts as first
+
+
+            GetController<BattlegroundController>().InitializeBattleground();
+
+            OnGameInitializedEvent?.Invoke();
         }
     }
 }

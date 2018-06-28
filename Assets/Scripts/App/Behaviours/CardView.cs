@@ -41,6 +41,8 @@ namespace GrandDevs.CZB
 
         protected Animator cardAnimator;
 
+        public Card libraryCard;
+
         public bool isNewCard = false;
 
         public int manaCost { get; protected set; }
@@ -68,13 +70,15 @@ namespace GrandDevs.CZB
         {
             WorkingCard = card;
 
-            nameText.text = WorkingCard.libraryCard.name;
-            bodyText.text = WorkingCard.libraryCard.description;
-            costText.text = WorkingCard.libraryCard.cost.ToString();
+            libraryCard = WorkingCard.libraryCard;
+
+            nameText.text = libraryCard.name;
+            bodyText.text = libraryCard.description;
+            costText.text = libraryCard.cost.ToString();
 
             isNewCard = true;
 
-            manaCost = WorkingCard.libraryCard.cost;
+            manaCost = libraryCard.cost;
 
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRarity), WorkingCard.libraryCard.cardRarity);
@@ -90,12 +94,14 @@ namespace GrandDevs.CZB
 
         public virtual void PopulateWithLibraryInfo(Card card, string setName = "", int amount = 0)
         {
-            nameText.text = card.name;
-            bodyText.text = card.description;
-            amountText.text = amount.ToString();
-            costText.text = card.cost.ToString();
+            libraryCard = card;
 
-            manaCost = WorkingCard.libraryCard.cost;
+            nameText.text = libraryCard.name;
+            bodyText.text = libraryCard.description;
+            amountText.text = amount.ToString();
+            costText.text = libraryCard.cost.ToString();
+
+            manaCost = libraryCard.cost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 

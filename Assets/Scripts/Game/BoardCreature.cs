@@ -495,7 +495,7 @@ namespace GrandDevs.CZB
                         _gameplayManager.GetController<VFXController>().PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, Damage);
 
 
-                        _playerController.FightPlayer(Card);
+                      //  _playerController.FightPlayer(Card);
                         CreatureOnAttackEvent?.Invoke(targetPlayer);
                     },
                     () =>
@@ -530,7 +530,7 @@ namespace GrandDevs.CZB
                             _gameplayManager.GetController<VFXController>().PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
 
 
-                            _playerController.FightCreature(Card, targetCard.Card);
+                        //    _playerController.FightCreature(Card, targetCard.Card);
                             CreatureOnAttackEvent?.Invoke(targetCard);
                         },
                         () =>

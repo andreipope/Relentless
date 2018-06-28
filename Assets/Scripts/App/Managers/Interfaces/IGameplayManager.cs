@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandDevs.CZB.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,14 +25,23 @@ namespace GrandDevs.CZB
 
         List<Player> PlayersInGame { get; set; }
 
+        Player WhoseTurn { get; set; }
+
         T GetController<T>() where T : IController;
 
         string GetCardSet(Data.Card card);
 
         void RearrangeHands();
 
+
+        bool IsLocalPlayerTurn();
+
+
         void StartGameplay();
         void StopGameplay();
+
+        void EndGame(Enumerators.EndGameType endGameType);
+
         Player GetLocalPlayer();
         Player GetOpponentPlayer();   
     }    

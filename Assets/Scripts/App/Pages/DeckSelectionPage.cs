@@ -209,14 +209,7 @@ namespace GrandDevs.CZB
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = _currentDeckId;
 
-            _uiManager.HideAllPages();
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
-
-            // small hack untill we will optimize the game because app stuck on this state.
-            GameClient.Get<ITimerManager>().AddTimer((x) =>
-            {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
-            }, null, Time.deltaTime, false);
+            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
         }
 		private void CreateDeck()
 		{

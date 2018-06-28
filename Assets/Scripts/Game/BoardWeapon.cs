@@ -228,10 +228,10 @@ namespace GrandDevs.CZB
             {
                 PlayAttackAnimationOnTarget(_player.gameObject, () =>
                 {
-                    if (_player.playerInfo.id == _owner.id)
-                        _owner.FightPlayerBySkill(_damage, false);
-                    else
-                        _owner.FightPlayerBySkill(_damage);
+                   // if (_player.playerInfo.id == _owner.id)
+                     //   _owner.FightPlayerBySkill(_damage, false);
+                  //  else
+                    //    _owner.FightPlayerBySkill(_damage);
                 });
                 //CreateVFX(_player.transform.position);
 
@@ -243,7 +243,7 @@ namespace GrandDevs.CZB
 
                 PlayAttackAnimationOnTarget(_creature.transform.gameObject, () =>
                 {
-                    _owner.FightCreatureBySkill(_damage, _creature.Card);
+                  //  _owner.FightCreatureBySkill(_damage, _creature.Card);
                     _owner.HP -= damageToUs;
                 });
                 //CreateVFX(_creature.transform.position);

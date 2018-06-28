@@ -14,6 +14,15 @@ namespace GrandDevs.CZB
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
         private ISoundManager _soundManager;
+        private IDataManager _dataManager;
+        private ITutorialManager _tutorialManager;
+        private IUIManager _uiManager;
+        private ILoadObjectsManager _loadObjectsManager;
+
+
+        private CardsController _cardsController;
+        private PlayerController _playerController;
+        private AIController _aiController;
 
         private bool _battleDynamic = false;
 
@@ -34,10 +43,6 @@ namespace GrandDevs.CZB
 
         public Coroutine createPreviewCoroutine;
 
-        public GameObject creatureCardViewPrefab,
-                          spellCardViewPrefab;
-
-
         public List<CardView> playerHandCards = new List<CardView>();
         public List<GameObject> opponentHandCards = new List<GameObject>();
 
@@ -48,13 +53,25 @@ namespace GrandDevs.CZB
         public List<BoardCreature> opponentGraveyardCards = new List<BoardCreature>();
 
 
-        public BattlegroundController()
+        public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+            _playerController = _gameplayManager.GetController<PlayerController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
+            _aiController = _gameplayManager.GetController<AIController>();
 
             LoadGameConfiguration();
+
+
+
+            //  _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
         }
 
         public void Dispose()
@@ -90,7 +107,7 @@ namespace GrandDevs.CZB
         }
 
 
-        public void StartGame()
+        public void InitializeBattleground()
         {
             Debug.Log("Game has started.");
 
@@ -122,8 +139,11 @@ namespace GrandDevs.CZB
             _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
         }
 
-        public void EndGame(Player player, Enumerators.EndGameType type)
+        public void OnGameEndedEventHandler()
         {
+            Player player = null;
+            Enumerators.EndGameType type = Enumerators.EndGameType.CANCEL;
+
             if (_gameplayManager.IsTutorial)
                 return;
 
@@ -131,10 +151,11 @@ namespace GrandDevs.CZB
 
             switch (type)
             {
-                case Enumerators.EndGameType.WIN:       
+                case Enumerators.EndGameType.WIN:
                     break;
-
                 case Enumerators.EndGameType.LOSE:
+                    break;
+                case Enumerators.EndGameType.CANCEL:
                     break;
             }
         }
@@ -149,12 +170,12 @@ namespace GrandDevs.CZB
             }
         }
 
-        protected virtual void StartTurn()
+        public void StartTurn()
         {
             var players = _gameplayManager.PlayersInGame;
 
 
-            _gameplayManager.PlayersInGame.Find(x => x.IsLocalPlayer).turn++;
+            players.Find(x => x.IsLocalPlayer).turn++;
 
             //// Execute the turn start actions.
             //foreach (var action in GameManager.Instance.config.properties.turnStartActions)
@@ -162,9 +183,112 @@ namespace GrandDevs.CZB
             //    ExecuteGameAction(action);
             //}
 
+            if (_dataManager.CachedUserLocalData.tutorial && !_tutorialManager.IsTutorial)
+                _tutorialManager.StartTutorial();
+
+            _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(_gameplayManager.IsLocalPlayerTurn());
+
+
+            foreach (var card in opponentHandCards)
+                MonoBehaviour.Destroy(card);
+
+            opponentHandCards.Clear();
+
+            for (var i = 0; i < _gameplayManager.GetOpponentPlayer().CardsInHand.Count; i++)
+            {
+                if (i == _gameplayManager.GetOpponentPlayer().CardsInHand.Count - 1)
+                    RearrangeOpponentHand();
+
+                _cardsController.AddCardToOpponentHand(null);
+            }
+
+            RearrangeOpponentHand(!_gameplayManager.IsLocalPlayerTurn(), true);
+
+            _playerController.IsActive = _gameplayManager.IsLocalPlayerTurn();
+
+            if (_gameplayManager.IsLocalPlayerTurn())
+            {
+                _playerController.UpdateHandCardsHighlight();
+
+                List<BoardCreature> creatures = new List<BoardCreature>();
+
+                foreach (var card in playerBoardCards)
+                {
+                    if (_playerController == null || !card.gameObject)
+                    {
+                        creatures.Add(card);
+                        continue;
+                    }
+
+                    card.OnStartTurn();
+                }
+
+                foreach (var item in creatures)
+                    playerBoardCards.Remove(item);
+                creatures.Clear();
+                creatures = null;
+
+                if (_playerController.PlayerInfo.CurrentBoardWeapon != null && !_playerController.IsPlayerStunned)
+                {
+                    _playerController.AlreadyAttackedInThisTurn = false;
+                    _playerController.PlayerInfo.CurrentBoardWeapon.ActivateWeapon(false);
+                }
+
+                foreach (var skill in _playerController.PlayerInfo.BoardSkills)
+                    skill.OnStartTurn();
+
+                _uiManager.DrawPopup<YourTurnPopup>();
+
+                //   StartTurnCountdown(Constants.DEFAULT_TURN_DURATION);
+            }
+            else
+            {
+                foreach (var card in opponentBoardCards)
+                {
+                    card.OnStartTurn();
+                }
+
+                foreach (var card in playerHandCards)
+                {
+                    card.SetHighlightingEnabled(false);
+                }
+                foreach (var card in playerBoardCards)
+                {
+                    card.SetHighlightingEnabled(false);
+                }
+
+                //HideTurnCountdown();
+            }
+
+            foreach (var player in players)
+                player.CallOnStartTurnEvent();
         }
 
-        protected virtual void EndTurn()
+
+        //public void StartTurnCountdown(int time)
+        //{
+        //    MainApp.Instance.StartCoroutine(StartCountdown(time));
+        //}
+
+        //public void HideTurnCountdown()
+        //{
+        //}
+
+        //private IEnumerator StartCountdown(int time)
+        //{
+        //    while (time >= 0)
+        //    {
+        //        yield return new WaitForSeconds(1.0f);
+        //        time -= 1;
+        //    }
+        //}
+
+        //public void StopCountdown()
+        //{
+        //    MainApp.Instance.StopAllCoroutines();
+        //}
+
+        public void EndTurn()
         {
             var players = _gameplayManager.PlayersInGame;
 
@@ -176,6 +300,49 @@ namespace GrandDevs.CZB
                 // Increase turn count.
                 currentTurn += 1;
             }
+
+
+
+            if (_gameplayManager.IsLocalPlayerTurn())
+            {
+                _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+
+                foreach (var card in playerBoardCards)
+                    card.OnEndTurn();
+
+                GameObject.Find("Player/Spell").GetComponent<BoardSkill>().OnEndTurn();
+
+                if (_playerController.currentCreature != null)
+                {
+                    playerBoardCards.Remove(_playerController.currentCreature);
+                    RearrangeBottomBoard();
+
+                    _playerController.PlayerInfo.AddCardToHand(_playerController.currentCreature.Card);
+                    _playerController.PlayerInfo.RemoveCardFromBoard(_playerController.currentCreature.Card);
+
+                    MonoBehaviour.Destroy(_playerController.currentCreature.gameObject);
+                    _playerController.currentCreature = null;
+                }
+
+                if (_playerController.currentSpellCard != null)
+                {
+                    MonoBehaviour.Destroy(_playerController.currentSpellCard.GetComponent<BoardSpell>());
+                    _playerController.currentSpellCard = null;
+                    RearrangeHand();
+                }
+            }
+            else
+            {
+                foreach (var card in opponentBoardCards)
+                    card.OnEndTurn();
+            }
+
+
+            foreach (var player in players)
+                player.CallOnEndTurnEvent();
+
+            //todo move it from here !!!!!!!!!!!!!! 
+            _gameplayManager.WhoseTurn = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.GetOpponentPlayer() : _gameplayManager.GetLocalPlayer();
         }
 
         public void StopTurn()
@@ -186,6 +353,68 @@ namespace GrandDevs.CZB
             EndTurn();
 
             _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
+        }
+
+        public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
+        {
+            var graveyardPos = GameObject.Find("GraveyardPlayer").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var boardCard = playerBoardCards.Find(x => x.Card == card);
+            if (boardCard != null)
+            {
+
+                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+
+                playerGraveyardCards.Add(boardCard);
+
+                boardCard.SetHighlightingEnabled(false);
+                boardCard.StopSleepingParticles();
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+
+                MonoBehaviour.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+            }
+            else if (_playerController.currentSpellCard != null && card == _playerController.currentSpellCard.WorkingCard)
+            {
+                _playerController.currentSpellCard.SetHighlightingEnabled(false);
+                _playerController.currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+
+                MonoBehaviour.Destroy(_playerController.currentSpellCard.GetComponent<BoxCollider2D>());
+
+                _playerController.currentSpellCard.GetComponent<HandCard>().enabled = false;
+                _playerController.currentSpellCard = null;
+            }
+        }
+
+        public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
+        {
+            var graveyardPos = GameObject.Find("GraveyardOpponent").transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var boardCard = opponentBoardCards.Find(x => x.Card == card);
+            if (boardCard != null)
+            {
+
+                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+
+                opponentGraveyardCards.Add(boardCard);
+
+
+                boardCard.SetHighlightingEnabled(false);
+                boardCard.StopSleepingParticles();
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                MonoBehaviour.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+            }
+            else if (_aiController.currentSpellCard != null && card == _aiController.currentSpellCard.WorkingCard)
+            {
+                _aiController.currentSpellCard.SetHighlightingEnabled(false);
+                _aiController.currentSpellCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                MonoBehaviour.Destroy(_aiController.currentSpellCard.GetComponent<BoxCollider2D>());
+                var sequence = DOTween.Sequence();
+                sequence.PrependInterval(2.0f);
+                sequence.Append(_aiController.currentSpellCard.transform.DOMove(graveyardPos, 0.5f));
+                sequence.Append(_aiController.currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f));
+                sequence.OnComplete(() =>
+                {
+                    _aiController.currentSpellCard = null;
+                });
+            }
         }
 
         public void RearrangeBottomBoard(Action onComplete = null)
@@ -329,11 +558,11 @@ namespace GrandDevs.CZB
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(creatureCardViewPrefab);
+                currentCardPreview = MonoBehaviour.Instantiate(_cardsController.creatureCardViewPrefab);
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(spellCardViewPrefab);
+                currentCardPreview = MonoBehaviour.Instantiate(_cardsController.spellCardViewPrefab);
             }
 
             var cardView = currentCardPreview.GetComponent<CardView>();
@@ -382,7 +611,7 @@ namespace GrandDevs.CZB
         }
 
         public void RearrangeHand(bool isMove = false)
-        {       
+        {
             var handWidth = 0.0f;
             var spacing = -1.5f; // -1
             foreach (var card in playerHandCards)

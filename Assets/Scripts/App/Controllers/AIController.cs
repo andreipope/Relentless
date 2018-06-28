@@ -12,6 +12,7 @@ namespace GrandDevs.CZB
     public class AIController : IController
     {
         private IGameplayManager _gameplayManager;
+        private IDataManager _dataManager;
 
         private BattlegroundController _battlegroundController;
         private CardsController _cardsController;
@@ -24,16 +25,17 @@ namespace GrandDevs.CZB
       
         private GameObject fightTargetingArrowPrefab;
 
-        private BoardCreature currentCreature;
-        private CardView currentSpellCard;
-
         private List<int> _attackedCreatureTargets;
 
-        private bool _enabledAIBrain = true;
+        private bool _enabledAIBrain = false;
 
         private List<ActionItem> allActions;
 
         private Player PlayerInfo;
+
+        public GameObject currentBoardCreature;
+        public BoardCreature currentCreature;
+        public CardView currentSpellCard;
 
         public PlayerAvatar player,
                             opponent;
@@ -45,6 +47,18 @@ namespace GrandDevs.CZB
         public bool IsActive { get; set; }
 
 
+
+        public void Init()
+        {
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+        }
+
         public void Dispose()
         {
         }
@@ -53,24 +67,58 @@ namespace GrandDevs.CZB
         {
         }
 
-
-        public AIController()
-        {
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
-            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-            _cardsController = _gameplayManager.GetController<CardsController>();
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
-        }
-
-        public void Initializeplayer()
+        public void InitializePlayer()
         {
             PlayerInfo = new Player(GameObject.Find("Opponent"), true);
+
+            _gameplayManager.PlayersInGame.Add(PlayerInfo);
 
             fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
 
             _attackedCreatureTargets = new List<int>();
+
+            var playerDeck = new List<int>();
+
+            if (_gameplayManager.IsTutorial)
+            {
+                playerDeck.Add(10);
+                playerDeck.Add(7);
+                playerDeck.Add(11);
+                playerDeck.Add(10);
+                playerDeck.Add(10);
+            }
+            else
+            {
+                var deckId = _gameplayManager.OpponentDeckId;
+                foreach (var card in _dataManager.CachedOpponentDecksData.decks[deckId].cards)
+                {
+                    for (var i = 0; i < card.amount; i++)
+                    {
+                        if (Constants.DEV_MODE)
+                        {
+                            //card.cardId = 1;
+                        }
+                        playerDeck.Add(card.cardId);
+                    }
+                }
+
+            }
+
+            PlayerInfo.SetDeck(playerDeck);
+
+
+            for(int i =0; i < PlayerInfo.CardsInDeck.Count; i++)
+            {
+                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME)
+                    break;
+
+                _cardsController.AddCardToHand(PlayerInfo, PlayerInfo.CardsInDeck[i]);
+            }
+
+            foreach (var card in PlayerInfo.CardsInHand)
+                _cardsController.AddCardToOpponentHand(card);
+
+            _battlegroundController.RearrangeOpponentHand();
         }
 
         public void OnStartGame()
@@ -213,7 +261,7 @@ namespace GrandDevs.CZB
                                 {
                                     PlayCreatureAttackSound(creature);
 
-                                    FightCreature(creature, attackedCreature);
+                                   // FightCreature(creature, attackedCreature);
 
                                     usedCreatures.Add(creature);
                                     yield return new WaitForSeconds(2.0f);
@@ -248,7 +296,7 @@ namespace GrandDevs.CZB
                             {
                                 PlayCreatureAttackSound(creature);
 
-                                FightPlayer(creature);
+                             //   FightPlayer(creature);
 
                                 yield return new WaitForSeconds(2.0f);
                             }
@@ -273,7 +321,7 @@ namespace GrandDevs.CZB
                                 {
                                     PlayCreatureAttackSound(creature);
 
-                                    FightPlayer(creature);
+                                  //  FightPlayer(creature);
 
                                     yield return new WaitForSeconds(2.0f);
                                 }
@@ -284,14 +332,14 @@ namespace GrandDevs.CZB
                                     {
                                         PlayCreatureAttackSound(creature);
 
-                                        FightCreature(creature, attackedCreature);
+                                       // FightCreature(creature, attackedCreature);
                                         yield return new WaitForSeconds(2.0f);
                                     }
                                     else
                                     {
                                         PlayCreatureAttackSound(creature);
 
-                                        FightPlayer(creature);
+                                     //   FightPlayer(creature);
                                         yield return new WaitForSeconds(2.0f);
                                     }
                                 }
@@ -414,10 +462,10 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    var creature = playerBoardCards.Find(x => x.Card.instanceId == target);
+                    var creature = _battlegroundController.opponentBoardCards.Find(x => x.Card.instanceId == target);
 
                     if (creature == null)
-                        creature = opponentBoardCards.Find(x => x.Card.instanceId == target);
+                        creature = _battlegroundController.playerBoardCards.Find(x => x.Card.instanceId == target);
 
                     if (creature != null)
                     {
@@ -465,7 +513,7 @@ namespace GrandDevs.CZB
 
                 if (target != null)
                 {
-                    var creature = opponentBoardCards.Find(x => x.Card.instanceId == target.instanceId);
+                    var creature = _battlegroundController.playerBoardCards.Find(x => x.Card.instanceId == target.instanceId);
 
                     PlayerInfo.CurrentBoardWeapon.ImmediatelyAttack(creature);
                 }
@@ -483,7 +531,7 @@ namespace GrandDevs.CZB
             if ((card.libraryCard.cost <= availableMana && _battlegroundController.currentTurn > _minTurnForAttack) || Constants.DEV_MODE)
             {
                 List<int> target = GetAbilityTarget(card);
-                if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && playerBoardCards.Count < Constants.MAX_BOARD_CREATURES)
+                if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_CREATURES)
                 {
                     //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                     //    if (target.Count == 0)
@@ -494,19 +542,19 @@ namespace GrandDevs.CZB
 
                     numTurnsOnBoard[card.instanceId] = 0;
 
-                    PlayCreatureCard(card, target);
+                  //  PlayCreatureCard(card, target);
 
                     AddCardInfo(card);
 
-                    if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 11)
-                        FightCreatureBySkill(1, card);
+                //    if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 11)
+                //        FightCreatureBySkill(1, card);
 
                 }
                 else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 {
                     if (target != null)
                     {
-                        PlaySpellCard(card, target);
+                     //   PlaySpellCard(card, target);
 
                         AddCardInfo(card);
                     }

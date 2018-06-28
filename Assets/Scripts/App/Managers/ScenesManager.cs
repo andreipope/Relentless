@@ -53,8 +53,8 @@ namespace GrandDevs.CZB
 
         public void ChangeScene(Enumerators.AppState appState)
         {
-            if (appState == Enumerators.AppState.APP_INIT ||
-                appState == Enumerators.AppState.NONE)
+            if (appState == Enumerators.AppState.NONE || 
+                CurrentAppStateScene == appState)
                 return;
 
             IsLoadedScene = false;
@@ -79,13 +79,6 @@ namespace GrandDevs.CZB
 #else
             CurrentAppStateScene = (Enumerators.AppState)Enum.Parse(typeof(Enumerators.AppState), Application.loadedLevelName);
 #endif
-            if(CurrentAppStateScene == Enumerators.AppState.GAMEPLAY)
-            {
-                _uiManager.SetPage<GameplayPage>();
-              //  _uiManager.DrawPopup<PreparingForBattlePopup>();
-            }
-
-
             _isLoadingStarted = false;
             IsLoadedScene = true;
             SceneLoadingProgress = 0;

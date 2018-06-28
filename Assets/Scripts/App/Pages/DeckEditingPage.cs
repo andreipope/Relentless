@@ -378,13 +378,8 @@ namespace GrandDevs.CZB
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
 
-                Debug.Log(card.id);
-                Debug.Log(_collectionData.GetCardData(card.id));
-                Debug.Log(_collectionData.GetCardData(card.id).amount);
-
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
-
                 var cardView = go.GetComponent<CardView>();
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);

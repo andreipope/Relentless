@@ -71,8 +71,8 @@ public class BoardSkill : MonoBehaviour
 
     public void OnStartTurn()
     {
-        if (ownerPlayer.isActivePlayer && ownerPlayer.playerInfo.namedStats["Mana"].effectiveValue >= manaCost)
-            SetHighlightingEnabled(true);
+       /* if (ownerPlayer.isActivePlayer && ownerPlayer.playerInfo.namedStats["Mana"].effectiveValue >= manaCost)
+            SetHighlightingEnabled(true); */
     }
 
     public void OnEndTurn()
@@ -95,33 +95,33 @@ public class BoardSkill : MonoBehaviour
         }
     }
 
-    /* private void OnTriggerEnter2D(Collider2D collider)
-     {
-         if (collider.transform.parent != null)
-         {
-             var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
-             if (targetingArrow != null)
-             {
-                 targetingArrow.OnCardSelected(this);
-             }
-         }
-     }
+     //private void OnTriggerEnter2D(Collider2D collider)
+     //{
+     //    if (collider.transform.parent != null)
+     //    {
+     //        var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+     //        if (targetingArrow != null)
+     //        {
+     //            targetingArrow.OnCardSelected(this);
+     //        }
+     //    }
+     //}
 
-     private void OnTriggerExit2D(Collider2D collider)
-     {
-         if (collider.transform.parent != null)
-         {
-             var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
-             if (targetingArrow != null)
-             {
-                 targetingArrow.OnCardUnselected(this);
-             }
-         }
-     }              */
+     //private void OnTriggerExit2D(Collider2D collider)
+     //{
+     //    if (collider.transform.parent != null)
+     //    {
+     //        var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+     //        if (targetingArrow != null)
+     //        {
+     //            targetingArrow.OnCardUnselected(this);
+     //        }
+     //    }
+     //}              
 
     private void OnMouseDown()
     {
-        if (!(ownerPlayer is DemoHumanPlayer))
+      /*  if (!(ownerPlayer is DemoHumanPlayer))
             return;
 
         if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 29))
@@ -134,7 +134,7 @@ public class BoardSkill : MonoBehaviour
         {
             if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
             {
-                if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
+                if (ownerPlayer != null && ownerPlayer.isActivePlayer)
                 {
                     fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
                     fightTargetingArrow.targetType = EffectTarget.AnyPlayerOrCreature;
@@ -150,15 +150,15 @@ public class BoardSkill : MonoBehaviour
                     }
                 }
             }
-        }
+        } */
     }
 
     private void OnMouseUp()
     {
-        if (!(ownerPlayer is DemoHumanPlayer))
-            return;
+    //    if (!(ownerPlayer is DemoHumanPlayer))
+    //        return;
 
-        DoOnUpSkillAction();
+    //    DoOnUpSkillAction();
     }
 
     public void DoOnUpSkillAction()
@@ -166,37 +166,37 @@ public class BoardSkill : MonoBehaviour
         if (_isUsed)
             return;
 
-        if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
-        {
-            if (!_isOpponent)
-            {
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
-                }
-            }
+        //if (manaCost <= ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].effectiveValue)
+        //{
+        //    if (!_isOpponent)
+        //    {
+        //        if (GameClient.Get<ITutorialManager>().IsTutorial)
+        //        {
+        //            GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+        //        }
+        //    }
 
-            if (skillType == Enumerators.SetType.EARTH)
-            {
-                if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
-                    DoSkillAction(null);
-            }
-            else
-            {
-                if (!_isOpponent)
-                {
-                    if (fightTargetingArrow != null)
-                    {
-                        ResolveCombat();
-                        (ownerPlayer as DemoHumanPlayer).isCardSelected = false;
-                    }
-                }
-                else
-                {
-                    ResolveCombat();
-                }
-            }
-        }
+        //    if (skillType == Enumerators.SetType.EARTH)
+        //    {
+        //        if (ownerPlayer != null && ownerPlayer.isActivePlayer/* && isPlayable*/)
+        //            DoSkillAction(null);
+        //    }
+        //    else
+        //    {
+        //        if (!_isOpponent)
+        //        {
+        //            if (fightTargetingArrow != null)
+        //            {
+        //                ResolveCombat();
+        //                (ownerPlayer as DemoHumanPlayer).isCardSelected = false;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            ResolveCombat();
+        //        }
+        //    }
+        //}
     }
 
     public void ResolveCombat()
@@ -216,7 +216,7 @@ public class BoardSkill : MonoBehaviour
             {
                 var targetCard = fightTargetingArrow.selectedCard;
                 if (targetCard != GetComponent<BoardCreature>() &&
-                    targetCard.GetComponent<HandCard>() == null)
+                    targetCard.gameObject.GetComponent<HandCard>() == null)
                 {
                     DoSkillAction(targetCard);
                 }
@@ -228,8 +228,8 @@ public class BoardSkill : MonoBehaviour
 
     private void DoSkillAction(object target)
     {
-        if (!Constants.DEV_MODE)
-            ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].baseValue -= manaCost;
+       // if (!Constants.DEV_MODE)
+         //   ownerPlayer.playerInfo.namedStats[Constants.TAG_MANA].baseValue -= manaCost;
 
         CreateVFX(target);
         SetHighlightingEnabled(false);
@@ -244,14 +244,14 @@ public class BoardSkill : MonoBehaviour
             var creature = target as BoardCreature;
 
 
-            for (int i = 0; i < ownerPlayer.opponentBoardCardsList.Count; i++)
-            {
-                if (ownerPlayer.opponentBoardCardsList[i] == creature)
-                {
-                    creature = ownerPlayer.opponentBoardCardsList[i];
-                    break;
-                }
-            }
+            //for (int i = 0; i < ownerPlayer.opponentBoardCardsList.Count; i++)
+            //{
+            //    if (ownerPlayer.opponentBoardCardsList[i] == creature)
+            //    {
+            //        creature = ownerPlayer.opponentBoardCardsList[i];
+            //        break;
+            //    }
+            //}
 
             creature.Stun(_skillPower);
             CreateFrozenVFX(creature.transform.position);
@@ -261,34 +261,36 @@ public class BoardSkill : MonoBehaviour
     private void ToxicDamageAction(object target)
     {
         Debug.Log("POISON HIM");
-        AttackWithModifiers(target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+       // AttackWithModifiers(target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
     }
     private void FireDamageAction(object target)
     {
         Debug.Log("BURN HIM");
-        AttackWithModifiers(target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
+       // AttackWithModifiers(target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
     }
     private void HealAnyAction(object target)
     {
         Debug.Log("HEAL ANY");
         if (target is PlayerAvatar)
         {
-            var player = target as PlayerAvatar;
-            if (player.playerInfo.netId == ownerPlayer.netId)
-                ownerPlayer.HealPlayerBySkill(_skillPower, false);
-            else
-                ownerPlayer.HealPlayerBySkill(_skillPower);
+            //var player = target as PlayerAvatar;
+            //if (player.playerInfo.netId == ownerPlayer.netId)
+            //    ownerPlayer.HealPlayerBySkill(_skillPower, false);
+            //else
+            //    ownerPlayer.HealPlayerBySkill(_skillPower);
             //TODO ????? QuestionPopup about when we damage ourselves
 
-            CreateHealVFX(player.transform.position);
+           // CreateHealVFX(player.transform.position);
         }
         else
         {
-            var cruature = target as BoardCreature;
-            ownerPlayer.HealCreatureBySkill(_skillPower, cruature.card);
-            CreateHealVFX(cruature.transform.position);
+            //var cruature = target as BoardCreature;
+            //ownerPlayer.HealCreatureBySkill(_skillPower, cruature.card);
+            //CreateHealVFX(cruature.transform.position);
         }
     }
+
+    /*
     private void CardReturnAction(object target)
     {
         var targetCreature = target as BoardCreature;
@@ -347,7 +349,7 @@ public class BoardSkill : MonoBehaviour
         }
     }
 
-    private RuntimeCard CreateRuntimeCard(BoardCreature targetCreature, PlayerInfo playerInfo, int instanceId)
+    private WorkingCard CreateRuntimeCard(BoardCreature targetCreature, PlayerInfo playerInfo, int instanceId)
     {
         var card = new RuntimeCard();
         card.cardId = targetCreature.card.cardId;
@@ -384,7 +386,7 @@ public class BoardSkill : MonoBehaviour
         netCard.connectedAbilities = card.connectedAbilities.ToArray();
 
         return netCard;
-    }
+    } 
 
     private void HealAction()
 	{
@@ -433,7 +435,7 @@ public class BoardSkill : MonoBehaviour
             default:
                 break;
         }
-    }
+    } */
 
     private void CreateFireAttackVFX(Vector3 pos)
     {
@@ -489,7 +491,7 @@ public class BoardSkill : MonoBehaviour
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
                 break;
             case Enumerators.SetType.EARTH:
-                HealAction();
+             //   HealAction();
                 break;
             case Enumerators.SetType.AIR:
                 prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
@@ -546,7 +548,7 @@ public class BoardSkill : MonoBehaviour
                 HealAnyAction(target);
                 break;
             case Enumerators.SetType.AIR:
-                CardReturnAction(target);
+             //   CardReturnAction(target);
                 break;
             default:
                 break;

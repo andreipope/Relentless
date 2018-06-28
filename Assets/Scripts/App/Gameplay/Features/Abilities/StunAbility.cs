@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 
@@ -13,7 +12,6 @@ namespace GrandDevs.CZB
     {
         public Enumerators.StatType statType;
         public int value = 1;
-        private Server _server;
 
 
         public StunAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)

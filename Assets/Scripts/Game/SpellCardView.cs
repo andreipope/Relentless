@@ -45,7 +45,7 @@ namespace GrandDevs.CZB
 
                 attackText.text = damage.ToString();
 
-                attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
+            //    attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
             }
 
             if (card.libraryCard.health == 0)
@@ -57,7 +57,7 @@ namespace GrandDevs.CZB
 
                 defenseText.text = health.ToString();
 
-                defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
+           //     defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
             }
         }
 
