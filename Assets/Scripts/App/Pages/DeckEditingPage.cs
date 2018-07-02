@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
 using System.IO;
-using FullSerializer;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
@@ -37,8 +36,6 @@ namespace GrandDevs.CZB
         private TextMeshProUGUI _currentSetPageCountText;
 
         private Deck _currentDeck;
-
-        private fsSerializer serializer = new fsSerializer();
 
         private Slider _cardSetsSlider;
 
@@ -103,8 +100,8 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersEditingDeck");
             _cardListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardListItem");
             //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
@@ -381,13 +378,8 @@ namespace GrandDevs.CZB
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
 
-                Debug.Log(card.id);
-                Debug.Log(_collectionData.GetCardData(card.id));
-                Debug.Log(_collectionData.GetCardData(card.id).amount);
-
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
-
                 var cardView = go.GetComponent<CardView>();
                 cardView.PopulateWithLibraryInfo(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);

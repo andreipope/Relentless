@@ -44,6 +44,7 @@ namespace GrandDevs.CZB
             AddService<IGameplayManager>(new GameplayManager());
             AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
+            AddService<IMatchManager>(new MatchManager());  
         }
 
         public static T Get<T>()

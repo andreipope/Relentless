@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
@@ -67,13 +66,13 @@ namespace GrandDevs.CZB
                     break;
             }
             //base.CreateVFX(pos);
-            var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.transform.position;
-
+            var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.AvatarObject.transform.position;
+           
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
             _vfxObject.transform.position = Utilites.CastVFXPosition(boardCreature.transform.position);
             targetPosition = Utilites.CastVFXPosition(targetPosition);
             _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-
+            Debug.Log(targetPosition);
             ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
 
             if(!autoDestroy)
@@ -82,16 +81,17 @@ namespace GrandDevs.CZB
 
         private void ActionCompleted()
         {
+            Debug.Log(1111);
+           
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                        playerCallerOfAbility.FightPlayerBySkill(value, false);
-                    else
-                        playerCallerOfAbility.FightPlayerBySkill(value);
+                    //if (targetPlayer.id == playerCallerOfAbility.id)
+                    _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+                    //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
                     break;
                 default: break;
             }

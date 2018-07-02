@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224819395830637186}
+  - component: {fileID: 114817068942395764}
   m_Layer: 5
   m_Name: GraveyardCardPreview
   m_TagString: Untagged
@@ -60,6 +61,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114817068942395764
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1064133930611794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ba015f453c971f43a833c260ae56185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114854174400099966
 MonoBehaviour:
   m_ObjectHideFlags: 1

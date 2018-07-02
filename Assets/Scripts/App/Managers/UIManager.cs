@@ -141,7 +141,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public IUIPopup GetPopup<T>() where T : IUIPopup
+        public T GetPopup<T>() where T : IUIPopup
         {
             IUIPopup popup = null;
             foreach (var _popup in _uiPopups)
@@ -153,10 +153,10 @@ namespace GrandDevs.CZB
                 }
             }
 
-            return popup;
+            return (T)popup;
         }
 
-        public IUIElement GetPage<T>() where T : IUIElement
+        public T GetPage<T>() where T : IUIElement
         {
             IUIElement page = null;
             foreach (var _page in _uiPages)
@@ -168,7 +168,7 @@ namespace GrandDevs.CZB
                 }
             }
 
-            return page;
+            return (T)page;
         }
     }
 }

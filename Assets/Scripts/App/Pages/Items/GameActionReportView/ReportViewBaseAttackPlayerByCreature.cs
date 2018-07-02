@@ -1,0 +1,68 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
+using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
+using System;
+using System.Linq;
+using UnityEngine.Rendering;
+
+namespace GrandDevs.CZB
+{
+    public class ReportViewBaseAttackPlayerByCreature : ReportViewBase
+    {
+        private BoardCreature _attackingCreature;
+        private Player _attackedPlayer;
+
+        private GameObject _attackingCreatureObj,
+                           _attackedPlayerObj;
+
+        public ReportViewBaseAttackPlayerByCreature(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+
+        public override void SetInfo()
+        {
+            base.SetInfo();
+
+            _attackingCreature = gameAction.parameters[0] as BoardCreature;
+            _attackedPlayer = gameAction.parameters[1] as Player;
+            previewImage.sprite = _attackingCreature.sprite;
+            _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero, false);
+            _attackedPlayerObj = CreatePlayerPreview(_attackedPlayer);
+
+
+            GameObject attackViewPlayer = _attackedPlayerObj.transform.Find("AttackingHealth").gameObject;
+            attackViewPlayer.SetActive(true);
+            var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            damageText.text = (-_attackingCreature.Damage).ToString();
+            attackViewPlayer.transform.localPosition = -Vector3.up;
+
+            if(_attackedPlayer.CurrentBoardWeapon != null)
+            {
+                GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
+                attackViewCreature.SetActive(true);
+                var damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
+                damageTextCreature.text = (-_attackedPlayer.CurrentBoardWeapon.Damage).ToString();
+                attackViewCreature.transform.localPosition = -Vector3.up * 3;
+                
+            }
+        }
+
+        public override void OnPointerEnterEventHandler()
+        {
+            base.OnPointerEnterEventHandler();
+        }
+
+        public override void OnPointerExitEventHandler()
+        {
+            base.OnPointerExitEventHandler();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
+
+    }
+}

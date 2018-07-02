@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Gameplay;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine.Networking;
 
 namespace GrandDevs.CZB
@@ -138,15 +137,15 @@ namespace GrandDevs.CZB
             _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
             _tutorialStarted = true;
 
-            GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
-            GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+           // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+          //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
         }
 
         public void StopTutorial()
         {
             _uiManager.HidePopup<TutorialPopup>();
             _tutorialStarted = false;
-            GameManager.Instance.tutorial = false;
+            GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
         }
 
@@ -205,7 +204,7 @@ namespace GrandDevs.CZB
 				return;
             }
             if (_currentStep == 11)
-                GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
+                GameClient.Get<ITimerManager>().AddTimer((x) => { GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn(); }, null, 5f, false);
 
             if (_currentStep != 29)
                 NextStepCommonEndActions();
@@ -217,7 +216,7 @@ namespace GrandDevs.CZB
         {
             _steps[_currentStep].finished = true;
             _currentStep++;
-            GameManager.Instance.tutorialStep = _currentStep;
+            GameClient.Get<IGameplayManager>().TutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (_currentStep == 22)

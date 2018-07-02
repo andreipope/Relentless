@@ -33,7 +33,7 @@ namespace GrandDevs.CZB.Data
         public List<DeckCardData> cards;
 
         [JsonIgnore]
-        public List<Enumerators.ActionType> opponentActions;
+        public List<Enumerators.AIActionType> opponentActions;
 
         public OpponentDeck()
         {
@@ -41,7 +41,7 @@ namespace GrandDevs.CZB.Data
 
         public void ParseData()
         {
-            opponentActions = Utilites.CastList<Enumerators.ActionType>(actions);
+            opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
         }
 
         public void AddCard(int cardId)

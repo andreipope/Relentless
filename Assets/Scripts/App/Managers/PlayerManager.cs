@@ -4,26 +4,19 @@ using GrandDevs.CZB.Common;
 using UnityEngine;
 using System.Collections.Generic;
 using GrandDevs.CZB.Data;
-using CCGKit;
 
 namespace GrandDevs.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {
-        public event Action<int> OnPlayerGraveyardUpdatedEvent;
-        public event Action<int> OnOpponentGraveyardUpdatedEvent;
-
-        public Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
-        public Action OnLocalPlayerSetUp { get; set; }
-
         private IDataManager _dataManager;
 
         public User LocalUser { get; set; }
 
         public List<BoardCreature> PlayerGraveyardCards { get; set; }
         public List<BoardCreature> OpponentGraveyardCards { get; set; }
-        public PlayerInfo playerInfo { get; set; }
-        public PlayerInfo opponentInfo { get; set; }
+        public Player PlayerInfo { get; set; }
+        public Player OpponentInfo { get; set; }
 
         public void Dispose()
         {
@@ -38,15 +31,6 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
-        }
-
-        public void UpdatePlayerGraveyard(int index)
-        {
-            OnPlayerGraveyardUpdatedEvent?.Invoke(index);
-        }
-        public void UpdateOpponentGraveyard(int index)
-        {
-            OnOpponentGraveyardUpdatedEvent?.Invoke(index);
         }
     }
 }

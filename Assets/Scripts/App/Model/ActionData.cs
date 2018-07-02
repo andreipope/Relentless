@@ -21,7 +21,7 @@ public class ActionData
         }
     }
 
-    public List<ActionItem> GetActions(Enumerators.ActionType[] types)
+    public List<ActionItem> GetActions(Enumerators.AIActionType[] types)
     {
         List<ActionItem> allActions = new List<ActionItem>();
         ActionItem act = null;
@@ -43,12 +43,12 @@ public class ActionItem
     public List<ActionState> states;
 
     [JsonIgnore]
-    public Enumerators.ActionType type;
+    public Enumerators.AIActionType type;
 
     public void ParseData()
     {
         if (actionType != null)
-            type = Utilites.CastStringTuEnum<Enumerators.ActionType>(actionType);
+            type = Utilites.CastStringTuEnum<Enumerators.AIActionType>(actionType);
         foreach (var state in states)
         {
             state.ParseData();

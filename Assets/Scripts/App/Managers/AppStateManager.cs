@@ -75,6 +75,7 @@ namespace GrandDevs.CZB
                     {
                         //GameObject.Find("MainApp/Camera").SetActive(true);
                         //GameObject.Find("MainApp/Camera2").SetActive(true);
+
                         _uiManager.SetPage<MainMenuPage>();
                     }
                     break;
@@ -110,7 +111,7 @@ namespace GrandDevs.CZB
                     break;
                 case Enumerators.AppState.GAMEPLAY:
                     {
-                        _uiManager.HideAllPages();
+                        _uiManager.SetPage<GameplayPage>();
 
                         //GameObject.Find("MainApp/Camera").SetActive(false);
                         //GameObject.Find("MainApp/Camera2").SetActive(false);
@@ -118,14 +119,8 @@ namespace GrandDevs.CZB
 
                         // GameNetworkManager.Instance.onlineScene = "GAMEPLAY";
 
-                        if (MonoBehaviour.FindObjectOfType<GameNetworkManager>() == null)
-                            MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/GameNetworkManager"));
+                        //MatchMaker.Instance.StartMatch();
 
-                        GameNetworkManager.Instance.StartMatchMaker();
-                        GameNetworkManager.Instance.isSinglePlayer = true;
-                        GameNetworkManager.Instance.StartHost();
-
-                        MatchMaker.Instance.StartMatch();
 
                         //GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                         //_scenesManager.ChangeScene(Enumerators.AppState.GAMEPLAY);

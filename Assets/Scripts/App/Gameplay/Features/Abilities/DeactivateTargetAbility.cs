@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 
@@ -49,7 +48,7 @@ namespace GrandDevs.CZB
             {
                 if (this.cardKind == Enumerators.CardKind.CREATURE)
                 {
-                    targetCreature.card.DisconnectAbility((uint)abilityType);
+                   // targetCreature.Card.DisconnectAbility((uint)abilityType);
                     CreatureOnDieEventHandler();
                 }
                 else if (this.cardKind == Enumerators.CardKind.SPELL)
@@ -66,7 +65,7 @@ namespace GrandDevs.CZB
             {
                 if (targetCreature != null)
                 {
-                    targetCreature.card.isPlayable = false;
+                    targetCreature.Card.IsPlayable = false;
                     targetCreature.SetHighlightingEnabled(false);
                 }
                 else
@@ -88,7 +87,7 @@ namespace GrandDevs.CZB
             {
                 case Enumerators.AffectObjectType.CHARACTER:
 
-                    targetCreature.card.isPlayable = false;
+                    targetCreature.Card.IsPlayable = false;
                     targetCreature.SetHighlightingEnabled(false);
 
                     CreateVFX(targetCreature.transform.position);

@@ -1123,8 +1123,8 @@
           "cost": 0,
           "description": "MEGA KILLER",
           "picture": "Zombie",
-          "damage": 30,
-          "health": 30,
+          "damage": 300,
+          "health": 300,
           "type": "FERAL",
           "rarity": "LEGENDARY",
           "cardViewInfo": {

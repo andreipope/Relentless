@@ -196,8 +196,6 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
-            CHANGE_STAT_OF_CREATURES_BY_TYPE,
-            ATTACK_NUMBER_OF_TIMES_PER_TURN
         }
 
         public enum AbilityActivityType
@@ -290,11 +288,30 @@
             TUTORIAL
         }
 
-        public enum ActionType
+        public enum AIActionType
         {
             TEST,
             TEST2
         }
+
+        public enum ActionType
+        {
+            ATTACK_PLAYER_BY_CREATURE,
+            ATTACK_CREATURE_BY_CREATURE,
+            ATTACK_CREATURE_BY_SPELL,
+            ATTACK_PLAYER_BY_SPELL,
+            ATTACK_CREATURE_BY_SKILL,
+            ATTACK_PLAYER_BY_SKILL,
+            HEAL_PLAYER_BY_SKILL,
+            HEAL_CREATURE_BY_SKILL,
+            ATTACK_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_ABILITY,
+            HEAL_PLAYER_BY_ABILITY,
+            HEAL_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_WEAPON,
+            ATTACK_CREATURE_BY_WEAPON
+        }
+
 
         public enum EffectActivateType
         {
@@ -331,10 +348,19 @@
             DEFAULT
         }
 
-        public enum AttackInfoType
+        public enum EndGameType
         {
-            ANY,
-            ONLY_DIFFERENT
+            WIN,
+            LOSE,
+            CANCEL
+        }
+
+        public enum MatchType
+        {
+            LOCAL,
+
+            PVP,
+            PVE
         }
     }
 }

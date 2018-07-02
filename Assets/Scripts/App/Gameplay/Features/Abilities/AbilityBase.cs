@@ -1,5 +1,4 @@
-﻿using CCGKit;
-using GrandDevs.CZB.Common;
+﻿using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Data;
 using GrandDevs.Internal;
 using System;
@@ -14,9 +13,10 @@ namespace GrandDevs.CZB
 
         protected AbilitiesController _abilitiesController;
         protected ParticlesController _particlesController;
-        protected ILoadObjectsManager _loadObjectsManager;
-        protected IDataManager _dataManager;
+        protected BattleController _battleController;
 
+        protected ILoadObjectsManager _loadObjectsManager;
+        protected IGameplayManager _gameplayManager;
 
         protected AbilityTargetingArrow _targettingArrow;
         protected GameObject _vfxObject;
@@ -45,11 +45,13 @@ namespace GrandDevs.CZB
         public BoardSpell boardSpell;
 
         public BoardCreature targetCreature;
-        public PlayerAvatar targetPlayer;
-        public PlayerAvatar selectedPlayer;
+        public Player targetPlayer;
+        public Player selectedPlayer;
 
-        private PlayerAvatar playerAvatar;
-        private PlayerAvatar opponenentAvatar;
+        private Player playerAvatar;
+        private Player opponenentAvatar;
+
+        protected AbilityData abilityData;
 
         protected List<ulong> _particleIds;
 
@@ -64,23 +66,28 @@ namespace GrandDevs.CZB
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
 
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _particlesController = _gameplayManager.GetController<ParticlesController>();
+            _battleController = _gameplayManager.GetController<BattleController>();
+
+            abilityData = ability;
             this.cardKind = cardKind;
             this.abilityType = ability.abilityType;
             this.abilityActivityType = ability.abilityActivityType;
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
             this.abilityEffectType = ability.abilityEffectType;
-            playerAvatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
-            opponenentAvatar = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
+            playerAvatar = _gameplayManager.GetLocalPlayer();
+            opponenentAvatar = _gameplayManager.GetOpponentPlayer();
 
             PermanentInputEndEvent += OnInputEndEventHandler;
 
             _particleIds = new List<ulong>();
         }
 
-        public void ActivateSelectTarget(EffectTarget targetType = EffectTarget.OpponentOrOpponentCreature, Action callback = null, Action failedCallback = null)
+        public void ActivateSelectTarget(List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
@@ -92,9 +99,9 @@ namespace GrandDevs.CZB
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(boardCreature.transform.position);
             else if (this.cardKind == Enumerators.CardKind.SPELL)
-                _targettingArrow.Begin(selectedPlayer.transform.position);//(boardSpell.transform.position);
+                _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position);//(boardSpell.transform.position);
             else
-                _targettingArrow.Begin(playerCallerOfAbility.transform.position);
+                _targettingArrow.Begin(playerCallerOfAbility.AvatarObject.transform.position);
 
             _targettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
             _targettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
@@ -127,26 +134,23 @@ namespace GrandDevs.CZB
 
         public virtual void Activate()
         {
-            _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
-            _particlesController = GameClient.Get<IGameplayManager>().GetController<ParticlesController>();
-
             playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-                boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
+				boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
                 boardCreature.CreatureOnAttackEvent += CreatureOnAttackEventHandler;
 
 				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
-                    boardCreature.card.ConnectAbility((uint)abilityType);
+                  //  boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
             }
             else if (this.cardKind == Enumerators.CardKind.SPELL)
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
 
-            if (playerCallerOfAbility is DemoHumanPlayer)
+            if (playerCallerOfAbility.IsLocalPlayer)
                 selectedPlayer = playerAvatar;
             else
                 selectedPlayer = opponenentAvatar;
@@ -177,14 +181,14 @@ namespace GrandDevs.CZB
             targetCreature = null;
         }
 
-        protected virtual void OnPlayerSelectedHandler(PlayerAvatar obj)
+        protected virtual void OnPlayerSelectedHandler(Player obj)
         {
             targetPlayer = obj;
                 
             targetCreature = null;
         }
 
-        protected virtual void OnPlayerUnselectedHandler(PlayerAvatar obj)
+        protected virtual void OnPlayerUnselectedHandler(Player obj)
         {
             targetPlayer = null;
         }
@@ -238,7 +242,7 @@ namespace GrandDevs.CZB
 
                 if (affectObjectType == Enumerators.AffectObjectType.CHARACTER)
                 {
-                    targetCreature.card.ConnectAbility((uint)abilityType);
+                   // targetCreature.Card.ConnectAbility((uint)abilityType);
                 }
 
                 OnObjectSelectedByTargettingArrowCallback?.Invoke();
@@ -269,8 +273,8 @@ namespace GrandDevs.CZB
 
         protected virtual void CreatureOnDieEventHandler()
         {
-            if(targetCreature != null)
-                targetCreature.card.DisconnectAbility((uint)abilityType);
+          //  if(targetCreature != null)
+            //    targetCreature.Card.DisconnectAbility((uint)abilityType);
 
             boardCreature.CreatureOnDieEvent -= CreatureOnDieEventHandler;
             _abilitiesController.DeactivateAbility(activityId);

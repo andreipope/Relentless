@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 using DG.Tweening;
@@ -45,14 +44,15 @@ namespace GrandDevs.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                        CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
-                    else
-                        CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
+                    //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
+                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
+                    //else
+                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
+                    _battleController.HealPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-
-                    CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
+                    _battleController.HealCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
+                    //  CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
                     break;
                 default: break;
             }
@@ -63,7 +63,7 @@ namespace GrandDevs.CZB
             target = Utilites.CastVFXPosition(target);
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
-                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
+                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVFX(startPosition);

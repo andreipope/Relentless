@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GrandDevs.CZB.Common;
-using CCGKit;
 using UnityEngine;
 using GrandDevs.CZB.Data;
 
@@ -14,7 +13,6 @@ namespace GrandDevs.CZB
         public Enumerators.SetType setType;
         public Enumerators.StatType statType;
         public int value = 1;
-        private Server _server;
 
 
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
@@ -56,19 +54,28 @@ namespace GrandDevs.CZB
             
 			string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
 
-			GetServer();
+            switch (statType)
+            {
+                case Enumerators.StatType.HEALTH:
+                    boardCreature.HP += value;
+                    break;
+                case Enumerators.StatType.DAMAGE:
+                    boardCreature.Damage += value;
+                    break;
+                default:
+                    break;
+            }
+             //var newValue = boardCreature.card.namedStats[statName].baseValue + value;
+             //if (newValue < 0)
+             //	newValue = 0;
 
-			var newValue = boardCreature.card.namedStats[statName].baseValue + value;
-			if (newValue < 0)
-				newValue = 0;
+            //var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
 
-			var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
-
-			boardCreature.card.namedStats[statName].baseValue = newValue;
+            //boardCreature.card.namedStats[statName].baseValue = newValue;
 
             try
             {
-                netCard.namedStats[statName].baseValue = newValue;
+              //  netCard.namedStats[statName].baseValue = newValue;
             }
             catch(Exception ex)
             {
@@ -76,18 +83,6 @@ namespace GrandDevs.CZB
             }
 
 			//CreateVFX(boardCreature.transform.position);
-        }
-
-        private void GetServer()
-        {
-            if (_server == null)
-            {
-                var server = GameObject.Find("Server");
-                if (server != null)
-                {
-                    _server = server.GetComponent<Server>();
-                }
-            }
         }
     }
 }
