@@ -11,6 +11,7 @@ namespace GrandDevs.CZB
     {
         event Action OnGameStartedEvent;
         event Action OnGameEndedEvent;
+        event Action OnGameInitializedEvent;
         event Action OnTurnStartedEvent;
         event Action OnTurnEndedEvent;
 
@@ -19,6 +20,7 @@ namespace GrandDevs.CZB
         int OpponentDeckId { get; set; }
 
         bool GameStarted { get; set; }
+        bool GameEnded { get; set; }
         bool IsTutorial { get; set; }
 
         int TutorialStep { get; set; }

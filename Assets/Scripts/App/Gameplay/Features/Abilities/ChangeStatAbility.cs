@@ -54,13 +54,24 @@ namespace GrandDevs.CZB
             
 			string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
 
-			//var newValue = boardCreature.card.namedStats[statName].baseValue + value;
-			//if (newValue < 0)
-			//	newValue = 0;
+            switch (statType)
+            {
+                case Enumerators.StatType.HEALTH:
+                    boardCreature.HP += value;
+                    break;
+                case Enumerators.StatType.DAMAGE:
+                    boardCreature.Damage += value;
+                    break;
+                default:
+                    break;
+            }
+             //var newValue = boardCreature.card.namedStats[statName].baseValue + value;
+             //if (newValue < 0)
+             //	newValue = 0;
 
-			//var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
+            //var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
 
-			//boardCreature.card.namedStats[statName].baseValue = newValue;
+            //boardCreature.card.namedStats[statName].baseValue = newValue;
 
             try
             {

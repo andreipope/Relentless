@@ -13,12 +13,18 @@ namespace GrandDevs.CZB
     {
         private ISoundManager _soundManager;
         private ITimerManager _timerManager;
+        private ILoadObjectsManager _loadObjectsManager;
+        private IGameplayManager _gameplayManager;
 
         private ParticlesController _particlesController;
 
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _particlesController = _gameplayManager.GetController<ParticlesController>();
         }
 
         public void Dispose()
@@ -38,7 +44,7 @@ namespace GrandDevs.CZB
 
             if (type == Enumerators.CardType.FERAL)
             {
-                vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
+                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                 effect = GameObject.Instantiate(vfxPrefab);
                 effect.transform.position = target;
                 _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
@@ -47,7 +53,7 @@ namespace GrandDevs.CZB
 
                 if (damage > 3 && damage < 7)
                 {
-                    GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
                         effect.transform.position = target;
@@ -59,7 +65,7 @@ namespace GrandDevs.CZB
                 }
                 if (damage > 6)
                 {
-                    GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
                         effect.transform.position = target - Vector3.right;
@@ -83,7 +89,7 @@ namespace GrandDevs.CZB
                     prefabName = "Prefabs/VFX/HeavyAttack2VFX";
                     soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
                 }
-                vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(prefabName);
+                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
                 effect = GameObject.Instantiate(vfxPrefab);
                 effect.transform.position = target;
 
@@ -96,7 +102,7 @@ namespace GrandDevs.CZB
             }
             else
             {
-                vfxPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
+                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                 effect = GameObject.Instantiate(vfxPrefab);
                 effect.transform.position = target;
 
@@ -104,7 +110,7 @@ namespace GrandDevs.CZB
 
                 if (damage > 4)
                 {
-                    GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
                         effect.transform.position = target;

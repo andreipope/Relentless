@@ -137,8 +137,8 @@ namespace GrandDevs.CZB
             _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
             _tutorialStarted = true;
 
-            GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
-            GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+           // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+          //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
         }
 
         public void StopTutorial()

@@ -9,12 +9,6 @@ namespace GrandDevs.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {
-        public event Action<int> OnPlayerGraveyardUpdatedEvent;
-        public event Action<int> OnOpponentGraveyardUpdatedEvent;
-
-        public Action<WorkingCard> OnBoardCardKilled { get; set; }
-        public Action OnLocalPlayerSetUp { get; set; }
-
         private IDataManager _dataManager;
 
         public User LocalUser { get; set; }
@@ -37,14 +31,6 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
-        }
-
-        public void UpdateGraveyard(int index, Player player)
-        {
-            if (player.IsLocalPlayer)
-                OnPlayerGraveyardUpdatedEvent?.Invoke(index);
-            else
-                OnOpponentGraveyardUpdatedEvent?.Invoke(index);
         }
     }
 }

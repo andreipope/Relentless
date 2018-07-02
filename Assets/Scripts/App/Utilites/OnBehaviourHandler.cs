@@ -11,6 +11,7 @@ namespace GrandDevs.CZB
         public event Action<Collider2D> OnTriggerExit2DEvent;
         public event Action<Collider> OnTriggerEnterEvent;
         public event Action<Collider> OnTriggerExitEvent;
+        public event Action<GameObject> OnDestroyEvent;
 
         private void OnMouseUp()
         {
@@ -40,6 +41,11 @@ namespace GrandDevs.CZB
         private void OnTriggerEnter(Collider collider)
         {
             OnTriggerEnterEvent?.Invoke(collider);
+        }
+
+        private void OnDestroy()
+        {
+            OnDestroyEvent?.Invoke(gameObject);
         }
     }
 }

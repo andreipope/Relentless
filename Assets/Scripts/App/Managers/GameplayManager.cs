@@ -1,9 +1,6 @@
 ﻿using GrandDevs.CZB.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace GrandDevs.CZB
 {
@@ -19,6 +16,8 @@ namespace GrandDevs.CZB
         private IMatchManager _matchManager;
         private ISoundManager _soundManager;
         private IUIManager _uiManager;
+        private ITimerManager _timerManager;
+        private ITutorialManager _tutorialManager;
 
         private List<IController> _controllers;
 
@@ -26,6 +25,7 @@ namespace GrandDevs.CZB
         public int OpponentDeckId { get; set; }
 
         public bool GameStarted { get; set; }
+        public bool GameEnded { get; set; }
         public bool IsTutorial { get; set; }
 
         public int TurnDuration { get; set; }
@@ -49,6 +49,8 @@ namespace GrandDevs.CZB
             _matchManager = GameClient.Get<IMatchManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             PlayersInGame = new List<Player>();
 
@@ -83,7 +85,8 @@ namespace GrandDevs.CZB
             _controllers.Add(new AIController());
             _controllers.Add(new CardsController());
             _controllers.Add(new BattlegroundController());
-
+            _controllers.Add(new AnimationsController());
+            _controllers.Add(new BattleController());          
 
             foreach (var controller in _controllers)
                 controller.Init();
@@ -108,14 +111,14 @@ namespace GrandDevs.CZB
 
         public void EndGame(Enumerators.EndGameType endGameType)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+            if (GameEnded)
+                return;
 
-            if (endGameType == Enumerators.EndGameType.WIN)
-                GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
-            else if (endGameType == Enumerators.EndGameType.LOSE)
-                GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().OnAvatarDie();
+            GameEnded = true;
 
-            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+
+            _timerManager.AddTimer((x) =>
             {
                 if (endGameType == Enumerators.EndGameType.WIN)
                     _uiManager.DrawPopup<YouWonPopup>();
@@ -138,14 +141,9 @@ namespace GrandDevs.CZB
         public void StopGameplay()
         {
             GameStarted = false;
+            GameEnded = true;
 
             OnGameEndedEvent?.Invoke();
-        }
-
-
-        public void EndTurn()
-        {
-            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.END_TURN);
         }
 
         public Player GetLocalPlayer()
@@ -177,6 +175,8 @@ namespace GrandDevs.CZB
 
 
             GetController<BattlegroundController>().InitializeBattleground();
+
+            GameEnded = false;
 
             OnGameInitializedEvent?.Invoke();
         }

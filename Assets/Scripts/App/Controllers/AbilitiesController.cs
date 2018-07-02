@@ -180,6 +180,8 @@ namespace GrandDevs.CZB
         {
             bool available = false;
 
+            var opponent = _gameplayManager.PlayersInGame.Find(x => x != localPlayer);
+
             lock (_lock)
             {
                // Debug.Log("ability - " + ability);
@@ -192,7 +194,7 @@ namespace GrandDevs.CZB
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
                             {
-                                if (localPlayer.BoardCards.Count > 0)
+                                if (opponent.BoardCards.Count > 0)
                                     available = true;
                             }
                             break;
@@ -255,7 +257,7 @@ namespace GrandDevs.CZB
             return abils;
         }
 
-        public void CallAbility(Card libraryCard, CardView card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, object target = null, HandCard handCard = null)
+        public void CallAbility(Card libraryCard, CardView card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, Action onCompleteCallback, object target = null, HandCard handCard = null)
         {
             Vector3 postionOfCardView = Vector3.zero;
 
@@ -285,8 +287,8 @@ namespace GrandDevs.CZB
             {
               //  if (isPlayer)
                 {
-                    workingCard.owner.CardsInHand.Remove(workingCard);
-                    workingCard.owner.CardsOnBoard.Add(workingCard);
+                    workingCard.owner.RemoveCardFromHand(workingCard);
+                    workingCard.owner.AddCardToBoard(workingCard);
 
                  //   if (currentCreature != null)
                   //      currentCreature._fightTargetingArrowPrefab = fightTargetingArrowPrefab;
@@ -301,6 +303,7 @@ namespace GrandDevs.CZB
             if (kind != Enumerators.CardKind.SPELL)
             {
              //   effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, workingCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+
             }
             else
             {
@@ -327,7 +330,10 @@ namespace GrandDevs.CZB
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
-                             //   effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, workingCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+                                //   effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, workingCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
+
+                                workingCard.owner.RemoveCardFromHand(workingCard);
+                                workingCard.owner.AddCardToBoard(workingCard);
 
                                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
 
@@ -338,6 +344,8 @@ namespace GrandDevs.CZB
                             }
 
                             action?.Invoke(card);
+
+                            onCompleteCallback?.Invoke();
                         },
                         failedCallback: () =>
                         {
@@ -359,29 +367,36 @@ namespace GrandDevs.CZB
                                 Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
                                 action?.Invoke(card);
                             }
+
+                            onCompleteCallback?.Invoke();
                         });
                     }
                     else
                     {
                         if (target is BoardCreature)
                             activeAbility.ability.targetCreature = target as BoardCreature;
-                        else if (target is PlayerAvatar)
-                            activeAbility.ability.targetPlayer = target as PlayerAvatar;
+                        else if (target is Player)
+                            activeAbility.ability.targetPlayer = target as Player;
 
                         activeAbility.ability.SelectedTargetAction(true);
 
                         _battlegroundController.RearrangeBottomBoard();
+                        _battlegroundController.RearrangeTopBoard();
                         //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
+
+                        onCompleteCallback?.Invoke();
                     }
                 }
                 else
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+                    onCompleteCallback?.Invoke();
                 }
             }
             else
             {
                 CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+                onCompleteCallback?.Invoke();
             }
         }
 
@@ -395,8 +410,8 @@ namespace GrandDevs.CZB
                     return;
                 if (target is BoardCreature)
                     activeAbility.ability.targetCreature = target as BoardCreature;
-                else if (target is PlayerAvatar)
-                    activeAbility.ability.targetPlayer = target as PlayerAvatar;
+                else if (target is Player)
+                    activeAbility.ability.targetPlayer = target as Player;
 
                 activeAbility.ability.SelectedTargetAction(true);
             }

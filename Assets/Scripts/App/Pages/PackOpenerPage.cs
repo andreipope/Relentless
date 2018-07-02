@@ -68,8 +68,8 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
             //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
@@ -297,6 +297,7 @@ namespace GrandDevs.CZB
             {
                 _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
                 _packOpenVFX.transform.position = Utilites.CastVFXPosition(_centerPos);
+                _packOpenVFX.GetComponent<AnimationEventTriggering>().OnAnimationEvent += OnPackOpenVFXAnimationEventHandler;
 
                 MonoBehaviour.Destroy(go);
                 GameClient.Get<ITimerManager>().AddTimer((x) =>
@@ -308,6 +309,9 @@ namespace GrandDevs.CZB
 
         private void PackItemAnimationComplete()
         {
+
+            Debug.LogError(1111);
+
             var cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
 
             if (!_dataManager.CachedUserLocalData.openedFirstPack)
@@ -363,6 +367,14 @@ namespace GrandDevs.CZB
             }
         }
 
+        private void OnPackOpenVFXAnimationEventHandler(string name)
+        {
+            if (_packOpenVFX == null)
+                return;
+
+            if (name == "EndPackOpen")
+                MonoBehaviour.Destroy(_packOpenVFX);
+        }
 
         private void CardSelected(CardView card)
         {

@@ -11,6 +11,12 @@ namespace GrandDevs.CZB
 {
     public class BattlegroundController : IController
     {
+        public event Action<BoardCreature> OnBoardCardKilledEvent;
+        public event Action<int> OnPlayerGraveyardUpdatedEvent;
+        public event Action<int> OnOpponentGraveyardUpdatedEvent;
+        public event Action OnTurnStartedEvent;
+        public event Action OnTurnEndeddEvent;
+
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
         private ISoundManager _soundManager;
@@ -18,6 +24,7 @@ namespace GrandDevs.CZB
         private ITutorialManager _tutorialManager;
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
+        private IPlayerManager _playerManager;
 
 
         private CardsController _cardsController;
@@ -62,6 +69,7 @@ namespace GrandDevs.CZB
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _playerManager = GameClient.Get<IPlayerManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -69,9 +77,7 @@ namespace GrandDevs.CZB
 
             LoadGameConfiguration();
 
-
-
-            //  _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
         }
 
         public void Dispose()
@@ -80,6 +86,10 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+            if(_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
+            {
+                CheckGameDynamic();
+            }
         }
 
         private void LoadGameConfiguration()
@@ -90,7 +100,12 @@ namespace GrandDevs.CZB
                 TurnDuration = 100000;
         }
 
-        private void CheckGameDynamic()
+        public void KillBoardCard(BoardCreature card)
+        {
+            OnBoardCardKilledEvent?.Invoke(card);
+        }
+
+        public void CheckGameDynamic()
         {
             if (_gameplayManager.GetOpponentPlayer().HP > 9 && _gameplayManager.GetLocalPlayer().HP > 9)
             {
@@ -107,12 +122,32 @@ namespace GrandDevs.CZB
         }
 
 
+        public void UpdateGraveyard(int index, Player player)
+        {
+            if (player.IsLocalPlayer)
+                OnPlayerGraveyardUpdatedEvent?.Invoke(index);
+            else
+                OnOpponentGraveyardUpdatedEvent?.Invoke(index);
+        }
+
+        public void ClearBattleground()
+        {
+            playerHandCards.Clear();
+            opponentHandCards.Clear();
+
+            playerBoardCards.Clear();
+            opponentBoardCards.Clear();
+
+            playerGraveyardCards.Clear();
+            opponentGraveyardCards.Clear();
+        }
+
         public void InitializeBattleground()
         {
-            Debug.Log("Game has started.");
-
             // Start with turn 1.
             currentTurn = 1;
+
+            gameFinished = false;
 
             var players = _gameplayManager.PlayersInGame;
 
@@ -121,43 +156,28 @@ namespace GrandDevs.CZB
             foreach (var player in players)
                 playerNicknames.Add(player.nickname);
 
-            if (!_gameplayManager.IsTutorial)
-            {
-                //// Execute the game start actions.
-                //foreach (var action in GameManager.Instance.config.properties.gameStartActions)
-                //{
-                //    ExecuteGameAction(action);
-                //}
-            }
-            else
+            if (_gameplayManager.IsTutorial)
                 players.Find(x => !x.IsLocalPlayer).HP = 8;
 
             if (Constants.DEV_MODE)
-                players.Find(x => !x.IsLocalPlayer).HP = 100;
+                players.Find(x => !x.IsLocalPlayer).HP = 99;
 
 
             _turnCoroutine = MainApp.Instance.StartCoroutine(RunTurn());
-        }
 
+
+            _playerManager.PlayerGraveyardCards = playerGraveyardCards;
+            _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
+        }
+    
         public void OnGameEndedEventHandler()
         {
-            Player player = null;
-            Enumerators.EndGameType type = Enumerators.EndGameType.CANCEL;
-
             if (_gameplayManager.IsTutorial)
                 return;
 
             gameFinished = true;
 
-            switch (type)
-            {
-                case Enumerators.EndGameType.WIN:
-                    break;
-                case Enumerators.EndGameType.LOSE:
-                    break;
-                case Enumerators.EndGameType.CANCEL:
-                    break;
-            }
+            ClearBattleground();
         }
 
         private IEnumerator RunTurn()
@@ -172,16 +192,14 @@ namespace GrandDevs.CZB
 
         public void StartTurn()
         {
+            if (_gameplayManager.GameEnded)
+                return;
+
             var players = _gameplayManager.PlayersInGame;
 
 
-            players.Find(x => x.IsLocalPlayer).turn++;
+            _gameplayManager.WhoseTurn.turn++;
 
-            //// Execute the turn start actions.
-            //foreach (var action in GameManager.Instance.config.properties.turnStartActions)
-            //{
-            //    ExecuteGameAction(action);
-            //}
 
             if (_dataManager.CachedUserLocalData.tutorial && !_tutorialManager.IsTutorial)
                 _tutorialManager.StartTutorial();
@@ -189,20 +207,20 @@ namespace GrandDevs.CZB
             _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(_gameplayManager.IsLocalPlayerTurn());
 
 
-            foreach (var card in opponentHandCards)
-                MonoBehaviour.Destroy(card);
+            //foreach (var card in opponentHandCards)
+            //    MonoBehaviour.Destroy(card);
 
-            opponentHandCards.Clear();
+            //opponentHandCards.Clear();
 
-            for (var i = 0; i < _gameplayManager.GetOpponentPlayer().CardsInHand.Count; i++)
-            {
-                if (i == _gameplayManager.GetOpponentPlayer().CardsInHand.Count - 1)
-                    RearrangeOpponentHand();
+            //for (var i = 0; i < _gameplayManager.GetOpponentPlayer().CardsInHand.Count; i++)
+            //{
+            //    //if (i == _gameplayManager.GetOpponentPlayer().CardsInHand.Count - 1)
+            //    //    RearrangeOpponentHand();
 
-                _cardsController.AddCardToOpponentHand(null);
-            }
-
-            RearrangeOpponentHand(!_gameplayManager.IsLocalPlayerTurn(), true);
+            //    _cardsController.AddCardToOpponentHand(null);
+            //}
+            RearrangeOpponentHand();
+            //RearrangeOpponentHand(!_gameplayManager.IsLocalPlayerTurn(), true);
 
             _playerController.IsActive = _gameplayManager.IsLocalPlayerTurn();
 
@@ -234,9 +252,6 @@ namespace GrandDevs.CZB
                     _playerController.PlayerInfo.CurrentBoardWeapon.ActivateWeapon(false);
                 }
 
-                foreach (var skill in _playerController.PlayerInfo.BoardSkills)
-                    skill.OnStartTurn();
-
                 _uiManager.DrawPopup<YourTurnPopup>();
 
                 //   StartTurnCountdown(Constants.DEFAULT_TURN_DURATION);
@@ -262,6 +277,8 @@ namespace GrandDevs.CZB
 
             foreach (var player in players)
                 player.CallOnStartTurnEvent();
+
+            OnTurnStartedEvent?.Invoke();
         }
 
 
@@ -290,6 +307,9 @@ namespace GrandDevs.CZB
 
         public void EndTurn()
         {
+            if (_gameplayManager.GameEnded)
+                return;
+
             var players = _gameplayManager.PlayersInGame;
 
             // Switch to next player.
@@ -326,7 +346,7 @@ namespace GrandDevs.CZB
 
                 if (_playerController.currentSpellCard != null)
                 {
-                    MonoBehaviour.Destroy(_playerController.currentSpellCard.GetComponent<BoardSpell>());
+                    MonoBehaviour.Destroy(_playerController.currentSpellCard);
                     _playerController.currentSpellCard = null;
                     RearrangeHand();
                 }
@@ -343,6 +363,10 @@ namespace GrandDevs.CZB
 
             //todo move it from here !!!!!!!!!!!!!! 
             _gameplayManager.WhoseTurn = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.GetOpponentPlayer() : _gameplayManager.GetLocalPlayer();
+
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
+
+            OnTurnEndeddEvent?.Invoke();
         }
 
         public void StopTurn()
@@ -364,6 +388,7 @@ namespace GrandDevs.CZB
 
                 boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
+                playerBoardCards.Remove(boardCard);
                 playerGraveyardCards.Add(boardCard);
 
                 boardCard.SetHighlightingEnabled(false);
@@ -393,8 +418,9 @@ namespace GrandDevs.CZB
 
                 boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
+                opponentBoardCards.Remove(boardCard);
                 opponentGraveyardCards.Add(boardCard);
-
+               
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
@@ -701,6 +727,17 @@ namespace GrandDevs.CZB
                 pivot.x += handWidth / opponentHandCards.Count;
                 card.GetComponent<SortingGroup>().sortingOrder = i;
             }
+        }
+
+        public BoardCreature GetBoardCreatureFromHisObject(GameObject creatureObject)
+        {
+           var creature = playerBoardCards.Find(x => x.gameObject.Equals(creatureObject));
+
+            if(creature == null)
+                creature = opponentBoardCards.Find(x => x.gameObject.Equals(creatureObject));
+
+
+            return creature;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using GrandDevs.CZB.Common;
+using GrandDevs.CZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace GrandDevs.CZB
         private BattlegroundController _battlgroundController;
         private VFXController _vfxController;
         private AbilitiesController _abilitiesController;
+        private ActionsQueueController _actionsQueueController;
 
         private GameObject _playerBoard;
         private GameObject _opponentBoard;
@@ -42,6 +44,7 @@ namespace GrandDevs.CZB
             _battlgroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             creatureCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             spellCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
@@ -275,98 +278,114 @@ namespace GrandDevs.CZB
         {
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
-                GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+                if (!Constants.DEV_MODE)
+                    player.Mana -= card.libraryCard.cost;
 
-                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.WorkingCard.libraryCard.id);
-
-                string cardSetName = string.Empty;
-                foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+                //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 {
-                    if (cardSet.cards.IndexOf(libraryCard) > -1)
-                        cardSetName = cardSet.name;
-                }
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
 
-                card.transform.DORotate(Vector3.zero, .1f);
-                card.GetComponent<HandCard>().enabled = false;
+                    GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.WorkingCard.libraryCard.id);
 
-                if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
-                {
-                    int indexOfCard = 0;
-                    float newCreatureCardPosition = card.transform.position.x;
-
-                    // set correct position on board depends from card view position
-                    for (int i = 0; i < player.BoardCards.Count; i++)
+                    string cardSetName = string.Empty;
+                    foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
                     {
-                        if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
-                            indexOfCard = i + 1;
-                        else break;
+                        if (cardSet.cards.IndexOf(libraryCard) > -1)
+                            cardSetName = cardSet.name;
                     }
 
-                    var boardCreature = new BoardCreature(_playerBoard.transform);
-                    boardCreature.transform.tag = Constants.TAG_PLAYER_OWNED;
-                    boardCreature.transform.parent = _playerBoard.transform;
-                    boardCreature.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                    boardCreature.ownerPlayer = card.WorkingCard.owner;
-                    boardCreature.PopulateWithInfo(card.WorkingCard, cardSetName);
+                    card.transform.DORotate(Vector3.zero, .1f);
+                    card.GetComponent<HandCard>().enabled = false;
 
-                    player.CardsInHand.Remove(card.WorkingCard);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                    // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                    _battlgroundController.RearrangeHand();
-
-                    player.BoardCards.Insert(indexOfCard, boardCreature);
-
-                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                    if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.CREATURE)
                     {
-                        card.WorkingCard.owner.GraveyardCardsCount++;
-                    }, null, 1f);
+                        int indexOfCard = 0;
+                        float newCreatureCardPosition = card.transform.position.x;
 
-                    //Destroy(card.gameObject);
-                    card.removeCardParticle.Play();
+                        // set correct position on board depends from card view position
+                        for (int i = 0; i < player.BoardCards.Count; i++)
+                        {
+                            if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
+                                indexOfCard = i + 1;
+                            else break;
+                        }
+
+                        var boardCreature = new BoardCreature(_playerBoard.transform);
+                        boardCreature.transform.tag = Constants.TAG_PLAYER_OWNED;
+                        boardCreature.transform.parent = _playerBoard.transform;
+                        boardCreature.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+                        boardCreature.ownerPlayer = card.WorkingCard.owner;
+                        boardCreature.PopulateWithInfo(card.WorkingCard, cardSetName);
+
+                        player.CardsInHand.Remove(card.WorkingCard);
+                        _battlgroundController.playerHandCards.Remove(card);
+                        _battlgroundController.playerBoardCards.Add(boardCreature);
+
+                        _battlgroundController.RearrangeHand();
+
+                        player.BoardCards.Insert(indexOfCard, boardCreature);
+
+                        GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                        {
+                            card.WorkingCard.owner.GraveyardCardsCount++;
+                        }, null, 1f);
+
+                        //Destroy(card.gameObject);
+                        card.removeCardParticle.Play();
 
 
-                    Sequence animationSequence = DOTween.Sequence();
-                    animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                    animationSequence.OnComplete(() =>
+                        Sequence animationSequence = DOTween.Sequence();
+                        animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                        animationSequence.OnComplete(() =>
+                        {
+                            RemoveCard(new object[] { card });
+                            _timerManager.AddTimer(_vfxController.PlayArrivalAnimationDelay, new object[] { boardCreature }, 0.1f, false);
+                        });
+
+                        //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
+                        //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
+
+                        _battlgroundController.RearrangeBottomBoard(() =>
+                        {
+                            _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardCreature, CallCardPlay, true, null);
+                        });
+
+                     //   actionComplete?.Invoke();
+
+                        //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
+                        //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+
+                    }
+                    else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
                     {
-                        RemoveCard(new object[] { card });
-                        _timerManager.AddTimer(_vfxController.PlayArrivalAnimationDelay, new object[] { boardCreature }, 0.1f, false);
-                    });
+                        //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
+                        //var sequence = DOTween.Sequence();
+                        //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
+                        //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
+                        //sequence.Play().OnComplete(() =>
+                        //{ 
 
-                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
+                        player.CardsInHand.Remove(card.WorkingCard);
+                        _battlgroundController.playerHandCards.Remove(card);
+                        _battlgroundController.RearrangeHand();
 
-                    _battlgroundController.RearrangeBottomBoard(() =>
-                    {
-                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardCreature, CallCardPlay, true);
-                    });
+                        card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                        card.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+                        var boardSpell = new BoardSpell(card.gameObject);
 
+                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                        //});
+
+                    //    actionComplete?.Invoke();
+                    }
                 }
-                else if ((Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL)
-                {
-                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                    //var sequence = DOTween.Sequence();
-                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                    //sequence.Play().OnComplete(() =>
-                    //{ 
-                    card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    card.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                    var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-
-                    Debug.Log(card.name);
-
-                    _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, handCard: handCard);
-                    //});
-                }
+              // );
             }
             else
             {
@@ -386,5 +405,67 @@ namespace GrandDevs.CZB
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 
+/*
+        public void CreateAndPutToHandRuntimeCard(Card card, Player player)
+        {
+            var runtimeCard = InitializeRuntimeCard(card, player);
+
+            player.AddCardToHand(runtimeCard);
+        }
+
+        public WorkingCard InitializeRuntimeCard(Card card, Player player)
+        {
+            var runtimeCard = CreateRuntimeCard();
+            runtimeCard.cardId = card.cardId;
+            runtimeCard.instanceId = card.instanceId;
+            runtimeCard.ownerPlayer = player;
+            foreach (var stat in card.stats)
+            {
+                var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
+                runtimeCard.stats[stat.statId] = runtimeStat;
+
+                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+
+                var statName = "DMG";
+                if (stat.statId == 1)
+                    statName = "HP";
+                runtimeCard.namedStats[statName] = runtimeStat;
+            }
+            runtimeCard.type = card.cardType;
+
+            //foreach (var abilityId in card.connectedAbilities)
+            //{
+            //    runtimeCard.ConnectAbility(abilityId);
+            //}
+
+            return runtimeCard;
+        }
+
+
+
+        public virtual void ReturnToHandRuntimeCard(Card card, Player player, Vector3 cardPosition)
+        {
+            var runtimeCard = InitializeRuntimeCard(card, player);
+            player.namedZones[Constants.ZONE_HAND].AddCardSilent(runtimeCard);
+
+            Player controlPlayer = this is DemoHumanPlayer ? this as DemoHumanPlayer : (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer);
+
+            if (this is DemoHumanPlayer)
+            {
+                var createdHandCard = controlPlayer.AddCardToHand(runtimeCard);
+                createdHandCard.transform.position = cardPosition;
+                createdHandCard.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
+                controlPlayer.RearrangeHand(true);
+            }
+            else if (this is DemoAIPlayer)
+            {
+
+                // move to ai controller
+                //var createdHandCard = controlPlayer.AddCardToOpponentHand();
+                //createdHandCard.transform.position = cardPosition;
+                //controlPlayer.RearrangeOpponentHand(true, false);
+
+            }
+        } */
     }
 }

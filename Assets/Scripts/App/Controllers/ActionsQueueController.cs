@@ -43,7 +43,7 @@ namespace GrandDevs.CZB
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public void AddNewActionInToQueue(Action<object, Action> actionToDo, object parameter, GameActionReport report = null)
+        public void AddNewActionInToQueue(Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
@@ -67,13 +67,19 @@ namespace GrandDevs.CZB
             return actionReport;
         }
 
+        public void PostGameActionReport(GameActionReport report)
+        {
+            if (report != null)
+            {
+                _actionsReports.Add(report);
+                GotNewActionReportEvent?.Invoke(report);
+                ActionsReportsUpdatedEvent?.Invoke(_actionsReports);
+            }
+        }
+
         private void OnActionDoneEvent(GameAction<object> previousAction)
         {
-            if(previousAction.report != null)
-            _actionsReports.Add(previousAction.report);
-
-            GotNewActionReportEvent?.Invoke(previousAction.report);
-            ActionsReportsUpdatedEvent?.Invoke(_actionsReports);
+            PostGameActionReport(previousAction.report);
 
             TryCallNewActionFromQueue();
         }

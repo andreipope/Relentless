@@ -25,7 +25,9 @@ public class CardListItem : MonoBehaviour
 
     private Transform panelCardCount;
 
-    private Image logoImage; 
+    private Image logoImage;
+
+    private Button _deleteCardButton;
 
     private uint _maxCount;
 
@@ -34,7 +36,9 @@ public class CardListItem : MonoBehaviour
     public void Init(Deck deck, Card card, int count, uint maxCount)
     {
         logoImage = transform.Find("Image_Logo").GetComponent<Image>();
+        _deleteCardButton = transform.Find("DeleteButton").GetComponent<Button>();
         logoImage.sprite = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>("Images/CardsDeckEditingIcons/" + card.picture.ToLower());
+        _deleteCardButton.onClick.AddListener(OnDeleteButtonPressed);
         deckButton = deck;
         this.card = card;
         this.count = count;

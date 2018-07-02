@@ -34,6 +34,11 @@ namespace GrandDevs.CZB
             cardId = card.id;
             owner = player;
 
+            initialHealth = card.health;
+            initialDamage = card.damage;
+            health = initialHealth;
+            damage = initialDamage;
+
             instanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
         }
     }

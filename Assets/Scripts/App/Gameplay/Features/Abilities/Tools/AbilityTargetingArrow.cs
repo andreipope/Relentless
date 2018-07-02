@@ -9,8 +9,8 @@ namespace GrandDevs.CZB
     {
         public event Action<BoardCreature> OnCardSelectedEvent;
         public event Action<BoardCreature> OnCardUnselectedevent;
-        public event Action<PlayerAvatar> OnPlayerSelectedEvent;
-        public event Action<PlayerAvatar> OnPlayerUnselectedEvent;
+        public event Action<Player> OnPlayerSelectedEvent;
+        public event Action<Player> OnPlayerUnselectedEvent;
         public event Action OnInputEndEvent;
         public event Action OnInputCancelEvent;
 
@@ -73,21 +73,21 @@ namespace GrandDevs.CZB
             } 
         }
 
-        public override void OnPlayerSelected(PlayerAvatar player)
+        public override void OnPlayerSelected(Player player)
         {
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
-                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
+            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
+                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 selectedPlayer = player;
                 selectedCard = null;
-                CreateTarget(player.transform.position);
+                CreateTarget(player.AvatarObject.transform.position);
 
                 OnPlayerSelectedEvent?.Invoke(player);
             }
         }
 
-        public override void OnPlayerUnselected(PlayerAvatar player)
+        public override void OnPlayerUnselected(Player player)
         {
             if (selectedPlayer == player)
             {

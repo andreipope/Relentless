@@ -39,41 +39,41 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
-           // Player creatureOwner = GetOwnerOfCreature(targetCreature);
-           // RuntimeCard returningCard = targetCreature.card;
-           // Vector3 creaturePosition = targetCreature.transform.position;
+            //Player creatureOwner = targetCreature.ownerPlayer;
+            ////RuntimeCard returningCard = targetCreature.Card;
+            //Vector3 creaturePosition = targetCreature.transform.position;
 
-           //// Debug.LogError("<color=white>------return card of " + creatureOwner.GetType() + "; human " + creatureOwner.isHuman + "; to hand-------</color>");
-           //// Debug.LogError("<color=white>------returning card " + returningCard.instanceId + " to hand-------</color>");
+            //// Debug.LogError("<color=white>------return card of " + creatureOwner.GetType() + "; human " + creatureOwner.isHuman + "; to hand-------</color>");
+            //// Debug.LogError("<color=white>------returning card " + returningCard.instanceId + " to hand-------</color>");
 
-           // // STEP 1 - REMOVE CREATURE FROM BOARD
-           // if (creatureOwner.playerBoardCardsList.Contains(targetCreature)) // hack
-           //     creatureOwner.playerBoardCardsList.Remove(targetCreature);
+            //// STEP 1 - REMOVE CREATURE FROM BOARD
+            //if (creatureOwner.BoardCards.Contains(targetCreature)) // hack
+            //    creatureOwner.BoardCards.Remove(targetCreature);
 
-           // // STEP 2 - DESTROY CREATURE ON THE BOARD OR ANIMATE
-           // CreateVFX(creaturePosition);
-           // MonoBehaviour.Destroy(targetCreature.gameObject);
+            //// STEP 2 - DESTROY CREATURE ON THE BOARD OR ANIMATE
+            //CreateVFX(creaturePosition);
+            //MonoBehaviour.Destroy(targetCreature.gameObject);
 
-           // // STEP 3 - REMOVE RUNTIME CARD FROM BOARD
-           // creatureOwner.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(returningCard);
-           // creatureOwner.boardZone.RemoveCard(returningCard);
+            // STEP 3 - REMOVE RUNTIME CARD FROM BOARD
+            //creatureOwner.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(returningCard);
+            //creatureOwner.boardZone.RemoveCard(returningCard);
 
-           // var serverCurrentPlayer = creatureOwner.Equals(playerCallerOfAbility) ? creatureOwner.GetServer().gameState.currentPlayer : creatureOwner.GetServer().gameState.currentOpponent;
+            //var serverCurrentPlayer = creatureOwner.Equals(playerCallerOfAbility) ? creatureOwner.GetServer().gameState.currentPlayer : creatureOwner.GetServer().gameState.currentOpponent;
 
-           // // STEP 4 - REMOVE CARD FROM SERVER BOARD
-           // var boardRuntimeCard = serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == returningCard.instanceId);
-           // serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
+            // STEP 4 - REMOVE CARD FROM SERVER BOARD
+            //var boardRuntimeCard = serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == returningCard.instanceId);
+            //serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
 
-           // // STEP 5 - CREATE AND ADD TO SERVER NEW RUNTIME CARD FOR HAND
-           // var card = CreateRuntimeCard(creatureOwner.playerInfo, returningCard.instanceId);
-           // serverCurrentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
+            // STEP 5 - CREATE AND ADD TO SERVER NEW RUNTIME CARD FOR HAND
+            //var card = CreateRuntimeCard(creatureOwner.playerInfo, returningCard.instanceId);
+            //serverCurrentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
 
-           // // STEP 6 - CREATE NET CARD AND SIMULATE ANIMATION OF RETURNING CARD TO HAND
-           // var netCard = CreateNetCard(card);
-           // creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo, creaturePosition);
+            //// STEP 6 - CREATE NET CARD AND SIMULATE ANIMATION OF RETURNING CARD TO HAND
+            //var netCard = CreateNetCard(card);
+            //creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo, creaturePosition);
 
-            // STEP 7 - REARRANGE CREATURES ON THE BOARD
-            GameClient.Get<IGameplayManager>().RearrangeHands();
+            ////STEP 7 - REARRANGE CREATURES ON THE BOARD
+            //GameClient.Get<IGameplayManager>().RearrangeHands();
         }
 
         //private RuntimeCard CreateRuntimeCard(PlayerInfo playerInfo, int instanceId)

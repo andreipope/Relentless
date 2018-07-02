@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GrandDevs.CZB.Common;
 using UnityEngine;
 using GrandDevs.CZB.Data;
+using GrandDevs.Internal;
 
 namespace GrandDevs.CZB
 {
@@ -44,49 +45,49 @@ namespace GrandDevs.CZB
 
         private void Action()
         {
-
-		/*	foreach (var target in abilityTargetTypes)
-			{
-				switch (target)
-				{
-					case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-						BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
-                        playerCallerOfAbility.opponentBoardCardsList.CopyTo(creatures);
-						foreach (var cardOpponent in creatures)
-						{
-							playerCallerOfAbility.FightCreatureBySkill(value, cardOpponent.card);
-							
-						}
+            Player opponent = _gameplayManager.PlayersInGame.Find(x => x != playerCallerOfAbility);
+            foreach (var target in abilityTargetTypes)
+            {
+                switch (target)
+                {
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:                       
+                        //BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
+                        //player.BoardCards.CopyTo(creatures);
+                        foreach (var cardOpponent in opponent.BoardCards)
+                        {
+                            _battleController.AttackCreatureByAbility(playerCallerOfAbility , abilityData, cardOpponent);
+                        }
                         CreateVFX(Vector3.up * 1.5f);
-                        Array.Clear(creatures, 0, creatures.Length);
-						creatures = null;
-						break;
+                        //Array.Clear(creatures, 0, creatures.Length);
+                        //creatures = null;
+                        break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-						RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
-						playerCallerOfAbility.boardZone.cards.CopyTo(cards);
-						foreach (var cardPlayer in cards)
-						{
-							playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
-							//CreateVFX(cardPlayer.transform.position);
-						}
-						Array.Clear(cards, 0, cards.Length);
-						cards = null;
-
-						// foreach (var card in cardCaller.boardZone.cards)
-						//   cardCaller.FightCreatureBySkill(value, card);
-
-						break;
-					case Enumerators.AbilityTargetType.OPPONENT:
-						playerCallerOfAbility.FightPlayerBySkill(value);
-						//CreateVFX(targetCreature.transform.position);
-						break;
-					case Enumerators.AbilityTargetType.PLAYER:
-						playerCallerOfAbility.FightPlayerBySkill(value, false);
-						//CreateVFX(targetCreature.transform.position);
-						break;
-					default: break;
-				}
-			} */
+                        //RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
+                        //playerCallerOfAbility.boardZone.cards.CopyTo(cards);
+                        //foreach (var cardPlayer in cards)
+                        //{
+                        //    playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
+                        //    CreateVFX(cardPlayer.transform.position);
+                        //}
+                        //Array.Clear(cards, 0, cards.Length);
+                        //cards = null;
+                        foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
+                        {
+                            _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, cardPlayer);
+                            CreateVFX(cardPlayer.transform.position);
+                        }
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, opponent);
+                        //CreateVFX(targetCreature.transform.position);
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER:
+                        _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, playerCallerOfAbility);
+                        //CreateVFX(targetCreature.transform.position);
+                        break;
+                    default: break;
+                }
+            }
         }
 
         protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
@@ -112,7 +113,7 @@ namespace GrandDevs.CZB
                 default:
                     break;
             }
-            pos = pos * playerPos;
+            pos = Utilites.CastVFXPosition(pos * playerPos);
 
             ClearParticles();
 

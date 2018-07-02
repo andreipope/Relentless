@@ -13,7 +13,11 @@ namespace GrandDevs.CZB
 
         protected AbilitiesController _abilitiesController;
         protected ParticlesController _particlesController;
+        protected BattleController _battleController;
+
         protected ILoadObjectsManager _loadObjectsManager;
+        protected IGameplayManager _gameplayManager;
+
         protected AbilityTargetingArrow _targettingArrow;
         protected GameObject _vfxObject;
 
@@ -41,11 +45,13 @@ namespace GrandDevs.CZB
         public BoardSpell boardSpell;
 
         public BoardCreature targetCreature;
-        public PlayerAvatar targetPlayer;
-        public PlayerAvatar selectedPlayer;
+        public Player targetPlayer;
+        public Player selectedPlayer;
 
-        private PlayerAvatar playerAvatar;
-        private PlayerAvatar opponenentAvatar;
+        private Player playerAvatar;
+        private Player opponenentAvatar;
+
+        protected AbilityData abilityData;
 
         protected List<ulong> _particleIds;
 
@@ -60,15 +66,21 @@ namespace GrandDevs.CZB
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
 
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _particlesController = _gameplayManager.GetController<ParticlesController>();
+            _battleController = _gameplayManager.GetController<BattleController>();
+
+            abilityData = ability;
             this.cardKind = cardKind;
             this.abilityType = ability.abilityType;
             this.abilityActivityType = ability.abilityActivityType;
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
             this.abilityEffectType = ability.abilityEffectType;
-            playerAvatar = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
-            opponenentAvatar = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
+            playerAvatar = _gameplayManager.GetLocalPlayer();
+            opponenentAvatar = _gameplayManager.GetOpponentPlayer();
 
             PermanentInputEndEvent += OnInputEndEventHandler;
 
@@ -87,7 +99,7 @@ namespace GrandDevs.CZB
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(boardCreature.transform.position);
             else if (this.cardKind == Enumerators.CardKind.SPELL)
-                _targettingArrow.Begin(selectedPlayer.transform.position);//(boardSpell.transform.position);
+                _targettingArrow.Begin(selectedPlayer.PlayerObject.transform.position);//(boardSpell.transform.position);
             else
                 _targettingArrow.Begin(playerCallerOfAbility.PlayerObject.transform.position);
 
@@ -122,9 +134,6 @@ namespace GrandDevs.CZB
 
         public virtual void Activate()
         {
-            _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
-            _particlesController = GameClient.Get<IGameplayManager>().GetController<ParticlesController>();
-
             playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
@@ -172,14 +181,14 @@ namespace GrandDevs.CZB
             targetCreature = null;
         }
 
-        protected virtual void OnPlayerSelectedHandler(PlayerAvatar obj)
+        protected virtual void OnPlayerSelectedHandler(Player obj)
         {
             targetPlayer = obj;
                 
             targetCreature = null;
         }
 
-        protected virtual void OnPlayerUnselectedHandler(PlayerAvatar obj)
+        protected virtual void OnPlayerUnselectedHandler(Player obj)
         {
             targetPlayer = null;
         }

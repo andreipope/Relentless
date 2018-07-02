@@ -5,7 +5,7 @@ using System.Collections;
 
 using UnityEngine;
 using GrandDevs.CZB.Common;
-
+using DG.Tweening;
 
 namespace GrandDevs.CZB
 {
@@ -13,23 +13,29 @@ namespace GrandDevs.CZB
     {
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
+        private ILoadObjectsManager _loadObjectsManager;
 
         private BattlegroundController _battlegroundController;
         private CardsController _cardsController;
         private ActionsQueueController _actionsQueueController;
         private AbilitiesController _abilitiesController;
+        private BattleController _battleController;
+        private AnimationsController _animationsController;
+        private VFXController _vfxController;
 
         private int _minTurnForAttack;
 
         private Dictionary<int, int> numTurnsOnBoard = new Dictionary<int, int>();
-      
+
         private GameObject fightTargetingArrowPrefab;
 
-        private List<int> _attackedCreatureTargets;
+        private List<BoardCreature> _attackedCreatureTargets;
 
-        private bool _enabledAIBrain = false;
+        private bool _enabledAIBrain = true;
 
         private List<ActionItem> allActions;
+
+        private GameObject _boardCreaturePrefab;
 
         private Player PlayerInfo;
 
@@ -37,8 +43,8 @@ namespace GrandDevs.CZB
         public BoardCreature currentCreature;
         public CardView currentSpellCard;
 
-        public PlayerAvatar player,
-                            opponent;
+        public Player localPlayer,
+                      aiPlayer;
 
         public Enumerators.AIType aiType;
 
@@ -52,11 +58,17 @@ namespace GrandDevs.CZB
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _battleController = _gameplayManager.GetController<BattleController>();
+            _animationsController = _gameplayManager.GetController<AnimationsController>();
+            _vfxController = _gameplayManager.GetController<VFXController>();
+
+            _boardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature");
         }
 
         public void Dispose()
@@ -75,7 +87,7 @@ namespace GrandDevs.CZB
 
             fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
 
-            _attackedCreatureTargets = new List<int>();
+            _attackedCreatureTargets = new List<BoardCreature>();
 
             var playerDeck = new List<int>();
 
@@ -106,19 +118,16 @@ namespace GrandDevs.CZB
 
             PlayerInfo.SetDeck(playerDeck);
 
-
-            for(int i =0; i < PlayerInfo.CardsInDeck.Count; i++)
-            {
-                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME)
-                    break;
-
-                _cardsController.AddCardToHand(PlayerInfo, PlayerInfo.CardsInDeck[i]);
-            }
-
-            foreach (var card in PlayerInfo.CardsInHand)
-                _cardsController.AddCardToOpponentHand(card);
+            PlayerInfo.SetFirstHand(_gameplayManager.IsTutorial);
 
             _battlegroundController.RearrangeOpponentHand();
+
+
+            PlayerInfo.OnStartTurnEvent += OnStartTurnEventHandler;
+            PlayerInfo.OnEndTurnEvent += OnEndTurnEventHandler;
+
+            localPlayer = _gameplayManager.GetLocalPlayer();
+            aiPlayer = _gameplayManager.GetOpponentPlayer();
         }
 
         public void OnStartGame()
@@ -127,9 +136,6 @@ namespace GrandDevs.CZB
             {
                 _minTurnForAttack = UnityEngine.Random.Range(1, 3);
                 FillActions();
-
-                player = GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>();
-                opponent = GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>();
 
                 SetAITypeByDeck();
             }
@@ -141,14 +147,20 @@ namespace GrandDevs.CZB
             MainApp.Instance.StopAllCoroutines();
         }
 
-        public void OnStartTurn()
+        public void OnStartTurnEventHandler()
         {
+            if (!_gameplayManager.WhoseTurn.Equals(PlayerInfo))
+                return;
+
             MainApp.Instance.StartCoroutine(RunLogic());
         }
 
 
-        public void OnEndTurn()
+        public void OnEndTurnEventHandler()
         {
+            if (!_gameplayManager.WhoseTurn.Equals(PlayerInfo))
+                return;
+
             MainApp.Instance.StopAllCoroutines();
 
             foreach (var card in PlayerInfo.CardsOnBoard)
@@ -180,6 +192,20 @@ namespace GrandDevs.CZB
             {
                 yield return null;
             }
+
+            if (!_gameplayManager.IsLocalPlayerTurn())
+            {
+                PlayerInfo.ManaOnCurrentTurn++;// = Mathf.Clamp(PlayerInfo.ManaOnCurrentTurn + 1, 0, Constants.MAXIMUM_PLAYER_MANA);
+                PlayerInfo.Mana = PlayerInfo.ManaOnCurrentTurn;
+                if (PlayerInfo.CardsInDeck.Count > 0)
+                {
+                    _cardsController.AddCardToHand(PlayerInfo, PlayerInfo.CardsInDeck[0]);
+                    //_cardsController.AddCardToOpponentHand(PlayerInfo.CardsInHand[PlayerInfo.CardsInHand.Count - 1]);
+                    //_battlegroundController.RearrangeOpponentHand(true, true);
+                }
+            }
+
+
             if (PlayerInfo.CurrentBoardWeapon != null && !IsPlayerStunned)
             {
                 PlayerInfo.AlreadyAttackedInThisTurn = false;
@@ -205,12 +231,6 @@ namespace GrandDevs.CZB
         {
             if (!_enabledAIBrain)
             {
-                if (!GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    foreach (var skill in PlayerInfo.BoardSkills)
-                        skill.OnEndTurn();
-                }
-
                 _battlegroundController.StopTurn();
             }
             else
@@ -241,27 +261,27 @@ namespace GrandDevs.CZB
                 {
                     yield return new WaitForSeconds(2.0f);
 
-                    var boardCreatures = new List<WorkingCard>();
+                    var boardCreatures = new List<BoardCreature>();
                     foreach (var creature in GetBoardCreatures())
-                    {
                         boardCreatures.Add(creature);
-                    }
 
-                    var usedCreatures = new List<WorkingCard>();
+                    var usedCreatures = new List<BoardCreature>();
 
                     if (OpponentHasProvokeCreatures())
                     {
                         foreach (var creature in boardCreatures)
                         {
-                            if (creature != null && creature.health > 0 &&
-                                (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
+                            if (creature != null && creature.HP > 0 &&
+                                (numTurnsOnBoard[creature.Card.instanceId] >= 1 || creature.Card.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
                             {
                                 var attackedCreature = GetTargetOpponentCreature();
                                 if (attackedCreature != null)
                                 {
-                                    PlayCreatureAttackSound(creature);
+                                    PlayCreatureAttackSound(creature.Card);
 
-                                   // FightCreature(creature, attackedCreature);
+                                    AttackCreature(creature, attackedCreature);
+
+                                    _battleController.AttackCreatureByCreature(creature, attackedCreature);
 
                                     usedCreatures.Add(creature);
                                     yield return new WaitForSeconds(2.0f);
@@ -286,17 +306,14 @@ namespace GrandDevs.CZB
                     {
                         foreach (var creature in boardCreatures)
                         {
-                            Debug.Log(creature != null);
-                            Debug.Log(creature.health);
-                            Debug.Log(numTurnsOnBoard[creature.instanceId] >= 1);
-                            Debug.Log(creature.type == Enumerators.CardType.FERAL);
-                            Debug.Log(creature.IsPlayable);
-                            if (creature != null && creature.health > 0 &&
-                                (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
+                            if (creature != null && creature.HP > 0 &&
+                                (numTurnsOnBoard[creature.Card.instanceId] >= 1 || creature.Card.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
                             {
-                                PlayCreatureAttackSound(creature);
+                                PlayCreatureAttackSound(creature.Card);
 
-                             //   FightPlayer(creature);
+                                AttackPlayer(creature, localPlayer);
+
+                                _battleController.AttackPlayerByCreature(creature, localPlayer);
 
                                 yield return new WaitForSeconds(2.0f);
                             }
@@ -306,22 +323,17 @@ namespace GrandDevs.CZB
                     {
                         foreach (var creature in boardCreatures)
                         {
-                            Debug.Log(creature != null);
-                            Debug.Log(creature.health);
-                            Debug.Log(numTurnsOnBoard[creature.instanceId] >= 1);
-                            Debug.Log(creature.type == Enumerators.CardType.FERAL);
-                            Debug.Log(creature.IsPlayable);
-                            if (creature != null && creature.health > 0 &&
-                                (numTurnsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
+                            if (creature != null && creature.HP > 0 &&
+                                (numTurnsOnBoard[creature.Card.instanceId] >= 1 || creature.Card.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
                             {
                                 Debug.Log("Should Attack");
                                 var playerPower = GetPlayerAttackingPower();
                                 var opponentPower = GetOpponentAttackingPower();
                                 if (playerPower > opponentPower && !GameClient.Get<ITutorialManager>().IsTutorial)
                                 {
-                                    PlayCreatureAttackSound(creature);
+                                    PlayCreatureAttackSound(creature.Card);
 
-                                  //  FightPlayer(creature);
+                                    _battleController.AttackPlayerByCreature(creature, _gameplayManager.GetLocalPlayer());
 
                                     yield return new WaitForSeconds(2.0f);
                                 }
@@ -330,16 +342,20 @@ namespace GrandDevs.CZB
                                     var attackedCreature = GetRandomOpponentCreature();
                                     if (attackedCreature != null)
                                     {
-                                        PlayCreatureAttackSound(creature);
+                                        PlayCreatureAttackSound(creature.Card);
 
-                                       // FightCreature(creature, attackedCreature);
+                                        AttackCreature(creature, attackedCreature);
+
+                                        _battleController.AttackCreatureByCreature(creature, attackedCreature);
                                         yield return new WaitForSeconds(2.0f);
                                     }
                                     else
                                     {
-                                        PlayCreatureAttackSound(creature);
+                                        PlayCreatureAttackSound(creature.Card);
 
-                                     //   FightPlayer(creature);
+                                        AttackPlayer(creature, localPlayer);
+
+                                        _battleController.AttackPlayerByCreature(creature, localPlayer);
                                         yield return new WaitForSeconds(2.0f);
                                     }
                                 }
@@ -375,17 +391,14 @@ namespace GrandDevs.CZB
 
         protected void TryToUseBoardSkill()
         {
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            if (_gameplayManager.IsTutorial)
                 return;
 
             var boardSkill = PlayerInfo.BoardSkills[0];
 
             if (PlayerInfo.Mana >= boardSkill.manaCost)
             {
-               // GetServer().gameState.currentPlayer.namedStats[Constants.TAG_MANA].baseValue -= boardSkill.manaCost;
-                //   playerInfo.namedStats[Constants.TAG_MANA].baseValue -= boardSkill.manaCost;
-
-                int target = 0;
+                object target = null;
 
                 Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
 
@@ -394,19 +407,19 @@ namespace GrandDevs.CZB
                     case Enumerators.SetType.EARTH:
                         {
                             selectedObjectType = Enumerators.AffectObjectType.PLAYER;
-                            target = 1;
+                            target = aiPlayer;
                         }
                         break;
                     case Enumerators.SetType.LIFE:
                         {
-                            target = 1;
+                            target = localPlayer;
                             selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
                             var creatures = GetCreaturesWithLowHP();
 
                             if (creatures.Count > 0)
                             {
-                                target = creatures[0].instanceId;
+                                target = creatures[0];
                                 selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                             }
                         }
@@ -415,14 +428,14 @@ namespace GrandDevs.CZB
                     case Enumerators.SetType.TOXIC:
                     case Enumerators.SetType.WATER:
                         {
-                            target = 0;
+                            target = localPlayer;
                             selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
                             var creature = GetRandomOpponentCreature();
 
                             if (creature != null)
                             {
-                                target = creature.instanceId;
+                                target = creature;
                                 selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                             }
                         }
@@ -433,7 +446,7 @@ namespace GrandDevs.CZB
 
                             if (creatures.Count > 0)
                             {
-                                target = creatures[0].instanceId;
+                                target = creatures[0];
                                 selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                             }
                             else
@@ -442,7 +455,7 @@ namespace GrandDevs.CZB
 
                                 if (creature != null)
                                 {
-                                    target = creature.instanceId;
+                                    target = creature;
                                     selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                                 }
                                 else return;
@@ -454,18 +467,15 @@ namespace GrandDevs.CZB
 
                 if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
                 {
-                    boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, target == 0 ? opponent.gameObject : player.gameObject, () =>
+                    boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, (target as Player).AvatarObject, () =>
                     {
-                        boardSkill.fightTargetingArrow.selectedPlayer = target == 0 ? opponent : player;
+                        boardSkill.fightTargetingArrow.selectedPlayer = target as Player;
                         boardSkill.DoOnUpSkillAction();
                     });
                 }
                 else
                 {
-                    var creature = _battlegroundController.opponentBoardCards.Find(x => x.Card.instanceId == target);
-
-                    if (creature == null)
-                        creature = _battlegroundController.playerBoardCards.Find(x => x.Card.instanceId == target);
+                    var creature = target as BoardCreature;
 
                     if (creature != null)
                     {
@@ -505,7 +515,7 @@ namespace GrandDevs.CZB
             action?.Invoke();
         }
 
-        protected void TryToUseBoardWeapon()
+        private void TryToUseBoardWeapon()
         {
             if (PlayerInfo.CurrentBoardWeapon != null && PlayerInfo.CurrentBoardWeapon.CanAttack)
             {
@@ -513,25 +523,25 @@ namespace GrandDevs.CZB
 
                 if (target != null)
                 {
-                    var creature = _battlegroundController.playerBoardCards.Find(x => x.Card.instanceId == target.instanceId);
+                    var creature = _battlegroundController.playerBoardCards.Find(x => x.Card.instanceId == target.Card.instanceId);
 
                     PlayerInfo.CurrentBoardWeapon.ImmediatelyAttack(creature);
                 }
                 else
                 {
-                    PlayerInfo.CurrentBoardWeapon.ImmediatelyAttack(opponent);
+                    PlayerInfo.CurrentBoardWeapon.ImmediatelyAttack(localPlayer);
                 }
             }
         }
 
-        protected bool TryToPlayCard(WorkingCard card)
+        private bool TryToPlayCard(WorkingCard card)
         {
-            var availableMana = PlayerInfo.Mana;
 
-            if ((card.libraryCard.cost <= availableMana && _battlegroundController.currentTurn > _minTurnForAttack) || Constants.DEV_MODE)
+            if ((card.libraryCard.cost <= PlayerInfo.Mana && _battlegroundController.currentTurn > _minTurnForAttack) || Constants.DEV_MODE)
             {
-                List<int> target = GetAbilityTarget(card);
-                if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_CREATURES)
+                var target = GetAbilityTarget(card);
+                if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
+                    _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_CREATURES)
                 {
                     //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                     //    if (target.Count == 0)
@@ -542,31 +552,39 @@ namespace GrandDevs.CZB
 
                     numTurnsOnBoard[card.instanceId] = 0;
 
-                  //  PlayCreatureCard(card, target);
+                    MoveCard(card, target);
+
+                    // AttackCreature(PlayerInfo.BoardCards.Find(x => x.Card == card), target);
 
                     AddCardInfo(card);
 
-                //    if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 11)
-                //        FightCreatureBySkill(1, card);
+                    // if (GameClient.Get<ITutorialManager>().IsTutorial && card.cardId == 11)
+                    //      FightCreatureBySkill(1, card);
 
                 }
                 else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 {
                     if (target != null)
                     {
-                     //   PlaySpellCard(card, target);
+                        MoveCard(card, target);
+
+                        //   PlaySpellCard(card, target);
 
                         AddCardInfo(card);
                     }
                 }
+
+                PlayerInfo.Mana -= card.libraryCard.cost;
                 return true;
             }
             return false;
         }
 
-        protected List<int> GetAbilityTarget(WorkingCard card)
+        private object GetAbilityTarget(WorkingCard card)
         {
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
+            var libraryCard = card.libraryCard;
+
+            object target = null;
 
             var abilitiesWithTarget = new List<GrandDevs.CZB.Data.AbilityData>();
 
@@ -612,64 +630,63 @@ namespace GrandDevs.CZB
 
             if (needsToSelectTarget)
             {
-                var targetInfo = new List<int>();
                 foreach (var ability in abilitiesWithTarget)
                 {
                     switch (ability.abilityType)
                     {
                         case Enumerators.AbilityType.ADD_GOO_VIAL:
                             {
-                                targetInfo.Add(1);
+                                target = aiPlayer;
                             }
                             break;
                         case Enumerators.AbilityType.CARD_RETURN:
                             {
-                                if (!AddRandomTargetCreature(true, ref targetInfo, false, true))
+                                if (!AddRandomTargetCreature(true, ref target, false, true))
                                 {
-                                    AddRandomTargetCreature(false, ref targetInfo, true, true);
+                                    AddRandomTargetCreature(false, ref target, true, true);
                                 }
                             }
                             break;
                         case Enumerators.AbilityType.DAMAGE_TARGET:
                             {
-                                CheckAndAddTargets(ability, ref targetInfo);
+                                CheckAndAddTargets(ability, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                             {
-                                if (!AddRandomTargetCreature(true, ref targetInfo))
-                                    targetInfo.Add(0);
+                                if (!AddRandomTargetCreature(true, ref target))
+                                    target = localPlayer;
                             }
                             break;
                         case Enumerators.AbilityType.MASSIVE_DAMAGE:
                             {
-                                AddRandomTargetCreature(true, ref targetInfo);
+                                AddRandomTargetCreature(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.MODIFICATOR_STATS:
                             {
                                 if (ability.value > 0)
-                                    AddRandomTargetCreature(false, ref targetInfo);
+                                    AddRandomTargetCreature(false, ref target);
                                 else
-                                    AddRandomTargetCreature(true, ref targetInfo);
+                                    AddRandomTargetCreature(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.STUN:
                             {
-                                CheckAndAddTargets(ability, ref targetInfo);
+                                CheckAndAddTargets(ability, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
                             {
-                                CheckAndAddTargets(ability, ref targetInfo);
+                                CheckAndAddTargets(ability, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.CHANGE_STAT:
                             {
                                 if (ability.value > 0)
-                                    AddRandomTargetCreature(false, ref targetInfo);
+                                    AddRandomTargetCreature(false, ref target);
                                 else
-                                    AddRandomTargetCreature(true, ref targetInfo);
+                                    AddRandomTargetCreature(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.SUMMON:
@@ -679,17 +696,17 @@ namespace GrandDevs.CZB
                             break;
                         case Enumerators.AbilityType.WEAPON:
                             {
-                                targetInfo.Add(1);
+                                target = localPlayer;
                             }
                             break;
                         case Enumerators.AbilityType.SPURT:
                             {
-                                AddRandomTargetCreature(true, ref targetInfo);
+                                AddRandomTargetCreature(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.SPELL_ATTACK:
                             {
-                                CheckAndAddTargets(ability, ref targetInfo);
+                                CheckAndAddTargets(ability, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.HEAL:
@@ -698,26 +715,26 @@ namespace GrandDevs.CZB
 
                                 if (creatures.Count > 0)
                                 {
-                                    targetInfo.Add(creatures[UnityEngine.Random.Range(0, creatures.Count)].instanceId);
+                                    target = creatures[UnityEngine.Random.Range(0, creatures.Count)];
                                 }
                                 else
                                 {
-                                    targetInfo.Add(1);
+                                    target = aiPlayer;
                                 }
                             }
                             break;
                         case Enumerators.AbilityType.DOT:
                             {
-                                CheckAndAddTargets(ability, ref targetInfo);
+                                CheckAndAddTargets(ability, ref target);
                             }
                             break;
                         default: break;
                     }
 
-                    return targetInfo; // hack to handle only one ability
+                    return target; // hack to handle only one ability
                 }
 
-                return targetInfo;
+                return target;
             }
             else
             {
@@ -725,7 +742,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref List<int> targetInfo)
+        private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref object targetInfo)
         {
             if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
@@ -733,13 +750,13 @@ namespace GrandDevs.CZB
             }
             else if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
             {
-                targetInfo.Add(0);
+                targetInfo = localPlayer;
             }
         }
 
-        private bool AddRandomTargetCreature(bool opponent, ref List<int> targetInfo, bool lowHP = false, bool addAttackIgnore = false)
+        private bool AddRandomTargetCreature(bool opponent, ref object targetInfo, bool lowHP = false, bool addAttackIgnore = false)
         {
-            WorkingCard target = null;
+            BoardCreature target = null;
 
             if (opponent)
                 target = GetRandomOpponentCreature();
@@ -748,10 +765,10 @@ namespace GrandDevs.CZB
 
             if (target != null)
             {
-                targetInfo.Add(target.instanceId);
+                targetInfo = target;
 
                 if (addAttackIgnore)
-                    _attackedCreatureTargets.Add(target.instanceId);
+                    _attackedCreatureTargets.Add(target);
 
                 return true;
             }
@@ -759,7 +776,7 @@ namespace GrandDevs.CZB
             return false;
         }
 
-        protected virtual void AddCardInfo(WorkingCard card)
+        private void AddCardInfo(WorkingCard card)
         {
             string cardSetName = string.Empty;
             foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
@@ -771,11 +788,11 @@ namespace GrandDevs.CZB
             GameObject prefab = null;
             if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/CreatureCard");
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             }
             else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/SpellCard");
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
             }
             GameObject go = MonoBehaviour.Instantiate(prefab);
 
@@ -789,12 +806,12 @@ namespace GrandDevs.CZB
             GameClient.Get<ITimerManager>().AddTimer(DestroyCardInfo, new object[] { go }, 2, false);
         }
 
-        protected void DestroyCardInfo(object[] param)
+        private void DestroyCardInfo(object[] param)
         {
             MonoBehaviour.Destroy((GameObject)param[0]);
         }
 
-        protected int GetPlayerAttackingPower()
+        private int GetPlayerAttackingPower()
         {
             var power = 0;
             foreach (var creature in PlayerInfo.CardsOnBoard)
@@ -808,10 +825,10 @@ namespace GrandDevs.CZB
             return power;
         }
 
-        protected int GetOpponentAttackingPower()
+        private int GetOpponentAttackingPower()
         {
             var power = 0;
-            foreach (var card in PlayerInfo.CardsOnBoard)
+            foreach (var card in localPlayer.CardsOnBoard)
             {
                 power += card.damage;
             }
@@ -819,24 +836,24 @@ namespace GrandDevs.CZB
         }
 
 
-        protected List<WorkingCard> GetCreaturesWithLowHP()
+        private List<BoardCreature> GetCreaturesWithLowHP()
         {
-            List<WorkingCard> finalList = new List<WorkingCard>();
+            List<BoardCreature> finalList = new List<BoardCreature>();
 
             var list = GetBoardCreatures();
 
             foreach (var item in list)
             {
-                if (item.health < item.initialHealth)
+                if (item.HP < item.initialHP)
                     finalList.Add(item);
             }
 
-            list = list.OrderBy(x => x.health).OrderBy(y => y.health.ToString().Length).ToList();
+            list = list.OrderBy(x => x.HP).OrderBy(y => y.HP.ToString().Length).ToList();
 
             return finalList;
         }
 
-        protected List<WorkingCard> GetCreatureCardsInHand()
+        private List<WorkingCard> GetCreatureCardsInHand()
         {
             List<WorkingCard> list = PlayerInfo.CardsInHand.FindAll(x => x.libraryCard.cardKind == Enumerators.CardKind.CREATURE);
 
@@ -860,27 +877,27 @@ namespace GrandDevs.CZB
             return sortedList;
         }
 
-        protected List<WorkingCard> GetSpellCardsInHand()
+        private List<WorkingCard> GetSpellCardsInHand()
         {
             return PlayerInfo.CardsInHand.FindAll(x => x.libraryCard.cardKind == Enumerators.CardKind.SPELL);
         }
 
-        protected List<WorkingCard> GetBoardCreatures()
+        private List<BoardCreature> GetBoardCreatures()
         {
-            var board = PlayerInfo.CardsOnBoard;
-            var eligibleCreatures = board.FindAll(x => x.health > 0);
+            var board = PlayerInfo.BoardCards;
+            var eligibleCreatures = board.FindAll(x => x.HP > 0);
             return eligibleCreatures;
         }
 
-        protected WorkingCard GetRandomCreature(bool lowHP = false)
+        private BoardCreature GetRandomCreature(bool lowHP = false)
         {
-            var board = PlayerInfo.CardsOnBoard;
-            List<WorkingCard> eligibleCreatures = null;
+            var board = PlayerInfo.BoardCards;
+            List<BoardCreature> eligibleCreatures = null;
 
             if (!lowHP)
-                eligibleCreatures = board.FindAll(x => x.health > 0 && !_attackedCreatureTargets.Contains(x.instanceId));
+                eligibleCreatures = board.FindAll(x => x.HP > 0 && !_attackedCreatureTargets.Contains(x));
             else
-                eligibleCreatures = board.FindAll(x => x.health < x.initialHealth && !_attackedCreatureTargets.Contains(x.instanceId));
+                eligibleCreatures = board.FindAll(x => x.HP < x.initialHP && !_attackedCreatureTargets.Contains(x));
 
             if (eligibleCreatures.Count > 0)
             {
@@ -889,14 +906,14 @@ namespace GrandDevs.CZB
             return null;
         }
 
-        protected WorkingCard GetTargetOpponentCreature()
+        private BoardCreature GetTargetOpponentCreature()
         {
-            var board = PlayerInfo.CardsOnBoard;
-            var eligibleCreatures = board.FindAll(x => x.health > 0);
+            var board = localPlayer.BoardCards;
+            var eligibleCreatures = board.FindAll(x => x.HP > 0);
 
             if (eligibleCreatures.Count > 0)
             {
-                var provokeCreatures = eligibleCreatures.FindAll(x => x.type == Enumerators.CardType.HEAVY);
+                var provokeCreatures = eligibleCreatures.FindAll(x => x.Card.type == Enumerators.CardType.HEAVY);
                 if (provokeCreatures != null && provokeCreatures.Count >= 1)
                 {
                     return provokeCreatures[UnityEngine.Random.Range(0, provokeCreatures.Count)];
@@ -909,11 +926,11 @@ namespace GrandDevs.CZB
             return null;
         }
 
-        protected WorkingCard GetRandomOpponentCreature()
+        private BoardCreature GetRandomOpponentCreature()
         {
-            var board = PlayerInfo.CardsOnBoard;
+            var board = localPlayer.BoardCards;
 
-            var eligibleCreatures = board.FindAll(x => x.health > 0 && !_attackedCreatureTargets.Contains(x.instanceId));
+            var eligibleCreatures = board.FindAll(x => x.HP > 0 && !_attackedCreatureTargets.Contains(x));
             if (eligibleCreatures.Count > 0)
             {
                 return eligibleCreatures[UnityEngine.Random.Range(0, eligibleCreatures.Count)];
@@ -921,13 +938,13 @@ namespace GrandDevs.CZB
             return null;
         }
 
-        protected bool OpponentHasProvokeCreatures()
+        private bool OpponentHasProvokeCreatures()
         {
-            var board = PlayerInfo.CardsOnBoard;
-            var eligibleCreatures = board.FindAll(x => x.health > 0);
+            var board = localPlayer.BoardCards;
+            var eligibleCreatures = board.FindAll(x => x.HP > 0);
             if (eligibleCreatures.Count > 0)
             {
-                var provokeCreatures = eligibleCreatures.FindAll(x => x.type == Enumerators.CardType.HEAVY);
+                var provokeCreatures = eligibleCreatures.FindAll(x => x.Card.type == Enumerators.CardType.HEAVY);
                 return (provokeCreatures != null && provokeCreatures.Count >= 1);
             }
             return false;
@@ -939,6 +956,226 @@ namespace GrandDevs.CZB
 
             var allActionsType = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId].opponentActions;
             allActions = GameClient.Get<IDataManager>().CachedActionsLibraryData.GetActions(allActionsType.ToArray());
+        }
+
+        private void MoveCard(WorkingCard card, object target)
+        {
+            var randomCard = _battlegroundController.opponentHandCards[0];
+
+            _battlegroundController.opponentHandCards.Remove(randomCard);
+
+            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+
+            randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(() =>
+            {
+                //GameClient.Get<ITimerManager>().AddTimer(DestroyRandomCard, new object[] { randomCard }, 1f, false);
+                //randomCard.GetComponent<Animator>().SetTrigger("RemoveCard");
+                randomCard.transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>().Play();
+
+                randomCard.transform.DOScale(Vector3.one * 1.2f, 0.6f).OnComplete(() =>
+                {
+                    _cardsController.RemoveOpponentCard(new object[] { randomCard });
+
+                    GameClient.Get<ITimerManager>().AddTimer(OnMovedCardCompleted, new object[] { card, target }, 0.1f);
+
+                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                    {
+                        PlayerInfo.GraveyardCardsCount++;
+                    }, null, 1f);
+
+
+                });
+            });
+
+            randomCard.transform.DORotate(Vector3.zero, 0.5f);
+
+            _battlegroundController.RearrangeOpponentHand(true);
+        }
+
+        private void DestroyRandomCard(object[] param)
+        {
+            GameObject randomCard = param[0] as GameObject;
+            MonoBehaviour.Destroy(randomCard);
+        }
+
+        private void OnMovedCardCompleted(object[] param)
+        {
+            WorkingCard card = (WorkingCard)param[0];
+            object target = param[1];
+
+            string cardSetName = string.Empty;
+            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            {
+                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
+                    cardSetName = cardSet.name;
+            }
+
+            var runtimeCard = PlayerInfo.CardsOnBoard[PlayerInfo.CardsOnBoard.Count - 1];
+
+            if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
+                var boardCreatureElement = new BoardCreature(GameObject.Find("OpponentBoard").transform);
+                var boardCreature = boardCreatureElement.gameObject;
+                boardCreature.tag = "OpponentOwned";
+                boardCreatureElement.ownerPlayer = card.owner;
+
+                boardCreatureElement.PopulateWithInfo(runtimeCard, cardSetName);
+                _battlegroundController.opponentBoardCards.Add(boardCreatureElement);
+
+                boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
+                                                                     //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+
+                PlayerInfo.BoardCards.Add(boardCreatureElement);
+
+                _battlegroundController.RearrangeTopBoard(() =>
+                 {
+                     // opponentHandZone.numCards -= 1;
+                     //  opponentManaStat.baseValue -= libraryCard.cost;
+
+                     bool createTargetArrow = false;
+
+                     if (card.libraryCard.abilities != null && card.libraryCard.abilities.Count > 0)
+                         createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.libraryCard.abilities[0]);
+
+                     if (target != null)
+                     {
+                         GameObject targetObject = null;
+
+                         if (target is Player)
+                             targetObject = (target as Player).AvatarObject;
+                         else if (target is BoardCreature)
+                             targetObject = (target as BoardCreature).gameObject;
+
+                         CreateOpponentTarget(createTargetArrow, boardCreature.gameObject, targetObject,
+                                  () => { _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreatureElement, null, false, null, target); });
+
+                     }
+                     else
+                     {
+                         _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreatureElement, null, false, null);
+                     }
+                 });
+
+
+                boardCreatureElement.PlayArrivalAnimation();
+
+                _battlegroundController.RearrangeTopBoard();
+                //GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 0.1f, false);
+            }
+            else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            {
+                var spellCard = MonoBehaviour.Instantiate(_cardsController.spellCardViewPrefab);
+                spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
+                spellCard.GetComponent<SpellCardView>().PopulateWithInfo(runtimeCard, cardSetName);
+                spellCard.GetComponent<SpellCardView>().SetHighlightingEnabled(false);
+
+                currentSpellCard = spellCard.GetComponent<SpellCardView>();
+
+                var boardSpell = new BoardSpell(spellCard);
+
+                spellCard.gameObject.SetActive(false);
+
+                //    opponentManaStat.baseValue -= libraryCard.cost;
+
+
+                bool createTargetArrow = false;
+
+                if (card.libraryCard.abilities != null && card.libraryCard.abilities.Count > 0)
+                    createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.libraryCard.abilities[0]);
+
+
+                if (target != null)
+                {
+                    GameObject targetObject = null;
+
+                    if (target is Player)
+                        targetObject = (target as Player).AvatarObject;
+                    else if (target is BoardCreature)
+                        targetObject = (target as BoardCreature).gameObject;
+
+                    CreateOpponentTarget(createTargetArrow, aiPlayer.AvatarObject, targetObject,
+                        () => { _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
+                }
+
+                else
+                {
+                    _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null);
+                }
+
+                //GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 0.1f, false);
+            }
+        }
+
+        public void AttackPlayer(BoardCreature attackingCard, Player attackedPlayer)
+        {
+            if (attackingCard != null && attackedPlayer != null)
+            {
+                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                {
+                    _animationsController.PlayFightAnimation(attackingCard.gameObject, attackedPlayer.AvatarObject, 0.1f, () =>
+                    {
+                        _vfxController.PlayAttackVFX(attackingCard.Card.type, attackedPlayer.AvatarObject.transform.position, attackingCard.Damage);
+
+                        attackingCard.CreatureOnAttack(attackedPlayer);
+
+                        completeCallback?.Invoke();
+                    });
+                });
+            }
+        }
+    
+        public void AttackCreature(BoardCreature attackingCard, BoardCreature attackedCard)
+        {
+            if (attackingCard != null && attackedCard != null)
+            {
+                //        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                {
+                    attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z - 0.2f);
+
+                    _animationsController.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
+                    {
+                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, attackingCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+
+                        _vfxController.PlayAttackVFX(attackingCard.Card.type, attackedCard.transform.position, attackingCard.Damage);
+
+                        attackingCard.CreatureOnAttack(attackedCard);
+
+                        attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z + 0.2f);
+
+                        completeCallback?.Invoke();
+                    });
+                });
+            }
+        }
+
+        // need to check
+        private void EffectActivateEventHandler(Enumerators.EffectActivateType effectActivateType, object[] param)
+        {
+            switch (effectActivateType)
+            {
+                case Enumerators.EffectActivateType.PLAY_SKILL_EFFECT:
+                    {
+                        Player player = (Player)param[0];
+                        int from = (int)param[2];
+                        int to = (int)param[3];
+                        int toType = (int)param[4];
+
+                        if (player.Equals(aiPlayer))
+                        {
+                            CreateOpponentTarget(true, GameObject.Find("Opponent/Spell"), PlayerInfo.AvatarObject, () =>
+                            {
+                                aiPlayer.BoardSkills[0].DoOnUpSkillAction();
+                            });
+                        }
+                    }
+                    break;
+                default: break;
+            }
         }
     }
 }

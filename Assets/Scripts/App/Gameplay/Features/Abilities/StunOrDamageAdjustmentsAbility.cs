@@ -66,42 +66,42 @@ namespace GrandDevs.CZB
             BoardCreature leftAdjustment = null,
                     rightAdjastment = null;
 
-            //int targetIndex = -1;
-            //for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
-            //{
-            //    if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
-            //        targetIndex = i;
-            //}
-            //if (targetIndex > -1)
-            //{
-            //    if (targetIndex - 1 > -1)
-            //        leftAdjustment = playerCallerOfAbility.opponentBoardCardsList[targetIndex - 1];
-            //    if (targetIndex + 1 < playerCallerOfAbility.opponentBoardCardsList.Count)
-            //        rightAdjastment = playerCallerOfAbility.opponentBoardCardsList[targetIndex + 1];
-            //}
+            int targetIndex = -1;
+            for (int i = 0; i < creature.ownerPlayer.BoardCards.Count; i++)
+            {
+                if (creature.ownerPlayer.BoardCards[i] == creature)
+                    targetIndex = i;
+            }
+            if (targetIndex > -1)
+            {
+                if (targetIndex - 1 > -1)
+                    leftAdjustment = creature.ownerPlayer.BoardCards[targetIndex - 1];
+                if (targetIndex + 1 < creature.ownerPlayer.BoardCards.Count)
+                    rightAdjastment = creature.ownerPlayer.BoardCards[targetIndex + 1];
+            }
 
-            //if (leftAdjustment != null)
-            //{
-            //    if (leftAdjustment.IsStun)
-            //        playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card);
-            //    else
-            //        leftAdjustment.Stun(1);
-            //    //CreateVFX(leftAdjustment..transform.position);
-            //}
+            if (leftAdjustment != null)
+            {
+                if (leftAdjustment.IsStun)
+                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, leftAdjustment);
+                else
+                    leftAdjustment.Stun(1);
+                //CreateVFX(leftAdjustment..transform.position);
+            }
 
-            //if (rightAdjastment != null)
-            //{
-            //    if (rightAdjastment.IsStun)
-            //        playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card);
-            //    else
-            //        rightAdjastment.Stun(1);
-            //    //CreateVFX(targetCreature.transform.position);
-            //}
+            if (rightAdjastment != null)
+            {
+                if (rightAdjastment.IsStun)
+                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, rightAdjastment);
+                else
+                    rightAdjastment.Stun(1);
+                //CreateVFX(targetCreature.transform.position);
+            }
 
-            //if (creature.IsStun)
-            //    playerCallerOfAbility.FightCreatureBySkill(value, creature.card);
-            //else
-            //    creature.Stun(1);
+            if (creature.IsStun)
+                _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, creature);
+            else
+                creature.Stun(1);
         }
 
         protected override void CreatureOnAttackEventHandler(object info)

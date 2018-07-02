@@ -49,16 +49,13 @@ namespace GrandDevs.CZB
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         //else
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
+                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetCreature);
-
-                        //cardCaller.FightCreatureBySkill(value, targetCreature.card);
-                        //CreateVFX(cardCaller.transform.position);
-                        //CreateAndMoveParticle(targetCreature);
                         CreateAndMoveParticle(() =>
                         {
-                           // playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
+                            _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
 
                         }, targetCreature.transform.position);
                 
@@ -71,62 +68,74 @@ namespace GrandDevs.CZB
         {
             base.Action(info);
 
-            //var creature = info as BoardCreature;
+            Player opponent = _gameplayManager.PlayersInGame.Find(x => x != playerCallerOfAbility);
 
-            //BoardCreature leftAdjustment = null,
-            //        rightAdjastment = null;
+            var creature = info as BoardCreature;
 
-            //int targetIndex = -1;
-            //List<BoardCreature> list = null;
-            //for (int i = 0; i < playerCallerOfAbility.opponentBoardCardsList.Count; i++)
-            //{
-            //    if (playerCallerOfAbility.opponentBoardCardsList[i] == creature)
-            //    {
-            //        targetIndex = i;
-            //        list = playerCallerOfAbility.opponentBoardCardsList;
-            //        break;
-            //    }
-            //}
-            //if (targetIndex == -1)
-            //    for (int i = 0; i < playerCallerOfAbility.playerBoardCardsList.Count; i++)
-            //    {
-            //        if (playerCallerOfAbility.playerBoardCardsList[i] == creature)
-            //        {
-            //            targetIndex = i;
-            //            list = playerCallerOfAbility.playerBoardCardsList;
-            //            break;
-            //        }
-            //    }
-            //if (targetIndex > -1)
-            //{
-            //    if (targetIndex - 1 > -1)
-            //        leftAdjustment = list[targetIndex - 1];
-            //    if (targetIndex + 1 < list.Count)
-            //        rightAdjastment = list[targetIndex + 1];
-            //}
+            BoardCreature leftAdjustment = null,
+                    rightAdjastment = null;
 
-            //if (leftAdjustment != null)
-            //{
-            //    //CreateVFX(cardCaller.transform.position);
-            //    CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
-            //}
+            int targetIndex = -1;
+            List<BoardCreature> list = null;
+            for (int i = 0; i < opponent.BoardCards.Count; i++)
+            {
+                if (opponent.BoardCards[i] == creature)
+                {
+                    targetIndex = i;
+                    list = opponent.BoardCards;
+                    break;
+                }
+            }
+            if (targetIndex == -1)
+                for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
+                {
+                    if (playerCallerOfAbility.BoardCards[i] == creature)
+                    {
+                        targetIndex = i;
+                        list = playerCallerOfAbility.BoardCards;
+                        break;
+                    }
+                }
+            if (targetIndex > -1)
+            {
+                if (targetIndex - 1 > -1)
+                    leftAdjustment = list[targetIndex - 1];
+                if (targetIndex + 1 < list.Count)
+                    rightAdjastment = list[targetIndex + 1];
+            }
 
-            //if (rightAdjastment != null)
-            //{
-            //    //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-            //    CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
-            //}
+            if (leftAdjustment != null)
+            {
+                //CreateVFX(cardCaller.transform.position);
+                //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
+                CreateAndMoveParticle(() =>
+                {
+                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, leftAdjustment);
+
+                }, leftAdjustment.transform.position);
+            }
+
+            if (rightAdjastment != null)
+            {
+                //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
+                //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
+                CreateAndMoveParticle(() =>
+                {
+                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, rightAdjastment);
+
+                }, rightAdjastment.transform.position);
+            }
         }
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.transform.position;
+            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
             {
                 //CreateVFX(cardCaller.transform.position);
                 var particleMain = MonoBehaviour.Instantiate(_vfxObject);
                 particleMain.transform.position = Utilites.CastVFXPosition(startPosition + Vector3.forward);
-                particleMain.transform.DOMove(targetPosition, 0.5f).OnComplete(() => 
+                particleMain.transform.DOMove(Utilites.CastVFXPosition(targetPosition), 0.5f).OnComplete(() => 
                 {
                     callback();
                     if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
@@ -135,13 +144,18 @@ namespace GrandDevs.CZB
                         var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/NailBombVFX");
                         var particle  = MonoBehaviour.Instantiate(prefab);
                         particle.transform.position = Utilites.CastVFXPosition(targetPosition + Vector3.forward);
-                        DestroyParticle(particle);
+                        _particlesController.RegisterParticleSystem(particle, true);
                     }
+                    else if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR) //one particle
+                    {
+                        var main = _vfxObject.GetComponent<ParticleSystem>().main;
+                        main.loop = false;
+                    } 
                 });
             }
             else
             {
-                CreateVFX(targetCreature.transform.position);
+                CreateVFX(Utilites.CastVFXPosition(targetCreature.transform.position));
                 callback();
             }
 
