@@ -1,5 +1,10 @@
-﻿using DG.Tweening;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +13,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class AnimationsController : IController
     {

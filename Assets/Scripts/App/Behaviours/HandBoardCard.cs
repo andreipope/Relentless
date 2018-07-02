@@ -1,19 +1,25 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using DG.Tweening;
-using GrandDevs.CZB;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 
-[RequireComponent(typeof(CardView))]
-public class HandCard : MonoBehaviour
+public class HandBoardCard
 {
     private IGameplayManager _gameplayManager;
     private PlayerController _playerController;
     private CardsController _cardsController;
 
+    private GameObject _selfObject;
+
     public Player ownerPlayer;
     public GameObject boardZone;
 
-    protected CardView cardView;
+    protected BoardCard cardView;
 
     protected bool startedDrag;
     protected Vector3 initialPos;
@@ -25,9 +31,15 @@ public class HandCard : MonoBehaviour
 
     private int _handInd;
 
-    private void Awake()
+
+    public Transform transform { get { return _selfObject.transform; } }
+    public GameObject gameObject { get { return _selfObject; } }
+
+
+    public HandBoardCard(GameObject selfObject, BoardCard boardCard)
     {
-        cardView = GetComponent<CardView>();
+        cardView = boardCard;
+
         _handInd = this.GetHashCode();
 
 
@@ -129,7 +141,7 @@ public class HandCard : MonoBehaviour
 
     public void ResetToHandAnimation()
     {
-        enabled = true;
+//        enabled = true;
         _alreadySelected = false;
         startedDrag = false;
         _isReturnToHand = true;

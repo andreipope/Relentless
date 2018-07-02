@@ -1,15 +1,21 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using System;
 using System.Linq;
 using UnityEngine.Rendering;
+using UnityEngine.EventSystems;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public abstract class ReportViewBase
     {
@@ -47,7 +53,7 @@ namespace GrandDevs.CZB
             reportActionPreviewPanel.SetActive(false);
 
 
-            var behaviour = selfObject.GetComponent<GameActionReportBehaviour>();
+            var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
             behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
             behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
 
@@ -62,13 +68,13 @@ namespace GrandDevs.CZB
 
         }
 
-        public virtual void OnPointerExitEventHandler()
+        public virtual void OnPointerExitEventHandler(PointerEventData obj)
         {
             if (reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
                 reportActionPreviewPanel.SetActive(false);
         }
 
-        public virtual void OnPointerEnterEventHandler()
+        public virtual void OnPointerEnterEventHandler(PointerEventData obj)
         {
             if(reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
             reportActionPreviewPanel.SetActive(true);
@@ -93,8 +99,8 @@ namespace GrandDevs.CZB
                 currentCardPreview = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
             }
 
-            var cardView = currentCardPreview.GetComponent<CardView>();
-            cardView.PopulateWithInfo(card, cardSetName);
+            var cardView = currentCardPreview.GetComponent<BoardCard>();
+            cardView.Init(card, cardSetName);
             if (highlight)
                 highlight = cardView.CanBePlayed(card.owner) && cardView.CanBeBuyed(card.owner);
             cardView.SetHighlightingEnabled(highlight);

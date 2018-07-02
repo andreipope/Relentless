@@ -1,27 +1,35 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
-using GrandDevs.CZB;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB;
+using LoomNetwork.CZB.Data;
 
-public class DeckBuilderCard : MonoBehaviour
+namespace LoomNetwork.CZB
 {
-    public DeckEditingPage scene;
-    public Card card;
-    public bool isActive;
-
-    private void Awake()
+    public class DeckBuilderCard : MonoBehaviour
     {
-        isActive = true;
-    }
+        public DeckEditingPage scene;
+        public Card card;
+        public bool isActive;
 
-    private void Update()
-    {
-        if (isActive && Input.GetMouseButtonDown(0))
+        private void Awake()
         {
-            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var hit = Physics2D.Raycast(mousePos, Vector2.zero);
-            if (hit.collider != null && hit.collider.gameObject == gameObject)
+            isActive = true;
+        }
+
+        private void Update()
+        {
+            if (isActive && Input.GetMouseButtonDown(0))
             {
-                scene.AddCardToDeck(card);
+                var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                var hit = Physics2D.Raycast(mousePos, Vector2.zero);
+                if (hit.collider != null && hit.collider.gameObject == gameObject)
+                {
+                    scene.AddCardToDeck(card);
+                }
             }
         }
     }

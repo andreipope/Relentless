@@ -1,4 +1,9 @@
-﻿﻿namespace GrandDevs.CZB.Common
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {
@@ -337,7 +342,7 @@
 			KISS,
 		}
 
-        public enum CardZoneType
+        public enum CardZoneOnBoardType
         {
             DECK,
             GRAVEYARD

@@ -1,14 +1,14 @@
-﻿// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
 
 using UnityEngine;
 using UnityEngine.Assertions;
 
 using DG.Tweening;
-using GrandDevs.CZB;
+using LoomNetwork.CZB;
 using TMPro;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 
 public class EndTurnButton : MonoBehaviour
 {
@@ -71,7 +71,7 @@ public class EndTurnButton : MonoBehaviour
 
         thisRenderer.sprite = pressedSprite;
         buttonText.transform.localPosition = textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(GrandDevs.CZB.Common.Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
+        GameClient.Get<ISoundManager>().PlaySound(LoomNetwork.CZB.Common.Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown

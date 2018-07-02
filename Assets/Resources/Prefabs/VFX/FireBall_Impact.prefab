@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 198192759220738484}
   - component: {fileID: 199272939252043570}
   m_Layer: 8
-  m_Name: FIreBall_Impact
+  m_Name: FireBall_Impact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,3 +1,8 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using System;
 
 using UnityEngine;
@@ -7,10 +12,10 @@ using UnityEngine.Rendering;
 using DG.Tweening;
 using TMPro;
 
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
 using System.Collections.Generic;
 
 public class BoardSkill : MonoBehaviour
@@ -253,7 +258,7 @@ public class BoardSkill : MonoBehaviour
             {
                 var targetCard = fightTargetingArrow.selectedCard;
                 if (targetCard.gameObject != gameObject &&
-                    targetCard.gameObject.GetComponent<HandCard>() == null)
+                    targetCard.gameObject.GetComponent<HandBoardCard>() == null)
                 {
                     DoSkillAction(targetCard);
                 }

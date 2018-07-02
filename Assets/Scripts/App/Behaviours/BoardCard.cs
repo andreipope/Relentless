@@ -1,68 +1,87 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
-using UnityEngine.Assertions;
 using TMPro;
 using System;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using DG.Tweening;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
-    public class CardView : MonoBehaviour
+    public class BoardCard
     {
-        public WorkingCard WorkingCard { get; private set; }
+        private ILoadObjectsManager _loadObjectsManager;
+        private ISoundManager _soundManager;
+        private IDataManager _dataManager;
+        private IGameplayManager _gameplayManager;
 
-        [SerializeField]
+        private GameObject _selfObject;
+
         protected SpriteRenderer glowSprite;
-
-        [SerializeField]
         protected SpriteRenderer pictureSprite;
-
-        [SerializeField]
         protected SpriteRenderer backgroundSprite;
 
-        [SerializeField]
         protected TextMeshPro costText;
-
-        [SerializeField]
         protected TextMeshPro nameText;
-
-        [SerializeField]
         protected TextMeshPro bodyText;
-
-        [SerializeField]
         protected TextMeshPro amountText;
 
         protected GameObject previewCard;
 
         protected Animator cardAnimator;
 
-        public Card libraryCard;
+        protected Vector3 positionOnHand;
+        protected Vector3 rotationOnHand;
 
         public bool isNewCard = false;
+        public bool isPreview;
+
+        public Card libraryCard;
 
         public int manaCost { get; protected set; }
 
         public ParticleSystem removeCardParticle { get; protected set; }
 
+        public Transform transform { get { return _selfObject.transform; } }
+        public GameObject gameObject { get { return _selfObject; } }
+
         public int CurrentTurn { get; set; }
 
-        [HideInInspector]
-        public bool isPreview;
+        public WorkingCard WorkingCard { get; private set; }
 
-        protected virtual void Awake()
+
+        public BoardCard(GameObject selfObject)
         {
-            Assert.IsNotNull(glowSprite);
-            Assert.IsNotNull(pictureSprite);
-            Assert.IsNotNull(costText);
-            Assert.IsNotNull(nameText);
-            Assert.IsNotNull(bodyText);
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            _selfObject = selfObject;
 
             cardAnimator = gameObject.GetComponent<Animator>();
             cardAnimator.enabled = false;
+
+            glowSprite = transform.Find("").GetComponent<SpriteRenderer>();
+            pictureSprite = transform.Find("").GetComponent<SpriteRenderer>();
+            backgroundSprite = transform.Find("").GetComponent<SpriteRenderer>();
+
+            costText = transform.Find("").GetComponent<TextMeshPro>();
+            nameText = transform.Find("").GetComponent<TextMeshPro>();
+            bodyText = transform.Find("").GetComponent<TextMeshPro>();
+            amountText = transform.Find("").GetComponent<TextMeshPro>();
+
+            previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
+
+            removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
+
         }
 
-        public virtual void PopulateWithInfo(WorkingCard card, string setName = "")
+        public virtual void Init(WorkingCard card, string setName = "")
         {
             WorkingCard = card;
 
@@ -79,16 +98,16 @@ namespace GrandDevs.CZB
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRarity), WorkingCard.libraryCard.cardRarity);
 
-            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
 
-            removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
+
 
             amountText.transform.parent.gameObject.SetActive(false);
         }
 
-        public virtual void PopulateWithLibraryInfo(Card card, string setName = "", int amount = 0)
+        public virtual void Init(Card card, string setName = "", int amount = 0)
         {
             libraryCard = card;
 
@@ -101,9 +120,9 @@ namespace GrandDevs.CZB
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
 
-            backgroundSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
 
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
+            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
         }
 
 
@@ -112,12 +131,11 @@ namespace GrandDevs.CZB
             amountText.text = amount.ToString();
         }
 
-        protected Vector3 positionOnHand;
-        protected Vector3 rotationOnHand;
         public virtual void RearrangeHand(Vector3 position, Vector3 rotation)
         {
             positionOnHand = position;
             rotationOnHand = rotation;
+
             if (!isNewCard)
             {
                 UpdatePositionOnHand();
@@ -127,8 +145,9 @@ namespace GrandDevs.CZB
                 cardAnimator.enabled = true;
                 cardAnimator.SetTrigger("DeckToHand");
 
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
             }
+
             isNewCard = false;
         }
 
@@ -143,12 +162,12 @@ namespace GrandDevs.CZB
             cardAnimator.enabled = true;
             cardAnimator.SetTrigger("DeckToHandDefault");
 
-            if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            if (_dataManager.CachedUserLocalData.tutorial)
                 cardAnimator.SetFloat("Id", 2);
             else
                 cardAnimator.SetFloat("Id", id);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
         }
 
         public virtual void UpdateAnimation(string name)
@@ -169,13 +188,14 @@ namespace GrandDevs.CZB
             if (Constants.DEV_MODE)
                 return true;
 
-            return GameClient.Get<IGameplayManager>().GetController<PlayerController>().IsActive;// && owner.manaStat.effectiveValue >= manaCost;
+            return _gameplayManager.GetController<PlayerController>().IsActive;// && owner.manaStat.effectiveValue >= manaCost;
         }
 
         public virtual bool CanBeBuyed(Player owner)
         {
             if (Constants.DEV_MODE)
                 return true;
+
             return owner.Mana >= manaCost;
         }
 

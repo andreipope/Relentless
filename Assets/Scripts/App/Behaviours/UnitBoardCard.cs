@@ -1,16 +1,16 @@
-﻿// Copyright (C) 2016-2017 David Pol. All rights reserved.
-// This code can only be used under the standard Unity Asset Store End User License Agreement,
-// a copy of which is available at http://unity3d.com/company/legal/as_terms.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
 
 using UnityEngine;
 using UnityEngine.Assertions;
 
 using TMPro;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
-    public class CreatureCardView : CardView
+    public class UnitBoardCard : BoardCard
     {
         [SerializeField]
         protected TextMeshPro attackText;
@@ -27,16 +27,13 @@ namespace GrandDevs.CZB
         public int health,
                    damage;
 
-        protected override void Awake()
+        public UnitBoardCard(GameObject selfObject) : base(selfObject)
         {
-            base.Awake();
-            Assert.IsNotNull(attackText);
-            Assert.IsNotNull(defenseText);
         }
 
-        public override void PopulateWithInfo(WorkingCard card, string setName)
+        public override void Init(WorkingCard card, string setName)
         {
-            base.PopulateWithInfo(card, setName);
+            base.Init(card, setName);
 
             damage = card.libraryCard.damage;
             initialDamage = card.libraryCard.damage;
@@ -53,9 +50,9 @@ namespace GrandDevs.CZB
          //   defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
         }
 
-        public override void PopulateWithLibraryInfo(Data.Card card, string setName = "", int amount = 0)
+        public override void Init(Data.Card card, string setName = "", int amount = 0)
         {
-            base.PopulateWithLibraryInfo(card, setName, amount);
+            base.Init(card, setName, amount);
 
             attackText.text = card.damage.ToString();
             defenseText.text = card.health.ToString();

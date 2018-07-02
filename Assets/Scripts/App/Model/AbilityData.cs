@@ -1,10 +1,15 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using System;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
     public class AbilityData
     {

@@ -1,9 +1,14 @@
-﻿using UnityEngine;
-using GrandDevs.CZB.Data;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Common;
 using System;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface IDataManager
     {

@@ -1,8 +1,13 @@
-﻿using UnityEngine;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
+using LoomNetwork.CZB.Data;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PlayerSkillItem
     {

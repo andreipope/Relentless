@@ -1,11 +1,16 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using System;
 using System.Collections.Generic;
-using GrandDevs.CZB.Gameplay;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
 using UnityEngine.Networking;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class TutorialManager : IService, ITutorialManager
     {

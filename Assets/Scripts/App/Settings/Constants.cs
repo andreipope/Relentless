@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB.Common
+
+
+using System.Collections.Generic;
+
+namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {

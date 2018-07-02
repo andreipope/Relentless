@@ -1,6 +1,11 @@
-﻿using GrandDevs.CZB.Gameplay;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using LoomNetwork.CZB.Gameplay;
+
+namespace LoomNetwork.CZB
 {
     public class GameClient : ServiceLocatorBase
     {

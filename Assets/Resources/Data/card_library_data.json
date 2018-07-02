@@ -100,7 +100,7 @@
             }
           }
         },
-        {
+		{
           "id": 3,
           "kind": "CREATURE",
           "name": "Fire-Maw",
@@ -112,16 +112,6 @@
           "health": 3,
           "type": "FERAL",
           "rarity": "EPIC",
-          "abilities": [
-            {
-              "type": "ATTACK_NUMBER_OF_TIMES_PER_TURN",
-              "activityType": "passive",
-              "callType": "PERMANENT",
-              "targetType": "player_card",
-              "value": 2,
-              "attackInfo": "ANY"
-            }
-          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -135,7 +125,7 @@
             }
           }
         },
-        {
+		{
           "id": 4,
           "kind": "CREATURE",
           "name": "Cerberus",
@@ -147,16 +137,6 @@
           "health": 6,
           "type": "FERAL",
           "rarity": "LEGENDARY",
-          "abilities": [
-            {
-              "type": "ATTACK_NUMBER_OF_TIMES_PER_TURN",
-              "activityType": "passive",
-              "callType": "PERMANENT",
-              "targetType": "player_card",
-              "value": 3,
-              "attackInfo": "ONLY_DIFFERENT"
-            }
-          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -698,7 +678,7 @@
             }
           }
         },
-        {
+		{
           "id": 20,
           "kind": "CREATURE",
           "name": "Puffer",
@@ -710,18 +690,6 @@
           "health": 2,
           "type": "WALKER",
           "rarity": "RARE",
-          "abilities": [
-            {
-              "type": "CHANGE_STAT_OF_CREATURES_BY_TYPE",
-              "activityType": "passive",
-              "callType": "PERMANENT",
-              "targetType": "player_card",
-              "value": 1,
-              "statType": "DAMAGE",
-              "setType": "LIFE",
-              "effectType": "TARGET_LIFE"
-            }
-          ],
           "cardViewInfo": {
             "position": {
               "x": 0,

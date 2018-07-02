@@ -1,14 +1,19 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
 using System.IO;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DeckEditingPage : IUIElement
     {
@@ -62,6 +67,8 @@ namespace GrandDevs.CZB
 
         private int _currentDeckId;
         private int _currentHeroId;
+
+        private List<CardListItem> _cardListItems;
 
         private Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
         {
@@ -205,7 +212,7 @@ namespace GrandDevs.CZB
 
         public void Dispose()
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
@@ -246,6 +253,13 @@ namespace GrandDevs.CZB
 
             _cardSetsSlider.value = 0;
             LoadCards(0, 0);
+        }
+
+        private void ResetCardListItems()
+        {
+            foreach(var item in _cardListItems)
+                item.Dispose();
+            _cardListItems.Clear();
         }
 
         #region button handlers
@@ -356,7 +370,7 @@ namespace GrandDevs.CZB
             var startIndex = page * cardPositions.Count;
             var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
@@ -380,8 +394,8 @@ namespace GrandDevs.CZB
 
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
-                var cardView = go.GetComponent<CardView>();
-                cardView.PopulateWithLibraryInfo(card, set.name, amount);
+                var cardView = go.GetComponent<BoardCard>();
+                cardView.Init(card, set.name, amount);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = cardPositions[i % cardPositions.Count].position;
                 cardView.transform.localScale = Vector3.one * 0.28f;
@@ -404,10 +418,7 @@ namespace GrandDevs.CZB
         {
             _deckNameInputField.text = deck.name;
 
-            foreach (var item in _cardListContent.GetComponentsInChildren<CardListItem>())
-            {
-                MonoBehaviour.Destroy(item.gameObject);
-            }
+            ResetCardListItems();
 
             _cardListItemEnd = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardListItemEnd"), _cardListContent.transform, false);
 
@@ -416,7 +427,7 @@ namespace GrandDevs.CZB
                 var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
-                var cardListItem = go.GetComponent<CardListItem>();
+                var cardListItem = new CardListItem(go);
                 _cardListItemEnd.transform.SetAsLastSibling();
                 //cardListItem.deckButton = deck;
                 //cardListItem.card = libraryCard;
@@ -426,6 +437,7 @@ namespace GrandDevs.CZB
                 cardListItem.Init(deck, libraryCard, card.amount, GetMaxCopiesValue(libraryCard.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
+                _cardListItems.Add(cardListItem);
 
                 _collectionData.GetCardData(card.cardId).amount -= card.amount;
             }
@@ -434,7 +446,7 @@ namespace GrandDevs.CZB
             UpdateNumCardsText();
         }
 
-        private void DeleteCardHandler(int cardId)
+        private void DeleteCardHandler(CardListItem listItem, int cardId)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
             var collectionCardData = _collectionData.GetCardData(cardId);
@@ -442,6 +454,9 @@ namespace GrandDevs.CZB
             UpdateCardAmount(cardId, collectionCardData.amount);
             if (_cardListContent.transform.childCount <= 8)
                 _cardListItemEnd.SetActive(false);
+
+            _cardListItems.Remove(listItem);
+            listItem.Dispose();
         }
 
         public void AddCardToDeck(Card card)
@@ -501,7 +516,7 @@ namespace GrandDevs.CZB
             {
                 var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
                 go.transform.SetParent(_cardListContent.transform, false);
-                var cardListItem = go.GetComponent<CardListItem>();
+                var cardListItem = new CardListItem(go);
                 _cardListItemEnd.transform.SetAsLastSibling();
                 //cardListItem.deckButton = _currentDeck;
                 //cardListItem.card = card;
@@ -542,7 +557,7 @@ namespace GrandDevs.CZB
 
         public void UpdateCardAmount(int cardId, int amount)
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 if (card.libraryCard.id == cardId)
                 {
@@ -555,10 +570,7 @@ namespace GrandDevs.CZB
         public void OnClearAllButtonPressed()
         {
             _currentDeck.cards.Clear();
-            foreach (var item in _cardListContent.GetComponentsInChildren<CardListItem>())
-            {
-               MonoBehaviour.Destroy(item.gameObject);
-            }
+            ResetCardListItems();
         }
 
         public void UpdateNumCardsText()

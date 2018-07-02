@@ -1,12 +1,17 @@
-﻿﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class StunOrDamageAdjustmentsAbility : AbilityBase
     {

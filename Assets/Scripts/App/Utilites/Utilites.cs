@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,7 +19,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GrandDevs.Internal
+namespace LoomNetwork.Internal
 {
     public class Utilites
     {

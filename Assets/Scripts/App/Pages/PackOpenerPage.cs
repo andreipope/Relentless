@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
@@ -6,14 +11,14 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using DG.Tweening;
-using GrandDevs.CZB.Helpers;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Helpers;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Gameplay;
 using Random = UnityEngine.Random;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PackOpenerPage : IUIElement
     {
@@ -130,7 +135,7 @@ namespace GrandDevs.CZB
 
         public void Dispose()
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
@@ -144,7 +149,7 @@ namespace GrandDevs.CZB
             var hit = Physics2D.Raycast(mousePos, Vector2.zero);
             if (hit.collider != null)
             {
-                foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+                foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
                 {
                     if (hit.collider.gameObject == card.gameObject)
                     {
@@ -351,8 +356,8 @@ namespace GrandDevs.CZB
                 go.transform.SetParent(_cardsContainer);
                 go.transform.Find("Back").gameObject.SetActive(true);
                 go.transform.Find("Amount").gameObject.SetActive(false);
-                var cardView = go.GetComponent<CardView>();
-                cardView.PopulateWithLibraryInfo(card, cardSetName);
+                var cardView = go.GetComponent<BoardCard>();
+                cardView.Init(card, cardSetName);
                 cardView.SetHighlightingEnabled(false);
                 cardView.transform.position = _centerPos;
                 cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
@@ -376,7 +381,7 @@ namespace GrandDevs.CZB
                 MonoBehaviour.Destroy(_packOpenVFX);
         }
 
-        private void CardSelected(CardView card)
+        private void CardSelected(BoardCard card)
         {
             var go = card.gameObject;
 

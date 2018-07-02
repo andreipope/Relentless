@@ -1,6 +1,11 @@
-﻿using DG.Tweening;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +14,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CardsController : IController
     {
@@ -100,8 +105,8 @@ namespace GrandDevs.CZB
                 go = MonoBehaviour.Instantiate(spellCardViewPrefab);
             }
 
-            var cardView = go.GetComponent<CardView>();
-            cardView.PopulateWithInfo(card, cardSetName);
+            var cardView = go.GetComponent<BoardCard>();
+            cardView.Init(card, cardSetName);
 
             cardView.CurrentTurn = _battlgroundController.currentTurn;
 
@@ -112,7 +117,7 @@ namespace GrandDevs.CZB
                 //    RearrangeHand();
             }
 
-            var handCard = go.AddComponent<HandCard>();
+            var handCard = go.AddComponent<HandBoardCard>();
             handCard.ownerPlayer = card.owner;
             handCard.boardZone = _playerBoard;
 
@@ -142,7 +147,7 @@ namespace GrandDevs.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
-            CardView card = param[0] as CardView;
+            BoardCard card = param[0] as BoardCard;
             //BoardCreature currentCreature = null;
             //if (param.Length > 1)
             //    currentCreature = param[1] as BoardCreature;
@@ -274,7 +279,7 @@ namespace GrandDevs.CZB
             });
         }
 
-        public void PlayCard(Player player, CardView card, HandCard handCard)
+        public void PlayCard(Player player, BoardCard card, HandBoardCard handCard)
         {
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
@@ -297,7 +302,7 @@ namespace GrandDevs.CZB
                     }
 
                     card.transform.DORotate(Vector3.zero, .1f);
-                    card.GetComponent<HandCard>().enabled = false;
+                    card.GetComponent<HandBoardCard>().enabled = false;
 
                     GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
                     // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
@@ -389,17 +394,17 @@ namespace GrandDevs.CZB
             }
             else
             {
-                card.GetComponent<HandCard>().ResetToInitialPosition();
+                card.GetComponent<HandBoardCard>().ResetToInitialPosition();
             }
         }
 
-        private void CallCardPlay(CardView card)
+        private void CallCardPlay(BoardCard card)
         {
            // PlayCreatureCard(card.WorkingCard);
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 
-        private void CallSpellCardPlay(CardView card)
+        private void CallSpellCardPlay(BoardCard card)
         {
           //  PlaySpellCard(card.WorkingCard);
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);

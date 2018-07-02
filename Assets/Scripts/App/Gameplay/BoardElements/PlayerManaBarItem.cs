@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PlayerManaBarItem
     {

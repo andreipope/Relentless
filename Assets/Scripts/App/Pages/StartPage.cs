@@ -1,10 +1,15 @@
-﻿﻿using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class StartPage : IUIElement
     {

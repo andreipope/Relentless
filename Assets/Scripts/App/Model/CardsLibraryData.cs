@@ -1,12 +1,17 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using Newtonsoft.Json;
 using System;
-using GrandDevs.Internal;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
     public class CardsLibraryData
     {

@@ -1,6 +1,11 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using UnityEngine;
+
+namespace LoomNetwork.CZB
 {
     public class OpponentTargetingArrow : FightTargetingArrow
     {

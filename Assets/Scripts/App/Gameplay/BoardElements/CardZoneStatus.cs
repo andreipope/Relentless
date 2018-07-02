@@ -1,16 +1,21 @@
-﻿using UnityEngine;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
 
-namespace GrandDevs.CZB
+
+using UnityEngine;
+using LoomNetwork.CZB.Common;
+
+
+namespace LoomNetwork.CZB
 {
-    public class CardZoneStatus
+    public class CardZoneOnBoardStatus
     {
-        public Enumerators.CardZoneType cardZone;
+        public Enumerators.CardZoneOnBoardType cardZone;
         public int percent;
         public Sprite statusSprite;
 
-        public CardZoneStatus(Enumerators.CardZoneType cardZone, Sprite statusSprite, int percent)
+        public CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType cardZone, Sprite statusSprite, int percent)
         {
             this.cardZone = cardZone;
             this.statusSprite = statusSprite;

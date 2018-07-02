@@ -1,11 +1,16 @@
-﻿using Newtonsoft.Json;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using Newtonsoft.Json;
 using System;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using System.Collections.Generic;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {

@@ -1,11 +1,16 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class AbilityBase
     {

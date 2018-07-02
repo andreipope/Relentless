@@ -1,14 +1,19 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using System;
 using System.Linq;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class GameplayPage : IUIElement
     {
@@ -37,7 +42,7 @@ namespace GrandDevs.CZB
         private PlayerManaBarItem _playerManaBar,
                                   _opponentManaBar;
 
-        private List<CardZoneStatus> _deckStatus,
+        private List<CardZoneOnBoardStatus> _deckStatus,
                              _graveyardStatus;
 
         private TextMeshPro _playerHealthText,
@@ -100,19 +105,19 @@ namespace GrandDevs.CZB
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
 
 
-            _deckStatus = new List<CardZoneStatus>();
-            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, null, 0));
-            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_single"), 15));
-            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_couple"), 40));
-            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_bunch"), 60));
-            _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_full"), 80));
+            _deckStatus = new List<CardZoneOnBoardStatus>();
+            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, null, 0));
+            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_single"), 15));
+            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_couple"), 40));
+            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_bunch"), 60));
+            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_full"), 80));
 
-            _graveyardStatus = new List<CardZoneStatus>();
-            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, null, 0));
-            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_single"), 10));
-            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
-            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
-            _graveyardStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
+            _graveyardStatus = new List<CardZoneOnBoardStatus>();
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, null, 0));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_single"), 10));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
             //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
 
 
@@ -411,7 +416,7 @@ namespace GrandDevs.CZB
 
                 var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
 
-                CardZoneStatus nearest = null;
+                CardZoneOnBoardStatus nearest = null;
 
                 if (nearestObjects[0].percent > 0)
                     nearest = nearestObjects[0];
@@ -454,7 +459,7 @@ namespace GrandDevs.CZB
 
                 var nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
 
-                CardZoneStatus nearest = null;
+                CardZoneOnBoardStatus nearest = null;
 
                 if (nearestObjects[0].percent > 0)
                     nearest = nearestObjects[0];

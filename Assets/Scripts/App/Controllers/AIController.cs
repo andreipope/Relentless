@@ -1,13 +1,18 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 
 using UnityEngine;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using DG.Tweening;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class AIController : IController
     {
@@ -41,7 +46,7 @@ namespace GrandDevs.CZB
 
         public GameObject currentBoardCreature;
         public BoardCreature currentCreature;
-        public CardView currentSpellCard;
+        public BoardCard currentSpellCard;
 
         public Player localPlayer,
                       aiPlayer;
@@ -586,7 +591,7 @@ namespace GrandDevs.CZB
 
             object target = null;
 
-            var abilitiesWithTarget = new List<GrandDevs.CZB.Data.AbilityData>();
+            var abilitiesWithTarget = new List<LoomNetwork.CZB.Data.AbilityData>();
 
             var needsToSelectTarget = false;
             foreach (var ability in libraryCard.abilities)
@@ -742,7 +747,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        private void CheckAndAddTargets(GrandDevs.CZB.Data.AbilityData ability, ref object targetInfo)
+        private void CheckAndAddTargets(LoomNetwork.CZB.Data.AbilityData ability, ref object targetInfo)
         {
             if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
@@ -796,8 +801,8 @@ namespace GrandDevs.CZB
             }
             GameObject go = MonoBehaviour.Instantiate(prefab);
 
-            var cardView = go.GetComponent<CardView>();
-            cardView.PopulateWithInfo(card, cardSetName);
+            var cardView = go.GetComponent<BoardCard>();
+            cardView.Init(card, cardSetName);
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
             cardView.SetHighlightingEnabled(false);
@@ -1068,10 +1073,10 @@ namespace GrandDevs.CZB
             {
                 var spellCard = MonoBehaviour.Instantiate(_cardsController.spellCardViewPrefab);
                 spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
-                spellCard.GetComponent<SpellCardView>().PopulateWithInfo(runtimeCard, cardSetName);
-                spellCard.GetComponent<SpellCardView>().SetHighlightingEnabled(false);
+                spellCard.GetComponent<SpellBoardCard>().Init(runtimeCard, cardSetName);
+                spellCard.GetComponent<SpellBoardCard>().SetHighlightingEnabled(false);
 
-                currentSpellCard = spellCard.GetComponent<SpellCardView>();
+                currentSpellCard = spellCard.GetComponent<SpellBoardCard>();
 
                 var boardSpell = new BoardSpell(spellCard);
 

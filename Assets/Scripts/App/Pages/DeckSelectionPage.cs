@@ -1,12 +1,17 @@
-﻿﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using TMPro;
 using System.IO;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DeckSelectionPage : IUIElement
     {

@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface IUIManager
     {

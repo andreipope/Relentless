@@ -1,4 +1,9 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +11,12 @@ using UnityEngine.UI;
 using TMPro;
 
 using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
 using DG.Tweening;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class YourTurnPopup : IUIPopup
     {
@@ -95,7 +100,7 @@ namespace GrandDevs.CZB
             if (GameClient.Get<ITutorialManager>().IsTutorial)
                 GameClient.Get<ITutorialManager>().StopTutorial();
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(LoomNetwork.CZB.Common.Enumerators.AppState.DECK_SELECTION);
             Hide();
         }
 

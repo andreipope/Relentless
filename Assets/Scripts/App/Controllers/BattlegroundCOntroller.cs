@@ -1,5 +1,10 @@
-﻿using DG.Tweening;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class BattlegroundController : IController
     {
@@ -50,7 +55,7 @@ namespace GrandDevs.CZB
 
         public Coroutine createPreviewCoroutine;
 
-        public List<CardView> playerHandCards = new List<CardView>();
+        public List<BoardCard> playerHandCards = new List<BoardCard>();
         public List<GameObject> opponentHandCards = new List<GameObject>();
 
         public List<BoardCreature> playerBoardCards = new List<BoardCreature>();
@@ -404,7 +409,7 @@ namespace GrandDevs.CZB
 
                 MonoBehaviour.Destroy(_playerController.currentSpellCard.GetComponent<BoxCollider2D>());
 
-                _playerController.currentSpellCard.GetComponent<HandCard>().enabled = false;
+                _playerController.currentSpellCard.GetComponent<HandBoardCard>().enabled = false;
                 _playerController.currentSpellCard = null;
             }
         }
@@ -591,8 +596,8 @@ namespace GrandDevs.CZB
                 currentCardPreview = MonoBehaviour.Instantiate(_cardsController.spellCardViewPrefab);
             }
 
-            var cardView = currentCardPreview.GetComponent<CardView>();
-            cardView.PopulateWithInfo(card, cardSetName);
+            var cardView = currentCardPreview.GetComponent<BoardCard>();
+            cardView.Init(card, cardSetName);
             if (highlight)
                 highlight = cardView.CanBePlayed(card.owner) && cardView.CanBeBuyed(card.owner);
             cardView.SetHighlightingEnabled(highlight);

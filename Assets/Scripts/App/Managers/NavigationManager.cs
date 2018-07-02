@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class NavigationManager : IService, INavigationManager
     {

@@ -1,11 +1,16 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 
 using UnityEngine;
 
 using System.Collections.Generic;
 using System.Linq;
-using GrandDevs.CZB;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB;
+using LoomNetwork.CZB.Common;
 
 public class TargetingArrow : MonoBehaviour
 {

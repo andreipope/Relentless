@@ -1,10 +1,15 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PlayerController : IController
     {
@@ -24,7 +29,7 @@ namespace GrandDevs.CZB
         public bool IsCardSelected { get; set; }
         public bool IsActive { get; set; }
 
-        public SpellCardView currentSpellCard;
+        public SpellBoardCard currentSpellCard;
         public GameObject currentBoardCreature;
         public BoardCreature currentCreature;
 
@@ -132,9 +137,9 @@ namespace GrandDevs.CZB
                     {
                         if (hit.collider != null &&
                             hit.collider.gameObject != null &&
-                            hit.collider.gameObject.GetComponent<CardView>() != null &&
-                            !hit.collider.gameObject.GetComponent<CardView>().isPreview &&
-                            hit.collider.gameObject.GetComponent<CardView>().CanBePlayed(PlayerInfo))
+                            hit.collider.gameObject.GetComponent<BoardCard>() != null &&
+                            !hit.collider.gameObject.GetComponent<BoardCard>().isPreview &&
+                            hit.collider.gameObject.GetComponent<BoardCard>().CanBePlayed(PlayerInfo))
                         {
                             hitCards.Add(hit.collider.gameObject);
                         }
@@ -143,11 +148,11 @@ namespace GrandDevs.CZB
                     {
                         _battlegroundController.DestroyCardPreview();
                         hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
-                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<CardView>();
-                        var topmostHandCard = topmostCardView.GetComponent<HandCard>();
+                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<BoardCard>();
+                        var topmostHandCard = topmostCardView.GetComponent<HandBoardCard>();
                         if (topmostHandCard != null)
                         {
-                            topmostCardView.GetComponent<HandCard>().OnSelected();
+                            topmostCardView.GetComponent<HandBoardCard>().OnSelected();
 
                             if (_tutorialManager.IsTutorial)
                                 _tutorialManager.DeactivateSelectTarget();
@@ -165,7 +170,7 @@ namespace GrandDevs.CZB
                 {
                     if (hit.collider != null &&
                         hit.collider.gameObject != null &&
-                        hit.collider.gameObject.GetComponent<CardView>() != null)
+                        hit.collider.gameObject.GetComponent<BoardCard>() != null)
                     {
                         hitCards.Add(hit.collider.gameObject);
                         hitHandCard = true;
@@ -188,7 +193,7 @@ namespace GrandDevs.CZB
                     if (hitCards.Count > 0)
                     {
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<CardView>();
+                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<BoardCard>();
                         if (!topmostCardView.isPreview)
                         {
                             if (!_battlegroundController.isPreviewActive || topmostCardView.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)

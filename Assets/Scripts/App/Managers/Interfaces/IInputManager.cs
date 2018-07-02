@@ -1,7 +1,12 @@
-﻿using System;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using System;
+using LoomNetwork.CZB.Common;
+
+namespace LoomNetwork.CZB
 {
     public interface IInputManager
     {

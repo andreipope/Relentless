@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using UnityEngine;
-using GrandDevs.CZB.Data;
-using DG.Tweening;
-using GrandDevs.Internal;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using System;
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using UnityEngine;
+using LoomNetwork.CZB.Data;
+using DG.Tweening;
+using LoomNetwork.Internal;
+
+namespace LoomNetwork.CZB
 {
     public class HealTargetAbility : AbilityBase
     {

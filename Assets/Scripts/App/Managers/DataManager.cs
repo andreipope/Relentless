@@ -1,14 +1,19 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using UnityEngine;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Data;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DataManager : IService, IDataManager
     {

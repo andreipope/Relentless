@@ -1,9 +1,14 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class WeaponTargettingArrow : TargetingArrow
     {

@@ -1,12 +1,17 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class AbilitiesController : IController
     {
@@ -257,7 +262,7 @@ namespace GrandDevs.CZB
             return abils;
         }
 
-        public void CallAbility(Card libraryCard, CardView card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<CardView> action, bool isPlayer, Action onCompleteCallback, object target = null, HandCard handCard = null)
+        public void CallAbility(Card libraryCard, BoardCard card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<BoardCard> action, bool isPlayer, Action onCompleteCallback, object target = null, HandBoardCard handCard = null)
         {
             Vector3 postionOfCardView = Vector3.zero;
 
@@ -398,7 +403,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        private void CallPermanentAbilityAction(bool isPlayer, Action<CardView> action, CardView card, object target, ActiveAbility activeAbility, Enumerators.CardKind kind)
+        private void CallPermanentAbilityAction(bool isPlayer, Action<BoardCard> action, BoardCard card, object target, ActiveAbility activeAbility, Enumerators.CardKind kind)
         {
             if (isPlayer)
             {

@@ -1,9 +1,15 @@
-﻿using System;
-using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace LoomNetwork.CZB
 {
-    public class OnBehaviourHandler : MonoBehaviour
+    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public event Action<GameObject> OnMouseUpEvent;
         public event Action<GameObject> OnMouseDownEvent;
@@ -12,6 +18,18 @@ namespace GrandDevs.CZB
         public event Action<Collider> OnTriggerEnterEvent;
         public event Action<Collider> OnTriggerExitEvent;
         public event Action<GameObject> OnDestroyEvent;
+        public event Action<PointerEventData> OnPointerEnterEvent;
+        public event Action<PointerEventData> OnPointerExitEvent;
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnPointerEnterEvent?.Invoke(eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnPointerExitEvent?.Invoke(eventData);
+        }
 
         private void OnMouseUp()
         {

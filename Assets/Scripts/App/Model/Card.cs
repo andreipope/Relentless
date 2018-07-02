@@ -1,11 +1,16 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using UnityEngine;
-using GrandDevs.CZB.Helpers;
+using LoomNetwork.CZB.Helpers;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
     public class Card {
         public int id;

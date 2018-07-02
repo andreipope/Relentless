@@ -1,17 +1,22 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 
 using UnityEngine;
 using UnityEngine.Rendering;
 
 using DG.Tweening;
 using TMPro;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using System.Collections.Generic;
-using GrandDevs.CZB.Helpers;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Helpers;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class BoardCreature
     {
@@ -537,7 +542,7 @@ namespace GrandDevs.CZB
 
                         //sortingGroup.sortingOrder = 100;
                         if (//targetCard != _selfObject.GetComponent<BoardCreature>() &&
-                            targetCard.transform.GetComponent<HandCard>() == null)
+                            targetCard.transform.GetComponent<HandBoardCard>() == null)
                         {
 
                             // play sound when target creature attack more than our

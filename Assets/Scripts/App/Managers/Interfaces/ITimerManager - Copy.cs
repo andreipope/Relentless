@@ -1,6 +1,11 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using System;
+
+namespace LoomNetwork.CZB
 {
     public interface ITimerManager
     {

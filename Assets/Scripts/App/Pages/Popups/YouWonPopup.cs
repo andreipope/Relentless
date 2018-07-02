@@ -1,15 +1,20 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class YouWonPopup : IUIPopup
     {

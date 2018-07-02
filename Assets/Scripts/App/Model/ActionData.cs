@@ -1,5 +1,10 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.Internal;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.Internal;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;

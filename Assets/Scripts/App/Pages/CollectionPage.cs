@@ -1,15 +1,20 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
 using System;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using TMPro;
 using DG.Tweening;
-using GrandDevs.Internal;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CollectionPage : IUIElement
     {
@@ -43,8 +48,8 @@ namespace GrandDevs.CZB
         private int numSets;
         private int currentSet;
 
-        private CardView _selectedCard;
-        private CardView _selectedCollectionCard;
+        private BoardCard _selectedCard;
+        private BoardCard _selectedCollectionCard;
 
         private bool _isPopupChangedStart;
 
@@ -99,7 +104,7 @@ namespace GrandDevs.CZB
                         var hit = Physics2D.Raycast(mousePos, Vector2.zero);
                         if (hit.collider != null)
                         {
-                            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+                            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
                             {
                                 if (hit.collider.gameObject == card.gameObject)
                                 {
@@ -125,7 +130,7 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
@@ -134,7 +139,7 @@ namespace GrandDevs.CZB
         public void Dispose()
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
             {
                 MonoBehaviour.Destroy(card.gameObject);
             }
@@ -185,11 +190,11 @@ namespace GrandDevs.CZB
 
 #region Buttons Handlers
 
-        private void CardSelected(CardView card)
+        private void CardSelected(BoardCard card)
         {
             ChangeStatePopup(true);
             _selectedCollectionCard = card;
-            _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
+            _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<BoardCard>();
             _selectedCard.name = "CardPreview";
             Utilites.SetLayerRecursively(_selectedCard.gameObject, 11);
 
@@ -321,7 +326,7 @@ namespace GrandDevs.CZB
 
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
-			foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+			foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
 			{
 				MonoBehaviour.Destroy(card.gameObject);
 			}
@@ -343,9 +348,9 @@ namespace GrandDevs.CZB
 					go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
 				}
               
-                var cardView = go.GetComponent<CardView>();
+                var cardView = go.GetComponent<BoardCard>();
                 var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
-                cardView.PopulateWithLibraryInfo(card, set.name, amount);
+                cardView.Init(card, set.name, amount);
 				cardView.SetHighlightingEnabled(false);
 				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
                 cardView.transform.localScale = Vector3.one * 0.32f;
