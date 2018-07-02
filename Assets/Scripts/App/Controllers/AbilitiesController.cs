@@ -135,12 +135,6 @@ namespace GrandDevs.CZB
                 case Enumerators.AbilityType.WEAPON:
                     ability = new HeroWeaponAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE:
-                    ability = new ChangeCreaturesOfTypeStatAbility(cardKind, abilityData);
-                    break;
-                case Enumerators.AbilityType.ATTACK_NUMBER_OF_TIMES_PER_TURN:
-                    ability = new AttackNumberOfTimesPerTurnAbility(cardKind, abilityData);
-                    break;
                 default:
                     break;
             }
