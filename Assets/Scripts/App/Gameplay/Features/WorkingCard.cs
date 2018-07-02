@@ -39,6 +39,8 @@ namespace GrandDevs.CZB
             health = initialHealth;
             damage = initialDamage;
 
+            type = libraryCard.cardType;
+
             instanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
         }
     }

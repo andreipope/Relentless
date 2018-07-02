@@ -108,7 +108,7 @@ namespace GrandDevs.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            //card.cardId = 1;
+                            card.cardId = 1;
                         }
                         playerDeck.Add(card.cardId);
                     }
@@ -259,7 +259,7 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    yield return new WaitForSeconds(2.0f);
+                    yield return new WaitForSeconds(3.0f);
 
                     var boardCreatures = new List<BoardCreature>();
                     foreach (var creature in GetBoardCreatures())
@@ -1135,6 +1135,8 @@ namespace GrandDevs.CZB
                 _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
                 {
                     attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z - 0.2f);
+
+                    attackingCard.SetHighlightingEnabled(false);
 
                     _animationsController.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
                     {

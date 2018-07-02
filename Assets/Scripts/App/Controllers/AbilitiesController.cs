@@ -330,8 +330,6 @@ namespace GrandDevs.CZB
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
-                                //   effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, workingCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-
                                 workingCard.owner.RemoveCardFromHand(workingCard);
                                 workingCard.owner.AddCardToBoard(workingCard);
 
@@ -389,21 +387,39 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+                    CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                     onCompleteCallback?.Invoke();
                 }
             }
             else
             {
-                CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility);
+                CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                 onCompleteCallback?.Invoke();
             }
         }
 
-        private void CallPermanentAbilityAction(bool isPlayer, Action<CardView> action, CardView card, object target, ActiveAbility activeAbility)
+        private void CallPermanentAbilityAction(bool isPlayer, Action<CardView> action, CardView card, object target, ActiveAbility activeAbility, Enumerators.CardKind kind)
         {
             if (isPlayer)
+            {
+                if (kind == Enumerators.CardKind.SPELL)
+                {
+                    card.gameObject.SetActive(true);
+                    card.removeCardParticle.Play(); // move it when card should call hide action
+
+                    card.WorkingCard.owner.RemoveCardFromHand(card.WorkingCard);
+                    card.WorkingCard.owner.AddCardToBoard(card.WorkingCard);
+
+                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
+
+                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                    {
+                        card.WorkingCard.owner.GraveyardCardsCount++;
+                    }, null, 1.5f);
+                }
+
                 action?.Invoke(card);
+            }
             else
             {
                 if (activeAbility == null)

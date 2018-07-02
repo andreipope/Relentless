@@ -89,7 +89,7 @@ namespace GrandDevs.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            //card.cardId = 30; 
+                            card.cardId = 51; 
                         }
 
                         playerDeck.Add(card.cardId);
@@ -258,30 +258,6 @@ namespace GrandDevs.CZB
                     card.SetHighlightingEnabled(false);
                 }
             }
-        }
-
-
-        public void PlayCreatureCard(WorkingCard card, List<int> targetInfo = null)
-        {
-            var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
-
-            if (!Constants.DEV_MODE)
-                PlayerInfo.Mana -= libraryCard.cost;
-
-            PlayerInfo.RemoveCardFromHand(card);
-            PlayerInfo.AddCardToBoard(card);
-        }
-
-        public void PlaySpellCard(WorkingCard card, List<int> targetInfo = null)
-        {
-            var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
-
-            if (!Constants.DEV_MODE)
-                PlayerInfo.Mana -= libraryCard.cost;
-
-
-            PlayerInfo.RemoveCardFromHand(card);
-            PlayerInfo.AddCardToBoard(card);
         }
     }
 }

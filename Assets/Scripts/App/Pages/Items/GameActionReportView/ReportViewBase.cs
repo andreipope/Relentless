@@ -64,11 +64,13 @@ namespace GrandDevs.CZB
 
         public virtual void OnPointerExitEventHandler()
         {
-            reportActionPreviewPanel.SetActive(false);
+            if (reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
+                reportActionPreviewPanel.SetActive(false);
         }
 
         public virtual void OnPointerEnterEventHandler()
         {
+            if(reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
             reportActionPreviewPanel.SetActive(true);
         }
 

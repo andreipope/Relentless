@@ -96,7 +96,9 @@ namespace GrandDevs.CZB
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
             _cards = new List<CardInGraveyard>();
 
-            _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;        
+            _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;
+            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+
 
             _deckStatus = new List<CardZoneStatus>();
             _deckStatus.Add(new CardZoneStatus(Enumerators.CardZoneType.DECK, null, 0));
@@ -119,11 +121,17 @@ namespace GrandDevs.CZB
             Hide();
         }
 
+        private void OnGameEndedEventHandler()
+        {
+            ClearGraveyard();
+
+            if (_reportGameActionsPanel != null)
+                _reportGameActionsPanel.Clear();
+        }
 
         public void Hide()
         {
             _selfPage.SetActive(false);
-            ClearGraveyard();
 
             _isPlayerInited = false;
         }
@@ -300,13 +308,12 @@ namespace GrandDevs.CZB
                 _opponentNameText.name = currentOpponentHero.name;
             }
 
+            if (_reportGameActionsPanel == null)
+            {
+                _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            }
 
             _isPlayerInited = true;
-
-            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
-
-            _reportGameActionsPanel.Clear();
-            ClearGraveyard();
         }
 
         public void SetHeroInfo(Hero hero, string objectName)

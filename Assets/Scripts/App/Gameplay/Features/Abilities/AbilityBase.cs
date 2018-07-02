@@ -99,9 +99,9 @@ namespace GrandDevs.CZB
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(boardCreature.transform.position);
             else if (this.cardKind == Enumerators.CardKind.SPELL)
-                _targettingArrow.Begin(selectedPlayer.PlayerObject.transform.position);//(boardSpell.transform.position);
+                _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position);//(boardSpell.transform.position);
             else
-                _targettingArrow.Begin(playerCallerOfAbility.PlayerObject.transform.position);
+                _targettingArrow.Begin(playerCallerOfAbility.AvatarObject.transform.position);
 
             _targettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
             _targettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
