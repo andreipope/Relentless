@@ -7,24 +7,55 @@
       "element": "EARTH",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		}
+	  ],
+      "primarySkill": 0,
+	  "secondarySkill": 1
     },
     {
       "heroId": 1,
@@ -33,24 +64,55 @@
       "element": "FIRE",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Fireball",
-        "skillType": 2,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 1
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+	  ],
+      "primarySkill": 0,
+	  "secondarySkill": 1
     },
     {
       "heroId": 2,
@@ -59,24 +121,55 @@
       "element": "WATER",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Freeze target for 1 turn",
-        "skillType": 0,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 1
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+	  ],
+      "primarySkill": 1, 
+	  "secondarySkill": 3
     },
     {
       "heroId": 3,
@@ -85,24 +178,56 @@
       "element": "AIR",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Return Zombie",
-        "skillType": 5,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 0
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  }
+
+	  ],
+      "primarySkill": 3,
+	  "secondarySkill": 2
     },
     {
       "heroId": 4,
@@ -111,24 +236,55 @@
       "element": "TOXIC",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Toxic Damage",
-        "skillType": 1,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 1
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+	  ],
+      "primarySkill": 3,
+	  "secondarySkill": 2
     },
     {
       "heroId": 5,
@@ -137,24 +293,55 @@
       "element": "LIFE",
 	  "experience": 0,
 	  "level": 0,
-      "primarySkill": {
-        "title": "Healing",
-        "skillType": 3,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      },
-	  "secondarySkill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-		"cooldown": 2,
-		"initialCooldown":0,
-        "value": 2
-      }
+	  "skills" : [
+		  {
+			"title": "Healing",
+			"skillType": 3,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		  },
+		  {
+			"title": "Healing",
+			"skillType": 3,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		  },
+		  {
+			"title": "Healing",
+			"skillType": 3,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		  },
+		  {
+			"title": "Healing",
+			"skillType": 3,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		  },
+		  {
+			"title": "Healing",
+			"skillType": 3,
+			"skillTargetType": 0,
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		  },
+	  ],
+      "primarySkill": 2, 
+	  "secondarySkill": 4
     }
   ]
 }

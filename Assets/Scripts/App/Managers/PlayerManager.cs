@@ -30,6 +30,7 @@ namespace LoomNetwork.CZB
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
 
             LocalUser = new User();
         }
@@ -38,26 +39,14 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void AddExperience(int value)
-        {
-            LocalUser.gooValue += value;
-            CheckLevel();
-        }
-
         public void AddGoo(int value)
         {
-
+            LocalUser.gooValue += value;
         }
 
-        private void CheckLevel()
+        public void SpendGoo(int value)
         {
-            if()
+            LocalUser.gooValue -= value;
         }
-
-        private void LevelUP()
-        {
-
-        }
-
     }
 }

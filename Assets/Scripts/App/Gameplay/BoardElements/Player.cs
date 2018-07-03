@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB
                 var oldMana = _mana;
                 _mana = value;
 
-                _mana = Mathf.Clamp(_mana, 0, Constants.MAXIMUM_PLAYER_MANA);
+                //_mana = Mathf.Clamp(_mana, 0, Constants.MAXIMUM_PLAYER_MANA);
 
                 PlayerManaChangedEvent?.Invoke(oldMana, _mana);
             }

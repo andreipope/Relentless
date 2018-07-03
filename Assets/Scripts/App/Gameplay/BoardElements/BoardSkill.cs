@@ -89,8 +89,8 @@ public class BoardSkill : MonoBehaviour
 
     public void SetSkill(Hero hero = null)
     {
-        manaCost = hero.skill.cost;
-        _skillPower = hero.skill.value;
+        //manaCost = hero.skill.cost;
+        //_skillPower = hero.skill.value;
         skillType = hero.heroElement;
     }
 

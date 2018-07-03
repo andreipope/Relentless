@@ -92,6 +92,7 @@ namespace LoomNetwork.CZB
             _controllers.Add(new BattlegroundController());
             _controllers.Add(new AnimationsController());
             _controllers.Add(new BattleController());          
+            _controllers.Add(new HeroesController());
 
             foreach (var controller in _controllers)
                 controller.Init();

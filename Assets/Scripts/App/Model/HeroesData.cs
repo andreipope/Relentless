@@ -69,6 +69,9 @@ namespace LoomNetwork.CZB.Data
         public int initialCooldown;
         public int value;
 
+        [JsonIgnore]
+        public bool unlocked;
+
         public HeroSkill()
         {
 
