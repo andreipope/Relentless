@@ -161,7 +161,7 @@ namespace LoomNetwork.CZB
                 players.Find(x => !x.IsLocalPlayer).HP = 8;
 
             if (Constants.DEV_MODE)
-                players.Find(x => !x.IsLocalPlayer).HP = 99;
+                players.Find(x => !x.IsLocalPlayer).HP = 1;
 
             StartTurn();
             _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
             
         }
 
-        public void OnGameEndedEventHandler()
+        public void OnGameEndedEventHandler(bool isWin)
         {
             if (_gameplayManager.IsTutorial)
                 return;

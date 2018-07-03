@@ -109,7 +109,7 @@
 			"cooldown": 2,
 			"initialCooldown":2,
 			"value": 1
-		},
+		}
 	  ],
       "primarySkill": 0,
 	  "secondarySkill": 1
@@ -166,7 +166,7 @@
 			"cooldown": 2,
 			"initialCooldown":2,
 			"value": 1
-		  },
+		  }
 	  ],
       "primarySkill": 1, 
 	  "secondarySkill": 3
@@ -281,7 +281,7 @@
 			"cooldown": 2,
 			"initialCooldown":2,
 			"value": 1
-		  },
+		  }
 	  ],
       "primarySkill": 3,
 	  "secondarySkill": 2
@@ -289,56 +289,12 @@
     {
       "heroId": 5,
       "icon": "icon",
-      "name": "Valash, Nature’s Warden",
+      "name": "Valash, Natures Warden",
       "element": "LIFE",
 	  "experience": 0,
 	  "level": 0,
 	  "skills" : [
-		  {
-			"title": "Healing",
-			"skillType": 3,
-			"skillTargetType": 0,
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		  },
-		  {
-			"title": "Healing",
-			"skillType": 3,
-			"skillTargetType": 0,
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		  },
-		  {
-			"title": "Healing",
-			"skillType": 3,
-			"skillTargetType": 0,
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		  },
-		  {
-			"title": "Healing",
-			"skillType": 3,
-			"skillTargetType": 0,
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		  },
-		  {
-			"title": "Healing",
-			"skillType": 3,
-			"skillTargetType": 0,
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		  },
+		 
 	  ],
       "primarySkill": 2, 
 	  "secondarySkill": 4

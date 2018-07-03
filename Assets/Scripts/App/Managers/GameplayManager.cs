@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB
     {
         public event Action OnGameStartedEvent;
         public event Action OnGameInitializedEvent;
-        public event Action OnGameEndedEvent;
+        public event Action<bool> OnGameEndedEvent;
         public event Action OnTurnStartedEvent;
         public event Action OnTurnEndedEvent;
 
@@ -92,7 +92,7 @@ namespace LoomNetwork.CZB
             _controllers.Add(new BattlegroundController());
             _controllers.Add(new AnimationsController());
             _controllers.Add(new BattleController());          
-            _controllers.Add(new HeroesController());
+            _controllers.Add(new HeroController());
 
             foreach (var controller in _controllers)
                 controller.Init();
@@ -154,7 +154,7 @@ namespace LoomNetwork.CZB
             GameStarted = false;
             GameEnded = true;
 
-            OnGameEndedEvent?.Invoke();
+            OnGameEndedEvent?.Invoke(true);
         }
 
         public Player GetLocalPlayer()

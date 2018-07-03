@@ -123,7 +123,7 @@ namespace LoomNetwork.CZB
             Hide();
         }
 
-        private void OnGameEndedEventHandler()
+        private void OnGameEndedEventHandler(bool isWin)
         {
             ClearGraveyard();
 
@@ -139,7 +139,7 @@ namespace LoomNetwork.CZB
         }
 
         public void Dispose()
-        {
+        {                                                                           
 
         }
 
@@ -311,7 +311,7 @@ namespace LoomNetwork.CZB
 
         public void SetHeroInfo(Hero hero, string objectName)
         {
-            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skill, "Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skills[hero.primarySkill], "Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;

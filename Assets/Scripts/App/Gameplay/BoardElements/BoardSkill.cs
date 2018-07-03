@@ -55,6 +55,8 @@ public class BoardSkill : MonoBehaviour
     public int manaCost;
     private int _skillPower;
     public Enumerators.SetType skillType;
+    private int _cooldown;
+    private int _initialCooldown;
 
 
 
@@ -92,6 +94,7 @@ public class BoardSkill : MonoBehaviour
         //manaCost = hero.skill.cost;
         //_skillPower = hero.skill.value;
         skillType = hero.heroElement;
+        //_cooldown = hero.primarySkill;
     }
 
     public void OnStartTurn()
@@ -209,8 +212,9 @@ public class BoardSkill : MonoBehaviour
         if (_isUsed)
             return;
 
-        if (manaCost <= ownerPlayer.Mana)
-        {
+        //Made cooldown condition mechanics
+        //if (ownerPlayer.SelfHero. <= ownerPlayer.Mana)
+        //{
             if (!_isOpponent)
             {
                 if (GameClient.Get<ITutorialManager>().IsTutorial)
@@ -238,7 +242,7 @@ public class BoardSkill : MonoBehaviour
                     ResolveCombat();
                 }
             }
-        }
+        //}
     }
 
     public void ResolveCombat()

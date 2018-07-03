@@ -36,6 +36,7 @@ namespace LoomNetwork.CZB.Data
             foreach (var item in heroes)
             {
                 item.heroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.element);
+                item.ValidateSkillLocking();
             }
             _casted = true;           
         }
@@ -58,6 +59,13 @@ namespace LoomNetwork.CZB.Data
         public Hero()
         {
 
+        }
+
+        public void ValidateSkillLocking()
+        {
+            int skillId = level % 4;
+            for(int i = 0; i < skillId + 1; i++)
+                skills[i].unlocked = true;
         }
     }
 

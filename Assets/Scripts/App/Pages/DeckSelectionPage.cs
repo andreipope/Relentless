@@ -130,6 +130,7 @@ namespace LoomNetwork.CZB
 			foreach (var deck in _dataManager.CachedDecksData.decks)
 			{
                 var ind = i;
+
                 string heroType = _dataManager.CachedHeroesData.Heroes[deck.heroId].element.ToString();
 
                 Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;

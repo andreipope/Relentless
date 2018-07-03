@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
     public interface IGameplayManager
     {
         event Action OnGameStartedEvent;
-        event Action OnGameEndedEvent;
+        event Action<bool> OnGameEndedEvent;
         event Action OnGameInitializedEvent;
         event Action OnTurnStartedEvent;
         event Action OnTurnEndedEvent;

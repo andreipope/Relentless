@@ -21,6 +21,7 @@ namespace LoomNetwork.CZB
         private AbilitiesController _abilitiesController;
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
+        private HeroController _heroController;
 
         public Player PlayerInfo { get; protected set; }
 
@@ -44,6 +45,7 @@ namespace LoomNetwork.CZB
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _heroController = _gameplayManager.GetController<HeroController>();
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
@@ -70,6 +72,8 @@ namespace LoomNetwork.CZB
         public void InitializePlayer()
         {
             PlayerInfo = new Player(GameObject.Find("Player"), false);
+
+            _heroController.playerHero = PlayerInfo.SelfHero;
 
             _gameplayManager.PlayersInGame.Add(PlayerInfo);
 
@@ -119,9 +123,10 @@ namespace LoomNetwork.CZB
         }
 
 
-        public virtual void OnGameEndedEventHandler()
+        public virtual void OnGameEndedEventHandler(bool isWin)
         {
-
+            //Write code for analize amount of experience getted in the battle
+            _heroController.ChangeExperience(isWin ? 100 : -50);
         }
 
         private void HandleInput()
