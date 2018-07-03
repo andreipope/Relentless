@@ -18,8 +18,8 @@ namespace LoomNetwork.CZB
 
         public User LocalUser { get; set; }
 
-        public List<BoardCreature> PlayerGraveyardCards { get; set; }
-        public List<BoardCreature> OpponentGraveyardCards { get; set; }
+        public List<BoardUnit> PlayerGraveyardCards { get; set; }
+        public List<BoardUnit> OpponentGraveyardCards { get; set; }
         public Player PlayerInfo { get; set; }
         public Player OpponentInfo { get; set; }
 

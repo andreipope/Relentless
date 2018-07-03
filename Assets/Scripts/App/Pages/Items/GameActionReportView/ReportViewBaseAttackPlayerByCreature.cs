@@ -13,12 +13,13 @@ using TMPro;
 using System;
 using System.Linq;
 using UnityEngine.Rendering;
+using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
     public class ReportViewBaseAttackPlayerByCreature : ReportViewBase
     {
-        private BoardCreature _attackingCreature;
+        private BoardUnit _attackingCreature;
         private Player _attackedPlayer;
 
         private GameObject _attackingCreatureObj,
@@ -30,7 +31,7 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _attackingCreature = gameAction.parameters[0] as BoardCreature;
+            _attackingCreature = gameAction.parameters[0] as BoardUnit;
             _attackedPlayer = gameAction.parameters[1] as Player;
             previewImage.sprite = _attackingCreature.sprite;
             _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero, false);
@@ -54,14 +55,14 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public override void OnPointerEnterEventHandler()
+        public override void OnPointerEnterEventHandler(PointerEventData obj)
         {
-            base.OnPointerEnterEventHandler();
+            base.OnPointerEnterEventHandler(obj);
         }
 
-        public override void OnPointerExitEventHandler()
+        public override void OnPointerExitEventHandler(PointerEventData obj)
         {
-            base.OnPointerExitEventHandler();
+            base.OnPointerExitEventHandler(obj);
         }
 
         public override void Dispose()

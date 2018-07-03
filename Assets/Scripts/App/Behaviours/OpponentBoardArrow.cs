@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class OpponentTargetingArrow : FightTargetingArrow
+    public class OpponentBoardArrow : BattleBoardArrow
     {
         private Vector3 _target = Vector3.zero;
 

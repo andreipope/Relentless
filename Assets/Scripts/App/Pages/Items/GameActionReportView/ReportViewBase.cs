@@ -6,12 +6,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
-using DG.Tweening;
 using TMPro;
-using System;
-using System.Linq;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
 
@@ -82,7 +77,7 @@ namespace LoomNetwork.CZB
 
         public GameObject CreateCardPreview(WorkingCard card, Vector3 pos, bool highlight)
         {
-            GameObject currentCardPreview = null;
+            GameObject currentBoardCard = null;
             string cardSetName = string.Empty;
             foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
             {
@@ -90,31 +85,34 @@ namespace LoomNetwork.CZB
                     cardSetName = cardSet.name;
             }
 
+            BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
+                boardCard = new UnitBoardCard(currentBoardCard);
+
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                currentCardPreview = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
+                boardCard = new SpellBoardCard(currentBoardCard);
             }
 
-            var cardView = currentCardPreview.GetComponent<BoardCard>();
-            cardView.Init(card, cardSetName);
+            boardCard.Init(card, cardSetName);
             if (highlight)
-                highlight = cardView.CanBePlayed(card.owner) && cardView.CanBeBuyed(card.owner);
-            cardView.SetHighlightingEnabled(highlight);
-            cardView.isPreview = true;
+                highlight = boardCard.CanBePlayed(card.owner) && boardCard.CanBeBuyed(card.owner);
+            boardCard.SetHighlightingEnabled(highlight);
+            boardCard.isPreview = true;
 
             //var newPos = pos;
             //newPos.y += 2.0f;
-            currentCardPreview.transform.localPosition = pos;
-            currentCardPreview.transform.localRotation = Quaternion.Euler(Vector3.zero);
-            currentCardPreview.transform.localScale = new Vector2(.4f, .4f);
-            currentCardPreview.GetComponent<SortingGroup>().sortingOrder = 1000;
-            currentCardPreview.layer = LayerMask.NameToLayer("Ignore Raycast");
+            currentBoardCard.transform.localPosition = pos;
+            currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
+            currentBoardCard.GetComponent<SortingGroup>().sortingOrder = 1000;
+            currentBoardCard.layer = LayerMask.NameToLayer("Ignore Raycast");
 
-            return currentCardPreview;
+            return currentBoardCard;
             //currentCardPreview.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
 

@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
         protected ILoadObjectsManager _loadObjectsManager;
         protected IGameplayManager _gameplayManager;
 
-        protected AbilityTargetingArrow _targettingArrow;
+        protected AbilityBoardArrow _targettingArrow;
         protected GameObject _vfxObject;
 
         protected bool _isAbilityResolved;
@@ -45,11 +45,11 @@ namespace LoomNetwork.CZB
 
         public Data.Card cardOwnerOfAbility;
 
-        public BoardCreature boardCreature;
+        public BoardUnit boardCreature;
         public Player playerCallerOfAbility;
         public BoardSpell boardSpell;
 
-        public BoardCreature targetCreature;
+        public BoardUnit targetCreature;
         public Player targetPlayer;
         public Player selectedPlayer;
 
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
 
         protected List<ulong> _particleIds;
 
-        public AbilityTargetingArrow TargettingArrow
+        public AbilityBoardArrow TargettingArrow
         {
             get
             {
@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AbilityTargetingArrow")).GetComponent<AbilityTargetingArrow>();
+            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AbilityTargetingArrow")).GetComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = boardCreature;
 
@@ -174,14 +174,14 @@ namespace LoomNetwork.CZB
             ClearParticles();
         }
 
-        protected virtual void OnCardSelectedEventHandler(BoardCreature obj)
+        protected virtual void OnCardSelectedEventHandler(BoardUnit obj)
         {
             targetCreature = obj;
 
             targetPlayer = null;
         }
 
-        protected virtual void OnCardUnselectedeventHandler(BoardCreature obj)
+        protected virtual void OnCardUnselectedeventHandler(BoardUnit obj)
         {
             targetCreature = null;
         }

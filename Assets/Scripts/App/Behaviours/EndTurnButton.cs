@@ -5,7 +5,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-using DG.Tweening;
 using LoomNetwork.CZB;
 using TMPro;
 using LoomNetwork.CZB.Common;
@@ -42,13 +41,6 @@ public class EndTurnButton : MonoBehaviour
     private void OnMouseEnter()
     {
         hovering = true;
-        //if (active)
-        //{
-        //    shineSprite.DOKill();
-        //    shineSprite.DOFade(1.0f, 0.4f);
-        //    hoverSprite.DOKill();
-        //    hoverSprite.DOFade(1.0f, 0.4f);
-        //}
     }
 
     private void OnMouseExit()
@@ -56,13 +48,6 @@ public class EndTurnButton : MonoBehaviour
         hovering = false;
         thisRenderer.sprite = defaultSprite;
         buttonText.transform.localPosition = textDefaultPosition;
-        //if (active)
-        //{
-        //    shineSprite.DOKill();
-        //    shineSprite.DOFade(0.0f, 0.2f);
-        //    hoverSprite.DOKill();
-        //    hoverSprite.DOFade(0.0f, 0.2f);
-        //}
     }
 
     private void OnMouseDown()
@@ -71,7 +56,7 @@ public class EndTurnButton : MonoBehaviour
 
         thisRenderer.sprite = pressedSprite;
         buttonText.transform.localPosition = textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(LoomNetwork.CZB.Common.Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown
@@ -84,14 +69,6 @@ public class EndTurnButton : MonoBehaviour
         if (active && hovering)
         {
             GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
-            //shineSprite.DOKill();
-            //hoverSprite.DOKill();
-            //var newColor = shineSprite.color;
-            //newColor.a = 0.0f;
-            //shineSprite.color = newColor;
-            //newColor = hoverSprite.color;
-            //newColor.a = 0.0f;
-            //hoverSprite.color = newColor;
             SetEnabled(false);
         }
 

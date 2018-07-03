@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
 
                 if (kind == Enumerators.CardKind.CREATURE)
-                    activeAbility.ability.boardCreature = boardObject as BoardCreature;
+                    activeAbility.ability.boardCreature = boardObject as BoardUnit;
                 else
                     activeAbility.ability.boardSpell = boardObject as BoardSpell;
 
@@ -363,7 +363,7 @@ namespace LoomNetwork.CZB
 
                                 GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
 
-                                _battlegroundController.RearrangeHand(true);
+                                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                             }
                             else
                             {
@@ -376,15 +376,15 @@ namespace LoomNetwork.CZB
                     }
                     else
                     {
-                        if (target is BoardCreature)
-                            activeAbility.ability.targetCreature = target as BoardCreature;
+                        if (target is BoardUnit)
+                            activeAbility.ability.targetCreature = target as BoardUnit;
                         else if (target is Player)
                             activeAbility.ability.targetPlayer = target as Player;
 
                         activeAbility.ability.SelectedTargetAction(true);
 
-                        _battlegroundController.RearrangeBottomBoard();
-                        _battlegroundController.RearrangeTopBoard();
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
                         //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
 
                         onCompleteCallback?.Invoke();
@@ -429,16 +429,16 @@ namespace LoomNetwork.CZB
             {
                 if (activeAbility == null)
                     return;
-                if (target is BoardCreature)
-                    activeAbility.ability.targetCreature = target as BoardCreature;
+                if (target is BoardUnit)
+                    activeAbility.ability.targetCreature = target as BoardUnit;
                 else if (target is Player)
                     activeAbility.ability.targetPlayer = target as Player;
 
                 activeAbility.ability.SelectedTargetAction(true);
             }
 
-            _battlegroundController.RearrangeBottomBoard();
-            _battlegroundController.RearrangeTopBoard();
+            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
+            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
         }
     }
 

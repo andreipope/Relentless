@@ -110,8 +110,8 @@ namespace LoomNetwork.CZB
 
         public void RearrangeHands()
         {
-            GetController<BattlegroundController>().RearrangeBottomBoard();
-            GetController<BattlegroundController>().RearrangeTopBoard();
+            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
+            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType)

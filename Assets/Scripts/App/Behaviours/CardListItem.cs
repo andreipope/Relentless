@@ -23,7 +23,6 @@ namespace LoomNetwork.CZB
         public Deck deckButton;
         public Card card;
         public TextMeshProUGUI cardNameText;
-        public TextMeshProUGUI cardCostText;
         public TextMeshProUGUI cardAmountText;
 
         public int count = 1;
@@ -47,6 +46,11 @@ namespace LoomNetwork.CZB
 
             logoImage = _selfObject.transform.Find("Image_Logo").GetComponent<Image>();
             _deleteCardButton = _selfObject.transform.Find("DeleteButton").GetComponent<Button>();
+
+
+            cardNameText = _selfObject.transform.Find("CardTitleText").GetComponent<TextMeshProUGUI>();
+            cardAmountText = _selfObject.transform.Find("Image_CardsCount/CardAmountText").GetComponent<TextMeshProUGUI>();
+
 
             _deleteCardButton.onClick.AddListener(OnDeleteButtonPressed);
         }

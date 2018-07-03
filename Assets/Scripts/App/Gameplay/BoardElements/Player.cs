@@ -134,7 +134,7 @@ namespace LoomNetwork.CZB
         public bool IsLocalPlayer { get; set; }
         public bool AlreadyAttackedInThisTurn { get; set; }
 
-        public List<BoardCreature> BoardCards { get; set; }
+        public List<BoardUnit> BoardCards { get; set; }
 
         public BoardWeapon CurrentBoardWeapon { get; set; }
         public List<BoardSkill> BoardSkills { get; set; }
@@ -164,7 +164,7 @@ namespace LoomNetwork.CZB
             CardsInGraveyard = new List<WorkingCard>();
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
-            BoardCards = new List<BoardCreature>();
+            BoardCards = new List<BoardUnit>();
 
             int heroId = 0;
 
@@ -274,12 +274,12 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 _cardsController.AddCardToHand(card);
-                _battlegroundController.RearrangeHand();
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
             }
             else
             {
                 _cardsController.AddCardToOpponentHand(card);
-                _battlegroundController.RearrangeOpponentHand(true, true);
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, true);
             }
 
             HandChangedEvent?.Invoke(CardsInHand.Count);
@@ -291,7 +291,7 @@ namespace LoomNetwork.CZB
 
             if (IsLocalPlayer)
             {
-                _battlegroundController.RearrangeHand();
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
             }
             else
             {
@@ -401,7 +401,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnPlayerSelected(this);
@@ -413,7 +413,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnPlayerUnselected(this);

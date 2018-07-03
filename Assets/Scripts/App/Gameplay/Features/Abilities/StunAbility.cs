@@ -61,9 +61,9 @@ namespace LoomNetwork.CZB
             base.CreatureOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
-            if(info is BoardCreature)
+            if(info is BoardUnit)
             {
-                var creature = info as BoardCreature;
+                var creature = info as BoardUnit;
                 creature.Stun(value);
 				CreateVFX(creature.transform.position);
 			}

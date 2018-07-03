@@ -20,6 +20,8 @@ namespace LoomNetwork.CZB
         public event Action<GameObject> OnDestroyEvent;
         public event Action<PointerEventData> OnPointerEnterEvent;
         public event Action<PointerEventData> OnPointerExitEvent;
+        public event Action<GameObject> OnUpdateEvent;
+
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -29,6 +31,11 @@ namespace LoomNetwork.CZB
         public void OnPointerExit(PointerEventData eventData)
         {
             OnPointerExitEvent?.Invoke(eventData);
+        }
+
+        private void Update()
+        {
+            OnUpdateEvent?.Invoke(gameObject);
         }
 
         private void OnMouseUp()

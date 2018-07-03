@@ -14,10 +14,10 @@ namespace LoomNetwork.CZB
 {
     public class BoardCard
     {
-        private ILoadObjectsManager _loadObjectsManager;
-        private ISoundManager _soundManager;
-        private IDataManager _dataManager;
-        private IGameplayManager _gameplayManager;
+        protected ILoadObjectsManager _loadObjectsManager;
+        protected ISoundManager _soundManager;
+        protected IDataManager _dataManager;
+        protected IGameplayManager _gameplayManager;
 
         private GameObject _selfObject;
 
@@ -30,12 +30,15 @@ namespace LoomNetwork.CZB
         protected TextMeshPro bodyText;
         protected TextMeshPro amountText;
 
-        protected GameObject previewCard;
+      //  protected GameObject previewCard;
 
         protected Animator cardAnimator;
 
         protected Vector3 positionOnHand;
         protected Vector3 rotationOnHand;
+
+        protected AnimationEventTriggering animationEventTriggering;
+        protected OnBehaviourHandler behaviourHandler;
 
         public bool isNewCard = false;
         public bool isPreview;
@@ -53,6 +56,7 @@ namespace LoomNetwork.CZB
 
         public WorkingCard WorkingCard { get; private set; }
 
+        public HandBoardCard HandBoardCard { get; set; }
 
         public BoardCard(GameObject selfObject)
         {
@@ -66,19 +70,23 @@ namespace LoomNetwork.CZB
             cardAnimator = gameObject.GetComponent<Animator>();
             cardAnimator.enabled = false;
 
-            glowSprite = transform.Find("").GetComponent<SpriteRenderer>();
-            pictureSprite = transform.Find("").GetComponent<SpriteRenderer>();
-            backgroundSprite = transform.Find("").GetComponent<SpriteRenderer>();
+            glowSprite = transform.Find("Glow").GetComponent<SpriteRenderer>();
+            pictureSprite = transform.Find("Picture").GetComponent<SpriteRenderer>();
+            backgroundSprite = transform.Find("Frame").GetComponent<SpriteRenderer>();
 
-            costText = transform.Find("").GetComponent<TextMeshPro>();
-            nameText = transform.Find("").GetComponent<TextMeshPro>();
-            bodyText = transform.Find("").GetComponent<TextMeshPro>();
-            amountText = transform.Find("").GetComponent<TextMeshPro>();
-
-            previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
+            costText = transform.Find("GooText").GetComponent<TextMeshPro>();
+            nameText = transform.Find("TitleText").GetComponent<TextMeshPro>();
+            bodyText = transform.Find("BodyText").GetComponent<TextMeshPro>();
+            amountText = transform.Find("Amount/Text").GetComponent<TextMeshPro>();
 
             removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
+            //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
+
+            animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
+            behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
+
+            animationEventTriggering.OnAnimationEvent += OnAnimationEvent;
         }
 
         public virtual void Init(WorkingCard card, string setName = "")
@@ -100,9 +108,6 @@ namespace LoomNetwork.CZB
 
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
-
-
-
 
             amountText.transform.parent.gameObject.SetActive(false);
         }
@@ -131,7 +136,7 @@ namespace LoomNetwork.CZB
             amountText.text = amount.ToString();
         }
 
-        public virtual void RearrangeHand(Vector3 position, Vector3 rotation)
+        public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation)
         {
             positionOnHand = position;
             rotationOnHand = rotation;
@@ -170,7 +175,7 @@ namespace LoomNetwork.CZB
             _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
         }
 
-        public virtual void UpdateAnimation(string name)
+        public virtual void OnAnimationEvent(string name)
         {
             switch (name)
             {
@@ -207,6 +212,11 @@ namespace LoomNetwork.CZB
         public void SetHighlightingEnabled(bool enabled)
         {
             glowSprite.enabled = enabled;
+        }
+
+        public void Dispose()
+        {
+            MonoBehaviour.Destroy(_selfObject);
         }
     }
 }

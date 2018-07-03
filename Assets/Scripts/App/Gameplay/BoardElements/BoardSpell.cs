@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
         public GameObject gameObject;
         public Transform transform;
 
-        public TargetingArrow targetingArrow;
+        public BoardArrow targetingArrow;
 
         public BoardSpell(GameObject obj)
         {

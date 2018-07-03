@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class TutorialTargetingArrow : TargetingArrow
+    public class TutorialBoardArrow : BoardArrow
     {
         public bool isEnabled;
 

@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
-    public class FightTargetingArrow : TargetingArrow
+    public class BattleBoardArrow : BoardArrow
     {
-        public List<BoardCreature> BoardCards;
+        public List<BoardUnit> BoardCards;
 
-        public void End(BoardCreature creature)
+        public void End(BoardUnit creature)
         {
             if (!startedDrag)
             {
@@ -20,11 +20,11 @@ namespace LoomNetwork.CZB
 
             startedDrag = false;
 
-            creature.ResolveCombat();
+            creature.DoCombat();
             Destroy(gameObject);
         }
 
-        public override void OnCardSelected(BoardCreature creature)
+        public override void OnCardSelected(BoardUnit creature)
         {
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 19 || _gameplayManager.TutorialStep == 27))
                 return;
@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public override void OnCardUnselected(BoardCreature creature)
+        public override void OnCardUnselected(BoardUnit creature)
         {
             if (selectedCard == creature)
             {

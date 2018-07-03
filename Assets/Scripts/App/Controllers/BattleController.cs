@@ -33,7 +33,7 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void AttackPlayerByCreature(BoardCreature attackingCreature, Player attackedPlayer)
+        public void AttackPlayerByCreature(BoardUnit attackingCreature, Player attackedPlayer)
         {
             if (attackingCreature != null && attackedPlayer != null)
             {
@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureByCreature(BoardCreature attackingCreature, BoardCreature attackedCreature)
+        public void AttackCreatureByCreature(BoardUnit attackingCreature, BoardUnit attackedCreature)
         {
             if (attackingCreature != null && attackedCreature != null)
             {
@@ -71,7 +71,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureBySkill(Player attackingPlayer, BoardSkill skill, BoardCreature attackedCreature)
+        public void AttackCreatureBySkill(Player attackingPlayer, BoardSkill skill, BoardUnit attackedCreature)
         {
             if (attackedCreature != null)
             {
@@ -119,7 +119,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealCreatureBySkill(Player healingPlayer, BoardSkill skill, BoardCreature healedCreature)
+        public void HealCreatureBySkill(Player healingPlayer, BoardSkill skill, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(Player attackingPlayer, AbilityData ability, BoardCreature attackedCreature)
+        public void AttackCreatureByAbility(Player attackingPlayer, AbilityData ability, BoardUnit attackedCreature)
         {
             if (attackedCreature != null)
             {
@@ -183,7 +183,7 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void HealCreatureByAbility(Player healingPlayer, AbilityData ability, BoardCreature healedCreature)
+        public void HealCreatureByAbility(Player healingPlayer, AbilityData ability, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
@@ -215,7 +215,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureByWeapon(Player attackingPlayer, BoardWeapon weapon, BoardCreature attackedCreature)
+        public void AttackCreatureByWeapon(Player attackingPlayer, BoardWeapon weapon, BoardUnit attackedCreature)
         {
             if (attackingPlayer != null && weapon != null && attackedCreature != null)
             {

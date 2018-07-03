@@ -31,7 +31,7 @@ namespace LoomNetwork.CZB
 
         public SpellBoardCard currentSpellCard;
         public GameObject currentBoardCreature;
-        public BoardCreature currentCreature;
+        public BoardUnit currentCreature;
 
 
         public void Init()
@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            card.cardId = 51; 
+                           // card.cardId = 51; 
                         }
 
                         playerDeck.Add(card.cardId);
@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
 
             PlayerInfo.SetFirstHand();
 
-            _battlegroundController.RearrangeHand();
+            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
             PlayerInfo.OnStartTurnEvent += OnTurnStartedEventHandler;
             PlayerInfo.OnEndTurnEvent += OnTurnEndedEventHandler;
@@ -135,24 +135,25 @@ namespace LoomNetwork.CZB
                     var hitCards = new List<GameObject>();
                     foreach (var hit in hits)
                     {
-                        if (hit.collider != null &&
-                            hit.collider.gameObject != null &&
-                            hit.collider.gameObject.GetComponent<BoardCard>() != null &&
-                            !hit.collider.gameObject.GetComponent<BoardCard>().isPreview &&
-                            hit.collider.gameObject.GetComponent<BoardCard>().CanBePlayed(PlayerInfo))
+                        if (hit.collider != null && hit.collider.gameObject != null)
                         {
-                            hitCards.Add(hit.collider.gameObject);
+                            var boardCardObject = _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject);
+                            if (boardCardObject != null && !boardCardObject.isPreview && boardCardObject.CanBePlayed(PlayerInfo))
+                            {
+                                hitCards.Add(hit.collider.gameObject);
+                            }
                         }
                     }
                     if (hitCards.Count > 0)
                     {
                         _battlegroundController.DestroyCardPreview();
                         hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
-                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<BoardCard>();
-                        var topmostHandCard = topmostCardView.GetComponent<HandBoardCard>();
+
+                        var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                        var topmostHandCard = topmostBoardCard.HandBoardCard;
                         if (topmostHandCard != null)
                         {
-                            topmostCardView.GetComponent<HandBoardCard>().OnSelected();
+                            topmostBoardCard.HandBoardCard.OnSelected();
 
                             if (_tutorialManager.IsTutorial)
                                 _tutorialManager.DeactivateSelectTarget();
@@ -170,7 +171,7 @@ namespace LoomNetwork.CZB
                 {
                     if (hit.collider != null &&
                         hit.collider.gameObject != null &&
-                        hit.collider.gameObject.GetComponent<BoardCard>() != null)
+                        _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject) != null)
                     {
                         hitCards.Add(hit.collider.gameObject);
                         hitHandCard = true;
@@ -193,13 +194,14 @@ namespace LoomNetwork.CZB
                     if (hitCards.Count > 0)
                     {
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        var topmostCardView = hitCards[hitCards.Count - 1].GetComponent<BoardCard>();
-                        if (!topmostCardView.isPreview)
+
+                        var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                        if (topmostBoardCard != null && !topmostBoardCard.isPreview)
                         {
-                            if (!_battlegroundController.isPreviewActive || topmostCardView.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
+                            if (!_battlegroundController.isPreviewActive || topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
                             {
                                 _battlegroundController.DestroyCardPreview();
-                                _battlegroundController.CreateCardPreview(topmostCardView.WorkingCard, topmostCardView.transform.position, IsActive);
+                                _battlegroundController.CreateCardPreview(topmostBoardCard.WorkingCard, topmostBoardCard.transform.position, IsActive);
                             }
                         }
                     }
@@ -209,7 +211,7 @@ namespace LoomNetwork.CZB
                     if (hitCards.Count > 0)
                     {
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        var selectedBoardCreature = _battlegroundController.GetBoardCreatureFromHisObject(hitCards[hitCards.Count - 1]);
+                        var selectedBoardCreature = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardCreature != null && (!_battlegroundController.isPreviewActive || selectedBoardCreature.Card.instanceId != _battlegroundController.currentPreviewedCardId))
                         {
                             _battlegroundController.DestroyCardPreview();

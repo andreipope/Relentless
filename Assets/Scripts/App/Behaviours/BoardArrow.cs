@@ -12,16 +12,15 @@ using System.Linq;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Common;
 
-public class TargetingArrow : MonoBehaviour
+public class BoardArrow : MonoBehaviour
 {
     protected IGameplayManager _gameplayManager;
 
-    [HideInInspector]
     public List<Enumerators.SkillTargetType> targetsType;
 
     public Action onTargetSelected;
 
-    public BoardCreature selectedCard { get; set; }
+    public BoardUnit selectedCard { get; set; }
     public Player selectedPlayer { get; set; }
 
     public Material material;
@@ -43,7 +42,7 @@ public class TargetingArrow : MonoBehaviour
     protected bool startedDrag;
     protected Vector3 initialPos;
 
-    protected BoardCreature boardCreature;
+    protected BoardUnit boardCreature;
 
     protected GameObject headArrow,
                          startArrow;
@@ -371,11 +370,11 @@ public class TargetingArrow : MonoBehaviour
     }
 
 
-    public virtual void OnCardSelected(BoardCreature creature)
+    public virtual void OnCardSelected(BoardUnit creature)
     {
     }
 
-    public virtual void OnCardUnselected(BoardCreature creature)
+    public virtual void OnCardUnselected(BoardUnit creature)
     {
     }
 

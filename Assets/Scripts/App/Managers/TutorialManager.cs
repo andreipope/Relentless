@@ -27,7 +27,7 @@ namespace LoomNetwork.CZB
         private bool _tutorialStarted,
                      _isBubbleShow;
 
-        private TutorialTargetingArrow _targettingArrow;
+        private TutorialBoardArrow _targettingArrow;
 
         private GameObject _targettingArrowPrefab;
 
@@ -301,7 +301,7 @@ namespace LoomNetwork.CZB
 
         private void CreateSelectTarget()
         {
-            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).GetComponent<TutorialTargetingArrow>();
+            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).GetComponent<TutorialBoardArrow>();
             _targettingArrow.Begin(_steps[_currentStep].tutorialTargetingArrowInfo.startPosition);
             _targettingArrow.UpdateTargetPosition(_steps[_currentStep].tutorialTargetingArrowInfo.targetPosition);
         }

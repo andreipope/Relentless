@@ -7,16 +7,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Helpers;
 using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
 using LoomNetwork.CZB.Gameplay;
-using Random = UnityEngine.Random;
 
 namespace LoomNetwork.CZB
 {
@@ -32,7 +28,7 @@ namespace LoomNetwork.CZB
 
         private Button _buttonBack;
 
-        private MenuButtonNoGlow _buttonBuy,
+        private Button _buttonBuy,
                                 _buttonCollection;
 
         private GameObject _packItemPrefab,
@@ -62,6 +58,8 @@ namespace LoomNetwork.CZB
 
         private bool _activatedTemporaryPack = false;
 
+        private List<BoardCard> _createdBoardCards;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -79,8 +77,8 @@ namespace LoomNetwork.CZB
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
 
-            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
 
             _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
 
@@ -90,8 +88,10 @@ namespace LoomNetwork.CZB
             _packsAmount = _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>();
 
             _buttonBack.onClick.AddListener(BackButtonHandler);
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonCollection.onClickEvent.AddListener(CollectionButtonHandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonCollection.onClick.AddListener(CollectionButtonHandler);
+
+            _createdBoardCards = new List<BoardCard>();
 
             Hide();
         }
@@ -135,12 +135,16 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
             MonoBehaviour.Destroy(_backgroundCanvas);
             MonoBehaviour.Destroy(_cardPlaceholders);
+        }
+
+        private void ResetBoardCards()
+        {
+            foreach (var item in _createdBoardCards)
+                item.Dispose();
+            _createdBoardCards.Clear();
         }
 
         private void CardClickeCheck()
@@ -149,7 +153,7 @@ namespace LoomNetwork.CZB
             var hit = Physics2D.Raycast(mousePos, Vector2.zero);
             if (hit.collider != null)
             {
-                foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
+                foreach (var card in _createdBoardCards)
                 {
                     if (hit.collider.gameObject == card.gameObject)
                     {
@@ -314,9 +318,6 @@ namespace LoomNetwork.CZB
 
         private void PackItemAnimationComplete()
         {
-
-            Debug.LogError(1111);
-
             var cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
 
             if (!_dataManager.CachedUserLocalData.openedFirstPack)
@@ -356,12 +357,12 @@ namespace LoomNetwork.CZB
                 go.transform.SetParent(_cardsContainer);
                 go.transform.Find("Back").gameObject.SetActive(true);
                 go.transform.Find("Amount").gameObject.SetActive(false);
-                var cardView = go.GetComponent<BoardCard>();
-                cardView.Init(card, cardSetName);
-                cardView.SetHighlightingEnabled(false);
-                cardView.transform.position = _centerPos;
-                cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
-                cardView.GetComponent<SortingGroup>().sortingOrder = 1;
+                var boardCard = new BoardCard(go);
+                boardCard.Init(card, cardSetName);
+                boardCard.SetHighlightingEnabled(false);
+                boardCard.transform.position = _centerPos;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
 
                 Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
                 Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
@@ -369,6 +370,8 @@ namespace LoomNetwork.CZB
                 go.transform.localScale = Vector3.one * .28f;
                 go.transform.DOMove(pos, 1.0f);
                 go.transform.DORotate(rotation, 1.0f);
+
+                _createdBoardCards.Add(boardCard);
             }
         }
 
@@ -388,7 +391,6 @@ namespace LoomNetwork.CZB
             if (!go.transform.Find("Back").gameObject.activeSelf)
                 return;
 
-
             Vector3 rotation = go.transform.eulerAngles;
             Sequence animationSequence3 = DOTween.Sequence();
             animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
@@ -402,84 +404,8 @@ namespace LoomNetwork.CZB
                 animationSequence4.AppendInterval(2f);
 
                 _cardsTurned++;
-                _dataManager.CachedCollectionData.ChangeAmount(card.WorkingCard.libraryCard.id, 1);
+                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.id, 1);
             });
-        }
-    }
-
-    public class CardPack
-    {
-        private IDataManager _dataManager;
-        private List<Card> _cardsInPack;
-
-        public Enumerators.CardPackType cardPackType;
-
-        public CardPack()
-        {
-            Init(Enumerators.CardPackType.DEFAULT);
-        }
-
-        public CardPack(Enumerators.CardPackType type)
-        {
-            Init(type);
-        }
-
-        private void Init(Enumerators.CardPackType type)
-        {
-            _dataManager = GameClient.Get<IDataManager>();
-
-            cardPackType = type;
-
-            _cardsInPack = new List<Card>();
-        }
-
-
-        public List<Card> OpenPack(bool isTemporary = false)
-        {
-            if (isTemporary)
-                GetSpecialCardPack();
-            else
-            {
-                for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
-                    _cardsInPack.Add(GenerateNewCard());
-            }
-
-            return _cardsInPack;
-        }
-
-        private Card GenerateNewCard()
-        {
-            var rarity = (Enumerators.CardRarity)IsChanceFit(0);
-            var cards = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardRarity == rarity && item.cardSetType != Enumerators.SetType.OTHERS);
-            Card card = cards[Random.Range(0, cards.Count)];
-            return card;
-        }
-
-        private int IsChanceFit(int rarity)
-        {
-            int random = Random.Range(0, 100);
-            if (random > 90)
-            {
-                rarity++;
-                return IsChanceFit(rarity);
-            }
-            else
-                return rarity;
-        }
-
-        // TEMPORARY OR SPECIAL
-        private void GetSpecialCardPack()
-        {
-            var fullColection = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardSetType != Enumerators.SetType.OTHERS);
-
-            var legendary = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.LEGENDARY);
-            var epic = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.EPIC);
-
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
-            _cardsInPack.Add(epic[Random.Range(0, epic.Count)]);
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
-            _cardsInPack.Add(legendary[Random.Range(0, legendary.Count)]);
         }
     }
 }

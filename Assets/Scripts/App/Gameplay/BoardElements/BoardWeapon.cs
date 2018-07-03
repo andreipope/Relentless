@@ -34,7 +34,7 @@ namespace LoomNetwork.CZB
         private SpriteRenderer _weaponIcon;
 
 
-        private WeaponTargettingArrow _targettingArrow;
+        private WeaponBoardArrow _targettingArrow;
         private Player _owner;
 
         private int _health,
@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
                             _siloObject;
 
         private Player _player;
-        private BoardCreature _creature;
+        private BoardUnit _creature;
 
         private OnBehaviourHandler _onMouseHandler;
 
@@ -159,8 +159,8 @@ namespace LoomNetwork.CZB
 
             if (target is Player)
                 _player = target as Player;
-            else if (target is BoardCreature)
-                _creature = target as BoardCreature;
+            else if (target is BoardUnit)
+                _creature = target as BoardUnit;
             else
                 return;
 
@@ -188,7 +188,7 @@ namespace LoomNetwork.CZB
             if (_targettingArrow != null)
                 DisableTargettig();
 
-            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/WeaponTargettingArrow")).GetComponent<WeaponTargettingArrow>();
+            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/WeaponTargettingArrow")).GetComponent<WeaponBoardArrow>();
             _targettingArrow.possibleTargets = _targets;
 
             _targettingArrow.OnPlayerSelectedEvent += OnPlayerSelectedEventHandler;
@@ -320,13 +320,13 @@ namespace LoomNetwork.CZB
             _player = null;
         }
 
-        private void OnCardSelectedEventHandler(BoardCreature obj)
+        private void OnCardSelectedEventHandler(BoardUnit obj)
         {
             _creature = obj;
             _player = null;
         }
 
-        private void OnCardUnselectedeventHandler(BoardCreature obj)
+        private void OnCardUnselectedeventHandler(BoardUnit obj)
         {
             _creature = null;
         }

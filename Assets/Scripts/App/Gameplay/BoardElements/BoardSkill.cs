@@ -48,9 +48,9 @@ public class BoardSkill : MonoBehaviour
     protected ParticleSystem sleepingParticles;
 
     [HideInInspector]
-    public TargetingArrow abilitiesTargetingArrow;
+    public BoardArrow abilitiesTargetingArrow;
     [HideInInspector]
-    public FightTargetingArrow fightTargetingArrow;
+    public BattleBoardArrow fightTargetingArrow;
 
     public int manaCost;
     private int _skillPower;
@@ -130,7 +130,7 @@ public class BoardSkill : MonoBehaviour
     {
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
             if (targetingArrow != null)
             {
                 targetingArrow.OnCardSelected(null);
@@ -142,7 +142,7 @@ public class BoardSkill : MonoBehaviour
     {
         if (collider.transform.parent != null)
         {
-            var targetingArrow = collider.transform.parent.GetComponent<TargetingArrow>();
+            var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
             if (targetingArrow != null)
             {
                 targetingArrow.OnCardUnselected(null);
@@ -165,7 +165,7 @@ public class BoardSkill : MonoBehaviour
         {
             if (manaCost <= ownerPlayer.Mana)
             {
-                fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
+                fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
                 fightTargetingArrow.BoardCards = _gameplayManager.PlayersInGame.Find(x => x != ownerPlayer).BoardCards;
 
                 fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>()
@@ -257,8 +257,7 @@ public class BoardSkill : MonoBehaviour
             else if (fightTargetingArrow.selectedCard != null)
             {
                 var targetCard = fightTargetingArrow.selectedCard;
-                if (targetCard.gameObject != gameObject &&
-                    targetCard.gameObject.GetComponent<HandBoardCard>() == null)
+                if (targetCard.gameObject != gameObject)// && targetCard.gameObject.GetComponent<HandBoardCard>() == null)
                 {
                     DoSkillAction(targetCard);
                 }
@@ -281,9 +280,9 @@ public class BoardSkill : MonoBehaviour
     private void FreezeAction(object target)
     {
         Debug.Log("FREEZE HIM");
-        if (target is BoardCreature)
+        if (target is BoardUnit)
         {
-            var creature = target as BoardCreature;
+            var creature = target as BoardUnit;
 
 
             //for (int i = 0; i < ownerPlayer.opponentBoardCardsList.Count; i++)
@@ -323,7 +322,7 @@ public class BoardSkill : MonoBehaviour
         }
         else
         {
-            var creature = target as BoardCreature;
+            var creature = target as BoardUnit;
 
             _battleController.HealCreatureBySkill(ownerPlayer, this, creature);
 
@@ -417,7 +416,7 @@ public class BoardSkill : MonoBehaviour
     } 
      */
 
-    private Player GetOwnerOfCreature(BoardCreature creature)
+    private Player GetOwnerOfCreature(BoardUnit creature)
     {
         if (_battlegroundController.playerBoardCards.Contains(creature))
             return ownerPlayer;
@@ -453,7 +452,7 @@ public class BoardSkill : MonoBehaviour
         }
         else
         {
-            var creature = target as BoardCreature;
+            var creature = target as BoardUnit;
             var attackModifier = 0;
 
             if (creature.Card.libraryCard.cardSetType == setType)
@@ -555,9 +554,9 @@ public class BoardSkill : MonoBehaviour
             //_firstParticle.transform.localEulerAngles = new Vector3(-90,0,AngleBetweenVector2(_firstParticle.transform.position, player.transform.position));
             _firstParticle.transform.DOMove(Utilites.CastVFXPosition(player.AvatarObject.transform.position), .5f).OnComplete(() => ActionCompleted(target));
         }
-        else if (target is BoardCreature)
+        else if (target is BoardUnit)
         {
-            var cruature = target as BoardCreature;
+            var cruature = target as BoardUnit;
 
             //_firstParticle.transform.localEulerAngles = new Vector3(-90, 0, AngleBetweenVector2(_firstParticle.transform.position, cruature.transform.position));
             _firstParticle.transform.DOMove(Utilites.CastVFXPosition(cruature.transform.position), .5f).OnComplete(() => ActionCompleted(target));

@@ -31,7 +31,6 @@ namespace LoomNetwork.CZB
 
         private GameObject _selfPage,
                            _playedCardPrefab;
-        //private VerticalLayoutGroup _cardGraveyard;
 
         private Button _buttonBack;
 
@@ -63,18 +62,18 @@ namespace LoomNetwork.CZB
 
         private int _currentDeckId;
 
-        public int CurrentDeckId
-        {
-            set { _currentDeckId = value; }
-            get { return _currentDeckId; }
-        }
-
         private bool _isPlayerInited = false;
         private int topOffset;
 
         private ReportPanelItem _reportGameActionsPanel;
 
         private GameObject _endTurnButton;
+
+        public int CurrentDeckId
+        {
+            set { _currentDeckId = value; }
+            get { return _currentDeckId; }
+        }
 
         public void Init()
         {
@@ -88,7 +87,6 @@ namespace LoomNetwork.CZB
             _timerManager = GameClient.Get<ITimerManager>();
 
       
-
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
@@ -96,8 +94,6 @@ namespace LoomNetwork.CZB
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
-
-            //_cardGraveyard = _selfPage.transform.Find("CardGraveyard").GetComponent<VerticalLayoutGroup>();
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
             _cards = new List<CardInGraveyard>();
 
@@ -118,7 +114,6 @@ namespace LoomNetwork.CZB
             _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
-            //scene.OpenPopup<PopupTurnStart>("PopupTurnStart", null, false);
 
 
             _graveYardTopOffset = 0;
@@ -150,10 +145,6 @@ namespace LoomNetwork.CZB
         {
             if (!_selfPage.activeSelf)
                 return;
-
-
-            //Debug.Log("Player id: " + _playerManager.playerInfo.id);
-            //Debug.Log("Opponent id: " + _playerManager.opponentInfo.id);
         }
 
         public void Show()
@@ -187,7 +178,7 @@ namespace LoomNetwork.CZB
         }
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
-        public void OnBoardCardKilledEventHandler(BoardCreature cardToDestroy)
+        public void OnBoardCardKilledEventHandler(BoardUnit cardToDestroy)
         {
             if (cardToDestroy == null)
                 return;
@@ -227,8 +218,8 @@ namespace LoomNetwork.CZB
 
                     _timerManager.AddTimer((f) =>
                     {
-                        _battlegroundController.RearrangeTopBoard();
-                        _battlegroundController.RearrangeBottomBoard();
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
                     }, null, Time.deltaTime, false);
 
                 }, null, soundLength);
@@ -251,7 +242,7 @@ namespace LoomNetwork.CZB
 
         private void DelayedCardDestroy(object[] card)
         {
-            BoardCreature cardToDestroy = (BoardCreature)card[0];
+            BoardUnit cardToDestroy = (BoardUnit)card[0];
             if (cardToDestroy != null)
             {
                 cardToDestroy.transform.DOKill();

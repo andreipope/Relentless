@@ -11,6 +11,8 @@ using UnityEngine;
 public class HandBoardCard
 {
     private IGameplayManager _gameplayManager;
+    private ISoundManager _soundManager;
+    private ITutorialManager _tutorialManager;
     private PlayerController _playerController;
     private CardsController _cardsController;
 
@@ -31,30 +33,41 @@ public class HandBoardCard
 
     private int _handInd;
 
+    private OnBehaviourHandler _behaviourHandler;
+
+    public bool enabled = true;
 
     public Transform transform { get { return _selfObject.transform; } }
     public GameObject gameObject { get { return _selfObject; } }
 
-
     public HandBoardCard(GameObject selfObject, BoardCard boardCard)
     {
+        _selfObject = selfObject;
+
         cardView = boardCard;
 
-        _handInd = this.GetHashCode();
-
+        _handInd = GetHashCode();
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
+        _soundManager = GameClient.Get<ISoundManager>();
+        _tutorialManager = GameClient.Get<ITutorialManager>();
+
         _playerController = _gameplayManager.GetController<PlayerController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
-    }
 
-    private void Start()
-    {
+        _behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
+
+        _behaviourHandler.OnMouseUpEvent += OnMouseUp;
+        _behaviourHandler.OnUpdateEvent += OnUpdateEventHandler;
+
         CheckStatusOfHighlight();
     }
 
-    private void Update()
+    public void OnUpdateEventHandler(GameObject obj)
     {
+        if (!enabled)
+            return;
+
         if (startedDrag)
         {
             transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -66,8 +79,7 @@ public class HandBoardCard
 
     public void OnSelected()
     {
-        if (_playerController.IsActive &&
-            cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected)
+        if (_playerController.IsActive && cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected)
         {
             startedDrag = true;
             initialPos = transform.position;
@@ -88,12 +100,14 @@ public class HandBoardCard
         }
     }
 
-    public void OnMouseUp()
+    public void OnMouseUp(GameObject obj)
     {
-        if (!startedDrag)
-        {
+        if (!enabled)
             return;
-        }
+
+        if (!startedDrag)
+            return;
+
         _alreadySelected = false;
         startedDrag = false;
         _playerController.IsCardSelected = false;
@@ -114,9 +128,9 @@ public class HandBoardCard
             else
             {
                 transform.position = initialPos;
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                if (_tutorialManager.IsTutorial)
                 {
-                    GameClient.Get<ITutorialManager>().ActivateSelectTarget();
+                    _tutorialManager.ActivateSelectTarget();
                 }
             }
         }
@@ -124,7 +138,7 @@ public class HandBoardCard
         {
             _isReturnToHand = true;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
             transform.DOMove(initialPos, 0.5f).OnComplete(() => 
             {
@@ -141,13 +155,15 @@ public class HandBoardCard
 
     public void ResetToHandAnimation()
     {
-//        enabled = true;
+
+        Debug.Log(333333);
+
         _alreadySelected = false;
         startedDrag = false;
         _isReturnToHand = true;
         _isHandCard = true;
 
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
         transform.DOMove(initialPos, 0.5f).OnComplete(() =>
         {

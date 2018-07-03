@@ -13,8 +13,8 @@ namespace LoomNetwork.CZB
     public interface IPlayerManager
     {
         User LocalUser { get; set; }
-        List<BoardCreature> PlayerGraveyardCards { get; set; }
-        List<BoardCreature> OpponentGraveyardCards { get; set; }
+        List<BoardUnit> PlayerGraveyardCards { get; set; }
+        List<BoardUnit> OpponentGraveyardCards { get; set; }
         Player PlayerInfo { get; set; }
         Player OpponentInfo { get; set; }
     }

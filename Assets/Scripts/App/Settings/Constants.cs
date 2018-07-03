@@ -44,6 +44,8 @@ namespace LoomNetwork.CZB.Common
         internal static int DEFAULT_PLAYER_MANA = 0;
         internal static int MAXIMUM_PLAYER_MANA = 10;
 
+        internal static int FIRST_GAME_TURN_INDEX = 1;
+
         internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 5;
 
         internal static float DELAY_BETWEEN_GAMEPALY_ACTIONS = 0.01f;
@@ -51,6 +53,11 @@ namespace LoomNetwork.CZB.Common
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
 
+
+        internal const string LAYER_HAND_CARDS = "HandCards";
+        internal const string LAYER_BOARD_CARDS = "BoardCards";
+        internal const string LAYER_DEFAULT = "Default";
+        internal const string LAYER_FOREGROUND = "Foreground";        
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";

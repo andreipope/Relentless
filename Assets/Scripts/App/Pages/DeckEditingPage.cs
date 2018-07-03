@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
 
         private TMP_InputField _deckNameInputField;
 
-        private MenuButtonNoGlow _buttonBack,
+        private Button _buttonBack,
                                 _buttonBuy,
                                 _buttonOpen,
                                 _buttonSave,
@@ -93,6 +93,8 @@ namespace LoomNetwork.CZB
 
         private List<DeckBuilderCard> _currentCards;
 
+        private List<BoardCard> _createdBoardCards;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -119,11 +121,11 @@ namespace LoomNetwork.CZB
 
             _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
-            _buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<MenuButtonNoGlow>();
+            _buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<Button>();
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
             //_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
-            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<MenuButtonNoGlow>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<Button>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
             _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
             _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
 
@@ -135,16 +137,20 @@ namespace LoomNetwork.CZB
 
             _currentSetPageCountText = _selfPage.transform.Find("Text_Count").GetComponent<TextMeshProUGUI>();           
 
-            _buttonBack.onClickEvent.AddListener(BackButtonHandler);
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonSave.onClickEvent.AddListener(SaveButtonHandler);
-            _buttonCollection.onClickEvent.AddListener(SaveButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonHandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonSave.onClick.AddListener(SaveButtonHandler);
+            _buttonCollection.onClick.AddListener(SaveButtonHandler);
             //_buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
             
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
             _deckNameInputField.onEndEdit.AddListener(OnDeckNameInputFieldEndedEdit);
+
+            _cardListItems = new List<CardListItem>();
+            _createdBoardCards = new List<BoardCard>();
+
 
             Hide();
         }
@@ -212,13 +218,21 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
             MonoBehaviour.Destroy(_cardPlaceholders);
             //_uiManager.Canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
             WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
+        }
+
+
+        private void ResetBoardCards()
+        {
+            if (_createdBoardCards != null)
+            {
+                foreach (var item in _createdBoardCards)
+                    item.Dispose();
+                _createdBoardCards.Clear();
+            }
         }
 
         private void OpenAlertDialog(string msg)
@@ -370,10 +384,7 @@ namespace LoomNetwork.CZB
             var startIndex = page * cardPositions.Count;
             var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
-            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
 
             for (var i = startIndex; i < endIndex; i++)
             {
@@ -394,18 +405,20 @@ namespace LoomNetwork.CZB
 
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
-                var cardView = go.GetComponent<BoardCard>();
-                cardView.Init(card, set.name, amount);
-                cardView.SetHighlightingEnabled(false);
-                cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-                cardView.transform.localScale = Vector3.one * 0.28f;
-                cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
-                cardView.GetComponent<SortingGroup>().sortingOrder = 1;
+                var boardCard = new BoardCard(go);
+                boardCard.Init(card, set.name, amount);
+                boardCard.SetHighlightingEnabled(false);
+                boardCard.transform.position = cardPositions[i % cardPositions.Count].position;
+                boardCard.transform.localScale = Vector3.one * 0.28f;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
 
                 var deckBuilderCard = go.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.scene = this;
                 deckBuilderCard.card = card;
                 _currentCards.Add(deckBuilderCard);
+
+                _createdBoardCards.Add(boardCard);
             }
         }
 
@@ -422,18 +435,14 @@ namespace LoomNetwork.CZB
 
             _cardListItemEnd = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CardListItemEnd"), _cardListContent.transform, false);
 
+
             foreach (var card in deck.cards)
             {
                 var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
-                var go = MonoBehaviour.Instantiate(_cardListItemPrefab) as GameObject;
-                go.transform.SetParent(_cardListContent.transform, false);
+                var go = MonoBehaviour.Instantiate(_cardListItemPrefab, _cardListContent.transform, false);
                 var cardListItem = new CardListItem(go);
                 _cardListItemEnd.transform.SetAsLastSibling();
-                //cardListItem.deckButton = deck;
-                //cardListItem.card = libraryCard;
-                //cardListItem.cardNameText.text = libraryCard.name;
-                //cardListItem.cardAmountText.text = "x" + card.amount.ToString();
-                //cardListItem.count = card.amount;
+
                 cardListItem.Init(deck, libraryCard, card.amount, GetMaxCopiesValue(libraryCard.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
@@ -455,8 +464,11 @@ namespace LoomNetwork.CZB
             if (_cardListContent.transform.childCount <= 8)
                 _cardListItemEnd.SetActive(false);
 
-            _cardListItems.Remove(listItem);
-            listItem.Dispose();
+            if (listItem.count == 0)
+            {
+                _cardListItems.Remove(listItem);
+                listItem.Dispose();
+            }
         }
 
         public void AddCardToDeck(Card card)
@@ -498,9 +510,9 @@ namespace LoomNetwork.CZB
 			}
 
             var itemFound = false;
-            foreach (var item in _cardListContent.GetComponentsInChildren<CardListItem>())
+            foreach (var item in _cardListItems)
             {
-                if (item.card == card)
+                if (item.card.id == card.id)
                 {
                     itemFound = true;
                     item.AddCard();
@@ -529,6 +541,7 @@ namespace LoomNetwork.CZB
                 cardListItem.Init(_currentDeck, card, 1, GetMaxCopiesValue(card.cardRarity));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
+                _cardListItems.Add(cardListItem);
             }
 
             _currentDeck.AddCard(card.id); 
@@ -557,7 +570,7 @@ namespace LoomNetwork.CZB
 
         public void UpdateCardAmount(int cardId, int amount)
         {
-            foreach (var card in MonoBehaviour.FindObjectsOfType<BoardCard>())
+            foreach (var card in _createdBoardCards)
             {
                 if (card.libraryCard.id == cardId)
                 {

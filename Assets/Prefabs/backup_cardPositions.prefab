@@ -291,7 +291,6 @@ GameObject:
   - component: {fileID: 212095321133369730}
   - component: {fileID: 210338034840047380}
   - component: {fileID: 61772138645822230}
-  - component: {fileID: 114423828045072668}
   m_Layer: 0
   m_Name: BoardCreature (14)
   m_TagString: Untagged
@@ -359,7 +358,6 @@ GameObject:
   - component: {fileID: 212846697539728298}
   - component: {fileID: 210334126375621034}
   - component: {fileID: 61715043712546658}
-  - component: {fileID: 114140341069640544}
   m_Layer: 0
   m_Name: BoardCreature (9)
   m_TagString: Untagged
@@ -619,7 +617,6 @@ GameObject:
   - component: {fileID: 212449783696802030}
   - component: {fileID: 210986874530260412}
   - component: {fileID: 61657665628647596}
-  - component: {fileID: 114763626901084280}
   m_Layer: 0
   m_Name: BoardCreature (16)
   m_TagString: Untagged
@@ -657,7 +654,6 @@ GameObject:
   - component: {fileID: 212995361092466128}
   - component: {fileID: 210789213011125234}
   - component: {fileID: 61422978891276066}
-  - component: {fileID: 114406427143074310}
   m_Layer: 0
   m_Name: BoardCreature (17)
   m_TagString: Untagged
@@ -1057,7 +1053,6 @@ GameObject:
   - component: {fileID: 212052316255483716}
   - component: {fileID: 210735285671449686}
   - component: {fileID: 61832803429522302}
-  - component: {fileID: 114619374880577844}
   m_Layer: 0
   m_Name: BoardCreature (5)
   m_TagString: Untagged
@@ -1108,7 +1103,6 @@ GameObject:
   - component: {fileID: 212817227457542416}
   - component: {fileID: 210571391929973814}
   - component: {fileID: 61253194218791198}
-  - component: {fileID: 114565054815899262}
   m_Layer: 0
   m_Name: BoardCreature (18)
   m_TagString: Untagged
@@ -1244,7 +1238,6 @@ GameObject:
   - component: {fileID: 212982797199867472}
   - component: {fileID: 210305989667680774}
   - component: {fileID: 61823740490869508}
-  - component: {fileID: 114049616415652876}
   m_Layer: 0
   m_Name: BoardCreature (13)
   m_TagString: Untagged
@@ -1378,7 +1371,6 @@ GameObject:
   - component: {fileID: 212652611003551620}
   - component: {fileID: 210128574557957660}
   - component: {fileID: 61949004574339292}
-  - component: {fileID: 114881095162866438}
   m_Layer: 0
   m_Name: BoardCreature (11)
   m_TagString: Untagged
@@ -1413,7 +1405,6 @@ GameObject:
   - component: {fileID: 212756842666570448}
   - component: {fileID: 210076073280710760}
   - component: {fileID: 61105529693393832}
-  - component: {fileID: 114911294637837054}
   m_Layer: 0
   m_Name: BoardCreature (2)
   m_TagString: Untagged
@@ -1582,7 +1573,6 @@ GameObject:
   - component: {fileID: 212168595288011084}
   - component: {fileID: 210223428699661610}
   - component: {fileID: 61293941013606010}
-  - component: {fileID: 114269485863923242}
   m_Layer: 0
   m_Name: BoardCreature (19)
   m_TagString: Untagged
@@ -1620,7 +1610,6 @@ GameObject:
   - component: {fileID: 212628296790702588}
   - component: {fileID: 210343654301129438}
   - component: {fileID: 61117189472712394}
-  - component: {fileID: 114543366306001526}
   m_Layer: 0
   m_Name: BoardCreature (12)
   m_TagString: Untagged
@@ -1723,7 +1712,6 @@ GameObject:
   - component: {fileID: 212147823856815454}
   - component: {fileID: 210372081009177104}
   - component: {fileID: 61393373233604958}
-  - component: {fileID: 114946954178252494}
   m_Layer: 0
   m_Name: BoardCreature (23)
   m_TagString: Untagged
@@ -1816,7 +1804,6 @@ GameObject:
   - component: {fileID: 212769263662565880}
   - component: {fileID: 210243592124604534}
   - component: {fileID: 61208798653157368}
-  - component: {fileID: 114877963278360742}
   m_Layer: 0
   m_Name: BoardCreature (3)
   m_TagString: Untagged
@@ -2017,7 +2004,6 @@ GameObject:
   - component: {fileID: 212869968625302000}
   - component: {fileID: 210086103591657678}
   - component: {fileID: 61292485515684688}
-  - component: {fileID: 114944265010540962}
   m_Layer: 0
   m_Name: BoardCreature (4)
   m_TagString: Untagged
@@ -2036,7 +2022,6 @@ GameObject:
   - component: {fileID: 212963404074718490}
   - component: {fileID: 210582966534534736}
   - component: {fileID: 61912943467956010}
-  - component: {fileID: 114590985805788334}
   m_Layer: 0
   m_Name: BoardCreature (7)
   m_TagString: Untagged
@@ -2225,7 +2210,6 @@ GameObject:
   - component: {fileID: 212995340418549728}
   - component: {fileID: 210399993368690942}
   - component: {fileID: 61486457363900040}
-  - component: {fileID: 114174630370127524}
   m_Layer: 0
   m_Name: BoardCreature (8)
   m_TagString: Untagged
@@ -2508,7 +2492,6 @@ GameObject:
   - component: {fileID: 212538366427302330}
   - component: {fileID: 210565539748250154}
   - component: {fileID: 61200645967898764}
-  - component: {fileID: 114730707088345728}
   m_Layer: 0
   m_Name: BoardCreature (6)
   m_TagString: Untagged
@@ -2527,7 +2510,6 @@ GameObject:
   - component: {fileID: 212136707379354048}
   - component: {fileID: 210374058817725568}
   - component: {fileID: 61520563684723160}
-  - component: {fileID: 114647169842665506}
   m_Layer: 0
   m_Name: BoardCreature (20)
   m_TagString: Untagged
@@ -2958,7 +2940,6 @@ GameObject:
   - component: {fileID: 212116099989006754}
   - component: {fileID: 210344639316609054}
   - component: {fileID: 61918518775233794}
-  - component: {fileID: 114350338001254948}
   m_Layer: 0
   m_Name: BoardCreature (10)
   m_TagString: Untagged
@@ -3060,7 +3041,6 @@ GameObject:
   - component: {fileID: 212511338706196962}
   - component: {fileID: 210184972214802160}
   - component: {fileID: 61697795401669930}
-  - component: {fileID: 114219597644989970}
   m_Layer: 0
   m_Name: BoardCreature (21)
   m_TagString: Untagged
@@ -3300,7 +3280,6 @@ GameObject:
   - component: {fileID: 212676288365117138}
   - component: {fileID: 210214527195532892}
   - component: {fileID: 61367136506127544}
-  - component: {fileID: 114792218001792044}
   m_Layer: 0
   m_Name: BoardCreature (15)
   m_TagString: Untagged
@@ -3574,7 +3553,6 @@ GameObject:
   - component: {fileID: 212286686900218776}
   - component: {fileID: 210627181863422814}
   - component: {fileID: 61844755592092376}
-  - component: {fileID: 114388967415431432}
   m_Layer: 0
   m_Name: BoardCreature (22)
   m_TagString: Untagged
@@ -3610,7 +3588,6 @@ GameObject:
   - component: {fileID: 212116457548943398}
   - component: {fileID: 210598479196752234}
   - component: {fileID: 61325317278440436}
-  - component: {fileID: 114265552644692628}
   m_Layer: 0
   m_Name: BoardCreature
   m_TagString: Untagged
@@ -3977,7 +3954,6 @@ GameObject:
   - component: {fileID: 212683739583189624}
   - component: {fileID: 210184990689585180}
   - component: {fileID: 61294191846944330}
-  - component: {fileID: 114579267716175010}
   m_Layer: 0
   m_Name: BoardCreature (1)
   m_TagString: Untagged
@@ -10095,38 +10071,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114049616415652876
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1273385127461844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212982797199867472}
-  pictureSprite: {fileID: 212684620040653522}
-  frozenSprite: {fileID: 212329768522012110}
-  attackText: {fileID: 114827584800444728}
-  healthText: {fileID: 114329136357283352}
-  sleepingParticles: {fileID: 198696883453503376}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114128781888334422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10239,38 +10183,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114140341069640544
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1059280847646510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212846697539728298}
-  pictureSprite: {fileID: 212356830551830116}
-  frozenSprite: {fileID: 212237243181960142}
-  attackText: {fileID: 114290606861726186}
-  healthText: {fileID: 114841670332719996}
-  sleepingParticles: {fileID: 198972403543754570}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114146526905931992
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10383,38 +10295,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114174630370127524
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1558032459813706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212995340418549728}
-  pictureSprite: {fileID: 212690031122244438}
-  frozenSprite: {fileID: 212055960789353054}
-  attackText: {fileID: 114128781888334422}
-  healthText: {fileID: 114502704811158424}
-  sleepingParticles: {fileID: 198027349355877550}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114210018785120406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10639,38 +10519,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114219597644989970
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1770824524034818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212511338706196962}
-  pictureSprite: {fileID: 212453154959692182}
-  frozenSprite: {fileID: 212526264608514894}
-  attackText: {fileID: 114956918196379458}
-  healthText: {fileID: 114821418948075104}
-  sleepingParticles: {fileID: 198816965094153362}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114222731760145118
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10895,70 +10743,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114265552644692628
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1886384873496460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212116457548943398}
-  pictureSprite: {fileID: 212568659771713638}
-  frozenSprite: {fileID: 212178494551455050}
-  attackText: {fileID: 114010476273022144}
-  healthText: {fileID: 114694945054382230}
-  sleepingParticles: {fileID: 198165156492204440}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114269485863923242
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1355407567694784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212168595288011084}
-  pictureSprite: {fileID: 212082329872026722}
-  frozenSprite: {fileID: 212847821736764450}
-  attackText: {fileID: 114417062880378258}
-  healthText: {fileID: 114665060960178582}
-  sleepingParticles: {fileID: 198316630506835884}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114290606861726186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11295,38 +11079,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114350338001254948
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1732089529906878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212116099989006754}
-  pictureSprite: {fileID: 212780197132989572}
-  frozenSprite: {fileID: 212401558294932730}
-  attackText: {fileID: 114210018785120406}
-  healthText: {fileID: 114308330875344264}
-  sleepingParticles: {fileID: 198515185297353628}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114358774168308168
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11551,38 +11303,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114388967415431432
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1880834844812912}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212286686900218776}
-  pictureSprite: {fileID: 212803133372736120}
-  frozenSprite: {fileID: 212580561883438018}
-  attackText: {fileID: 114883268425476728}
-  healthText: {fileID: 114438138346833974}
-  sleepingParticles: {fileID: 198615913021951766}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114405047485570588
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11695,38 +11415,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114406427143074310
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1133334666609704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212995361092466128}
-  pictureSprite: {fileID: 212742337011473150}
-  frozenSprite: {fileID: 212453452855835506}
-  attackText: {fileID: 114869415571074028}
-  healthText: {fileID: 114591883458745696}
-  sleepingParticles: {fileID: 198500243721720418}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114417062880378258
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11951,38 +11639,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114423828045072668
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1053968251362080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212095321133369730}
-  pictureSprite: {fileID: 212627480826665844}
-  frozenSprite: {fileID: 212572127557145246}
-  attackText: {fileID: 114026189114869332}
-  healthText: {fileID: 114006408645777692}
-  sleepingParticles: {fileID: 198546959080933506}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114438138346833974
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12431,38 +12087,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114543366306001526
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1364846877418770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212628296790702588}
-  pictureSprite: {fileID: 212362770223174448}
-  frozenSprite: {fileID: 212208009862717702}
-  attackText: {fileID: 114450194113375538}
-  healthText: {fileID: 114020954391154284}
-  sleepingParticles: {fileID: 198833505757236578}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114545105771178448
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12575,102 +12199,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114565054815899262
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1230598982291852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212817227457542416}
-  pictureSprite: {fileID: 212768815719434476}
-  frozenSprite: {fileID: 212487305183130632}
-  attackText: {fileID: 114468135822558584}
-  healthText: {fileID: 114422630734955166}
-  sleepingParticles: {fileID: 198569396530124760}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114579267716175010
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1967784049387536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212683739583189624}
-  pictureSprite: {fileID: 212301477980798266}
-  frozenSprite: {fileID: 212373098926104710}
-  attackText: {fileID: 114258974425346424}
-  healthText: {fileID: 114943385818589938}
-  sleepingParticles: {fileID: 198348012263730316}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114590985805788334
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1521395254865224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212963404074718490}
-  pictureSprite: {fileID: 212643867734009862}
-  frozenSprite: {fileID: 212875084718559334}
-  attackText: {fileID: 114723281189151586}
-  healthText: {fileID: 114374764724134410}
-  sleepingParticles: {fileID: 198108344385246032}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114591883458745696
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13007,70 +12535,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114619374880577844
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1214671133482932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212052316255483716}
-  pictureSprite: {fileID: 212351909797055906}
-  frozenSprite: {fileID: 212140062306766256}
-  attackText: {fileID: 114210685320263792}
-  healthText: {fileID: 114598650659532490}
-  sleepingParticles: {fileID: 198173503498023994}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114647169842665506
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640780104365646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212136707379354048}
-  pictureSprite: {fileID: 212886315298744380}
-  frozenSprite: {fileID: 212634379861144832}
-  attackText: {fileID: 114900391080850852}
-  healthText: {fileID: 114146526905931992}
-  sleepingParticles: {fileID: 198111263574223384}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114665060960178582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13631,38 +13095,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114730707088345728
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1635164217352830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212538366427302330}
-  pictureSprite: {fileID: 212528231578300284}
-  frozenSprite: {fileID: 212616392702483012}
-  attackText: {fileID: 114897930041590592}
-  healthText: {fileID: 114685290112010276}
-  sleepingParticles: {fileID: 198062611384628230}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114755271919965334
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13887,38 +13319,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114763626901084280
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1130545180085342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212449783696802030}
-  pictureSprite: {fileID: 212925715313722726}
-  frozenSprite: {fileID: 212192545563603578}
-  attackText: {fileID: 114787877978091196}
-  healthText: {fileID: 114905399469316556}
-  sleepingParticles: {fileID: 198327075795765662}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114787877978091196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14031,38 +13431,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114792218001792044
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1818791936932354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212676288365117138}
-  pictureSprite: {fileID: 212331829424275076}
-  frozenSprite: {fileID: 212460420553989244}
-  attackText: {fileID: 114001900888567908}
-  healthText: {fileID: 114405047485570588}
-  sleepingParticles: {fileID: 198032977722586938}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114803656290598778
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14735,70 +14103,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114877963278360742
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1446229402472618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212769263662565880}
-  pictureSprite: {fileID: 212746729226643834}
-  frozenSprite: {fileID: 212642492248378272}
-  attackText: {fileID: 114863974593448428}
-  healthText: {fileID: 114724767359507324}
-  sleepingParticles: {fileID: 198285800775686240}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114881095162866438
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1297103839450286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212652611003551620}
-  pictureSprite: {fileID: 212343594828712720}
-  frozenSprite: {fileID: 212953377350223326}
-  attackText: {fileID: 114222731760145118}
-  healthText: {fileID: 114803656290598778}
-  sleepingParticles: {fileID: 198924600721173254}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114883268425476728
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15247,38 +14551,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114911294637837054
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1298165642910754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212756842666570448}
-  pictureSprite: {fileID: 212186564918360204}
-  frozenSprite: {fileID: 212768333540123280}
-  attackText: {fileID: 114048497360885466}
-  healthText: {fileID: 114755271919965334}
-  sleepingParticles: {fileID: 198186905509201032}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114943385818589938
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15391,70 +14663,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &114944265010540962
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1510867493092366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212869968625302000}
-  pictureSprite: {fileID: 212751622480658666}
-  frozenSprite: {fileID: 212448061971125258}
-  attackText: {fileID: 114607826878493908}
-  healthText: {fileID: 114358774168308168}
-  sleepingParticles: {fileID: 198284399208044972}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
---- !u!114 &114946954178252494
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1406819887380076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
-  frameSprite: {fileID: 212147823856815454}
-  pictureSprite: {fileID: 212755880425954802}
-  frozenSprite: {fileID: 212914024106755736}
-  attackText: {fileID: 114545105771178448}
-  healthText: {fileID: 114760498693592948}
-  sleepingParticles: {fileID: 198988043059393668}
-  frameSprites:
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  ownerPlayer: {fileID: 0}
-  abilitiesTargetingArrow: {fileID: 0}
-  fightTargetingArrow: {fileID: 0}
-  hasImpetus: 0
-  hasProvoke: 0
-  numTurnsOnBoard: 0
-  arrivalAnimationEventHandler: {fileID: 0}
-  creatureContentObject: {fileID: 0}
-  creatureAnimator: {fileID: 0}
-  animatorControllers: []
 --- !u!114 &114956918196379458
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -98733,7 +97941,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212192545563603578
 SpriteRenderer:
@@ -99833,7 +99041,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212343062052977188
 SpriteRenderer:
@@ -99921,7 +99129,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212351909797055906
 SpriteRenderer:
@@ -99965,7 +99173,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212356830551830116
 SpriteRenderer:
@@ -100317,7 +99525,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212453452855835506
 SpriteRenderer:
@@ -100933,7 +100141,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212532350898644082
 SpriteRenderer:
@@ -101197,7 +100405,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212572127557145246
 SpriteRenderer:
@@ -101593,7 +100801,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212628296790702588
 SpriteRenderer:
@@ -101769,7 +100977,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212652611003551620
 SpriteRenderer:
@@ -102165,7 +101373,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212746729226643834
 SpriteRenderer:
@@ -102429,7 +101637,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212769263662565880
 SpriteRenderer:
@@ -102561,7 +101769,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212783383182899238
 SpriteRenderer:
@@ -102649,7 +101857,7 @@ SpriteRenderer:
   m_Size: {x: 9.2, y: 6.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 1
 --- !u!212 &212806537259305686
 SpriteRenderer:

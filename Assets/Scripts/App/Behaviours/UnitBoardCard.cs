@@ -2,52 +2,80 @@
 // https://loomx.io/
 
 
-using UnityEngine;
-using UnityEngine.Assertions;
-
-using TMPro;
 using LoomNetwork.CZB.Common;
+using System;
+using TMPro;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class UnitBoardCard : BoardCard
     {
-        [SerializeField]
+        public event Action<int, int> HealthChangedEvent;
+        public event Action<int, int> DamageChangedEvent;
+
         protected TextMeshPro attackText;
-
-        [SerializeField]
         protected SpriteRenderer typeSprite;
-
-        [SerializeField]
         protected TextMeshPro defenseText;
+
+        private int _hp,
+                    _damage;
 
         public int initialHealth,
                    initialDamage;
 
-        public int health,
-                   damage;
+        public int Health
+        {
+            get
+            {
+                return _hp;
+            }
+            set
+            {
+                int oldHP = _hp;
+                _hp = Mathf.Clamp(value, 0, int.MaxValue);
+                HealthChangedEvent?.Invoke(oldHP, _hp);
+            }
+        }
+
+        public int Damage
+        {
+            get
+            {
+                return _damage;
+            }
+            set
+            {
+                int _oldDamage = _damage;
+                _damage = Mathf.Clamp(value, 0, int.MaxValue);
+                DamageChangedEvent?.Invoke(_oldDamage, _damage);
+            }
+        }
 
         public UnitBoardCard(GameObject selfObject) : base(selfObject)
         {
+            attackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
+            typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
         public override void Init(WorkingCard card, string setName)
         {
             base.Init(card, setName);
 
-            damage = card.libraryCard.damage;
+            Damage = card.libraryCard.damage;
             initialDamage = card.libraryCard.damage;
 
-            health = card.libraryCard.health;
+            Health = card.libraryCard.health;
             initialHealth = card.libraryCard.health;
 
-            attackText.text = damage.ToString();
-            defenseText.text = health.ToString();
+            attackText.text = Damage.ToString();
+            defenseText.text = Health.ToString();
 
-            typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
 
-         //   attackStat.onValueChanged += (oldValue, newValue) => { attackText.text = attackStat.effectiveValue.ToString(); };
-         //   defenseStat.onValueChanged += (oldValue, newValue) => { defenseText.text = defenseStat.effectiveValue.ToString(); };
+            DamageChangedEvent += (oldValue, newValue) => { attackText.text = newValue.ToString(); };
+            HealthChangedEvent += (oldValue, newValue) => { defenseText.text = newValue.ToString(); };
         }
 
         public override void Init(Data.Card card, string setName = "", int amount = 0)
@@ -57,7 +85,7 @@ namespace LoomNetwork.CZB
             attackText.text = card.damage.ToString();
             defenseText.text = card.health.ToString();
 
-            typeSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
         }
     }
 }

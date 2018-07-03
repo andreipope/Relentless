@@ -18,7 +18,7 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class BoardCreature
+    public class BoardUnit
     {
         public event Action CreatureOnDieEvent;
         public event Action<object> CreatureOnAttackEvent;
@@ -26,12 +26,14 @@ namespace LoomNetwork.CZB
         public event Action<int, int> CreatureHPChangedEvent;
         public event Action<int, int> CreatureDamageChangedEvent;
 
-        private Action<int, int> onAttackStatChangedDelegate;
-        private Action<int, int> onHealthStatChangedDelegate;
+        private Action<int, int> damageChangedDelegate;
+        private Action<int, int> healthChangedDelegate;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
+        private ITimerManager _timerManager;
+        private ITutorialManager _tutorialManager;
         private PlayerController _playerController;
         private BattlegroundController _battlegroundController;
         private AnimationsController _animationsController;
@@ -56,8 +58,8 @@ namespace LoomNetwork.CZB
 
         private int _stunTurns = 0;
 
-        private TargetingArrow abilitiesTargetingArrow;
-        private FightTargetingArrow fightTargetingArrow;
+        private BoardArrow abilitiesTargetingArrow;
+        private BattleBoardArrow fightTargetingArrow;
 
         private AnimationEventTriggering arrivalAnimationEventHandler;
 
@@ -78,7 +80,7 @@ namespace LoomNetwork.CZB
 
         public Player ownerPlayer;
 
-        public List<CreatureAnimatorInfo> animatorControllers;
+        public List<UnitAnimatorInfo> animatorControllers;
 
         public int Damage
         {
@@ -127,11 +129,13 @@ namespace LoomNetwork.CZB
             get { return (_stunTurns > 0 ? true : false); }
         }
 
-        public BoardCreature(Transform parent)
+        public BoardUnit(Transform parent)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
@@ -168,10 +172,10 @@ namespace LoomNetwork.CZB
             _onBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             _onBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
 
-            animatorControllers = new List<CreatureAnimatorInfo>();
+            animatorControllers = new List<UnitAnimatorInfo>();
             for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
             {
-                animatorControllers.Add(new CreatureAnimatorInfo()
+                animatorControllers.Add(new UnitAnimatorInfo()
                 {
                     animator = _loadObjectsManager.GetObjectByPath<RuntimeAnimatorController>("Animators/" + ((Enumerators.CardType)i).ToString() + "ArrivalController"),
                     cardType = (Enumerators.CardType)i
@@ -181,8 +185,8 @@ namespace LoomNetwork.CZB
 
         public void Die()
         {
-            CreatureHPChangedEvent -= onHealthStatChangedDelegate;
-            CreatureDamageChangedEvent -= onAttackStatChangedDelegate;
+            CreatureHPChangedEvent -= healthChangedDelegate;
+            CreatureDamageChangedEvent -= damageChangedDelegate;
 
             _dead = true;
 
@@ -209,12 +213,12 @@ namespace LoomNetwork.CZB
 
                 if (Card.libraryCard.cardRarity == Enumerators.CardRarity.EPIC)
                 {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
                 }
                 else
                 {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
                 }
 
 
@@ -236,7 +240,7 @@ namespace LoomNetwork.CZB
 
         private void CreateFrozenVFX(Vector3 pos)
         {
-            var _frozenVFX = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
+            var _frozenVFX = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
             _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
             DestroyCurrentParticle(_frozenVFX);
         }
@@ -246,7 +250,7 @@ namespace LoomNetwork.CZB
             if (isDirectly)
                 DestroyParticle(new object[] { currentParticle });
             else
-                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
+                _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
         }
 
         private void DestroyParticle(object[] param)
@@ -255,18 +259,18 @@ namespace LoomNetwork.CZB
             MonoBehaviour.Destroy(particleObj);
         }
 
-        private List<BoardCreature> GetEnemyCreaturesList(BoardCreature creature)
+        private List<BoardUnit> GetEnemyCreaturesList(BoardUnit creature)
         {
             if (_gameplayManager.GetLocalPlayer().BoardCards.Contains(creature))
                 return _gameplayManager.GetOpponentPlayer().BoardCards;
             return _gameplayManager.GetLocalPlayer().BoardCards;
         }
 
-        public void PopulateWithInfo(WorkingCard card, string setName = "")
+        public void SetObjectInfo(WorkingCard card, string setName = "")
         {
             Card = card;
 
-            pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRarity.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
+            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRarity.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
 
             pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
             pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
@@ -286,20 +290,20 @@ namespace LoomNetwork.CZB
             attackText.text = Damage.ToString();
             healthText.text = HP.ToString();
 
-            onAttackStatChangedDelegate = (oldValue, newValue) =>
+            damageChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateStatText(attackText, Damage, initialDamage, true);
+                UpdateUnitInfoText(attackText, Damage, initialDamage, true);
             };
 
-            CreatureDamageChangedEvent += onAttackStatChangedDelegate;
+            CreatureDamageChangedEvent += damageChangedDelegate;
 
-            onHealthStatChangedDelegate = (oldValue, newValue) =>
+            healthChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateStatText(healthText, HP, initialHP, false);
+                UpdateUnitInfoText(healthText, HP, initialHP, false);
                 CheckOnDie();
             };
 
-            CreatureHPChangedEvent += onHealthStatChangedDelegate;
+            CreatureHPChangedEvent += healthChangedDelegate;
 
             switch (Card.libraryCard.cardType)
             {
@@ -312,6 +316,7 @@ namespace LoomNetwork.CZB
                     _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                     hasProvoke = true;
                     break;
+                case Enumerators.CardType.WALKER:
                 default:
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                     break;
@@ -385,23 +390,20 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void UpdateStatText(TextMeshPro text, int stat, int initialStat, bool statOne)
+        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, bool isDamage)
         {
             if (text == null || !text)
                 return;
 
             text.text = stat.ToString();
+
             if (stat > initialStat)
-            {
                 text.color = Color.green;
-            }
             else if (stat < initialStat)
-            {
                 text.color = Color.red;
-            }
             else
             {
-                if (statOne)
+                if (isDamage)
                     text.color = Color.white;
                 else
                     text.color = Color.black;
@@ -427,7 +429,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnCardSelected(this);
@@ -439,7 +441,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<TargetingArrow>();
+                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnCardUnselected(this);
@@ -456,7 +458,7 @@ namespace LoomNetwork.CZB
 
             if (ownerPlayer != null && ownerPlayer.IsLocalPlayer && _playerController.IsActive && IsPlayable)
             {
-                fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).GetComponent<FightTargetingArrow>();
+                fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
                 fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>() { Enumerators.SkillTargetType.OPPONENT, Enumerators.SkillTargetType.OPPONENT_CARD };
                 fightTargetingArrow.BoardCards = _gameplayManager.PlayersInGame.Find(x => x != ownerPlayer).BoardCards;
                 fightTargetingArrow.Begin(transform.position);
@@ -466,10 +468,8 @@ namespace LoomNetwork.CZB
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
 
-                    if (GameClient.Get<ITutorialManager>().IsTutorial)
-                    {
-                        GameClient.Get<ITutorialManager>().DeactivateSelectTarget();
-                    }
+                    if (_tutorialManager.IsTutorial)
+                        _tutorialManager.DeactivateSelectTarget();
                 }
             }
         }
@@ -490,7 +490,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void ResolveCombat()
+        public void DoCombat()
         {
             var sortingGroup = _selfObject.GetComponent<SortingGroup>();
             if (fightTargetingArrow != null)
@@ -541,8 +541,7 @@ namespace LoomNetwork.CZB
                         _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                         //sortingGroup.sortingOrder = 100;
-                        if (//targetCard != _selfObject.GetComponent<BoardCreature>() &&
-                            targetCard.transform.GetComponent<HandBoardCard>() == null)
+                       // if (targetCard.transform== null)
                         {
 
                             // play sound when target creature attack more than our
@@ -553,9 +552,7 @@ namespace LoomNetwork.CZB
 
                             _animationsController.PlayFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, () =>
                             {
-                                Debug.Log("CreatureOnAttackEvent?.Invoke(targetCard)");
                                 _gameplayManager.GetController<VFXController>().PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
-
 
                                 _battleController.AttackCreatureByCreature(this, targetCard);
                                 CreatureOnAttackEvent?.Invoke(targetCard);
@@ -572,10 +569,8 @@ namespace LoomNetwork.CZB
                 }
                 if (fightTargetingArrow.selectedCard == null && fightTargetingArrow.selectedPlayer == null)
                 {
-                    if (GameClient.Get<ITutorialManager>().IsTutorial)
-                    {
-                        GameClient.Get<ITutorialManager>().ActivateSelectTarget();
-                    }
+                    if (_tutorialManager.IsTutorial)
+                        _tutorialManager.ActivateSelectTarget();
                 }
             }
         }
@@ -587,7 +582,7 @@ namespace LoomNetwork.CZB
     }
 
     [Serializable]
-    public class CreatureAnimatorInfo
+    public class UnitAnimatorInfo
     {
         public Enumerators.CardType cardType;
         public RuntimeAnimatorController animator;

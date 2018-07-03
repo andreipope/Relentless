@@ -143,10 +143,10 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimationDelay(object[] param)
         {
-            BoardCreature currentCreature = null;
+            BoardUnit currentCreature = null;
             if (param != null)
             {
-                currentCreature = param[0] as BoardCreature;
+                currentCreature = param[0] as BoardUnit;
                 currentCreature.PlayArrivalAnimation();
             }
         }

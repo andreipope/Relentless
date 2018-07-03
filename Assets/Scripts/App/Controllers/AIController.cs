@@ -34,7 +34,7 @@ namespace LoomNetwork.CZB
 
         private GameObject fightTargetingArrowPrefab;
 
-        private List<BoardCreature> _attackedCreatureTargets;
+        private List<BoardUnit> _attackedCreatureTargets;
 
         private bool _enabledAIBrain = true;
 
@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
         private Player PlayerInfo;
 
         public GameObject currentBoardCreature;
-        public BoardCreature currentCreature;
+        public BoardUnit currentCreature;
         public BoardCard currentSpellCard;
 
         public Player localPlayer,
@@ -92,7 +92,7 @@ namespace LoomNetwork.CZB
 
             fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
 
-            _attackedCreatureTargets = new List<BoardCreature>();
+            _attackedCreatureTargets = new List<BoardUnit>();
 
             var playerDeck = new List<int>();
 
@@ -113,7 +113,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            card.cardId = 1;
+                           // card.cardId = 1;
                         }
                         playerDeck.Add(card.cardId);
                     }
@@ -125,7 +125,7 @@ namespace LoomNetwork.CZB
 
             PlayerInfo.SetFirstHand(_gameplayManager.IsTutorial);
 
-            _battlegroundController.RearrangeOpponentHand();
+            _battlegroundController.UpdatePositionOfCardsInOpponentHand();
 
 
             PlayerInfo.OnStartTurnEvent += OnStartTurnEventHandler;
@@ -266,11 +266,11 @@ namespace LoomNetwork.CZB
                 {
                     yield return new WaitForSeconds(3.0f);
 
-                    var boardCreatures = new List<BoardCreature>();
+                    var boardCreatures = new List<BoardUnit>();
                     foreach (var creature in GetBoardCreatures())
                         boardCreatures.Add(creature);
 
-                    var usedCreatures = new List<BoardCreature>();
+                    var usedCreatures = new List<BoardUnit>();
 
                     if (OpponentHasProvokeCreatures())
                     {
@@ -480,7 +480,7 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
-                    var creature = target as BoardCreature;
+                    var creature = target as BoardUnit;
 
                     if (creature != null)
                     {
@@ -494,7 +494,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private OpponentTargetingArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
+        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
         {
             if (!createTargetArrow)
             {
@@ -502,7 +502,7 @@ namespace LoomNetwork.CZB
                 return null;
             }
 
-            var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<OpponentTargetingArrow>();
+            var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<OpponentBoardArrow>();
             targetingArrow.Begin(startObj.transform.position);
 
             targetingArrow.SetTarget(targetObject);
@@ -512,7 +512,7 @@ namespace LoomNetwork.CZB
             return targetingArrow;
         }
 
-        private IEnumerator RemoveOpponentTargetingArrow(TargetingArrow arrow, System.Action action)
+        private IEnumerator RemoveOpponentTargetingArrow(BoardArrow arrow, System.Action action)
         {
             yield return new WaitForSeconds(1f);
             MonoBehaviour.Destroy(arrow.gameObject);
@@ -761,7 +761,7 @@ namespace LoomNetwork.CZB
 
         private bool AddRandomTargetCreature(bool opponent, ref object targetInfo, bool lowHP = false, bool addAttackIgnore = false)
         {
-            BoardCreature target = null;
+            BoardUnit target = null;
 
             if (opponent)
                 target = GetRandomOpponentCreature();
@@ -801,7 +801,7 @@ namespace LoomNetwork.CZB
             }
             GameObject go = MonoBehaviour.Instantiate(prefab);
 
-            var cardView = go.GetComponent<BoardCard>();
+            var cardView = new BoardCard(go);
             cardView.Init(card, cardSetName);
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
@@ -841,9 +841,9 @@ namespace LoomNetwork.CZB
         }
 
 
-        private List<BoardCreature> GetCreaturesWithLowHP()
+        private List<BoardUnit> GetCreaturesWithLowHP()
         {
-            List<BoardCreature> finalList = new List<BoardCreature>();
+            List<BoardUnit> finalList = new List<BoardUnit>();
 
             var list = GetBoardCreatures();
 
@@ -887,17 +887,17 @@ namespace LoomNetwork.CZB
             return PlayerInfo.CardsInHand.FindAll(x => x.libraryCard.cardKind == Enumerators.CardKind.SPELL);
         }
 
-        private List<BoardCreature> GetBoardCreatures()
+        private List<BoardUnit> GetBoardCreatures()
         {
             var board = PlayerInfo.BoardCards;
             var eligibleCreatures = board.FindAll(x => x.HP > 0);
             return eligibleCreatures;
         }
 
-        private BoardCreature GetRandomCreature(bool lowHP = false)
+        private BoardUnit GetRandomCreature(bool lowHP = false)
         {
             var board = PlayerInfo.BoardCards;
-            List<BoardCreature> eligibleCreatures = null;
+            List<BoardUnit> eligibleCreatures = null;
 
             if (!lowHP)
                 eligibleCreatures = board.FindAll(x => x.HP > 0 && !_attackedCreatureTargets.Contains(x));
@@ -911,7 +911,7 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private BoardCreature GetTargetOpponentCreature()
+        private BoardUnit GetTargetOpponentCreature()
         {
             var board = localPlayer.BoardCards;
             var eligibleCreatures = board.FindAll(x => x.HP > 0);
@@ -931,7 +931,7 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private BoardCreature GetRandomOpponentCreature()
+        private BoardUnit GetRandomOpponentCreature()
         {
             var board = localPlayer.BoardCards;
 
@@ -996,7 +996,7 @@ namespace LoomNetwork.CZB
 
             randomCard.transform.DORotate(Vector3.zero, 0.5f);
 
-            _battlegroundController.RearrangeOpponentHand(true);
+            _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
         }
 
         private void DestroyRandomCard(object[] param)
@@ -1021,12 +1021,12 @@ namespace LoomNetwork.CZB
 
             if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                var boardCreatureElement = new BoardCreature(GameObject.Find("OpponentBoard").transform);
+                var boardCreatureElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
                 var boardCreature = boardCreatureElement.gameObject;
                 boardCreature.tag = "OpponentOwned";
                 boardCreatureElement.ownerPlayer = card.owner;
 
-                boardCreatureElement.PopulateWithInfo(runtimeCard, cardSetName);
+                boardCreatureElement.SetObjectInfo(runtimeCard, cardSetName);
                 _battlegroundController.opponentBoardCards.Add(boardCreatureElement);
 
                 boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
@@ -1034,7 +1034,7 @@ namespace LoomNetwork.CZB
 
                 PlayerInfo.BoardCards.Add(boardCreatureElement);
 
-                _battlegroundController.RearrangeTopBoard(() =>
+                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(() =>
                  {
                      // opponentHandZone.numCards -= 1;
                      //  opponentManaStat.baseValue -= libraryCard.cost;
@@ -1050,8 +1050,8 @@ namespace LoomNetwork.CZB
 
                          if (target is Player)
                              targetObject = (target as Player).AvatarObject;
-                         else if (target is BoardCreature)
-                             targetObject = (target as BoardCreature).gameObject;
+                         else if (target is BoardUnit)
+                             targetObject = (target as BoardUnit).gameObject;
 
                          CreateOpponentTarget(createTargetArrow, boardCreature.gameObject, targetObject,
                                   () => { _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.CREATURE, boardCreatureElement, null, false, null, target); });
@@ -1066,17 +1066,18 @@ namespace LoomNetwork.CZB
 
                 boardCreatureElement.PlayArrivalAnimation();
 
-                _battlegroundController.RearrangeTopBoard();
+                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
                 //GameClient.Get<ITimerManager>().AddTimer(RemoveOpponentCard, new object[] { randomCard }, 0.1f, false);
             }
             else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
                 var spellCard = MonoBehaviour.Instantiate(_cardsController.spellCardViewPrefab);
                 spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
-                spellCard.GetComponent<SpellBoardCard>().Init(runtimeCard, cardSetName);
-                spellCard.GetComponent<SpellBoardCard>().SetHighlightingEnabled(false);
 
-                currentSpellCard = spellCard.GetComponent<SpellBoardCard>();
+                currentSpellCard = new SpellBoardCard(spellCard);
+
+                currentSpellCard.Init(runtimeCard, cardSetName);
+                currentSpellCard.SetHighlightingEnabled(false);
 
                 var boardSpell = new BoardSpell(spellCard);
 
@@ -1097,8 +1098,8 @@ namespace LoomNetwork.CZB
 
                     if (target is Player)
                         targetObject = (target as Player).AvatarObject;
-                    else if (target is BoardCreature)
-                        targetObject = (target as BoardCreature).gameObject;
+                    else if (target is BoardUnit)
+                        targetObject = (target as BoardUnit).gameObject;
 
                     CreateOpponentTarget(createTargetArrow, aiPlayer.AvatarObject, targetObject,
                         () => { _abilitiesController.CallAbility(card.libraryCard, null, runtimeCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
@@ -1113,7 +1114,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void AttackPlayer(BoardCreature attackingCard, Player attackedPlayer)
+        public void AttackPlayer(BoardUnit attackingCard, Player attackedPlayer)
         {
             if (attackingCard != null && attackedPlayer != null)
             {
@@ -1131,7 +1132,7 @@ namespace LoomNetwork.CZB
             }
         }
     
-        public void AttackCreature(BoardCreature attackingCard, BoardCreature attackedCard)
+        public void AttackCreature(BoardUnit attackingCard, BoardUnit attackedCard)
         {
             if (attackingCard != null && attackedCard != null)
             {

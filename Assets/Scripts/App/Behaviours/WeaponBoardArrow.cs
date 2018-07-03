@@ -10,39 +10,30 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class AbilityTargetingArrow : TargetingArrow
+    public class WeaponBoardArrow : BoardArrow
     {
-        public event Action<BoardCreature> OnCardSelectedEvent;
-        public event Action<BoardCreature> OnCardUnselectedevent;
+        public event Action<BoardUnit> OnCardSelectedEvent;
+        public event Action<BoardUnit> OnCardUnselectedevent;
         public event Action<Player> OnPlayerSelectedEvent;
         public event Action<Player> OnPlayerUnselectedEvent;
         public event Action OnInputEndEvent;
-        public event Action OnInputCancelEvent;
 
         private IInputManager _inputManager;
 
         private int _onMouseDownInputIndex;
-        private int _onRightMouseDownInputIndex;
-        private int _onEscapeInputIndex;
 
         public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
-        public BoardCreature selfBoardCreature;
-
 
         protected void Awake()
         {
             _inputManager = GameClient.Get<IInputManager>();
 
-            _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, null, OnMouseButtonDownHandler, null);
-            _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, null, OnRightMouseButtonDownHandler, null);
-            _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonDownHandler, null);
+            _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler, null, null);
         }
 
         protected void OnDestroy()
         {
             _inputManager.UnregisterInputHandler(_onMouseDownInputIndex);
-            _inputManager.UnregisterInputHandler(_onRightMouseDownInputIndex);
-            _inputManager.UnregisterInputHandler(_onEscapeInputIndex);
         }
 
         protected override void Update()
@@ -50,24 +41,21 @@ namespace LoomNetwork.CZB
             base.Update();
         }
 
-        public override void OnCardSelected(BoardCreature creature)
+        public override void OnCardSelected(BoardUnit creature)
         {
             if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && creature.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
                 (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (selfBoardCreature != creature)
-                {
-                    selectedCard = creature;
-                    selectedPlayer = null;
-                    CreateTarget(creature.transform.position);
+                selectedCard = creature;
+                selectedPlayer = null;
+                CreateTarget(creature.transform.position);
 
-                    OnCardSelectedEvent?.Invoke(creature);
-                }
+                OnCardSelectedEvent?.Invoke(creature);
             }
         }
 
-        public override void OnCardUnselected(BoardCreature creature)
+        public override void OnCardUnselected(BoardUnit creature)
         {
             if (selectedCard == creature)
             {
@@ -75,7 +63,7 @@ namespace LoomNetwork.CZB
                 selectedCard = null;
 
                 OnCardUnselectedevent?.Invoke(creature);
-            } 
+            }
         }
 
         public override void OnPlayerSelected(Player player)
@@ -103,7 +91,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected void OnMouseButtonDownHandler()
+        protected void OnMouseButtonUpHandler()
         {
             if (startedDrag)
             {
@@ -111,14 +99,5 @@ namespace LoomNetwork.CZB
                 OnInputEndEvent?.Invoke();
             }
         }
-
-        protected void OnRightMouseButtonDownHandler()
-        {
-            if (startedDrag)
-            {
-                startedDrag = false;
-                OnInputCancelEvent?.Invoke();
-            }
-        }  
     }
 }

@@ -64,11 +64,11 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            var creature = info as BoardCreature;
+            var creature = info as BoardUnit;
 
             CreateVFX(creature.transform.position);
 
-            BoardCreature leftAdjustment = null,
+            BoardUnit leftAdjustment = null,
                     rightAdjastment = null;
 
             int targetIndex = -1;

@@ -75,13 +75,13 @@ namespace LoomNetwork.CZB
 
             Player opponent = _gameplayManager.PlayersInGame.Find(x => x != playerCallerOfAbility);
 
-            var creature = info as BoardCreature;
+            var creature = info as BoardUnit;
 
-            BoardCreature leftAdjustment = null,
+            BoardUnit leftAdjustment = null,
                     rightAdjastment = null;
 
             int targetIndex = -1;
-            List<BoardCreature> list = null;
+            List<BoardUnit> list = null;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
                 if (opponent.BoardCards[i] == creature)
