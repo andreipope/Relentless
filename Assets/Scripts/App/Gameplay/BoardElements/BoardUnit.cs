@@ -350,7 +350,7 @@ namespace LoomNetwork.CZB
             numTurnsOnBoard += 1;
             StopSleepingParticles();
 
-            if (ownerPlayer != null && IsPlayable)
+            if (ownerPlayer != null && IsPlayable && _gameplayManager.WhoseTurn.Equals(ownerPlayer))
                 SetHighlightingEnabled(true);
         }
 

@@ -183,6 +183,7 @@ namespace LoomNetwork.CZB
                 return;
 
             gameFinished = true;
+            currentTurn = 0;
 
             ClearBattleground();
         }
@@ -397,6 +398,9 @@ namespace LoomNetwork.CZB
             }
 
 
+            if (_gameplayManager.GameEnded)
+                return;
+
             var playerBoardCards = _gameplayManager.GetLocalPlayer().BoardCards;
 
             _rearrangingBottomBoard = true;
@@ -454,6 +458,10 @@ namespace LoomNetwork.CZB
 
                 return;
             }
+
+
+            if (_gameplayManager.GameEnded)
+                return;
 
             var opponentBoardCards = _gameplayManager.GetOpponentPlayer().BoardCards;
 

@@ -19,6 +19,9 @@ namespace LoomNetwork.CZB
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
+        private ISoundManager _soundManager;
+        private ITutorialManager _tutorialManager;
+        private ITimerManager _timerManager;
 
         private BattlegroundController _battlegroundController;
         private CardsController _cardsController;
@@ -64,6 +67,9 @@ namespace LoomNetwork.CZB
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -183,7 +189,7 @@ namespace LoomNetwork.CZB
 
         private void SetAITypeByDeck()
         {
-            var deck = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId];
+            var deck = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId];
             aiType = (Enumerators.AIType)System.Enum.Parse(typeof(Enumerators.AIType), deck.type);
         }
 
@@ -240,7 +246,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                foreach (var creature in GetCreatureCardsInHand())
+                foreach (var creature in GetUnitCardsInHand())
                 {
                     if (TryToPlayCard(creature))
                     {
@@ -258,9 +264,9 @@ namespace LoomNetwork.CZB
                         yield return new WaitForSeconds(2.0f);
                     }
                 }
-                if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep == 11)
+                if(_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
                 {
-                    (GameClient.Get<ITutorialManager>() as TutorialManager).paused = true;
+                    (_tutorialManager as TutorialManager).paused = true;
                 }
                 else
                 {
@@ -272,14 +278,14 @@ namespace LoomNetwork.CZB
 
                     var usedCreatures = new List<BoardUnit>();
 
-                    if (OpponentHasProvokeCreatures())
+                    if (OpponentHasHeavyUnits())
                     {
                         foreach (var creature in boardCreatures)
                         {
                             if (creature != null && creature.HP > 0 &&
                                 (numTurnsOnBoard[creature.Card.instanceId] >= 1 || creature.Card.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
                             {
-                                var attackedCreature = GetTargetOpponentCreature();
+                                var attackedCreature = GetTargetOpponentUnit();
                                 if (attackedCreature != null)
                                 {
                                     PlayCreatureAttackSound(creature.Card);
@@ -290,7 +296,7 @@ namespace LoomNetwork.CZB
 
                                     usedCreatures.Add(creature);
                                     yield return new WaitForSeconds(2.0f);
-                                    if (!OpponentHasProvokeCreatures())
+                                    if (!OpponentHasHeavyUnits())
                                     {
                                         break;
                                     }
@@ -304,10 +310,10 @@ namespace LoomNetwork.CZB
                         boardCreatures.Remove(creature);
                     }
 
-                    var totalPower = GetPlayerAttackingPower();
+                    var totalPower = GetPlayerAttackingValue();
                     if ((totalPower >= _gameplayManager.GetLocalPlayer().HP ||
                         (aiType == Enumerators.AIType.BLITZ_AI ||
-                         aiType == Enumerators.AIType.TIME_BLITZ_AI)) && !GameClient.Get<ITutorialManager>().IsTutorial)
+                         aiType == Enumerators.AIType.TIME_BLITZ_AI)) && !_tutorialManager.IsTutorial)
                     {
                         foreach (var creature in boardCreatures)
                         {
@@ -332,9 +338,9 @@ namespace LoomNetwork.CZB
                                 (numTurnsOnBoard[creature.Card.instanceId] >= 1 || creature.Card.type == Enumerators.CardType.FERAL) && creature.IsPlayable)
                             {
                                 Debug.Log("Should Attack");
-                                var playerPower = GetPlayerAttackingPower();
-                                var opponentPower = GetOpponentAttackingPower();
-                                if (playerPower > opponentPower && !GameClient.Get<ITutorialManager>().IsTutorial)
+                                var playerPower = GetPlayerAttackingValue();
+                                var opponentPower = GetOpponentAttackingValue();
+                                if (playerPower > opponentPower && !_tutorialManager.IsTutorial)
                                 {
                                     PlayCreatureAttackSound(creature.Card);
 
@@ -344,7 +350,7 @@ namespace LoomNetwork.CZB
                                 }
                                 else
                                 {
-                                    var attackedCreature = GetRandomOpponentCreature();
+                                    var attackedCreature = GetRandomOpponentUnit();
                                     if (attackedCreature != null)
                                     {
                                         PlayCreatureAttackSound(creature.Card);
@@ -380,7 +386,7 @@ namespace LoomNetwork.CZB
 
                     yield return new WaitForSeconds(1.0f);
 
-                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (!_tutorialManager.IsTutorial)
                         foreach (var skill in PlayerInfo.BoardSkills)
                             skill.OnEndTurn();
 
@@ -391,7 +397,7 @@ namespace LoomNetwork.CZB
 
         private void PlayCreatureAttackSound(WorkingCard card)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+           _soundManager.PlaySound(Enumerators.SoundType.CARDS, card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
         }
 
         protected void TryToUseBoardSkill()
@@ -420,7 +426,7 @@ namespace LoomNetwork.CZB
                             target = localPlayer;
                             selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
-                            var creatures = GetCreaturesWithLowHP();
+                            var creatures = GetUnitsWithLowHP();
 
                             if (creatures.Count > 0)
                             {
@@ -436,7 +442,7 @@ namespace LoomNetwork.CZB
                             target = localPlayer;
                             selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
-                            var creature = GetRandomOpponentCreature();
+                            var creature = GetRandomOpponentUnit();
 
                             if (creature != null)
                             {
@@ -447,7 +453,7 @@ namespace LoomNetwork.CZB
                         break;
                     case Enumerators.SetType.AIR:
                         {
-                            var creatures = GetCreaturesWithLowHP();
+                            var creatures = GetUnitsWithLowHP();
 
                             if (creatures.Count > 0)
                             {
@@ -456,7 +462,7 @@ namespace LoomNetwork.CZB
                             }
                             else
                             {
-                                var creature = GetRandomOpponentCreature();
+                                var creature = GetRandomOpponentUnit();
 
                                 if (creature != null)
                                 {
@@ -524,7 +530,7 @@ namespace LoomNetwork.CZB
         {
             if (PlayerInfo.CurrentBoardWeapon != null && PlayerInfo.CurrentBoardWeapon.CanAttack)
             {
-                var target = GetRandomOpponentCreature();
+                var target = GetRandomOpponentUnit();
 
                 if (target != null)
                 {
@@ -646,9 +652,9 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityType.CARD_RETURN:
                             {
-                                if (!AddRandomTargetCreature(true, ref target, false, true))
+                                if (!AddRandomTargetUnit(true, ref target, false, true))
                                 {
-                                    AddRandomTargetCreature(false, ref target, true, true);
+                                    AddRandomTargetUnit(false, ref target, true, true);
                                 }
                             }
                             break;
@@ -659,21 +665,21 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                             {
-                                if (!AddRandomTargetCreature(true, ref target))
+                                if (!AddRandomTargetUnit(true, ref target))
                                     target = localPlayer;
                             }
                             break;
                         case Enumerators.AbilityType.MASSIVE_DAMAGE:
                             {
-                                AddRandomTargetCreature(true, ref target);
+                                AddRandomTargetUnit(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.MODIFICATOR_STATS:
                             {
                                 if (ability.value > 0)
-                                    AddRandomTargetCreature(false, ref target);
+                                    AddRandomTargetUnit(false, ref target);
                                 else
-                                    AddRandomTargetCreature(true, ref target);
+                                    AddRandomTargetUnit(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.STUN:
@@ -689,9 +695,9 @@ namespace LoomNetwork.CZB
                         case Enumerators.AbilityType.CHANGE_STAT:
                             {
                                 if (ability.value > 0)
-                                    AddRandomTargetCreature(false, ref target);
+                                    AddRandomTargetUnit(false, ref target);
                                 else
-                                    AddRandomTargetCreature(true, ref target);
+                                    AddRandomTargetUnit(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.SUMMON:
@@ -706,7 +712,7 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityType.SPURT:
                             {
-                                AddRandomTargetCreature(true, ref target);
+                                AddRandomTargetUnit(true, ref target);
                             }
                             break;
                         case Enumerators.AbilityType.SPELL_ATTACK:
@@ -716,11 +722,11 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityType.HEAL:
                             {
-                                var creatures = GetCreaturesWithLowHP();
+                                var units = GetUnitsWithLowHP();
 
-                                if (creatures.Count > 0)
+                                if (units.Count > 0)
                                 {
-                                    target = creatures[UnityEngine.Random.Range(0, creatures.Count)];
+                                    target = units[UnityEngine.Random.Range(0, units.Count)];
                                 }
                                 else
                                 {
@@ -751,7 +757,7 @@ namespace LoomNetwork.CZB
         {
             if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                AddRandomTargetCreature(true, ref targetInfo);
+                AddRandomTargetUnit(true, ref targetInfo);
             }
             else if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
             {
@@ -759,14 +765,14 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private bool AddRandomTargetCreature(bool opponent, ref object targetInfo, bool lowHP = false, bool addAttackIgnore = false)
+        private bool AddRandomTargetUnit(bool opponent, ref object targetInfo, bool lowHP = false, bool addAttackIgnore = false)
         {
             BoardUnit target = null;
 
             if (opponent)
-                target = GetRandomOpponentCreature();
+                target = GetRandomOpponentUnit();
             else
-                target = GetRandomCreature(lowHP);
+                target = GetRandomUnit(lowHP);
 
             if (target != null)
             {
@@ -784,31 +790,32 @@ namespace LoomNetwork.CZB
         private void AddCardInfo(WorkingCard card)
         {
             string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
             {
                 if (cardSet.cards.IndexOf(card.libraryCard) > -1)
                     cardSetName = cardSet.name;
             }
 
-            GameObject prefab = null;
+            GameObject go = null;
+            BoardCard boardCard = null;
             if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+                go = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
+                boardCard = new UnitBoardCard(go);
             }
             else if ((Enumerators.CardKind)card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
-            }
-            GameObject go = MonoBehaviour.Instantiate(prefab);
+                go = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard"));
+                boardCard = new SpellBoardCard(go);
 
-            var cardView = new BoardCard(go);
-            cardView.Init(card, cardSetName);
+            }
+            boardCard.Init(card, cardSetName);
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
-            cardView.SetHighlightingEnabled(false);
+            boardCard.SetHighlightingEnabled(false);
 
-            GameClient.Get<ITimerManager>().StopTimer(DestroyCardInfo);
-            GameClient.Get<ITimerManager>().AddTimer(DestroyCardInfo, new object[] { go }, 2, false);
+            _timerManager.StopTimer(DestroyCardInfo);
+            _timerManager.AddTimer(DestroyCardInfo, new object[] { go }, 2, false);
         }
 
         private void DestroyCardInfo(object[] param)
@@ -816,7 +823,7 @@ namespace LoomNetwork.CZB
             MonoBehaviour.Destroy((GameObject)param[0]);
         }
 
-        private int GetPlayerAttackingPower()
+        private int GetPlayerAttackingValue()
         {
             var power = 0;
             foreach (var creature in PlayerInfo.CardsOnBoard)
@@ -830,7 +837,7 @@ namespace LoomNetwork.CZB
             return power;
         }
 
-        private int GetOpponentAttackingPower()
+        private int GetOpponentAttackingValue()
         {
             var power = 0;
             foreach (var card in localPlayer.CardsOnBoard)
@@ -841,7 +848,7 @@ namespace LoomNetwork.CZB
         }
 
 
-        private List<BoardUnit> GetCreaturesWithLowHP()
+        private List<BoardUnit> GetUnitsWithLowHP()
         {
             List<BoardUnit> finalList = new List<BoardUnit>();
 
@@ -858,14 +865,14 @@ namespace LoomNetwork.CZB
             return finalList;
         }
 
-        private List<WorkingCard> GetCreatureCardsInHand()
+        private List<WorkingCard> GetUnitCardsInHand()
         {
             List<WorkingCard> list = PlayerInfo.CardsInHand.FindAll(x => x.libraryCard.cardKind == Enumerators.CardKind.CREATURE);
 
             List<Data.Card> cards = new List<Data.Card>();
 
             foreach (var item in list)
-                cards.Add(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(item.cardId));
+                cards.Add(_dataManager.CachedCardsLibraryData.GetCard(item.cardId));
 
             cards = cards.OrderBy(x => x.cost).ThenBy(y => y.cost.ToString().Length).ToList();
 
@@ -894,7 +901,7 @@ namespace LoomNetwork.CZB
             return eligibleCreatures;
         }
 
-        private BoardUnit GetRandomCreature(bool lowHP = false)
+        private BoardUnit GetRandomUnit(bool lowHP = false)
         {
             var board = PlayerInfo.BoardCards;
             List<BoardUnit> eligibleCreatures = null;
@@ -911,7 +918,7 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private BoardUnit GetTargetOpponentCreature()
+        private BoardUnit GetTargetOpponentUnit()
         {
             var board = localPlayer.BoardCards;
             var eligibleCreatures = board.FindAll(x => x.HP > 0);
@@ -931,7 +938,7 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private BoardUnit GetRandomOpponentCreature()
+        private BoardUnit GetRandomOpponentUnit()
         {
             var board = localPlayer.BoardCards;
 
@@ -943,7 +950,7 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private bool OpponentHasProvokeCreatures()
+        private bool OpponentHasHeavyUnits()
         {
             var board = localPlayer.BoardCards;
             var eligibleCreatures = board.FindAll(x => x.HP > 0);
@@ -959,8 +966,8 @@ namespace LoomNetwork.CZB
         {
             allActions = new List<ActionItem>();
 
-            var allActionsType = GameClient.Get<IDataManager>().CachedOpponentDecksData.decks[GameClient.Get<IGameplayManager>().OpponentDeckId].opponentActions;
-            allActions = GameClient.Get<IDataManager>().CachedActionsLibraryData.GetActions(allActionsType.ToArray());
+            var allActionsType = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].opponentActions;
+            allActions = _dataManager.CachedActionsLibraryData.GetActions(allActionsType.ToArray());
         }
 
         private void MoveCard(WorkingCard card, object target)
@@ -969,9 +976,9 @@ namespace LoomNetwork.CZB
 
             _battlegroundController.opponentHandCards.Remove(randomCard);
 
-            GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
             randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(() =>
             {
@@ -983,9 +990,9 @@ namespace LoomNetwork.CZB
                 {
                     _cardsController.RemoveOpponentCard(new object[] { randomCard });
 
-                    GameClient.Get<ITimerManager>().AddTimer(OnMovedCardCompleted, new object[] { card, target }, 0.1f);
+                    _timerManager.AddTimer(OnMovedCardCompleted, new object[] { card, target }, 0.1f);
 
-                    GameClient.Get<ITimerManager>().AddTimer((creat) =>
+                    _timerManager.AddTimer((creat) =>
                     {
                         PlayerInfo.GraveyardCardsCount++;
                     }, null, 1f);
@@ -1011,7 +1018,7 @@ namespace LoomNetwork.CZB
             object target = param[1];
 
             string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
+            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
             {
                 if (cardSet.cards.IndexOf(card.libraryCard) > -1)
                     cardSetName = cardSet.name;
@@ -1120,6 +1127,8 @@ namespace LoomNetwork.CZB
             {
                 _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
                 {
+                    attackingCard.SetHighlightingEnabled(false);
+
                     _animationsController.PlayFightAnimation(attackingCard.gameObject, attackedPlayer.AvatarObject, 0.1f, () =>
                     {
                         _vfxController.PlayAttackVFX(attackingCard.Card.type, attackedPlayer.AvatarObject.transform.position, attackingCard.Damage);
@@ -1146,14 +1155,15 @@ namespace LoomNetwork.CZB
 
                     _animationsController.PlayFightAnimation(attackingCard.gameObject, attackedCard.gameObject, 0.5f, () =>
                     {
-                        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, attackingCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, attackingCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                         _vfxController.PlayAttackVFX(attackingCard.Card.type, attackedCard.transform.position, attackingCard.Damage);
 
                         attackingCard.CreatureOnAttack(attackedCard);
 
                         attackingCard.transform.position = new Vector3(attackingCard.transform.position.x, attackingCard.transform.position.y, attackingCard.transform.position.z + 0.2f);
+
+                      
 
                         completeCallback?.Invoke();
                     });

@@ -266,7 +266,7 @@ namespace LoomNetwork.CZB
         {
             Vector3 postionOfCardView = Vector3.zero;
 
-            if (card != null)
+            if (card != null && card.gameObject != null)
                 postionOfCardView = card.transform.position;
 
             bool canUseAbility = false;

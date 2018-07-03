@@ -39,17 +39,17 @@ namespace LoomNetwork.CZB
             AddService<IDataManager>(new DataManager());
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
-            AddService<IUIManager>(new UIManager());
             AddService<ICameraManager>(new CameraManager()); 
             AddService<IPlayerManager>(new PlayerManager());
             AddService<ISoundManager>(new SoundManager());
             AddService<INotificationManager>(new NotificationManager());         
-            AddService<IScreenOrientationManager>(new ScreenOrientationManager());
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
             AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
-            AddService<IMatchManager>(new MatchManager());  
+            AddService<IMatchManager>(new MatchManager());
+            AddService<IUIManager>(new UIManager());
+            AddService<IScreenOrientationManager>(new ScreenOrientationManager());
         }
 
         public static T Get<T>()

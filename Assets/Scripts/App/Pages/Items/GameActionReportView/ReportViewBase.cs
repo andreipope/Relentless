@@ -135,6 +135,7 @@ namespace LoomNetwork.CZB
         public virtual void Dispose()
         {
             MonoBehaviour.Destroy(reportActionPreviewPanel);
+            MonoBehaviour.Destroy(selfObject);
         }
     }
 }

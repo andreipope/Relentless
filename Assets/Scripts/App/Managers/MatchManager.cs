@@ -116,8 +116,6 @@ namespace LoomNetwork.CZB
                 _appStateManager.ChangeAppState(_finishMatchAppState);
 
                 _uiManager.HidePopup<PreparingForBattlePopup>();
-
-                _gameplayManager.StopGameplay();
             }
         }
     }

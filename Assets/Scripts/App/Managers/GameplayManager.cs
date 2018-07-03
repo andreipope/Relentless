@@ -123,15 +123,20 @@ namespace LoomNetwork.CZB
 
             _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
 
-            _timerManager.AddTimer((x) =>
+            if (endGameType != Enumerators.EndGameType.CANCEL)
             {
-                if (endGameType == Enumerators.EndGameType.WIN)
-                    _uiManager.DrawPopup<YouWonPopup>();
-                else if (endGameType == Enumerators.EndGameType.LOSE)
-                    _uiManager.DrawPopup<YouLosePopup>();
-            }, null, 4f);
+                _timerManager.AddTimer((x) =>
+                {
+                    if (endGameType == Enumerators.EndGameType.WIN)
+                        _uiManager.DrawPopup<YouWonPopup>();
+                    else if (endGameType == Enumerators.EndGameType.LOSE)
+                        _uiManager.DrawPopup<YouLosePopup>();
+                }, null, 4f);
+            }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+
+            StopGameplay();
         }
 
         public void StartGameplay()

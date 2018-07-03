@@ -118,6 +118,8 @@ namespace LoomNetwork.CZB
 
             _graveYardTopOffset = 0;
 
+            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
+
             Hide();
         }
 
@@ -302,11 +304,6 @@ namespace LoomNetwork.CZB
             {
                 SetHeroInfo(currentOpponentHero, "Opponent");
                 _opponentNameText.name = currentOpponentHero.name;
-            }
-
-            if (_reportGameActionsPanel == null)
-            {
-                _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
             }
 
             _isPlayerInited = true;
@@ -515,6 +512,7 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.HidePopup<YourTurnPopup>();
 
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU, true);
 
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
