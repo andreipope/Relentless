@@ -47,9 +47,13 @@ namespace LoomNetwork.CZB.Data
         public string icon;
         public string name;
         public string element;
+        public int experience;
+        public int level;
         [JsonIgnore]
         public Enumerators.SetType heroElement;
-        public HeroSkill skill;
+        public List<HeroSkill> skills;
+        public int primarySkill;
+        public int secondarySkill;
 
         public Hero()
         {
@@ -61,7 +65,8 @@ namespace LoomNetwork.CZB.Data
     {
         public string title;
         public Enumerators.SkillTargetType skillTargetType;
-        public int cost;
+        public int cooldown;
+        public int initialCooldown;
         public int value;
 
         public HeroSkill()

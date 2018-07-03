@@ -37,5 +37,27 @@ namespace LoomNetwork.CZB
         public void Update()
         {
         }
+
+        public void AddExperience(int value)
+        {
+            LocalUser.gooValue += value;
+            CheckLevel();
+        }
+
+        public void AddGoo(int value)
+        {
+
+        }
+
+        private void CheckLevel()
+        {
+            if()
+        }
+
+        private void LevelUP()
+        {
+
+        }
+
     }
 }

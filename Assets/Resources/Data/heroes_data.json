@@ -2,79 +2,157 @@
   "heroes": [
     {
       "heroId": 0,
-      "icon": "asdasd",
-      "name": "Golem Hero",
+      "icon": "icon",
+      "name": "Brakuus, The Guardian",
       "element": "EARTH",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Deffence",
         "skillType": 4,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 2
       }
     },
     {
       "heroId": 1,
-      "icon": "asdasd",
-      "name": "Pyro Hero",
+      "icon": "icon",
+      "name": "Razu, The Fire Daemon",
       "element": "FIRE",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Fireball",
         "skillType": 2,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 1
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
       }
     },
     {
       "heroId": 2,
-      "icon": "asdasd",
-      "name": "Water Hero",
+      "icon": "icon",
+      "name": "Vash'Kala, The Ancient One",
       "element": "WATER",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Freeze target for 1 turn",
         "skillType": 0,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 1
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
       }
     },
     {
       "heroId": 3,
-      "icon": "asdasd",
-      "name": "Air Hero",
+      "icon": "icon",
+      "name": "Kalile, Tempest of Storms",
       "element": "AIR",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Return Zombie",
         "skillType": 5,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 0
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
       }
     },
     {
       "heroId": 4,
-      "icon": "asdasd",
-      "name": "Toxic Hero",
+      "icon": "icon",
+      "name": "Mhalik, Lord of Pestilence",
       "element": "TOXIC",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Toxic Damage",
         "skillType": 1,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 1
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
       }
     },
     {
       "heroId": 5,
-      "icon": "asdasd",
-      "name": "Life Hero",
+      "icon": "icon",
+      "name": "Valash, Nature’s Warden",
       "element": "LIFE",
-      "skill": {
+	  "experience": 0,
+	  "level": 0,
+      "primarySkill": {
         "title": "Healing",
         "skillType": 3,
         "skillTargetType": 0,
         "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
+        "value": 2
+      },
+	  "secondarySkill": {
+        "title": "Deffence",
+        "skillType": 4,
+        "skillTargetType": 0,
+        "cost": 2,
+		"cooldown": 2,
+		"initialCooldown":0,
         "value": 2
       }
     }
