@@ -30,11 +30,6 @@ namespace LoomNetwork.CZB
         public bool IsCardSelected { get; set; }
         public bool IsActive { get; set; }
 
-        public SpellBoardCard currentSpellCard;
-        public GameObject currentBoardCreature;
-        public BoardUnit currentCreature;
-
-
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -73,7 +68,7 @@ namespace LoomNetwork.CZB
         {
             PlayerInfo = new Player(GameObject.Find("Player"), false);
 
-            _heroController.playerHero = PlayerInfo.SelfHero;
+            //_heroController.playerHero = PlayerInfo.SelfHero;
 
             _gameplayManager.PlayersInGame.Add(PlayerInfo);
 
@@ -126,7 +121,7 @@ namespace LoomNetwork.CZB
         public virtual void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             //Write code for analize amount of experience getted in the battle
-            _heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
+            //_heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }
 
         private void HandleInput()
@@ -134,7 +129,7 @@ namespace LoomNetwork.CZB
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if (Input.GetMouseButtonDown(0))
             {
-                if (IsActive && currentSpellCard == null)
+                if (IsActive)
                 {
                     var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                     var hitCards = new List<GameObject>();

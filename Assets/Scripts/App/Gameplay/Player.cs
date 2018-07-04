@@ -133,14 +133,10 @@ namespace LoomNetwork.CZB
 
         public List<BoardUnit> BoardCards { get; set; }
 
-        public List<BoardSkill> BoardSkills { get; set; }
-
         public List<WorkingCard> CardsInDeck { get; private set; }
         public List<WorkingCard> CardsInGraveyard { get; private set; }
         public List<WorkingCard> CardsInHand { get; private set; }
         public List<WorkingCard> CardsOnBoard { get; private set; }
-
-  
 
         public Player(GameObject playerObject, bool isOpponent)
         {
@@ -201,15 +197,6 @@ namespace LoomNetwork.CZB
             _avatarAnimator.enabled = false;
             _deathAnimamtor.enabled = false;
             _deathAnimamtor.StopPlayback();
-
-            // setted it only for one skill
-            BoardSkills = new List<BoardSkill>();
-
-            var skill = _playerObject.transform.Find("Spell").GetComponent<BoardSkill>();
-            skill.ownerPlayer = this;
-            skill.SetSkill(_selfHero);
-
-            BoardSkills.Add(skill);
 
             _avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
             _avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
@@ -371,6 +358,24 @@ namespace LoomNetwork.CZB
 
 
             _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+        }
+
+        public void DoSkill(Enumerators.SkillType skillType)
+        {
+            HeroSkill skill = null;
+
+            switch(skillType)
+            {
+                case Enumerators.SkillType.PRIMARY:
+                    skill = _selfHero.skills[_selfHero.primarySkill];
+                    break;
+                case Enumerators.SkillType.SECONDARY:
+                    skill = _selfHero.skills[_selfHero.secondarySkill];
+                    break;
+            }
+
+            //SkillController.DoSkill(skill);
+
         }
 
         #region handlers

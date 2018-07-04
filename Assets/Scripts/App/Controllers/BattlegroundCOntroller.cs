@@ -269,25 +269,6 @@ namespace LoomNetwork.CZB
                 foreach (var card in playerBoardCards)
                     card.OnEndTurn();
 
-                if (_playerController.currentCreature != null)
-                {
-                    playerBoardCards.Remove(_playerController.currentCreature);
-                    UpdatePositionOfBoardUnitsOfPlayer();
-
-                    _playerController.PlayerInfo.AddCardToHand(_playerController.currentCreature.Card);
-                    _playerController.PlayerInfo.RemoveCardFromBoard(_playerController.currentCreature.Card);
-
-                    MonoBehaviour.Destroy(_playerController.currentCreature.gameObject);
-                    _playerController.currentCreature = null;
-                }
-
-                if (_playerController.currentSpellCard != null)
-                {
-                    MonoBehaviour.Destroy(_playerController.currentSpellCard.gameObject);
-                    _playerController.currentSpellCard = null;
-
-                    UpdatePositionOfCardsInPlayerHand();
-                }
             }
             else
             {
@@ -333,16 +314,6 @@ namespace LoomNetwork.CZB
                 boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
 
                 MonoBehaviour.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
-            }
-            else if (_playerController.currentSpellCard != null && card == _playerController.currentSpellCard.WorkingCard)
-            {
-                _playerController.currentSpellCard.SetHighlightingEnabled(false);
-                _playerController.currentSpellCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-
-                MonoBehaviour.Destroy(_playerController.currentSpellCard.gameObject.GetComponent<BoxCollider2D>());
-
-                _playerController.currentSpellCard.HandBoardCard.enabled = false;
-                _playerController.currentSpellCard = null;
             }
         }
 

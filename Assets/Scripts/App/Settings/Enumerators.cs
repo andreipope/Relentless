@@ -367,5 +367,11 @@
             PVP,
             PVE
         }
+
+        public enum SkillType
+        {
+            PRIMARY,
+            SECONDARY
+        }
     }
 }
