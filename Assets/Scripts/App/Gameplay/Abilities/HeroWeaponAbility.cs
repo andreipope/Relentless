@@ -50,12 +50,6 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-
-            playerCallerOfAbility.AddWeapon(cardOwnerOfAbility);
-            playerCallerOfAbility.CurrentBoardWeapon.InitWeapon(damage, health, playerCallerOfAbility, abilityTargetTypes);
-
-            if (!playerCallerOfAbility.AlreadyAttackedInThisTurn)
-                playerCallerOfAbility.CurrentBoardWeapon.ActivateWeapon(!(playerCallerOfAbility.IsLocalPlayer));
         }
     }
 }

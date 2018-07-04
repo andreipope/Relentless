@@ -16,7 +16,6 @@ namespace LoomNetwork.CZB
         private IDataManager _dataManager;
         private IPlayerManager _playerManager;
         private ILocalizationManager _localizationManager;
-        private INotificationManager _notificationsManager;
 		private IInputManager _inputManager;
         private IScenesManager _scenesManager;
 
@@ -50,7 +49,6 @@ namespace LoomNetwork.CZB
             _dataManager = GameClient.Get<IDataManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
-            _notificationsManager = GameClient.Get<INotificationManager>();
 			_inputManager = GameClient.Get<IInputManager>();
             _scenesManager = GameClient.Get<IScenesManager>();
         }

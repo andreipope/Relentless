@@ -198,37 +198,5 @@ namespace LoomNetwork.CZB
                 healedCreature
             }));
         }
-
-        public void AttackPlayerByWeapon(Player attackingPlayer, BoardWeapon weapon, Player attackedPlayer)
-        {
-            if (attackingPlayer != null && weapon != null && attackedPlayer != null)
-            {
-                attackedPlayer.HP -= weapon.Damage;
-            }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_WEAPON,
-            new object[]
-            {
-                attackingPlayer,
-                weapon,
-                attackedPlayer
-            }));
-        }
-
-        public void AttackCreatureByWeapon(Player attackingPlayer, BoardWeapon weapon, BoardUnit attackedCreature)
-        {
-            if (attackingPlayer != null && weapon != null && attackedCreature != null)
-            {
-                attackedCreature.HP -= weapon.Damage;
-            }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_WEAPON,
-            new object[]
-            {
-                attackingPlayer,
-                weapon,
-                attackedCreature
-            }));
-        }
     }
 }

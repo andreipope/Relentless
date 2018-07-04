@@ -35,8 +35,6 @@ namespace LoomNetwork.CZB
         private Button _buttonBack;
 
         private List<CardInGraveyard> _cards;
-        private PlayerSkillItem _playerSkill,
-                                _opponentSkill;
 
         private PlayerManaBarItem _playerManaBar,
                                   _opponentManaBar;
@@ -102,18 +100,18 @@ namespace LoomNetwork.CZB
 
 
             _deckStatus = new List<CardZoneOnBoardStatus>();
-            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, null, 0));
-            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_single"), 15));
-            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_couple"), 40));
-            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_bunch"), 60));
-            _deckStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.DECK, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_full"), 80));
+            _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
+            _deckStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_single"), 15));
+            _deckStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_couple"), 40));
+            _deckStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_bunch"), 60));
+            _deckStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/deck_full"), 80));
 
             _graveyardStatus = new List<CardZoneOnBoardStatus>();
-            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, null, 0));
-            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_single"), 10));
-            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
-            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
-            _graveyardStatus.Add(new CardZoneOnBoardStatus(Enumerators.CardZoneOnBoardType.GRAVEYARD, _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(null, 0));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_single"), 10));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
+            _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
 
 
             _graveYardTopOffset = 0;
@@ -123,7 +121,7 @@ namespace LoomNetwork.CZB
             Hide();
         }
 
-        private void OnGameEndedEventHandler(bool isWin)
+        private void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             ClearGraveyard();
 
@@ -311,7 +309,10 @@ namespace LoomNetwork.CZB
 
         public void SetHeroInfo(Hero hero, string objectName)
         {
-            new PlayerSkillItem(GameObject.Find(objectName + "/Spell"), hero.skills[hero.primarySkill], "Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            var spell = GameObject.Find(objectName + "/Spell");
+            spell.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            //spell.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
+
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
@@ -523,6 +524,39 @@ namespace LoomNetwork.CZB
         }
 
         #endregion
+
+        class CardInGraveyard
+        {
+            public GameObject selfObject;
+            public Image image;
+
+            public CardInGraveyard(GameObject gameObject, Sprite sprite = null)
+            {
+                selfObject = gameObject;
+                image = selfObject.transform.Find("Image").GetComponent<Image>();
+
+                if (sprite != null)
+                    image.sprite = sprite;
+            }
+
+            public void Dispose()
+            {
+                if (selfObject != null)
+                    GameObject.Destroy(selfObject);
+            }
+        }
+
+        class CardZoneOnBoardStatus
+        {
+            public int percent;
+            public Sprite statusSprite;
+
+            public CardZoneOnBoardStatus(Sprite statusSprite, int percent)
+            {
+                this.statusSprite = statusSprite;
+                this.percent = percent;
+            }
+        }
     }
 
 }

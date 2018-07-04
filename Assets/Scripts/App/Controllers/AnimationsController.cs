@@ -6,9 +6,6 @@
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -29,7 +26,7 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void PlayFightAnimation(GameObject source, GameObject target, float shakeStrength, Action onHitCallback, Action onCompleteCallback = null, bool isCreatureAttacker = true, float duration = 0.5f)
+        public void DoFightAnimation(GameObject source, GameObject target, float shakeStrength, Action onHitCallback, Action onCompleteCallback = null, bool isCreatureAttacker = true, float duration = 0.5f)
         {
             var originalPos = source.transform.position;
 
@@ -37,7 +34,7 @@ namespace LoomNetwork.CZB
             var oldSortingOrder = sortingGroup.sortingOrder;
             var oldsortingLayerName = sortingGroup.sortingLayerName;
 
-            sortingGroup.sortingLayerName = "BoardCards";
+            sortingGroup.sortingLayerName = Constants.LAYER_BOARD_CARDS;
             sortingGroup.sortingOrder = 1000;
 
             Vector3 partWay = Vector3.zero;

@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB
     {
         public event Action OnGameStartedEvent;
         public event Action OnGameInitializedEvent;
-        public event Action<bool> OnGameEndedEvent;
+        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
         public event Action OnTurnStartedEvent;
         public event Action OnTurnEndedEvent;
 
@@ -91,8 +91,9 @@ namespace LoomNetwork.CZB
             _controllers.Add(new CardsController());
             _controllers.Add(new BattlegroundController());
             _controllers.Add(new AnimationsController());
-            _controllers.Add(new BattleController());          
+            _controllers.Add(new BattleController());
             _controllers.Add(new HeroController());
+            _controllers.Add(new BoardArrowController());
 
             foreach (var controller in _controllers)
                 controller.Init();
@@ -138,6 +139,8 @@ namespace LoomNetwork.CZB
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
 
             StopGameplay();
+
+            OnGameEndedEvent?.Invoke(endGameType);
         }
 
         public void StartGameplay()
@@ -153,8 +156,6 @@ namespace LoomNetwork.CZB
         {
             GameStarted = false;
             GameEnded = true;
-
-            OnGameEndedEvent?.Invoke(true);
         }
 
         public Player GetLocalPlayer()

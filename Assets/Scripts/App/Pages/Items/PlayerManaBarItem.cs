@@ -4,12 +4,9 @@
 
 
 using UnityEngine;
-using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
-using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
 using TMPro;
+using DG.Tweening;
 
 namespace LoomNetwork.CZB
 {
@@ -41,13 +38,36 @@ namespace LoomNetwork.CZB
             for (var i = 0; i < _manaBottles.Count; i++)
             {
                 if (i < mana)
-                {
-                    _manaBottles[i].Active();
-                }
+                    Active(_manaBottles[i]);
                 else
-                {
-                    _manaBottles[i].Disactive();
-                }
+                   Disactive(_manaBottles[i]);
+            }
+        }
+
+
+        public void Active(ManaBottleItem item)
+        {
+            item.fullBoottle.DOFade(1.0f, 0.5f);
+            item.glowBottle.DOFade(1.0f, 0.5f);
+        }
+
+        public void Disactive(ManaBottleItem item)
+        {
+            item.fullBoottle.DOFade(0.0f, 0.5f);
+            item.glowBottle.DOFade(0.0f, 0.5f);
+        }
+
+
+        public struct ManaBottleItem
+        {
+            public SpriteRenderer fullBoottle,
+                                   glowBottle;
+
+
+            public ManaBottleItem(GameObject gameObject)
+            {
+                fullBoottle = gameObject.transform.Find("ManaIconBlue/goobottle_goo").GetComponent<SpriteRenderer>();
+                glowBottle = gameObject.transform.Find("ManaIconBlue/glow_goo").GetComponent<SpriteRenderer>();
             }
         }
     }

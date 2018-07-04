@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB
 
             startedDrag = false;
 
-            creature.DoCombat();
+            creature.DoCombat(selectedCard != null ? (object)selectedCard : (object)selectedPlayer);
             Destroy(gameObject);
         }
 

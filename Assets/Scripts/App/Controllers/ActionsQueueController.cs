@@ -130,7 +130,7 @@ namespace LoomNetwork.CZB
             _timerManager.AddTimer((x) =>
             {
                 OnActionDoneEvent?.Invoke(this);
-            }, null, Constants.DELAY_BETWEEN_GAMEPALY_ACTIONS);
+            }, null, Constants.DELAY_BETWEEN_GAMEPLAY_ACTIONS);
         }
     }
 

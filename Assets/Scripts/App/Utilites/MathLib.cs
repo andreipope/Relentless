@@ -63,5 +63,12 @@ namespace LoomNetwork.CZB.Helpers
             return new Vector3(vector.x, vector.y, vector.z);
         }
 
+
+        public static float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)
+        {
+            Vector2 diference = vec2 - vec1;
+            float sign = (vec2.x > vec1.x) ? -1.0f : 1.0f;
+            return (180 + Vector2.Angle(Vector2.up, diference)) * sign;
+        }
     }
 }

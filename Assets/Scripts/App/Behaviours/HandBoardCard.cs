@@ -122,7 +122,7 @@ public class HandBoardCard
             if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayCard(ownerPlayer, cardView, this);
+                _cardsController.PlayPlayerCard(ownerPlayer, cardView, this);
                 cardView.SetHighlightingEnabled(false);
             }
             else

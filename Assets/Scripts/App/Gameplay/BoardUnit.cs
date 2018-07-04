@@ -39,6 +39,7 @@ namespace LoomNetwork.CZB
         private AnimationsController _animationsController;
         private BattleController _battleController;
         private ActionsQueueController _actionsQueueController;
+        private VFXController _vfxController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -142,6 +143,7 @@ namespace LoomNetwork.CZB
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _vfxController = _gameplayManager.GetController<VFXController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -224,7 +226,7 @@ namespace LoomNetwork.CZB
 
                 if (Card.libraryCard.name.Equals("Freezzee"))
                 {
-                    var freezzees = GetEnemyCreaturesList(this).FindAll(x => x.Card.libraryCard.id == Card.libraryCard.id);
+                    var freezzees = GetEnemyUnitsList(this).FindAll(x => x.Card.libraryCard.id == Card.libraryCard.id);
 
                     if (freezzees.Count > 0)
                     {
@@ -259,9 +261,9 @@ namespace LoomNetwork.CZB
             MonoBehaviour.Destroy(particleObj);
         }
 
-        private List<BoardUnit> GetEnemyCreaturesList(BoardUnit creature)
+        private List<BoardUnit> GetEnemyUnitsList(BoardUnit unit)
         {
-            if (_gameplayManager.GetLocalPlayer().BoardCards.Contains(creature))
+            if (_gameplayManager.GetLocalPlayer().BoardCards.Contains(unit))
                 return _gameplayManager.GetOpponentPlayer().BoardCards;
             return _gameplayManager.GetLocalPlayer().BoardCards;
         }
@@ -490,94 +492,83 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void DoCombat()
+        public void DoCombat(object target)
         {
-            var sortingGroup = _selfObject.GetComponent<SortingGroup>();
-            if (fightTargetingArrow != null)
+            if (target == null)
             {
-                if (fightTargetingArrow.selectedPlayer != null)
+                if (_tutorialManager.IsTutorial)
+                    _tutorialManager.ActivateSelectTarget();
+                return;
+            }
+
+            var sortingGroup = _selfObject.GetComponent<SortingGroup>();
+
+            if (target is Player)
+            {
+                var targetPlayer = target as Player;
+                SetHighlightingEnabled(false);
+                IsPlayable = false;
+
+
+                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                //sortingGroup.sortingOrder = 100;
+
+                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
                 {
-                    var targetPlayer = fightTargetingArrow.selectedPlayer;
-                    SetHighlightingEnabled(false);
-                    IsPlayable = false;
-
-
-                    //         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                    //sortingGroup.sortingOrder = 100;
-
-                    _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
-                    {
-                        _animationsController.PlayFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, () =>
-                        {
-                            _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                            Vector3 positionOfVFX = targetPlayer.Transform.position;
-                            positionOfVFX.y = 4.45f;
-
-                            _gameplayManager.GetController<VFXController>().PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, Damage);
-
-
-                            _battleController.AttackPlayerByCreature(this, targetPlayer);
-                            CreatureOnAttackEvent?.Invoke(targetPlayer);
-                        },
-                        () =>
-                        {
-                            //sortingGroup.sortingOrder = 0;
-                            fightTargetingArrow = null;
-
-                            completeCallback?.Invoke();
-                        });
-                    });
-                }
-                if (fightTargetingArrow.selectedCard != null)
-                {
-                    var targetCard = fightTargetingArrow.selectedCard;
-                    SetHighlightingEnabled(false);
-                    IsPlayable = false;
-
-                    _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                    _animationsController.DoFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, () =>
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                        //sortingGroup.sortingOrder = 100;
-                       // if (targetCard.transform== null)
-                        {
+                        Vector3 positionOfVFX = targetPlayer.AvatarObject.transform.position;
+                       // positionOfVFX.y = 4.45f; // was used only for local player
 
-                            // play sound when target creature attack more than our
-                            if (targetCard.Damage > Damage)
-                            {
-                                _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                            }
+                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, Damage);
 
-                            _animationsController.PlayFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, () =>
-                            {
-                                _gameplayManager.GetController<VFXController>().PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
+                        _battleController.AttackPlayerByCreature(this, targetPlayer);
+                        CreatureOnAttackEvent?.Invoke(targetPlayer);
+                    },
+                    () =>
+                    {
+                        //sortingGroup.sortingOrder = 0;
+                        fightTargetingArrow = null;
 
-                                _battleController.AttackCreatureByCreature(this, targetCard);
-                                CreatureOnAttackEvent?.Invoke(targetCard);
-                            },
-                            () =>
-                            {
-                                //sortingGroup.sortingOrder = 0;
-                                fightTargetingArrow = null;
-
-                                completeCallback?.Invoke();
-                            });
-                        }
+                        completeCallback?.Invoke();
                     });
-                }
-                if (fightTargetingArrow.selectedCard == null && fightTargetingArrow.selectedPlayer == null)
-                {
-                    if (_tutorialManager.IsTutorial)
-                        _tutorialManager.ActivateSelectTarget();
-                }
+                });
             }
-        }
+            else if (target is BoardUnit)
+            {
+                var targetCard = target as BoardUnit;
+                SetHighlightingEnabled(false);
+                IsPlayable = false;
 
-        public void CreatureOnAttack(object target)
-        {
-            CreatureOnAttackEvent?.Invoke(target);
+                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                {
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                    //sortingGroup.sortingOrder = 100;
+
+                    // play sound when target creature attack more than our
+                    if (targetCard.Damage > Damage)
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
+                    _animationsController.DoFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, () =>
+                    {
+                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
+
+                        _battleController.AttackCreatureByCreature(this, targetCard);
+                        CreatureOnAttackEvent?.Invoke(targetCard);
+                    },
+                    () =>
+                    {
+                        //sortingGroup.sortingOrder = 0;
+                        fightTargetingArrow = null;
+
+                        completeCallback?.Invoke();
+                    });
+                });
+            }
         }
     }
 

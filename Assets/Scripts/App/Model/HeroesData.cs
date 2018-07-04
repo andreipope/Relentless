@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB.Data
         public void ValidateSkillLocking()
         {
             int skillId = level % 4;
-            for(int i = 0; i < skillId + 1; i++)
+            for(int i = 0; i < skillId; i++)
                 skills[i].unlocked = true;
         }
     }

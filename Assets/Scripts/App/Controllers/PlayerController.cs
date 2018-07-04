@@ -123,10 +123,10 @@ namespace LoomNetwork.CZB
         }
 
 
-        public virtual void OnGameEndedEventHandler(bool isWin)
+        public virtual void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             //Write code for analize amount of experience getted in the battle
-            _heroController.ChangeExperience(isWin ? 100 : -50);
+            _heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }
 
         private void HandleInput()
@@ -234,19 +234,10 @@ namespace LoomNetwork.CZB
 
         public void OnTurnEndedEventHandler()
         {
-
         }
 
         public void OnTurnStartedEventHandler()
         {
-            if (_gameplayManager.IsLocalPlayerTurn())
-            {
-                if (PlayerInfo.turn != 1 && PlayerInfo.CardsInDeck.Count > 0)
-                    _cardsController.AddCardToHand(PlayerInfo, PlayerInfo.CardsInDeck[0]);
-
-                PlayerInfo.ManaOnCurrentTurn++;
-                PlayerInfo.Mana = PlayerInfo.ManaOnCurrentTurn;
-            }
         }
 
         public void UpdateHandCardsHighlight()

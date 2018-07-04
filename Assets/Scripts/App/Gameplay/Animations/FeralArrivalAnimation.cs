@@ -10,7 +10,8 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class FeralArrivalAnimation {
+    public class FeralArrivalAnimation
+    {
 
         public Action<FeralArrivalAnimation> OnAnimationCompleted;
 
@@ -39,7 +40,7 @@ namespace LoomNetwork.CZB
 
             //Debug.Log("HeavyArrivalAnimation clip length: "+_animationLength);
 
-            GameClient.Get<ITimerManager>().AddTimer((x) => 
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
             {
                 if (OnAnimationCompleted != null) OnAnimationCompleted(this);
                 Dispose();
@@ -48,7 +49,7 @@ namespace LoomNetwork.CZB
                     if (call.Value != null) call.Value(call.Key);
                 }
                 _onCompleteActions.Clear();
-            }, time:_animationLength);
+            }, time: _animationLength);
         }
 
         public void AddOnCompleteCallback(Action<object[]> call, object[] param = null)

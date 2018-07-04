@@ -43,16 +43,6 @@ namespace LoomNetwork.CZB
             var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_attackingCreature.Damage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up;
-
-            if(_attackedPlayer.CurrentBoardWeapon != null)
-            {
-                GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
-                attackViewCreature.SetActive(true);
-                var damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
-                damageTextCreature.text = (-_attackedPlayer.CurrentBoardWeapon.Damage).ToString();
-                attackViewCreature.transform.localPosition = -Vector3.up * 3;
-                
-            }
         }
 
         public override void OnPointerEnterEventHandler(PointerEventData obj)

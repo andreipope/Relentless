@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
             
         }
 
-        public void OnGameEndedEventHandler(bool isWin)
+        public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             if (_gameplayManager.IsTutorial)
                 return;
@@ -236,12 +236,6 @@ namespace LoomNetwork.CZB
                     playerBoardCards.Remove(item);
                 creatures.Clear();
                 creatures = null;
-
-                if (_playerController.PlayerInfo.CurrentBoardWeapon != null && !_playerController.IsPlayerStunned)
-                {
-                    _playerController.AlreadyAttackedInThisTurn = false;
-                    _playerController.PlayerInfo.CurrentBoardWeapon.ActivateWeapon(false);
-                }
 
                 _uiManager.DrawPopup<YourTurnPopup>();
             }

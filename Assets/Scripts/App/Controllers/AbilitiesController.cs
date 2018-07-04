@@ -7,8 +7,6 @@ using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -189,12 +187,8 @@ namespace LoomNetwork.CZB
 
             lock (_lock)
             {
-               // Debug.Log("ability - " + ability);
-
                 foreach (var item in ability.abilityTargetTypes)
                 {
-                    //Debug.Log("item - " + item);
-
                     switch (item)
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
@@ -205,8 +199,6 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
-                                // Debug.Log("localPlayer.boardZone.cards.Count - " + localPlayer.boardZone.cards.Count);
-                                // Debug.Log("kind - " + kind);
                                 if (localPlayer.BoardCards.Count > 1 || kind == Enumerators.CardKind.SPELL)
                                     available = true;
                             }
@@ -218,8 +210,6 @@ namespace LoomNetwork.CZB
                             break;
                         default: break;
                     }
-                    //Debug.Log("available - " + available);
-
                 }
             }
 
@@ -280,8 +270,6 @@ namespace LoomNetwork.CZB
                 else //if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
                     activeAbility.ability.Activate();
             }
-            // Preemptively move the card so that the effect solver can properly check the availability of targets
-            // by also taking into account this card (that is trying to be played).
 
             if (kind == Enumerators.CardKind.SPELL)
             {
@@ -290,27 +278,11 @@ namespace LoomNetwork.CZB
             }
             else
             {
-              //  if (isPlayer)
-                {
-                    workingCard.owner.RemoveCardFromHand(workingCard);
-                    workingCard.owner.AddCardToBoard(workingCard);
-
-                 //   if (currentCreature != null)
-                  //      currentCreature._fightTargetingArrowPrefab = fightTargetingArrowPrefab;
-                }
-               // else
-                {
-                    //opponentInfo.namedZones[Constants.ZONE_HAND].RemoveCard(runtimeCard);
-                    //opponentInfo.namedZones[Constants.ZONE_BOARD].AddCard(runtimeCard);
-                }
+                workingCard.owner.RemoveCardFromHand(workingCard);
+                workingCard.owner.AddCardToBoard(workingCard);
             }
 
-            if (kind != Enumerators.CardKind.SPELL)
-            {
-             //   effectSolver.MoveCard(isPlayer ? netId : opponentInfo.netId, workingCard, Constants.ZONE_HAND, Constants.ZONE_BOARD);
-
-            }
-            else
+            if(kind == Enumerators.CardKind.SPELL)
             {
                 if (handCard != null && isPlayer)
                 {
@@ -440,12 +412,11 @@ namespace LoomNetwork.CZB
             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
             _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
         }
-    }
 
-
-    public class ActiveAbility
-    {
-        public ulong id;
-        public AbilityBase ability;
+        public class ActiveAbility
+        {
+            public ulong id;
+            public AbilityBase ability;
+        }
     }
 }

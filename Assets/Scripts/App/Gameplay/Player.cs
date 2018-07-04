@@ -133,7 +133,6 @@ namespace LoomNetwork.CZB
 
         public List<BoardUnit> BoardCards { get; set; }
 
-        public BoardWeapon CurrentBoardWeapon { get; set; }
         public List<BoardSkill> BoardSkills { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; private set; }
@@ -232,23 +231,16 @@ namespace LoomNetwork.CZB
 
             foreach (var item in BoardSkills)
                 item.OnStartTurn();
-        }
 
-        public void DestroyWeapon()
-        {
-            if (CurrentBoardWeapon != null)
+            if (_gameplayManager.WhoseTurn.Equals(this))
             {
-                CurrentBoardWeapon.Destroy();
+                ManaOnCurrentTurn++;
+                Mana = ManaOnCurrentTurn;
+
+                if (((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && CardsInDeck.Count > 0)
+                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
-
-            CurrentBoardWeapon = null;
         }
-
-        public void AddWeapon(Data.Card card)
-        {
-            CurrentBoardWeapon = new BoardWeapon(_playerObject.transform.Find("Weapon").gameObject, card);
-        }
-
 
         public void AddCardToDeck(WorkingCard card)
         {
@@ -398,11 +390,9 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnPlayerSelected(this);
-                }
+                var boardArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                if (boardArrow != null)
+                    boardArrow.OnPlayerSelected(this);
             }
         }
 
@@ -410,11 +400,9 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnPlayerUnselected(this);
-                }
+                var boardArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                if (boardArrow != null)
+                    boardArrow.OnPlayerUnselected(this);
             }
         }
 
