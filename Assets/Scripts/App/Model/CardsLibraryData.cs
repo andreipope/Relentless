@@ -50,8 +50,8 @@ namespace LoomNetwork.CZB.Data
 
                     if(card.kind != null)
                         card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
-                    if (card.rarity != null)
-                        card.cardRarity = Utilites.CastStringTuEnum<Enumerators.CardRarity>(card.rarity);
+                    if (card.rank != null)
+                        card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
                     if (card.type != null)
                         card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
 

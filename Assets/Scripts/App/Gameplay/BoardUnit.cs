@@ -213,7 +213,7 @@ namespace LoomNetwork.CZB
 
                 InternalTools.SetLayerRecursively(_selfObject, 0);
 
-                if (Card.libraryCard.cardRarity == Enumerators.CardRarity.EPIC)
+                if (Card.libraryCard.cardRank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
@@ -272,7 +272,7 @@ namespace LoomNetwork.CZB
         {
             Card = card;
 
-            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRarity.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
+            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRank.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
 
             pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
             pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
@@ -462,7 +462,7 @@ namespace LoomNetwork.CZB
             {
                 fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
                 fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>() { Enumerators.SkillTargetType.OPPONENT, Enumerators.SkillTargetType.OPPONENT_CARD };
-                fightTargetingArrow.BoardCards = _gameplayManager.PlayersInGame.Find(x => x != ownerPlayer).BoardCards;
+                fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 fightTargetingArrow.Begin(transform.position);
 
                 if (ownerPlayer.Equals(_gameplayManager.CurrentPlayer))

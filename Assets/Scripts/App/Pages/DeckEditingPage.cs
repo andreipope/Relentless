@@ -443,7 +443,7 @@ namespace LoomNetwork.CZB
                 var cardListItem = new CardListItem(go);
                 _cardListItemEnd.transform.SetAsLastSibling();
 
-                cardListItem.Init(deck, libraryCard, card.amount, GetMaxCopiesValue(libraryCard.cardRarity));
+                cardListItem.Init(deck, libraryCard, card.amount, GetMaxCopiesValue(libraryCard.cardRank));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
                 _cardListItems.Add(cardListItem);
@@ -493,12 +493,12 @@ namespace LoomNetwork.CZB
 
             var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
 
-            uint maxCopies = GetMaxCopiesValue(card.cardRarity);
+            uint maxCopies = GetMaxCopiesValue(card.cardRank);
             var cardRarity = "You cannot have more than ";
 
             if (existingCards != null && existingCards.amount == maxCopies)
             {
-                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.cardRarity.ToString().ToLower() + " card in your deck.");
+                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.cardRank.ToString().ToLower() + " card in your deck.");
                 return;
             }
 
@@ -538,7 +538,7 @@ namespace LoomNetwork.CZB
 
 
                 int maxCount = _collectionData.GetCardData(card.id).amount + 1;
-                cardListItem.Init(_currentDeck, card, 1, GetMaxCopiesValue(card.cardRarity));
+                cardListItem.Init(_currentDeck, card, 1, GetMaxCopiesValue(card.cardRank));
                 cardListItem.OnDeleteCard += DeleteCardHandler;
 
                 _cardListItems.Add(cardListItem);
@@ -547,22 +547,22 @@ namespace LoomNetwork.CZB
             _currentDeck.AddCard(card.id); 
         }
 
-        public uint GetMaxCopiesValue(Enumerators.CardRarity rarity)
+        public uint GetMaxCopiesValue(Enumerators.CardRank rarity)
         {
             uint maxCopies = 0;
             switch (rarity)
             {
-                case Enumerators.CardRarity.COMMON:
-                    maxCopies = Constants.CARD_COMMON_MAX_COPIES;
+                case Enumerators.CardRank.MINION:
+                    maxCopies = Constants.CARD_MINION_MAX_COPIES;
                     break;
-                case Enumerators.CardRarity.RARE:
-                    maxCopies = Constants.CARD_RARE_MAX_COPIES;
+                case Enumerators.CardRank.OFFICER:
+                    maxCopies = Constants.CARD_OFFICER_MAX_COPIES;
                     break;
-                case Enumerators.CardRarity.LEGENDARY:
-                    maxCopies = Constants.CARD_LEGENDARY_MAX_COPIES;
+                case Enumerators.CardRank.COMMANDER:
+                    maxCopies = Constants.CARD_COMMANDER_MAX_COPIES;
                     break;
-                case Enumerators.CardRarity.EPIC:
-                    maxCopies = Constants.CARD_EPIC_MAX_COPIES;
+                case Enumerators.CardRank.GENERAL:
+                    maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
                     break;
             }
             return maxCopies;

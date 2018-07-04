@@ -155,13 +155,11 @@ namespace LoomNetwork.CZB
 
             gameFinished = false;
 
-            var players = _gameplayManager.PlayersInGame;
-
             if (_gameplayManager.IsTutorial)
-                players.Find(x => !x.IsLocalPlayer).HP = 8;
+                _gameplayManager.OpponentPlayer.HP = 8;
 
             if (Constants.DEV_MODE)
-                players.Find(x => !x.IsLocalPlayer).HP = 1;
+                _gameplayManager.OpponentPlayer.HP = 1;
 
             StartTurn();
             _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
@@ -250,8 +248,8 @@ namespace LoomNetwork.CZB
                     card.SetHighlightingEnabled(false);
             }
 
-            foreach (var player in _gameplayManager.PlayersInGame)
-                player.CallOnStartTurnEvent();
+            _gameplayManager.CurrentPlayer.CallOnStartTurnEvent();
+            _gameplayManager.OpponentPlayer.CallOnStartTurnEvent();
 
             OnTurnStartedEvent?.Invoke();
         }
@@ -275,8 +273,8 @@ namespace LoomNetwork.CZB
                     card.OnEndTurn();
             }
 
-            foreach (var player in _gameplayManager.PlayersInGame)
-                player.CallOnEndTurnEvent();
+            _gameplayManager.CurrentPlayer.CallOnEndTurnEvent();
+            _gameplayManager.OpponentPlayer.CallOnEndTurnEvent();
 
             //todo move it from here I guess !!!!!!!!!!!!!! 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;

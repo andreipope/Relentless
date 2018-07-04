@@ -28,10 +28,10 @@ namespace LoomNetwork.CZB.Common
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
-		internal static uint CARD_COMMON_MAX_COPIES = 4;
-		internal static uint CARD_RARE_MAX_COPIES = 2;
-        internal static uint CARD_EPIC_MAX_COPIES = 2;
-        internal static uint CARD_LEGENDARY_MAX_COPIES = 1;
+		internal static uint CARD_MINION_MAX_COPIES = 4;
+		internal static uint CARD_OFFICER_MAX_COPIES = 2;
+        internal static uint CARD_COMMANDER_MAX_COPIES = 2;
+        internal static uint CARD_GENERAL_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
         internal static uint MAX_BOARD_CREATURES = 6;

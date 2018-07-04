@@ -53,8 +53,8 @@ namespace LoomNetwork.CZB
 
         private Card GenerateNewCard()
         {
-            var rarity = (Enumerators.CardRarity)IsChanceFit(0);
-            var cards = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardRarity == rarity && item.cardSetType != Enumerators.SetType.OTHERS);
+            var rarity = (Enumerators.CardRank)IsChanceFit(0);
+            var cards = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardRank == rarity && item.cardSetType != Enumerators.SetType.OTHERS);
             Card card = cards[Random.Range(0, cards.Count)];
             return card;
         }
@@ -76,8 +76,8 @@ namespace LoomNetwork.CZB
         {
             var fullColection = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardSetType != Enumerators.SetType.OTHERS);
 
-            var legendary = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.LEGENDARY);
-            var epic = fullColection.FindAll((item) => item.cardRarity == Enumerators.CardRarity.EPIC);
+            var legendary = fullColection.FindAll((item) => item.cardRank == Enumerators.CardRank.GENERAL);
+            var epic = fullColection.FindAll((item) => item.cardRank == Enumerators.CardRank.COMMANDER);
 
             _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
             _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);

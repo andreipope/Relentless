@@ -73,7 +73,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            Player opponent = _gameplayManager.PlayersInGame.Find(x => x != playerCallerOfAbility);
+            Player opponent = _gameplayManager.OpponentPlayer;
 
             var creature = info as BoardUnit;
 

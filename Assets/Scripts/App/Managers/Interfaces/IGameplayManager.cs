@@ -34,9 +34,6 @@ namespace LoomNetwork.CZB
 
         int TutorialStep { get; set; }
 
-        List<Player> PlayersInGame { get; set; }
-
-
         T GetController<T>() where T : IController;
 
         string GetCardSet(Data.Card card);

@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
             manaCost = libraryCard.cost;
 
 
-            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), WorkingCard.libraryCard.cardRarity);
+            var rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.libraryCard.cardRank);
 
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
@@ -123,7 +123,7 @@ namespace LoomNetwork.CZB
 
             manaCost = libraryCard.cost;
 
-            var rarity = Enum.GetName(typeof(Enumerators.CardRarity), card.cardRarity);
+            var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
 
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
 

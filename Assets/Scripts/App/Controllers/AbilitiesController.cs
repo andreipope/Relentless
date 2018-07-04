@@ -183,7 +183,7 @@ namespace LoomNetwork.CZB
         {
             bool available = false;
 
-            var opponent = _gameplayManager.PlayersInGame.Find(x => x != localPlayer);
+            var opponent = _gameplayManager.OpponentPlayer;
 
             lock (_lock)
             {

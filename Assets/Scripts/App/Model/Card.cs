@@ -23,13 +23,13 @@ namespace LoomNetwork.CZB.Data
         public string picture;
         public int damage;
         public int health;
-        public string rarity;
+        public string rank;
         public string type;
         public List<AbilityData> abilities = new List<AbilityData>();
         public CardViewInfo cardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
-        public Enumerators.CardRarity cardRarity;
+        public Enumerators.CardRank cardRank;
         [JsonIgnore]
         public Enumerators.CardType cardType;
         [JsonIgnore]

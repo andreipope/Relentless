@@ -181,7 +181,7 @@ namespace LoomNetwork.CZB
                 if (manaCost <= ownerPlayer.Mana)
                 {
                     fightTargetingArrow = Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
-                    fightTargetingArrow.BoardCards = _gameplayManager.PlayersInGame.Find(x => x != ownerPlayer).BoardCards;
+                    fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
                     fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>()
                 {

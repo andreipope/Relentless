@@ -14,7 +14,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -50,7 +50,7 @@
           "damage": 2,
           "health": 2,
           "type": "FERAL",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "cardViewInfo": {
             "position": {
               "x": -0.35,
@@ -75,7 +75,7 @@
           "damage": 4,
           "health": 3,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -111,7 +111,7 @@
           "damage": 3,
           "health": 3,
           "type": "FERAL",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -136,7 +136,7 @@
           "damage": 6,
           "health": 6,
           "type": "FERAL",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -161,7 +161,7 @@
           "damage": 6,
           "health": 6,
           "type": "WALKER",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -202,7 +202,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "STUN",
@@ -236,7 +236,7 @@
           "damage": 3,
           "health": 3,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -273,7 +273,7 @@
           "damage": 4,
           "health": 4,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
@@ -308,7 +308,7 @@
           "damage": 8,
           "health": 7,
           "type": "WALKER",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -349,7 +349,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -385,7 +385,7 @@
           "damage": 2,
           "health": 6,
           "type": "HEAVY",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "cardViewInfo": {
             "position": {
               "x": -0.45,
@@ -410,7 +410,7 @@
           "damage": 3,
           "health": 5,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -446,7 +446,7 @@
           "damage": 8,
           "health": 8,
           "type": "HEAVY",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -485,7 +485,7 @@
           "damage": 1,
           "health": 1,
           "type": "FERAL",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "cardViewInfo": {
             "position": {
               "x": -0.2,
@@ -510,7 +510,7 @@
           "damage": 3,
           "health": 3,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "abilities": [
             {
               "type": "CARD_RETURN",
@@ -543,7 +543,7 @@
           "damage": 4,
           "health": 5,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -578,7 +578,7 @@
           "damage": 8,
           "health": 7,
           "type": "WALKER",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -618,7 +618,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -654,7 +654,7 @@
           "damage": 4,
           "health": 2,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
@@ -689,7 +689,7 @@
           "damage": 2,
           "health": 2,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -714,7 +714,7 @@
           "damage": 5,
           "health": 5,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "STUN",
@@ -749,7 +749,7 @@
           "damage": 5,
           "health": 6,
           "type": "WALKER",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "SUMMON",
@@ -788,7 +788,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "MODIFICATOR_STATS",
@@ -824,7 +824,7 @@
           "damage": 3,
           "health": 2,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "abilities": [
             {
               "type": "CHANGE_STAT",
@@ -859,7 +859,7 @@
           "damage": 3,
           "health": 3,
           "type": "FERAL",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
           ],
           "cardViewInfo": {
@@ -886,7 +886,7 @@
           "damage": 8,
           "health": 8,
           "type": "HEAVY",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "MASSIVE_DAMAGE",
@@ -927,7 +927,7 @@
           "damage": 0,
           "health": 0,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "heal",
@@ -962,7 +962,7 @@
           "damage": 5,
           "health": 0,
           "type": "WALKER",
-          "rarity": "RARE",
+          "rank": "OFFICER",
           "abilities": [
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
@@ -997,7 +997,7 @@
           "damage": 0,
           "health": 0,
           "type": "WALKER",
-          "rarity": "EPIC",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "ADD_GOO_VIAL",
@@ -1031,7 +1031,7 @@
           "damage": 7,
           "health": 2,
           "type": "WALKER",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "abilities": [
             {
               "type": "WEAPON",
@@ -1070,7 +1070,7 @@
           "damage": 1,
           "health": 1,
           "type": "WALKER",
-          "rarity": "COMMON",
+          "rank": "MINION",
           "cardViewInfo": {
             "position": {
               "x": -0.18,
@@ -1094,7 +1094,7 @@
           "damage": 300,
           "health": 300,
           "type": "FERAL",
-          "rarity": "LEGENDARY",
+          "rank": "GENERAL",
           "cardViewInfo": {
             "position": {
               "x": -0.18,

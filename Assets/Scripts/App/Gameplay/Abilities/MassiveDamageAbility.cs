@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
-            Player opponent = _gameplayManager.PlayersInGame.Find(x => x != playerCallerOfAbility);
+            Player opponent = _gameplayManager.OpponentPlayer;
             foreach (var target in abilityTargetTypes)
             {
                 switch (target)

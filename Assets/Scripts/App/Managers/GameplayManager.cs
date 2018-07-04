@@ -38,10 +38,7 @@ namespace LoomNetwork.CZB
 
         public int TutorialStep { get; set; }
 
-        public List<Player> PlayersInGame { get; set; }
-
         public Player CurrentTurnPlayer { get; set; }
-
         public Player CurrentPlayer { get; set; }
         public Player OpponentPlayer { get; set; }
 
@@ -59,8 +56,6 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-
-            PlayersInGame = new List<Player>();
 
             InitControllers();
 
@@ -167,8 +162,6 @@ namespace LoomNetwork.CZB
 
         private void StartInitializeGame()
         {
-            PlayersInGame.Clear();
-
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 

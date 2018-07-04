@@ -167,12 +167,12 @@
             HEAVY
         }
 
-        public enum CardRarity
+        public enum CardRank
         {
-            COMMON,
-            RARE,
-            LEGENDARY,
-            EPIC
+            MINION,
+            OFFICER,
+            COMMANDER,
+            GENERAL
         }
 
         public enum GameEndCondition
