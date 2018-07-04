@@ -263,9 +263,9 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> GetEnemyUnitsList(BoardUnit unit)
         {
-            if (_gameplayManager.GetLocalPlayer().BoardCards.Contains(unit))
-                return _gameplayManager.GetOpponentPlayer().BoardCards;
-            return _gameplayManager.GetLocalPlayer().BoardCards;
+            if (_gameplayManager.CurrentPlayer.BoardCards.Contains(unit))
+                return _gameplayManager.OpponentPlayer.BoardCards;
+            return _gameplayManager.CurrentPlayer.BoardCards;
         }
 
         public void SetObjectInfo(WorkingCard card, string setName = "")
@@ -352,7 +352,7 @@ namespace LoomNetwork.CZB
             numTurnsOnBoard += 1;
             StopSleepingParticles();
 
-            if (ownerPlayer != null && IsPlayable && _gameplayManager.WhoseTurn.Equals(ownerPlayer))
+            if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
                 SetHighlightingEnabled(true);
         }
 
@@ -465,7 +465,7 @@ namespace LoomNetwork.CZB
                 fightTargetingArrow.BoardCards = _gameplayManager.PlayersInGame.Find(x => x != ownerPlayer).BoardCards;
                 fightTargetingArrow.Begin(transform.position);
 
-                if (ownerPlayer.Equals(_gameplayManager.GetLocalPlayer()))
+                if (ownerPlayer.Equals(_gameplayManager.CurrentPlayer))
                 {
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
@@ -484,7 +484,7 @@ namespace LoomNetwork.CZB
                 {
                     fightTargetingArrow.End(this);
 
-                    if (ownerPlayer.Equals(_gameplayManager.GetLocalPlayer()))
+                    if (ownerPlayer.Equals(_gameplayManager.CurrentPlayer))
                     {
                         _playerController.IsCardSelected = false;
                     }

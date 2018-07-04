@@ -183,7 +183,7 @@ namespace LoomNetwork.CZB
             if (cardToDestroy == null)
                 return;
 
-            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.GetLocalPlayer() ? false : true;
+            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
 
 
             //_cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
@@ -353,8 +353,8 @@ namespace LoomNetwork.CZB
 
         private void OnGameInitializedEventHandler()
         {
-            var player = _gameplayManager.GetLocalPlayer();
-            var opponent = _gameplayManager.GetOpponentPlayer();
+            var player = _gameplayManager.CurrentPlayer;
+            var opponent = _gameplayManager.OpponentPlayer;
 
             player.DeckChangedEvent += OnPlayerDeckZoneChanged;
             player.PlayerHPChangedEvent += OnPlayerHPChanged;

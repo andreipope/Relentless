@@ -99,7 +99,7 @@ public class BoardSkill : MonoBehaviour
 
     public void OnStartTurn()
     {
-        if (!_gameplayManager.WhoseTurn.Equals(ownerPlayer))
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             return;
 
         if (ownerPlayer.Mana >= manaCost)
@@ -108,7 +108,7 @@ public class BoardSkill : MonoBehaviour
 
     public void OnEndTurn()
     {
-        if (!_gameplayManager.WhoseTurn.Equals(ownerPlayer))
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             return;
 
         _isUsed = false;
@@ -155,7 +155,7 @@ public class BoardSkill : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!ownerPlayer.IsLocalPlayer || !_gameplayManager.WhoseTurn.Equals(ownerPlayer))
+        if (!ownerPlayer.IsLocalPlayer || !_gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             return;
 
         if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep != 29)
@@ -198,7 +198,7 @@ public class BoardSkill : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (!ownerPlayer.IsLocalPlayer || !_gameplayManager.WhoseTurn.Equals(ownerPlayer))
+        if (!ownerPlayer.IsLocalPlayer || !_gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             return;
 
         DoOnUpSkillAction();
@@ -206,7 +206,7 @@ public class BoardSkill : MonoBehaviour
 
     public void DoOnUpSkillAction()
     {
-        if (!_gameplayManager.WhoseTurn.Equals(ownerPlayer))
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             return;
 
         if (_isUsed)
@@ -427,7 +427,7 @@ public class BoardSkill : MonoBehaviour
         else
         {
             if (ownerPlayer.IsLocalPlayer)
-                return _gameplayManager.GetOpponentPlayer();
+                return _gameplayManager.OpponentPlayer;
             else
                 return ownerPlayer;
         }

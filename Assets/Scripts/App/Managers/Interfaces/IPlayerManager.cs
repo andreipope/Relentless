@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
         User LocalUser { get; set; }
         List<BoardUnit> PlayerGraveyardCards { get; set; }
         List<BoardUnit> OpponentGraveyardCards { get; set; }
-        Player PlayerInfo { get; set; }
-        Player OpponentInfo { get; set; }
+        void ChangeGoo(int value);
+        int GetGoo();
     }
 }

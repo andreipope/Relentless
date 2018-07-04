@@ -219,7 +219,7 @@ namespace LoomNetwork.CZB
             foreach (var item in BoardSkills)
                 item.OnStartTurn();
 
-            if (_gameplayManager.WhoseTurn.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 ManaOnCurrentTurn++;
                 Mana = ManaOnCurrentTurn;

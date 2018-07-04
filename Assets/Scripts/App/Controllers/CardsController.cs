@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
 
         public GameObject AddCardToOpponentHand(WorkingCard card)
         {
-            var opponent = _gameplayManager.GetOpponentPlayer();
+            var opponent = _gameplayManager.OpponentPlayer;
             var go = MonoBehaviour.Instantiate(opponentCardPrefab);
             go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
 

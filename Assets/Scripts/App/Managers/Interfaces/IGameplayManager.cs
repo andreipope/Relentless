@@ -24,6 +24,10 @@ namespace LoomNetwork.CZB
         int PlayerDeckId { get; set; }
         int OpponentDeckId { get; set; }
 
+        Player CurrentTurnPlayer { get; set; }
+        Player CurrentPlayer { get; set; }
+        Player OpponentPlayer { get; set; }
+
         bool GameStarted { get; set; }
         bool GameEnded { get; set; }
         bool IsTutorial { get; set; }
@@ -32,7 +36,6 @@ namespace LoomNetwork.CZB
 
         List<Player> PlayersInGame { get; set; }
 
-        Player WhoseTurn { get; set; }
 
         T GetController<T>() where T : IController;
 
@@ -48,8 +51,5 @@ namespace LoomNetwork.CZB
         void StopGameplay();
 
         void EndGame(Enumerators.EndGameType endGameType);
-
-        Player GetLocalPlayer();
-        Player GetOpponentPlayer();   
     }    
 }

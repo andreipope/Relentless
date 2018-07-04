@@ -122,7 +122,7 @@ namespace LoomNetwork.CZB
         public void Show()
         {
             //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -187,7 +187,7 @@ namespace LoomNetwork.CZB
 
         public void UpdateGooValue()
         {
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
         }
 
 #region Buttons Handlers

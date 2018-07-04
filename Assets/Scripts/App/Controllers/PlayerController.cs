@@ -21,9 +21,7 @@ namespace LoomNetwork.CZB
         private AbilitiesController _abilitiesController;
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
-        private HeroController _heroController;
-
-        public Player PlayerInfo { get; protected set; }
+      //  private HeroController _heroController;
 
         public bool AlreadyAttackedInThisTurn { get; set; }
         public bool IsPlayerStunned { get; set; }
@@ -40,7 +38,7 @@ namespace LoomNetwork.CZB
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-            _heroController = _gameplayManager.GetController<HeroController>();
+            //_heroController = _gameplayManager.GetController<HeroController>();
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
@@ -66,13 +64,7 @@ namespace LoomNetwork.CZB
 
         public void InitializePlayer()
         {
-            PlayerInfo = new Player(GameObject.Find("Player"), false);
-
-            //_heroController.playerHero = PlayerInfo.SelfHero;
-
-            _gameplayManager.PlayersInGame.Add(PlayerInfo);
-
-            _playerManager.PlayerInfo = PlayerInfo;
+            _gameplayManager.CurrentPlayer = new Player(GameObject.Find("Player"), false);
 
             var playerDeck = new List<int>();
 
@@ -101,16 +93,14 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            PlayerInfo.SetDeck(playerDeck);
-
-            PlayerInfo.SetFirstHand();
+            _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+            _gameplayManager.CurrentPlayer.SetFirstHand();
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-            PlayerInfo.OnStartTurnEvent += OnTurnStartedEventHandler;
-            PlayerInfo.OnEndTurnEvent += OnTurnEndedEventHandler;
+            _gameplayManager.CurrentPlayer.OnStartTurnEvent += OnTurnStartedEventHandler;
+            _gameplayManager.CurrentPlayer.OnEndTurnEvent += OnTurnEndedEventHandler;
         }
-
 
         public virtual void OnGameStartedEventHandler()
         {
@@ -138,7 +128,7 @@ namespace LoomNetwork.CZB
                         if (hit.collider != null && hit.collider.gameObject != null)
                         {
                             var boardCardObject = _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject);
-                            if (boardCardObject != null && !boardCardObject.isPreview && boardCardObject.CanBePlayed(PlayerInfo))
+                            if (boardCardObject != null && !boardCardObject.isPreview && boardCardObject.CanBePlayed(_gameplayManager.CurrentPlayer))
                             {
                                 hitCards.Add(hit.collider.gameObject);
                             }
@@ -237,17 +227,17 @@ namespace LoomNetwork.CZB
 
         public void UpdateHandCardsHighlight()
         {
-            if (PlayerInfo.BoardSkills[0] != null && IsActive)
+            if (_gameplayManager.CurrentPlayer.BoardSkills[0] != null && IsActive)
             {
-                if (PlayerInfo.Mana >= PlayerInfo.BoardSkills[0].manaCost)
-                    PlayerInfo.BoardSkills[0].SetHighlightingEnabled(true);
+                if (_gameplayManager.CurrentPlayer.Mana >= _gameplayManager.CurrentPlayer.BoardSkills[0].manaCost)
+                    _gameplayManager.CurrentPlayer.BoardSkills[0].SetHighlightingEnabled(true);
                 else
-                    PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
+                    _gameplayManager.CurrentPlayer.BoardSkills[0].SetHighlightingEnabled(false);
             }
 
             foreach (var card in _battlegroundController.playerHandCards)
             {
-                if (card.CanBePlayed(PlayerInfo) && card.CanBeBuyed(PlayerInfo))
+                if (card.CanBePlayed(_gameplayManager.CurrentPlayer) && card.CanBeBuyed(_gameplayManager.CurrentPlayer))
                 {
                     card.SetHighlightingEnabled(true);
                 }

@@ -14,14 +14,10 @@ namespace LoomNetwork.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {
-        private IDataManager _dataManager;
-
         public User LocalUser { get; set; }
 
         public List<BoardUnit> PlayerGraveyardCards { get; set; }
         public List<BoardUnit> OpponentGraveyardCards { get; set; }
-        public Player PlayerInfo { get; set; }
-        public Player OpponentInfo { get; set; }
 
         public void Dispose()
         {
@@ -29,8 +25,6 @@ namespace LoomNetwork.CZB
 
         public void Init()
         {
-            _dataManager = GameClient.Get<IDataManager>();
-
             LocalUser = new User();
         }
 
@@ -41,6 +35,11 @@ namespace LoomNetwork.CZB
         public void ChangeGoo(int value)
         {
             LocalUser.gooValue += value;
+        }
+
+        public int GetGoo()
+        {
+            return LocalUser.gooValue;
         }
     }
 }

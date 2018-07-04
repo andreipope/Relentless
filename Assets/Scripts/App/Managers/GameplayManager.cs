@@ -40,7 +40,10 @@ namespace LoomNetwork.CZB
 
         public List<Player> PlayersInGame { get; set; }
 
-        public Player WhoseTurn { get; set; }
+        public Player CurrentTurnPlayer { get; set; }
+
+        public Player CurrentPlayer { get; set; }
+        public Player OpponentPlayer { get; set; }
 
         public void Dispose()
         {
@@ -92,7 +95,6 @@ namespace LoomNetwork.CZB
             _controllers.Add(new BattlegroundController());
             _controllers.Add(new AnimationsController());
             _controllers.Add(new BattleController());
-            _controllers.Add(new HeroController());
             _controllers.Add(new BoardArrowController());
 
             foreach (var controller in _controllers)
@@ -158,19 +160,9 @@ namespace LoomNetwork.CZB
             GameEnded = true;
         }
 
-        public Player GetLocalPlayer()
-        {
-            return PlayersInGame.Find(x => x.IsLocalPlayer);
-        }
-
-        public Player GetOpponentPlayer()
-        {
-            return PlayersInGame.Find(x => !x.IsLocalPlayer);
-        }
-
         public bool IsLocalPlayerTurn()
         {
-            return WhoseTurn.Equals(GetLocalPlayer());
+            return CurrentTurnPlayer.Equals(CurrentPlayer);
         }
 
         private void StartInitializeGame()
@@ -183,7 +175,7 @@ namespace LoomNetwork.CZB
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
                 GetController<AIController>().InitializePlayer();
 
-            WhoseTurn = GetLocalPlayer();// local player starts as first
+            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
 
 
             GetController<BattlegroundController>().InitializeBattleground();

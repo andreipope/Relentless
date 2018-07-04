@@ -119,7 +119,7 @@ namespace LoomNetwork.CZB
             GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.amount);
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
-            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 5 * ((int)libraryCard.cardRarity + 1);
+            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.cardRarity + 1));
 
 			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();
 		}

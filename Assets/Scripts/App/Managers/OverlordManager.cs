@@ -13,10 +13,8 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class HeroController : IController
+    public class OverlordManager : IService, IOverlordManager
     {
-        public Hero playerHero;
-
         public void Init()
         {
 
@@ -30,23 +28,23 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void ChangeExperience(int value)
+        public void ChangeExperience(Hero hero, int value)
         {
-            playerHero.experience += value;
-            CheckLevel();
+            hero.experience += value;
+            CheckLevel(hero);
         }
 
-        private void CheckLevel()
+        private void CheckLevel(Hero hero)
         {
-            if (playerHero.experience > 1000)
-                LevelUP();
+            if (hero.experience > 1000)
+                LevelUP(hero);
         }
 
-        private void LevelUP()
+        private void LevelUP(Hero hero)
         {
-            playerHero.level++;
-            playerHero.experience = 0;
-            playerHero.ValidateSkillLocking();
+            hero.level++;
+            hero.experience = 0;
+            hero.ValidateSkillLocking();
         }
     }
 }

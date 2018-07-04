@@ -114,7 +114,7 @@ namespace LoomNetwork.CZB
 
         public void CheckGameDynamic()
         {
-            if (_gameplayManager.GetOpponentPlayer().HP > 9 && _gameplayManager.GetLocalPlayer().HP > 9)
+            if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
             {
                 if (_battleDynamic)
                     _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
@@ -166,7 +166,6 @@ namespace LoomNetwork.CZB
             StartTurn();
             _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
 
-            _playerManager.PlayerGraveyardCards = playerGraveyardCards;
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
 
@@ -203,7 +202,7 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.GameEnded)
                 return;
 
-            _gameplayManager.WhoseTurn.turn++;
+            _gameplayManager.CurrentTurnPlayer.turn++;
 
             if (_dataManager.CachedUserLocalData.tutorial && !_tutorialManager.IsTutorial)
                 _tutorialManager.StartTutorial();
@@ -280,7 +279,7 @@ namespace LoomNetwork.CZB
                 player.CallOnEndTurnEvent();
 
             //todo move it from here I guess !!!!!!!!!!!!!! 
-            _gameplayManager.WhoseTurn = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.GetOpponentPlayer() : _gameplayManager.GetLocalPlayer();
+            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 
@@ -327,8 +326,6 @@ namespace LoomNetwork.CZB
                 boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
                 opponentBoardCards.Remove(boardCard);
-                opponentGraveyardCards.Add(boardCard);
-               
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
@@ -366,7 +363,7 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.GameEnded)
                 return;
 
-            var playerBoardCards = _gameplayManager.GetLocalPlayer().BoardCards;
+            var playerBoardCards = _gameplayManager.CurrentPlayer.BoardCards;
 
             _rearrangingBottomBoard = true;
 
@@ -428,7 +425,7 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.GameEnded)
                 return;
 
-            var opponentBoardCards = _gameplayManager.GetOpponentPlayer().BoardCards;
+            var opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
 
             _rearrangingTopBoard = true;

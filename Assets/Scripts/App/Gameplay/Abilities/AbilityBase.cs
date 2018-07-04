@@ -84,8 +84,8 @@ namespace LoomNetwork.CZB
             this.abilityCallType = ability.abilityCallType;
             this.abilityTargetTypes = ability.abilityTargetTypes;
             this.abilityEffectType = ability.abilityEffectType;
-            playerAvatar = _gameplayManager.GetLocalPlayer();
-            opponenentAvatar = _gameplayManager.GetOpponentPlayer();
+            playerAvatar = _gameplayManager.CurrentPlayer;
+            opponenentAvatar = _gameplayManager.OpponentPlayer;
 
             PermanentInputEndEvent += OnInputEndEventHandler;
 
