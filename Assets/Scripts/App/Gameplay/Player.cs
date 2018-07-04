@@ -32,6 +32,7 @@ namespace LoomNetwork.CZB
 
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
+        private SkillsController _skillsController;
 
         private int _mana;
         private int _manaOnCurrentTurn;
@@ -151,6 +152,7 @@ namespace LoomNetwork.CZB
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _skillsController = _gameplayManager.GetController<SkillsController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -178,7 +180,6 @@ namespace LoomNetwork.CZB
             {
                 ManaOnCurrentTurn = 10;
                 Mana = ManaOnCurrentTurn;
-
             }
 
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
@@ -207,19 +208,13 @@ namespace LoomNetwork.CZB
         public void CallOnEndTurnEvent()
         {
             OnEndTurnEvent?.Invoke();
-
-            foreach (var item in BoardSkills)
-                item.OnEndTurn();
         }
 
         public void CallOnStartTurnEvent()
         {
             OnStartTurnEvent?.Invoke();
 
-            foreach (var item in BoardSkills)
-                item.OnStartTurn();
-
-            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
+           if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 ManaOnCurrentTurn++;
                 Mana = ManaOnCurrentTurn;
@@ -374,8 +369,7 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            //SkillController.DoSkill(skill);
-
+            _skillsController.DoSkill(this, skill);
         }
 
         #region handlers

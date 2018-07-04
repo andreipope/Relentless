@@ -25,6 +25,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
         private AbilitiesController _abilitiesController;
         private ActionsQueueController _actionsQueueController;
+        private AnimationsController _animationsController;
 
         private GameObject _playerBoard;
         private GameObject _opponentBoard;
@@ -50,6 +51,8 @@ namespace LoomNetwork.CZB
             _vfxController = _gameplayManager.GetController<VFXController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _animationsController = _gameplayManager.GetController<AnimationsController>();
+
 
             creatureCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             spellCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
@@ -347,7 +350,7 @@ namespace LoomNetwork.CZB
                         animationSequence.OnComplete(() =>
                         {
                             RemoveCard(new object[] { card });
-                            _timerManager.AddTimer(_vfxController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
+                            _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
                         });
 
                         //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);

@@ -227,13 +227,13 @@ namespace LoomNetwork.CZB
 
         public void UpdateHandCardsHighlight()
         {
-            if (_gameplayManager.CurrentPlayer.BoardSkills[0] != null && IsActive)
-            {
-                if (_gameplayManager.CurrentPlayer.Mana >= _gameplayManager.CurrentPlayer.BoardSkills[0].manaCost)
-                    _gameplayManager.CurrentPlayer.BoardSkills[0].SetHighlightingEnabled(true);
-                else
-                    _gameplayManager.CurrentPlayer.BoardSkills[0].SetHighlightingEnabled(false);
-            }
+            //if (PlayerInfo.BoardSkills[0] != null && IsActive)
+            //{
+            //    if (PlayerInfo.Mana >= PlayerInfo.BoardSkills[0].manaCost)
+            //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(true);
+            //    else
+            //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
+            //}
 
             foreach (var card in _battlegroundController.playerHandCards)
             {

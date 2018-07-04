@@ -26,5 +26,10 @@ namespace LoomNetwork.CZB
         public void Update()
         {
         }
+
+        public void BeginBoardArrow(Vector3 startPosition)
+        {
+
+        }
     }
 }

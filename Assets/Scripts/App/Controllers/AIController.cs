@@ -779,7 +779,7 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsTutorial)
                 return;
 
-            var boardSkill = _gameplayManager.OpponentPlayer.BoardSkills[0];
+      /*      var boardSkill = _aiPlayer.BoardSkills[0];
 
             if (_gameplayManager.OpponentPlayer.Mana >= boardSkill.manaCost)
             {
@@ -871,7 +871,7 @@ namespace LoomNetwork.CZB
                         });
                     }
                 }
-            }
+            } */
         }
         // rewrite
         private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)

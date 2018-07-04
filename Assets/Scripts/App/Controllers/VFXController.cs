@@ -3,13 +3,10 @@
 
 
 
+using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -141,13 +138,66 @@ namespace LoomNetwork.CZB
 
         }
 
-        public void PlayArrivalAnimationDelay(object[] param)
+        public void CreateVFX(GameObject prefab, Vector3 position, bool autoDestroy = false, float delay = 3f)
         {
-            BoardUnit currentCreature = null;
-            if (param != null)
+            var particle = MonoBehaviour.Instantiate(prefab);
+            particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
+            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
+        public void CreateSkillVFX(Enumerators.SetType setType, Vector3 from, object target, Action<object> callbackComplete)
+        {
+            GameObject prefab = null;
+
+            switch (setType)
             {
-                currentCreature = param[0] as BoardUnit;
-                currentCreature.PlayArrivalAnimation();
+                case Enumerators.SetType.WATER:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
+                    break;
+                case Enumerators.SetType.TOXIC:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/Toxic_Bullet_08");
+                    break;
+                case Enumerators.SetType.FIRE:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/fireBall_03");
+                    break;
+                case Enumerators.SetType.LIFE:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                    break;
+                case Enumerators.SetType.EARTH:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack"); // todo improve particle
+                    break;
+                case Enumerators.SetType.AIR:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                    break;
+                default:
+                    break;
+            }
+
+            if (target == null)
+                return;
+
+            var particleSystem = MonoBehaviour.Instantiate(prefab);
+            particleSystem.transform.position = Utilites.CastVFXPosition(from + Vector3.forward);
+
+            if (target is Player)
+            {
+                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(() =>
+                {
+                    callbackComplete(target);
+
+                    if (particleSystem != null)
+                        MonoBehaviour.Destroy(particleSystem);
+                });
+            }
+            else if (target is BoardUnit)
+            {
+                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as BoardUnit).transform.position), .5f).OnComplete(() =>
+                {
+                    callbackComplete(target);
+
+                    if (particleSystem != null)
+                        MonoBehaviour.Destroy(particleSystem);
+                });
             }
         }
     }

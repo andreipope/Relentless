@@ -71,66 +71,67 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureBySkill(Player attackingPlayer, BoardSkill skill, BoardUnit attackedCreature)
+        public void AttackCreatureBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedCreature, int modifier)
         {
             if (attackedCreature != null)
             {
-                attackedCreature.HP -= skill.SkillPower;
+                attackedCreature.HP -= (skill.value + modifier);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
             new object[]
             {
                 attackingPlayer,
-                skill.SkillPower,
+                skill,
+                (skill.value + modifier),
                 attackedCreature
             }));
         }
 
-        public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer)
+        public void AttackPlayerBySkill(Player attackingPlayer, HeroSkill skill, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
-                attackedPlayer.HP -= skill.SkillPower;
+                attackedPlayer.HP -= skill.value;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL,
             new object[]
             {
                 attackingPlayer,
-                skill.SkillPower,
+                skill,
                 attackedPlayer
             }));
         }
 
-        public void HealPlayerBySkill(Player healingPlayer, BoardSkill skill, Player healedPlayer)
+        public void HealPlayerBySkill(Player healingPlayer, HeroSkill skill, Player healedPlayer)
         {
             if (healingPlayer != null)
             {
-                healedPlayer.HP += skill.SkillPower;
+                healedPlayer.HP += skill.value;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,
             new object[]
             {
                 healedPlayer,
-                skill.SkillPower,
+                skill,
                 healedPlayer
             }));
         }
 
-        public void HealCreatureBySkill(Player healingPlayer, BoardSkill skill, BoardUnit healedCreature)
+        public void HealCreatureBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
-                healedCreature.HP += skill.SkillPower;
+                healedCreature.HP += skill.value;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_SKILL,
             new object[]
             {
                 healingPlayer,
-                skill.SkillPower,
+                skill,
                 healedCreature
             }));
         }
