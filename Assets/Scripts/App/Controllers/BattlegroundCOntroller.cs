@@ -160,7 +160,7 @@ namespace LoomNetwork.CZB
                 _gameplayManager.OpponentPlayer.HP = 8;
 
             if (Constants.DEV_MODE)
-                _gameplayManager.OpponentPlayer.HP = 1;
+                _gameplayManager.OpponentPlayer.HP = 99;
 
             StartTurn();
 
@@ -179,8 +179,8 @@ namespace LoomNetwork.CZB
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-            if (_gameplayManager.IsTutorial)
-                return;
+            _timerManager.StopTimer(RunTurnAsync);
+
 
             gameFinished = true;
             currentTurn = 0;

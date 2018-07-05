@@ -49,24 +49,27 @@ namespace LoomNetwork.CZB
 
         public void InitializeSkills()
         {
-            _uiManager.GetPage<GameplayPage>().playerPrimarySkillHandler.OnMouseDownEvent += PrimarySkillHandlerOnMouseDownEventHandler;
-            _uiManager.GetPage<GameplayPage>().playerPrimarySkillHandler.OnMouseUpEvent += PrimarySkillHandlerOnMouseUpEventHandler;
+            var rootPage = _uiManager.GetPage<GameplayPage>();
 
-            _uiManager.GetPage<GameplayPage>().playerSecondarySkillHandler.OnMouseDownEvent += SecondarySkillHandlerOnMouseDownEventHandler;
-            _uiManager.GetPage<GameplayPage>().playerSecondarySkillHandler.OnMouseUpEvent += SecondarySkillHandlerOnMouseUpEventHandler;
+
+            rootPage.playerPrimarySkillHandler.OnMouseDownEvent += PrimarySkillHandlerOnMouseDownEventHandler;
+            rootPage.playerPrimarySkillHandler.OnMouseUpEvent += PrimarySkillHandlerOnMouseUpEventHandler;
+
+            rootPage.playerSecondarySkillHandler.OnMouseDownEvent += SecondarySkillHandlerOnMouseDownEventHandler;
+            rootPage.playerSecondarySkillHandler.OnMouseUpEvent += SecondarySkillHandlerOnMouseUpEventHandler;
 
 
             int primary = _gameplayManager.CurrentPlayer.SelfHero.primarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.secondarySkill;
 
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count && secondary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count)
-                SetPlayerSkills(_gameplayManager.CurrentPlayer.SelfHero.skills[primary], _gameplayManager.CurrentPlayer.SelfHero.skills[secondary]);
+                SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.skills[primary], _gameplayManager.CurrentPlayer.SelfHero.skills[secondary]);
 
             primary = _gameplayManager.OpponentPlayer.SelfHero.primarySkill;
             secondary = _gameplayManager.OpponentPlayer.SelfHero.secondarySkill;
 
             if (primary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count && secondary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count)
-                SetOpponentSkills(_gameplayManager.OpponentPlayer.SelfHero.skills[primary], _gameplayManager.OpponentPlayer.SelfHero.skills[secondary]);
+                SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.skills[primary], _gameplayManager.OpponentPlayer.SelfHero.skills[secondary]);
         }
 
 
@@ -94,22 +97,16 @@ namespace LoomNetwork.CZB
                 _playerSecondarySkill.EndDoSkill();
         }
 
-        public void SetPlayerSkills(HeroSkill primary, HeroSkill secondary)
+        public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _playerPrimarySkill = new BoardSkill(_uiManager.GetPage<GameplayPage>().playerPrimarySkillHandler.gameObject, 
-                                                 _gameplayManager.CurrentPlayer, primary);
-
-            _playerSecondarySkill = new BoardSkill(_uiManager.GetPage<GameplayPage>().playerSecondarySkillHandler.gameObject,
-                                                   _gameplayManager.CurrentPlayer, secondary);
+            _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary);
+            _playerSecondarySkill = new BoardSkill(rootPage.playerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary);
         }
 
-        public void SetOpponentSkills(HeroSkill primary, HeroSkill secondary)
+        public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _opponentPrimarySkill = new BoardSkill(_uiManager.GetPage<GameplayPage>().opponentPrimarySkillHandler,
-                                                   _gameplayManager.OpponentPlayer, primary);
-
-            _opponentSecondarySkill = new BoardSkill(_uiManager.GetPage<GameplayPage>().opponentSecondarySkillHandler,
-                                                     _gameplayManager.OpponentPlayer, secondary);
+            _opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary);
+            _opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary);
         }
 
         private void SkillParticleActionCompleted(object target)

@@ -51,7 +51,7 @@ namespace LoomNetwork.CZB
                 if ((int)unit.Card.libraryCard.cardRank > (int)highestRank)
                     highestRank = unit.Card.libraryCard.cardRank;
             }
-            Debug.Log(highestRank);
+           // Debug.Log(highestRank + "  | " + element);
 
             var weakerUnitsList = elementFilter.Where((unit) => unit.Card.libraryCard.cardRank != highestRank).ToList();
             DoRankUpgrades(weakerUnitsList, element, highestRank);
@@ -59,7 +59,9 @@ namespace LoomNetwork.CZB
 
         public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
         {
-            switch(element)
+          //  Debug.Log(units.Count + " | " + rank);
+
+            switch (element)
             {
                 case Enumerators.SetType.AIR:
                     AirRankBuff(units, rank);
@@ -169,7 +171,7 @@ namespace LoomNetwork.CZB
 
             BoardUnit unit;
             int random;
-            for (int i = 0; i< cycles; i++)
+            for (int i = 0; i < cycles; i++)
             {
                 random = Random.Range(0, units.Count);
                 unit = units[random];

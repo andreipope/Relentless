@@ -85,9 +85,7 @@ namespace LoomNetwork.CZB
         }
 
         private void ActionCompleted()
-        {
-            Debug.Log(1111);
-           
+        {           
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:

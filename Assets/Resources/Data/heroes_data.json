@@ -293,11 +293,19 @@
       "element": "LIFE",
 	  "experience": 0,
 	  "level": 0,
-	  "skills" : [
-		 
-	  ],
-      "primarySkill": 2, 
-	  "secondarySkill": 4
+      "skills": [
+        {
+          "title": "Life Defense",
+          "skillType": 1,
+          "skillTargetType": [ 0 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        }
+      ],
+      "primarySkill": 0, 
+	  "secondarySkill": 0
     }
   ]
 }
