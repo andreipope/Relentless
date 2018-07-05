@@ -155,8 +155,9 @@ namespace LoomNetwork.CZB
 
             gameFinished = false;
 
+
             if (_gameplayManager.IsTutorial)
-                _gameplayManager.OpponentPlayer.HP = 8;
+                _gameplayManager.CurrentPlayer.HP = 8;
 
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 1;
@@ -277,7 +278,7 @@ namespace LoomNetwork.CZB
             _gameplayManager.OpponentPlayer.CallOnEndTurnEvent();
 
             //todo move it from here I guess !!!!!!!!!!!!!! 
-            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
+            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 

@@ -72,7 +72,7 @@ namespace LoomNetwork.CZB.Data
     public class HeroSkill
     {
         public string title;
-        public Enumerators.SkillTargetType skillTargetType;
+        public List<Enumerators.SkillTargetType> skillTargetType;
         public int cooldown;
         public int initialCooldown;
         public int value;

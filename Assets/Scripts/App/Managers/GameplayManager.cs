@@ -91,6 +91,7 @@ namespace LoomNetwork.CZB
             _controllers.Add(new AnimationsController());
             _controllers.Add(new BattleController());
             _controllers.Add(new BoardArrowController());
+            _controllers.Add(new SkillsController());
 
             foreach (var controller in _controllers)
                 controller.Init();
@@ -172,6 +173,8 @@ namespace LoomNetwork.CZB
 
 
             GetController<BattlegroundController>().InitializeBattleground();
+
+            GetController<SkillsController>().InitializeSkills();
 
             GameEnded = false;
 

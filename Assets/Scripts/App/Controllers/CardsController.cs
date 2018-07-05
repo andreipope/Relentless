@@ -122,6 +122,8 @@ namespace LoomNetwork.CZB
 
             boardCard.HandBoardCard = handCard;
 
+            handCard.CheckStatusOfHighlight();
+
             boardCard.transform.localScale = Vector3.one * .3f;
             // card.owner.CardsInHand.Add(card);
 

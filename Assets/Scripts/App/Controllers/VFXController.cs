@@ -37,7 +37,6 @@ namespace LoomNetwork.CZB
         {
         }
 
-
         public void PlayAttackVFX(Enumerators.CardType type, Vector3 target, int damage)
         {
             GameObject effect;
@@ -138,8 +137,34 @@ namespace LoomNetwork.CZB
 
         }
 
-        public void CreateVFX(GameObject prefab, Vector3 position, bool autoDestroy = false, float delay = 3f)
+        public void CreateVFX(Enumerators.SetType setType, Vector3 position, bool autoDestroy = false, float delay = 3f)
         {
+            GameObject prefab = null;
+
+            switch (setType)
+            {
+                case Enumerators.SetType.WATER:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    break;
+                case Enumerators.SetType.TOXIC:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Toxic_Impact");
+                    break;
+                case Enumerators.SetType.FIRE:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FIreBall_Impact");
+                    break;
+                case Enumerators.SetType.LIFE:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
+                    break;
+                case Enumerators.SetType.EARTH:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack"); // todo improve particle
+                    break;
+                case Enumerators.SetType.AIR:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                    break;
+                default:
+                    break;
+            }
+
             var particle = MonoBehaviour.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);

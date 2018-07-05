@@ -5,6 +5,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
@@ -15,6 +16,9 @@ namespace LoomNetwork.CZB
 
         private ActionsQueueController _actionsQueueController;
         private AbilitiesController _abilitiesController;
+
+        private Dictionary<Enumerators.SetType, Enumerators.SetType> _strongerElemental,
+                                                                     _weakerElemental;
 
         public void Dispose()
         {
@@ -27,10 +31,48 @@ namespace LoomNetwork.CZB
 
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+
+            FillStrongersAndWeakers();
         }
 
         public void Update()
         {
+        }
+
+
+        private void FillStrongersAndWeakers()
+        {
+            _strongerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
+            {
+                { Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.AIR },
+                { Enumerators.SetType.AIR, Enumerators.SetType.WATER },
+                { Enumerators.SetType.WATER, Enumerators.SetType.FIRE },
+            };
+
+            _weakerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
+            {
+                { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.WATER, Enumerators.SetType.AIR },
+            };
+        }
+
+        private int GetStrongersAndWeakersModifier(Enumerators.SetType attackerElement, Enumerators.SetType defenderElement)
+        {
+            int modifier = 0;
+
+            if (_strongerElemental[attackerElement].Equals(defenderElement))
+                modifier++;
+            else if(_weakerElemental[attackerElement].Equals(defenderElement))
+                modifier--;
+
+            return modifier;
         }
 
         public void AttackPlayerByCreature(BoardUnit attackingCreature, Player attackedPlayer)
@@ -56,6 +98,9 @@ namespace LoomNetwork.CZB
             {
                 int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingCreature.Card, attackedCreature.Card);
                 int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedCreature.Card, attackingCreature.Card);
+
+                additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingCreature.Card.libraryCard.cardSetType, attackedCreature.Card.libraryCard.cardSetType);
+                additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedCreature.Card.libraryCard.cardSetType, attackingCreature.Card.libraryCard.cardSetType);
 
                 attackedCreature.HP -= attackingCreature.Damage + additionalDamageAttacker;
                 attackingCreature.HP -= attackedCreature.Damage + additionalDamageAttacked;

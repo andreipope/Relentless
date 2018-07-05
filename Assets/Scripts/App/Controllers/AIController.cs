@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB
         private BattleController _battleController;
         private AnimationsController _animationsController;
         private VFXController _vfxController;
+        private SkillsController _skillsController;
 
         private bool _enabledAIBrain = true;
         private int _minTurnForAttack = 0;
@@ -62,6 +63,7 @@ namespace LoomNetwork.CZB
             _battleController = _gameplayManager.GetController<BattleController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
+            _skillsController = _gameplayManager.GetController<SkillsController>();
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
@@ -118,7 +120,6 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OpponentPlayer.OnStartTurnEvent += OnStartTurnEventHandler;
             _gameplayManager.OpponentPlayer.OnEndTurnEvent += OnEndTurnEventHandler;
-
         }
 
         private void SetAITypeByDeck()

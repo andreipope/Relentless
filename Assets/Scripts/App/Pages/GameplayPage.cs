@@ -67,6 +67,13 @@ namespace LoomNetwork.CZB
 
         private GameObject _endTurnButton;
 
+        public OnBehaviourHandler playerPrimarySkillHandler,
+                                  playerSecondarySkillHandler;
+
+        public GameObject opponentPrimarySkillHandler,
+                          opponentSecondarySkillHandler;
+
+
         public int CurrentDeckId
         {
             set { _currentDeckId = value; }
@@ -293,26 +300,30 @@ namespace LoomNetwork.CZB
 
             _endTurnButton = GameObject.Find("EndTurnButton");
 
+            playerPrimarySkillHandler = GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+            playerSecondarySkillHandler = GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+
+            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary");
+            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary");
+
             if (currentPlayerHero != null)
             {
-                SetHeroInfo(currentPlayerHero, "Player");
+                SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
                 _playerNameText.name = currentPlayerHero.name;
             }
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent");
+                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
                 _opponentNameText.name = currentOpponentHero.name;
             }
 
             _isPlayerInited = true;
         }
 
-        public void SetHeroInfo(Hero hero, string objectName)
+        public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            var spell = GameObject.Find(objectName + "/Spell");
-            spell.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
-            //spell.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
-
+            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
@@ -356,24 +367,24 @@ namespace LoomNetwork.CZB
             var player = _gameplayManager.CurrentPlayer;
             var opponent = _gameplayManager.OpponentPlayer;
 
-            player.DeckChangedEvent += OnPlayerDeckZoneChanged;
+            player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
             player.PlayerHPChangedEvent += OnPlayerHPChanged;
             player.PlayerManaChangedEvent += OnPlayerManaChanged;
-            opponent.DeckChangedEvent += OnOpponentDeckZoneChanged;
+            opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
             opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
             opponent.PlayerManaChangedEvent += OnOpponentManaChanged;
 
             player.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            OnPlayerDeckZoneChanged(player.CardsInDeck.Count);
+            OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
             OnPlayerHPChanged(player.HP, player.HP);
             OnPlayerManaChanged(player.Mana, player.Mana);
-            OnOpponentDeckZoneChanged(opponent.CardsInDeck.Count);
+            OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
             OnOpponentHPChanged(opponent.HP, opponent.HP);
             OnOpponentManaChanged(opponent.Mana, opponent.Mana);
         }
 
-        private void OnPlayerDeckZoneChanged(int index)
+        private void OnPlayerDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -416,7 +427,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnOpponentDeckZoneChanged(int index)
+        private void OnOpponentDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -558,5 +569,4 @@ namespace LoomNetwork.CZB
             }
         }
     }
-
 }

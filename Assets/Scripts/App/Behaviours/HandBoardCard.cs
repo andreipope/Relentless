@@ -59,8 +59,6 @@ public class HandBoardCard
 
         _behaviourHandler.OnMouseUpEvent += OnMouseUp;
         _behaviourHandler.OnUpdateEvent += OnUpdateEventHandler;
-
-        CheckStatusOfHighlight();
     }
 
     public void OnUpdateEventHandler(GameObject obj)

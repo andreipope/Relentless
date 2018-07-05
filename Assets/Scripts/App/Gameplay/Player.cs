@@ -52,8 +52,6 @@ namespace LoomNetwork.CZB
 
         private GameObject _avatarObject,
                            _avatarDeathObject,
-                           _spellObject,
-                           _weaponObject,
                            _avatarHeroHighlight;
 
         private Animator _avatarAnimator, 
@@ -186,8 +184,6 @@ namespace LoomNetwork.CZB
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _avatarDeathObject = playerObject.transform.Find("HeroDeath").gameObject;
-            _spellObject = playerObject.transform.Find("Spell").gameObject;
-            _weaponObject = playerObject.transform.Find("Weapon").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
@@ -344,8 +340,6 @@ namespace LoomNetwork.CZB
             _avatarAnimator.enabled = true;
             _deathAnimamtor.enabled = true;
             _avatarHeroHighlight.SetActive(false);
-            _spellObject.SetActive(false);
-            _weaponObject.SetActive(false);
             _avatarAnimator.Play(0);
             _deathAnimamtor.Play(0);
 
@@ -354,24 +348,7 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
         }
-
-        public void DoSkill(Enumerators.SkillType skillType)
-        {
-            HeroSkill skill = null;
-
-            switch(skillType)
-            {
-                case Enumerators.SkillType.PRIMARY:
-                    skill = _selfHero.skills[_selfHero.primarySkill];
-                    break;
-                case Enumerators.SkillType.SECONDARY:
-                    skill = _selfHero.skills[_selfHero.secondarySkill];
-                    break;
-            }
-
-            _skillsController.DoSkill(this, skill);
-        }
-
+  
         #region handlers
 
 

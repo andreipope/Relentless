@@ -21,6 +21,7 @@ namespace LoomNetwork.CZB
         private AbilitiesController _abilitiesController;
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
+        private SkillsController _skillsController;
       //  private HeroController _heroController;
 
         public bool AlreadyAttackedInThisTurn { get; set; }
@@ -38,6 +39,7 @@ namespace LoomNetwork.CZB
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _skillsController = _gameplayManager.GetController<SkillsController>();
             //_heroController = _gameplayManager.GetController<HeroController>();
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
