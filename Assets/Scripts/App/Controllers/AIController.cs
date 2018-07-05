@@ -41,6 +41,8 @@ namespace LoomNetwork.CZB
         private Dictionary<int, int> _unitNumberOfTunrsOnBoard = new Dictionary<int, int>();
         private GameObject fightTargetingArrowPrefab;// rewrite
 
+        private System.Random _random = new System.Random();
+
         public BoardCard currentSpellCard;
 
         public bool IsPlayerStunned { get; set; }
@@ -146,7 +148,7 @@ namespace LoomNetwork.CZB
         {
             if (!_gameplayManager.IsTutorial)
             {
-                _minTurnForAttack = UnityEngine.Random.Range(1, 3);
+                _minTurnForAttack = _random.Next(1, 3);
                 FillActions();
 
                 SetAITypeByDeck();
@@ -595,7 +597,7 @@ namespace LoomNetwork.CZB
 
                                 if (units.Count > 0)
                                 {
-                                    target = units[UnityEngine.Random.Range(0, units.Count)];
+                                    target = units[_random.Next(0, units.Count)];
                                 }
                                 else
                                 {
@@ -734,7 +736,7 @@ namespace LoomNetwork.CZB
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP < x.initialHP && !_attackedUnitTargets.Contains(x));
 
             if (eligibleUnits.Count > 0)
-                return eligibleUnits[UnityEngine.Random.Range(0, eligibleUnits.Count)];
+                return eligibleUnits[_random.Next(0, eligibleUnits.Count)];
             return null;
         }
 
@@ -746,9 +748,9 @@ namespace LoomNetwork.CZB
             {
                 var heavyUnits = eligibleUnits.FindAll(x => x.Card.type == Enumerators.CardType.HEAVY);
                 if (heavyUnits != null && heavyUnits.Count >= 1)
-                    return heavyUnits[UnityEngine.Random.Range(0, heavyUnits.Count)];
+                    return heavyUnits[_random.Next(0, heavyUnits.Count)];
                 else
-                    return eligibleUnits[UnityEngine.Random.Range(0, eligibleUnits.Count)];
+                    return eligibleUnits[_random.Next(0, eligibleUnits.Count)];
             }
             return null;
         }
@@ -757,7 +759,7 @@ namespace LoomNetwork.CZB
         {
             var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.HP > 0 && !_attackedUnitTargets.Contains(x));
             if (eligibleCreatures.Count > 0)
-                return eligibleCreatures[UnityEngine.Random.Range(0, eligibleCreatures.Count)];
+                return eligibleCreatures[_random.Next(0, eligibleCreatures.Count)];
             return null;
         }
 
