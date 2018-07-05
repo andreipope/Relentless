@@ -91,7 +91,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add(10);
+                playerDeck.Add(6);
                 playerDeck.Add(7);
                 playerDeck.Add(11);
                 playerDeck.Add(10);

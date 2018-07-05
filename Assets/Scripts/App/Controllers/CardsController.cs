@@ -26,6 +26,7 @@ namespace LoomNetwork.CZB
         private AbilitiesController _abilitiesController;
         private ActionsQueueController _actionsQueueController;
         private AnimationsController _animationsController;
+        private RanksController _ranksController;
 
         private GameObject _playerBoard;
         private GameObject _opponentBoard;
@@ -52,6 +53,7 @@ namespace LoomNetwork.CZB
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
 
 
             creatureCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -345,6 +347,8 @@ namespace LoomNetwork.CZB
 
                         player.BoardCards.Insert(indexOfCard, boardUnit);
 
+                        _ranksController.UpdateRanksBuffs(player);
+
                         _timerManager.AddTimer((creat) =>
                         {
                             card.WorkingCard.owner.GraveyardCardsCount++;
@@ -429,7 +433,7 @@ namespace LoomNetwork.CZB
                     RemoveOpponentCard(new object[] { randomCard });
 
                     _timerManager.AddTimer((x) => { completePlayCardCallback?.Invoke(card, target); }, null, 0.1f);
-
+                    _ranksController.UpdateRanksBuffs(player);
                     _timerManager.AddTimer((x) =>
                     {
                         player.GraveyardCardsCount++;

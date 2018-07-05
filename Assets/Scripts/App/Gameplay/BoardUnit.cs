@@ -294,14 +294,14 @@ namespace LoomNetwork.CZB
 
             damageChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateUnitInfoText(attackText, Damage, initialDamage, true);
+                UpdateUnitInfoText(attackText, Damage, initialDamage);
             };
 
             CreatureDamageChangedEvent += damageChangedDelegate;
 
             healthChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateUnitInfoText(healthText, HP, initialHP, false);
+                UpdateUnitInfoText(healthText, HP, initialHP);
                 CheckOnDie();
             };
 
@@ -392,7 +392,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, bool isDamage)
+        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat)
         {
             if (text == null || !text)
                 return;
@@ -405,10 +405,7 @@ namespace LoomNetwork.CZB
                 text.color = Color.red;
             else
             {
-                if (isDamage)
-                    text.color = Color.white;
-                else
-                    text.color = Color.black;
+                text.color = Color.white;
             }
             var sequence = DOTween.Sequence();
             sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
@@ -457,6 +454,9 @@ namespace LoomNetwork.CZB
             //    return;
 
             //Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
+
+            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
+                return;
 
             if (ownerPlayer != null && ownerPlayer.IsLocalPlayer && _playerController.IsActive && IsPlayable)
             {

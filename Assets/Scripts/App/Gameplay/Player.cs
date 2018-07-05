@@ -333,7 +333,7 @@ namespace LoomNetwork.CZB
         {
             for (int i = 0; i < CardsInDeck.Count; i++)
             {
-                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial && !IsLocalPlayer))
+                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
                     break;
 
                 _cardsController.AddCardToHand(this, CardsInDeck[0]);

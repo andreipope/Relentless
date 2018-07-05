@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
             TurnDuration = Constants.DEFAULT_TURN_DURATION;
 
             if (_gameplayManager.IsTutorial)
-                TurnDuration = 100000;
+                TurnDuration = 10000000;
         }
 
         public void KillBoardCard(BoardUnit card)
@@ -157,13 +157,15 @@ namespace LoomNetwork.CZB
 
 
             if (_gameplayManager.IsTutorial)
-                _gameplayManager.CurrentPlayer.HP = 8;
+                _gameplayManager.OpponentPlayer.HP = 8;
 
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 1;
 
             StartTurn();
-            _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+
+            if (!_gameplayManager.IsTutorial)
+                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
 
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
@@ -188,6 +190,7 @@ namespace LoomNetwork.CZB
 
         private void RunTurnAsync(object[] param)
         {
+            Debug.Log("TURN END");
             EndTurn();
 
             if(!gameFinished)
@@ -291,7 +294,8 @@ namespace LoomNetwork.CZB
             EndTurn();
             StartTurn();
 
-            _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+            if (!_gameplayManager.IsTutorial)
+                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
