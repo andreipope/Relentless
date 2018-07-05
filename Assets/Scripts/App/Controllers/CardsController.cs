@@ -99,12 +99,19 @@ namespace LoomNetwork.CZB
             }
 
             GameObject go = null;
+            BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
                 go = MonoBehaviour.Instantiate(creatureCardViewPrefab);
+                boardCard = new UnitBoardCard(go);
+            }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            {
                 go = MonoBehaviour.Instantiate(spellCardViewPrefab);
+                boardCard = new SpellBoardCard(go);
 
-            var boardCard = new BoardCard(go);
+            }
+
             boardCard.Init(card, cardSetName);
 
             boardCard.CurrentTurn = _battlegroundController.currentTurn;
