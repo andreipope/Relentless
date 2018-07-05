@@ -7,6 +7,7 @@ using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -315,6 +316,13 @@ namespace LoomNetwork.CZB
         public void SetDeck(List<int> cards)
         {
             CardsInDeck = new List<WorkingCard>();
+
+            if (!_gameplayManager.IsTutorial)
+            {
+                // shake
+                var rnd = new System.Random();
+                cards = cards.OrderBy(item => rnd.Next()).ToList();
+            }
 
             foreach (var card in cards)
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));

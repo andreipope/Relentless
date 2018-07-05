@@ -84,7 +84,7 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 _cooldown = 0;
             else
-                _cooldown--;
+                _cooldown = Mathf.Clamp(_cooldown-1, 0, _initialCooldown);
 
             if (IsSkillReady)
                 SetHighlightingEnabled(true);
