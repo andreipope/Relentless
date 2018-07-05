@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB.Common
+
+
+using System.Collections.Generic;
+
+namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.13.2.ver";
+        internal const string CURRENT_VERSION = "0.0.16.1.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -20,24 +25,41 @@ namespace GrandDevs.CZB.Common
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
         internal static bool DATA_ENCRYPTION_ENABLED = false;
-            
-        internal static bool DEBUG_MODE = false;
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
-		internal static uint CARD_COMMON_MAX_COPIES = 4;
-		internal static uint CARD_RARE_MAX_COPIES = 2;
-        internal static uint CARD_EPIC_MAX_COPIES = 2;
-        internal static uint CARD_LEGENDARY_MAX_COPIES = 1;
+		internal static uint CARD_MINION_MAX_COPIES = 4;
+		internal static uint CARD_OFFICER_MAX_COPIES = 2;
+        internal static uint CARD_COMMANDER_MAX_COPIES = 2;
+        internal static uint CARD_GENERAL_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
         internal static uint MAX_BOARD_CREATURES = 6;
 
+        internal static int DEFAULT_TURN_DURATION = 60;
+        internal static int MAX_DECK_SIZE = 30;
+        internal static int MIN_DECK_SIZE = 30;
 
+        internal static int DEFAULT_PLAYER_HP = 30;
+        internal static int DEFAULT_PLAYER_MANA = 0;
+        internal static int MAXIMUM_PLAYER_MANA = 10;
+
+        internal static int FIRST_GAME_TURN_INDEX = 1;
+
+        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 5;
+
+        internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
+
+        internal static int DELAY_BETWEEN_AI_ACTIONS = 2000;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
 
+
+        internal const string LAYER_HAND_CARDS = "HandCards";
+        internal const string LAYER_BOARD_CARDS = "BoardCards";
+        internal const string LAYER_DEFAULT = "Default";
+        internal const string LAYER_FOREGROUND = "Foreground";        
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";

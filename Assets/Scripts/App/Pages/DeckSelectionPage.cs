@@ -1,15 +1,17 @@
-﻿﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using CCGKit;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using TMPro;
-using FullSerializer;
 using System.IO;
 
-
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DeckSelectionPage : IUIElement
     {
@@ -40,8 +42,6 @@ namespace GrandDevs.CZB
         private Image _selectedDeckIcon;
 
         //private TMP_Text _selectedDeckName;
-
-        private fsSerializer serializer = new fsSerializer();
 
         private int _deckToDelete;
 
@@ -130,6 +130,7 @@ namespace GrandDevs.CZB
 			foreach (var deck in _dataManager.CachedDecksData.decks)
 			{
                 var ind = i;
+
                 string heroType = _dataManager.CachedHeroesData.Heroes[deck.heroId].element.ToString();
 
                 Transform deckObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckItem")).transform;
@@ -214,14 +215,7 @@ namespace GrandDevs.CZB
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = _currentDeckId;
 
-            _uiManager.HideAllPages();
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
-
-            // small hack untill we will optimize the game because app stuck on this state.
-            GameClient.Get<ITimerManager>().AddTimer((x) =>
-            {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
-            }, null, Time.deltaTime, false);
+            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
         }
 		private void CreateDeck()
 		{

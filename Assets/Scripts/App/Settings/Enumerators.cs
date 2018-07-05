@@ -1,4 +1,9 @@
-﻿﻿namespace GrandDevs.CZB.Common
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {
@@ -162,12 +167,12 @@
             HEAVY
         }
 
-        public enum CardRarity
+        public enum CardRank
         {
-            COMMON,
-            RARE,
-            LEGENDARY,
-            EPIC
+            MINION,
+            OFFICER,
+            COMMANDER,
+            GENERAL
         }
 
         public enum GameEndCondition
@@ -288,11 +293,30 @@
             TUTORIAL
         }
 
-        public enum ActionType
+        public enum AIActionType
         {
             TEST,
             TEST2
         }
+
+        public enum ActionType
+        {
+            ATTACK_PLAYER_BY_CREATURE,
+            ATTACK_CREATURE_BY_CREATURE,
+            ATTACK_CREATURE_BY_SPELL,
+            ATTACK_PLAYER_BY_SPELL,
+            ATTACK_CREATURE_BY_SKILL,
+            ATTACK_PLAYER_BY_SKILL,
+            HEAL_PLAYER_BY_SKILL,
+            HEAL_CREATURE_BY_SKILL,
+            ATTACK_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_ABILITY,
+            HEAL_PLAYER_BY_ABILITY,
+            HEAL_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_WEAPON,
+            ATTACK_CREATURE_BY_WEAPON
+        }
+
 
         public enum EffectActivateType
         {
@@ -318,7 +342,7 @@
 			KISS,
 		}
 
-        public enum CardZoneType
+        public enum CardZoneOnBoardType
         {
             DECK,
             GRAVEYARD
@@ -327,6 +351,27 @@
         public enum CardPackType
         {
             DEFAULT
+        }
+
+        public enum EndGameType
+        {
+            WIN,
+            LOSE,
+            CANCEL
+        }
+
+        public enum MatchType
+        {
+            LOCAL,
+
+            PVP,
+            PVE
+        }
+
+        public enum SkillType
+        {
+            PRIMARY,
+            SECONDARY
         }
     }
 }

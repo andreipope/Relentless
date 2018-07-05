@@ -1,15 +1,18 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
-using System;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
 using TMPro;
 using DG.Tweening;
-using GrandDevs.Internal;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CollectionPage : IUIElement
     {
@@ -20,7 +23,7 @@ namespace GrandDevs.CZB
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow _buttonBuy,
+        private Button _buttonBuy,
                                 _buttonOpen,
                                 _buttonBack;
         private Button  _buttonArrowLeft,
@@ -43,10 +46,12 @@ namespace GrandDevs.CZB
         private int numSets;
         private int currentSet;
 
-        private CardView _selectedCard;
-        private CardView _selectedCollectionCard;
+        private BoardCard _selectedBoardCard;
+        private BoardCard _selectedCollectionCard;
 
         private bool _isPopupChangedStart;
+
+        private List<BoardCard> _createdBoardCards;
 
         public void Init()
         {
@@ -60,25 +65,27 @@ namespace GrandDevs.CZB
 
             gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
-			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
-			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
-			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
+			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<Button>();
+			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<Button>();
+			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<Button>();
             _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
             _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
 
             _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
 
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
-            _buttonBack.onClickEvent.AddListener(BackButtonHandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonHandler);
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
             _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
-			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
+
+            _createdBoardCards = new List<BoardCard>();
 
             Hide();
         }
@@ -89,7 +96,7 @@ namespace GrandDevs.CZB
             {
                 if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf)
                 {
-                    if (!_isPopupChangedStart && _selectedCard != null)
+                    if (!_isPopupChangedStart && _selectedBoardCard != null)
                     {
                         ClosePopupInfo();
                     }
@@ -99,11 +106,11 @@ namespace GrandDevs.CZB
                         var hit = Physics2D.Raycast(mousePos, Vector2.zero);
                         if (hit.collider != null)
                         {
-                            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+                            for(int i =0;i < _createdBoardCards.Count; i++)
                             {
-                                if (hit.collider.gameObject == card.gameObject)
+                                if (hit.collider.gameObject == _createdBoardCards[i].gameObject)
                                 {
-                                    CardSelected(card);
+                                    CardSelected(_createdBoardCards[i]);
                                 }
                             }
                         }
@@ -115,7 +122,7 @@ namespace GrandDevs.CZB
         public void Show()
         {
             //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -125,29 +132,29 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
         }
 
         public void Dispose()
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
+        }
+
+        private void ResetBoardCards()
+        {
+            foreach (var item in _createdBoardCards)
+                item.Dispose();
+            _createdBoardCards.Clear();
         }
 
         private void InitObjects()
         {
 			_cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
 			cardPositions = new List<Transform>();
+
 			foreach (Transform placeholder in _cardPlaceholders.transform)
-			{
 				cardPositions.Add(placeholder);
-			}
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
             numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1; //1 - tutorial
@@ -167,43 +174,43 @@ namespace GrandDevs.CZB
             UpdateGooValue();
 
 			Sequence sequence = DOTween.Sequence();
-            sequence.Append(_selectedCard.transform.DOScale(_selectedCollectionCard.transform.localScale, .3f));
-			sequence.Join(_selectedCard.transform.DOMove(_selectedCollectionCard.transform.position, .3f));
-			sequence.Join(_selectedCard.transform.DORotate(_selectedCollectionCard.transform.eulerAngles, .3f));
+            sequence.Append(_selectedBoardCard.transform.DOScale(_selectedCollectionCard.transform.localScale, .3f));
+			sequence.Join(_selectedBoardCard.transform.DOMove(_selectedCollectionCard.transform.position, .3f));
+			sequence.Join(_selectedBoardCard.transform.DORotate(_selectedCollectionCard.transform.eulerAngles, .3f));
 			sequence.OnComplete(() =>
 			{
-				MonoBehaviour.Destroy(_selectedCard.gameObject);
-				_selectedCard = null;
+				MonoBehaviour.Destroy(_selectedBoardCard.gameObject);
+				_selectedBoardCard = null;
                 ChangeStatePopup(false);
             });
         }
 
         public void UpdateGooValue()
         {
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
         }
 
 #region Buttons Handlers
 
-        private void CardSelected(CardView card)
+        private void CardSelected(BoardCard card)
         {
             ChangeStatePopup(true);
             _selectedCollectionCard = card;
-            _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
-            _selectedCard.name = "CardPreview";
-            Utilites.SetLayerRecursively(_selectedCard.gameObject, 11);
+            _selectedBoardCard = new BoardCard(MonoBehaviour.Instantiate(card.gameObject));
+            _selectedBoardCard.gameObject.name = "CardPreview";
+            Utilites.SetLayerRecursively(_selectedBoardCard.gameObject, 11);
 
 			Sequence mySequence = DOTween.Sequence();
-			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
-			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
+			mySequence.Append(_selectedBoardCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
+			mySequence.Append(_selectedBoardCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
 
 			Sequence mySequence2 = DOTween.Sequence();
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, 1.2f, 5), .4f));
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, .8f, 5), .2f));
+			mySequence2.Append(_selectedBoardCard.transform.DOMove(new Vector3(-4.3f, 1.2f, 5), .4f));
+			mySequence2.Append(_selectedBoardCard.transform.DOMove(new Vector3(-4.3f, .8f, 5), .2f));
 
 			Sequence mySequence3 = DOTween.Sequence();
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.9f, .9f, .9f), .4f));
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.72f, .72f, .72f), .2f));
+			mySequence3.Append(_selectedBoardCard.transform.DOScale(new Vector3(.9f, .9f, .9f), .4f));
+			mySequence3.Append(_selectedBoardCard.transform.DOScale(new Vector3(.72f, .72f, .72f), .2f));
             mySequence3.OnComplete(() =>
             {
                 ChangeStatePopup(false);
@@ -211,7 +218,9 @@ namespace GrandDevs.CZB
 
 
 			_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
-            (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).cardTransform = _selectedCard.transform;
+            _uiManager.GetPopup<CardInfoPopup>().cardTransform = _selectedBoardCard.transform;
+
+            _createdBoardCards.Add(_selectedBoardCard);
         }
 
         private void ChangeStatePopup(bool isStart)
@@ -321,12 +330,9 @@ namespace GrandDevs.CZB
 
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
-			foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-			{
-				MonoBehaviour.Destroy(card.gameObject);
-			}
+            ResetBoardCards();
 
-			for (var i = startIndex; i < endIndex; i++)
+            for (var i = startIndex; i < endIndex; i++)
 			{
                 if (i >= cards.Count)
                     break;
@@ -334,24 +340,23 @@ namespace GrandDevs.CZB
 				var card = cards[i];
 
                 GameObject go = null;
-				if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
-				{
-					go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
-				}
+
+				if (card.cardKind == Enumerators.CardKind.CREATURE)
+					go = MonoBehaviour.Instantiate(_cardCreaturePrefab);
 				else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
-				{
-					go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
-				}
+					go = MonoBehaviour.Instantiate(_cardSpellPrefab);
               
-                var cardView = go.GetComponent<CardView>();
+                var boardCard = new BoardCard(go);
                 var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
-                cardView.PopulateWithLibraryInfo(card, set.name, amount);
-				cardView.SetHighlightingEnabled(false);
-				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-                cardView.transform.localScale = Vector3.one * 0.32f;
-                cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
-				cardView.GetComponent<SortingGroup>().sortingOrder = 1;
-			}
+                boardCard.Init(card, set.name, amount);
+				boardCard.SetHighlightingEnabled(false);
+				boardCard.transform.position = cardPositions[i % cardPositions.Count].position;
+                boardCard.transform.localScale = Vector3.one * 0.32f;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+
+                _createdBoardCards.Add(boardCard);
+            }
 		}
 
 		private void OpenAlertDialog(string msg)

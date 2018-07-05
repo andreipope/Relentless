@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using UnityEngine;
 
-public class AnimationEventTriggering : MonoBehaviour
+namespace LoomNetwork.CZB
 {
-    public Action<string> OnAnimationEvent;
-
-    public void AnimationEvent(string animationName)
+    public class AnimationEventTriggering : MonoBehaviour
     {
-        if (OnAnimationEvent != null)
+        public Action<string> OnAnimationEvent;
+
+        public void AnimationEvent(string animationName)
         {
-            OnAnimationEvent(animationName);
+            if (OnAnimationEvent != null)
+            {
+                OnAnimationEvent(animationName);
+            }
         }
     }
 }

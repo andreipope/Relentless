@@ -205,7 +205,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224927076997222258}
-  - component: {fileID: 114861339686514012}
   m_Layer: 12
   m_Name: PreparingForBattlePopup
   m_TagString: Untagged
@@ -678,19 +677,6 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &114861339686514012
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1743145644628048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1ea8e3b9b0619941a9bc54286e900df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentScene: {fileID: 0}
-  text: {fileID: 114821840173458840}
 --- !u!114 &114887385281602790
 MonoBehaviour:
   m_ObjectHideFlags: 1

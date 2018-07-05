@@ -1,7 +1,12 @@
-﻿using System.IO;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.IO;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LoadObjectsManager : IService, ILoadObjectsManager
     {

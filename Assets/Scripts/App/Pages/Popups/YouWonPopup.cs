@@ -1,16 +1,20 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class YouWonPopup : IUIPopup
     {
@@ -98,20 +102,10 @@ namespace GrandDevs.CZB
         private void OnClickOkButtonEventHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (NetworkingUtils.GetLocalPlayer().isServer)
-            {
-                NetworkManager.singleton.StopHost();
-            }
-            else
-            {
-                NetworkManager.singleton.StopClient();
-            }
 
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-                GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            Hide();          
+            _uiManager.HidePopup<YouWonPopup>();          
         }
 
     }

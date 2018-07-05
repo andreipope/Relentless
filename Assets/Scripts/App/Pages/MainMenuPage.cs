@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using CCGKit;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class MainMenuPage : IUIElement
     {
@@ -82,7 +86,8 @@ namespace GrandDevs.CZB
             if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.T))
             {
                 GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
-                GameManager.Instance.tutorial = true;
+
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
             }
 
             /*  FOR TESTING
@@ -134,16 +139,9 @@ namespace GrandDevs.CZB
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
             {
-                _uiManager.HideAllPages();
-                _uiManager.DrawPopup<PreparingForBattlePopup>();
-
                 (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = 0;
 
-                // small hack untill we will optimize the game because app stuck on this state.
-                GameClient.Get<ITimerManager>().AddTimer((x) =>
-                {
-                    _stateManager.ChangeAppState(Common.Enumerators.AppState.GAMEPLAY);
-                }, null, Time.deltaTime, false);
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
             }
             else
                 _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);

@@ -1,12 +1,17 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using Newtonsoft.Json;
 using System;
-using GrandDevs.Internal;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
     public class CardsLibraryData
     {
@@ -45,8 +50,8 @@ namespace GrandDevs.CZB.Data
 
                     if(card.kind != null)
                         card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
-                    if (card.rarity != null)
-                        card.cardRarity = Utilites.CastStringTuEnum<Enumerators.CardRarity>(card.rarity);
+                    if (card.rank != null)
+                        card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
                     if (card.type != null)
                         card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
 

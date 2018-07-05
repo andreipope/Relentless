@@ -1,11 +1,16 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using UnityEngine;
-using GrandDevs.CZB.Helpers;
+using LoomNetwork.CZB.Helpers;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
     public class Card {
         public int id;
@@ -18,13 +23,13 @@ namespace GrandDevs.CZB.Data
         public string picture;
         public int damage;
         public int health;
-        public string rarity;
+        public string rank;
         public string type;
         public List<AbilityData> abilities = new List<AbilityData>();
         public CardViewInfo cardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
-        public Enumerators.CardRarity cardRarity;
+        public Enumerators.CardRank cardRank;
         [JsonIgnore]
         public Enumerators.CardType cardType;
         [JsonIgnore]

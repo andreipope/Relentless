@@ -1,9 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB.Data
+
+
+using System.Collections;
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+
+namespace LoomNetwork.CZB.Data
 {
     public class CollectionData
     {

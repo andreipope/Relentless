@@ -1,10 +1,15 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LoadingPage : IUIElement
     {
@@ -30,7 +35,7 @@ namespace GrandDevs.CZB
         private TMP_InputField _usernameInputField,
                                 _passwordInputField;
 
-        private MenuButtonNoGlow _signUpButton,
+        private Button _signUpButton,
                             _loginButton;
 
         private int a = 0;
@@ -58,11 +63,11 @@ namespace GrandDevs.CZB
             _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
             _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
 
-            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
-            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
+            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<Button>();
+            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<Button>();
 
-            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
-            _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
+            _signUpButton.onClick.AddListener(OnSignupButtonPressed);
+            _loginButton.onClick.AddListener(OnLoginButtonPressed);
 
             _fillSize = _loaderBar.rectTransform.sizeDelta;
 			_fullFillWidth = _fillSize.x;

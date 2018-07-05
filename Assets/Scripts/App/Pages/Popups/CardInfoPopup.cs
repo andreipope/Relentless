@@ -1,14 +1,19 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CardInfoPopup : IUIPopup
     {
@@ -79,7 +84,7 @@ namespace GrandDevs.CZB
             _card = data as Card;
             _description.text = _card.flavorText;
 
-            _amountAward.text = (5 * ((int)_card.cardRarity + 1)).ToString();
+            _amountAward.text = (5 * ((int)_card.cardRank + 1)).ToString();
 
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.id);
             UpdateCardAmount();

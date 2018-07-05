@@ -2,81 +2,310 @@
   "heroes": [
     {
       "heroId": 0,
-      "icon": "asdasd",
-      "name": "Golem Hero",
+      "icon": "icon",
+      "name": "Brakuus, The Guardian",
       "element": "EARTH",
-      "skill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 2
-      }
+	  "experience": 0,
+	  "level": 0,
+	  "skills" : [
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		},
+		{
+			"title": "Deffence",
+			"skillType": 4,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 2
+		}
+	  ],
+      "primarySkill": 0,
+	  "secondarySkill": 1
     },
     {
       "heroId": 1,
-      "icon": "asdasd",
-      "name": "Pyro Hero",
+      "icon": "icon",
+      "name": "Razu, The Fire Daemon",
       "element": "FIRE",
-      "skill": {
-        "title": "Fireball",
-        "skillType": 2,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+	  "experience": 0,
+	  "level": 0,
+	  "skills" : [
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		},
+		{
+			"title": "Fireball",
+			"skillType": 2,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		}
+	  ],
+      "primarySkill": 0,
+	  "secondarySkill": 1
     },
     {
       "heroId": 2,
-      "icon": "asdasd",
-      "name": "Water Hero",
+      "icon": "icon",
+      "name": "Vash'Kala, The Ancient One",
       "element": "WATER",
-      "skill": {
-        "title": "Freeze target for 1 turn",
-        "skillType": 0,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+	  "experience": 0,
+	  "level": 0,
+	  "skills" : [
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Freeze target for 1 turn",
+			"skillType": 0,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  }
+	  ],
+      "primarySkill": 1, 
+	  "secondarySkill": 3
     },
     {
       "heroId": 3,
-      "icon": "asdasd",
-      "name": "Air Hero",
+      "icon": "icon",
+      "name": "Kalile, Tempest of Storms",
       "element": "AIR",
-      "skill": {
-        "title": "Return Zombie",
-        "skillType": 5,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 0
-      }
+	  "experience": 0,
+	  "level": 0,
+	  "skills" : [
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  },
+		  {
+			"title": "Return Zombie",
+			"skillType": 5,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 0
+		  }
+
+	  ],
+      "primarySkill": 3,
+	  "secondarySkill": 2
     },
     {
       "heroId": 4,
-      "icon": "asdasd",
-      "name": "Toxic Hero",
+      "icon": "icon",
+      "name": "Mhalik, Lord of Pestilence",
       "element": "TOXIC",
-      "skill": {
-        "title": "Toxic Damage",
-        "skillType": 1,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+	  "experience": 0,
+	  "level": 0,
+	  "skills" : [
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  },
+		  {
+			"title": "Toxic Damage",
+			"skillType": 1,
+			"skillTargetType": [ 0 ],
+			"cost": 2,
+			"cooldown": 2,
+			"initialCooldown":2,
+			"value": 1
+		  }
+	  ],
+      "primarySkill": 3,
+	  "secondarySkill": 2
     },
     {
       "heroId": 5,
-      "icon": "asdasd",
-      "name": "Life Hero",
+      "icon": "icon",
+      "name": "Valash, Natures Warden",
       "element": "LIFE",
-      "skill": {
-        "title": "Healing",
-        "skillType": 3,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 2
-      }
+	  "experience": 0,
+	  "level": 0,
+      "skills": [
+        {
+          "title": "Life Defense",
+          "skillType": 1,
+          "skillTargetType": [ 0 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        }
+      ],
+      "primarySkill": 0, 
+	  "secondarySkill": 0
     }
   ]
 }

@@ -1,11 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
-using Newtonsoft.Json;
-using GrandDevs.Internal;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB.Data
+
+
+using System.Collections;
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using Newtonsoft.Json;
+using LoomNetwork.Internal;
+
+namespace LoomNetwork.CZB.Data
 {
     public class OpponentDecksData
     {
@@ -33,7 +38,7 @@ namespace GrandDevs.CZB.Data
         public List<DeckCardData> cards;
 
         [JsonIgnore]
-        public List<Enumerators.ActionType> opponentActions;
+        public List<Enumerators.AIActionType> opponentActions;
 
         public OpponentDeck()
         {
@@ -41,7 +46,7 @@ namespace GrandDevs.CZB.Data
 
         public void ParseData()
         {
-            opponentActions = Utilites.CastList<Enumerators.ActionType>(actions);
+            opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
         }
 
         public void AddCard(int cardId)

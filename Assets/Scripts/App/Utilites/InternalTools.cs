@@ -1,12 +1,17 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Reflection;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-namespace GrandDevs.CZB.Helpers
+namespace LoomNetwork.CZB.Helpers
 {
     public class InternalTools
     {
