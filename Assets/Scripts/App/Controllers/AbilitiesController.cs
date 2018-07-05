@@ -333,7 +333,7 @@ namespace LoomNetwork.CZB
                                 _playerController.IsCardSelected = false;
                               //  currentSpellCard = null;
 
-                                GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+                               // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
 
                                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                             }

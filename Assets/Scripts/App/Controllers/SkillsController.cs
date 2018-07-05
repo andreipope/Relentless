@@ -148,24 +148,37 @@ namespace LoomNetwork.CZB
                     if (skill.fightTargetingArrow.selectedPlayer != null)
                     {
                         var targetPlayer = skill.fightTargetingArrow.selectedPlayer;
-                        skill.UseSkill(targetPlayer);
-                        DoActionByType(skill, targetPlayer);
-                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+
+                        _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, targetPlayer, (x) =>
+                        {
+                            skill.UseSkill(targetPlayer);
+                            DoActionByType(skill, targetPlayer);
+                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                        });
                     }
                     else if (skill.fightTargetingArrow.selectedCard != null)
                     {
                         var targetUnit = skill.fightTargetingArrow.selectedCard;
-                        DoActionByType(skill, targetUnit);
-                        skill.UseSkill(targetUnit);
+
+                        _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, targetUnit, (x) =>
+                        {
+                            DoActionByType(skill, targetUnit);
+                            skill.UseSkill(targetUnit);
+                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                        });  
                     }
 
                     skill.CancelTargetingArrows();
                     skill.fightTargetingArrow = null;
                 }
-                else
+                else if(target != null)
                 {
-                    DoActionByType(skill, target);
-                    skill.UseSkill(target);
+                    _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, target, (x) =>
+                    {
+                        DoActionByType(skill, target);
+                        skill.UseSkill(target);
+                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                    });   
                 }
             }
         }
@@ -206,7 +219,8 @@ namespace LoomNetwork.CZB
             {
                 var unit = target as BoardUnit;
                 unit.Stun(skill.value);
-                _vfxController.CreateSkillVFX(Enumerators.SetType.EARTH, unit.transform.position, target, SkillParticleActionCompleted);
+
+                _vfxController.CreateVFX(Enumerators.SetType.WATER, unit.transform.position);
             }
             else if (target is Player)
             {
@@ -232,7 +246,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealPlayerBySkill(owner, skill, player);
 
-            //    _vfxController.CreateSkillVFX(Enumerators.SetType.EARTH, player.AvatarObject.transform.position, owner, SkillParticleActionCompleted);
+                _vfxController.CreateVFX(Enumerators.SetType.LIFE, player.AvatarObject.transform.position);
             }
             else
             {
@@ -240,7 +254,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealCreatureBySkill(owner, skill, unit);
 
-            //    _vfxController.CreateSkillVFX(Enumerators.SetType.EARTH, unit.transform.position, unit, SkillParticleActionCompleted);
+                _vfxController.CreateVFX(Enumerators.SetType.LIFE, unit.transform.position);
             }
         }
 
@@ -248,7 +262,7 @@ namespace LoomNetwork.CZB
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
-            _vfxController.CreateSkillVFX(Enumerators.SetType.EARTH, owner.AvatarObject.transform.position - Vector3.right * 2.3f, owner, SkillParticleActionCompleted);
+            _vfxController.CreateVFX(Enumerators.SetType.EARTH, owner.AvatarObject.transform.position - Vector3.right * 2.3f);
         }
 
         private void AttackWithModifiers(Player owner, HeroSkill skill, object target, Enumerators.SetType attackType, Enumerators.SetType setType)
@@ -260,7 +274,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.AttackPlayerBySkill(owner, skill, player);
 
-              //  _vfxController.CreateSkillVFX(attackType, player.AvatarObject.transform.position, owner, SkillParticleActionCompleted);
+                _vfxController.CreateVFX(attackType, player.AvatarObject.transform.position);
             }
             else
             {
@@ -272,7 +286,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.AttackCreatureBySkill(owner, skill, creature, attackModifier);
 
-             //   _vfxController.CreateSkillVFX(attackType, creature.transform.position, owner, SkillParticleActionCompleted);
+                _vfxController.CreateVFX(attackType, creature.transform.position);
             }
         }
 

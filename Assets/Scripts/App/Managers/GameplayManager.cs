@@ -171,10 +171,8 @@ namespace LoomNetwork.CZB
 
             CurrentTurnPlayer = CurrentPlayer;// local player starts as first
 
-
-            GetController<BattlegroundController>().InitializeBattleground();
-
             GetController<SkillsController>().InitializeSkills();
+            GetController<BattlegroundController>().InitializeBattleground();
 
             GameEnded = false;
 

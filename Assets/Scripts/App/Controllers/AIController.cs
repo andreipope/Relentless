@@ -140,8 +140,7 @@ namespace LoomNetwork.CZB
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
         {
-            // rewrite
-            MainApp.Instance.StopAllCoroutines();
+            ThreadTool.Instance.AbortAllThreads(this);
         }
 
         private void OnGameStartedEventHandler()
@@ -183,9 +182,12 @@ namespace LoomNetwork.CZB
 
         private void DoAIBrain()
         {
-            if (!_enabledAIBrain)
+            if (!_enabledAIBrain && Constants.DEV_MODE)
             {
-                _battlegroundController.StopTurn();
+                _timerManager.AddTimer((x) =>
+                {
+                    _battlegroundController.StopTurn();
+                }, null, 2f);
                 return;
             }
 

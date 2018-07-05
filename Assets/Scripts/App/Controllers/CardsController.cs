@@ -298,7 +298,7 @@ namespace LoomNetwork.CZB
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 {
-                    _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+                   // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
 
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
@@ -475,13 +475,13 @@ namespace LoomNetwork.CZB
         private void CallCardPlay(BoardCard card)
         {
             // PlayCreatureCard(card.WorkingCard);
-            _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 
         private void CallSpellCardPlay(BoardCard card)
         {
             //  PlaySpellCard(card.WorkingCard);
-            _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
         }
 
 /*

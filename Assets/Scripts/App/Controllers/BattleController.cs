@@ -153,6 +153,7 @@ namespace LoomNetwork.CZB
         {
             if (healingPlayer != null)
             {
+                //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
             }
 

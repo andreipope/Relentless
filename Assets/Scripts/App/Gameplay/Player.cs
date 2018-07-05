@@ -168,7 +168,6 @@ namespace LoomNetwork.CZB
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
-
             nickname = _selfHero.name;
             deckId = _gameplayManager.PlayerDeckId;
 

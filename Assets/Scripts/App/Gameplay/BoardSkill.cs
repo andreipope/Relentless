@@ -20,8 +20,6 @@ namespace LoomNetwork.CZB
         private SkillsController _skillsController;
         private VFXController _vfxController;
 
-        private GameObject _selfObject;
-
         private SpriteRenderer _glowObjectSprite;
 
         private GameObject fightTargetingArrowPrefab;
@@ -34,6 +32,9 @@ namespace LoomNetwork.CZB
         public BoardArrow abilitiesTargetingArrow;
         public BattleBoardArrow fightTargetingArrow;
 
+        public GameObject selfObject;
+
+
         public Player owner;
         public HeroSkill skill;
 
@@ -44,7 +45,7 @@ namespace LoomNetwork.CZB
 
         public BoardSkill(GameObject selfObject, Player player, HeroSkill skillInfo)
         {
-            _selfObject = selfObject;
+            this.selfObject = selfObject;
             skill = skillInfo;
             owner = player;
 
@@ -61,13 +62,13 @@ namespace LoomNetwork.CZB
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
 
-            _glowObjectSprite = _selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
+            _glowObjectSprite = this.selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
 
             owner.OnStartTurnEvent += OnStartTurnEventHandler;
             owner.OnEndTurnEvent += OnEndTurnEventHandler;
-            
-            _behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
+
+            _behaviourHandler = this.selfObject.GetComponent<OnBehaviourHandler>();
 
             _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
@@ -157,7 +158,7 @@ namespace LoomNetwork.CZB
                 //skill.skillTargetType;
 
 
-                fightTargetingArrow.Begin(_selfObject.transform.position);
+                fightTargetingArrow.Begin(selfObject.transform.position);
 
                 if (_tutorialManager.IsTutorial)
                     _tutorialManager.DeactivateSelectTarget();
@@ -202,7 +203,6 @@ namespace LoomNetwork.CZB
 
         public void UseSkill(object target)
         {
-          //  _vfxController.CreateVFX(owner.SelfHero.heroElement, target is BoardUnit ? (target as BoardUnit).transform.position : (target as Player).AvatarObject.transform.position);
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
         }

@@ -192,16 +192,6 @@ namespace LoomNetwork.CZB
 
             bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
 
-
-            //_cards.Add(new CardInGraveyard(GameObject.Instantiate(_playedCardPrefab, _cardGraveyard.transform),
-            //                               cardToDestroy.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>().sprite));
-            //if (_cards.Count > 4)
-            //{
-            //    _graveYardTopOffset = -66 - 120 * (_cards.Count - 5);
-            //}
-            //for (int j = _cards.Count-1; j >= 0; j--)
-            //_cards[j].selfObject.transform.SetAsLastSibling();
-
             cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
 
             _timerManager.AddTimer((x) =>
@@ -232,18 +222,6 @@ namespace LoomNetwork.CZB
                 }, null, soundLength);
 
             }, null, 1f);
-
-
-            //  if (!gameEnded)
-            // {
-
-            //   GameClient.Get<ITimerManager>().AddTimer((x) =>
-            //  {
-            //  }, null, Constants.DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE);
-            //}
-
-
-            //GameClient.Get<ITimerManager>().AddTimer(DelayedCardDestroy, new object[] { cardToDestroy }, 0.7f);
 
         }
 

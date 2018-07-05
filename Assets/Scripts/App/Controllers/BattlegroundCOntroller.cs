@@ -277,7 +277,6 @@ namespace LoomNetwork.CZB
             _gameplayManager.CurrentPlayer.CallOnEndTurnEvent();
             _gameplayManager.OpponentPlayer.CallOnEndTurnEvent();
 
-            //todo move it from here I guess !!!!!!!!!!!!!! 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);

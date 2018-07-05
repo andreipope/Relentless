@@ -137,7 +137,7 @@ namespace LoomNetwork.CZB
 
         }
 
-        public void CreateVFX(Enumerators.SetType setType, Vector3 position, bool autoDestroy = false, float delay = 3f)
+        public void CreateVFX(Enumerators.SetType setType, Vector3 position, bool autoDestroy = true, float delay = 3f)
         {
             GameObject prefab = null;
 
