@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
         private SkillsController _skillsController;
 
-        private bool _enabledAIBrain = false;
+        private bool _enabledAIBrain = true;
         private int _minTurnForAttack = 0;
 
         private Enumerators.AIType _aiType;
@@ -334,7 +334,7 @@ namespace LoomNetwork.CZB
 
         private bool CardCanBePlayable(WorkingCard card)
         {
-            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Mana && _battlegroundController.currentTurn > _minTurnForAttack) || Constants.DEV_MODE);
+            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Mana && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
         }
 
         private bool UnitCanBeUsable(BoardUnit unit)
