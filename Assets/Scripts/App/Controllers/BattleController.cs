@@ -102,8 +102,25 @@ namespace LoomNetwork.CZB
                 additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingCreature.Card.libraryCard.cardSetType, attackedCreature.Card.libraryCard.cardSetType);
                 additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedCreature.Card.libraryCard.cardSetType, attackingCreature.Card.libraryCard.cardSetType);
 
-                attackedCreature.HP -= attackingCreature.Damage + additionalDamageAttacker;
-                attackingCreature.HP -= attackedCreature.Damage + additionalDamageAttacked;
+                int damage = attackingCreature.Damage + additionalDamageAttacker;
+
+                if (attackedCreature.HasShield)
+                {
+                    damage = 0;
+                    attackedCreature.UseShieldfromBuff();
+                }
+
+                attackedCreature.HP -= damage;
+
+                damage = attackedCreature.Damage + additionalDamageAttacked;
+
+                if (attackedCreature.HasShield)
+                {
+                    damage = 0;
+                    attackedCreature.UseShieldfromBuff();
+                }
+
+                attackingCreature.HP -= damage;
             }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
@@ -120,7 +137,15 @@ namespace LoomNetwork.CZB
         {
             if (attackedCreature != null)
             {
-                attackedCreature.HP -= (skill.value + modifier);
+                int damage = (skill.value + modifier);
+
+                if (attackedCreature.HasShield)
+                {
+                    damage = 0;
+                    attackedCreature.UseShieldfromBuff();
+                }
+
+                attackedCreature.HP -= damage;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -186,7 +211,15 @@ namespace LoomNetwork.CZB
         {
             if (attackedCreature != null)
             {
-                attackedCreature.HP -= ability.value;
+                int damage = ability.value;
+
+                if (attackedCreature.HasShield)
+                {
+                    damage = 0;
+                    attackedCreature.UseShieldfromBuff();
+                }
+
+                attackedCreature.HP -= damage;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,

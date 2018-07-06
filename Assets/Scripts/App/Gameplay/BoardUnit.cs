@@ -40,6 +40,7 @@ namespace LoomNetwork.CZB
         private BattleController _battleController;
         private ActionsQueueController _actionsQueueController;
         private VFXController _vfxController;
+        private RanksController _ranksController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -48,6 +49,7 @@ namespace LoomNetwork.CZB
         private SpriteRenderer pictureSprite;
         private SpriteRenderer frozenSprite;
         private SpriteRenderer glowSprite;
+        private GameObject _shieldSprite;
 
         private TextMeshPro attackText;
         private TextMeshPro healthText;
@@ -70,6 +72,8 @@ namespace LoomNetwork.CZB
 
         private Animator creatureAnimator;
 
+        private List<Enumerators.BuffType> _buffsOnUnit;
+
         private bool _dead = false;
 
         public bool hasImpetus;
@@ -83,6 +87,8 @@ namespace LoomNetwork.CZB
 
         public List<UnitAnimatorInfo> animatorControllers;
 
+       
+
         public int Damage
         {
             get
@@ -94,7 +100,9 @@ namespace LoomNetwork.CZB
                 var oldDamage = _damage;
                 _damage = value;
 
-                CreatureDamageChangedEvent?.Invoke(oldDamage, _damage);
+
+                if (oldDamage != _damage)
+                    CreatureDamageChangedEvent?.Invoke(oldDamage, _damage);
             }
         }
 
@@ -111,7 +119,8 @@ namespace LoomNetwork.CZB
 
                 _health = Mathf.Clamp(_health, 0, 99);
 
-                CreatureHPChangedEvent?.Invoke(oldHealth, _health);
+                if (oldHealth != _health)
+                    CreatureHPChangedEvent?.Invoke(oldHealth, _health);
             }
         }
 
@@ -130,6 +139,16 @@ namespace LoomNetwork.CZB
             get { return (_stunTurns > 0 ? true : false); }
         }
 
+        public List<Enumerators.BuffType> BuffsOnUnit { get { return _buffsOnUnit; } }
+
+        public bool HasRush { get; set; }
+        public bool HasHeavy { get; set; }
+        public bool HasShield { get; set; }
+        public bool TakeFreezeToAttacked { get; set; }
+        public int AdditionalDamage { get; set; }
+        public int AdditionalDefense { get; set; }
+
+
         public BoardUnit(Transform parent)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -144,6 +163,7 @@ namespace LoomNetwork.CZB
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -153,6 +173,7 @@ namespace LoomNetwork.CZB
             pictureSprite = _selfObject.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>();
             frozenSprite = _selfObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             glowSprite = _selfObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
+            _shieldSprite = _selfObject.transform.Find("Other/Shield").gameObject;
 
             attackText = _selfObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             healthText = _selfObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
@@ -183,6 +204,8 @@ namespace LoomNetwork.CZB
                     cardType = (Enumerators.CardType)i
                 });
             }
+
+            _buffsOnUnit = new List<Enumerators.BuffType>();
         }
 
         public void Die()
@@ -195,6 +218,98 @@ namespace LoomNetwork.CZB
             _battlegroundController.KillBoardCard(this);
 
             CreatureOnDieEvent?.Invoke();
+        }
+
+        public void BuffUnit(Enumerators.BuffType type)
+        {
+            _buffsOnUnit.Add(type);
+        }
+
+        public void RemoveBuff(Enumerators.BuffType type)
+        {
+            _buffsOnUnit.Remove(type);
+        }
+
+        public void ClearBuffs()
+        {
+            int damageToDelete = 0;
+            int defenseToDelete = 0;
+
+            foreach (var buff in _buffsOnUnit)
+            {
+                switch (buff)
+                {
+                    case Enumerators.BuffType.ATTACK:
+                    case Enumerators.BuffType.DAMAGE:
+                        damageToDelete++;
+                        break;
+                    case Enumerators.BuffType.DEFENCE:
+                        defenseToDelete++;
+                        break;
+                    case Enumerators.BuffType.FREEZE:
+                        TakeFreezeToAttacked = false;
+                        break;
+                    case Enumerators.BuffType.HEAVY:
+                        HasHeavy = false;
+                        break;
+                    case Enumerators.BuffType.RUSH:
+                        HasRush = false;
+                        break;
+                    case Enumerators.BuffType.SHIELD:
+                        HasShield = false;
+                        break;
+                    default: break;
+                }
+            }
+
+            _buffsOnUnit.Clear();
+
+            AdditionalDefense -= defenseToDelete;
+            AdditionalDamage -= damageToDelete;
+            HP -= AdditionalDefense;
+            Damage -= AdditionalDamage;
+            _shieldSprite.SetActive(HasShield);
+        }
+
+        public void ApplyBuffs()
+        {
+            foreach(var buff in _buffsOnUnit)
+            {
+                switch(buff)
+                {
+                    case Enumerators.BuffType.ATTACK:
+                    case Enumerators.BuffType.DAMAGE:
+                        AdditionalDamage++;
+                        break;
+                    case Enumerators.BuffType.DEFENCE:
+                        AdditionalDefense++;
+                        break;
+                    case Enumerators.BuffType.FREEZE:
+                        TakeFreezeToAttacked = true;
+                        break;
+                    case Enumerators.BuffType.HEAVY:
+                        HasHeavy = true;
+                        break;
+                    case Enumerators.BuffType.RUSH:
+                        HasRush = true;
+                        break;
+                    case Enumerators.BuffType.SHIELD:
+                        HasShield = true;
+                        break;
+                    default: break;
+                }
+            }
+
+            HP += AdditionalDefense;
+            Damage += AdditionalDamage;
+            _shieldSprite.SetActive(HasShield);
+        }
+
+        public void UseShieldfromBuff()
+        {
+            HasShield = false;
+            _buffsOnUnit.Remove(Enumerators.BuffType.SHIELD);
+            _shieldSprite.SetActive(HasShield);
         }
 
         public void ArrivalAnimationEventHandler(string param)
@@ -558,6 +673,10 @@ namespace LoomNetwork.CZB
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
 
                         _battleController.AttackCreatureByCreature(this, targetCard);
+
+                        if(TakeFreezeToAttacked)
+                            targetCard.Stun(1);
+
                         CreatureOnAttackEvent?.Invoke(targetCard);
                     },
                     () =>

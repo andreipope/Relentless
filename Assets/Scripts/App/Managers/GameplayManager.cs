@@ -139,6 +139,11 @@ namespace LoomNetwork.CZB
 
             StopGameplay();
 
+
+            CurrentTurnPlayer = null;
+            CurrentPlayer = null;
+            OpponentPlayer = null;
+
             OnGameEndedEvent?.Invoke(endGameType);
         }
 

@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB
 
 
         private BattlegroundController _battlegroundController;
+        private RanksController _ranksController;
 
         private GameObject _selfPage,
                            _playedCardPrefab;
@@ -132,6 +133,8 @@ namespace LoomNetwork.CZB
         {
             ClearGraveyard();
 
+            SetEndTurnButtonStatus(true);
+
             if (_reportGameActionsPanel != null)
                 _reportGameActionsPanel.Clear();
         }
@@ -210,6 +213,8 @@ namespace LoomNetwork.CZB
                     cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
                     cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
 
+                    _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
+
                     cardToDestroy.transform.DOKill();
                     MonoBehaviour.Destroy(cardToDestroy.gameObject);
 
@@ -244,6 +249,8 @@ namespace LoomNetwork.CZB
                 _battlegroundController.OnBoardCardKilledEvent += OnBoardCardKilledEventHandler;
                 _battlegroundController.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardUpdatedEventHandler;
                 _battlegroundController.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardUpdatedEventHandler;
+
+                _ranksController = _gameplayManager.GetController<RanksController>();
             }
 
             int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
