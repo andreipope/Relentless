@@ -157,7 +157,10 @@ namespace LoomNetwork.CZB
         private void OnStartTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer) || !_gameplayManager.GameStarted)
+            {
+                ThreadTool.Instance.AbortAllThreads(this);
                 return;
+            }
 
             DoAIBrain();
         }

@@ -155,6 +155,8 @@ namespace LoomNetwork.CZB
 
             gameFinished = false;
 
+            _timerManager.StopTimer(RunTurnAsync);
+
 
             if (_gameplayManager.IsTutorial)
                 _gameplayManager.OpponentPlayer.HP = 8;
@@ -202,6 +204,8 @@ namespace LoomNetwork.CZB
         {
             if (_gameplayManager.GameEnded)
                 return;
+
+            currentTurn++;
 
             _gameplayManager.CurrentTurnPlayer.turn++;
 
