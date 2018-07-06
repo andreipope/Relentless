@@ -24,7 +24,6 @@ namespace LoomNetwork.CZB
         private SkillsController _skillsController;
       //  private HeroController _heroController;
 
-        public bool AlreadyAttackedInThisTurn { get; set; }
         public bool IsPlayerStunned { get; set; }
         public bool IsCardSelected { get; set; }
         public bool IsActive { get; set; }
@@ -115,6 +114,11 @@ namespace LoomNetwork.CZB
 
         public virtual void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
+
+            IsActive = false;
+            IsPlayerStunned = false;
+            IsCardSelected = false;
+
             //Write code for analize amount of experience getted in the battle
             //_heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }

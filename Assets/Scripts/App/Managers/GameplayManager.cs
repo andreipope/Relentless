@@ -150,6 +150,7 @@ namespace LoomNetwork.CZB
         public void StartGameplay()
         {
             GameStarted = true;
+            GameEnded = false;
 
             OnGameStartedEvent?.Invoke();
 
