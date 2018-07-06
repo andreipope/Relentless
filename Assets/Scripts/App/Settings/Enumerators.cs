@@ -373,5 +373,26 @@
             PRIMARY,
             SECONDARY
         }
+
+        public enum BuffType
+        {
+            SHIELD,
+            DEFENCE,
+            HEAVY,
+            WEAPON,
+            RUSH,
+            ATTACK,
+            FREEZE,
+            DAMAGE,
+            HEAL_ALLY
+        }
+
+        public enum BuffActivityType
+        {
+            ONE_TIME,
+            PERMANENT,
+            TILL_FIRST_DEFENSE_FROM_ATTACK,
+            TURN_BASED,
+        }
     }
 }

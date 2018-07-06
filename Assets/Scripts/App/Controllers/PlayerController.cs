@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
 
-            if (_tutorialManager.IsTutorial)
+            if (_gameplayManager.IsTutorial)
                 _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
             _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
 

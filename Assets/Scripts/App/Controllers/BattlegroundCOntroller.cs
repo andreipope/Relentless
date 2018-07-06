@@ -181,8 +181,7 @@ namespace LoomNetwork.CZB
         {
             _timerManager.StopTimer(RunTurnAsync);
 
-
-            gameFinished = true;
+           gameFinished = true;
             currentTurn = 0;
 
             ClearBattleground();

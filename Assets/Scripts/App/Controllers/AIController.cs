@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
         private SkillsController _skillsController;
 
-        private bool _enabledAIBrain = true;
+        private bool _enabledAIBrain = false;
         private int _minTurnForAttack = 0;
 
         private Enumerators.AIType _aiType;

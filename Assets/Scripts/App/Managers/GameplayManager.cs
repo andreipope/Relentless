@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
         }
 
-        public void EndGame(Enumerators.EndGameType endGameType)
+        public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
         {
             if (GameEnded)
                 return;
@@ -132,12 +132,17 @@ namespace LoomNetwork.CZB
                         _uiManager.DrawPopup<YouWonPopup>();
                     else if (endGameType == Enumerators.EndGameType.LOSE)
                         _uiManager.DrawPopup<YouLosePopup>();
-                }, null, 4f);
+                }, null, timer);
             }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
 
             StopGameplay();
+
+
+            CurrentTurnPlayer = null;
+            CurrentPlayer = null;
+            OpponentPlayer = null;
 
             OnGameEndedEvent?.Invoke(endGameType);
         }

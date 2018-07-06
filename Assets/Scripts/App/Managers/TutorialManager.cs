@@ -204,9 +204,10 @@ namespace LoomNetwork.CZB
 
             if (_currentStep >= _steps.Count - 1)
             {
-                GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
-                GameClient.Get<ITutorialManager>().StopTutorial();
-				return;
+                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
+                //GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
+                //GameClient.Get<ITutorialManager>().StopTutorial();
+                return;
             }
             if (_currentStep == 11)
                 GameClient.Get<ITimerManager>().AddTimer((x) => { GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn(); }, null, 5f, false);
