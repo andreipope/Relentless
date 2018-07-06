@@ -352,7 +352,7 @@ namespace LoomNetwork.CZB
 
             _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HERO_DEATH_SOUND_VOLUME, false, false);
 
-
+            if(!_gameplayManager.IsTutorial)
             _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
         }
   
