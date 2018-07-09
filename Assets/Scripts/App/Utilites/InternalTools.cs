@@ -10,6 +10,7 @@ using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LoomNetwork.CZB.Helpers
 {
@@ -71,6 +72,12 @@ namespace LoomNetwork.CZB.Helpers
                 if (parent.transform.GetChild(i).childCount > 0)
                     SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer);
             }
+        }
+
+        public static void ShakeList<T>(ref List<T> list)
+        {
+            var rnd = new System.Random();
+            list = list.OrderBy(item => rnd.Next()).ToList();
         }
     }
 }

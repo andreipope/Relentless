@@ -10,6 +10,7 @@ namespace LoomNetwork.CZB
     public class BattleBoardArrow : BoardArrow
     {
         public List<BoardUnit> BoardCards;
+        public BoardUnit owner;
 
         public void End(BoardUnit creature)
         {
@@ -36,7 +37,7 @@ namespace LoomNetwork.CZB
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && creature.transform.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && creature.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY))
+                if (!opponentHasProvoke || (opponentHasProvoke && creature.IsHeavyUnit()))
                 {
                     selectedCard = creature;
                     selectedPlayer = null;
@@ -59,6 +60,10 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19 &&
                                                 _gameplayManager.TutorialStep != 28 &&
                                                 _gameplayManager.TutorialStep != 29))
+                return;
+
+
+            if (owner != null && owner.HasBuffRush && !owner.hasFeral)
                 return;
 
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
@@ -88,7 +93,7 @@ namespace LoomNetwork.CZB
 
         protected bool OpponentBoardContainsProvokingCreatures()
         {
-            var provokeCards = BoardCards.FindAll(x => x.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY);
+            var provokeCards = BoardCards.FindAll(x => x.IsHeavyUnit());
             return provokeCards.Count > 0;
         }
     }

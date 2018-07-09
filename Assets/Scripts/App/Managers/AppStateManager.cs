@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
                     {
                         _uiManager.SetPage<LoadingPage>();
                         _dataManager.StartLoadCache();
-                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
                     }
                     break;
                 case Enumerators.AppState.LOGIN:

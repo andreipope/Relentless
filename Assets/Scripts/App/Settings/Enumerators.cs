@@ -303,8 +303,6 @@
         {
             ATTACK_PLAYER_BY_CREATURE,
             ATTACK_CREATURE_BY_CREATURE,
-            ATTACK_CREATURE_BY_SPELL,
-            ATTACK_PLAYER_BY_SPELL,
             ATTACK_CREATURE_BY_SKILL,
             ATTACK_PLAYER_BY_SKILL,
             HEAL_PLAYER_BY_SKILL,
@@ -313,8 +311,8 @@
             ATTACK_PLAYER_BY_ABILITY,
             HEAL_PLAYER_BY_ABILITY,
             HEAL_CREATURE_BY_ABILITY,
-            ATTACK_PLAYER_BY_WEAPON,
-            ATTACK_CREATURE_BY_WEAPON
+            PLAY_UNIT_CARD,
+            PLAY_SPELL_CARD
         }
 
 

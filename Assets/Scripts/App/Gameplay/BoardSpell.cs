@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
             gameObject = obj;
             transform = obj.transform;
 
-            _eventHandler = gameObject.AddComponent<OnBehaviourHandler>();
+            _eventHandler = gameObject.GetComponent<OnBehaviourHandler>();
 
             _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
         }

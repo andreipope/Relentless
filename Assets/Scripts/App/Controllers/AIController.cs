@@ -342,7 +342,7 @@ namespace LoomNetwork.CZB
 
         private bool UnitCanBeUsable(BoardUnit unit)
         {
-            return (unit != null && unit.HP > 0 && (_unitNumberOfTunrsOnBoard[unit.Card.instanceId] >= 1 || unit.Card.type == Enumerators.CardType.FERAL) && unit.IsPlayable);
+            return (unit != null && unit.HP > 0 && (_unitNumberOfTunrsOnBoard[unit.Card.instanceId] >= 1 || unit.IsFeralUnit()) && unit.IsPlayable);
         }
 
         private void PlayCardOnBoard(WorkingCard card)
@@ -666,17 +666,17 @@ namespace LoomNetwork.CZB
         private int GetPlayerAttackingValue()
         {
             int power = 0;
-            foreach (var creature in _gameplayManager.OpponentPlayer.CardsOnBoard)
-                if (creature.health > 0 && (_unitNumberOfTunrsOnBoard[creature.instanceId] >= 1 || creature.type == Enumerators.CardType.FERAL))
-                    power += creature.damage;
+            foreach (var creature in _gameplayManager.OpponentPlayer.BoardCards)
+                if (creature.HP > 0 && (_unitNumberOfTunrsOnBoard[creature.Card.instanceId] >= 1 || creature.IsFeralUnit()))
+                    power += creature.Damage;
             return power;
         }
 
         private int GetOpponentAttackingValue()
         {
             int power = 0;
-            foreach (var card in _gameplayManager.CurrentPlayer.CardsOnBoard)
-                power += card.damage;
+            foreach (var card in _gameplayManager.CurrentPlayer.BoardCards)
+                power += card.Damage;
             return power;
         }
     
@@ -751,7 +751,7 @@ namespace LoomNetwork.CZB
 
             if (eligibleUnits.Count > 0)
             {
-                var heavyUnits = eligibleUnits.FindAll(x => x.Card.type == Enumerators.CardType.HEAVY);
+                var heavyUnits = eligibleUnits.FindAll(x => x.IsHeavyUnit());
                 if (heavyUnits != null && heavyUnits.Count >= 1)
                     return heavyUnits[_random.Next(0, heavyUnits.Count)];
                 else
@@ -774,7 +774,7 @@ namespace LoomNetwork.CZB
             var eligibleCreatures = board.FindAll(x => x.HP > 0);
             if (eligibleCreatures.Count > 0)
             {
-                var provokeCreatures = eligibleCreatures.FindAll(x => x.Card.type == Enumerators.CardType.HEAVY);
+                var provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit());
                 return (provokeCreatures != null && provokeCreatures.Count >= 1);
             }
             return false;

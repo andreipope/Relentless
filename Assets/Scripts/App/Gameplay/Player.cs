@@ -5,6 +5,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -317,11 +318,7 @@ namespace LoomNetwork.CZB
             CardsInDeck = new List<WorkingCard>();
 
             if (!_gameplayManager.IsTutorial)
-            {
-                // shake
-                var rnd = new System.Random();
-                cards = cards.OrderBy(item => rnd.Next()).ToList();
-            }
+                InternalTools.ShakeList(ref cards);// shake
 
             foreach (var card in cards)
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));

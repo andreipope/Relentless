@@ -67,9 +67,6 @@ public class EndTurnButton : MonoBehaviour
                                                               GameClient.Get<ITutorialManager>().CurrentStep != 21))
             return;
 
-
-        Debug.Log(active + " | " + hovering);
-
         if (active && hovering)
         {
             GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();

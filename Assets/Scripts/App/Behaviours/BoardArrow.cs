@@ -71,8 +71,6 @@ public class BoardArrow : MonoBehaviour
     private Vector3 newRotation,
                 oldPosition;
 
-
-
     protected void Init()
     {
         _gameplayManager = GameClient.Get<IGameplayManager>();

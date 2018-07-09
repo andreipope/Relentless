@@ -4,15 +4,7 @@
 
 
 using UnityEngine;
-using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
-using DG.Tweening;
 using TMPro;
-using System;
-using System.Linq;
-using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB

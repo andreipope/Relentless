@@ -299,112 +299,118 @@ namespace LoomNetwork.CZB
                     player.Mana -= card.libraryCard.cost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
+                // {
+                // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
+                var libraryCard = card.WorkingCard.libraryCard;
+
+                string cardSetName = string.Empty;
+                foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
                 {
-                   // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+                    if (cardSet.cards.IndexOf(libraryCard) > -1)
+                        cardSetName = cardSet.name;
+                }
 
-                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                card.transform.DORotate(Vector3.zero, .1f);
+                card.HandBoardCard.enabled = false;
 
-                    var libraryCard = card.WorkingCard.libraryCard;
+                _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                    string cardSetName = string.Empty;
-                    foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
+                if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+                {
+                    int indexOfCard = 0;
+                    float newCreatureCardPosition = card.transform.position.x;
+
+                    // set correct position on board depends from card view position
+                    for (int i = 0; i < player.BoardCards.Count; i++)
                     {
-                        if (cardSet.cards.IndexOf(libraryCard) > -1)
-                            cardSetName = cardSet.name;
+                        if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
+                            indexOfCard = i + 1;
+                        else break;
                     }
 
-                    card.transform.DORotate(Vector3.zero, .1f);
-                    card.HandBoardCard.enabled = false;
+                    var boardUnit = new BoardUnit(_playerBoard.transform);
+                    boardUnit.transform.tag = Constants.TAG_PLAYER_OWNED;
+                    boardUnit.transform.parent = _playerBoard.transform;
+                    boardUnit.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+                    boardUnit.ownerPlayer = card.WorkingCard.owner;
+                    boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
 
-                    _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-                    // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    player.CardsInHand.Remove(card.WorkingCard);
+                    _battlegroundController.playerHandCards.Remove(card);
+                    _battlegroundController.playerBoardCards.Add(boardUnit);
 
-                    if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
+                    player.BoardCards.Insert(indexOfCard, boardUnit);
+
+
+                    //_ranksController.UpdateRanksBuffs(player);
+
+                    _timerManager.AddTimer((creat) =>
                     {
-                        int indexOfCard = 0;
-                        float newCreatureCardPosition = card.transform.position.x;
+                        card.WorkingCard.owner.GraveyardCardsCount++;
+                    }, null, 1f);
 
-                        // set correct position on board depends from card view position
-                        for (int i = 0; i < player.BoardCards.Count; i++)
-                        {
-                            if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
-                                indexOfCard = i + 1;
-                            else break;
-                        }
+                    //Destroy(card.gameObject);
+                    card.removeCardParticle.Play();
 
-                        var boardUnit = new BoardUnit(_playerBoard.transform);
-                        boardUnit.transform.tag = Constants.TAG_PLAYER_OWNED;
-                        boardUnit.transform.parent = _playerBoard.transform;
-                        boardUnit.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                        boardUnit.ownerPlayer = card.WorkingCard.owner;
-                        boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
-
-                        player.CardsInHand.Remove(card.WorkingCard);
-                        _battlegroundController.playerHandCards.Remove(card);
-                        _battlegroundController.playerBoardCards.Add(boardUnit);
-
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
-                        player.BoardCards.Insert(indexOfCard, boardUnit);
-
-                        _ranksController.UpdateRanksBuffs(player);
-
-                        _timerManager.AddTimer((creat) =>
-                        {
-                            card.WorkingCard.owner.GraveyardCardsCount++;
-                        }, null, 1f);
-
-                        //Destroy(card.gameObject);
-                        card.removeCardParticle.Play();
-
-
-                        Sequence animationSequence = DOTween.Sequence();
-                        animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                        animationSequence.OnComplete(() =>
-                        {
-                            RemoveCard(new object[] { card });
-                            _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
-                        });
-
-                        //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                        //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
-
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
-                        {
-                            _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
-                        });
-
-                     //   actionComplete?.Invoke();
-
-                        //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                        //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
-                    }
-                    else if (libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
                     {
-                        //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                        //var sequence = DOTween.Sequence();
-                        //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                        //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                        //sequence.Play().OnComplete(() =>
-                        //{ 
+                        boardUnit.ownerPlayer,
+                        boardUnit
+                    }));
 
-                        player.CardsInHand.Remove(card.WorkingCard);
-                        _battlegroundController.playerHandCards.Remove(card);
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                    Sequence animationSequence = DOTween.Sequence();
+                    animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                    animationSequence.OnComplete(() =>
+                    {
+                        RemoveCard(new object[] { card });
+                        _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
+                    });
 
-                        card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-                        card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
+                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
 
-                        var boardSpell = new BoardSpell(card.gameObject);
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
+                    {
+                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
+                    });
 
-                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
-                        //});
+                    //actionComplete?.Invoke();
+
+                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
+                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+
+                }
+                else if (libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                {
+                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
+                    //var sequence = DOTween.Sequence();
+                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
+                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
+                    //sequence.Play().OnComplete(() =>
+                    //{ 
+
+                    player.CardsInHand.Remove(card.WorkingCard);
+                    _battlegroundController.playerHandCards.Remove(card);
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
+                    card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
+                    card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+
+                    var boardSpell = new BoardSpell(card.gameObject);
+
+                    _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                    //});
 
                     //    actionComplete?.Invoke();
-                    }
                 }
-              // );
+                // }
+                // );
             }
             else
             {

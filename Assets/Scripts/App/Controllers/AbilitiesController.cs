@@ -17,6 +17,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private PlayerController _playerController;
         private BattlegroundController _battlegroundController;
+        private ActionsQueueController _actionsQueueController;
 
         private object _lock = new object();
 
@@ -32,6 +33,7 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
         }
 
         public void Reset()
@@ -315,6 +317,12 @@ namespace LoomNetwork.CZB
                                 GameClient.Get<ITimerManager>().AddTimer((creat) =>
                                 {
                                     workingCard.owner.GraveyardCardsCount++;
+
+                                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                                    {
+                                        workingCard.owner,
+                                        card
+                                    }));
                                 }, null, 1.5f);
                             }
 
@@ -330,12 +338,14 @@ namespace LoomNetwork.CZB
                                 handCard.ResetToHandAnimation();
                                 handCard.CheckStatusOfHighlight();
 
+                                workingCard.owner.CardsInHand.Add(card.WorkingCard);
+                                _battlegroundController.playerHandCards.Add(card);
+                                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
                                 _playerController.IsCardSelected = false;
                               //  currentSpellCard = null;
 
                                // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
-
-                                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                             }
                             else
                             {
@@ -392,6 +402,12 @@ namespace LoomNetwork.CZB
                     GameClient.Get<ITimerManager>().AddTimer((creat) =>
                     {
                         card.WorkingCard.owner.GraveyardCardsCount++;
+
+                        _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                        {
+                            card.WorkingCard.owner,
+                            card
+                        }));
                     }, null, 1.5f);
                 }
 

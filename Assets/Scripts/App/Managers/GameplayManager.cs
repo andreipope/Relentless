@@ -122,7 +122,7 @@ namespace LoomNetwork.CZB
 
             GameEnded = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {

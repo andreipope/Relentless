@@ -114,18 +114,18 @@ namespace LoomNetwork.CZB
 
         public void CheckGameDynamic()
         {
-            if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
-            {
-                if (_battleDynamic)
-                    _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-                _battleDynamic = false;
-            }
-            else
-            {
+            //if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
+            //{
+            //    if (_battleDynamic)
+            //        _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+            //    _battleDynamic = false;
+            //}
+            //else
+            //{
                 if (!_battleDynamic)
                     _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
                 _battleDynamic = true;
-            }
+          //  }
         }
 
 

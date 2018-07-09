@@ -7,6 +7,7 @@ using DG.Tweening;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class HandBoardCard
 {
@@ -30,6 +31,7 @@ public class HandBoardCard
 
     private bool _isReturnToHand = false;
     private bool _alreadySelected = false;
+    private bool _canceledPlay = false;
 
     private int _handInd;
 
@@ -72,6 +74,12 @@ public class HandBoardCard
             var newPos = transform.position;
             newPos.z = 0;
             transform.position = newPos;
+
+            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                _canceledPlay = true;
+                OnMouseUp(null);
+            }
         }
     }
 
@@ -111,9 +119,10 @@ public class HandBoardCard
         _playerController.IsCardSelected = false;
 
         bool playable = true;
-        if (!cardView.CanBeBuyed(ownerPlayer) || (cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
+        if (_canceledPlay || !cardView.CanBeBuyed(ownerPlayer) || (cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
                                                      ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_CREATURES))
             playable = false;
+        
 
         if (playable)
         {
@@ -153,13 +162,14 @@ public class HandBoardCard
 
     public void ResetToHandAnimation()
     {
-
-        Debug.Log(333333);
-
+        _canceledPlay = false;
         _alreadySelected = false;
         startedDrag = false;
         _isReturnToHand = true;
         _isHandCard = true;
+        enabled = true;
+        gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_HAND_CARDS;
+        gameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
         _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
