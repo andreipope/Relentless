@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "github.com/loomnetwork/go-loom/types/types.proto";
+
+message Account {
+    string id                  = 1;
+    string username            = 2;
+    bool private_key_created   = 3;
+    bool phone_number_verified = 4;
+    bool reward_redeemed       = 5;
+    bool is_kickstarter        = 6;
+    string image               = 7;
+    bool email_notification    = 8;
+    int64 elo_score            = 9;
+    int32 current_tier         = 10;
+    int32 game_membership_tier = 11;
+    Address owner              = 12;
+}
+
+message CreateAccountRequest {
+    string username = 1;
+}
+
+message UpdateAccountRequest {
+    string username = 1;
+    string image = 2;
+}
