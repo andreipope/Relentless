@@ -71,10 +71,10 @@ namespace LoomNetwork.CZB
                     break;
             }
             //base.CreateVFX(pos);
-            var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetCreature.transform.position : targetPlayer.AvatarObject.transform.position;
+            var targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER ? targetUnit.transform.position : targetPlayer.AvatarObject.transform.position;
            
             _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-            _vfxObject.transform.position = Utilites.CastVFXPosition(boardCreature.transform.position);
+            _vfxObject.transform.position = Utilites.CastVFXPosition(abilityUnitOwner.transform.position);
             targetPosition = Utilites.CastVFXPosition(targetPosition);
             _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
             Debug.Log(targetPosition);
@@ -90,11 +90,11 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.AffectObjectType.PLAYER:
                     //if (targetPlayer.id == playerCallerOfAbility.id)
-                    _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer);
+                    _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
                     break;
                 default: break;
             }

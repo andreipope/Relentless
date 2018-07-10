@@ -17,6 +17,9 @@ namespace LoomNetwork.CZB
         private int _skillValue;
         private BoardUnit _skillUsedOnUnit;
 
+        private GameObject _attackedCreatureObj,
+                           _attackingPlayerObj;
+
         public GameplayActionReport_AttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
 
         public override void SetInfo()
@@ -28,7 +31,18 @@ namespace LoomNetwork.CZB
             _skillValue = (int)gameAction.parameters[2];
             _skillUsedOnUnit = gameAction.parameters[3] as BoardUnit;
 
-            previewImage.sprite = _skillUsedOnUnit.sprite;
+            previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.heroElement.ToString() + "_EXP");
+
+            attackingPictureObject.SetActive(true);
+
+            _attackedCreatureObj = CreateCardPreview(_skillUsedOnUnit.Card, Vector3.right * 6);
+            _attackingPlayerObj = CreatePlayerPreview(_callerPlayer, Vector3.zero);
+
+            GameObject cardView = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
+            cardView.SetActive(true);
+            var damageText = cardView.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            damageText.text = (-_skillValue).ToString();
+            cardView.transform.localPosition = -Vector3.up * 3;
         }
 
         public override void OnPointerEnterEventHandler(PointerEventData obj)

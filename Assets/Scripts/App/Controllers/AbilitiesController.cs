@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
 
                 if (kind == Enumerators.CardKind.CREATURE)
-                    activeAbility.ability.boardCreature = boardObject as BoardUnit;
+                    activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
                 else
                     activeAbility.ability.boardSpell = boardObject as BoardSpell;
 
@@ -139,6 +139,12 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.WEAPON:
                     ability = new HeroWeaponAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE:
+                    ability = new ChangeUnitsOfTypeStatAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ATTACK_NUMBER_OF_TIMES_PER_TURN:
+                    ability = new AttackNumberOfTimesPerTurnAbility(cardKind, abilityData);
                     break;
                 default:
                     break;
@@ -359,7 +365,7 @@ namespace LoomNetwork.CZB
                     else
                     {
                         if (target is BoardUnit)
-                            activeAbility.ability.targetCreature = target as BoardUnit;
+                            activeAbility.ability.targetUnit = target as BoardUnit;
                         else if (target is Player)
                             activeAbility.ability.targetPlayer = target as Player;
 
@@ -418,7 +424,7 @@ namespace LoomNetwork.CZB
                 if (activeAbility == null)
                     return;
                 if (target is BoardUnit)
-                    activeAbility.ability.targetCreature = target as BoardUnit;
+                    activeAbility.ability.targetUnit = target as BoardUnit;
                 else if (target is Player)
                     activeAbility.ability.targetPlayer = target as Player;
 

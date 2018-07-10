@@ -323,8 +323,23 @@ namespace LoomNetwork.CZB
         }
         // ai step 3
         private void UsePlayerSkills()
-        {
-            ThreadTool.Instance.RunInMainThread(() => { TryToUseBoardSkill(); });
+        { 
+            if (_gameplayManager.IsTutorial)
+                return;
+
+            ThreadTool.Instance.RunInMainThread(() =>
+            {
+                if (_skillsController.opponentPrimarySkill.IsSkillReady)
+                    DoBoardSkill(_skillsController.opponentPrimarySkill);
+            });
+
+            LetsThink();
+
+            ThreadTool.Instance.RunInMainThread(() =>
+            {
+                if (_skillsController.opponentSecondarySkill.IsSkillReady)
+                    DoBoardSkill(_skillsController.opponentSecondarySkill);
+            });
 
             LetsThink();
         }
@@ -398,6 +413,13 @@ namespace LoomNetwork.CZB
                                                                      //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
 
                 _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitElement);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
+                {
+                        boardUnitElement.ownerPlayer,
+                        boardUnitElement
+                }));
+
 
                 _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(() =>
                 {
@@ -780,107 +802,103 @@ namespace LoomNetwork.CZB
             return false;
         }
 
-
-        // rewrite
-        private void TryToUseBoardSkill()
+        private void DoBoardSkill(BoardSkill skill)
         {
-            if (_gameplayManager.IsTutorial)
-                return;
+            object target = null;
 
-      /*      var boardSkill = _aiPlayer.BoardSkills[0];
+            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
 
-            if (_gameplayManager.OpponentPlayer.Mana >= boardSkill.manaCost)
+#region find target
+            switch (skill.owner.SelfHero.heroElement)
             {
-                object target = null;
-
-                Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
-
-                switch (boardSkill.skillType)
-                {
-                    case Enumerators.SetType.EARTH:
-                        {
-                            selectedObjectType = Enumerators.AffectObjectType.PLAYER;
-                            target = _gameplayManager.OpponentPlayer;
-                        }
-                        break;
-                    case Enumerators.SetType.LIFE:
-                        {
-                            target = _gameplayManager.CurrentPlayer;
-                            selectedObjectType = Enumerators.AffectObjectType.PLAYER;
-
-                            var creatures = GetUnitsWithLowHP();
-
-                            if (creatures.Count > 0)
-                            {
-                                target = creatures[0];
-                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                            }
-                        }
-                        break;
-                    case Enumerators.SetType.FIRE:
-                    case Enumerators.SetType.TOXIC:
-                    case Enumerators.SetType.WATER:
-                        {
-                            target = _gameplayManager.CurrentPlayer;
-                            selectedObjectType = Enumerators.AffectObjectType.PLAYER;
-
-                            var creature = GetRandomOpponentUnit();
-
-                            if (creature != null)
-                            {
-                                target = creature;
-                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                            }
-                        }
-                        break;
-                    case Enumerators.SetType.AIR:
-                        {
-                            var creatures = GetUnitsWithLowHP();
-
-                            if (creatures.Count > 0)
-                            {
-                                target = creatures[0];
-                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                            }
-                            else
-                            {
-                                var creature = GetRandomOpponentUnit();
-
-                                if (creature != null)
-                                {
-                                    target = creature;
-                                    selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                                }
-                                else return;
-                            }
-                        }
-                        break;
-                    default: return;
-                }
-
-                if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
-                {
-                    boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, (target as Player).AvatarObject, () =>
+                case Enumerators.SetType.EARTH:
                     {
-                        boardSkill.fightTargetingArrow.selectedPlayer = target as Player;
-                        boardSkill.DoOnUpSkillAction();
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                        target = _gameplayManager.OpponentPlayer;
+                    }
+                    break;
+                case Enumerators.SetType.LIFE:
+                    {
+                        target = _gameplayManager.OpponentPlayer;
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+
+                        var units = GetUnitsWithLowHP();
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                    }
+                    break;
+                case Enumerators.SetType.FIRE:
+                case Enumerators.SetType.TOXIC:
+                case Enumerators.SetType.WATER:
+                    {
+                        target = _gameplayManager.CurrentPlayer;
+                        selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+
+                        var unit = GetRandomOpponentUnit();
+
+                        if (unit != null)
+                        {
+                            target = unit;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                    }
+                    break;
+                case Enumerators.SetType.AIR:
+                    {
+                        var units = GetUnitsWithLowHP();
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                        else
+                        {
+                            var unit = GetRandomOpponentUnit();
+
+                            if (unit != null)
+                            {
+                                target = unit;
+                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            }
+                            else return;
+                        }
+                    }
+                    break;
+                default: return;
+            }
+#endregion
+
+            skill.StartDoSkill();
+
+            if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
+            {
+                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, (target as Player).AvatarObject, () =>
+                {
+                    skill.fightTargetingArrow.selectedPlayer = target as Player;
+                    skill.EndDoSkill();
+                });
+            }
+            else
+            {
+                if (target != null)
+                {
+                    var unit = target as BoardUnit;
+
+                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, unit.gameObject, () =>
+                    {
+                        skill.fightTargetingArrow.selectedCard = unit;
+                        skill.EndDoSkill();
                     });
                 }
-                else
-                {
-                    var creature = target as BoardUnit;
-
-                    if (creature != null)
-                    {
-                        boardSkill.fightTargetingArrow = CreateOpponentTarget(true, boardSkill.gameObject, creature.gameObject, () =>
-                        {
-                            boardSkill.fightTargetingArrow.selectedCard = creature;
-                            boardSkill.DoOnUpSkillAction();
-                        });
-                    }
-                }
-            } */
+            }
         }
+
+
         // rewrite
         private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
         {

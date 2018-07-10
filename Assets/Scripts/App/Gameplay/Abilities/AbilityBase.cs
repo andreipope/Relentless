@@ -19,9 +19,13 @@ namespace LoomNetwork.CZB
         protected AbilitiesController _abilitiesController;
         protected ParticlesController _particlesController;
         protected BattleController _battleController;
+        protected ActionsQueueController _actionsQueueController;
+        protected BattlegroundController _battlegroundController;
+        protected CardsController _cardsController;
 
         protected ILoadObjectsManager _loadObjectsManager;
         protected IGameplayManager _gameplayManager;
+        protected IDataManager _dataManager;
 
         protected AbilityBoardArrow _targettingArrow;
         protected GameObject _vfxObject;
@@ -45,11 +49,11 @@ namespace LoomNetwork.CZB
 
         public Data.Card cardOwnerOfAbility;
 
-        public BoardUnit boardCreature;
+        public BoardUnit abilityUnitOwner;
         public Player playerCallerOfAbility;
         public BoardSpell boardSpell;
 
-        public BoardUnit targetCreature;
+        public BoardUnit targetUnit;
         public Player targetPlayer;
         public Player selectedPlayer;
 
@@ -72,10 +76,14 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
             _battleController = _gameplayManager.GetController<BattleController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
 
             abilityData = ability;
             this.cardKind = cardKind;
@@ -99,10 +107,10 @@ namespace LoomNetwork.CZB
 
             _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AbilityTargetingArrow")).GetComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
-            _targettingArrow.selfBoardCreature = boardCreature;
+            _targettingArrow.selfBoardCreature = abilityUnitOwner;
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
-                _targettingArrow.Begin(boardCreature.transform.position);
+                _targettingArrow.Begin(abilityUnitOwner.transform.position);
             else if (this.cardKind == Enumerators.CardKind.SPELL)
                 _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position);//(boardSpell.transform.position);
             else
@@ -144,8 +152,8 @@ namespace LoomNetwork.CZB
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-				boardCreature.CreatureOnDieEvent += CreatureOnDieEventHandler;
-                boardCreature.CreatureOnAttackEvent += CreatureOnAttackEventHandler;
+				abilityUnitOwner.CreatureOnDieEvent += CreatureOnDieEventHandler;
+                abilityUnitOwner.CreatureOnAttackEvent += UnitOnAttackEventHandler;
 
 				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
@@ -176,21 +184,21 @@ namespace LoomNetwork.CZB
 
         protected virtual void OnCardSelectedEventHandler(BoardUnit obj)
         {
-            targetCreature = obj;
+            targetUnit = obj;
 
             targetPlayer = null;
         }
 
         protected virtual void OnCardUnselectedeventHandler(BoardUnit obj)
         {
-            targetCreature = null;
+            targetUnit = null;
         }
 
         protected virtual void OnPlayerSelectedHandler(Player obj)
         {
             targetPlayer = obj;
                 
-            targetCreature = null;
+            targetUnit = null;
         }
 
         protected virtual void OnPlayerUnselectedHandler(Player obj)
@@ -234,7 +242,7 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            if (targetCreature != null)
+            if (targetUnit != null)
                 affectObjectType = Enumerators.AffectObjectType.CHARACTER;
             else if (targetPlayer != null)
                 affectObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -281,12 +289,12 @@ namespace LoomNetwork.CZB
           //  if(targetCreature != null)
             //    targetCreature.Card.DisconnectAbility((uint)abilityType);
 
-            boardCreature.CreatureOnDieEvent -= CreatureOnDieEventHandler;
+            abilityUnitOwner.CreatureOnDieEvent -= CreatureOnDieEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
             Dispose();
         }
 
-		protected virtual void CreatureOnAttackEventHandler(object info)
+		protected virtual void UnitOnAttackEventHandler(object info)
 		{
 			
 		}

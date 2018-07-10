@@ -235,22 +235,27 @@ namespace LoomNetwork.CZB
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
         }
 
-        public void AddCardToHand(WorkingCard card)
+        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
+            GameObject cardObject = null;
             CardsInHand.Add(card);
 
             if (IsLocalPlayer)
             {
-                _cardsController.AddCardToHand(card);
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                cardObject = _cardsController.AddCardToHand(card, silent);
+
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else
             {
-                _cardsController.AddCardToOpponentHand(card);
-                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, true);
+                cardObject = _cardsController.AddCardToOpponentHand(card, silent);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
             HandChangedEvent?.Invoke(CardsInHand.Count);
+
+            return cardObject;
         }
 
         public void RemoveCardFromHand(WorkingCard card)
@@ -321,7 +326,14 @@ namespace LoomNetwork.CZB
                 InternalTools.ShakeList(ref cards);// shake
 
             foreach (var card in cards)
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+            {
+#if UNITY_EDITOR
+                if (IsLocalPlayer && Constants.DEV_MODE)
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card /* 15 */), this)); // special card id
+                else
+#endif
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+            }
 
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
         }

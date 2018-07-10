@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
                         //player.BoardCards.CopyTo(creatures);
                         foreach (var cardOpponent in opponent.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(playerCallerOfAbility , abilityData, cardOpponent);
+                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, cardOpponent);
                         }
                         CreateVFX(Vector3.up * 1.5f);
                         //Array.Clear(creatures, 0, creatures.Length);
@@ -78,16 +78,16 @@ namespace LoomNetwork.CZB
                         //cards = null;
                         foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, cardPlayer);
+                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, cardPlayer);
                             CreateVFX(cardPlayer.transform.position);
                         }
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, opponent);
+                        _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, opponent);
                         //CreateVFX(targetCreature.transform.position);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, playerCallerOfAbility);
+                        _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, playerCallerOfAbility);
                         //CreateVFX(targetCreature.transform.position);
                         break;
                     default: break;

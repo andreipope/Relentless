@@ -60,14 +60,14 @@ namespace LoomNetwork.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
-                    if (targetCreature.Card.libraryCard.cardSetType == setType || setType == Enumerators.SetType.NONE)
+                    if (targetUnit.Card.libraryCard.cardSetType == setType || setType == Enumerators.SetType.NONE)
                     {
                         //if (statType == Enumerators.StatType.DAMAGE)
                         //    targetCreature.Damage.AddModifier(new Modifier(value));
                         //else if (statType == Enumerators.StatType.HEALTH)
                         //    targetCreature.HP.AddModifier(new Modifier(value));
 
-                        CreateVFX(targetCreature.transform.position);
+                        CreateVFX(targetUnit.transform.position);
                     }
                     break;
                 default: break;

@@ -19,6 +19,8 @@ namespace LoomNetwork.CZB
         protected IDataManager _dataManager;
         protected IGameplayManager _gameplayManager;
 
+        protected CardsController _cardsController;
+
         private GameObject _selfObject;
 
         protected SpriteRenderer glowSprite;
@@ -65,6 +67,8 @@ namespace LoomNetwork.CZB
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
+            _cardsController = _gameplayManager.GetController<CardsController>();
+
             _selfObject = selfObject;
 
             cardAnimator = gameObject.GetComponent<Animator>();
@@ -87,6 +91,8 @@ namespace LoomNetwork.CZB
             behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
 
             animationEventTriggering.OnAnimationEvent += OnAnimationEvent;
+
+            _cardsController.UpdateCardsStatusEvent += UpdateCardsStatusEventHandler;
         }
 
         public virtual void Init(WorkingCard card, string setName = "")
@@ -138,6 +144,9 @@ namespace LoomNetwork.CZB
 
         public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation)
         {
+            if (isPreview)
+                return;
+
             positionOnHand = position;
             rotationOnHand = rotation;
 
@@ -158,12 +167,18 @@ namespace LoomNetwork.CZB
 
         protected virtual void UpdatePositionOnHand()
         {
+            if (isPreview)
+                return;
+
             transform.DOMove(positionOnHand, 0.5f);
             transform.DORotate(rotationOnHand, 0.5f);
         }
 
         public virtual void SetDefaultAnimation(int id)
         {
+            if (isPreview)
+                return;
+
             cardAnimator.enabled = true;
             cardAnimator.SetTrigger("DeckToHandDefault");
 
@@ -211,12 +226,31 @@ namespace LoomNetwork.CZB
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            glowSprite.enabled = enabled;
+            if (glowSprite != null && glowSprite)
+            {
+                glowSprite.enabled = enabled;
+            }
+            else
+            {
+                Debug.Log(_selfObject + " glow doesnt exists ");
+            }
         }
 
         public void Dispose()
         {
             MonoBehaviour.Destroy(_selfObject);
+        }
+
+
+        private void UpdateCardsStatusEventHandler(Player player)
+        {
+            if (isPreview)
+                return;
+
+            if (CanBePlayed(player) && CanBeBuyed(player))
+                SetHighlightingEnabled(true);
+            else
+                SetHighlightingEnabled(false);
         }
     }
 }

@@ -5,6 +5,7 @@
 
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,6 +14,8 @@ namespace LoomNetwork.CZB
 {
     public class CardsController : IController
     {
+        public event Action<Player> UpdateCardsStatusEvent;
+
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
         private ILoadObjectsManager _loadObjectsManager;
@@ -91,7 +94,7 @@ namespace LoomNetwork.CZB
             player.AddCardToHand(card);
         }
 
-        public GameObject AddCardToHand(WorkingCard card)
+        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
             string cardSetName = string.Empty;
             foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
@@ -140,10 +143,22 @@ namespace LoomNetwork.CZB
 
             _battlegroundController.playerHandCards.Add(boardCard);
 
+            if (silent)
+            {
+                handCard.enabled = false;
+
+                _timerManager.AddTimer((x) =>
+                {
+                    handCard.enabled = true;
+                }, null, 2f);
+            }
+
+            // UpdateCardsStatusEvent?.Invoke(card.owner);
+
             return go;
         }
 
-        public GameObject AddCardToOpponentHand(WorkingCard card)
+        public GameObject AddCardToOpponentHand(WorkingCard card, bool silent = false)
         {
             var opponent = _gameplayManager.OpponentPlayer;
             var go = MonoBehaviour.Instantiate(opponentCardPrefab);
@@ -339,14 +354,12 @@ namespace LoomNetwork.CZB
                     boardUnit.ownerPlayer = card.WorkingCard.owner;
                     boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
 
-                    player.CardsInHand.Remove(card.WorkingCard);
                     _battlegroundController.playerHandCards.Remove(card);
                     _battlegroundController.playerBoardCards.Add(boardUnit);
-
-                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                    player.AddCardToBoard(card.WorkingCard);
+                    player.RemoveCardFromHand(card.WorkingCard);
 
                     player.BoardCards.Insert(indexOfCard, boardUnit);
-
 
                     //_ranksController.UpdateRanksBuffs(player);
 
@@ -363,6 +376,9 @@ namespace LoomNetwork.CZB
                         boardUnit.ownerPlayer,
                         boardUnit
                     }));
+
+
+                    UpdateCardsStatusEvent?.Invoke(player);
 
                     Sequence animationSequence = DOTween.Sequence();
                     animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
@@ -395,7 +411,8 @@ namespace LoomNetwork.CZB
                     //sequence.Play().OnComplete(() =>
                     //{ 
 
-                    player.CardsInHand.Remove(card.WorkingCard);
+
+                    player.RemoveCardFromHand(card.WorkingCard);
                     _battlegroundController.playerHandCards.Remove(card);
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -484,77 +501,21 @@ namespace LoomNetwork.CZB
 
         private void CallCardPlay(BoardCard card)
         {
-            // PlayCreatureCard(card.WorkingCard);
-           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+
         }
 
         private void CallSpellCardPlay(BoardCard card)
         {
-            //  PlaySpellCard(card.WorkingCard);
-           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+
         }
 
-/*
-        public void CreateAndPutToHandRuntimeCard(Card card, Player player)
+        public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
-            var runtimeCard = InitializeRuntimeCard(card, player);
+            var cardObject = player.AddCardToHand(workingCard, true);
+            cardObject.transform.position = cardPosition;
 
-            player.AddCardToHand(runtimeCard);
+            if (player.IsLocalPlayer)
+                cardObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
         }
-
-        public WorkingCard InitializeRuntimeCard(Card card, Player player)
-        {
-            var runtimeCard = CreateRuntimeCard();
-            runtimeCard.cardId = card.cardId;
-            runtimeCard.instanceId = card.instanceId;
-            runtimeCard.ownerPlayer = player;
-            foreach (var stat in card.stats)
-            {
-                var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
-                runtimeCard.stats[stat.statId] = runtimeStat;
-
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-                var statName = "DMG";
-                if (stat.statId == 1)
-                    statName = "HP";
-                runtimeCard.namedStats[statName] = runtimeStat;
-            }
-            runtimeCard.type = card.cardType;
-
-            //foreach (var abilityId in card.connectedAbilities)
-            //{
-            //    runtimeCard.ConnectAbility(abilityId);
-            //}
-
-            return runtimeCard;
-        }
-
-
-
-        public virtual void ReturnToHandRuntimeCard(Card card, Player player, Vector3 cardPosition)
-        {
-            var runtimeCard = InitializeRuntimeCard(card, player);
-            player.namedZones[Constants.ZONE_HAND].AddCardSilent(runtimeCard);
-
-            Player controlPlayer = this is DemoHumanPlayer ? this as DemoHumanPlayer : (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer);
-
-            if (this is DemoHumanPlayer)
-            {
-                var createdHandCard = controlPlayer.AddCardToHand(runtimeCard);
-                createdHandCard.transform.position = cardPosition;
-                createdHandCard.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
-                controlPlayer.RearrangeHand(true);
-            }
-            else if (this is DemoAIPlayer)
-            {
-
-                // move to ai controller
-                //var createdHandCard = controlPlayer.AddCardToOpponentHand();
-                //createdHandCard.transform.position = cardPosition;
-                //controlPlayer.RearrangeOpponentHand(true, false);
-
-            }
-        } */
     }
 }

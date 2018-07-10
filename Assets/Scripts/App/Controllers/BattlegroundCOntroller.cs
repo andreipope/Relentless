@@ -38,11 +38,6 @@ namespace LoomNetwork.CZB
 
         private bool _battleDynamic = false;
 
-        private GameObject _playerBoardObject,
-                           _opponentBoardObject,
-                           _playerGraveyardObject,
-                           _opponentGraveyardObject;
-
         public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
@@ -54,6 +49,11 @@ namespace LoomNetwork.CZB
         public bool _rearrangingBottomBoard,
                     _rearrangingTopBoard,
                     isPreviewActive;
+
+        public GameObject playerBoardObject,
+                           opponentBoardObject,
+                           playerGraveyardObject,
+                           opponentGraveyardObject;
 
         public Coroutine createPreviewCoroutine;
 
@@ -172,10 +172,10 @@ namespace LoomNetwork.CZB
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
 
-            _playerBoardObject = GameObject.Find("PlayerBoard");
-            _opponentBoardObject = GameObject.Find("OpponentBoard");
-            _playerGraveyardObject = GameObject.Find("GraveyardPlayer");
-            _opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
+            playerBoardObject = GameObject.Find("PlayerBoard");
+            opponentBoardObject = GameObject.Find("OpponentBoard");
+            playerGraveyardObject = GameObject.Find("GraveyardPlayer");
+            opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
             
         }
 
@@ -303,7 +303,7 @@ namespace LoomNetwork.CZB
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            var graveyardPos = _playerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var graveyardPos = playerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = playerBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
@@ -323,7 +323,7 @@ namespace LoomNetwork.CZB
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
-            var graveyardPos = _opponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var graveyardPos = opponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = opponentBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
@@ -384,7 +384,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             var newPositions = new List<Vector2>(playerBoardCards.Count);
-            var pivot = _playerBoardObject.transform.position;
+            var pivot = playerBoardObject.transform.position;
 
             for (var i = 0; i < playerBoardCards.Count; i++)
             {
@@ -448,7 +448,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             var newPositions = new List<Vector2>(opponentBoardCards.Count);
-            var pivot = _opponentBoardObject.transform.position;
+            var pivot = opponentBoardObject.transform.position;
 
             for (var i = 0; i < opponentBoardCards.Count; i++)
             {

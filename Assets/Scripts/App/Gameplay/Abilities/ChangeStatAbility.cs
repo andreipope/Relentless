@@ -51,9 +51,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreatureOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info)
         {
-            base.CreatureOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             
@@ -62,10 +62,10 @@ namespace LoomNetwork.CZB
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
-                    boardCreature.HP += value;
+                    abilityUnitOwner.HP += value;
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    boardCreature.Damage += value;
+                    abilityUnitOwner.Damage += value;
                     break;
                 default:
                     break;

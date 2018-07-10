@@ -15,6 +15,8 @@ namespace LoomNetwork.CZB
         private Player _callerPlayer;
         private BoardUnit _playedCard;
 
+        private GameObject _playedCardPreviewObject;
+
         public GameplayActionReport_PlaySpellCard(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
 
         public override void SetInfo()
@@ -25,6 +27,8 @@ namespace LoomNetwork.CZB
             _playedCard = gameAction.parameters[1] as BoardUnit;
 
             previewImage.sprite = _playedCard.sprite;
+
+            _playedCardPreviewObject = CreateCardPreview(_playedCard.Card, Vector3.zero);
         }
 
         public override void OnPointerEnterEventHandler(PointerEventData obj)

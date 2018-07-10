@@ -151,24 +151,26 @@ namespace LoomNetwork.CZB
             if (!IsSkillCanUsed())
                 return;
 
-            if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+            if (owner.IsLocalPlayer)
             {
-                fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
-                fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
-                fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
+                if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+                {
+                    fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
+                    fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
+                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
                 {
                     Enumerators.SkillTargetType.PLAYER,
                     Enumerators.SkillTargetType.OPPONENT,
                     Enumerators.SkillTargetType.OPPONENT_CARD,
                     Enumerators.SkillTargetType.PLAYER_CARD
                 };
-                //skill.skillTargetType;
+                    //skill.skillTargetType;
 
+                    fightTargetingArrow.Begin(selfObject.transform.position);
 
-                fightTargetingArrow.Begin(selfObject.transform.position);
-
-                if (_tutorialManager.IsTutorial)
-                    _tutorialManager.DeactivateSelectTarget();
+                    if (_tutorialManager.IsTutorial)
+                        _tutorialManager.DeactivateSelectTarget();
+                }
             }
 
             IsUsing = true;
@@ -221,7 +223,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 29)
                 return true;
 
-            if (!IsSkillReady || !owner.IsLocalPlayer || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
                 return false;
 
             return true;

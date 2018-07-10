@@ -14,6 +14,9 @@ namespace LoomNetwork.CZB
         private BoardUnit _attackingCreature,
                               _attackedCreature;
 
+        private int _attackingDamage,
+                    _attackedDamage;
+
         private GameObject _attackingCreatureObj,
                            _attackedCreatureObj;
 
@@ -24,24 +27,29 @@ namespace LoomNetwork.CZB
             base.SetInfo();
 
             _attackingCreature = gameAction.parameters[0] as BoardUnit;
-            _attackedCreature = gameAction.parameters[1] as BoardUnit;
-            previewImage.sprite = _attackingCreature.sprite;
-            _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero, false);
-            _attackedCreatureObj = CreateCardPreview(_attackedCreature.Card, Vector3.right * 6, false);
+            _attackingDamage = (int)gameAction.parameters[1];
+            _attackedCreature = gameAction.parameters[2] as BoardUnit;
+            _attackedDamage = (int)gameAction.parameters[3];
 
+
+            previewImage.sprite = _attackingCreature.sprite;
+            _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
+            _attackedCreatureObj = CreateCardPreview(_attackedCreature.Card, Vector3.right * 6);
+
+            attackingPictureObject.SetActive(true);
 
             GameObject attackViewPlayer = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);
             var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            damageText.text = (-_attackingCreature.Damage).ToString();
+            damageText.text = (-_attackingDamage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up * 3;
 
-            if (_attackedCreature.Damage > 0)
+            if (_attackedDamage > 0)
             {
                 GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
                 attackViewCreature.SetActive(true);
                 var damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
-                damageTextCreature.text = (-_attackedCreature.Damage).ToString();
+                damageTextCreature.text = (-_attackedDamage).ToString();
                 attackViewCreature.transform.localPosition = -Vector3.up * 3;
 
             }

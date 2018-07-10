@@ -68,10 +68,10 @@ namespace LoomNetwork.CZB
 
             if (_turnsLength > 0)
             {
-                if (targetCreature != null)
+                if (targetUnit != null)
                 {
-                    targetCreature.Card.IsPlayable = false;
-                    targetCreature.SetHighlightingEnabled(false);
+                    targetUnit.Card.IsPlayable = false;
+                    targetUnit.SetHighlightingEnabled(false);
                 }
                 else
                 {
@@ -92,10 +92,10 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.AffectObjectType.CHARACTER:
 
-                    targetCreature.Card.IsPlayable = false;
-                    targetCreature.SetHighlightingEnabled(false);
+                    targetUnit.Card.IsPlayable = false;
+                    targetUnit.SetHighlightingEnabled(false);
 
-                    CreateVFX(targetCreature.transform.position);
+                    CreateVFX(targetUnit.transform.position);
                     break;
                 default: break;
             }

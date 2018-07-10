@@ -113,6 +113,8 @@ namespace LoomNetwork.CZB
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)

@@ -67,9 +67,9 @@ namespace LoomNetwork.CZB
         {
             int modifier = 0;
 
-            if (_strongerElemental[attackerElement].Equals(defenderElement))
+            if (_strongerElemental.ContainsKey(attackerElement) && _strongerElemental[attackerElement].Equals(defenderElement))
                 modifier++;
-            else if(_weakerElemental[attackerElement].Equals(defenderElement))
+            else if(_weakerElemental.ContainsKey(attackerElement) && _weakerElemental[attackerElement].Equals(defenderElement))
                 modifier--;
 
             return modifier;
@@ -94,6 +94,9 @@ namespace LoomNetwork.CZB
 
         public void AttackCreatureByCreature(BoardUnit attackingUnit, BoardUnit attackedUnit)
         {
+            int damageAttacked = 0;
+            int damageAttacking = 0;
+
             if (attackingUnit != null && attackedUnit != null)
             {
                 int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit.Card, attackedUnit.Card);
@@ -102,25 +105,25 @@ namespace LoomNetwork.CZB
                 additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                int damage = attackingUnit.Damage + additionalDamageAttacker;
+                damageAttacking = attackingUnit.Damage + additionalDamageAttacker;
 
                 if (attackedUnit.HasBuffShield)
                 {
-                    damage = 0;
+                    damageAttacking = 0;
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damage;
+                attackedUnit.HP -= damageAttacking;
 
-                damage = attackedUnit.Damage + additionalDamageAttacked;
+                damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
 
                 if (attackedUnit.HasBuffShield)
                 {
-                    damage = 0;
+                    damageAttacked = 0;
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackingUnit.HP -= damage;
+                attackingUnit.HP -= damageAttacked;
             }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
@@ -129,16 +132,18 @@ namespace LoomNetwork.CZB
             new object[]
             {
                 attackingUnit,
-                attackedUnit
+                damageAttacking,
+                attackedUnit,
+                damageAttacked
             }));
         }
 
         public void AttackCreatureBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
         {
+            int damage = (skill.value + modifier);
+
             if (attackedUnit != null)
             {
-                int damage = (skill.value + modifier);
-
                 if (attackedUnit.HasBuffShield)
                 {
                     damage = 0;
@@ -153,7 +158,7 @@ namespace LoomNetwork.CZB
             {
                 attackingPlayer,
                 skill,
-                (skill.value + modifier),
+                damage,
                 attackedUnit
             }));
         }
@@ -207,12 +212,12 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(Player attackingPlayer, AbilityData ability, BoardUnit attackedUnit)
+        public void AttackCreatureByAbility(BoardUnit attackingUnit, AbilityData ability, BoardUnit attackedUnit)
         {
+            int damage = ability.value;
+
             if (attackedUnit != null)
             {
-                int damage = ability.value;
-
                 if (attackedUnit.HasBuffShield)
                 {
                     damage = 0;
@@ -225,13 +230,14 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
             new object[]
             {
-                attackingPlayer,
+                attackingUnit,
                 ability,
-                attackedUnit
+                damage,
+                attackedUnit,
             }));
         }
 
-        public void AttackPlayerByAbility(Player attackingPlayer, AbilityData ability, Player attackedPlayer)
+        public void AttackPlayerByAbility(BoardUnit attackingUnit, AbilityData ability, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
@@ -241,40 +247,43 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY,
             new object[]
             {
-                attackingPlayer,
+                attackingUnit,
                 ability,
+                ability.value,
                 attackedPlayer
             }));
         }
 
-        public void HealPlayerByAbility(Player healingPlayer, AbilityData ability, Player healedPlayer)
+        public void HealPlayerByAbility(BoardUnit healingUnit, AbilityData ability, Player healedPlayer)
         {
-            if (healingPlayer != null)
+            if (healedPlayer != null)
             {
-                healingPlayer.HP += ability.value;
+                healedPlayer.HP += ability.value;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY,
             new object[]
             {
-                healingPlayer,
+                healingUnit,
                 ability,
+                ability.value,
                 healedPlayer
             }));
         }
 
-        public void HealCreatureByAbility(Player healingPlayer, AbilityData ability, BoardUnit healedCreature)
+        public void HealCreatureByAbility(BoardUnit healingUnit, AbilityData ability, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
                 healedCreature.HP += ability.value;
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_SKILL,
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,
             new object[]
             {
-                healingPlayer,
+                healingUnit,
                 ability,
+                ability.value,
                 healedCreature
             }));
         }

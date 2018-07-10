@@ -53,10 +53,10 @@ namespace LoomNetwork.CZB
                     //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
                     //else
                     //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
-                    _battleController.HealPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer);
+                    _battleController.HealPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    _battleController.HealCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
+                    _battleController.HealCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
                     //  CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
                     break;
                 default: break;
@@ -68,7 +68,7 @@ namespace LoomNetwork.CZB
             target = Utilites.CastVFXPosition(target);
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
-                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
+                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? abilityUnitOwner.transform.position : selectedPlayer.Transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVFX(startPosition);

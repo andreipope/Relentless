@@ -54,15 +54,15 @@ namespace LoomNetwork.CZB
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         //else
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
-                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
+                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
-                        Action(targetCreature);
+                        Action(targetUnit);
                         CreateAndMoveParticle(() =>
                         {
-                            _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
+                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
 
-                        }, targetCreature.transform.position);
+                        }, targetUnit.transform.position);
                 
                         break;
                     default: break;
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, leftAdjustment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, leftAdjustment);
 
                 }, leftAdjustment.transform.position);
             }
@@ -126,7 +126,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, rightAdjastment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, rightAdjastment);
 
                 }, rightAdjastment.transform.position);
             }
@@ -134,7 +134,7 @@ namespace LoomNetwork.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
+            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? abilityUnitOwner.transform.position : selectedPlayer.Transform.position;
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
             {
                 //CreateVFX(cardCaller.transform.position);
@@ -160,7 +160,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                CreateVFX(Utilites.CastVFXPosition(targetCreature.transform.position));
+                CreateVFX(Utilites.CastVFXPosition(targetUnit.transform.position));
                 callback();
             }
 

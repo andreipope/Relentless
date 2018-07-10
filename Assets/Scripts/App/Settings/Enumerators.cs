@@ -201,6 +201,8 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
+            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ATTACK_NUMBER_OF_TIMES_PER_TURN
         }
 
         public enum AbilityActivityType
@@ -312,7 +314,12 @@
             HEAL_PLAYER_BY_ABILITY,
             HEAL_CREATURE_BY_ABILITY,
             PLAY_UNIT_CARD,
-            PLAY_SPELL_CARD
+            PLAY_SPELL_CARD,
+            STUN_CREATURE_BY_ABILITY,
+            STUN_CREATURE_BY_SKILL,
+            SUMMON_UNIT_CARD,
+            RETURN_TO_HAND_CARD_ABILITY,
+            RETURN_TO_HAND_CARD_SKILL
         }
 
 
@@ -391,6 +398,12 @@
             PERMANENT,
             TILL_FIRST_DEFENSE_FROM_ATTACK,
             TURN_BASED,
+        }
+
+        public enum AttackInfoType
+        {
+            ANY,
+            ONLY_DIFFERENT
         }
     }
 }

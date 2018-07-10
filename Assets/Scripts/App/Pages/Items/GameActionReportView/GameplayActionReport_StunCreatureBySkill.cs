@@ -10,25 +10,27 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_PlayUnitCard : ReportViewBase
+    public class GameplayActionReport_StunCreatureBySkill : ReportViewBase
     {
         private Player _callerPlayer;
-        private BoardUnit _playedCard;
+        private BoardUnit _skillUsedOnUnit;
 
-        private GameObject _playedCardPreviewObject;
+        private GameObject _stunnedUnitPreviewObject,
+                           _skillOwnerObject;
 
-        public GameplayActionReport_PlayUnitCard(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public GameplayActionReport_StunCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
 
         public override void SetInfo()
         {
             base.SetInfo();
 
             _callerPlayer = gameAction.parameters[0] as Player;
-            _playedCard = gameAction.parameters[1] as BoardUnit;
+            _skillUsedOnUnit = gameAction.parameters[1] as BoardUnit;
 
-            previewImage.sprite = _playedCard.sprite;
+            previewImage.sprite = _skillUsedOnUnit.sprite;
 
-            _playedCardPreviewObject = CreateCardPreview(_playedCard.Card, Vector3.zero);
+            _skillOwnerObject = CreatePlayerPreview(_callerPlayer, Vector3.zero);
+            _stunnedUnitPreviewObject = CreateCardPreview(_skillUsedOnUnit.Card, Vector3.right * 6);
         }
 
         public override void OnPointerEnterEventHandler(PointerEventData obj)

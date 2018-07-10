@@ -176,6 +176,14 @@ namespace LoomNetwork.CZB
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
+
+        public void CreateVFX(GameObject prefab, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        {
+            var particle = MonoBehaviour.Instantiate(prefab);
+            particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
+            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
         public void CreateSkillVFX(Enumerators.SetType setType, Vector3 from, object target, Action<object> callbackComplete)
         {
             GameObject prefab = null;
