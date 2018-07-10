@@ -156,7 +156,7 @@ namespace LoomNetwork.CZB
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Toxic_Impact");
                     break;
                 case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FIreBall_Impact");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
                 case Enumerators.SetType.LIFE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
@@ -197,7 +197,7 @@ namespace LoomNetwork.CZB
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/Toxic_Bullet_08");
                     break;
                 case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/fireBall_03");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
                 case Enumerators.SetType.LIFE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");

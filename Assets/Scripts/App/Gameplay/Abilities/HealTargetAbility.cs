@@ -49,15 +49,10 @@ namespace LoomNetwork.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
-                    //else
-                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
                     _battleController.HealPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     _battleController.HealCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
-                    //  CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
                     break;
                 default: break;
             }

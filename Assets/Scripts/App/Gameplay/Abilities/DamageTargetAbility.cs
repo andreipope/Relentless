@@ -109,7 +109,7 @@ namespace LoomNetwork.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/rockDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamage2VFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FireBolt_ImpactVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_LIFE:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");

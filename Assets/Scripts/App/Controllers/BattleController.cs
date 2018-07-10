@@ -185,6 +185,8 @@ namespace LoomNetwork.CZB
             {
                 //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
+                if (healingPlayer.HP > 30)
+                    healingPlayer.HP = 30;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,
@@ -201,7 +203,10 @@ namespace LoomNetwork.CZB
             if (healedCreature != null)
             {
                 healedCreature.HP += skill.value;
+                if (healedCreature.HP > healedCreature.Card.initialHealth)
+                    healedCreature.HP = healedCreature.Card.initialHealth;
             }
+            
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_SKILL,
             new object[]
@@ -259,6 +264,8 @@ namespace LoomNetwork.CZB
             if (healedPlayer != null)
             {
                 healedPlayer.HP += ability.value;
+                if (healedPlayer.HP > 30)
+                    healedPlayer.HP = 30;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY,
@@ -276,6 +283,8 @@ namespace LoomNetwork.CZB
             if (healedCreature != null)
             {
                 healedCreature.HP += ability.value;
+                if (healedCreature.HP > healedCreature.Card.initialHealth)
+                    healedCreature.HP = healedCreature.Card.initialHealth;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,

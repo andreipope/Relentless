@@ -44,9 +44,11 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
+            Debug.Log("OnInputEndEventHandler");
             if (_isAbilityResolved)
             {
+                Debug.Log("_isAbilityResolved " + _isAbilityResolved);
+
                 switch (affectObjectType)
                 {
                     case Enumerators.AffectObjectType.PLAYER:
@@ -57,6 +59,7 @@ namespace LoomNetwork.CZB
                         CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
+                    	Debug.Log("BOOM ");
                         Action(targetUnit);
                         CreateAndMoveParticle(() =>
                         {
@@ -72,8 +75,12 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-
+            Debug.Log("Action Call");
             Player opponent = _gameplayManager.OpponentPlayer;
+            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.OpponentPlayer)
+                opponent = _gameplayManager.CurrentPlayer;
+
+            Debug.Log("opponent " + opponent.IsLocalPlayer);
 
             var creature = info as BoardUnit;
 
@@ -82,6 +89,8 @@ namespace LoomNetwork.CZB
 
             int targetIndex = -1;
             List<BoardUnit> list = null;
+            Debug.Log(opponent.BoardCards.Count);
+            Debug.Log(opponent.CardsOnBoard.Count);
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
                 if (opponent.BoardCards[i] == creature)
@@ -91,7 +100,8 @@ namespace LoomNetwork.CZB
                     break;
                 }
             }
-            if (targetIndex == -1)
+
+            /*if (targetIndex == -1)
                 for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
                 {
                     if (playerCallerOfAbility.BoardCards[i] == creature)
@@ -101,6 +111,7 @@ namespace LoomNetwork.CZB
                         break;
                     }
                 }
+                */
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -108,9 +119,13 @@ namespace LoomNetwork.CZB
                 if (targetIndex + 1 < list.Count)
                     rightAdjastment = list[targetIndex + 1];
             }
+            Debug.Log("targetIndex " + targetIndex);
+
 
             if (leftAdjustment != null)
             {
+                Debug.Log("leftAdjustment Not Null");
+
                 //CreateVFX(cardCaller.transform.position);
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(() =>
@@ -122,6 +137,8 @@ namespace LoomNetwork.CZB
 
             if (rightAdjastment != null)
             {
+                Debug.Log("rightAdjustment Not Null");
+
                 //cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(() =>
@@ -130,6 +147,14 @@ namespace LoomNetwork.CZB
 
                 }, rightAdjastment.transform.position);
             }
+        }
+
+        protected override void UnitOnAttackEventHandler(object info)
+        {
+            base.UnitOnAttackEventHandler(info);
+            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+                return;
+            Action(info);
         }
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
@@ -160,6 +185,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
+                Debug.Log("&&&&&");
                 CreateVFX(Utilites.CastVFXPosition(targetUnit.transform.position));
                 callback();
             }
