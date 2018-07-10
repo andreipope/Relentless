@@ -1,8 +1,11 @@
+using System.Text;
+using Google.Protobuf;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
+using Loom.Unity3d.Samples;
 
 namespace GrandDevs.CZB
 {
@@ -152,7 +155,50 @@ namespace GrandDevs.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
-            OpenAlertDialog("Will be available on full version");
+            //OpenAlertDialog("Will be available on full version");
+	        
+	        var usernameText = _usernameInputField.text;
+	        var passwordText = _passwordInputField.text;
+	        if (string.IsNullOrEmpty(usernameText))
+	        {
+		        OpenAlertDialog("Please enter your username.");
+		        return;
+	        }
+
+	        /*if (string.IsNullOrEmpty(passwordText))
+	        {
+		        OpenAlertDialog("Please enter your password.");
+		        return;
+	        }*/
+	        
+	        var accountTx = new CreateAccountRequest {
+		        Username = usernameText
+	        };
+	        
+	        LoomManager.Instance.SignUp(accountTx, result =>
+	        {
+		        if (result != null)
+		        {
+			        if (result.CheckTx.Code != 0)
+			        {
+				        if (!string.IsNullOrEmpty(result.CheckTx.Error))
+					        OpenAlertDialog(result.CheckTx.Error);
+			        }
+			        else if (result.DeliverTx.Code != 0)
+			        {
+				        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
+					        OpenAlertDialog(result.DeliverTx.Error);
+			        }
+			        else
+				        OpenAlertDialog("Account Create Successfully.");
+		        } 
+		        else
+		        {
+			        OpenAlertDialog("Connection Not Found.");
+		        }
+	        });
+	        
+	         
         }
 
         public void OnLoginButtonPressed()
@@ -175,6 +221,41 @@ namespace GrandDevs.CZB
                 OpenAlertDialog("Please enter your password.");
                 return;
             }
+	        
+	        var mapEntry = new MapEntry();
+	        mapEntry.Key = "Crypto";
+	        /*mapEntry.Value = "Currency";
+	        LoomManager.Instance.SetMessageWithResult(mapEntry, result =>
+	        {
+		        if (result != null)
+		        {
+			        if (result.CheckTx.Code != 0)
+			        {
+				        if (!string.IsNullOrEmpty(result.CheckTx.Error))
+					        OpenAlertDialog(result.CheckTx.Error);
+			        }
+			        else if (result.DeliverTx.Code != 0)
+			        {
+				        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
+					        OpenAlertDialog(result.DeliverTx.Error);
+			        }
+			        else
+				        OpenAlertDialog("result = " + result);
+		        } 
+		        else
+		        {
+			        OpenAlertDialog("Connection Not Found.");
+		        }
+	        });*/
+	        
+	        LoomManager.Instance.GetMessage(mapEntry, result =>
+	        {
+		        if(result != null)
+			       Debug.Log("========= Result = " + result.Value);
+		        else
+			       Debug.Log("======= Key Not found ==== ");
+	        });
+	        
 
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
             /*ClientAPI.Login(usernameText, passwordText,

@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
+using CCGKit;
 
 namespace GrandDevs.Internal
 {
@@ -388,6 +389,26 @@ namespace GrandDevs.Internal
                 input = input.First().ToString().ToUpper() + input.Substring(1);
             return input;
 
+        }
+
+        public static string GetStringFromByteArray(byte[] byteArr)
+        {
+            return Convert.ToBase64String(byteArr);
+        }
+
+        public static byte[] GetByteArrFromString(string str)
+        {
+            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
+        }
+        
+        public static T CreateFromJSON<T>(string jsonString)
+        {
+            return JsonUtility.FromJson<T>(jsonString);
+        }
+
+        public static string SaveToString(object obj)
+        {
+            return JsonUtility.ToJson(obj);
         }
     }
 }
