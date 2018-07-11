@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB.Common
 
         internal static int FIRST_GAME_TURN_INDEX = 1;
 
-        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 5;
+        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 2;
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 

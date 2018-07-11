@@ -175,13 +175,16 @@ namespace LoomNetwork.CZB
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 
+            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
+
+            GetController<PlayerController>().SetHand();
+
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
                 GetController<AIController>().InitializePlayer();
 
-            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
-
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
+            GetController<CardsController>().StartCardDistribution();
 
             GameEnded = false;
 

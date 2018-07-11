@@ -85,8 +85,15 @@ namespace LoomNetwork.CZB.Gameplay
 			_timerManager.AddTimer(Fade, new object[] { true, null, level }, _fadeDelay, true);
 		}
 
-        public void FadeOut(Action callback = null, int level = 0)
+        public void FadeOut(Action callback = null, int level = 0, bool immediately = false)
         {
+            if(immediately)
+            {
+                _fadeImageGroups[level].alpha = 0;
+                _fadeImageGroups[level].gameObject.SetActive(false);
+                return;
+            }
+
 			if (_timerManager == null)
 				return;
             PrepareFading(false, level);

@@ -27,6 +27,8 @@ namespace LoomNetwork.CZB
         protected SpriteRenderer pictureSprite;
         protected SpriteRenderer backgroundSprite;
 
+        protected GameObject distibuteCardObject;
+
         protected TextMeshPro costText;
         protected TextMeshPro nameText;
         protected TextMeshPro bodyText;
@@ -41,6 +43,8 @@ namespace LoomNetwork.CZB
 
         protected AnimationEventTriggering animationEventTriggering;
         protected OnBehaviourHandler behaviourHandler;
+
+        public bool cardShouldBeDistributed = false;
 
         public bool isNewCard = false;
         public bool isPreview;
@@ -85,6 +89,8 @@ namespace LoomNetwork.CZB
 
             removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
+            distibuteCardObject = transform.Find("DistributeCardObject").gameObject;
+
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
             animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
@@ -93,6 +99,9 @@ namespace LoomNetwork.CZB
             animationEventTriggering.OnAnimationEvent += OnAnimationEvent;
 
             _cardsController.UpdateCardsStatusEvent += UpdateCardsStatusEventHandler;
+
+            behaviourHandler.OnMouseDownEvent += OnMouseDownEventHandler;
+            behaviourHandler.OnMouseUpEvent += OnMouseUpEventHandler;
         }
 
         public virtual void Init(WorkingCard card, string setName = "")
@@ -174,6 +183,14 @@ namespace LoomNetwork.CZB
             transform.DORotate(rotationOnHand, 0.5f);
         }
 
+        public virtual void MoveCardFromDeckToCenter()
+        {
+            cardAnimator.enabled = true;
+            cardAnimator.SetTrigger("DeckToCenterDistribute");
+
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+        }
+
         public virtual void SetDefaultAnimation(int id)
         {
             if (isPreview)
@@ -196,7 +213,9 @@ namespace LoomNetwork.CZB
             {
                 case "DeckToHandEnd":
                     cardAnimator.enabled = false;
-                    UpdatePositionOnHand();
+
+                    if(!_cardsController.CardDistribution)
+                        UpdatePositionOnHand();
                     break;
                 default:
                     break;
@@ -251,6 +270,33 @@ namespace LoomNetwork.CZB
                 SetHighlightingEnabled(true);
             else
                 SetHighlightingEnabled(false);
+        }
+
+        public void ReturnCardToDeck()
+        {
+            if (!_cardsController.CardDistribution)
+                return;
+
+            _cardsController.ReturnCardToDeck(this, () =>
+            {
+                WorkingCard.owner.DistributeCard();
+            });  
+        }
+
+        private void OnMouseUpEventHandler(GameObject obj)
+        {
+            if (!_cardsController.CardDistribution)
+                return;
+        }
+
+        private void OnMouseDownEventHandler(GameObject obj)
+        {
+            if (!_cardsController.CardDistribution)
+                return;
+
+            cardShouldBeDistributed = !cardShouldBeDistributed;
+
+            distibuteCardObject.SetActive(cardShouldBeDistributed);
         }
     }
 }

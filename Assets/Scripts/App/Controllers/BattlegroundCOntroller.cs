@@ -164,11 +164,6 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
 
-            StartTurn();
-
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
-
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
 
@@ -176,7 +171,14 @@ namespace LoomNetwork.CZB
             opponentBoardObject = GameObject.Find("OpponentBoard");
             playerGraveyardObject = GameObject.Find("GraveyardPlayer");
             opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
-            
+        }
+
+        public void StartGameplayTurns()
+        {
+            StartTurn();
+
+            if (!_gameplayManager.IsTutorial)
+                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)

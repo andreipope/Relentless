@@ -96,14 +96,25 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
 
-            if (_gameplayManager.IsTutorial)
-                _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
-
-            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
             _gameplayManager.CurrentPlayer.OnStartTurnEvent += OnTurnStartedEventHandler;
             _gameplayManager.CurrentPlayer.OnEndTurnEvent += OnTurnEndedEventHandler;
+        }
+
+
+        public void SetHand()
+        {
+            if (_gameplayManager.IsTutorial)
+                _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+
+            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
+            }, null, 1f);
+           
+
+            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
         public virtual void OnGameStartedEventHandler()

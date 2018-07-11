@@ -139,6 +139,9 @@ namespace LoomNetwork.CZB
         public List<WorkingCard> CardsInHand { get; private set; }
         public List<WorkingCard> CardsOnBoard { get; private set; }
 
+        public List<BoardCard> CardsPreparingToHand { get; set; }
+
+
         public Player(GameObject playerObject, bool isOpponent)
         {
             _playerObject = playerObject;
@@ -159,6 +162,8 @@ namespace LoomNetwork.CZB
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
             BoardCards = new List<BoardUnit>();
+
+            CardsPreparingToHand = new List<BoardCard>();
 
             int heroId = 0;
 
@@ -342,11 +347,22 @@ namespace LoomNetwork.CZB
         {
             for (int i = 0; i < CardsInDeck.Count; i++)
             {
-                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
+                if ((_gameplayManager.CurrentTurnPlayer.Equals(this) && i > 0) || i > 1 || (isTutorial))
                     break;
 
-                _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                if (IsLocalPlayer)
+                    _cardsController.AddCardToDistributionState(this, CardsInDeck[0]);
+                else
+                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
+        }
+
+        public void DistributeCard()
+        {
+            if (IsLocalPlayer)
+                _cardsController.AddCardToDistributionState(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+            else
+                _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
         }
 
         public void PlayerDie()
