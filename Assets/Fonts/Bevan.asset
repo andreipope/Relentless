@@ -18,12 +18,12 @@ MonoBehaviour:
   m_fontInfo:
     Name: Bevan
     PointSize: 63
-    Scale: 0
+    Scale: 1
     CharacterCount: 97
     LineHeight: 101
     Baseline: 0
     Ascender: 73
-    CapHeight: 0
+    CapHeight: 49
     Descender: -28
     CenterLine: 0
     SuperscriptOffset: 73
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 3.1376953
     strikethrough: 16.363636
     strikethroughThickness: 3.1376953
-    TabWidth: 0
+    TabWidth: 140
     Padding: 5
     AtlasWidth: 512
     AtlasHeight: 512
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 5
     y: 507
-    width: 0
-    height: 0
+    width: 14
+    height: 101
     xOffset: 0
-    yOffset: 0
+    yOffset: 73
     xAdvance: 14
     scale: 1
   - id: 33
@@ -977,7 +977,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Bevan Material
   m_Shader: {fileID: 4800000, guid: edfcf888cd11d9245b91d2883049a57e, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: UNITY_UI_CLIP_RECT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

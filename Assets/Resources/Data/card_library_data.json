@@ -455,6 +455,34 @@
             }
           }
         },
+		{
+          "id": 12,
+          "kind": "CREATURE",
+          "name": "Earthshaker",
+          "cost": 5,
+          "description": "<b>Entry:</b> destroy another Heavy zombie",
+          "flavorText": "One more step, just one more step!",
+          "picture": "Earthshaker",
+          "damage": 4,
+          "health": 4,
+          "type": "WALKER",
+          "rank": "COMMANDER",
+          "abilities": [
+           
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
+        },
         {
           "id": 13,
           "kind": "CREATURE",
@@ -510,6 +538,56 @@
             "position": {
               "x": -0.2,
               "y": 0.18,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.45,
+              "y": 0.45,
+              "z": 0.45
+            }
+          }
+        },
+		{
+          "id": 14,
+          "kind": "CREATURE",
+          "name": "Wheezy",
+          "cost": 2,
+          "description": "<b>Entry:</b> lower the goo cost of a random card in your hand by 1",
+          "flavorText": "The unfriendly ghost...",
+          "picture": "Wheezy",
+          "damage": 1,
+          "health": 2,
+          "type": "WALKER",
+          "rank": "MINION",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.45,
+              "y": 0.45,
+              "z": 0.45
+            }
+          }
+        },
+		{
+          "id": 14,
+          "kind": "CREATURE",
+          "name": "Soothsayer",
+          "cost": 2,
+          "description": "<b>Entry:</b> draw a card",
+          "flavorText": "The unfriendly ghost...",
+          "picture": "Soothsayer",
+          "damage": 1,
+          "health": 1,
+          "type": "WALKER",
+          "rank": "MINION",
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -663,6 +741,33 @@
             }
           }
         },
+		{
+          "id": 18,
+          "kind": "CREATURE",
+          "name": "Bloomer",
+          "cost": 2,
+          "description": "<b>Entry:</b>  draw a card if you have a life zombie in the battleground",
+          "flavorText": "Beeee yourself!",
+          "picture": "Bloomer",
+          "damage": 1,
+          "health": 1,
+          "type": "WALKER",
+          "rank": "MINION",
+          "abilities": [
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.42,
+              "y": 0.42,
+              "z": 0.42
+            }
+          }
+        },
         {
           "id": 19,
           "kind": "CREATURE",
@@ -703,7 +808,7 @@
           "kind": "CREATURE",
           "name": "Puffer",
           "cost": 3,
-          "description": "NR <b>Entry:</b> add 1 attack to all life zombies on the Battleground",
+          "description": "<b>Entry:</b> add 1 attack to all life zombies on the Battleground",
           "flavorText": "Some like to grow flowers, others grow hallucinogenic poison mushrooms...",
           "picture": "Puffer",
           "damage": 2,
@@ -790,6 +895,35 @@
               "targetType": "NONE",
               "value": 50
             }
+          ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.05,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.43,
+              "y": 0.43,
+              "z": 0.43
+            }
+          }
+        },
+		{
+          "id": 22,
+          "kind": "CREATURE",
+          "name": "Z-Virus",
+          "cost": 7,
+          //"description": "",
+          "description": "Devour friendly zombies, and replace them with a zombie with their combined attack and defense",
+          "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
+          "picture": "Z-Virus",
+          "damage": 5,
+          "health": 6,
+          "type": "WALKER",
+          "rank": "GENERAL",
+          "abilities": [
+            
           ],
           "cardViewInfo": {
             "position": {

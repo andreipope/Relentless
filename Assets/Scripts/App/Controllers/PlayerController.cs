@@ -71,11 +71,11 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add(21);
-                playerDeck.Add(1);
-                playerDeck.Add(1);
-                playerDeck.Add(1);
-                playerDeck.Add(18);
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Vindrom") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Azuraz") ); 
             }
             else
             {
