@@ -234,9 +234,14 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     boardCard.HandBoardCard.enabled = true;
+                    boardCard.HandBoardCard.CheckStatusOfHighlight();
+
                 }, null, 2f);
             }
-
+            else
+            {
+                boardCard.HandBoardCard.CheckStatusOfHighlight();
+            }
             // UpdateCardsStatusEvent?.Invoke(card.owner);
 
             return boardCard.gameObject;
@@ -532,7 +537,7 @@ namespace LoomNetwork.CZB
                     card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
                     card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                    var boardSpell = new BoardSpell(card.gameObject);
+                    var boardSpell = new BoardSpell(card.gameObject, card.WorkingCard);
 
                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
                     //});

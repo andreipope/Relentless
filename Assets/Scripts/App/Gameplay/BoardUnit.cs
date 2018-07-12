@@ -225,6 +225,9 @@ namespace LoomNetwork.CZB
 
             _buffsOnUnit = new List<Enumerators.BuffType>();
             attackedBoardObjectsThisTurn = new List<object>();
+
+            _glowSprite.gameObject.SetActive(true);
+            _glowSprite.enabled = false;
         }
 
         public bool IsHeavyUnit()

@@ -357,7 +357,10 @@ namespace LoomNetwork.CZB
                 go.transform.SetParent(_cardsContainer);
                 go.transform.Find("Back").gameObject.SetActive(true);
                 go.transform.Find("Amount").gameObject.SetActive(false);
+
+                // todo imrpoveE!!!!
                 var boardCard = new BoardCard(go);
+
                 boardCard.Init(card, cardSetName);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.transform.position = _centerPos;

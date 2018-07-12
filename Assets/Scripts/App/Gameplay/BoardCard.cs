@@ -246,13 +246,7 @@ namespace LoomNetwork.CZB
         public void SetHighlightingEnabled(bool enabled)
         {
             if (glowSprite != null && glowSprite)
-            {
                 glowSprite.enabled = enabled;
-            }
-            else
-            {
-                Debug.Log(_selfObject + " glow doesnt exists ");
-            }
         }
 
         public void Dispose()

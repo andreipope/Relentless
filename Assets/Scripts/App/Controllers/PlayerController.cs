@@ -89,7 +89,9 @@ namespace LoomNetwork.CZB
                            // card.cardId = 51; 
                         }
 
-                        playerDeck.Add(card.cardId);
+                         playerDeck.Add(card.cardId); 
+
+                        //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stapler"));
                     }
                 }
             }
@@ -269,15 +271,14 @@ namespace LoomNetwork.CZB
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
             //}
 
-            foreach (var card in _battlegroundController.playerHandCards)
+            if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
             {
-                if (card.CanBePlayed(_gameplayManager.CurrentPlayer) && card.CanBeBuyed(_gameplayManager.CurrentPlayer))
+                foreach (var card in _battlegroundController.playerHandCards)
                 {
-                    card.SetHighlightingEnabled(true);
-                }
-                else
-                {
-                    card.SetHighlightingEnabled(false);
+                    if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
+                        card.SetHighlightingEnabled(true);
+                    else
+                        card.SetHighlightingEnabled(false);
                 }
             }
         }

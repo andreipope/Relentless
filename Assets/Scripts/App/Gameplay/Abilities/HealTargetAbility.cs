@@ -46,13 +46,15 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    _battleController.HealPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
+                    _battleController.HealPlayerByAbility(caller, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    _battleController.HealCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
+                    _battleController.HealCreatureByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }

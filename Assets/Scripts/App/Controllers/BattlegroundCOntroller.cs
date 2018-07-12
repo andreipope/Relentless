@@ -225,8 +225,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
-                _playerController.UpdateHandCardsHighlight();
-
+               
                 List<BoardUnit> creatures = new List<BoardUnit>();
 
                 foreach (var card in playerBoardCards)
@@ -245,6 +244,12 @@ namespace LoomNetwork.CZB
                 creatures.Clear();
                 creatures = null;
 
+                foreach (var card in playerBoardCards)
+                {
+                    Debug.Log(card.Card.libraryCard.name);
+                    card.SetHighlightingEnabled(true);
+                }
+
                 _uiManager.DrawPopup<YourTurnPopup>();
             }
             else
@@ -261,6 +266,8 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentPlayer.CallOnStartTurnEvent();
             _gameplayManager.OpponentPlayer.CallOnStartTurnEvent();
+
+            _playerController.UpdateHandCardsHighlight();
 
             OnTurnStartedEvent?.Invoke();
         }

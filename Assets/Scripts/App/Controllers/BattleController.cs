@@ -117,10 +117,10 @@ namespace LoomNetwork.CZB
 
                 damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
 
-                if (attackedUnit.HasBuffShield)
+                if (attackingUnit.HasBuffShield)
                 {
                     damageAttacked = 0;
-                    attackedUnit.UseShieldFromBuff();
+                    attackingUnit.UseShieldFromBuff();
                 }
 
                 attackingUnit.HP -= damageAttacked;
@@ -259,7 +259,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealPlayerByAbility(BoardUnit healingUnit, AbilityData ability, Player healedPlayer)
+        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer)
         {
             if (healedPlayer != null)
             {
@@ -271,14 +271,14 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY,
             new object[]
             {
-                healingUnit,
+                healler,
                 ability,
                 ability.value,
                 healedPlayer
             }));
         }
 
-        public void HealCreatureByAbility(BoardUnit healingUnit, AbilityData ability, BoardUnit healedCreature)
+        public void HealCreatureByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
@@ -290,7 +290,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,
             new object[]
             {
-                healingUnit,
+                healler,
                 ability,
                 ability.value,
                 healedCreature

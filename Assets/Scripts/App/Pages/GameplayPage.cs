@@ -295,12 +295,12 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.name = currentPlayerHero.name;
+                _playerNameText.text = currentPlayerHero.name;
             }
             if (currentOpponentHero != null)
             {
                 SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
-                _opponentNameText.name = currentOpponentHero.name;
+                _opponentNameText.text = currentOpponentHero.name;
             }
 
             _isPlayerInited = true;

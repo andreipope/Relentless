@@ -222,7 +222,10 @@ namespace LoomNetwork.CZB
                 Mana = ManaOnCurrentTurn;
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
+                {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
+
             }
         }
 
