@@ -479,6 +479,10 @@ namespace LoomNetwork.CZB
         {
             Card = card;
 
+            // hack for top zombies
+            if (!ownerPlayer.IsLocalPlayer)
+                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x, _sleepingParticles.transform.localPosition.y, 3f);
+
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRank.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
 
             _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
@@ -739,13 +743,15 @@ namespace LoomNetwork.CZB
 
                 //sortingGroup.sortingOrder = 100;
 
+                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
                 _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
                 {
                     attackedBoardObjectsThisTurn.Add(targetPlayer);
 
                     _animationsController.DoFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, () =>
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                         Vector3 positionOfVFX = targetPlayer.AvatarObject.transform.position;
                        // positionOfVFX.y = 4.45f; // was used only for local player
@@ -770,10 +776,11 @@ namespace LoomNetwork.CZB
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
+                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
                 _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
                     attackedBoardObjectsThisTurn.Add(targetCard);
 
                     //sortingGroup.sortingOrder = 100;

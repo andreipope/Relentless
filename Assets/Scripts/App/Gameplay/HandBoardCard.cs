@@ -85,6 +85,9 @@ public class HandBoardCard
 
     public void OnSelected()
     {
+        if (!enabled)
+            return;
+
         if (_playerController.IsActive && cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected && enabled)
         {
             startedDrag = true;

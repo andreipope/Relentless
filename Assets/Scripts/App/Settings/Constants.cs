@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB.Common
 
         internal static int FIRST_GAME_TURN_INDEX = 1;
 
-        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 2;
+        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 3;
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 
@@ -96,7 +96,8 @@ namespace LoomNetwork.CZB.Common
 
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
-
+        internal static float CARD_DISTRIBUTION_TIME = 25f;
+        
         internal const bool DEV_MODE = false;
     }
 }

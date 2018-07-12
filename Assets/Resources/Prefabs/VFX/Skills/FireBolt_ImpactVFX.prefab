@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4032991150837084}
   - component: {fileID: 198507264643372670}
   - component: {fileID: 199922373093595432}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,11 +38,7 @@ GameObject:
   - component: {fileID: 4672776329347374}
   - component: {fileID: 198334773741046770}
   - component: {fileID: 199947440407939904}
-<<<<<<< Updated upstream
   m_Layer: 0
-=======
-  m_Layer: 8
->>>>>>> Stashed changes
   m_Name: FireBolt_ImpactVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +55,7 @@ GameObject:
   - component: {fileID: 4974728806751194}
   - component: {fileID: 198553626805883346}
   - component: {fileID: 199658321166077612}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}

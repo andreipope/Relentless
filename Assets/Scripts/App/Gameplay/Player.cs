@@ -221,7 +221,7 @@ namespace LoomNetwork.CZB
                 ManaOnCurrentTurn++;
                 Mana = ManaOnCurrentTurn;
 
-                if (((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && CardsInDeck.Count > 0)
+                if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
         }
@@ -347,11 +347,11 @@ namespace LoomNetwork.CZB
         {
             for (int i = 0; i < CardsInDeck.Count; i++)
             {
-                if ((_gameplayManager.CurrentTurnPlayer.Equals(this) && i > 0) || i > 1 || (isTutorial))
+                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
                     break;
 
-                if (IsLocalPlayer)
-                    _cardsController.AddCardToDistributionState(this, CardsInDeck[0]);
+                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                    _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
