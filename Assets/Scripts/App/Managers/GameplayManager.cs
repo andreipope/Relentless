@@ -70,6 +70,11 @@ namespace LoomNetwork.CZB
         {
             foreach (var item in _controllers)
                 item.Update();
+
+            if (UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode.Q))
+                GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
+            if (UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode.W))
+                GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHandZoom();
         }
 
         public T GetController<T>() where T : IController
@@ -114,7 +119,7 @@ namespace LoomNetwork.CZB
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
             GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();    
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)

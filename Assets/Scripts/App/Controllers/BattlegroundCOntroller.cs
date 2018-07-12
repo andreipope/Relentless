@@ -597,6 +597,47 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void UpdatePositionOfCardsInPlayerHandZoom(bool isMove = false)
+        {
+            var handWidth = 0.0f;
+            var spacing = -1.5f;
+
+            foreach (var card in playerHandCards)
+                handWidth += spacing;
+            handWidth -= spacing;
+
+            var pivot = new Vector3(0, -7.5f, 0f); //1.115f, -8.05f, 0f
+            var twistPerCard = -5;
+
+            if (playerHandCards.Count == 1)
+                twistPerCard = 0;
+
+            var totalTwist = twistPerCard * playerHandCards.Count;
+            float startTwist = ((totalTwist - twistPerCard) / 2f);
+            var scalingFactor = 0.5f;
+            Vector3 moveToPosition = Vector3.zero;
+
+            for (var i = 0; i < playerHandCards.Count; i++)
+            {
+                var card = playerHandCards[i];
+                var twist = startTwist - (i * twistPerCard);
+                var nudge = Mathf.Abs(twist);
+
+                nudge *= scalingFactor;
+                moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (playerHandCards.Count - i) * 0.1f);
+
+                if (isMove)
+                    card.isNewCard = false;
+
+                card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist);
+
+                pivot.x += handWidth / playerHandCards.Count;
+
+                card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_HAND_CARDS;
+                card.gameObject.GetComponent<SortingGroup>().sortingOrder = i;
+            }
+        }
+
         public void UpdatePositionOfCardsInOpponentHand(bool isMove = false, bool isNewCard = false)
         {
             var handWidth = 0.0f;

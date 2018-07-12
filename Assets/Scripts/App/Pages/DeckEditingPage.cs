@@ -402,7 +402,6 @@ namespace LoomNetwork.CZB
                 {
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 }
-
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
                 var boardCard = new BoardCard(go);

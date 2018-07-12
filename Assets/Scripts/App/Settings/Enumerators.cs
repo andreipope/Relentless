@@ -193,6 +193,7 @@
 			STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
+            ADD_GOO_CARRIER,
             DOT,
             SUMMON,
             SPELL_ATTACK,

@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.16.2.ver";
+        internal const string CURRENT_VERSION = "0.0.17.1.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -96,8 +96,8 @@ namespace LoomNetwork.CZB.Common
 
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
-        internal static float CARD_DISTRIBUTION_TIME = 25f;
+        internal static float CARD_DISTRIBUTION_TIME = 10f;
         
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;
     }
 }

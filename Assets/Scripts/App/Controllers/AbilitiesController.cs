@@ -116,6 +116,9 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.ADD_GOO_CARRIER:
+                    ability = new AddGooByCarrierAbility(cardKind, abilityData);
+                    break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
                     break;
