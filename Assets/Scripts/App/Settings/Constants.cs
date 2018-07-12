@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB.Common
 
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
-        internal static float CARD_DISTRIBUTION_TIME = 10f;
+        internal static float CARD_DISTRIBUTION_TIME = 1f;
         
         internal const bool DEV_MODE = true;
     }

@@ -614,7 +614,7 @@ namespace LoomNetwork.CZB
 
             var totalTwist = twistPerCard * playerHandCards.Count;
             float startTwist = ((totalTwist - twistPerCard) / 2f);
-            var scalingFactor = 0.5f;
+            var scalingFactor = 0.04f;
             Vector3 moveToPosition = Vector3.zero;
 
             for (var i = 0; i < playerHandCards.Count; i++)
@@ -625,6 +625,7 @@ namespace LoomNetwork.CZB
 
                 nudge *= scalingFactor;
                 moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (playerHandCards.Count - i) * 0.1f);
+                card.transform.localScale = Vector3.one * 0.5f;
 
                 if (isMove)
                     card.isNewCard = false;
