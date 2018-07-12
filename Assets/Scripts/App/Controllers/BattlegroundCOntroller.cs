@@ -1,4 +1,4 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
+﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
 
@@ -93,7 +93,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
+            if (_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
             {
                 CheckGameDynamic();
             }
@@ -122,10 +122,10 @@ namespace LoomNetwork.CZB
             //}
             //else
             //{
-                if (!_battleDynamic)
-                    _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
-                _battleDynamic = true;
-          //  }
+            if (!_battleDynamic)
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+            _battleDynamic = true;
+            //  }
         }
 
 
@@ -185,7 +185,7 @@ namespace LoomNetwork.CZB
         {
             _timerManager.StopTimer(RunTurnAsync);
 
-           gameFinished = true;
+            gameFinished = true;
             currentTurn = 0;
 
             ClearBattleground();
@@ -196,7 +196,7 @@ namespace LoomNetwork.CZB
             Debug.Log("TURN END");
             EndTurn();
 
-            if(!gameFinished)
+            if (!gameFinished)
                 StartTurn();
             else
                 _timerManager.StopTimer(RunTurnAsync);
@@ -695,9 +695,9 @@ namespace LoomNetwork.CZB
 
         public BoardUnit GetBoardUnitFromHisObject(GameObject unitObject)
         {
-           var unit = playerBoardCards.Find(x => x.gameObject.Equals(unitObject));
+            var unit = playerBoardCards.Find(x => x.gameObject.Equals(unitObject));
 
-            if(unit == null)
+            if (unit == null)
                 unit = opponentBoardCards.Find(x => x.gameObject.Equals(unitObject));
 
             return unit;
