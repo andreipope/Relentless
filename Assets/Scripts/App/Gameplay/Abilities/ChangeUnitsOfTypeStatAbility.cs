@@ -32,7 +32,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.StatType.HEALTH:
                 case Enumerators.StatType.DAMAGE:
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
             }
 

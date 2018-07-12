@@ -141,6 +141,7 @@ namespace LoomNetwork.CZB
             {
                 if (IsActive)
                 {
+                    
                     var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                     var hitCards = new List<GameObject>();
                     foreach (var hit in hits)
@@ -156,18 +157,31 @@ namespace LoomNetwork.CZB
                     }
                     if (hitCards.Count > 0)
                     {
-                        _battlegroundController.DestroyCardPreview();
-                        hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
-
-                        var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
-                        var topmostHandCard = topmostBoardCard.HandBoardCard;
-                        if (topmostHandCard != null)
+                        if (_battlegroundController.cardsZoomed || _tutorialManager.IsTutorial)
                         {
-                            topmostBoardCard.HandBoardCard.OnSelected();
+                            _battlegroundController.DestroyCardPreview();
+                            hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
 
-                            if (_tutorialManager.IsTutorial)
-                                _tutorialManager.DeactivateSelectTarget();
+                            var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                            var topmostHandCard = topmostBoardCard.HandBoardCard;
+                            if (topmostHandCard != null)
+                            {
+                                topmostBoardCard.HandBoardCard.OnSelected();
+
+                                if (_tutorialManager.IsTutorial)
+                                    _tutorialManager.DeactivateSelectTarget();
+                            }
                         }
+                        else if(!_tutorialManager.IsTutorial)
+                        {
+                            _battlegroundController.cardsZoomed = true;
+                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                        }
+                    }
+                    else
+                    {
+                        _battlegroundController.cardsZoomed = false;
+                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
                     }
                 }
             }

@@ -27,7 +27,7 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             Debug.Log("Activate");
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
             Action();
         }
 

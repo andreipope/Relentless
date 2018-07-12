@@ -304,7 +304,7 @@ namespace LoomNetwork.CZB
             unitOwner.BoardCards.Remove(targetUnit);
 
             // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX"), unitPosition);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unitPosition);
             targetUnit.Die(true);
             MonoBehaviour.Destroy(targetUnit.gameObject);
 

@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Update() { }
@@ -56,7 +56,7 @@ namespace LoomNetwork.CZB
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetRockAttack");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
@@ -106,13 +106,13 @@ namespace LoomNetwork.CZB
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/rockDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/toxicDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FireBolt_ImpactVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ToxicAttackVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_TOXIC:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");

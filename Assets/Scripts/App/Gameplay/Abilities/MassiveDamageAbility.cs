@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/tsunamiSpellVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
                     break;
                 case Enumerators.AbilityEffectType.MASSIVE_FIRE:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellMassiveFireVFX");
