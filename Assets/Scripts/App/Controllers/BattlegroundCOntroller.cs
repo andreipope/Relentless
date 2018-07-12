@@ -1,4 +1,4 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
+﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
 
@@ -38,14 +38,11 @@ namespace LoomNetwork.CZB
 
         private bool _battleDynamic = false;
 
-        private GameObject _playerBoardObject,
-                           _opponentBoardObject,
-                           _playerGraveyardObject,
-                           _opponentGraveyardObject;
-
         public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
+        public bool cardsZoomed = false;
+
 
         public GameObject currentBoardCard;
         public int currentPreviewedCardId;
@@ -54,6 +51,11 @@ namespace LoomNetwork.CZB
         public bool _rearrangingBottomBoard,
                     _rearrangingTopBoard,
                     isPreviewActive;
+
+        public GameObject playerBoardObject,
+                           opponentBoardObject,
+                           playerGraveyardObject,
+                           opponentGraveyardObject;
 
         public Coroutine createPreviewCoroutine;
 
@@ -93,7 +95,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
+            if (_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
             {
                 CheckGameDynamic();
             }
@@ -114,18 +116,18 @@ namespace LoomNetwork.CZB
 
         public void CheckGameDynamic()
         {
-            if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
-            {
-                if (_battleDynamic)
-                    _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-                _battleDynamic = false;
-            }
-            else
-            {
-                if (!_battleDynamic)
-                    _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
-                _battleDynamic = true;
-            }
+            //if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
+            //{
+            //    if (_battleDynamic)
+            //        _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+            //    _battleDynamic = false;
+            //}
+            //else
+            //{
+            if (!_battleDynamic)
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+            _battleDynamic = true;
+            //  }
         }
 
 
@@ -164,26 +166,28 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
 
+            _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
+
+
+            playerBoardObject = GameObject.Find("PlayerBoard");
+            opponentBoardObject = GameObject.Find("OpponentBoard");
+            playerGraveyardObject = GameObject.Find("GraveyardPlayer");
+            opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
+        }
+
+        public void StartGameplayTurns()
+        {
             StartTurn();
 
             if (!_gameplayManager.IsTutorial)
                 _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
-
-            _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
-
-
-            _playerBoardObject = GameObject.Find("PlayerBoard");
-            _opponentBoardObject = GameObject.Find("OpponentBoard");
-            _playerGraveyardObject = GameObject.Find("GraveyardPlayer");
-            _opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
-            
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             _timerManager.StopTimer(RunTurnAsync);
 
-           gameFinished = true;
+            gameFinished = true;
             currentTurn = 0;
 
             ClearBattleground();
@@ -194,7 +198,7 @@ namespace LoomNetwork.CZB
             Debug.Log("TURN END");
             EndTurn();
 
-            if(!gameFinished)
+            if (!gameFinished)
                 StartTurn();
             else
                 _timerManager.StopTimer(RunTurnAsync);
@@ -221,8 +225,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
-                _playerController.UpdateHandCardsHighlight();
-
+               
                 List<BoardUnit> creatures = new List<BoardUnit>();
 
                 foreach (var card in playerBoardCards)
@@ -241,6 +244,12 @@ namespace LoomNetwork.CZB
                 creatures.Clear();
                 creatures = null;
 
+                foreach (var card in playerBoardCards)
+                {
+                    Debug.Log(card.Card.libraryCard.name);
+                    card.SetHighlightingEnabled(true);
+                }
+
                 _uiManager.DrawPopup<YourTurnPopup>();
             }
             else
@@ -257,6 +266,8 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentPlayer.CallOnStartTurnEvent();
             _gameplayManager.OpponentPlayer.CallOnStartTurnEvent();
+
+            _playerController.UpdateHandCardsHighlight();
 
             OnTurnStartedEvent?.Invoke();
         }
@@ -303,7 +314,7 @@ namespace LoomNetwork.CZB
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            var graveyardPos = _playerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var graveyardPos = playerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = playerBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
@@ -323,7 +334,7 @@ namespace LoomNetwork.CZB
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
-            var graveyardPos = _opponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            var graveyardPos = opponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             var boardCard = opponentBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
@@ -384,7 +395,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             var newPositions = new List<Vector2>(playerBoardCards.Count);
-            var pivot = _playerBoardObject.transform.position;
+            var pivot = playerBoardObject.transform.position;
 
             for (var i = 0; i < playerBoardCards.Count; i++)
             {
@@ -448,7 +459,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             var newPositions = new List<Vector2>(opponentBoardCards.Count);
-            var pivot = _opponentBoardObject.transform.position;
+            var pivot = opponentBoardObject.transform.position;
 
             for (var i = 0; i < opponentBoardCards.Count; i++)
             {
@@ -558,12 +569,21 @@ namespace LoomNetwork.CZB
         {
             var handWidth = 0.0f;
             var spacing = -1.5f;
+            var scaling = 0.25f;
+            var pivot = new Vector3(6f, -7.5f, 0f);
+
+
+            if (cardsZoomed)
+            {
+                spacing = -4.5f;
+                scaling = 0.4f;
+                pivot = new Vector3(-1, -5.5f, 0f);
+            }
 
             foreach (var card in playerHandCards)
                 handWidth += spacing;
             handWidth -= spacing;
 
-            var pivot = new Vector3(6f, -7.5f, 0f); //1.115f, -8.05f, 0f
             var twistPerCard = -5;
 
             if (playerHandCards.Count == 1)
@@ -586,6 +606,7 @@ namespace LoomNetwork.CZB
                 if (isMove)
                     card.isNewCard = false;
 
+                card.transform.DOScale(Vector3.one * scaling, 0.5f);
                 card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist);
 
                 pivot.x += handWidth / playerHandCards.Count;
@@ -651,9 +672,9 @@ namespace LoomNetwork.CZB
 
         public BoardUnit GetBoardUnitFromHisObject(GameObject unitObject)
         {
-           var unit = playerBoardCards.Find(x => x.gameObject.Equals(unitObject));
+            var unit = playerBoardCards.Find(x => x.gameObject.Equals(unitObject));
 
-            if(unit == null)
+            if (unit == null)
                 unit = opponentBoardCards.Find(x => x.gameObject.Equals(unitObject));
 
             return unit;

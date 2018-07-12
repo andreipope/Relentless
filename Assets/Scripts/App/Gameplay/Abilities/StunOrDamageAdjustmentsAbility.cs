@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
         }
@@ -56,7 +56,7 @@ namespace LoomNetwork.CZB
 
             if (_isAbilityResolved)
             {
-                Action(targetCreature);
+                Action(targetUnit);
             }
         }
 
@@ -88,7 +88,7 @@ namespace LoomNetwork.CZB
             if (leftAdjustment != null)
             {
                 if (leftAdjustment.IsStun)
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, leftAdjustment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, leftAdjustment);
                 else
                     leftAdjustment.Stun(1);
                 //CreateVFX(leftAdjustment..transform.position);
@@ -97,21 +97,21 @@ namespace LoomNetwork.CZB
             if (rightAdjastment != null)
             {
                 if (rightAdjastment.IsStun)
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, rightAdjastment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, rightAdjastment);
                 else
                     rightAdjastment.Stun(1);
                 //CreateVFX(targetCreature.transform.position);
             }
 
             if (creature.IsStun)
-                _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, creature);
+                _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, creature);
             else
                 creature.Stun(1);
         }
 
-        protected override void CreatureOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info)
         {
-            base.CreatureOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info);
         }
     }
 }

@@ -113,6 +113,8 @@ namespace LoomNetwork.CZB
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();    
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -122,7 +124,7 @@ namespace LoomNetwork.CZB
 
             GameEnded = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
@@ -149,12 +151,19 @@ namespace LoomNetwork.CZB
 
         public void StartGameplay()
         {
-            GameStarted = true;
-            GameEnded = false;
+            _uiManager.DrawPopup<PreparingForBattlePopup>();
 
-            OnGameStartedEvent?.Invoke();
+            _timerManager.AddTimer((x) =>
+            {
+                _uiManager.HidePopup<PreparingForBattlePopup>();
 
-            StartInitializeGame();
+                GameStarted = true;
+                GameEnded = false;
+
+                OnGameStartedEvent?.Invoke();
+
+                StartInitializeGame();
+            }, null, 2f);
         }
 
         public void StopGameplay()
@@ -173,13 +182,16 @@ namespace LoomNetwork.CZB
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 
+            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
+
+            GetController<PlayerController>().SetHand();
+
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
                 GetController<AIController>().InitializePlayer();
 
-            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
-
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
+            GetController<CardsController>().StartCardDistribution();
 
             GameEnded = false;
 

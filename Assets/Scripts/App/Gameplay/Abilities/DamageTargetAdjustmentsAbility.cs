@@ -44,7 +44,6 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
             if (_isAbilityResolved)
             {
                 switch (affectObjectType)
@@ -54,15 +53,15 @@ namespace LoomNetwork.CZB
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         //else
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
-                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
+                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
-                        Action(targetCreature);
+                        Action(targetUnit);
                         CreateAndMoveParticle(() =>
                         {
-                            _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
+                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
 
-                        }, targetCreature.transform.position);
+                        }, targetUnit.transform.position);
                 
                         break;
                     default: break;
@@ -72,8 +71,9 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-
             Player opponent = _gameplayManager.OpponentPlayer;
+            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.OpponentPlayer)
+                opponent = _gameplayManager.CurrentPlayer;
 
             var creature = info as BoardUnit;
 
@@ -82,6 +82,8 @@ namespace LoomNetwork.CZB
 
             int targetIndex = -1;
             List<BoardUnit> list = null;
+            Debug.Log(opponent.BoardCards.Count);
+            Debug.Log(opponent.CardsOnBoard.Count);
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
                 if (opponent.BoardCards[i] == creature)
@@ -91,7 +93,8 @@ namespace LoomNetwork.CZB
                     break;
                 }
             }
-            if (targetIndex == -1)
+
+            /*if (targetIndex == -1)
                 for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
                 {
                     if (playerCallerOfAbility.BoardCards[i] == creature)
@@ -101,6 +104,7 @@ namespace LoomNetwork.CZB
                         break;
                     }
                 }
+                */
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -115,7 +119,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, leftAdjustment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, leftAdjustment);
 
                 }, leftAdjustment.transform.position);
             }
@@ -126,15 +130,23 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(playerCallerOfAbility, abilityData, rightAdjastment);
+                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, rightAdjastment);
 
                 }, rightAdjastment.transform.position);
             }
         }
 
+        protected override void UnitOnAttackEventHandler(object info)
+        {
+            base.UnitOnAttackEventHandler(info);
+            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+                return;
+            Action(info);
+        }
+
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
+            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? abilityUnitOwner.transform.position : selectedPlayer.Transform.position;
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
             {
                 //CreateVFX(cardCaller.transform.position);
@@ -146,7 +158,7 @@ namespace LoomNetwork.CZB
                     if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                     {
                         DestroyParticle(particleMain, true);
-                        var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/NailBombVFX");
+                        var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                         var particle  = MonoBehaviour.Instantiate(prefab);
                         particle.transform.position = Utilites.CastVFXPosition(targetPosition + Vector3.forward);
                         _particlesController.RegisterParticleSystem(particle, true);
@@ -160,7 +172,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                CreateVFX(Utilites.CastVFXPosition(targetCreature.transform.position));
+                CreateVFX(Utilites.CastVFXPosition(targetUnit.transform.position));
                 callback();
             }
 

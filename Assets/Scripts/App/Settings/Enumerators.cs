@@ -193,6 +193,7 @@
 			STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
+            ADD_GOO_CARRIER,
             DOT,
             SUMMON,
             SPELL_ATTACK,
@@ -201,6 +202,8 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
+            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ATTACK_NUMBER_OF_TIMES_PER_TURN
         }
 
         public enum AbilityActivityType
@@ -303,8 +306,6 @@
         {
             ATTACK_PLAYER_BY_CREATURE,
             ATTACK_CREATURE_BY_CREATURE,
-            ATTACK_CREATURE_BY_SPELL,
-            ATTACK_PLAYER_BY_SPELL,
             ATTACK_CREATURE_BY_SKILL,
             ATTACK_PLAYER_BY_SKILL,
             HEAL_PLAYER_BY_SKILL,
@@ -313,8 +314,13 @@
             ATTACK_PLAYER_BY_ABILITY,
             HEAL_PLAYER_BY_ABILITY,
             HEAL_CREATURE_BY_ABILITY,
-            ATTACK_PLAYER_BY_WEAPON,
-            ATTACK_CREATURE_BY_WEAPON
+            PLAY_UNIT_CARD,
+            PLAY_SPELL_CARD,
+            STUN_CREATURE_BY_ABILITY,
+            STUN_CREATURE_BY_SKILL,
+            SUMMON_UNIT_CARD,
+            RETURN_TO_HAND_CARD_ABILITY,
+            RETURN_TO_HAND_CARD_SKILL
         }
 
 
@@ -393,6 +399,12 @@
             PERMANENT,
             TILL_FIRST_DEFENSE_FROM_ATTACK,
             TURN_BASED,
+        }
+
+        public enum AttackInfoType
+        {
+            ANY,
+            ONLY_DIFFERENT
         }
     }
 }

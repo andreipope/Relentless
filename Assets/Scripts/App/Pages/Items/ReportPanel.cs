@@ -69,29 +69,44 @@ namespace LoomNetwork.CZB
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE:
                     reportView = new ReportViewBaseAttackCreatureByCreature(playedCardPrefab, selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.ATTACK_CREATURE_BY_SPELL:
-                    break;
-                case Enumerators.ActionType.ATTACK_PLAYER_BY_SPELL:
-                    break;
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL:
+                    reportView = new GameplayActionReport_AttackCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL:
+                    reportView = new GameplayActionReport_AttackPlayerBySkill(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_PLAYER_BY_SKILL:
+                    reportView = new GameplayActionReport_HealPlayerBySkill(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_CREATURE_BY_SKILL:
+                    reportView = new GameplayActionReport_HealCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY:
+                    reportView = new GameplayActionReport_AttackCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY:
+                    reportView = new GameplayActionReport_AttackPlayerByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY:
+                    reportView = new GameplayActionReport_HealPlayerByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY:
+                    reportView = new GameplayActionReport_HealCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.ATTACK_PLAYER_BY_WEAPON:
+                case Enumerators.ActionType.PLAY_UNIT_CARD:
+                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);  
                     break;
-                case Enumerators.ActionType.ATTACK_CREATURE_BY_WEAPON:
+                case Enumerators.ActionType.PLAY_SPELL_CARD:
+                    reportView = new GameplayActionReport_PlaySpellCard(playedCardPrefab, selfPanel.transform, report);
+                    break;
+                case Enumerators.ActionType.STUN_CREATURE_BY_ABILITY:
+                    reportView = new GameplayActionReport_StunCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
+                    break;
+                case Enumerators.ActionType.STUN_CREATURE_BY_SKILL:
+                    reportView = new GameplayActionReport_StunCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
+                    break;
+                case Enumerators.ActionType.SUMMON_UNIT_CARD:
+                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);
                     break;
                 default:
                     break;
@@ -99,6 +114,7 @@ namespace LoomNetwork.CZB
             if (reportView != null)
                 _allReports.Add(reportView);
 
+            // improve this animation!!!!!!!!!!
 
             //if (_allReports.Count > 4)
             //{

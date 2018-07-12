@@ -5,10 +5,6 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -21,11 +17,14 @@ namespace LoomNetwork.CZB
         private IUIManager _uiManager;
         private VFXController _vfxController;
         private BattleController _battleController;
+        private ActionsQueueController _actionsQueueController;
+        private CardsController _cardsController;
 
         private BoardSkill _playerPrimarySkill,
-                           _playerSecondarySkill,
-                           _opponentPrimarySkill,
-                           _opponentSecondarySkill;
+                           _playerSecondarySkill;
+
+        public BoardSkill opponentPrimarySkill,
+                          opponentSecondarySkill;
 
         public void Dispose()
         {
@@ -40,7 +39,8 @@ namespace LoomNetwork.CZB
 
             _vfxController = _gameplayManager.GetController<VFXController>();
             _battleController = _gameplayManager.GetController<BattleController>();
-
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
         }
 
         public void Update()
@@ -105,8 +105,8 @@ namespace LoomNetwork.CZB
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary);
-            _opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary);
+            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary);
+            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary);
         }
 
         private void SkillParticleActionCompleted(object target)
@@ -201,7 +201,7 @@ namespace LoomNetwork.CZB
                     HealAction(skill.owner, skill.skill);
                     break;
                 case Enumerators.SetType.AIR:
-                    //CardReturnAction(skill.owner, skill.skill, target);
+                    CardReturnAction(skill.owner, skill.skill, target);
                     break;
                 default:
                     break;
@@ -218,6 +218,12 @@ namespace LoomNetwork.CZB
                 unit.Stun(skill.value);
 
                 _vfxController.CreateVFX(Enumerators.SetType.WATER, unit.transform.position);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_SKILL, new object[]
+                {
+                    owner,
+                    unit
+                }));
             }
             else if (target is Player)
             {
@@ -286,93 +292,41 @@ namespace LoomNetwork.CZB
                 _vfxController.CreateVFX(attackType, creature.transform.position);
             }
         }
-
-
-        /*
+        
         private void CardReturnAction(Player owner, HeroSkill skill, object target)
         {
-            var targetCreature = target as BoardCreature;
+            BoardUnit targetUnit = (target as BoardUnit);
+            Player unitOwner = targetUnit.ownerPlayer;
+            WorkingCard returningCard = targetUnit.Card;
+            Vector3 unitPosition = targetUnit.transform.position;
 
-            Debug.Log("RETURN CARD");
+            // STEP 1 - REMOVE UNIT FROM BOARD
+            unitOwner.BoardCards.Remove(targetUnit);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unitPosition);
+            targetUnit.Die(true);
+            MonoBehaviour.Destroy(targetUnit.gameObject);
 
-            Player creatureOwner = GetOwnerOfCreature(targetCreature);
-            RuntimeCard returningCard = targetCreature.card;
-            Vector3 creaturePosition = targetCreature.transform.position;
+            // STEP 3 - REMOVE WORKING CARD FROM BOARD
+            unitOwner.RemoveCardFromBoard(returningCard);
 
-            // Debug.LogError("<color=white>------return card of " + creatureOwner.GetType() + "; human " + creatureOwner.isHuman + "; to hand-------</color>");
-            // Debug.LogError("<color=white>------returning card " + returningCard.instanceId + " to hand-------</color>");
+            // STEP 4 - RETURN CARD TO HAND
+            _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
 
-            // STEP 1 - REMOVE CREATURE FROM BOARD
-            if (creatureOwner.playerBoardCardsList.Contains(targetCreature)) // hack
-                creatureOwner.playerBoardCardsList.Remove(targetCreature);
+            // STEP 4 - REARRANGE HANDS
+            _gameplayManager.RearrangeHands();
 
-            // STEP 2 - DESTROY CREATURE ON THE BOARD OR ANIMATE
-            CreateVFX(creaturePosition);
-            MonoBehaviour.Destroy(targetCreature.gameObject);
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
+            {
+                owner,
+                skill,
+                targetUnit
+            }));
 
-            // STEP 3 - REMOVE RUNTIME CARD FROM BOARD
-            creatureOwner.playerInfo.namedZones[Constants.ZONE_BOARD].RemoveCard(returningCard);
-            creatureOwner.boardZone.RemoveCard(returningCard);
-
-            var serverCurrentPlayer = creatureOwner.Equals(ownerPlayer) ? creatureOwner.GetServer().gameState.currentPlayer : creatureOwner.GetServer().gameState.currentOpponent;
-
-            // STEP 4 - REMOVE CARD FROM SERVER BOARD
-            var boardRuntimeCard = serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == returningCard.instanceId);
-            serverCurrentPlayer.namedZones[Constants.ZONE_BOARD].cards.Remove(boardRuntimeCard);
-
-            // STEP 5 - CREATE AND ADD TO SERVER NEW RUNTIME CARD FOR HAND
-            var card = CreateRuntimeCard(targetCreature, creatureOwner.playerInfo, returningCard.instanceId);
-            serverCurrentPlayer.namedZones[Constants.ZONE_HAND].cards.Add(card);
-
-            // STEP 6 - CREATE NET CARD AND SIMULATE ANIMATION OF RETURNING CARD TO HAND
-            var netCard = CreateNetCard(card);
-            creatureOwner.ReturnToHandRuntimeCard(netCard, creatureOwner.playerInfo, creaturePosition);
-
-            // STEP 7 - REARRANGE CREATURES ON THE BOARD
-            GameClient.Get<IGameplayManager>().RearrangeHands();
+            _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
         }
 
-        private WorkingCard CreateRuntimeCard(BoardCreature targetCreature, PlayerInfo playerInfo, int instanceId)
-        {
-            var card = new RuntimeCard();
-            card.cardId = targetCreature.card.cardId;
-            card.instanceId = instanceId;// playerInfo.currentCardInstanceId++;
-            card.ownerPlayer = playerInfo;
-            card.stats[0] = targetCreature.card.stats[0];
-            card.stats[1] = targetCreature.card.stats[1];
-            card.namedStats[Constants.STAT_DAMAGE] = targetCreature.card.namedStats[Constants.STAT_DAMAGE].Clone();
-            card.namedStats[Constants.STAT_HP] = targetCreature.card.namedStats[Constants.STAT_HP].Clone();
-            card.namedStats[Constants.STAT_DAMAGE].baseValue = card.namedStats[Constants.STAT_DAMAGE].originalValue;
-            card.namedStats[Constants.STAT_HP].baseValue = card.namedStats[Constants.STAT_HP].originalValue;
-            return card;
-        }
-
-        private NetCard CreateNetCard(RuntimeCard card)
-        {
-            var netCard = new NetCard();
-            netCard.cardId = card.cardId;
-            netCard.instanceId = card.instanceId;
-            netCard.stats = new NetStat[card.stats.Count];
-
-            var idx = 0;
-
-            foreach (var entry in card.stats)
-                netCard.stats[idx++] = NetworkingUtils.GetNetStat(entry.Value);
-
-            netCard.keywords = new NetKeyword[card.keywords.Count];
-
-            idx = 0;
-
-            foreach (var entry in card.keywords)
-                netCard.keywords[idx++] = NetworkingUtils.GetNetKeyword(entry);
-
-            netCard.connectedAbilities = card.connectedAbilities.ToArray();
-
-            return netCard;
-        } 
-         */
         #endregion
     }
 }

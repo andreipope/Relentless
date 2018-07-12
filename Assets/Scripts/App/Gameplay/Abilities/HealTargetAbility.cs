@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update() { }
@@ -46,18 +46,15 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-                    //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value, false); }, targetPlayer.transform.position);
-                    //else
-                    //    CreateAndMoveParticle(() => { playerCallerOfAbility.HealPlayerBySkill(value); }, targetPlayer.transform.position);
-                    _battleController.HealPlayerByAbility(playerCallerOfAbility, abilityData, targetPlayer);
+                    _battleController.HealPlayerByAbility(caller, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    _battleController.HealCreatureByAbility(playerCallerOfAbility, abilityData, targetCreature);
-                    //  CreateAndMoveParticle(() => { playerCallerOfAbility.HealCreatureBySkill(value, targetCreature.card); }, targetCreature.transform.position);
+                    _battleController.HealCreatureByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }
@@ -68,7 +65,7 @@ namespace LoomNetwork.CZB
             target = Utilites.CastVFXPosition(target);
             if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
-                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? boardCreature.transform.position : selectedPlayer.Transform.position;
+                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? abilityUnitOwner.transform.position : selectedPlayer.Transform.position;
                 _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVFX(startPosition);

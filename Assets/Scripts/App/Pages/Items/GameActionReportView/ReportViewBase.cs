@@ -9,6 +9,7 @@ using LoomNetwork.CZB.Common;
 using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
+using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
@@ -27,6 +28,9 @@ namespace LoomNetwork.CZB
 
         protected GameObject playerAvatarPreviewPrefab;
         protected GameObject attackingHealthPrefab;
+
+        protected GameObject attackingPictureObject;
+        protected GameObject healPictureObject;
 
         private GameObject reportActionPreviewPanel;
 
@@ -47,6 +51,11 @@ namespace LoomNetwork.CZB
             reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
             reportActionPreviewPanel.SetActive(false);
 
+            attackingPictureObject = reportActionPreviewPanel.transform.Find("PictureAttack").gameObject;
+            attackingPictureObject.SetActive(false);
+
+            healPictureObject = reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
+            healPictureObject.SetActive(false);
 
             var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
             behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
@@ -65,27 +74,20 @@ namespace LoomNetwork.CZB
 
         public virtual void OnPointerExitEventHandler(PointerEventData obj)
         {
-            if (reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
-                reportActionPreviewPanel.SetActive(false);
+            reportActionPreviewPanel.SetActive(false);
         }
 
         public virtual void OnPointerEnterEventHandler(PointerEventData obj)
         {
-            if(reportActionPreviewPanel != null && reportActionPreviewPanel) // hack delete it!
             reportActionPreviewPanel.SetActive(true);
         }
 
-        public GameObject CreateCardPreview(WorkingCard card, Vector3 pos, bool highlight)
+        public GameObject CreateCardPreview(WorkingCard card, Vector3 pos)
         {
-            GameObject currentBoardCard = null;
-            string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
-            }
-
             BoardCard boardCard = null;
+            GameObject currentBoardCard = null;
+            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
+          
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
@@ -99,13 +101,8 @@ namespace LoomNetwork.CZB
             }
 
             boardCard.Init(card, cardSetName);
-            if (highlight)
-                highlight = boardCard.CanBePlayed(card.owner) && boardCard.CanBeBuyed(card.owner);
-            boardCard.SetHighlightingEnabled(highlight);
+            boardCard.SetHighlightingEnabled(false);
             boardCard.isPreview = true;
-
-            //var newPos = pos;
-            //newPos.y += 2.0f;
             currentBoardCard.transform.localPosition = pos;
             currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
             currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
@@ -113,10 +110,25 @@ namespace LoomNetwork.CZB
             currentBoardCard.layer = LayerMask.NameToLayer("Ignore Raycast");
 
             return currentBoardCard;
-            //currentCardPreview.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
 
-        public GameObject CreatePlayerPreview(Player player)
+        public GameObject CreatePlayerPreview(Player player, Vector3 pos)
+        {
+            GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
+            var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
+            var heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement.ToString() + "_EXP");
+            sprite.sprite = heroSprite;
+            var hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            hpText.text = player.HP.ToString();
+            avatar.transform.localPosition = pos;
+            avatar.transform.localScale = Vector3.one * 1.6f;
+            avatar.GetComponent<SortingGroup>().sortingOrder = 1000;
+            avatar.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+            return avatar;
+        }
+        //todo improve
+        public GameObject CreateSkillPreview(Player player)
         {
             GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
             var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
@@ -130,6 +142,36 @@ namespace LoomNetwork.CZB
             avatar.layer = LayerMask.NameToLayer("Ignore Raycast");
 
             return avatar;
+        }
+        //todo improve
+        public GameObject CreateAbilityPreview(WorkingCard card, Vector3 pos)
+        {
+            BoardCard boardCard = null;
+            GameObject currentBoardCard = null;
+            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
+
+            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
+                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
+                boardCard = new UnitBoardCard(currentBoardCard);
+
+            }
+            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            {
+                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
+                boardCard = new SpellBoardCard(currentBoardCard);
+            }
+
+            boardCard.Init(card, cardSetName);
+            boardCard.SetHighlightingEnabled(false);
+            boardCard.isPreview = true;
+            currentBoardCard.transform.localPosition = pos;
+            currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
+            currentBoardCard.GetComponent<SortingGroup>().sortingOrder = 1000;
+            currentBoardCard.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+            return currentBoardCard;
         }
 
         public virtual void Dispose()

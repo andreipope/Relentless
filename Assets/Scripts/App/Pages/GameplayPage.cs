@@ -202,10 +202,11 @@ namespace LoomNetwork.CZB
                 cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
 
                 string cardDeathSoundName = cardToDestroy.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
+                float soundLength = 0f;
 
-                _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-
-                float soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                if (cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
+                else soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
 
                 _timerManager.AddTimer((t) =>
                 {
@@ -294,12 +295,12 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.name = currentPlayerHero.name;
+                _playerNameText.text = currentPlayerHero.name;
             }
             if (currentOpponentHero != null)
             {
                 SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
-                _opponentNameText.name = currentOpponentHero.name;
+                _opponentNameText.text = currentOpponentHero.name;
             }
 
             _isPlayerInited = true;

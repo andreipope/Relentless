@@ -19,12 +19,16 @@ namespace LoomNetwork.CZB
 
         public BoardArrow targetingArrow;
 
-        public BoardSpell(GameObject obj)
+        public WorkingCard Card;
+
+        public BoardSpell(GameObject obj, WorkingCard card)
         {
             gameObject = obj;
             transform = obj.transform;
 
-            _eventHandler = gameObject.AddComponent<OnBehaviourHandler>();
+            Card = card;
+
+            _eventHandler = gameObject.GetComponent<OnBehaviourHandler>();
 
             _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
         }

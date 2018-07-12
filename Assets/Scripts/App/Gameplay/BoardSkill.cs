@@ -21,6 +21,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
 
         private SpriteRenderer _glowObjectSprite;
+        private TMPro.TextMeshPro _cooldownText;
 
         private GameObject fightTargetingArrowPrefab;
 
@@ -43,14 +44,15 @@ namespace LoomNetwork.CZB
         public bool IsUsing { get; private set; }
 
 
-        public BoardSkill(GameObject selfObject, Player player, HeroSkill skillInfo)
+        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo)
         {
-            this.selfObject = selfObject;
+            selfObject = obj;
             skill = skillInfo;
             owner = player;
 
             _initialCooldown = skillInfo.initialCooldown;
             _cooldown = skillInfo.initialCooldown;
+      
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -62,8 +64,10 @@ namespace LoomNetwork.CZB
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
 
-            _glowObjectSprite = this.selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
+            _glowObjectSprite = selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
+
+            _cooldownText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TMPro.TextMeshPro>();
 
             owner.OnStartTurnEvent += OnStartTurnEventHandler;
             owner.OnEndTurnEvent += OnEndTurnEventHandler;
@@ -73,6 +77,7 @@ namespace LoomNetwork.CZB
             _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
 
+            _cooldownText.text = _cooldown.ToString();
 
             fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
         }
@@ -89,6 +94,8 @@ namespace LoomNetwork.CZB
 
             if (IsSkillReady)
                 SetHighlightingEnabled(true);
+
+            _cooldownText.text = _cooldown.ToString();
         }
 
         private void OnEndTurnEventHandler()
@@ -144,24 +151,26 @@ namespace LoomNetwork.CZB
             if (!IsSkillCanUsed())
                 return;
 
-            if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+            if (owner.IsLocalPlayer)
             {
-                fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
-                fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
-                fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
+                if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+                {
+                    fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
+                    fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
+                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
                 {
                     Enumerators.SkillTargetType.PLAYER,
                     Enumerators.SkillTargetType.OPPONENT,
                     Enumerators.SkillTargetType.OPPONENT_CARD,
                     Enumerators.SkillTargetType.PLAYER_CARD
                 };
-                //skill.skillTargetType;
+                    //skill.skillTargetType;
 
+                    fightTargetingArrow.Begin(selfObject.transform.position);
 
-                fightTargetingArrow.Begin(selfObject.transform.position);
-
-                if (_tutorialManager.IsTutorial)
-                    _tutorialManager.DeactivateSelectTarget();
+                    if (_tutorialManager.IsTutorial)
+                        _tutorialManager.DeactivateSelectTarget();
+                }
             }
 
             IsUsing = true;
@@ -205,6 +214,7 @@ namespace LoomNetwork.CZB
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
+            _cooldownText.text = _cooldown.ToString();
         }
 
 
@@ -213,7 +223,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 29)
                 return true;
 
-            if (!IsSkillReady || !owner.IsLocalPlayer || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
                 return false;
 
             return true;

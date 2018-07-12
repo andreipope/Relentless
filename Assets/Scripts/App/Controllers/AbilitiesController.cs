@@ -17,6 +17,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private PlayerController _playerController;
         private BattlegroundController _battlegroundController;
+        private ActionsQueueController _actionsQueueController;
 
         private object _lock = new object();
 
@@ -32,6 +33,7 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
         }
 
         public void Reset()
@@ -87,7 +89,7 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
 
                 if (kind == Enumerators.CardKind.CREATURE)
-                    activeAbility.ability.boardCreature = boardObject as BoardUnit;
+                    activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
                 else
                     activeAbility.ability.boardSpell = boardObject as BoardSpell;
 
@@ -114,6 +116,9 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.ADD_GOO_CARRIER:
+                    ability = new AddGooByCarrierAbility(cardKind, abilityData);
+                    break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
                     break;
@@ -137,6 +142,12 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.WEAPON:
                     ability = new HeroWeaponAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE:
+                    ability = new ChangeUnitsOfTypeStatAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ATTACK_NUMBER_OF_TIMES_PER_TURN:
+                    ability = new AttackNumberOfTimesPerTurnAbility(cardKind, abilityData);
                     break;
                 default:
                     break;
@@ -315,6 +326,12 @@ namespace LoomNetwork.CZB
                                 GameClient.Get<ITimerManager>().AddTimer((creat) =>
                                 {
                                     workingCard.owner.GraveyardCardsCount++;
+
+                                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                                    {
+                                        workingCard.owner,
+                                        card
+                                    }));
                                 }, null, 1.5f);
                             }
 
@@ -330,12 +347,14 @@ namespace LoomNetwork.CZB
                                 handCard.ResetToHandAnimation();
                                 handCard.CheckStatusOfHighlight();
 
+                                workingCard.owner.CardsInHand.Add(card.WorkingCard);
+                                _battlegroundController.playerHandCards.Add(card);
+                                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
                                 _playerController.IsCardSelected = false;
                               //  currentSpellCard = null;
 
                                // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
-
-                                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                             }
                             else
                             {
@@ -349,7 +368,7 @@ namespace LoomNetwork.CZB
                     else
                     {
                         if (target is BoardUnit)
-                            activeAbility.ability.targetCreature = target as BoardUnit;
+                            activeAbility.ability.targetUnit = target as BoardUnit;
                         else if (target is Player)
                             activeAbility.ability.targetPlayer = target as Player;
 
@@ -392,6 +411,12 @@ namespace LoomNetwork.CZB
                     GameClient.Get<ITimerManager>().AddTimer((creat) =>
                     {
                         card.WorkingCard.owner.GraveyardCardsCount++;
+
+                        _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                        {
+                            card.WorkingCard.owner,
+                            card
+                        }));
                     }, null, 1.5f);
                 }
 
@@ -402,7 +427,7 @@ namespace LoomNetwork.CZB
                 if (activeAbility == null)
                     return;
                 if (target is BoardUnit)
-                    activeAbility.ability.targetCreature = target as BoardUnit;
+                    activeAbility.ability.targetUnit = target as BoardUnit;
                 else if (target is Player)
                     activeAbility.ability.targetPlayer = target as Player;
 

@@ -5,7 +5,10 @@
 
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Gameplay;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,6 +16,8 @@ namespace LoomNetwork.CZB
 {
     public class CardsController : IController
     {
+        public event Action<Player> UpdateCardsStatusEvent;
+
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
         private ILoadObjectsManager _loadObjectsManager;
@@ -37,6 +42,8 @@ namespace LoomNetwork.CZB
         public GameObject creatureCardViewPrefab,
                            opponentCardPrefab,
                            spellCardViewPrefab;
+
+        public bool CardDistribution { get; set; }
 
         public void Init()
         {
@@ -85,21 +92,164 @@ namespace LoomNetwork.CZB
         }
 
 
+        public void StartCardDistribution()
+        {
+            CardDistribution = true;
+
+            GameClient.Get<ICameraManager>().FadeIn(0.5f);
+
+            if (!_gameplayManager.IsTutorial)
+                _timerManager.AddTimer(DirectlyEndCardDistribution, null, Constants.CARD_DISTRIBUTION_TIME);
+            else
+                EndCardDistribution();
+        }
+
+        public void EndCardDistribution()
+        {
+            if (!CardDistribution)
+                return;
+
+            GameClient.Get<ICameraManager>().FadeOut(immediately: true);
+
+            _timerManager.StopTimer(DirectlyEndCardDistribution);
+
+            // for local player
+
+            List<BoardCard> cards = new List<BoardCard>();
+            cards.AddRange(_gameplayManager.CurrentPlayer.CardsPreparingToHand.FindAll(x => x.cardShouldBeDistributed));
+            foreach (var card in cards)
+                card.ReturnCardToDeck();
+
+            foreach (var card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            {
+                _gameplayManager.CurrentPlayer.RemoveCardFromDeck(card.WorkingCard);
+                _gameplayManager.CurrentPlayer.CardsInHand.Add(card.WorkingCard);
+                _battlegroundController.playerHandCards.Add(card);
+
+                _timerManager.AddTimer((x) =>
+                {
+                    card.HandBoardCard.enabled = true;
+                }, null, 2f);
+            }
+
+            if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
+            {
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                _gameplayManager.CurrentPlayer.CardsPreparingToHand.Clear();
+            }
+
+            CardDistribution = false;
+
+            if (!_gameplayManager.IsTutorial)
+            {
+                if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
+                {
+                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+                }
+                else
+                {
+                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+                }
+                _timerManager.AddTimer((x) =>
+                {
+                    _battlegroundController.StartGameplayTurns();
+                }, null, 2f);
+            }
+            else
+                _battlegroundController.StartGameplayTurns();
+        }
+
+        private void DirectlyEndCardDistribution(object[] param)
+        {
+            EndCardDistribution();
+        }
+
+        public void AddCardToDistributionState(Player player, WorkingCard card)
+        {
+            var boardCard = CreateBoardCard(card);
+            player.CardsPreparingToHand.Add(boardCard);
+            boardCard.HandBoardCard.enabled = false;
+            boardCard.MoveCardFromDeckToCenter();
+        }
+
+        public void UpdatePositionOfCardsForDistribution(Player player)
+        {
+            int count = player.CardsPreparingToHand.Count;
+
+            var handWidth = 0.0f;
+            var spacing = -3f;
+
+            handWidth += spacing * count - 1;
+
+            var pivot = new Vector3(-1.5f, 0, 0);
+
+            Vector3 moveToPosition = Vector3.zero;
+
+            for (var i = 0; i < count; i++)
+            {
+                moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
+                player.CardsPreparingToHand[i].transform.DOMove(moveToPosition, 1f, false);
+
+                pivot.x += handWidth / count;
+            }
+        }
+
+        public void ReturnCardToDeck(BoardCard card, Action callback)
+        {
+            card.WorkingCard.owner.CardsPreparingToHand.Remove(card);
+            MonoBehaviour.Destroy(card.gameObject);
+
+            callback?.Invoke();
+
+           // UpdatePositionOfCardsForDistribution(card.WorkingCard.owner);
+        }
+
         public void AddCardToHand(Player player, WorkingCard card)
         {
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
         }
 
-        public GameObject AddCardToHand(WorkingCard card)
+        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
-            string cardSetName = string.Empty;
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
+            var boardCard = CreateBoardCard(card);
+
+            if (_battlegroundController.currentTurn == 0)
             {
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
+                boardCard.SetDefaultAnimation(boardCard.WorkingCard.owner.CardsInHand.Count);
+                //if (playerHandCards.Count == 4)
+                //    RearrangeHand();
             }
 
+            _battlegroundController.playerHandCards.Add(boardCard);
+
+            if (silent)
+            {
+                boardCard.HandBoardCard.enabled = false;
+
+                _timerManager.AddTimer((x) =>
+                {
+                    boardCard.HandBoardCard.enabled = true;
+                    boardCard.HandBoardCard.CheckStatusOfHighlight();
+
+                }, null, 2f);
+            }
+            else
+            {
+                boardCard.HandBoardCard.CheckStatusOfHighlight();
+            }
+            // UpdateCardsStatusEvent?.Invoke(card.owner);
+
+            return boardCard.gameObject;
+        }
+
+        private BoardCard CreateBoardCard(WorkingCard card)
+        {
+            string cardSetName = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
             GameObject go = null;
             BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -111,39 +261,22 @@ namespace LoomNetwork.CZB
             {
                 go = MonoBehaviour.Instantiate(spellCardViewPrefab);
                 boardCard = new SpellBoardCard(go);
-
             }
 
             boardCard.Init(card, cardSetName);
-
             boardCard.CurrentTurn = _battlegroundController.currentTurn;
-
-            if (_battlegroundController.currentTurn == 0)
-            {
-                boardCard.SetDefaultAnimation(card.owner.CardsInHand.Count);
-                //if(playerHandCards.Count == 4)
-                //    RearrangeHand();
-            }
 
             var handCard = new HandBoardCard(go, boardCard);
             handCard.ownerPlayer = card.owner;
             handCard.boardZone = _playerBoard;
-
             boardCard.HandBoardCard = handCard;
-
             handCard.CheckStatusOfHighlight();
-
             boardCard.transform.localScale = Vector3.one * .3f;
-            // card.owner.CardsInHand.Add(card);
 
-            //go.GetComponent<SortingGroup>().sortingOrder = playerHandCards.Count;
-
-            _battlegroundController.playerHandCards.Add(boardCard);
-
-            return go;
+            return boardCard;
         }
 
-        public GameObject AddCardToOpponentHand(WorkingCard card)
+        public GameObject AddCardToOpponentHand(WorkingCard card, bool silent = false)
         {
             var opponent = _gameplayManager.OpponentPlayer;
             var go = MonoBehaviour.Instantiate(opponentCardPrefab);
@@ -299,112 +432,120 @@ namespace LoomNetwork.CZB
                     player.Mana -= card.libraryCard.cost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
+                // {
+                // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
+                var libraryCard = card.WorkingCard.libraryCard;
+
+                string cardSetName = string.Empty;
+                foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
                 {
-                   // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
+                    if (cardSet.cards.IndexOf(libraryCard) > -1)
+                        cardSetName = cardSet.name;
+                }
 
-                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                card.transform.DORotate(Vector3.zero, .1f);
+                card.HandBoardCard.enabled = false;
 
-                    var libraryCard = card.WorkingCard.libraryCard;
+                _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                    string cardSetName = string.Empty;
-                    foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
+                if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+                {
+                    int indexOfCard = 0;
+                    float newCreatureCardPosition = card.transform.position.x;
+
+                    // set correct position on board depends from card view position
+                    for (int i = 0; i < player.BoardCards.Count; i++)
                     {
-                        if (cardSet.cards.IndexOf(libraryCard) > -1)
-                            cardSetName = cardSet.name;
+                        if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
+                            indexOfCard = i + 1;
+                        else break;
                     }
 
-                    card.transform.DORotate(Vector3.zero, .1f);
-                    card.HandBoardCard.enabled = false;
+                    var boardUnit = new BoardUnit(_playerBoard.transform);
+                    boardUnit.transform.tag = Constants.TAG_PLAYER_OWNED;
+                    boardUnit.transform.parent = _playerBoard.transform;
+                    boardUnit.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+                    boardUnit.ownerPlayer = card.WorkingCard.owner;
+                    boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
 
-                    _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
-                    // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _battlegroundController.playerHandCards.Remove(card);
+                    _battlegroundController.playerBoardCards.Add(boardUnit);
+                    player.AddCardToBoard(card.WorkingCard);
+                    player.RemoveCardFromHand(card.WorkingCard);
 
-                    if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+                    player.BoardCards.Insert(indexOfCard, boardUnit);
+
+                    //_ranksController.UpdateRanksBuffs(player);
+
+                    _timerManager.AddTimer((creat) =>
                     {
-                        int indexOfCard = 0;
-                        float newCreatureCardPosition = card.transform.position.x;
+                        card.WorkingCard.owner.GraveyardCardsCount++;
+                    }, null, 1f);
 
-                        // set correct position on board depends from card view position
-                        for (int i = 0; i < player.BoardCards.Count; i++)
-                        {
-                            if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
-                                indexOfCard = i + 1;
-                            else break;
-                        }
+                    //Destroy(card.gameObject);
+                    card.removeCardParticle.Play();
 
-                        var boardUnit = new BoardUnit(_playerBoard.transform);
-                        boardUnit.transform.tag = Constants.TAG_PLAYER_OWNED;
-                        boardUnit.transform.parent = _playerBoard.transform;
-                        boardUnit.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                        boardUnit.ownerPlayer = card.WorkingCard.owner;
-                        boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
-
-                        player.CardsInHand.Remove(card.WorkingCard);
-                        _battlegroundController.playerHandCards.Remove(card);
-                        _battlegroundController.playerBoardCards.Add(boardUnit);
-
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
-                        player.BoardCards.Insert(indexOfCard, boardUnit);
-
-                        _ranksController.UpdateRanksBuffs(player);
-
-                        _timerManager.AddTimer((creat) =>
-                        {
-                            card.WorkingCard.owner.GraveyardCardsCount++;
-                        }, null, 1f);
-
-                        //Destroy(card.gameObject);
-                        card.removeCardParticle.Play();
-
-
-                        Sequence animationSequence = DOTween.Sequence();
-                        animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                        animationSequence.OnComplete(() =>
-                        {
-                            RemoveCard(new object[] { card });
-                            _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
-                        });
-
-                        //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                        //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
-
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
-                        {
-                            _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
-                        });
-
-                     //   actionComplete?.Invoke();
-
-                        //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                        //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
-                    }
-                    else if (libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
                     {
-                        //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                        //var sequence = DOTween.Sequence();
-                        //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                        //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                        //sequence.Play().OnComplete(() =>
-                        //{ 
+                        boardUnit.ownerPlayer,
+                        boardUnit
+                    }));
 
-                        player.CardsInHand.Remove(card.WorkingCard);
-                        _battlegroundController.playerHandCards.Remove(card);
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                        card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-                        card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+                    UpdateCardsStatusEvent?.Invoke(player);
 
-                        var boardSpell = new BoardSpell(card.gameObject);
+                    Sequence animationSequence = DOTween.Sequence();
+                    animationSequence.Append(card.transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                    animationSequence.OnComplete(() =>
+                    {
+                        RemoveCard(new object[] { card });
+                        _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
+                    });
 
-                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
-                        //});
+                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
+                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
+
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
+                    {
+                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
+                    });
+
+                    //actionComplete?.Invoke();
+
+                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
+                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+
+                }
+                else if (libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                {
+                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
+                    //var sequence = DOTween.Sequence();
+                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
+                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
+                    //sequence.Play().OnComplete(() =>
+                    //{ 
+
+
+                    player.RemoveCardFromHand(card.WorkingCard);
+                    _battlegroundController.playerHandCards.Remove(card);
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
+                    card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
+                    card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+
+                    var boardSpell = new BoardSpell(card.gameObject, card.WorkingCard);
+
+                    _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                    //});
 
                     //    actionComplete?.Invoke();
-                    }
                 }
-              // );
+                // }
+                // );
             }
             else
             {
@@ -478,77 +619,21 @@ namespace LoomNetwork.CZB
 
         private void CallCardPlay(BoardCard card)
         {
-            // PlayCreatureCard(card.WorkingCard);
-           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+
         }
 
         private void CallSpellCardPlay(BoardCard card)
         {
-            //  PlaySpellCard(card.WorkingCard);
-           // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+
         }
 
-/*
-        public void CreateAndPutToHandRuntimeCard(Card card, Player player)
+        public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
-            var runtimeCard = InitializeRuntimeCard(card, player);
+            var cardObject = player.AddCardToHand(workingCard, true);
+            cardObject.transform.position = cardPosition;
 
-            player.AddCardToHand(runtimeCard);
+            if (player.IsLocalPlayer)
+                cardObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
         }
-
-        public WorkingCard InitializeRuntimeCard(Card card, Player player)
-        {
-            var runtimeCard = CreateRuntimeCard();
-            runtimeCard.cardId = card.cardId;
-            runtimeCard.instanceId = card.instanceId;
-            runtimeCard.ownerPlayer = player;
-            foreach (var stat in card.stats)
-            {
-                var runtimeStat = NetworkingUtils.GetRuntimeStat(stat);
-                runtimeCard.stats[stat.statId] = runtimeStat;
-
-                var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(card.cardId);
-
-                var statName = "DMG";
-                if (stat.statId == 1)
-                    statName = "HP";
-                runtimeCard.namedStats[statName] = runtimeStat;
-            }
-            runtimeCard.type = card.cardType;
-
-            //foreach (var abilityId in card.connectedAbilities)
-            //{
-            //    runtimeCard.ConnectAbility(abilityId);
-            //}
-
-            return runtimeCard;
-        }
-
-
-
-        public virtual void ReturnToHandRuntimeCard(Card card, Player player, Vector3 cardPosition)
-        {
-            var runtimeCard = InitializeRuntimeCard(card, player);
-            player.namedZones[Constants.ZONE_HAND].AddCardSilent(runtimeCard);
-
-            Player controlPlayer = this is DemoHumanPlayer ? this as DemoHumanPlayer : (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer);
-
-            if (this is DemoHumanPlayer)
-            {
-                var createdHandCard = controlPlayer.AddCardToHand(runtimeCard);
-                createdHandCard.transform.position = cardPosition;
-                createdHandCard.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
-                controlPlayer.RearrangeHand(true);
-            }
-            else if (this is DemoAIPlayer)
-            {
-
-                // move to ai controller
-                //var createdHandCard = controlPlayer.AddCardToOpponentHand();
-                //createdHandCard.transform.position = cardPosition;
-                //controlPlayer.RearrangeOpponentHand(true, false);
-
-            }
-        } */
     }
 }

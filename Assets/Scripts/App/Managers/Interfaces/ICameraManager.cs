@@ -18,6 +18,6 @@ namespace LoomNetwork.CZB.Gameplay
 
 		void FadeIn(Action callback = null, int level = 0);
 		void FadeIn(float fadeTo, int level = 0);
-        void FadeOut(Action callback = null, int level = 0);
+        void FadeOut(Action callback = null, int level = 0, bool immediately = false);
     }
 }

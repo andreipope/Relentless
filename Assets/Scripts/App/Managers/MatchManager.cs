@@ -53,7 +53,7 @@ namespace LoomNetwork.CZB
             _finishMatchAppState = appStateAfterMatch;
 
             _uiManager.HideAllPages();
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
+            _uiManager.DrawPopup<LoadingGameplayPopup>();
 
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
         private void StartLoadMatch()
         {
             _uiManager.HideAllPages();
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
+            _uiManager.DrawPopup<LoadingGameplayPopup>();
 
             _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
         }
@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
             {
                 _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
-                _uiManager.HidePopup<PreparingForBattlePopup>();
+                _uiManager.HidePopup<LoadingGameplayPopup>();
 
                 _gameplayManager.StartGameplay();
             }
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
             {
                 _appStateManager.ChangeAppState(_finishMatchAppState);
 
-                _uiManager.HidePopup<PreparingForBattlePopup>();
+                _uiManager.HidePopup<LoadingGameplayPopup>();
             }
         }
     }

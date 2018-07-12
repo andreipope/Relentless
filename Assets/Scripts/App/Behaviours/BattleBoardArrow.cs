@@ -9,7 +9,9 @@ namespace LoomNetwork.CZB
 {
     public class BattleBoardArrow : BoardArrow
     {
+        public List<object> ignoreBoardObjectsList;
         public List<BoardUnit> BoardCards;
+        public BoardUnit owner;
 
         public void End(BoardUnit creature)
         {
@@ -24,23 +26,26 @@ namespace LoomNetwork.CZB
             Destroy(gameObject);
         }
 
-        public override void OnCardSelected(BoardUnit creature)
+        public override void OnCardSelected(BoardUnit unit)
         {
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 19 || _gameplayManager.TutorialStep == 27))
                 return;
 
+            if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(unit))
+                return;
+
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
-                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && creature.transform.CompareTag("PlayerOwned")) ||
-                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && creature.transform.CompareTag("OpponentOwned")) ||
-                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT) && creature.transform.CompareTag("OpponentOwned")) ||
-                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && creature.transform.CompareTag("PlayerOwned")))
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && unit.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT) && unit.transform.CompareTag("OpponentOwned")) ||
+                (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && unit.transform.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && creature.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY))
+                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()))
                 {
-                    selectedCard = creature;
+                    selectedCard = unit;
                     selectedPlayer = null;
-                    CreateTarget(creature.transform.position);
+                    CreateTarget(unit.transform.position);
                 }
             }
         }
@@ -59,6 +64,12 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19 &&
                                                 _gameplayManager.TutorialStep != 28 &&
                                                 _gameplayManager.TutorialStep != 29))
+                return;
+
+            if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(player))
+                return;
+
+            if (owner != null && owner.HasBuffRush && !owner.hasFeral)
                 return;
 
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
@@ -88,7 +99,7 @@ namespace LoomNetwork.CZB
 
         protected bool OpponentBoardContainsProvokingCreatures()
         {
-            var provokeCards = BoardCards.FindAll(x => x.Card.libraryCard.cardType == Common.Enumerators.CardType.HEAVY);
+            var provokeCards = BoardCards.FindAll(x => x.IsHeavyUnit());
             return provokeCards.Count > 0;
         }
     }

@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
             
@@ -56,9 +56,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void CreatureOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info)
         {
-            base.CreatureOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             if(info is BoardUnit)
@@ -66,7 +66,13 @@ namespace LoomNetwork.CZB
                 var creature = info as BoardUnit;
                 creature.Stun(value);
 				CreateVFX(creature.transform.position);
-			}
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
+                {
+                    abilityUnitOwner,
+                    creature
+                }));
+            }
         }
     }
 }

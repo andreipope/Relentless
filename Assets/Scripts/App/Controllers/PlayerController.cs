@@ -71,11 +71,11 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add(21);
-                playerDeck.Add(1);
-                playerDeck.Add(1);
-                playerDeck.Add(1);
-                playerDeck.Add(18);
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Vindrom") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
+                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Azuraz") ); 
             }
             else
             {
@@ -89,21 +89,34 @@ namespace LoomNetwork.CZB
                            // card.cardId = 51; 
                         }
 
-                        playerDeck.Add(card.cardId);
+                         playerDeck.Add(card.cardId); 
+
+                        //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stapler"));
                     }
                 }
             }
 
             _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
 
-            if (_gameplayManager.IsTutorial)
-                _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
-
-            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
             _gameplayManager.CurrentPlayer.OnStartTurnEvent += OnTurnStartedEventHandler;
             _gameplayManager.CurrentPlayer.OnEndTurnEvent += OnTurnEndedEventHandler;
+        }
+
+
+        public void SetHand()
+        {
+            //if (_gameplayManager.IsTutorial)
+           //     _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+
+            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
+            }, null, 1f);
+           
+
+            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
         public virtual void OnGameStartedEventHandler()
@@ -130,6 +143,7 @@ namespace LoomNetwork.CZB
             {
                 if (IsActive)
                 {
+                    
                     var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                     var hitCards = new List<GameObject>();
                     foreach (var hit in hits)
@@ -145,18 +159,31 @@ namespace LoomNetwork.CZB
                     }
                     if (hitCards.Count > 0)
                     {
-                        _battlegroundController.DestroyCardPreview();
-                        hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
-
-                        var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
-                        var topmostHandCard = topmostBoardCard.HandBoardCard;
-                        if (topmostHandCard != null)
+                        if (_battlegroundController.cardsZoomed || _tutorialManager.IsTutorial)
                         {
-                            topmostBoardCard.HandBoardCard.OnSelected();
+                            _battlegroundController.DestroyCardPreview();
+                            hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
 
-                            if (_tutorialManager.IsTutorial)
-                                _tutorialManager.DeactivateSelectTarget();
+                            var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                            var topmostHandCard = topmostBoardCard.HandBoardCard;
+                            if (topmostHandCard != null)
+                            {
+                                topmostBoardCard.HandBoardCard.OnSelected();
+
+                                if (_tutorialManager.IsTutorial)
+                                    _tutorialManager.DeactivateSelectTarget();
+                            }
                         }
+                        else if(!_tutorialManager.IsTutorial)
+                        {
+                            _battlegroundController.cardsZoomed = true;
+                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                        }
+                    }
+                    else
+                    {
+                        _battlegroundController.cardsZoomed = false;
+                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
                     }
                 }
             }
@@ -244,15 +271,14 @@ namespace LoomNetwork.CZB
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
             //}
 
-            foreach (var card in _battlegroundController.playerHandCards)
+            if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
             {
-                if (card.CanBePlayed(_gameplayManager.CurrentPlayer) && card.CanBeBuyed(_gameplayManager.CurrentPlayer))
+                foreach (var card in _battlegroundController.playerHandCards)
                 {
-                    card.SetHighlightingEnabled(true);
-                }
-                else
-                {
-                    card.SetHighlightingEnabled(false);
+                    if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
+                        card.SetHighlightingEnabled(true);
+                    else
+                        card.SetHighlightingEnabled(false);
                 }
             }
         }

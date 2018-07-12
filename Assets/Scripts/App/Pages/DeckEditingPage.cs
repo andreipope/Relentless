@@ -393,19 +393,20 @@ namespace LoomNetwork.CZB
 
                 var card = cards[i];
 
+                BoardCard boardCard = null;
                 GameObject go = null;
                 if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
                 {
                     go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
+                    boardCard = new UnitBoardCard(go);
                 }
                 else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
                 {
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
+                    boardCard = new SpellBoardCard(go);
                 }
-
                 var amount = _collectionData.GetCardData(card.id).amount;
                 
-                var boardCard = new BoardCard(go);
                 boardCard.Init(card, set.name, amount);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.transform.position = cardPositions[i % cardPositions.Count].position;

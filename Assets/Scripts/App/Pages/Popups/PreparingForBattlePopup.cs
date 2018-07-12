@@ -46,9 +46,10 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
+           GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
             OnHidePopupEvent?.Invoke();
             _selfPage.SetActive(false);
-			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+
 		}
 
         public void SetMainPriority()

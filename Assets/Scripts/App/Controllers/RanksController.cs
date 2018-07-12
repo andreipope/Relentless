@@ -4,7 +4,6 @@
 
 
 using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,19 +90,6 @@ namespace LoomNetwork.CZB
             {
                 for (int i = 0; i < (int)rank; i++)
                     unit.BuffUnit(Enumerators.BuffType.ATTACK);
-
-                //switch (rank)
-                //{
-                //    case Enumerators.CardRank.OFFICER:
-                //        unit.Damage += 1;
-                //        break;
-                //    case Enumerators.CardRank.COMMANDER:
-                //        unit.Damage += 2;
-                //        break;
-                //    case Enumerators.CardRank.GENERAL:
-                //        unit.Damage += 3;
-                //        break;
-                //}
             }
         }
 
@@ -120,12 +106,10 @@ namespace LoomNetwork.CZB
                         break;
                     case Enumerators.CardRank.COMMANDER:
                         unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                       // unit.HP++;
                         break;
                     case Enumerators.CardRank.GENERAL:
                         unit.BuffUnit(Enumerators.BuffType.DEFENCE);
                         unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                        //  unit.HP += 2;
                         break;
                 }
             }
@@ -141,18 +125,13 @@ namespace LoomNetwork.CZB
                 switch (rank)
                 {
                     case Enumerators.CardRank.OFFICER:
-                      //  unit.HP++;
                         break;
                     case Enumerators.CardRank.COMMANDER:
-                        // unit.HP++;
-                        // unit.hasProvoke = true;
                         unit.BuffUnit(Enumerators.BuffType.HEAVY);
                         break;
                     case Enumerators.CardRank.GENERAL:
                         unit.BuffUnit(Enumerators.BuffType.DEFENCE);
                         unit.BuffUnit(Enumerators.BuffType.HEAVY);
-                        //   unit.HP += 2;
-                        //   unit.hasProvoke = true;
                         break;
                 }
             }
@@ -168,19 +147,13 @@ namespace LoomNetwork.CZB
                 switch (rank)
                 {
                     case Enumerators.CardRank.OFFICER:
-                        //  unit.hasImpetus = true;
                         break;
                     case Enumerators.CardRank.COMMANDER:
                         unit.BuffUnit(Enumerators.BuffType.ATTACK);
-                        //   unit.Damage++;
-                        //  unit.hasImpetus = true;
                         break;
                     case Enumerators.CardRank.GENERAL:
                         unit.BuffUnit(Enumerators.BuffType.ATTACK);
                         unit.BuffUnit(Enumerators.BuffType.ATTACK);
-
-                        //   unit.Damage += 2;
-                        //   unit.hasImpetus = true;
                         break;
                 }
             }

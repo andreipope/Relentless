@@ -20,6 +20,9 @@ namespace LoomNetwork.CZB
 
         private ParticlesController _particlesController;
 
+        public Sprite FeralFrame { get; set; }
+        public Sprite HeavyFrame { get; set; }
+
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -27,6 +30,9 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
+
+            FeralFrame = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UnitFrames/feral");
+            HeavyFrame = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UnitFrames/heavy");
         }
 
         public void Dispose()
@@ -144,27 +150,35 @@ namespace LoomNetwork.CZB
             switch (setType)
             {
                 case Enumerators.SetType.WATER:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
                 case Enumerators.SetType.TOXIC:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Toxic_Impact");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Toxic_ImpactVFX");
                     break;
                 case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FIreBall_Impact");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
                 case Enumerators.SetType.LIFE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/HealVFX");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
                 case Enumerators.SetType.EARTH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack"); // todo improve particle
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
                     break;
                 case Enumerators.SetType.AIR:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
                     break;
                 default:
                     break;
             }
 
+            var particle = MonoBehaviour.Instantiate(prefab);
+            particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
+            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
+
+        public void CreateVFX(GameObject prefab, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        {
             var particle = MonoBehaviour.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
@@ -177,27 +191,27 @@ namespace LoomNetwork.CZB
             switch (setType)
             {
                 case Enumerators.SetType.WATER:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFrozenAttack");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
                     break;
                 case Enumerators.SetType.TOXIC:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/Toxic_Bullet_08");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
                     break;
                 case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/fireBall_03");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
                 case Enumerators.SetType.LIFE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
                 case Enumerators.SetType.EARTH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack"); // todo improve particle
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
                     break;
                 case Enumerators.SetType.AIR:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
                     break;
                 default:
                     break;
             }
-
+ 
             if (target == null)
                 return;
 

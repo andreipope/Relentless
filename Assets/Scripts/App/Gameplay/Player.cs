@@ -5,6 +5,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,6 +139,9 @@ namespace LoomNetwork.CZB
         public List<WorkingCard> CardsInHand { get; private set; }
         public List<WorkingCard> CardsOnBoard { get; private set; }
 
+        public List<BoardCard> CardsPreparingToHand { get; set; }
+
+
         public Player(GameObject playerObject, bool isOpponent)
         {
             _playerObject = playerObject;
@@ -158,6 +162,8 @@ namespace LoomNetwork.CZB
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
             BoardCards = new List<BoardUnit>();
+
+            CardsPreparingToHand = new List<BoardCard>();
 
             int heroId = 0;
 
@@ -215,8 +221,11 @@ namespace LoomNetwork.CZB
                 ManaOnCurrentTurn++;
                 Mana = ManaOnCurrentTurn;
 
-                if (((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && CardsInDeck.Count > 0)
+                if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
+                {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
+
             }
         }
 
@@ -234,22 +243,27 @@ namespace LoomNetwork.CZB
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
         }
 
-        public void AddCardToHand(WorkingCard card)
+        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
+            GameObject cardObject = null;
             CardsInHand.Add(card);
 
             if (IsLocalPlayer)
             {
-                _cardsController.AddCardToHand(card);
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                cardObject = _cardsController.AddCardToHand(card, silent);
+
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else
             {
-                _cardsController.AddCardToOpponentHand(card);
-                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, true);
+                cardObject = _cardsController.AddCardToOpponentHand(card, silent);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
             HandChangedEvent?.Invoke(CardsInHand.Count);
+
+            return cardObject;
         }
 
         public void RemoveCardFromHand(WorkingCard card)
@@ -317,14 +331,17 @@ namespace LoomNetwork.CZB
             CardsInDeck = new List<WorkingCard>();
 
             if (!_gameplayManager.IsTutorial)
-            {
-                // shake
-                var rnd = new System.Random();
-                cards = cards.OrderBy(item => rnd.Next()).ToList();
-            }
+                InternalTools.ShakeList(ref cards);// shake
 
             foreach (var card in cards)
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+            {
+#if UNITY_EDITOR
+                if (IsLocalPlayer && Constants.DEV_MODE)
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card /* 15 */), this)); // special card id
+                else
+#endif
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+            }
 
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
         }
@@ -336,8 +353,19 @@ namespace LoomNetwork.CZB
                 if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
                     break;
 
-                _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                    _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
+                else
+                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
+        }
+
+        public void DistributeCard()
+        {
+            if (IsLocalPlayer)
+                _cardsController.AddCardToDistributionState(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+            else
+                _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
         }
 
         public void PlayerDie()

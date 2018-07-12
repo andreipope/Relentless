@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/fireDamageVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -51,9 +51,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreatureOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info)
         {
-            base.CreatureOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             
@@ -62,32 +62,22 @@ namespace LoomNetwork.CZB
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
-                    boardCreature.HP += value;
+                    abilityUnitOwner.HP = ChangeValue(abilityUnitOwner.HP, value);
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    boardCreature.Damage += value;
+                    abilityUnitOwner.Damage = ChangeValue(abilityUnitOwner.Damage, value);
                     break;
                 default:
                     break;
             }
-             //var newValue = boardCreature.card.namedStats[statName].baseValue + value;
-             //if (newValue < 0)
-             //	newValue = 0;
+        }
 
-            //var netCard = _server.gameState.currentPlayer.namedZones[Constants.ZONE_BOARD].cards.Find(x => x.instanceId == boardCreature.card.instanceId);
-
-            //boardCreature.card.namedStats[statName].baseValue = newValue;
-
-            try
-            {
-              //  netCard.namedStats[statName].baseValue = newValue;
-            }
-            catch(Exception ex)
-            {
-                Debug.LogError(ex.Message);
-            }
-
-			//CreateVFX(boardCreature.transform.position);
+        private int ChangeValue(int param, int valueChange)
+        {
+            param = param + valueChange;
+            if (param < 0)
+                param = 0;
+            return param;
         }
     }
 }

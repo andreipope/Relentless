@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
             int i = 0;
 			foreach (var deck in _dataManager.CachedDecksData.decks)
 			{
-                var ind = i;
+                var ind = i;                                                           
 
                 string heroType = _dataManager.CachedHeroesData.Heroes[deck.heroId].element.ToString();
 
@@ -146,7 +146,7 @@ namespace LoomNetwork.CZB
 				deckObject.Find("Frame/EditButton").gameObject.SetActive(false);
 				deckObject.Find("Frame/DeleteButton").GetComponent<Button>().onClick.AddListener(() => { DeleteDeckHandler(deckObject); });
                 deckObject.Find("Frame/DeleteButton").gameObject.SetActive(false);
-                deckObject.Find("Frame/HeroSkillIcon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + heroType);
+                deckObject.Find("Frame/HeroSkillIcon").GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Elementals/tab_" + heroType);
                 i++;
 			}
             _createDeckButtonPersist = false;
