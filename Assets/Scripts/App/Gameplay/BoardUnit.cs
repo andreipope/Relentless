@@ -411,7 +411,7 @@ namespace LoomNetwork.CZB
                 }
 
 
-                InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name });
+                InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
                 if (Card.libraryCard.cardRank == Enumerators.CardRank.COMMANDER)
                 {
@@ -444,7 +444,7 @@ namespace LoomNetwork.CZB
             }
             else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
             {
-                InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name });
+                InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
                 _animationSprite.sortingOrder = -_animationSprite.sortingOrder;
                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;

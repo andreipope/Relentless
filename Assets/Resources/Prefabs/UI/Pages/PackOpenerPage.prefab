@@ -644,9 +644,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1559496853975320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 76d712aa1bb29ac42bf5624346fe93aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragOnSurfaces: 1
+  locked: 0
 --- !u!114 &114261340583873858
 MonoBehaviour:
   m_ObjectHideFlags: 1
