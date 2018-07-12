@@ -13,7 +13,7 @@ using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
 {
-    public class PreparingForBattlePopup : IUIPopup
+    public class LoadingGameplayPopup : IUIPopup
     {
         public GameObject Self
         {
@@ -24,17 +24,25 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
+        private IScenesManager _sceneManager;
+
+
         private GameObject _selfPage;
+
+        private Image _progressBar;
 
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _sceneManager = GameClient.Get<IScenesManager>();
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingGameplayPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
+
+            _progressBar = _selfPage.transform.Find("ProgresBar/Fill").GetComponent<Image>();
 
             Hide();
         }
@@ -46,7 +54,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-           GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
             OnHidePopupEvent?.Invoke();
             _selfPage.SetActive(false);
 
@@ -58,7 +65,7 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+            _progressBar.fillAmount = 0f;
             _selfPage.SetActive(true);
         }
 
@@ -70,7 +77,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-
+            _progressBar.fillAmount = (float)_sceneManager.SceneLoadingProgress / 100f;
         }
 
     }

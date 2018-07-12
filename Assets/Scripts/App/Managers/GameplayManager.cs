@@ -156,12 +156,19 @@ namespace LoomNetwork.CZB
 
         public void StartGameplay()
         {
-            GameStarted = true;
-            GameEnded = false;
+            _uiManager.DrawPopup<PreparingForBattlePopup>();
 
-            OnGameStartedEvent?.Invoke();
+            _timerManager.AddTimer((x) =>
+            {
+                _uiManager.HidePopup<PreparingForBattlePopup>();
 
-            StartInitializeGame();
+                GameStarted = true;
+                GameEnded = false;
+
+                OnGameStartedEvent?.Invoke();
+
+                StartInitializeGame();
+            }, null, 2f);
         }
 
         public void StopGameplay()

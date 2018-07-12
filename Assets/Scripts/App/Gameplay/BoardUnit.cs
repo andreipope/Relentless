@@ -349,6 +349,7 @@ namespace LoomNetwork.CZB
                     case Enumerators.BuffType.RUSH:
                         HasBuffRush = true;
                         IsPlayable = !_attacked;
+                        _sleepingParticles.gameObject.SetActive(false);
                         break;
                     case Enumerators.BuffType.SHIELD:
                         HasBuffShield = true;

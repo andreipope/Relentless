@@ -323,6 +323,8 @@ namespace LoomNetwork.CZB
                 skill,
                 targetUnit
             }));
+
+            _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
         }
 
         #endregion
