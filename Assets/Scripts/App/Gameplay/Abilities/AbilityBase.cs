@@ -105,7 +105,7 @@ namespace LoomNetwork.CZB
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AbilityTargetingArrow")).GetComponent<AbilityBoardArrow>();
+            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = abilityUnitOwner;
 

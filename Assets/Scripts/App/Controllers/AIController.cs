@@ -83,7 +83,7 @@ namespace LoomNetwork.CZB
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
 
-            fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/OpponentTargetingArrow");
+            fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _attackedUnitTargets = new List<BoardUnit>();
 
@@ -908,7 +908,7 @@ namespace LoomNetwork.CZB
                 return null;
             }
 
-            var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<OpponentBoardArrow>();
+            var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
             targetingArrow.Begin(startObj.transform.position);
 
             targetingArrow.SetTarget(targetObject);

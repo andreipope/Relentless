@@ -15765,8 +15765,7 @@ MonoBehaviour:
   m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
-  m_renderer: {fileID: 23886279372134026, guid: 02172f9a88e803a45b21bc8d2373475d,
-    type: 2}
+  m_renderer: {fileID: 1869908078}
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}

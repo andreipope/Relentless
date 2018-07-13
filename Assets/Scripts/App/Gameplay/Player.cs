@@ -401,7 +401,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var boardArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
                 if (boardArrow != null)
                     boardArrow.OnPlayerSelected(this);
             }
@@ -411,7 +411,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var boardArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
                 if (boardArrow != null)
                     boardArrow.OnPlayerUnselected(this);
             }

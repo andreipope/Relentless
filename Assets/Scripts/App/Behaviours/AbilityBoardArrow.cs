@@ -36,6 +36,8 @@ namespace LoomNetwork.CZB
             _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, null, OnMouseButtonDownHandler, null);
             _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, null, OnRightMouseButtonDownHandler, null);
             _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonDownHandler, null);
+
+            Init();
         }
 
         protected void OnDestroy()
@@ -71,7 +73,7 @@ namespace LoomNetwork.CZB
         {
             if (selectedCard == creature)
             {
-                Destroy(target);
+                _targetObjectsGroup.SetActive(false);
                 selectedCard = null;
 
                 OnCardUnselectedevent?.Invoke(creature);
@@ -96,7 +98,7 @@ namespace LoomNetwork.CZB
         {
             if (selectedPlayer == player)
             {
-                Destroy(target);
+                _targetObjectsGroup.SetActive(false);
                 selectedPlayer = null;
 
                 OnPlayerUnselectedEvent?.Invoke(player);
