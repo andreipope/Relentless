@@ -457,7 +457,7 @@ namespace LoomNetwork.CZB
 
                 currentSpellCard = new SpellBoardCard(spellCard);
 
-                currentSpellCard.Init(workingCard, cardSetName);
+                currentSpellCard.Init(workingCard);
                 currentSpellCard.SetHighlightingEnabled(false);
 
                 var boardSpell = new BoardSpell(spellCard, workingCard);

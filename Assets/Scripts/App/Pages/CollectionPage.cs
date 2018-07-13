@@ -353,7 +353,7 @@ namespace LoomNetwork.CZB
                 }
 
                 var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
-                boardCard.Init(card, set.name, amount);
+                boardCard.Init(card, amount);
 				boardCard.SetHighlightingEnabled(false);
 				boardCard.transform.position = cardPositions[i % cardPositions.Count].position;
                 boardCard.transform.localScale = Vector3.one * 0.32f;

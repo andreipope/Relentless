@@ -520,7 +520,7 @@ namespace LoomNetwork.CZB
                 boardCard = new SpellBoardCard(currentBoardCard);
 
             }
-            boardCard.Init(card, cardSetName);
+            boardCard.Init(card);
             if (highlight)
                 highlight = boardCard.CanBePlayed(card.owner) && boardCard.CanBeBuyed(card.owner);
             boardCard.SetHighlightingEnabled(highlight);

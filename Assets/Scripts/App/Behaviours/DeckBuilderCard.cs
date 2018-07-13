@@ -14,6 +14,7 @@ namespace LoomNetwork.CZB
         public DeckEditingPage scene;
         public Card card;
         public bool isActive;
+        public bool isHordeItem = false;
 
         private void Awake()
         {
@@ -28,7 +29,10 @@ namespace LoomNetwork.CZB
                 var hit = Physics2D.Raycast(mousePos, Vector2.zero);
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
-                    scene.AddCardToDeck(card);
+                    if(!isHordeItem)
+                        scene.AddCardToDeck(card);
+                    else
+                        scene.RemoveCardFromDeck(card);
                 }
             }
         }

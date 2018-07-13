@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
             behaviourHandler.OnMouseUpEvent += OnMouseUpEventHandler;
         }
 
-        public virtual void Init(WorkingCard card, string setName = "")
+        public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;
 
@@ -121,13 +121,15 @@ namespace LoomNetwork.CZB
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.libraryCard.cardRank);
 
+            var setName = libraryCard.cardSetType.ToString();
+
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
         }
 
-        public virtual void Init(Card card, string setName = "", int amount = 0)
+        public virtual void Init(Card card, int amount = 0)
         {
             libraryCard = card;
 
@@ -139,6 +141,8 @@ namespace LoomNetwork.CZB
             manaCost = libraryCard.cost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
+
+            var setName = libraryCard.cardSetType.ToString();
 
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
 

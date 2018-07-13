@@ -361,7 +361,7 @@ namespace LoomNetwork.CZB
                 // todo imrpoveE!!!!
                 var boardCard = new BoardCard(go);
 
-                boardCard.Init(card, cardSetName);
+                boardCard.Init(card);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.transform.position = _centerPos;
                 boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
