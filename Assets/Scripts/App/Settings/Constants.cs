@@ -39,7 +39,8 @@ namespace LoomNetwork.CZB.Common
         internal static int DEFAULT_TURN_DURATION = 60;
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
-
+        internal static int MAX_DECKS_AT_ALL = 6;
+    
         internal static int DEFAULT_PLAYER_HP = 30;
         internal static int DEFAULT_PLAYER_MANA = 0;
         internal static int MAXIMUM_PLAYER_MANA = 10;
