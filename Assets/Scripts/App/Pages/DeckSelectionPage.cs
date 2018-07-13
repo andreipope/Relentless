@@ -260,7 +260,10 @@ namespace LoomNetwork.CZB
 
         #endregion
 
-
+        private void OpenAlertDialog(string msg)
+        {
+            _uiManager.DrawPopup<WarningPopup>(msg);
+        }
 
         public class HordeDeckObject
         {
