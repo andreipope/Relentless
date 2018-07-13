@@ -56,9 +56,9 @@ namespace LoomNetwork.CZB
             defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
         }
 
-        public override void Init(WorkingCard card, string setName)
+        public override void Init(WorkingCard card)
         {
-            base.Init(card, setName);
+            base.Init(card);
 
             if (card.libraryCard.damage == 0)
                 attackText.gameObject.SetActive(false);
@@ -85,9 +85,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public override void Init(Data.Card card, string setName = "", int amount = 0)
+        public override void Init(Data.Card card, int amount = 0)
         {
-            base.Init(card, setName, amount);
+            base.Init(card, amount);
 
             if (card.damage == 0)
                 attackText.gameObject.SetActive(false);

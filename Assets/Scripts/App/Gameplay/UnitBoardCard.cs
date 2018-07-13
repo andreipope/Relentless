@@ -59,9 +59,9 @@ namespace LoomNetwork.CZB
             typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
-        public override void Init(WorkingCard card, string setName)
+        public override void Init(WorkingCard card)
         {
-            base.Init(card, setName);
+            base.Init(card);
 
             Damage = card.libraryCard.damage;
             initialDamage = card.libraryCard.damage;
@@ -78,9 +78,9 @@ namespace LoomNetwork.CZB
             HealthChangedEvent += (oldValue, newValue) => { defenseText.text = newValue.ToString(); };
         }
 
-        public override void Init(Data.Card card, string setName = "", int amount = 0)
+        public override void Init(Data.Card card, int amount = 0)
         {
-            base.Init(card, setName, amount);
+            base.Init(card, amount);
 
             attackText.text = card.damage.ToString();
             defenseText.text = card.health.ToString();

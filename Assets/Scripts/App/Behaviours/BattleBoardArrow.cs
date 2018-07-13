@@ -13,6 +13,11 @@ namespace LoomNetwork.CZB
         public List<BoardUnit> BoardCards;
         public BoardUnit owner;
 
+        private void Awake()
+        {
+            Init();
+        }
+
         public void End(BoardUnit creature)
         {
             if (!startedDrag)
@@ -54,7 +59,7 @@ namespace LoomNetwork.CZB
         {
             if (selectedCard == creature)
             {
-                Destroy(target);
+                _targetObjectsGroup.SetActive(false);
                 selectedCard = null;
             }
         }
@@ -92,7 +97,7 @@ namespace LoomNetwork.CZB
         {
             if (selectedPlayer == player)
             {
-                Destroy(target);
+                _targetObjectsGroup.SetActive(false);
                 selectedPlayer = null;
             }
         }

@@ -15,9 +15,14 @@ namespace LoomNetwork.CZB
 
         private Vector3 _targetPosition;
 
+        private void Awake()
+        {
+            Init();
+        }
+
+
         public void UpdateTargetPosition(Vector3 position)
         {
-            DestroyMiddleBlocks();
             _targetPosition = position;
             Activate();
         }
@@ -32,10 +37,6 @@ namespace LoomNetwork.CZB
         {
             isEnabled = false;
             UpdateVisibility();
-        }
-
-        protected void Awake()
-        {
         }
 
         protected override void Update()

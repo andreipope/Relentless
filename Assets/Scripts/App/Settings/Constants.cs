@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.17.1.ver";
+        internal const string CURRENT_VERSION = "0.0.17.2.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -39,7 +39,8 @@ namespace LoomNetwork.CZB.Common
         internal static int DEFAULT_TURN_DURATION = 60;
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
-
+        internal static int MAX_DECKS_AT_ALL = 6;
+    
         internal static int DEFAULT_PLAYER_HP = 30;
         internal static int DEFAULT_PLAYER_MANA = 0;
         internal static int MAXIMUM_PLAYER_MANA = 10;

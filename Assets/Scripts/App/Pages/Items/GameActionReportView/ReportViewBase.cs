@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB
                 boardCard = new SpellBoardCard(currentBoardCard);
             }
 
-            boardCard.Init(card, cardSetName);
+            boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
             boardCard.isPreview = true;
             currentBoardCard.transform.localPosition = pos;
@@ -162,7 +162,7 @@ namespace LoomNetwork.CZB
                 boardCard = new SpellBoardCard(currentBoardCard);
             }
 
-            boardCard.Init(card, cardSetName);
+            boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
             boardCard.isPreview = true;
             currentBoardCard.transform.localPosition = pos;

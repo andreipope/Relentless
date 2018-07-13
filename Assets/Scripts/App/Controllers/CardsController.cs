@@ -263,7 +263,7 @@ namespace LoomNetwork.CZB
                 boardCard = new SpellBoardCard(go);
             }
 
-            boardCard.Init(card, cardSetName);
+            boardCard.Init(card);
             boardCard.CurrentTurn = _battlegroundController.currentTurn;
 
             var handCard = new HandBoardCard(go, boardCard);
@@ -609,7 +609,7 @@ namespace LoomNetwork.CZB
                 boardCard = new SpellBoardCard(go);
 
             }
-            boardCard.Init(card, cardSetName);
+            boardCard.Init(card);
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
             boardCard.SetHighlightingEnabled(false);

@@ -74,12 +74,12 @@ namespace LoomNetwork.CZB
 
             _behaviourHandler = this.selfObject.GetComponent<OnBehaviourHandler>();
 
-            _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
-            _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
+            //_behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
+         //   _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
 
             _cooldownText.text = _cooldown.ToString();
 
-            fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
+            fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
         private void OnStartTurnEventHandler()
@@ -122,29 +122,29 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void OnTriggerEnter2D(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardSelected(null);
-                }
-            }
-        }
+        //public void OnTriggerEnter2D(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (targetingArrow != null)
+        //        {
+        //            targetingArrow.OnCardSelected(null);
+        //        }
+        //    }
+        //}
 
-        public void OnTriggerExit2D(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardUnselected(null);
-                }
-            }
-        }
+        //public void OnTriggerExit2D(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (targetingArrow != null)
+        //        {
+        //            targetingArrow.OnCardUnselected(null);
+        //        }
+        //    }
+        //}
 
         public void StartDoSkill()
         {
@@ -155,7 +155,7 @@ namespace LoomNetwork.CZB
             {
                 if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
                 {
-                    fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
+                    fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
                     fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
                 {

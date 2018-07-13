@@ -181,7 +181,7 @@ namespace LoomNetwork.CZB
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
 
-            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _pictureSprite = _selfObject.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = _selfObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
@@ -648,7 +648,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnCardSelected(this);
@@ -660,7 +660,7 @@ namespace LoomNetwork.CZB
         {
             if (collider.transform.parent != null)
             {
-                var targetingArrow = collider.transform.parent.parent.GetComponent<BoardArrow>();
+                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
                 if (targetingArrow != null)
                 {
                     targetingArrow.OnCardUnselected(this);
@@ -680,7 +680,7 @@ namespace LoomNetwork.CZB
 
             if (ownerPlayer != null && ownerPlayer.IsLocalPlayer && _playerController.IsActive && IsPlayable)
             {
-                fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).GetComponent<BattleBoardArrow>();
+                fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                 fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>() { Enumerators.SkillTargetType.OPPONENT, Enumerators.SkillTargetType.OPPONENT_CARD };
                 fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 fightTargetingArrow.owner = this;

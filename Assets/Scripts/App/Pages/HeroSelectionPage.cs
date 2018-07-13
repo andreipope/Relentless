@@ -5,57 +5,58 @@
 
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
 using TMPro;
-
+using LoomNetwork.CZB.Data;
+using System;
 
 namespace LoomNetwork.CZB
 {
     public class HeroSelectionPage : IUIElement
     {
-		private IUIManager _uiManager;
-		private ILoadObjectsManager _loadObjectsManager;
-		private ILocalizationManager _localizationManager;
+        private IUIManager _uiManager;
+        private ILoadObjectsManager _loadObjectsManager;
         private IDataManager _dataManager;
+        private ISoundManager _soundManager;
+        private IAppStateManager _appStateManager;
 
         private GameObject _selfPage;
 
-        private Button _buttonBack,
-                                _buttonContinue;
-        private Transform _heroesContainer;
+        private Button _backButton,
+                       _continueButton,
+                       _leftArrowButton,
+                       _rightArrowButton;
 
-        private Image _selectedHeroIcon,
-                        _selectedHeroSkillIcon;
+        private OverlordObject _currentOverlordObject;
 
-        //private Text _selectedHeroName;
-        private int _currentHeroId;
+        private Transform _overlordsContainer;
+
+        private int _leftHeroIndex;
 
         public void Init()
         {
-			_uiManager = GameClient.Get<IUIManager>();
-			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-			_localizationManager = GameClient.Get<ILocalizationManager>();
-			_dataManager = GameClient.Get<IDataManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
 
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"), _uiManager.Canvas.transform, false);
 
 
-			_buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
-			_buttonContinue = _selfPage.transform.Find("ContinueButton/Button").GetComponent<Button>();
+            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
+            _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
+            _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
-			_buttonBack.onClick.AddListener(BackButtonHandler);
-			_buttonContinue.onClick.AddListener(ContinueButtonHandler);
-             
-			_selectedHeroIcon = _selfPage.transform.Find("SelectedHero/Mask/Icon").GetComponent<Image>();
-            _selectedHeroSkillIcon = _selfPage.transform.Find("SelectedHero/SkillIcon").GetComponent<Image>();
-            //_selectedHeroName = _selfPage.transform.Find("SelectedHero/Name/Text").GetComponent<Text>();
+            _backButton.onClick.AddListener(BackButtonOnClickHandler);
+            _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
+            _leftArrowButton.onClick.AddListener(LeftArrowButtonOnClickHandler);
+            _rightArrowButton.onClick.AddListener(RightArrowButtonOnClickHandler);
 
-            _heroesContainer = _selfPage.transform.Find("HeroesContainer");
+            _overlordsContainer = _selfPage.transform.Find("Panel_OverlordContent/Group");
 
-            Hide();  
+            Hide();
         }
 
         public void Update()
@@ -64,115 +65,122 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
+            SelectOverlordObject(_leftHeroIndex);
             _selfPage.SetActive(true);
-            FillInfo();
         }
 
         public void Hide()
         {
-            for (int i = 0; i < _heroesContainer.childCount; i++)
-            {
-                MonoBehaviour.Destroy(_heroesContainer.GetChild(i).gameObject);
-            }
             _selfPage.SetActive(false);
+            _leftHeroIndex = 0;
+            ResetOverlordObject();
         }
 
         public void Dispose()
         {
-            
+
         }
 
-        private void FillInfo()
+        #region Buttons Handlers
+
+        private void BackButtonOnClickHandler()
         {
-             for (int i = 0; i < Constants.HEROES_AMOUNT; i++)
-			{
-                Transform heroObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/HeroItem")).transform;
-                heroObject.SetParent(_heroesContainer, false);
-				var icon = heroObject.Find("HeroIcon").GetComponent<Image>();
-
-                if (i < _dataManager.CachedHeroesData.Heroes.Count)
-                {
-					icon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + _dataManager.CachedHeroesData.Heroes[i].element);
-                    heroObject.Find("SelectedIcon").gameObject.SetActive(false);
-                    heroObject.Find("LockedIcon").gameObject.SetActive(false);
-                    heroObject.GetComponent<Button>().onClick.AddListener(() => { ChooseHeroHandler(heroObject); });
-                    heroObject.Find("Name").GetComponent<Text>().text = _dataManager.CachedHeroesData.Heroes[i].name;
-                }
-                else
-                {
-                    heroObject.Find("Name").gameObject.SetActive(false);
-                    heroObject.Find("LockedIcon").gameObject.SetActive(true);
-                    heroObject.Find("SelectedIcon").gameObject.SetActive(false);
-                    icon.gameObject.SetActive(false);
-                }
-			}
-            _currentHeroId = 0;
-                SetActive(  _currentHeroId, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
         }
 
-		#region Buttons Handlers
-
-		private void BackButtonHandler()
-		{
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-		}
-        public void ContinueButtonHandler()
+        private void ContinueButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            (_uiManager.GetPage<DeckEditingPage>() as DeckEditingPage).CurrentHeroId = _currentHeroId;
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_EDITING);
-           // OpenAlertDialog("You will have this chance soon ;) ");
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.heroId;
+
+            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }
 
-        private void ChooseHeroHandler(Transform deck)
+        private void LeftArrowButtonOnClickHandler()
         {
-            int id = GetHeroId(deck);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
-            if (id == _currentHeroId)
-                return;
-            
-			if (  _currentHeroId > -1)
-				SetActive(  _currentHeroId, false);
-			  _currentHeroId = id;
-            SetActive(id, true);
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _leftHeroIndex = Mathf.Clamp(_leftHeroIndex - 1, 0, _dataManager.CachedHeroesData.heroes.Count - 1);
+            SelectOverlordObject(_leftHeroIndex);
         }
-		
-        private int GetHeroId(Transform hero)
+
+        private void RightArrowButtonOnClickHandler()
         {
-            int id = -1;
-			for (int i = 0; i < _heroesContainer.childCount; i++)
-			{
-                if (_heroesContainer.GetChild(i) == hero)
-                {
-                    id = i;
-                    break;
-                }
-			}
-            return id;
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            _leftHeroIndex = Mathf.Clamp(_leftHeroIndex + 1, 0, _dataManager.CachedHeroesData.heroes.Count - 1);
+            SelectOverlordObject(_leftHeroIndex);
         }
-		#endregion
 
-		private void OpenAlertDialog(string msg)
-		{
-			_uiManager.DrawPopup<WarningPopup>(msg);
-		}
+        #endregion
 
-		public void SetActive(int id, bool active)
-		{
-            Transform activatedHero = _heroesContainer.GetChild(id);
-            Transform selectedIcon = activatedHero.Find("SelectedIcon");
-            selectedIcon.gameObject.SetActive(active);
 
-            if(active)
+        private void SelectOverlordObject(int index)
+        {
+            ResetOverlordObject();
+
+            _currentOverlordObject = new OverlordObject(_overlordsContainer, _dataManager.CachedHeroesData.heroes[index]);
+        }
+
+
+        private void ResetOverlordObject()
+        {
+            if (_currentOverlordObject != null)
             {
-                var element = _dataManager.CachedHeroesData.Heroes[id].element;
-                _selectedHeroIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/PanelSelection/panel_selectedhero_" + element);
-                _selectedHeroSkillIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + element);
-                //_selectedHeroName.text = _dataManager.CachedHeroesData.Heroes[id].name;
+                _currentOverlordObject.Dispose();
+                _currentOverlordObject = null;
             }
-		}
+        }
+
+        public class OverlordObject
+        {
+            private ILoadObjectsManager _loadObjectsManager;
+
+            private GameObject _selfObject;
+
+            private Image _overlordPicture;
+            private Image _elementIcon;
+
+            private TextMeshProUGUI _overlordNameText,
+                                    _overlordDescriptionText,
+                                    _overlordShortDescription;
+
+            public Hero SelfHero { get; private set; }
+
+            public OverlordObject(Transform parent, Hero hero)
+            {
+                SelfHero = hero;
+
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_OverlordSelectionOverlord"), parent, false);
+
+                _overlordPicture = _selfObject.transform.Find("Image_OverlordPicture").GetComponent<Image>();
+                _elementIcon = _selfObject.transform.Find("Panel_Type/Image_ElementType").GetComponent<Image>();
+
+                _overlordNameText = _selfObject.transform.Find("Text_OverlordName").GetComponent<TextMeshProUGUI>();
+                _overlordDescriptionText = _selfObject.transform.Find("Text_LongDescription").GetComponent<TextMeshProUGUI>();
+                _overlordShortDescription = _selfObject.transform.Find("Text_ShortDescription").GetComponent<TextMeshProUGUI>();
+
+                _overlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" + SelfHero.element.ToLower() + "_hero");
+                _elementIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
+
+                string[] split = SelfHero.name.Split(',');
+
+                _overlordNameText.text = split[0];
+
+                if (split.Length > 1)
+                    _overlordShortDescription.text = split[1].Substring(1);
+
+                //_overlordDescriptionText.text = SelfHero.name;
+            }
+
+            public void Dispose()
+            {
+                MonoBehaviour.Destroy(_selfObject);
+            }
+        }
     }
-}
-                     
+}     

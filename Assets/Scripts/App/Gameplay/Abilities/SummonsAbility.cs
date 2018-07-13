@@ -13,8 +13,7 @@ namespace LoomNetwork.CZB
     {
         public Enumerators.StatType statType;
         public int value = 1;
-        private GameObject _boardCreaturePrefab,
-                        _fightTargetingArrowPrefab;
+        private GameObject _boardCreaturePrefab;
 
 
         public SummonsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
@@ -29,7 +28,6 @@ namespace LoomNetwork.CZB
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
             _boardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature");
-            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/FightTargetingArrow");
         }
 
         public override void Dispose()
