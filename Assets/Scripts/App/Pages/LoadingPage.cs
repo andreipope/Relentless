@@ -6,6 +6,7 @@ using TMPro;
 using GrandDevs.CZB.Common;
 using GrandDevs.CZB.Gameplay;
 using Loom.Unity3d.Samples;
+using Loom.Unity3d.Zb;
 
 namespace GrandDevs.CZB
 {
@@ -171,8 +172,8 @@ namespace GrandDevs.CZB
 		        return;
 	        }*/
 	        
-	        var accountTx = new CreateAccountRequest {
-		        Username = usernameText
+	        var accountTx = new UpsertAccountRequest {
+		        UserId = usernameText
 	        };
 	        
 	        LoomManager.Instance.SignUp(accountTx, result =>
@@ -222,9 +223,9 @@ namespace GrandDevs.CZB
                 return;
             }
 	        
-	        var mapEntry = new MapEntry();
+	        /*var mapEntry = new MapEntry();
 	        mapEntry.Key = "Crypto";
-	        /*mapEntry.Value = "Currency";
+	        mapEntry.Value = "Currency";
 	        LoomManager.Instance.SetMessageWithResult(mapEntry, result =>
 	        {
 		        if (result != null)
@@ -248,13 +249,13 @@ namespace GrandDevs.CZB
 		        }
 	        });*/
 	        
-	        LoomManager.Instance.GetMessage(mapEntry, result =>
+	        /*LoomManager.Instance.GetMessage(mapEntry, result =>
 	        {
 		        if(result != null)
 			       Debug.Log("========= Result = " + result.Value);
 		        else
 			       Debug.Log("======= Key Not found ==== ");
-	        });
+	        });*/
 	        
 
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);

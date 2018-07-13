@@ -10,7 +10,7 @@ namespace GrandDevs.CZB.Data
 
         public DecksData()
         {
-
+           decks = new List<Deck>();
         }
     }
 

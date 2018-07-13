@@ -1,14 +1,15 @@
 ﻿using GrandDevs.CZB.Common;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using UnityEngine;
 using GrandDevs.Internal;
 using FullSerializer;
 using GrandDevs.CZB.Data;
 using CCGKit;
+using Loom.Unity3d.Zb;
 
 
 namespace GrandDevs.CZB
@@ -80,29 +81,53 @@ namespace GrandDevs.CZB
             CheckVersion();
             CheckFirstLaunch();
             FillCacheDataPathes();
-
+           
             GameNetworkManager.Instance.Initialize();
+        }
+        
+        public void LoadDeckData(Action fillData)
+        {
+            var deckRequest = new GetDeckRequest {
+                UserId = "g"
+                //UserId = LoomManager.Instance.UserId
+            };
+            
+            LoomManager.Instance.GetDecks(deckRequest, userDecks =>
+            {
+                Debug.Log(userDecks.ToString());
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(userDecks.ToString());
+                
+                fillData?.Invoke();
+            });
+            
+    
         }
 
         public void StartLoadCache()
         {
+            Debug.Log("=== Start loading server ==== ");
+            
+            
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
+            
+            LoadDeckData(() =>
+            {
+                CachedCardsLibraryData.FillAllCards();
 
-            CachedCardsLibraryData.FillAllCards();
+                CachedOpponentDecksData.ParseData();
+                CachedActionsLibraryData.ParseData();
 
-            CachedOpponentDecksData.ParseData();
-            CachedActionsLibraryData.ParseData();
+                _localizationManager.ApplyLocalization();
 
-            _localizationManager.ApplyLocalization();
+                if (Constants.DEV_MODE)
+                    CachedUserLocalData.tutorial = false;
 
-            if (Constants.DEV_MODE)
-                CachedUserLocalData.tutorial = false;
+                GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
 
-            GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
-
-            OnLoadCacheCompletedEvent?.Invoke();
+                OnLoadCacheCompletedEvent?.Invoke();
+            });
         }
 
         public void Update()
@@ -112,6 +137,8 @@ namespace GrandDevs.CZB
 
         public void SaveAllCache()
         {
+            
+            Debug.Log("== Saving all cache calledd === ");
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 SaveCache((Enumerators.CacheDataType)i);
@@ -186,6 +213,7 @@ namespace GrandDevs.CZB
             }
         }
 
+
         public Sprite GetSpriteFromTexture(Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one / 2f);
@@ -219,12 +247,12 @@ namespace GrandDevs.CZB
                             CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                     }
                     break;
-                case Enumerators.CacheDataType.DECKS_DATA:
+                /*case Enumerators.CacheDataType.DECKS_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
                     }
-                    break;
+                    break;*/
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
@@ -254,7 +282,7 @@ namespace GrandDevs.CZB
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(Resources.Load("Data/card_library_data").ToString());
                 CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(Resources.Load("Data/heroes_data").ToString());
                 CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(Resources.Load("Data/collection_data").ToString());
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
+                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(Resources.Load("Data/opponent_decks_data").ToString());
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(Resources.Load("Data/credits_data").ToString());

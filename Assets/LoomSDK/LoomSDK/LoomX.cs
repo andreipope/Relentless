@@ -4,7 +4,7 @@ using Loom.Unity3d;
 using UnityEngine;
 using System.IO;
 using System.Threading.Tasks;
-using GrandDevs.Internal;
+using Google.Protobuf;
 
 public static class LoomX
 {
@@ -76,50 +76,86 @@ public static class LoomX
         var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
         _contract = new Contract(client, contractAddr, callerAddr);
     }
-
-    
-    public static async void SignUp(CreateAccountRequest accountTx, Action<BroadcastTxResult> result)
-    {
-        if (_contract == null)
-        {
-            await Init();
-        }
-        
-        await _contract.CallAsync<CreateAccountRequest>("CreateAccount", accountTx, result);
-    }
     
     
-    public static async void SetMessage(MapEntry entry)
+    public static async void SetMessage(string methodName, IMessage entry)
     {
         if (_contract == null)
         {
             await Init();
         }
 
-        await _contract.CallAsync("SetMsg", entry);
+        await _contract.CallAsync(methodName, entry);
     }
     
 
-    public static async void SetMessageEcho(MapEntry entry, Action<BroadcastTxResult> result)
+    public static async void SetMessageEcho<T>(string methodName, IMessage entry, Action<BroadcastTxResult> result) where T : IMessage, new()
     {
         if (_contract == null)
         {
             await Init();
         }
 
-        await _contract.CallAsync<MapEntry>("SetMsgEcho", entry, result);
+        await _contract.CallAsync<T>(methodName, entry, result);
+    }
+    
+    
+    public static async Task<T> GetMessage<T>(string methodName, IMessage entry) where T : IMessage, new()
+    {
+        if (_contract == null)
+        {
+            await Init();
+        }
+
+        var result = await _contract.StaticCallAsync<T>(methodName, entry);
+        return result;
     }
 
+
     
-    public static async void GetMessage(MapEntry entry, Action<MapEntry> result)
+    public static async void GetMessage<T>(string methodName, IMessage entry, Action<IMessage> result) where T : IMessage, new()
     {
         if (_contract == null)
         {
             await Init();
         }
 
-        var mapEntry = await _contract.StaticCallAsync<MapEntry>("GetMsg", entry);
+        var mapEntry = await _contract.StaticCallAsync<T>(methodName, entry);
         result?.Invoke(mapEntry);
+
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

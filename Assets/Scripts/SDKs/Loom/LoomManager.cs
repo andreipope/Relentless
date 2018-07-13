@@ -1,14 +1,16 @@
 ﻿
 using System;
-using GrandDevs.CZB.Data;
+using Google.Protobuf;
 using Loom.Unity3d;
-using UnityEngine.Events;
+using Loom.Unity3d.Zb;
 
 public class LoomManager
 {
     private static LoomManager _instance;
-
     private LoomManager(){}
+    
+    private const string Createaccount = "CreateAccount";
+    private const string GetDeckData = "GetDecks"; 
     
     public static LoomManager Instance
     {
@@ -21,28 +23,27 @@ public class LoomManager
         }
     }
 
-    public void SignUp(CreateAccountRequest accountTx, Action<BroadcastTxResult> result)
+    public void SignUp(UpsertAccountRequest accountTx, Action<BroadcastTxResult> result)
     {
-        LoomX.SignUp(accountTx, result);
+        SetMessage<UpsertAccountRequest>(Createaccount, accountTx, result);
     }
 
-    public void SignIn(UnityAction<bool> result)
+    public void GetDecks(GetDeckRequest deckRequest, Action<IMessage> result)
     {
-        
+        GetMessage<UserDecks>(GetDeckData, deckRequest, result);  
     }
-
-    public void SetMessageWithResult(MapEntry entry, Action<BroadcastTxResult> result)
+    
+    
+    
+    private void SetMessage<T>(string methodName, IMessage msg, Action<BroadcastTxResult> result) where T : IMessage, new()
     {
-        LoomX.SetMessageEcho(entry, result);
+        LoomX.SetMessageEcho<T>(methodName, msg, result);
     }
+    
 
-    public void GetMessage(MapEntry entry, Action<MapEntry> result)
+    private void GetMessage<T>(string methodName, IMessage entry, Action<IMessage> result) where T : IMessage, new()
     {
-        LoomX.GetMessage(entry, result);
-    }
-
-    public DecksData GetDeckData()
-    {
-        LoomX.SetMessageEcho();
+        LoomX.GetMessage<T>(methodName, entry, result);
     }
 }
+       
