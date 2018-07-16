@@ -7,6 +7,7 @@ using CCGKit;
 using TMPro;
 using FullSerializer;
 using System.IO;
+ using Loom.Unity3d.Zb;
 
 
 namespace GrandDevs.CZB
@@ -277,6 +278,7 @@ namespace GrandDevs.CZB
 
         private void DeleteConfirmationHandler()
         {
+            var deckName = _dataManager.CachedDecksData.decks[_deckToDelete].name;
 			_dataManager.CachedDecksData.decks.RemoveAt(_deckToDelete);
 			Transform deckObj = _decksContainer.GetChild(_deckToDelete);
 			deckObj.SetParent(null);
@@ -288,6 +290,41 @@ namespace GrandDevs.CZB
 			}
 
             AddCreationDeckButton();
+            
+            Debug.Log(" == Deck to Delete = " + _deckToDelete + " , " + deckName);
+            var request = new DeleteDeckRequest {
+                UserId = LoomManager.UserId,
+                DeckId = deckName
+            };
+            
+            LoomManager.Instance.DeleteDeck(request, result =>
+            {
+                if (result != null)
+                {
+                    if (result.CheckTx.Code != 0)
+                    {
+                        if (!string.IsNullOrEmpty(result.CheckTx.Error))
+                        {
+                            Debug.Log(result.CheckTx.Error);
+                            OpenAlertDialog(result.CheckTx.Error);
+                        }
+                    }
+                    else if (result.DeliverTx.Code != 0)
+                    {
+                        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
+                        {
+                            Debug.Log(result.DeliverTx.Error);
+                            OpenAlertDialog(result.DeliverTx.Error);
+                        }
+                    }
+                    else
+                        OpenAlertDialog("Deck deleted Successfully.");
+                } 
+                else
+                {
+                    OpenAlertDialog("Connection Not Found.");
+                }
+            });
         }
 		
         private int GetDeckId(Transform deck)

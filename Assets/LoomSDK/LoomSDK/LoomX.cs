@@ -99,6 +99,16 @@ public static class LoomX
         await _contract.CallAsync<T>(methodName, entry, result);
     }
     
+    public static async Task<T> SetMessageEchoCall<T>(string methodName, IMessage entry, Action<BroadcastTxResult> result) where T : IMessage, new()
+    {
+        if (_contract == null)
+        {
+            await Init();
+        }
+
+        return await _contract.CallAsync<T>(methodName, entry, result);
+    }
+    
     
     public static async Task<T> GetMessage<T>(string methodName, IMessage entry) where T : IMessage, new()
     {

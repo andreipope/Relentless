@@ -88,8 +88,7 @@ namespace GrandDevs.CZB
         public void LoadDeckData(Action fillData)
         {
             var deckRequest = new GetDeckRequest {
-                UserId = "g"
-                //UserId = LoomManager.Instance.UserId
+                UserId = LoomManager.UserId
             };
             
             LoomManager.Instance.GetDecks(deckRequest, userDecks =>

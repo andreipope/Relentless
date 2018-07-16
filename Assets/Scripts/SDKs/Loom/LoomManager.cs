@@ -9,9 +9,12 @@ public class LoomManager
     private static LoomManager _instance;
     private LoomManager(){}
     
-    private const string Createaccount = "CreateAccount";
-    private const string GetDeckData = "GetDecks"; 
-    
+    private const string CreateAccountMethod = "CreateAccount";
+    private const string GetDeckDataMethod = "GetDecks";
+    private const string DeleteDeckMethod = "DeleteDeck";
+
+    public const string UserId = "f";
+
     public static LoomManager Instance
     {
         get
@@ -25,14 +28,18 @@ public class LoomManager
 
     public void SignUp(UpsertAccountRequest accountTx, Action<BroadcastTxResult> result)
     {
-        SetMessage<UpsertAccountRequest>(Createaccount, accountTx, result);
+        SetMessage<UpsertAccountRequest>(CreateAccountMethod, accountTx, result);
     }
 
-    public void GetDecks(GetDeckRequest deckRequest, Action<IMessage> result)
+    public void GetDecks(GetDeckRequest request, Action<IMessage> result)
     {
-        GetMessage<UserDecks>(GetDeckData, deckRequest, result);  
+        GetMessage<UserDecks>(GetDeckDataMethod, request, result);  
     }
-    
+
+    public void DeleteDeck(DeleteDeckRequest request, Action<BroadcastTxResult> result)
+    {
+        SetMessage<DeleteDeckRequest>(DeleteDeckMethod, request, result);
+    }
     
     
     private void SetMessage<T>(string methodName, IMessage msg, Action<BroadcastTxResult> result) where T : IMessage, new()
