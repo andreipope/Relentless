@@ -1,3 +1,0 @@
-MyText = aaaaaES
-placeres = ccdd // te veo
-puig = bbcc // uiuiu

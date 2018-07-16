@@ -1,4 +1,9 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +11,7 @@ using UnityEngine;
 using System.Linq;
 
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LocalizationManager : IService, ILocalizationManager
     {
@@ -68,7 +73,7 @@ namespace GrandDevs.CZB
 
             string languageCode = language.ToString().ToLower();
 
-            I2.Loc.LocalizationManager.SetLanguageAndCode(I2.Loc.LocalizationManager.GetLanguageFromCode(languageCode), languageCode);
+            //I2.Loc.LocalizationManager.SetLanguageAndCode(I2.Loc.LocalizationManager.GetLanguageFromCode(languageCode), languageCode);
 
             _currentLanguage = language;
             _dataManager.CachedUserLocalData.appLanguage = language;
@@ -79,7 +84,7 @@ namespace GrandDevs.CZB
 
         public string GetUITranslation(string key)
         {
-            return I2.Loc.LocalizationManager.GetTermTranslation(key);
+            return "";// I2.Loc.LocalizationManager.GetTermTranslation(key);
         }
 
 

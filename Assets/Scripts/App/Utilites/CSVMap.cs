@@ -1,11 +1,16 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.IO;
 
-namespace GrandDevs.CZB.Helpers
+namespace LoomNetwork.CZB.Helpers
 {
     public class CSVMap
     {

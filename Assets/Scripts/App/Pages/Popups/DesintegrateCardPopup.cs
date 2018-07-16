@@ -1,5 +1,10 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +13,7 @@ using TMPro;
 using DG.Tweening;
 
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DesintigrateCardPopup : IUIPopup
     {
@@ -111,10 +116,10 @@ namespace GrandDevs.CZB
             _cardData.amount--;
             if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            GameObject.Find("CardPreview").GetComponent<CardView>().UpdateAmount(_cardData.amount);
+            GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.amount);
 
             var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
-            GameClient.Get<IPlayerManager>().LocalUser.gooValue += 5 * ((int)libraryCard.cardRarity + 1);
+            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.cardRank + 1));
 
 			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();
 		}

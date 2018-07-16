@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4082533605109602}
   - component: {fileID: 198183311224309274}
   - component: {fileID: 199560189597329954}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4625030368225598}
   - component: {fileID: 198996093648141182}
   - component: {fileID: 199131944416490458}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4667886393798350}
   - component: {fileID: 198914739870029274}
   - component: {fileID: 199825494847956808}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4752875496917738}
   - component: {fileID: 198059035930276154}
   - component: {fileID: 199064397141847166}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: SmokeClouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4848320212028456}
   - component: {fileID: 198043355054309114}
   - component: {fileID: 199890996291970910}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Nova
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 198888305646366736}
   - component: {fileID: 199152893271251730}
   - component: {fileID: 108518031088468402}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: ToxicMassiveAllVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 4069489421588834}
   - component: {fileID: 198541019922977752}
   - component: {fileID: 199631627579234362}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: FireBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

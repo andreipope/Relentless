@@ -1,14 +1,19 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CardInfoPopup : IUIPopup
     {
@@ -45,7 +50,7 @@ namespace GrandDevs.CZB
 
 			_desintegrateButton.onClickEvent.AddListener(DesintegrateButtonHandler);
 			_backButton.onClickEvent.AddListener(Hide);
-			_selfPage.GetComponent<Button>().onClick.AddListener(Hide);
+			_selfPage.GetComponent<Button>().onClick.AddListener(ClosePopup);
 
 
 			_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
@@ -70,6 +75,7 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
             _selfPage.SetActive(true);
         }
 
@@ -78,7 +84,7 @@ namespace GrandDevs.CZB
             _card = data as Card;
             _description.text = _card.flavorText;
 
-            _amountAward.text = (5 * ((int)_card.cardRarity + 1)).ToString();
+            _amountAward.text = (5 * ((int)_card.cardRank + 1)).ToString();
 
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.id);
             UpdateCardAmount();
@@ -88,6 +94,12 @@ namespace GrandDevs.CZB
         public void Update()
         {
 
+        }
+
+        private void ClosePopup()
+        {
+            Hide();
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
 		public void UpdateCardAmount()

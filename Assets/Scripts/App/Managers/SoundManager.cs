@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using System;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using System.Linq;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class SoundManager : ISoundManager, IService
     {

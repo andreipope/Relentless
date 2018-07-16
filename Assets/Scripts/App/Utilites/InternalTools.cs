@@ -1,12 +1,18 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Reflection;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace GrandDevs.CZB.Helpers
+namespace LoomNetwork.CZB.Helpers
 {
     public class InternalTools
     {
@@ -55,17 +61,24 @@ namespace GrandDevs.CZB.Helpers
             return data.Replace(LINE_BREAK, "\n");
         }
 
-        public static void SetLayerRecursively(GameObject parent, int layer)
+        public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null)
         {
             parent.layer = layer;
 
             for (int i = 0; i < parent.transform.childCount; i++)
             {
-                parent.transform.GetChild(i).gameObject.layer = layer;
+                if (ignoreNames == null || !ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name))
+                    parent.transform.GetChild(i).gameObject.layer = layer;
 
                 if (parent.transform.GetChild(i).childCount > 0)
-                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer);
+                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames);
             }
+        }
+
+        public static void ShakeList<T>(ref List<T> list)
+        {
+            var rnd = new System.Random();
+            list = list.OrderBy(item => rnd.Next()).ToList();
         }
     }
 }

@@ -1,4 +1,9 @@
-﻿﻿namespace GrandDevs.CZB.Common
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {
@@ -162,12 +167,12 @@
             HEAVY
         }
 
-        public enum CardRarity
+        public enum CardRank
         {
-            COMMON,
-            RARE,
-            LEGENDARY,
-            EPIC
+            MINION,
+            OFFICER,
+            COMMANDER,
+            GENERAL
         }
 
         public enum GameEndCondition
@@ -188,6 +193,7 @@
 			STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
+            ADD_GOO_CARRIER,
             DOT,
             SUMMON,
             SPELL_ATTACK,
@@ -196,6 +202,8 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
+            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ATTACK_NUMBER_OF_TIMES_PER_TURN
         }
 
         public enum AbilityActivityType
@@ -288,11 +296,33 @@
             TUTORIAL
         }
 
-        public enum ActionType
+        public enum AIActionType
         {
             TEST,
             TEST2
         }
+
+        public enum ActionType
+        {
+            ATTACK_PLAYER_BY_CREATURE,
+            ATTACK_CREATURE_BY_CREATURE,
+            ATTACK_CREATURE_BY_SKILL,
+            ATTACK_PLAYER_BY_SKILL,
+            HEAL_PLAYER_BY_SKILL,
+            HEAL_CREATURE_BY_SKILL,
+            ATTACK_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_ABILITY,
+            HEAL_PLAYER_BY_ABILITY,
+            HEAL_CREATURE_BY_ABILITY,
+            PLAY_UNIT_CARD,
+            PLAY_SPELL_CARD,
+            STUN_CREATURE_BY_ABILITY,
+            STUN_CREATURE_BY_SKILL,
+            SUMMON_UNIT_CARD,
+            RETURN_TO_HAND_CARD_ABILITY,
+            RETURN_TO_HAND_CARD_SKILL
+        }
+
 
         public enum EffectActivateType
         {
@@ -318,7 +348,7 @@
 			KISS,
 		}
 
-        public enum CardZoneType
+        public enum CardZoneOnBoardType
         {
             DECK,
             GRAVEYARD
@@ -327,6 +357,54 @@
         public enum CardPackType
         {
             DEFAULT
+        }
+
+        public enum EndGameType
+        {
+            WIN,
+            LOSE,
+            CANCEL
+        }
+
+        public enum MatchType
+        {
+            LOCAL,
+
+            PVP,
+            PVE
+        }
+
+        public enum SkillType
+        {
+            PRIMARY,
+            SECONDARY
+        }
+
+        public enum BuffType
+        {
+            SHIELD,
+            DEFENCE,
+            HEAVY,
+            WEAPON,
+            RUSH,
+            ATTACK,
+            FREEZE,
+            DAMAGE,
+            HEAL_ALLY
+        }
+
+        public enum BuffActivityType
+        {
+            ONE_TIME,
+            PERMANENT,
+            TILL_FIRST_DEFENSE_FROM_ATTACK,
+            TURN_BASED,
+        }
+
+        public enum AttackInfoType
+        {
+            ANY,
+            ONLY_DIFFERENT
         }
     }
 }

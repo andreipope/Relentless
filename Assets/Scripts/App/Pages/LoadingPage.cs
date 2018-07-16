@@ -1,14 +1,15 @@
-using System.Text;
-using Google.Protobuf;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using Loom.Unity3d.Samples;
 using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Common;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LoadingPage : IUIElement
     {
@@ -20,21 +21,19 @@ namespace GrandDevs.CZB
 
         private Transform _progressBar;
 
-        private Text _loadingText,
-                     _pressAnyText;
+        private Text _pressAnyText;
+        private TextMeshProUGUI _loadingText;
         private Image _loaderBar;
 
-        private float _fullFillWidth,
-                        _percentage = 0;
+        private float _percentage = 0;
 
 		private bool _isLoaded;
-		private Vector2 _fillSize;
         private Color _pressAnyTextColor;
 
         private TMP_InputField _usernameInputField,
                                 _passwordInputField;
 
-        private MenuButtonNoGlow _signUpButton,
+        private Button _signUpButton,
                             _loginButton;
 
         private int a = 0;
@@ -53,7 +52,7 @@ namespace GrandDevs.CZB
             _progressBar = _selfPage.transform.Find("ProgresBar");
 
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
-            _loadingText = _progressBar.Find("Text").GetComponent<Text>();
+            _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<Text>();
 
@@ -62,21 +61,17 @@ namespace GrandDevs.CZB
             _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
             _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
 
-            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
-            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
+            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<Button>();
+            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<Button>();
 
-            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
-            _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
+            _signUpButton.onClick.AddListener(OnSignupButtonPressed);
+            _loginButton.onClick.AddListener(OnLoginButtonPressed);
 
-            _fillSize = _loaderBar.rectTransform.sizeDelta;
-			_fullFillWidth = _fillSize.x;
-            _fillSize.x = 0;
-
-            _loaderBar.rectTransform.sizeDelta = _fillSize;
+            _loaderBar.fillAmount = 0.03f;
 
             _pressAnyTextColor = _pressAnyText.color;
 
-			_loadingText.text = "Loading...";
+			_loadingText.text = "LOADING...";
 
             _pressAnyText.gameObject.SetActive(false);
             _loginForm.SetActive(false);
@@ -92,8 +87,7 @@ namespace GrandDevs.CZB
                 if (!_isLoaded)
                 {
                     _percentage += 1f;
-                    _fillSize.x = _fullFillWidth * _percentage / 100f;
-                    _loaderBar.rectTransform.sizeDelta = _fillSize;
+                    _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                     if (_percentage >= 100)
                     {
                         _isLoaded = true;

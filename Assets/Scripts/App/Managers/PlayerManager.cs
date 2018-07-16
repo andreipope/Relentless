@@ -1,29 +1,23 @@
-﻿using Newtonsoft.Json;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using Newtonsoft.Json;
 using System;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using System.Collections.Generic;
-using GrandDevs.CZB.Data;
-using CCGKit;
+using LoomNetwork.CZB.Data;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class PlayerManager : IService, IPlayerManager
     {
-        public event Action<int> OnPlayerGraveyardUpdatedEvent;
-        public event Action<int> OnOpponentGraveyardUpdatedEvent;
-
-        public Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
-        public Action OnLocalPlayerSetUp { get; set; }
-
-        private IDataManager _dataManager;
-
         public User LocalUser { get; set; }
 
-        public List<BoardCreature> PlayerGraveyardCards { get; set; }
-        public List<BoardCreature> OpponentGraveyardCards { get; set; }
-        public PlayerInfo playerInfo { get; set; }
-        public PlayerInfo opponentInfo { get; set; }
+        public List<BoardUnit> PlayerGraveyardCards { get; set; }
+        public List<BoardUnit> OpponentGraveyardCards { get; set; }
 
         public void Dispose()
         {
@@ -31,8 +25,6 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
-            _dataManager = GameClient.Get<IDataManager>();
-
             LocalUser = new User();
         }
 
@@ -40,13 +32,14 @@ namespace GrandDevs.CZB
         {
         }
 
-        public void UpdatePlayerGraveyard(int index)
+        public void ChangeGoo(int value)
         {
-            OnPlayerGraveyardUpdatedEvent?.Invoke(index);
+            LocalUser.gooValue += value;
         }
-        public void UpdateOpponentGraveyard(int index)
+
+        public int GetGoo()
         {
-            OnOpponentGraveyardUpdatedEvent?.Invoke(index);
+            return LocalUser.gooValue;
         }
     }
 }

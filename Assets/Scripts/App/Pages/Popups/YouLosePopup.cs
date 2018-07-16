@@ -1,17 +1,21 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
+using LoomNetwork.CZB.Data;
 using System.Linq;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class YouLosePopup : IUIPopup
     {
@@ -71,8 +75,8 @@ namespace GrandDevs.CZB
             GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);
 
-            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId];
+            int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[GameClient.Get<IGameplayManager>().PlayerDeckId].heroId;
+            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
             _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
@@ -94,20 +98,10 @@ namespace GrandDevs.CZB
         private void OnClickOkButtonEventHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (NetworkingUtils.GetLocalPlayer().isServer)
-            {
-                NetworkManager.singleton.StopHost();
-            }
-            else
-            {
-                NetworkManager.singleton.StopClient();
-            }
 
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-                GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            Hide();      
+            _uiManager.HidePopup<YouLosePopup>();
         }
     }
 }

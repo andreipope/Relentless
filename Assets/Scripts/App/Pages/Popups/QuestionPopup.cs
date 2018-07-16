@@ -1,15 +1,20 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class QuestionPopup : IUIPopup
     {
-        public event Action ConfirmationEvent;
+        public event Action<bool> ConfirmationEvent;
 
 		public GameObject Self
         {
@@ -42,7 +47,7 @@ namespace GrandDevs.CZB
 
 			//_closeButton.onClickEvent.AddListener(Hide);
             _buttonYes.onClickEvent.AddListener(ConfirmationButtonHandler);
-            _buttonNo.onClickEvent.AddListener(Hide);
+            _buttonNo.onClickEvent.AddListener(NoButtonOnClickHandler);
 
 
 			_text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
@@ -84,9 +89,16 @@ namespace GrandDevs.CZB
         private void ConfirmationButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (ConfirmationEvent != null)
-				ConfirmationEvent();
+
+            ConfirmationEvent?.Invoke(true);
+
             Hide();
+        }
+
+        private void NoButtonOnClickHandler()
+        {
+            ConfirmationEvent?.Invoke(false);
+            _uiManager.HidePopup<QuestionPopup>();
         }
 
     }

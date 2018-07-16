@@ -1,17 +1,22 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
-using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
-using DG.Tweening;
-using GrandDevs.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+using UnityEngine.Networking;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using DG.Tweening;
+using LoomNetwork.CZB.Gameplay;
+
+namespace LoomNetwork.CZB
 {
     public class YourTurnPopup : IUIPopup
     {
@@ -91,19 +96,11 @@ namespace GrandDevs.CZB
         private void OnClickOkButtonEventHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (NetworkingUtils.GetLocalPlayer().isServer)
-            {
-                NetworkManager.singleton.StopHost();
-            }
-            else
-            {
-                NetworkManager.singleton.StopClient();
-            }
 
             if (GameClient.Get<ITutorialManager>().IsTutorial)
                 GameClient.Get<ITutorialManager>().StopTutorial();
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(LoomNetwork.CZB.Common.Enumerators.AppState.DECK_SELECTION);
             Hide();
         }
 

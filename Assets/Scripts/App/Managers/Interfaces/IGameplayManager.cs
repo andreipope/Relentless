@@ -1,20 +1,52 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface IGameplayManager
     {
-        int PlayerHeroId { get; set; }
-        int OpponentHeroId { get; set; }
+        event Action OnGameStartedEvent;
+        event Action<Enumerators.EndGameType> OnGameEndedEvent;
+        event Action OnGameInitializedEvent;
+        event Action OnTurnStartedEvent;
+        event Action OnTurnEndedEvent;
+
+
+        int PlayerDeckId { get; set; }
+        int OpponentDeckId { get; set; }
+
+        Player CurrentTurnPlayer { get; set; }
+        Player CurrentPlayer { get; set; }
+        Player OpponentPlayer { get; set; }
+
+        bool GameStarted { get; set; }
+        bool GameEnded { get; set; }
+        bool IsTutorial { get; set; }
+
+        int TutorialStep { get; set; }
 
         T GetController<T>() where T : IController;
 
         string GetCardSet(Data.Card card);
 
         void RearrangeHands();
+
+
+        bool IsLocalPlayerTurn();
+
+
+        void StartGameplay();
+        void StopGameplay();
+
+        void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
     }    
 }

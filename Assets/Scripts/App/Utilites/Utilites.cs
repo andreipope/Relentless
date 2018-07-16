@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,9 +18,8 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
-using CCGKit;
 
-namespace GrandDevs.Internal
+namespace LoomNetwork.Internal
 {
     public class Utilites
     {
@@ -409,6 +413,11 @@ namespace GrandDevs.Internal
         public static string SaveToString(object obj)
         {
             return JsonUtility.ToJson(obj);
+        }
+
+        public static Vector3 CastVFXPosition(Vector3 position)
+        {
+            return new Vector3(position.x, position.z, position.y);
         }
     }
 }

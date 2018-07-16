@@ -1,11 +1,16 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB.Gameplay
+namespace LoomNetwork.CZB.Gameplay
 {
     public class CameraManager : IService, ICameraManager
     {
@@ -80,8 +85,15 @@ namespace GrandDevs.CZB.Gameplay
 			_timerManager.AddTimer(Fade, new object[] { true, null, level }, _fadeDelay, true);
 		}
 
-        public void FadeOut(Action callback = null, int level = 0)
+        public void FadeOut(Action callback = null, int level = 0, bool immediately = false)
         {
+            if(immediately)
+            {
+                _fadeImageGroups[level].alpha = 0;
+                _fadeImageGroups[level].gameObject.SetActive(false);
+                return;
+            }
+
 			if (_timerManager == null)
 				return;
             PrepareFading(false, level);

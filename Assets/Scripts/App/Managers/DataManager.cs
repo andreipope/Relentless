@@ -1,18 +1,19 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using GrandDevs.Internal;
-using FullSerializer;
-using GrandDevs.CZB.Data;
-using CCGKit;
 using Loom.Unity3d.Zb;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Data;
 
-
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class DataManager : IService, IDataManager
     {
@@ -38,10 +39,7 @@ namespace GrandDevs.CZB
         private int _currentDeckIndex;
 		private int _currentAIDeckIndex;
 
-		private fsSerializer serializer = new fsSerializer();
-
         private DirectoryInfo dir;
-
 
         public int CurrentDeckInd
 		{
@@ -81,8 +79,6 @@ namespace GrandDevs.CZB
             CheckVersion();
             CheckFirstLaunch();
             FillCacheDataPathes();
-           
-            GameNetworkManager.Instance.Initialize();
         }
         
         public void LoadDeckData(Action fillData)
@@ -123,7 +119,8 @@ namespace GrandDevs.CZB
                 if (Constants.DEV_MODE)
                     CachedUserLocalData.tutorial = false;
 
-                GameManager.Instance.tutorial = CachedUserLocalData.tutorial;
+                GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
+
 
                 OnLoadCacheCompletedEvent?.Invoke();
             });
