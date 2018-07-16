@@ -357,7 +357,7 @@ namespace LoomNetwork.CZB
 
         private bool UnitCanBeUsable(BoardUnit unit)
         {
-            return (unit != null && unit.HP > 0 && (_unitNumberOfTunrsOnBoard[unit.Card.instanceId] >= 1 || unit.IsFeralUnit()) && unit.IsPlayable);
+            return unit.UnitCanBeUsable();
         }
 
         private void PlayCardOnBoard(WorkingCard card)
@@ -437,7 +437,7 @@ namespace LoomNetwork.CZB
                         else if (target is BoardUnit)
                             targetObject = (target as BoardUnit).gameObject;
 
-                        CreateOpponentTarget(createTargetArrow, boardCreature.gameObject, targetObject,
+                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, targetObject,
                                  () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target); });
                     }
                     else
@@ -478,7 +478,7 @@ namespace LoomNetwork.CZB
                     else if (target is BoardUnit)
                         targetObject = (target as BoardUnit).gameObject;
 
-                    CreateOpponentTarget(createTargetArrow, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
+                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
                         () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
                 }
 
@@ -877,7 +877,7 @@ namespace LoomNetwork.CZB
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {
-                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, (target as Player).AvatarObject, () =>
+                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player).AvatarObject, () =>
                 {
                     skill.fightTargetingArrow.selectedPlayer = target as Player;
                     skill.EndDoSkill();
@@ -889,7 +889,7 @@ namespace LoomNetwork.CZB
                 {
                     var unit = target as BoardUnit;
 
-                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, unit.gameObject, () =>
+                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit.gameObject, () =>
                     {
                         skill.fightTargetingArrow.selectedCard = unit;
                         skill.EndDoSkill();
@@ -900,7 +900,7 @@ namespace LoomNetwork.CZB
 
 
         // rewrite
-        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
+        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, GameObject targetObject, System.Action action)
         {
             if (!createTargetArrow)
             {
@@ -909,7 +909,7 @@ namespace LoomNetwork.CZB
             }
 
             var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
-            targetingArrow.Begin(startObj.transform.position);
+            targetingArrow.Begin(startObj.transform.position, isReverseArrow);
 
             targetingArrow.SetTarget(targetObject);
 

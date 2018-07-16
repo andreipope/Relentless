@@ -9,6 +9,7 @@ using System;
 using LoomNetwork.CZB.Common;
 using DG.Tweening;
 using LoomNetwork.CZB.Data;
+using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
@@ -44,6 +45,9 @@ namespace LoomNetwork.CZB
         protected AnimationEventTriggering animationEventTriggering;
         protected OnBehaviourHandler behaviourHandler;
 
+        protected List<ElementSlotOfCards> _elementSlotsOfCards;
+        protected Transform _parentOfEditingGroupUI;
+
         public bool cardShouldBeDistributed = false;
 
         public bool isNewCard = false;
@@ -75,6 +79,8 @@ namespace LoomNetwork.CZB
 
             _selfObject = selfObject;
 
+            _elementSlotsOfCards = new List<ElementSlotOfCards>();
+
             cardAnimator = gameObject.GetComponent<Animator>();
             cardAnimator.enabled = false;
 
@@ -90,6 +96,8 @@ namespace LoomNetwork.CZB
             removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
             distibuteCardObject = transform.Find("DistributeCardObject").gameObject;
+
+            _parentOfEditingGroupUI = transform.Find("DeckEditingGroupUI");
 
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
@@ -281,6 +289,25 @@ namespace LoomNetwork.CZB
             });  
         }
 
+        // editing deck page
+        public void SetAmountOfCardsInEditingPage(DeckEditingPage page, bool init, uint maxCopies, int amount)
+        {
+            if (init)
+            {
+                foreach (var item in _elementSlotsOfCards)
+                    MonoBehaviour.Destroy(item.selfObject);
+                _elementSlotsOfCards.Clear();
+
+                for (int i = 0; i < maxCopies; i++)
+                    _elementSlotsOfCards.Add(new ElementSlotOfCards(_parentOfEditingGroupUI, false));
+
+                // add groupping
+            }
+
+            for (int i = 0; i < maxCopies; i++)
+                _elementSlotsOfCards[i].SetStatus(i < amount);
+        }
+
         private void OnMouseUpEventHandler(GameObject obj)
         {
             if (!_cardsController.CardDistribution)
@@ -295,6 +322,39 @@ namespace LoomNetwork.CZB
             cardShouldBeDistributed = !cardShouldBeDistributed;
 
             distibuteCardObject.SetActive(cardShouldBeDistributed);
+        }
+
+
+        public class ElementSlotOfCards
+        {
+            public GameObject selfObject;
+
+            public GameObject usedObject,
+                              freeObject;
+
+            public ElementSlotOfCards(Transform parent, bool used)
+            {
+                selfObject = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
+
+                freeObject = selfObject.transform.Find("Object_Free").gameObject;
+                usedObject = selfObject.transform.Find("Object_Used").gameObject;
+
+                SetStatus(used);
+            }
+
+            public void SetStatus(bool used)
+            {
+                if (used)
+                {
+                    freeObject.SetActive(false);
+                    usedObject.SetActive(true);
+                }
+                else
+                {
+                    freeObject.SetActive(true);
+                    usedObject.SetActive(false);
+                }
+            }
         }
     }
 }

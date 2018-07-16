@@ -205,8 +205,10 @@ namespace LoomNetwork.CZB
                 float soundLength = 0f;
 
                 if (cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-                else soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                    soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                }
 
                 _timerManager.AddTimer((t) =>
                 {

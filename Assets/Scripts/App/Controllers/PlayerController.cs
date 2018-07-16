@@ -89,9 +89,9 @@ namespace LoomNetwork.CZB
                            // card.cardId = 51; 
                         }
 
-                         playerDeck.Add(card.cardId); 
+                        playerDeck.Add(card.cardId); 
 
-                        //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stapler"));
+                       // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Fire-Maw"));
                     }
                 }
             }

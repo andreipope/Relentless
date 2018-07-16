@@ -49,7 +49,10 @@ namespace LoomNetwork.CZB
                 if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()))
                 {
                     selectedCard = unit;
+                    if (selectedPlayer != null)
+                        selectedPlayer.SetGlowStatus(false);
                     selectedPlayer = null;
+                    selectedCard.SetSelectedUnit(true);
                     CreateTarget(unit.transform.position);
                 }
             }
@@ -59,7 +62,8 @@ namespace LoomNetwork.CZB
         {
             if (selectedCard == creature)
             {
-                _targetObjectsGroup.SetActive(false);
+                selectedCard.SetSelectedUnit(false);
+                //  _targetObjectsGroup.SetActive(false);
                 selectedCard = null;
             }
         }
@@ -74,7 +78,7 @@ namespace LoomNetwork.CZB
             if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(player))
                 return;
 
-            if (owner != null && owner.HasBuffRush && !owner.hasFeral)
+            if (owner != null && !owner.hasFeral && owner.HasBuffRush)
                 return;
 
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
@@ -87,6 +91,10 @@ namespace LoomNetwork.CZB
                 if (!opponentHasProvoke)
                 {
                     selectedPlayer = player;
+
+                    selectedPlayer.SetGlowStatus(true);
+                    if (selectedCard != null)
+                        selectedCard.SetSelectedUnit(false);
                     selectedCard = null;
                     CreateTarget(player.AvatarObject.transform.position);
                 }
@@ -97,7 +105,12 @@ namespace LoomNetwork.CZB
         {
             if (selectedPlayer == player)
             {
-                _targetObjectsGroup.SetActive(false);
+                if (selectedCard != null)
+                    selectedCard.SetSelectedUnit(false);
+                selectedCard = null;
+
+                selectedPlayer.SetGlowStatus(false);
+                //_targetObjectsGroup.SetActive(false);
                 selectedPlayer = null;
             }
         }

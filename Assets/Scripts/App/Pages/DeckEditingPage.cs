@@ -497,6 +497,8 @@ namespace LoomNetwork.CZB
 
                     _currentDeck.AddCard(libraryCard.id);
 
+                    boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard.cardRank), card.amount);
+
                     _collectionData.GetCardData(card.cardId).amount -= card.amount;
                     UpdateNumCardsText();
                 }
@@ -576,10 +578,12 @@ namespace LoomNetwork.CZB
                 return;
             }
             var itemFound = false;
+            BoardCard foundItem = null;
             foreach (var item in _createdHordeCards)
             {
                 if (item.libraryCard.id == card.id)
                 {
+                    foundItem = item;
                     itemFound = true;
                     //item.AddCard();
                     break;
@@ -604,6 +608,10 @@ namespace LoomNetwork.CZB
                 _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
                 Debug.Log("_numHordePages " + _numHordePages);
                 CalculateVisibility();
+            }
+            else
+            {
+                foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card.cardRank), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
             }
 
             _currentDeck.AddCard(card.id);
