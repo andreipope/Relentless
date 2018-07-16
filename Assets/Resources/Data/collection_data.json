@@ -6,7 +6,7 @@
     },
     {
       "cardId": 1,
-      "amount": 2
+      "amount": 4
     },
     {
       "cardId": 2,
@@ -18,7 +18,7 @@
     },
     {
       "cardId": 4,
-      "amount": 1
+      "amount": 2
     },
 	{
       "cardId": 5,
@@ -26,39 +26,39 @@
     },
     {
       "cardId": 6,
-      "amount": 4
+      "amount": 1
     },
     {
       "cardId": 7,
-      "amount": 2
+      "amount": 1
     },
     {
       "cardId": 8,
-      "amount": 2
+      "amount": 4
     },
     {
       "cardId": 9,
-      "amount": 1
+      "amount": 2
     },
     {
       "cardId": 10,
-      "amount": 4
+      "amount": 2
     },
     {
       "cardId": 11,
-      "amount": 2
-    },
-    {
-      "cardId": 12,
-      "amount": 2
-    },
-    {
-      "cardId": 13,
       "amount": 1
     },
     {
-      "cardId": 14,
+      "cardId": 12,
       "amount": 4
+    },
+    {
+      "cardId": 13,
+      "amount": 2
+    },
+    {
+      "cardId": 14,
+      "amount": 2
     },
     {
       "cardId": 15,
@@ -66,11 +66,11 @@
     },
     {
       "cardId": 16,
-      "amount": 2
+      "amount": 1
     },
     {
       "cardId": 17,
-      "amount": 1
+      "amount": 4
     },
     {
       "cardId": 18,
@@ -78,7 +78,7 @@
     },
     {
       "cardId": 19,
-      "amount": 2
+      "amount": 4
     },
     {
       "cardId": 20,
@@ -98,7 +98,7 @@
     },
     {
       "cardId": 24,
-      "amount": 2
+      "amount": 4
     },
     {
       "cardId": 25,
@@ -106,31 +106,31 @@
     },
     {
       "cardId": 26,
-      "amount": 1
+      "amount": 2
     },
     {
       "cardId": 27,
-      "amount": 4
+      "amount": 2
     },
     {
       "cardId": 28,
-      "amount": 2
+      "amount": 1
     },
     {
       "cardId": 29,
-      "amount": 2
+      "amount": 1
     },
     {
       "cardId": 30,
-      "amount": 1
+      "amount": 4
     },
     {
       "cardId": 31,
-      "amount": 1
+      "amount": 2
     },
     {
       "cardId": 32,
-      "amount": 1
+      "amount": 2
     },
     {
       "cardId": 33,
@@ -138,15 +138,15 @@
     },
     {
       "cardId": 34,
-      "amount": 1
+      "amount": 4
     },
     {
       "cardId": 35,
-      "amount": 1
+      "amount": 4
     },
     {
       "cardId": 36,
-      "amount": 1
+      "amount": 4
     }
   ]
 }

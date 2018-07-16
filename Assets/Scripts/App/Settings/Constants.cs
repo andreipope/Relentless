@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
     
-        internal static int DEFAULT_PLAYER_HP = 30;
+        internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_MANA = 0;
         internal static int MAXIMUM_PLAYER_MANA = 10;
 
@@ -97,8 +97,8 @@ namespace LoomNetwork.CZB.Common
 
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
-        internal static float CARD_DISTRIBUTION_TIME = 10f;
+        internal static float CARD_DISTRIBUTION_TIME = 7f;
         
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;
     }
 }

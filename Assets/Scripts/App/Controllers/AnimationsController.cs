@@ -40,11 +40,11 @@ namespace LoomNetwork.CZB
             Vector3 partWay = Vector3.zero;
 
             if (isCreatureAttacker)
-                partWay = Vector3.Lerp(originalPos, target.transform.position, 0.5f);
+                partWay = Vector3.Lerp(originalPos, target.transform.position, 0.6f);
             else
                 partWay = Vector3.Lerp(originalPos, target.transform.position, 0.7f);
 
-            source.transform.DOMove(partWay, 0.35f).SetEase(Ease.InSine).OnComplete(() =>
+            source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(() =>
             {
                 DOTween.Sequence()
                     .Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f))
