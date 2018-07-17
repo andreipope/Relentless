@@ -53,12 +53,15 @@ public class BoardArrow : MonoBehaviour
         _selfObject = gameObject;
 
         _targetObjectsGroup = _selfObject.transform.Find("Group_TargetObjects").gameObject;
-        _rootObjectsGroup = _selfObject.transform.Find("Group_RootObjects").gameObject;
+        _rootObjectsGroup = _selfObject.transform.Find("Arrow/Group_RootObjects").gameObject;
         _arrowObject = _selfObject.transform.Find("Arrow").gameObject;
         _targetColliderObject = _selfObject.transform.Find("Target_Collider").gameObject;
 
         _upBubbles = _rootObjectsGroup.transform.Find("UpBubbles").GetComponent<ParticleSystem>();
 
+
+        if (_isInverse)
+            _selfObject.transform.localScale = new Vector3(-1, 1, 1);
         //  _targetObjectsGroup.SetActive(false);
     }
 
@@ -74,15 +77,18 @@ public class BoardArrow : MonoBehaviour
 
     public void Begin(Vector2 from, bool isInverse = true)
     {
-       // _isInverse = isInverse;
+         _isInverse = isInverse;
 
         startedDrag = true;
         _fromPosition = from;
-        _rootObjectsGroup.transform.position = _fromPosition;
+     //   _rootObjectsGroup.transform.position = _fromPosition;
         _arrowObject.transform.position = _fromPosition;
 
-      //  if (this._isInverse)
-       //     _arrowObject.transform.localScale = new Vector3(-1, _arrowObject.transform.localScale.y, _arrowObject.transform.localScale.z);
+        if (_isInverse)
+            _selfObject.transform.localScale = new Vector3(-1, 1, 1);
+
+        //  if (this._isInverse)
+        //     _arrowObject.transform.localScale = new Vector3(-1, _arrowObject.transform.localScale.y, _arrowObject.transform.localScale.z);
     }
 
     public void UpdateLength(Vector3 target, bool isInverse = true)
@@ -94,23 +100,25 @@ public class BoardArrow : MonoBehaviour
         float rootObjectsOffset = 21f;
 
         if (isInverse)
-            rootObjectsOffset = 0;
+            rootObjectsOffset = -5f;
 
         _arrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
-        _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
+      //  _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
 
         var scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
-        var scaleX = 1;
+      //  var scaleX = 1;
+         
+     //   if (isInverse)
+       //     scaleX = -1;
 
-        if (isInverse)
-            scaleX = -1;
+        _arrowObject.transform.localScale = new Vector3(1, scaleY, 1);
 
-        _arrowObject.transform.localScale = new Vector3(scaleX, scaleY, 1);
+        //float speedOfBubbles = 0.25f * scaleY * 25f;
 
-        float speedOfBubbles = 0.25f * scaleY * 25f;
-
-        var bubblesMain = _upBubbles.main;
-        bubblesMain.startSpeed = speedOfBubbles;
+      // var bubblesMain = _upBubbles.main;
+      //  bubblesMain.startLifetime = new ParticleSystem.MinMaxCurve(scaleY / 8f, scaleY / 8f);
+     //   var forceOverLifetimeX = _upBubbles.forceOverLifetime.x;
+      //  forceOverLifetimeX.curve = _upBubbles.GetComponent<AnimationCurveList>().curves[0];
     }
 
 

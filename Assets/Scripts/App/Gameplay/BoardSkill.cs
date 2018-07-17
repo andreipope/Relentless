@@ -103,7 +103,7 @@ namespace LoomNetwork.CZB
                 return;
 
             SetHighlightingEnabled(false);
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
             if (Constants.DEV_MODE)
                 _cooldown = 0;
             else
@@ -112,7 +112,7 @@ namespace LoomNetwork.CZB
                 if(!_usedInThisTurn)
                     _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
 
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
             }
 #endif
 
