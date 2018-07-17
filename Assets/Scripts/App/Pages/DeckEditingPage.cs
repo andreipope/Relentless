@@ -642,7 +642,6 @@ namespace LoomNetwork.CZB
                 _createdHordeCards.Add(boardCard);
 
                 _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
-                Debug.Log("_numHordePages " + _numHordePages);
                 CalculateVisibility();
             }
 

@@ -266,7 +266,6 @@ namespace LoomNetwork.CZB
 
         public void HandCardPreview(object[] param)
         {
-            Debug.Log("HandCardPreview");
             BoardCard card = param[0] as BoardCard;
             _battlegroundController.CreateCardPreview(card.WorkingCard, card.transform.position, IsActive);
         }

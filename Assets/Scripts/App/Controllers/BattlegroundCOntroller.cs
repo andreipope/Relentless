@@ -195,7 +195,6 @@ namespace LoomNetwork.CZB
 
         private void RunTurnAsync(object[] param)
         {
-            Debug.Log("TURN END");
             EndTurn();
 
             if (!gameFinished)
