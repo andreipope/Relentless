@@ -60,6 +60,9 @@ namespace LoomNetwork.CZB
             {
                 if (selfBoardCreature != creature)
                 {
+                    if (selectedCard != null)
+                        selectedCard.SetSelectedUnit(false);
+
                     selectedCard = creature;
                     if(selectedPlayer != null)
                         selectedPlayer.SetGlowStatus(false);

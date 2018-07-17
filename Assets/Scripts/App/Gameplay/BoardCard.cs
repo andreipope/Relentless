@@ -10,6 +10,7 @@ using LoomNetwork.CZB.Common;
 using DG.Tweening;
 using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Helpers;
 
 namespace LoomNetwork.CZB
 {
@@ -47,6 +48,7 @@ namespace LoomNetwork.CZB
 
         protected List<ElementSlotOfCards> _elementSlotsOfCards;
         protected Transform _parentOfEditingGroupUI;
+        public int cardsAmountDeckEditing = 0;
 
         public bool cardShouldBeDistributed = false;
 
@@ -292,6 +294,7 @@ namespace LoomNetwork.CZB
         // editing deck page
         public void SetAmountOfCardsInEditingPage(DeckEditingPage page, bool init, uint maxCopies, int amount)
         {
+            cardsAmountDeckEditing = amount;
             if (init)
             {
                 foreach (var item in _elementSlotsOfCards)
@@ -300,12 +303,17 @@ namespace LoomNetwork.CZB
 
                 for (int i = 0; i < maxCopies; i++)
                     _elementSlotsOfCards.Add(new ElementSlotOfCards(_parentOfEditingGroupUI, false));
-
-                // add groupping
             }
 
             for (int i = 0; i < maxCopies; i++)
+            {
+                if (i >= _elementSlotsOfCards.Count)
+                    _elementSlotsOfCards.Add(new ElementSlotOfCards(_parentOfEditingGroupUI, false));
+
                 _elementSlotsOfCards[i].SetStatus(i < amount);
+            }
+
+            InternalTools.GroupHorizontalObjects(_parentOfEditingGroupUI, 0.75f, 2f);
         }
 
         private void OnMouseUpEventHandler(GameObject obj)

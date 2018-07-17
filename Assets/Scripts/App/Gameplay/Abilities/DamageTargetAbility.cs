@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/toxicDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
@@ -120,9 +120,13 @@ namespace LoomNetwork.CZB
                 default:
                     break;
             }
-            _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-            _vfxObject.transform.position = targetPosition;
-            _particlesController.RegisterParticleSystem(_vfxObject, true);
+
+            if (_vfxObject != null)
+            {
+                _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
+                _vfxObject.transform.position = targetPosition;
+                _particlesController.RegisterParticleSystem(_vfxObject, true);
+            }
         }
     }
 }

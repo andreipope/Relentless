@@ -276,7 +276,7 @@ namespace LoomNetwork.CZB
         private void InitObjects()
         {
             numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
-            _numElementPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / _cardAmount);
+            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)_cardAmount);
 
             LoadCards(0, 0);
         }
@@ -287,9 +287,8 @@ namespace LoomNetwork.CZB
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _currentElementPage = 0;
+          //  _currentElementPage = 0;
             currentSet = (int)type;
-            Debug.Log(currentSet);
             LoadCards(0, (int)type);
         }
 
@@ -361,20 +360,25 @@ namespace LoomNetwork.CZB
         public void MoveCardsPage(int direction)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+
             _currentElementPage += direction;
-            Debug.Log(direction);
+
             if (_currentElementPage < 0)
             {
-                currentSet += direction;
+               currentSet += direction;
 
                 if (currentSet < 0)
                 {
                     currentSet = numSets - 1;
+                    CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
                 else
                 {
+                    CalculateNumberOfPages();
+
                     _currentElementPage = _numElementPages - 1;
+                  
                     _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
                 }
             }
@@ -393,13 +397,20 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _numElementPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / _cardAmount);
+            CalculateNumberOfPages();
 
-            LoadCards(_currentElementPage, currentSet, true );
+            LoadCards(_currentElementPage, currentSet, true);
+        }
+
+        private void CalculateNumberOfPages()
+        {
+            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)_cardAmount);
         }
 
         public void LoadCards(int page, int setIndex, bool needCast = false)
         {
+            _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
+
             //if(needCast)
             //    CorrectSetIndex(ref setIndex);
             var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
@@ -430,6 +441,17 @@ namespace LoomNetwork.CZB
 
                 _createdArmyCards.Add(boardCard);
             }
+
+            RepositionArmyCards();
+        }
+
+        private void RepositionArmyCards()
+        {
+            Vector3 _startPos = new Vector3(-7f, -2.4f, 0);
+            float stepX = 3.4f;
+
+            for (int i = 0; i < _createdArmyCards.Count; i++)
+                _createdArmyCards[i].transform.position = _startPos + Vector3.right * stepX * i;
         }
 
         public BoardCard CreateCard(Card card, Vector3 pos)
@@ -485,7 +507,7 @@ namespace LoomNetwork.CZB
                 }
                 if (!itemFound)
                 {
-                    BoardCard boardCard = CreateCard(libraryCard, new Vector3(-7.9f + 3.85f * (_createdHordeCards.Count % _cardAmount), 3, 0));
+                    BoardCard boardCard = CreateCard(libraryCard, Vector3.zero);
                     boardCard.transform.Find("Amount").gameObject.SetActive(false);
 
                     var deckBuilderCard = boardCard.gameObject.AddComponent<DeckBuilderCard>();
@@ -495,7 +517,7 @@ namespace LoomNetwork.CZB
 
                     _createdHordeCards.Add(boardCard);
 
-                    _currentDeck.AddCard(libraryCard.id);
+                  //  _currentDeck.AddCard(libraryCard.id);
 
                     boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard.cardRank), card.amount);
 
@@ -503,9 +525,14 @@ namespace LoomNetwork.CZB
                     UpdateNumCardsText();
                 }
             }
+            UpdateTopDeck();
+        }
+
+        private void UpdateTopDeck()
+        {
             _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
             _currentHordePage = 0;
-            CalculateVisibility();
+            RepositionHordeCards();
         }
 
         private void CalculateVisibility()
@@ -522,10 +549,8 @@ namespace LoomNetwork.CZB
         private void RepositionHordeCards()
         {
             for (int i = 0; i < _createdHordeCards.Count; i++)
-            {
-                _createdHordeCards[i].transform.position = new Vector3( 7.9f + 3.85f * (_createdHordeCards.Count % _cardAmount), 3, 0);
-                CalculateVisibility();
-            }
+                _createdHordeCards[i].transform.position = new Vector3(-7.9f + 3.85f * (i % _cardAmount), 3, 0);
+            CalculateVisibility();
         }
 
         public void RemoveCardFromDeck(Card card)
@@ -534,13 +559,23 @@ namespace LoomNetwork.CZB
             var collectionCardData = _collectionData.GetCardData(card.id);
             collectionCardData.amount++;
             UpdateCardAmount(card.id, collectionCardData.amount);
-            BoardCard boardCard = _createdHordeCards.Where((item) => item.libraryCard.id == card.id) as BoardCard;
-            Debug.Log(boardCard);
-            _createdHordeCards.Remove(boardCard);
-            Debug.Log(_createdHordeCards.Count);
-            MonoBehaviour.Destroy(boardCard.gameObject);
-            _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
-            RepositionHordeCards();
+            BoardCard boardCard = _createdHordeCards.Find((item) => item.libraryCard.id == card.id);
+            boardCard.cardsAmountDeckEditing--;
+            _currentDeck.RemoveCard(card.id);
+
+            if (boardCard.cardsAmountDeckEditing == 0)
+            {
+                _createdHordeCards.Remove(boardCard);
+
+                MonoBehaviour.DestroyImmediate(boardCard.gameObject);
+
+                UpdateTopDeck();
+                UpdateNumCardsText();
+            }
+            else
+            {
+                boardCard.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(boardCard.libraryCard.cardRank), boardCard.cardsAmountDeckEditing);
+            }
         }
 
         public void AddCardToDeck(Card card)
@@ -597,6 +632,7 @@ namespace LoomNetwork.CZB
             {
                 BoardCard boardCard = CreateCard(card, new Vector3(-7.9f + 3.85f * (_createdHordeCards.Count % _cardAmount), 3, 0));
                 boardCard.transform.Find("Amount").gameObject.SetActive(false);
+                foundItem = boardCard;
 
                 var deckBuilderCard = boardCard.gameObject.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.scene = this;
@@ -609,12 +645,10 @@ namespace LoomNetwork.CZB
                 Debug.Log("_numHordePages " + _numHordePages);
                 CalculateVisibility();
             }
-            else
-            {
-                foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card.cardRank), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
-            }
 
             _currentDeck.AddCard(card.id);
+
+            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card.cardRank), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
         }
 
         public uint GetMaxCopiesValue(Enumerators.CardRank rarity)

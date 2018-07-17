@@ -48,6 +48,9 @@ namespace LoomNetwork.CZB
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()))
                 {
+                    if(selectedCard != null)
+                        selectedCard.SetSelectedUnit(false);
+
                     selectedCard = unit;
                     if (selectedPlayer != null)
                         selectedPlayer.SetGlowStatus(false);
