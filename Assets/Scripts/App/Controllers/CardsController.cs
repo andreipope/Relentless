@@ -7,6 +7,7 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -142,6 +143,8 @@ namespace LoomNetwork.CZB
 
             if (!_gameplayManager.IsTutorial)
             {
+                _gameplayManager.CurrentPlayer.CardsInDeck = _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
+
                 if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
                 {
                     AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);

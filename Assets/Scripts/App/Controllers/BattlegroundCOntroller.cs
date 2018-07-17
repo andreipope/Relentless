@@ -195,7 +195,6 @@ namespace LoomNetwork.CZB
 
         private void RunTurnAsync(object[] param)
         {
-            Debug.Log("TURN END");
             EndTurn();
 
             if (!gameFinished)
@@ -571,20 +570,21 @@ namespace LoomNetwork.CZB
             var spacing = -1.5f;
             var scaling = 0.25f;
             var pivot = new Vector3(6f, -7.5f, 0f);
+            var twistPerCard = -5;
 
 
             if (cardsZoomed)
             {
-                spacing = -4.5f;
-                scaling = 0.4f;
-                pivot = new Vector3(-1, -5.5f, 0f);
+                spacing = -2.6f;
+                scaling = 0.31f;
+                pivot = new Vector3(-1.3f, -6.5f, 0f);
+                twistPerCard = -3;
             }
 
             foreach (var card in playerHandCards)
                 handWidth += spacing;
             handWidth -= spacing;
 
-            var twistPerCard = -5;
 
             if (playerHandCards.Count == 1)
                 twistPerCard = 0;

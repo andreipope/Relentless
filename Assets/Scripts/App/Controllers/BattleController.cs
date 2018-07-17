@@ -185,8 +185,8 @@ namespace LoomNetwork.CZB
             {
                 //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
-                if (healingPlayer.HP > 30)
-                    healingPlayer.HP = 30;
+                if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                    healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,
@@ -264,8 +264,8 @@ namespace LoomNetwork.CZB
             if (healedPlayer != null)
             {
                 healedPlayer.HP += ability.value;
-                if (healedPlayer.HP > 30)
-                    healedPlayer.HP = 30;
+                if (healedPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                    healedPlayer.HP = Constants.DEFAULT_PLAYER_HP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY,

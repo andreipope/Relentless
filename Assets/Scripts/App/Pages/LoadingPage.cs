@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB
 
         private Transform _progressBar;
 
-        private Text _pressAnyText;
+        private TextMeshProUGUI _pressAnyText;
         private TextMeshProUGUI _loadingText;
         private Image _loaderBar;
 
@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
             _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
 
-            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<Text>();
+            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<TextMeshProUGUI>();
 
             _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
 
@@ -103,19 +103,9 @@ namespace LoomNetwork.CZB
                         _loginForm.SetActive(true);
                         _pressAnyText.gameObject.SetActive(false);
 
-                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
-                        /*a++;
-                        if(a == 1)
-						MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/GameNetworkManager"));
-                        if(a==2)
-                        {
-							GameNetworkManager.Instance.isSinglePlayer = true;
-							GameNetworkManager.Instance.StartHost();
-						}
-*/
-
+                        //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
                     }
-                    //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
                 }
             }
         }

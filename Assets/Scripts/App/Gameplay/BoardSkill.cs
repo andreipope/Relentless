@@ -28,6 +28,8 @@ namespace LoomNetwork.CZB
         private int _cooldown;
         private int _initialCooldown;
 
+        private bool _usedInThisTurn = false;
+
         private OnBehaviourHandler _behaviourHandler;
 
         public BoardArrow abilitiesTargetingArrow;
@@ -43,15 +45,17 @@ namespace LoomNetwork.CZB
 
         public bool IsUsing { get; private set; }
 
+        public bool IsPrimary { get; private set; }
 
-        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo)
+        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, int cooldown, bool isPrimary)
         {
             selfObject = obj;
             skill = skillInfo;
             owner = player;
+            IsPrimary = isPrimary;
 
-            _initialCooldown = skillInfo.initialCooldown;
-            _cooldown = skillInfo.initialCooldown;
+            _initialCooldown = cooldown;
+            _cooldown = cooldown;
       
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -87,11 +91,6 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
                 return;
 
-            if (Constants.DEV_MODE)
-                _cooldown = 0;
-            else
-                _cooldown = Mathf.Clamp(_cooldown-1, 0, _initialCooldown);
-
             if (IsSkillReady)
                 SetHighlightingEnabled(true);
 
@@ -104,6 +103,20 @@ namespace LoomNetwork.CZB
                 return;
 
             SetHighlightingEnabled(false);
+#if UNITY_EDITOR
+            if (Constants.DEV_MODE)
+                _cooldown = 0;
+            else
+            {
+#endif
+                if(!_usedInThisTurn)
+                    _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
+
+#if UNITY_EDITOR
+            }
+#endif
+
+            _usedInThisTurn = false;
 
             //rewrite
             CancelTargetingArrows();
@@ -166,7 +179,7 @@ namespace LoomNetwork.CZB
                 };
                     //skill.skillTargetType;
 
-                    fightTargetingArrow.Begin(selfObject.transform.position);
+                    fightTargetingArrow.Begin(selfObject.transform.position, !IsPrimary);
 
                     if (_tutorialManager.IsTutorial)
                         _tutorialManager.DeactivateSelectTarget();
@@ -214,9 +227,14 @@ namespace LoomNetwork.CZB
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
+            _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
         }
 
+        public void Hide()
+        {
+            selfObject.SetActive(false);
+        }
 
         private bool IsSkillCanUsed()
         {

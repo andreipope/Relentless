@@ -60,9 +60,15 @@ namespace LoomNetwork.CZB
             {
                 if (selfBoardCreature != creature)
                 {
+                    if (selectedCard != null)
+                        selectedCard.SetSelectedUnit(false);
+
                     selectedCard = creature;
+                    if(selectedPlayer != null)
+                        selectedPlayer.SetGlowStatus(false);
                     selectedPlayer = null;
                     CreateTarget(creature.transform.position);
+                    selectedCard.SetSelectedUnit(true);
 
                     OnCardSelectedEvent?.Invoke(creature);
                 }
@@ -73,7 +79,8 @@ namespace LoomNetwork.CZB
         {
             if (selectedCard == creature)
             {
-                _targetObjectsGroup.SetActive(false);
+                selectedCard.SetSelectedUnit(false);
+                //  _targetObjectsGroup.SetActive(false);
                 selectedCard = null;
 
                 OnCardUnselectedevent?.Invoke(creature);
@@ -87,9 +94,11 @@ namespace LoomNetwork.CZB
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 selectedPlayer = player;
+                if (selectedCard != null)
+                    selectedCard.SetSelectedUnit(false);
                 selectedCard = null;
                 CreateTarget(player.AvatarObject.transform.position);
-
+                selectedPlayer.SetGlowStatus(true);
                 OnPlayerSelectedEvent?.Invoke(player);
             }
         }
@@ -98,7 +107,12 @@ namespace LoomNetwork.CZB
         {
             if (selectedPlayer == player)
             {
-                _targetObjectsGroup.SetActive(false);
+                if (selectedCard != null)
+                    selectedCard.SetSelectedUnit(false);
+                selectedCard = null;
+
+                selectedPlayer.SetGlowStatus(false);
+                //_targetObjectsGroup.SetActive(false);
                 selectedPlayer = null;
 
                 OnPlayerUnselectedEvent?.Invoke(player);

@@ -54,7 +54,8 @@ namespace LoomNetwork.CZB
 
         private GameObject _avatarObject,
                            _avatarDeathObject,
-                           _avatarHeroHighlight;
+                           _avatarHeroHighlight,
+                           _avatarSelectedHighlight;
 
         private Animator _avatarAnimator, 
                          _deathAnimamtor;
@@ -134,7 +135,7 @@ namespace LoomNetwork.CZB
 
         public List<BoardUnit> BoardCards { get; set; }
 
-        public List<WorkingCard> CardsInDeck { get; private set; }
+        public List<WorkingCard> CardsInDeck { get; set; }
         public List<WorkingCard> CardsInGraveyard { get; private set; }
         public List<WorkingCard> CardsInHand { get; private set; }
         public List<WorkingCard> CardsOnBoard { get; private set; }
@@ -191,6 +192,7 @@ namespace LoomNetwork.CZB
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _avatarDeathObject = playerObject.transform.Find("HeroDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
+            _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
             _deathAnimamtor = playerObject.transform.Find("HeroDeath").GetComponent<Animator>();
@@ -330,8 +332,7 @@ namespace LoomNetwork.CZB
         {
             CardsInDeck = new List<WorkingCard>();
 
-            if (!_gameplayManager.IsTutorial)
-                InternalTools.ShakeList(ref cards);// shake
+            cards = ShuffleCardsList(cards);
 
             foreach (var card in cards)
             {
@@ -344,6 +345,16 @@ namespace LoomNetwork.CZB
             }
 
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
+        }
+
+        public List<T> ShuffleCardsList<T>(List<T> cards)
+        {
+            var array = cards;
+
+            if (!_gameplayManager.IsTutorial)
+                InternalTools.ShakeList<T>(ref array);// shake
+
+            return array;
         }
 
         public void SetFirstHand(bool isTutorial = false)
@@ -378,12 +389,19 @@ namespace LoomNetwork.CZB
             _avatarAnimator.Play(0);
             _deathAnimamtor.Play(0);
 
+            _skillsController.DisableSkillsContent(this);
+
             _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HERO_DEATH_SOUND_VOLUME, false, false);
 
             if(!_gameplayManager.IsTutorial)
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
         }
-  
+
+        public void SetGlowStatus(bool status)
+        {
+            _avatarSelectedHighlight.SetActive(status);
+        }
+
         #region handlers
 
 
