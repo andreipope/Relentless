@@ -149,6 +149,15 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.ATTACK_NUMBER_OF_TIMES_PER_TURN:
                     ability = new AttackNumberOfTimesPerTurnAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DRAW_CARD:
+                    ability = new DrawCardAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEVOUR_ZOMBIE_AND_COMBINE_STATS:
+                    ability = new DevourZombieAndCombineStatsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
+                    ability = new DestroyUnitByTypeAbility(cardKind, abilityData);
+                    break;                 
                 default:
                     break;
             }

@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB.Data
         public string statType;
         public string setType;
         public string effectType;
-
+        public string cardType;
 
         [JsonIgnore]
 		public Enumerators.AbilityType abilityType;
@@ -38,6 +38,9 @@ namespace LoomNetwork.CZB.Data
         public Enumerators.AbilityEffectType abilityEffectType;
         [JsonIgnore]
         public Enumerators.AttackInfoType attackInfoType;
+        [JsonIgnore]
+        public Enumerators.CardType targetCardType;
+        
 
         public int value;
 
@@ -68,6 +71,9 @@ namespace LoomNetwork.CZB.Data
 
             if (!string.IsNullOrEmpty(attackInfo))
                 attackInfoType = CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
+
+            if (!string.IsNullOrEmpty(cardType))
+                targetCardType = CastStringTuEnum<Enumerators.CardType>(cardType);
         }
 
         private T CastStringTuEnum<T>(string data)

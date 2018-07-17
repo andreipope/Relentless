@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB
 
         private Button _buttonBack;
 
-        private List<CardInGraveyard> _cards;
+       // private List<CardInGraveyard> _cards;
 
         private PlayerManaBarItem _playerManaBar,
                                   _opponentManaBar;
@@ -101,7 +101,7 @@ namespace LoomNetwork.CZB
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
-            _cards = new List<CardInGraveyard>();
+          //  _cards = new List<CardInGraveyard>();
 
             _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-            ClearGraveyard();
+          //  ClearGraveyard();
 
             SetEndTurnButtonStatus(true);
 
@@ -178,14 +178,14 @@ namespace LoomNetwork.CZB
             // _endTurnButton.SetActive(status);
         }
 
-        public void ClearGraveyard()
-        {
-            foreach (var item in _cards)
-            {
-                item.Dispose();
-            }
-            _cards.Clear();
-        }
+        //public void ClearGraveyard()
+        //{
+        //    foreach (var item in _cards)
+        //    {
+        //        item.Dispose();
+        //    }
+        //    _cards.Clear();
+        //}
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
         public void OnBoardCardKilledEventHandler(BoardUnit cardToDestroy)

@@ -211,8 +211,11 @@ namespace LoomNetwork.CZB
            // UpdatePositionOfCardsForDistribution(card.WorkingCard.owner);
         }
 
-        public void AddCardToHand(Player player, WorkingCard card)
+        public void AddCardToHand(Player player, WorkingCard card = null)
         {
+            if (card == null)
+                card = player.CardsInDeck[0];
+
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
         }

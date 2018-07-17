@@ -203,7 +203,10 @@
             CARD_RETURN,
             WEAPON,
             CHANGE_STAT_OF_CREATURES_BY_TYPE,
-            ATTACK_NUMBER_OF_TIMES_PER_TURN
+            ATTACK_NUMBER_OF_TIMES_PER_TURN,
+            DRAW_CARD,
+            DEVOUR_ZOMBIE_AND_COMBINE_STATS,
+            DESTROY_UNIT_BY_TYPE
         }
 
         public enum AbilityActivityType

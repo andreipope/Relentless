@@ -529,9 +529,16 @@
           "health": 4,
           "type": "WALKER",
           "rank": "COMMANDER",
-          "abilities": [
-           
-          ],
+      "abilities": [
+        {
+          "type": "DESTROY_UNIT_BY_TYPE",
+          "activityType": "active",
+          "callType": "at_start",
+          "targetType": "opponent_card",
+          "affectObjectType": "none",
+          "cardType": "HEAVY"
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -634,7 +641,7 @@
             }
           }
         },
-		{
+        {
           "id": 19,
           "kind": "CREATURE",
           "name": "Soothsayer",
@@ -646,6 +653,15 @@
           "health": 1,
           "type": "WALKER",
           "rank": "MINION",
+          "abilities": [
+            {
+              "type": "DRAW_CARD",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "none",
+              "setType": "none"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -815,8 +831,15 @@
           "health": 1,
           "type": "WALKER",
           "rank": "MINION",
-          "abilities": [
-          ],
+      "abilities": [
+        {
+          "type": "DRAW_CARD",
+          "activityType": "passive",
+          "callType": "at_start",
+          "targetType": "none",
+          "setType": "life",
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -984,9 +1007,15 @@
           "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
-          "abilities": [
-            
-          ],
+      "abilities": [
+        {
+          "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+          "activityType": "active",
+          "callType": "AT_START",
+          "targetType": "PLAYER_ALL_CARDS",
+        }
+
+      ],
           "cardViewInfo": {
             "position": {
               "x": -0.05,
