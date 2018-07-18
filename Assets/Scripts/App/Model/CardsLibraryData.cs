@@ -50,7 +50,6 @@ namespace LoomNetwork.CZB.Data
             {
                 foreach (var card in set.cards)
                 {
-                    card.id = id;
                     card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
                     if(card.kind != null)
@@ -63,12 +62,14 @@ namespace LoomNetwork.CZB.Data
                     foreach (var ability in card.abilities)
                         ability.ParseData();
                     _allCards.Add(card);
+
+                    if (card.cardSetType != Enumerators.SetType.OTHERS)
+                        card.id = id;
+
                     id++;
                 }
             }
         }
-
-        
     }
 
     public class CardSet

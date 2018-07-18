@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB.Data
 {
     public class Card
     {
-        [JsonIgnore]
+        //[JsonIgnore]
         public int id;
         public Enumerators.SetType cardSetType;
         public string kind;
