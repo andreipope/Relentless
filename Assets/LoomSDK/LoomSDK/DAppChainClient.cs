@@ -225,7 +225,7 @@ namespace Loom.Unity3d
             }
             string payload = CryptoBytes.ToBase64String(txBytes);
             var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new string[] { payload });
-            /*if (result != null)
+            if (result != null)
             {
                 if (result.CheckTx.Code != 0)
                 {
@@ -247,7 +247,7 @@ namespace Loom.Unity3d
                     }
                     throw new Exception(String.Format("Failed to commit Tx: {0}", result.DeliverTx.Error));
                 }
-            }*/
+            }
             return result;
         }
 

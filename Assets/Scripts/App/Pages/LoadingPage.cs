@@ -2,7 +2,8 @@
 // https://loomx.io/
 
 
-
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -146,7 +147,7 @@ namespace LoomNetwork.CZB
 			//  _loginText.text = _localizationManager.GetUITranslation("KEY_START_SCREEN_LOGIN");
 		}
 
-        public void OnSignupButtonPressed()
+	    private async void OnSignupButtonPressed()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
@@ -166,34 +167,13 @@ namespace LoomNetwork.CZB
 		        return;
 	        }*/
 	        
-	        var accountTx = new UpsertAccountRequest {
-		        UserId = usernameText
-	        };
-	        
-	        LoomManager.Instance.SignUp(accountTx, result =>
-	        {
-		        if (result != null)
-		        {
-			        if (result.CheckTx.Code != 0)
-			        {
-				        if (!string.IsNullOrEmpty(result.CheckTx.Error))
-					        OpenAlertDialog(result.CheckTx.Error);
-			        }
-			        else if (result.DeliverTx.Code != 0)
-			        {
-				        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
-					        OpenAlertDialog(result.DeliverTx.Error);
-			        }
-			        else
-				        OpenAlertDialog("Account Create Successfully.");
-		        } 
-		        else
-		        {
-			        OpenAlertDialog("Connection Not Found.");
-		        }
-	        });
-	        
-	         
+			await LoomManager.Instance.SignUp(usernameText, result => {
+				if(!string.IsNullOrEmpty(result))
+					OpenAlertDialog("Not Able to Create Account..");
+				else
+					Debug.Log(" ====== Account Created Successfully ==== ");
+					
+			});
         }
 
         public void OnLoginButtonPressed()

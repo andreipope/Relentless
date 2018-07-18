@@ -80,25 +80,8 @@ namespace LoomNetwork.CZB
             CheckFirstLaunch();
             FillCacheDataPathes();
         }
-        
-        public void LoadDeckData(Action fillData)
-        {
-            var deckRequest = new GetDeckRequest {
-                UserId = LoomManager.UserId
-            };
-            
-            LoomManager.Instance.GetDecks(deckRequest, userDecks =>
-            {
-                Debug.Log(userDecks.ToString());
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(userDecks.ToString());
-                
-                fillData?.Invoke();
-            });
-            
-    
-        }
 
-        public void StartLoadCache()
+        public async void StartLoadCache()
         {
             Debug.Log("=== Start loading server ==== ");
             
@@ -106,24 +89,32 @@ namespace LoomNetwork.CZB
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
-            
-            LoadDeckData(() =>
+
+            try
             {
-                CachedCardsLibraryData.FillAllCards();
+                var deckData = await LoomManager.Instance.GetDecks(LoomManager.UserId);
+                Debug.Log(deckData.ToString());
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(deckData.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("===== Deck Data Not Loaded ===== " + ex);
+            }
+            
+            CachedCardsLibraryData.FillAllCards();
 
-                CachedOpponentDecksData.ParseData();
-                CachedActionsLibraryData.ParseData();
+            CachedOpponentDecksData.ParseData();
+            CachedActionsLibraryData.ParseData();
 
-                _localizationManager.ApplyLocalization();
+            _localizationManager.ApplyLocalization();
 
-                if (Constants.DEV_MODE)
-                    CachedUserLocalData.tutorial = false;
+            if (Constants.DEV_MODE)
+                CachedUserLocalData.tutorial = false;
 
-                GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
+            GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
 
 
-                OnLoadCacheCompletedEvent?.Invoke();
-            });
+            OnLoadCacheCompletedEvent?.Invoke();
         }
 
         public void Update()

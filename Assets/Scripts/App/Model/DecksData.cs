@@ -27,6 +27,7 @@ namespace LoomNetwork.CZB.Data
 
         public Deck()
         {
+            cards = new List<DeckCardData>();
         }
 
         public void AddCard(int cardId)

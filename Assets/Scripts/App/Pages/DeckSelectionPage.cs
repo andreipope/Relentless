@@ -145,7 +145,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void DeleteDeckEventHandler(HordeDeckObject deck)
+        private async void DeleteDeckEventHandler(HordeDeckObject deck)
         {
             var deckName = _dataManager.CachedDecksData.decks[deck.DeckId].name;
             _dataManager.CachedDecksData.decks.RemoveAt(deck.DeckId);
@@ -155,38 +155,17 @@ namespace LoomNetwork.CZB
             LoadDeckObjects(_leftDeckIndex);
             
             Debug.Log("Deleting Deck with " + deck.DeckId);
-            var request = new DeleteDeckRequest {
-                UserId = LoomManager.UserId,
-                DeckId = deckName
-            };
             
-            LoomManager.Instance.DeleteDeck(request, result =>
+            await LoomManager.Instance.DeleteDeck(LoomManager.UserId, deckName, result => 
             {
-                if (result != null)
+                if (!string.IsNullOrEmpty(result))
                 {
-                    if (result.CheckTx.Code != 0)
-                    {
-                        if (!string.IsNullOrEmpty(result.CheckTx.Error))
-                        {
-                            Debug.Log(result.CheckTx.Error);
-                            OpenAlertDialog(result.CheckTx.Error);
-                        }
-                    }
-                    else if (result.DeliverTx.Code != 0)
-                    {
-                        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
-                        {
-                            Debug.Log(result.DeliverTx.Error);
-                            OpenAlertDialog(result.DeliverTx.Error);
-                        }
-                    }
-                    else
-                        OpenAlertDialog("Deck deleted Successfully.");
-                } 
-                else
-                {
-                    OpenAlertDialog("Connection Not Found.");
+                    Debug.Log("Result === " + result);
+                    OpenAlertDialog("Not able to Delete Deck..");
                 }
+                else
+                    Debug.Log(" ====== Delete Deck Successfully ==== ");
+					
             });
             
         }

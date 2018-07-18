@@ -7,12 +7,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using LoomNetwork.Internal;
 
 namespace LoomNetwork.CZB
 {
@@ -650,7 +648,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void OnDoneButtonPressed()
+        public async void OnDoneButtonPressed()
         {
             if (_currentDeckId == -1)
             {
@@ -665,6 +663,20 @@ namespace LoomNetwork.CZB
             _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
 
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+            
+            Debug.Log("Deck saved called ======= " + _currentDeck.name + " , " + _currentDeck.heroId);
+            
+            await LoomManager.Instance.AddDeck(LoomManager.UserId, _currentDeck, result => 
+            {
+                if (!string.IsNullOrEmpty(result))
+                {
+                    Debug.Log("Result === " + result);
+                    OpenAlertDialog("Not able to Add Deck..");
+                }
+                else
+                    Debug.Log(" ====== Add Deck Successfully ==== ");
+					
+            });
         }
 
         private void CorrectSetIndex(ref int id)

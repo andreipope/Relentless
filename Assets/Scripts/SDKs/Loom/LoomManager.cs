@@ -1,19 +1,38 @@
 ﻿
 using System;
-using Google.Protobuf;
+using System.Threading.Tasks;
 using Loom.Unity3d;
-using Loom.Unity3d.Zb;
+using UnityEngine;
 
-public class LoomManager
+public partial class LoomManager
 {
     private static LoomManager _instance;
-    private LoomManager(){}
+    private LoomManager()
+    {
+        LoomXCommandHandlers.Initialize();
+    }
     
-    private const string CreateAccountMethod = "CreateAccount";
-    private const string GetDeckDataMethod = "GetDecks";
-    private const string DeleteDeckMethod = "DeleteDeck";
+    private static Contract _contract;
+    
+    public const string UserId = "a";
 
-    public const string UserId = "f";
+    private string _writerHost= "ws://127.0.0.1:46657/websocket";
+    private string _readerHost = "ws://127.0.0.1:9999/queryws";
+    
+    //private string _writerHost= "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
+    //private string _readerHost = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
+
+    public string WriteHost
+    {
+        get { return _writerHost; }
+        set { _writerHost = value;  }
+    }
+
+    public string ReaderHost
+    {
+        get { return _readerHost; }
+        set { _readerHost = value; }
+    }
 
     public static LoomManager Instance
     {
@@ -25,32 +44,63 @@ public class LoomManager
             return _instance;
         }
     }
-
-    public void SignUp(UpsertAccountRequest accountTx, Action<BroadcastTxResult> result)
-    {
-        SetMessage<UpsertAccountRequest>(CreateAccountMethod, accountTx, result);
-    }
-
-    public void GetDecks(GetDeckRequest request, Action<IMessage> result)
-    {
-        GetMessage<UserDecks>(GetDeckDataMethod, request, result);  
-    }
-
-    public void DeleteDeck(DeleteDeckRequest request, Action<BroadcastTxResult> result)
-    {
-        SetMessage<DeleteDeckRequest>(DeleteDeckMethod, request, result);
-    }
     
-    
-    private void SetMessage<T>(string methodName, IMessage msg, Action<BroadcastTxResult> result) where T : IMessage, new()
+    public async Task Init(Action result = null)
     {
-        LoomX.SetMessageEcho<T>(methodName, msg, result);
-    }
-    
+        var privateKey = LoomX.GetPrivateKeyFromPlayerPrefs();
+        var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+        var callerAddr = Address.FromPublicKey(publicKey);
 
-    private void GetMessage<T>(string methodName, IMessage entry, Action<IMessage> result) where T : IMessage, new()
-    {
-        LoomX.GetMessage<T>(methodName, entry, result);
-    }
+        var writer = RPCClientFactory.Configure()
+            .WithLogger(Debug.unityLogger)
+            .WithWebSocket(_writerHost)
+            .Create();
+
+        var reader = RPCClientFactory.Configure()
+            .WithLogger(Debug.unityLogger)
+            .WithWebSocket(_readerHost)
+            .Create();
+
+        var client = new DAppChainClient(writer, reader)
+        {
+            Logger = Debug.unityLogger
+        };
+        
+        client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]{
+            new NonceTxMiddleware{
+                PublicKey = publicKey,
+                Client = client
+            },
+            new SignedTxMiddleware(privateKey)
+        });
+
+        var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
+        _contract = new Contract(client, contractAddr, callerAddr);
+        
+        result?.Invoke();
+    }   
 }
-       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

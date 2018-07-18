@@ -26,13 +26,14 @@ public static class LoomX
         return privateKey;
     }
 
-    private static byte[] GetPrivateKeyFromPlayerPrefs()
+    public static byte[] GetPrivateKeyFromPlayerPrefs()
     {
         byte[] privateKey;
         if (PlayerPrefs.HasKey(Key_PrivateKey))
         {
             var privateKeyStr = PlayerPrefs.GetString(Key_PrivateKey);
             privateKey = Convert.FromBase64String(privateKeyStr);
+            Debug.Log("key = " + privateKeyStr);
         }
         else
         {
@@ -78,7 +79,7 @@ public static class LoomX
     }
     
     
-    public static async void SetMessage(string methodName, IMessage entry)
+    public static async void CallAsync(string methodName, IMessage entry)
     {
         if (_contract == null)
         {
@@ -86,6 +87,16 @@ public static class LoomX
         }
 
         await _contract.CallAsync(methodName, entry);
+    }
+
+    public static async Task<T> CallAsync<T>(string methodName, IMessage entry) where T : IMessage, new()
+    {
+        if (_contract == null)
+        {
+            await Init();
+        }
+
+        return await _contract.CallAsync<T>(methodName, entry);
     }
     
 
