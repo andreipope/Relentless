@@ -220,6 +220,15 @@ namespace LoomNetwork.CZB
             player.AddCardToHand(card);
         }
 
+        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        {
+            if (card == null)
+                card = otherPlayer.CardsInDeck[0];
+
+            otherPlayer.RemoveCardFromDeck(card);
+            player.AddCardToHand(card);
+        }
+
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
             var boardCard = CreateBoardCard(card);

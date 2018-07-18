@@ -1048,7 +1048,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 20,
           "kind": "CREATURE",
           "name": "Draft",
@@ -1060,6 +1060,14 @@ d          "cardViewInfo": {
           "health": 5,
           "type": "WALKER",
           "rank": "COMMANDER",
+          "abilities": [
+            {
+              "type": "DRAW_CARD",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "OPPONENT"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.075,
@@ -1712,8 +1720,14 @@ d          "cardViewInfo": {
           "health": 3,
           "type": "WALKER",
           "rank": "COMMANDER",
-          "abilities": [
-          ],
+      "abilities": [
+        {
+          "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+          "activityType": "active",
+          "callType": "AT_START",
+          "targetType": "PLAYER_CARD"
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": -0.4,

@@ -48,8 +48,17 @@ namespace LoomNetwork.CZB
             if ((setType == Enumerators.SetType.NONE) ||
                 (setType != Enumerators.SetType.NONE && playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType == setType).Count > 0))
             {
-                _cardsController.AddCardToHand(playerCallerOfAbility);
+
+                if (abilityTargetTypes.Count > 0)
+                {
+                    if (abilityTargetTypes[0] == Enumerators.AbilityTargetType.PLAYER)
+                        _cardsController.AddCardToHandFromOtherPlayerDeck(playerCallerOfAbility, playerCallerOfAbility);
+                    else if(abilityTargetTypes[0] == Enumerators.AbilityTargetType.OPPONENT)
+                        _cardsController.AddCardToHandFromOtherPlayerDeck(playerCallerOfAbility, playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer);
+                }
+                else
+                    _cardsController.AddCardToHand(playerCallerOfAbility);
             }
         }
     }
-}
+}{
