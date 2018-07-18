@@ -11,6 +11,7 @@ public partial class LoomManager
     private const string GetDeckDataMethod = "GetDecks";
     private const string DeleteDeckMethod = "DeleteDeck";
     private const string AddDeckMethod = "AddDeck";
+    private const string EditDeckMethod = "EditDeck";
     
     public async Task<UserDecks> GetDecks(string userId)
     {
@@ -46,6 +47,47 @@ public partial class LoomManager
         }
     }
 
+    public async Task EditDeck(string userId, Deck deck, Action<string> errorResult)
+    {
+        if (_contract == null)
+            await Init();
+        
+        var cards = new RepeatedField<CardInCollection>();
+            
+        for (var i = 0; i < deck.cards.Count; i++)
+        {
+            var cardInCollection = new CardInCollection
+            {
+                CardId = deck.cards[i].cardId,
+                Amount = deck.cards[i].amount
+            };
+            Debug.Log("Card in collection = " + cardInCollection.CardId + " , " + cardInCollection.Amount);
+            cards.Add(cardInCollection);
+        }
+        
+        var request = new EditDeckRequest
+        {
+            UserId = userId,
+            Deck = new ZBDeck
+            {
+                Name = deck.name,
+                HeroId = deck.heroId,
+                Cards = {cards}
+            }
+        };
+        
+        try
+        {
+            await _contract.CallAsync(EditDeckMethod, request);
+            errorResult?.Invoke(string.Empty);
+        }
+        catch (Exception ex)
+        {
+            //Debug.Log("Exception = " + ex);
+            errorResult?.Invoke(ex.ToString());
+        }
+    }
+
     public async Task AddDeck(string userId, Deck deck, Action<string> errorResult)
     {
         if (_contract == null)
@@ -55,16 +97,18 @@ public partial class LoomManager
             
         for (var i = 0; i < deck.cards.Count; i++)
         {
-            var cardInCollection = new CardInCollection();
-            cardInCollection.CardId = deck.cards[i].cardId;
-            cardInCollection.Amount = deck.cards[i].amount;
+            var cardInCollection = new CardInCollection
+            {
+                CardId = deck.cards[i].cardId,
+                Amount = deck.cards[i].amount
+            };
             Debug.Log("Card in collection = " + cardInCollection.CardId + " , " + cardInCollection.Amount);
             cards.Add(cardInCollection);
         }
             
         var request = new AddDeckRequest
         {
-            UserId = LoomManager.UserId,
+            UserId = userId,
             Deck = new ZBDeck
             {
                 Name = deck.name,
@@ -85,4 +129,6 @@ public partial class LoomManager
         }
         
     }
+    
+    
 }
