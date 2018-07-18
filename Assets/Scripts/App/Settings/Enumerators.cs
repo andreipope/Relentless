@@ -164,7 +164,9 @@
         {
             WALKER,
             FERAL,
-            HEAVY
+            HEAVY,
+
+            NONE
         }
 
         public enum CardRank

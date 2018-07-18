@@ -20,6 +20,8 @@ namespace LoomNetwork.CZB
     {
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
+        private ITimerManager _timerManager;
+
         private CardsController cardsController;
         private ActionsQueueController _actionsQueueController;
 
@@ -38,6 +40,8 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             cardsController = _gameplayManager.GetController<CardsController>();
 
@@ -49,6 +53,18 @@ namespace LoomNetwork.CZB
             playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
 
             _actionsQueueController.GotNewActionReportEvent += GotNewActionReportEventHandler;
+        }
+
+        public void Update()
+        {
+            if (selfPanel == null)
+                return;
+
+            if (_reportGroup.padding.top > _graveYardTopOffset)
+            {
+                float offset = Mathf.Lerp((float)_reportGroup.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 2);
+                _reportGroup.padding = new RectOffset(0, 0, Mathf.FloorToInt(offset), 0);
+            }
         }
 
         public void Clear()
@@ -94,7 +110,7 @@ namespace LoomNetwork.CZB
                     reportView = new GameplayActionReport_HealCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.PLAY_UNIT_CARD:
-                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);  
+                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.PLAY_SPELL_CARD:
                     reportView = new GameplayActionReport_PlaySpellCard(playedCardPrefab, selfPanel.transform, report);
@@ -114,19 +130,19 @@ namespace LoomNetwork.CZB
             if (reportView != null)
                 _allReports.Add(reportView);
 
-            // improve this animation!!!!!!!!!!
+         //   reportView.selfObject.transform.SetAsLastSibling();
 
-            //if (_allReports.Count > 4)
-            //{
-            //    _graveYardTopOffset = -66 - 120 * (_allReports.Count - 5);
-            //}
+
+            if (_allReports.Count > 4)
+                _graveYardTopOffset = -80f - (120f * (_allReports.Count - 5));
 
             //if (_reportGroup.padding.top > _graveYardTopOffset)
             //{
-            //    float offset = Mathf.Lerp((float)_reportGroup.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 2);
-            //    _reportGroup.padding = new RectOffset(0, 0, Mathf.FloorToInt(offset), 0);
+            //    _reportGroup.padding.top = Mathf.FloorToInt(Mathf.Lerp((float)_reportGroup.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 1f));
+
+            //    // _timerManager.StopTimer(MoveReportGroupObjects);
+            //    // _timerManager.AddTimer(MoveReportGroupObjects, null, Time.deltaTime, true);
             //}
-            for (int j = _allReports.Count - 1; j >= 0; j--)
-                _allReports[j].selfObject.transform.SetAsLastSibling();        }
+        }
     }
 }

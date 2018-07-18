@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            card.cardId = 18; 
+                          //  card.cardId = 15; 
                         }
 
                         playerDeck.Add(card.cardId); 

@@ -217,7 +217,7 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(BoardUnit attackingUnit, AbilityData ability, BoardUnit attackedUnit)
+        public void AttackCreatureByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit)
         {
             int damage = ability.value;
 
@@ -235,14 +235,14 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
             new object[]
             {
-                attackingUnit,
+                attacker,
                 ability,
                 damage,
                 attackedUnit,
             }));
         }
 
-        public void AttackPlayerByAbility(BoardUnit attackingUnit, AbilityData ability, Player attackedPlayer)
+        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
@@ -252,7 +252,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY,
             new object[]
             {
-                attackingUnit,
+                attacker,
                 ability,
                 ability.value,
                 attackedPlayer

@@ -590,7 +590,7 @@ namespace LoomNetwork.CZB
 
         public void DrawCardInfo(WorkingCard card)
         {
-            string cardSetName = GetSetOfCard(card.libraryCard); ;
+            string cardSetName = GetSetOfCard(card.libraryCard);
 
             GameObject go = null;
             BoardCard boardCard = null;

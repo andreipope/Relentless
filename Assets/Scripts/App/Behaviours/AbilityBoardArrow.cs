@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB
         public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
         public BoardUnit selfBoardCreature;
 
+        public Enumerators.CardType targetUnitType;
 
         protected void Awake()
         {
@@ -58,19 +59,22 @@ namespace LoomNetwork.CZB
                 (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (selfBoardCreature != creature)
+                if ((targetUnitType == Enumerators.CardType.NONE) || creature.Card.type == targetUnitType)
                 {
-                    if (selectedCard != null)
-                        selectedCard.SetSelectedUnit(false);
+                    if (selfBoardCreature != creature)
+                    {
+                        if (selectedCard != null)
+                            selectedCard.SetSelectedUnit(false);
 
-                    selectedCard = creature;
-                    if(selectedPlayer != null)
-                        selectedPlayer.SetGlowStatus(false);
-                    selectedPlayer = null;
-                    CreateTarget(creature.transform.position);
-                    selectedCard.SetSelectedUnit(true);
+                        selectedCard = creature;
+                        if (selectedPlayer != null)
+                            selectedPlayer.SetGlowStatus(false);
+                        selectedPlayer = null;
+                        CreateTarget(creature.transform.position);
+                        selectedCard.SetSelectedUnit(true);
 
-                    OnCardSelectedEvent?.Invoke(creature);
+                        OnCardSelectedEvent?.Invoke(creature);
+                    }
                 }
             }
         }

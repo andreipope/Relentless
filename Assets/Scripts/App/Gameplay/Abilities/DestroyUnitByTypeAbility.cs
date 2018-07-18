@@ -3,10 +3,6 @@
 
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 using LoomNetwork.CZB.Data;
@@ -15,8 +11,6 @@ namespace LoomNetwork.CZB
 {
     public class DestroyUnitByTypeAbility : AbilityBase
     {
-        public Enumerators.CardType targetCardType;
-
         public DestroyUnitByTypeAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             targetCardType = ability.targetCardType;
@@ -26,13 +20,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            switch (abilityEffectType)
-            {
-                default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-                    break;
-            }
-
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -49,14 +37,17 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            Action();
+            if (_isAbilityResolved)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-//todo
+            _battlegroundController.DestroyBoardUnit(targetUnit);
         }
     }
 }

@@ -2,11 +2,6 @@
 // https://loomx.io/
 
 
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 using LoomNetwork.CZB.Data;
@@ -24,37 +19,34 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            switch (abilityEffectType)
-            {
-                default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-                    break;
-            }
-            
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
+        public override void Update() { }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
+        public override void Dispose() { }
 
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
 
-            Action();
+            if (_isAbilityResolved)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-          
+            int health = targetUnit.HP;
+            int damage = targetUnit.Damage;
+
+            _battlegroundController.DestroyBoardUnit(targetUnit);
+
+            abilityUnitOwner.HP += health;
+            abilityUnitOwner.Damage += damage;
         }
     }
 }

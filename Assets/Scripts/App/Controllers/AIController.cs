@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           // card.cardId = 1;
+                          //  card.cardId = 16;
                         }
                         playerDeck.Add(card.cardId);
                     }
@@ -222,7 +222,7 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
@@ -234,13 +234,14 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(spell))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
                     break;
             }
 
+            LetsThink();
             LetsThink();
         }
         // ai step 2

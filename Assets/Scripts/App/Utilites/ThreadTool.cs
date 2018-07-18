@@ -31,6 +31,9 @@ namespace LoomNetwork.CZB
 
         private void Update()
         {
+            if (_actionsMainThread == null)
+                return;
+
             while (_actionsMainThread.Count > 0)
             {
                 var action = _actionsMainThread.Dequeue();

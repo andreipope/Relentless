@@ -50,6 +50,8 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             Player opponent = playerCallerOfAbility == _gameplayManager.CurrentPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
             foreach (var target in abilityTargetTypes)
             {
@@ -60,7 +62,7 @@ namespace LoomNetwork.CZB
                         //player.BoardCards.CopyTo(creatures);
                         foreach (var cardOpponent in opponent.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, cardOpponent);
+                            _battleController.AttackCreatureByAbility(caller, abilityData, cardOpponent);
                         }
                         CreateVFX(Vector3.up * 1.5f);
                         //Array.Clear(creatures, 0, creatures.Length);
@@ -78,16 +80,16 @@ namespace LoomNetwork.CZB
                         //cards = null;
                         foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, cardPlayer);
+                            _battleController.AttackCreatureByAbility(caller, abilityData, cardPlayer);
                             CreateVFX(cardPlayer.transform.position);
                         }
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, opponent);
+                        _battleController.AttackPlayerByAbility(caller, abilityData, opponent);
                         //CreateVFX(targetCreature.transform.position);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, playerCallerOfAbility);
+                        _battleController.AttackPlayerByAbility(caller, abilityData, playerCallerOfAbility);
                         //CreateVFX(targetCreature.transform.position);
                         break;
                     default: break;

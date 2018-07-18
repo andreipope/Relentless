@@ -681,5 +681,10 @@ namespace LoomNetwork.CZB
 
             return card;
         }
+
+        public void DestroyBoardUnit(BoardUnit unit)
+        {
+            unit.Die();
+        }
     }
 }

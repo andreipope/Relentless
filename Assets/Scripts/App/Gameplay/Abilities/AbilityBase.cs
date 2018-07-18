@@ -43,6 +43,8 @@ namespace LoomNetwork.CZB
         public Enumerators.AffectObjectType affectObjectType;
         public Enumerators.AbilityEffectType abilityEffectType;
 
+        public Enumerators.CardType targetCardType = Enumerators.CardType.NONE;
+
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
         public Enumerators.CardKind cardKind;
@@ -108,6 +110,7 @@ namespace LoomNetwork.CZB
             _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = abilityUnitOwner;
+            _targettingArrow.targetUnitType = targetCardType;
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(abilityUnitOwner.transform.position);

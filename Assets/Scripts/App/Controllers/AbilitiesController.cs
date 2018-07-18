@@ -206,7 +206,7 @@ namespace LoomNetwork.CZB
         {
             bool available = false;
 
-            var opponent = _gameplayManager.OpponentPlayer;
+            var opponent = localPlayer.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
             lock (_lock)
             {
@@ -275,6 +275,11 @@ namespace LoomNetwork.CZB
             return abils;
         }
 
+        public bool HasUnitTypeOnBoard(Player player, Enumerators.CardType type)
+        {
+            return player.BoardCards.FindAll(x => x.Card.type == type).Count > 0;
+        }
+
         public void CallAbility(Card libraryCard, BoardCard card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<BoardCard> action, bool isPlayer, Action onCompleteCallback, object target = null, HandBoardCard handCard = null)
         {
             Vector3 postionOfCardView = Vector3.zero;
@@ -316,6 +321,17 @@ namespace LoomNetwork.CZB
             if (canUseAbility)
             {
                 var ability = libraryCard.abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
+
+                if (ability.targetCardType != Enumerators.CardType.NONE)
+                {
+                    if(!HasUnitTypeOnBoard(workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer, ability.targetCardType))
+                    {
+                        CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                        onCompleteCallback?.Invoke();
+
+                        return;
+                    }
+                }
 
                 if (CheckActivateAvailability(kind, ability, workingCard.owner))
                 {
