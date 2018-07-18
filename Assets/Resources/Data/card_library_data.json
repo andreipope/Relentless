@@ -559,13 +559,38 @@
 	  {
           "id": 12,
           "kind": "CREATURE",
-          "name": "Slab",
+          "name": "Blocker",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Water zombies",
+          "description": "<b>Heavy</b>",
           "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
-          "picture": "Rockky",
-          "damage": 1,
-          "health": 1,
+          "picture": "Blocker",
+          "damage": 0,
+          "health": 3,
+          "type": "HEAVY",
+          "rank": "MINION",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.15,
+              "y": 0.08,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
+            }
+          }
+        },
+	  {
+          "id": 12,
+          "kind": "CREATURE",
+          "name": "Slab",
+          "cost": 3,
+          "description": "",
+          "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
+          "picture": "Slab",
+          "damage": 3,
+          "health": 4,
           "type": "WALKER",
           "rank": "MINION",
           "cardViewInfo": {
@@ -900,6 +925,31 @@ d          "cardViewInfo": {
           "damage": 1,
           "health": 1,
           "type": "FERAL",
+          "rank": "MINION",
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0.18,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.62,
+              "y": 0.62,
+              "z": 0.62
+            }
+          }
+        },
+		{
+          "id": 17,
+          "kind": "CREATURE",
+          "name": "Bouncer",
+          "cost": 4,
+          "description": "<b>Heavy</b>",
+          "flavorText": "The unfriendly ghost...",
+          "picture": "Bouncer",
+          "damage": 2,
+          "health": 3,
+          "type": "HEAVY",
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
@@ -2052,14 +2102,14 @@ d          "cardViewInfo": {
       "name": "Others",
       "cards": [
         {
-          "id": 50,
+          "id": 100,
           "kind": "CREATURE",
           "name": "Zombie",
           "cost": 1,
           "description": "",
           "picture": "Zombie",
-          "damage": 1,
-          "health": 1,
+          "damage": 2,
+          "health": 2,
           "type": "WALKER",
           "rank": "MINION",
           "cardViewInfo": {
