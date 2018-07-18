@@ -616,7 +616,7 @@
             }
           }
         },
-		{
+        {
           "id": 18,
           "kind": "CREATURE",
           "name": "Wheezy",
@@ -628,6 +628,14 @@
           "health": 2,
           "type": "WALKER",
           "rank": "MINION",
+          "abilities": [
+            {
+              "type": "LOWER_COST_OF_CARD_IN_HAND",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "player_card",
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,

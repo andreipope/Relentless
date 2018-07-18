@@ -91,8 +91,8 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject currentBoardCard = null;
-            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
-          
+            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
+
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
@@ -153,7 +153,7 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject currentBoardCard = null;
-            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
+            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {

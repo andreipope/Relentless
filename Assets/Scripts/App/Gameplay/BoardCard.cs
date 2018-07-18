@@ -160,6 +160,13 @@ namespace LoomNetwork.CZB
         }
 
 
+        public void SetCardCost(int cost)
+        {
+            libraryCard.cost = cost;
+            manaCost = libraryCard.cost;
+            costText.text = manaCost.ToString();
+        }
+
         public virtual void UpdateAmount(int amount)
         {
             amountText.text = amount.ToString();

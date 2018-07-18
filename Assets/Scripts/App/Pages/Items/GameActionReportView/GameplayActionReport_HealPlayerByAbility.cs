@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB
             else if (_abilityOwner is BoardSpell)
             {
                 var rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.libraryCard.cardRank);
-                string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf((_abilityOwner as BoardSpell).Card.libraryCard) > -1).name;
+                string cardSetName = cardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.libraryCard);
                 previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.libraryCard.picture.ToLower()));
                 _healCreatureObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
             }

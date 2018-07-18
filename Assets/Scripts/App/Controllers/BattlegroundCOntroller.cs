@@ -500,12 +500,7 @@ namespace LoomNetwork.CZB
         {
             yield return new WaitForSeconds(0.3f);
 
-            string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
-            }
+            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
             BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)

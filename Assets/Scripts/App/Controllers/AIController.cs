@@ -392,10 +392,7 @@ namespace LoomNetwork.CZB
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
         {
-            string cardSetName = string.Empty;
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
+            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
             var workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 

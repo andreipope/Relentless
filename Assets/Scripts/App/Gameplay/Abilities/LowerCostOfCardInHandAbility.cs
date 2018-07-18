@@ -1,5 +1,6 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
+﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
+
 
 
 using LoomNetwork.CZB.Common;
@@ -7,13 +8,11 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class DrawCardAbility : AbilityBase
+    public class LowerCostOfCardInHandAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
-
-        public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public LowerCostOfCardInHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            this.setType = ability.abilitySetType;
+
         }
 
         public override void Activate()
@@ -45,11 +44,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if ((setType == Enumerators.SetType.NONE) ||
-                (setType != Enumerators.SetType.NONE && playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType == setType).Count > 0))
-            {
-                _cardsController.AddCardToHand(playerCallerOfAbility);
-            }
+            _cardsController.LowGooCostOfCardInHand(playerCallerOfAbility);
         }
     }
 }

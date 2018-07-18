@@ -55,7 +55,7 @@ namespace LoomNetwork.CZB
         {
             var rarity = (Enumerators.CardRank)IsChanceFit(0);
             var cards = _dataManager.CachedCardsLibraryData.Cards.FindAll((item) => item.cardRank == rarity && item.cardSetType != Enumerators.SetType.OTHERS);
-            Card card = cards[Random.Range(0, cards.Count)];
+            Card card = cards[Random.Range(0, cards.Count)].Clone();
             return card;
         }
 

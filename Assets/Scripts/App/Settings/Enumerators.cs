@@ -206,7 +206,8 @@
             ATTACK_NUMBER_OF_TIMES_PER_TURN,
             DRAW_CARD,
             DEVOUR_ZOMBIE_AND_COMBINE_STATS,
-            DESTROY_UNIT_BY_TYPE
+            DESTROY_UNIT_BY_TYPE,
+            LOWER_COST_OF_CARD_IN_HAND
         }
 
         public enum AbilityActivityType

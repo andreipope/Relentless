@@ -32,7 +32,7 @@ namespace LoomNetwork.CZB
                 _playedCard = gameAction.parameters[1] as BoardCard;
 
                 var rarity = Enum.GetName(typeof(Enumerators.CardRank), _playedCard.WorkingCard.libraryCard.cardRank);
-                string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(_playedCard.WorkingCard.libraryCard) > -1).name;
+                string cardSetName = cardsController.GetSetOfCard(_playedCard.WorkingCard.libraryCard);
                 previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), _playedCard.WorkingCard.libraryCard.picture.ToLower()));
 
                 _playedCardPreviewObject = CreateCardPreview(_playedCard.WorkingCard, Vector3.zero);
