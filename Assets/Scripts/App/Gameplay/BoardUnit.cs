@@ -22,6 +22,7 @@ namespace LoomNetwork.CZB
     {
         public event Action CreatureOnDieEvent;
         public event Action<object> CreatureOnAttackEvent;
+        public event Action UnitGotDamageEvent;
 
         public event Action<int, int> CreatureHPChangedEvent;
         public event Action<int, int> CreatureDamageChangedEvent;
@@ -865,6 +866,17 @@ namespace LoomNetwork.CZB
                 return true;
 
             return false;
+        }
+
+        public void ThrowEventGotDamage()
+        {
+            UnitGotDamageEvent?.Invoke();
+        }
+
+        public void MoveUnitFromBoardToDeck()
+        {
+            Die(true);
+            MonoBehaviour.Destroy(gameObject);
         }
     }
 

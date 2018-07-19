@@ -58,7 +58,9 @@ namespace LoomNetwork.CZB.Data
             abilityType = CastStringTuEnum<Enumerators.AbilityType>(type);
             abilityActivityType = CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
             abilityCallType = CastStringTuEnum<Enumerators.AbilityCallType>(callType);
-            abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
+
+            if (!string.IsNullOrEmpty(targetType))
+                abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
 
             if (!string.IsNullOrEmpty(statType))
                 abilityStatType = CastStringTuEnum<Enumerators.StatType>(statType);

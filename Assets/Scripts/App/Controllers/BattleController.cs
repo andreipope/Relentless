@@ -115,6 +115,9 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.HP -= damageAttacking;
 
+                if (damageAttacking > 0)
+                    attackedUnit.ThrowEventGotDamage();
+
                 damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
 
                 if (attackingUnit.HasBuffShield)
@@ -151,6 +154,9 @@ namespace LoomNetwork.CZB
                 }
 
                 attackedUnit.HP -= damage;
+
+                if (damage > 0)
+                    attackedUnit.ThrowEventGotDamage();
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -230,6 +236,9 @@ namespace LoomNetwork.CZB
                 }
 
                 attackedUnit.HP -= damage;
+
+                if (damage > 0)
+                    attackedUnit.ThrowEventGotDamage();
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,

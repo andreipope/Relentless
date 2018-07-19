@@ -151,7 +151,12 @@ namespace LoomNetwork.CZB
             bool isChanged = false;
 
             var oldIndex = _leftHeroIndex;
-            _leftHeroIndex = Mathf.Clamp(_leftHeroIndex + direction, 0, _overlordObjects.Count - 1);
+            _leftHeroIndex += direction;
+
+            if (_leftHeroIndex < 0)
+                _leftHeroIndex = _overlordObjects.Count - 1;
+            else if (_leftHeroIndex >= _overlordObjects.Count - 1)
+                _leftHeroIndex = 0;
 
             if (oldIndex != _leftHeroIndex)
                 isChanged = true;

@@ -157,8 +157,9 @@ namespace LoomNetwork.CZB
             {
 				abilityUnitOwner.CreatureOnDieEvent += CreatureOnDieEventHandler;
                 abilityUnitOwner.CreatureOnAttackEvent += UnitOnAttackEventHandler;
+                abilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
-				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
                   //  boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
@@ -289,10 +290,11 @@ namespace LoomNetwork.CZB
 
         protected virtual void CreatureOnDieEventHandler()
         {
-          //  if(targetCreature != null)
+            //  if(targetCreature != null)
             //    targetCreature.Card.DisconnectAbility((uint)abilityType);
 
             abilityUnitOwner.CreatureOnDieEvent -= CreatureOnDieEventHandler;
+            abilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
             Dispose();
         }
@@ -301,6 +303,11 @@ namespace LoomNetwork.CZB
 		{
 			
 		}
+
+        protected virtual void UnitGotDamageEventHandler()
+        {
+
+        }
 
         protected void SpellOnUsedEventHandler()
         {
@@ -326,6 +333,11 @@ namespace LoomNetwork.CZB
         {
             foreach (var id in _particleIds)
                 _particlesController.DestoryParticle(id);
+        }
+
+        protected object GetCaller()
+        {
+            return abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
         }
     }
 }

@@ -160,7 +160,46 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.LOWER_COST_OF_CARD_IN_HAND:
                     ability = new LowerCostOfCardInHandAbility(cardKind, abilityData);
-                    break;    
+                    break;
+                case Enumerators.AbilityType.OVERFLOW_GOO:
+                    ability = new OverflowGooAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.LOSE_GOO:
+                    ability = new LoseGooAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.RAGE:
+                    ability = new RageAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FREEZE_UNITS:
+                    ability = new FreezeUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_UNIT:
+                    ability = new TakeDamageRandomUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
+                    ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.SHILED:
+                    ability = new ShieldAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DESTROY_FROZEN_UNIT:
+                    ability = new DestroyFrozenZombieAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS:
+                    ability = new UseAllGooToIncreaseStatsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FIRST_UNIT_IN_PLAY:
+                    ability = new FirstUnitInPlayAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS:
+                    ability = new AllyUnitsOfTypeInPlayGetStatsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM:
+                    ability = new DamageEnemyUnitsAndFreezeThemAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS:
+                    ability = new ReturnUnitsOnBoardToOwnersDecksAbility(cardKind, abilityData);
+                    break;     
                 default:
                     break;
             }

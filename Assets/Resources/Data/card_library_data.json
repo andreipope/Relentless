@@ -30,7 +30,7 @@
             "position": {
               "x": 0,
               "y": 0,
-              "z":  0
+              "z": 0
             },
             "scale": {
               "x": 0.62,
@@ -64,7 +64,7 @@
             }
           }
         },
-		{
+        {
           "id": 2,
           "kind": "CREATURE",
           "name": "Werezomb",
@@ -138,7 +138,12 @@
           "type": "FERAL",
           "rank": "COMMANDER",
           "abilities": [
-            
+            {
+              "type": "FIRST_UNIT_IN_PLAY",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 2
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -258,13 +263,13 @@
               "z": 0.6
             }
           }
-        },
+        }
       ]
     },
     {
       "name": "Water",
       "cards": [
-		{
+        {
           "id": 8,
           "kind": "CREATURE",
           "name": "Zhatterer",
@@ -277,7 +282,7 @@
           "type": "WALKER",
           "rank": "MINION",
           "abilities": [
-            
+
           ],
           "cardViewInfo": {
             "position": {
@@ -326,7 +331,7 @@
             }
           }
         },
-		{
+        {
           "id": 8,
           "kind": "CREATURE",
           "name": "Znowman",
@@ -396,7 +401,7 @@
             }
           }
         },
-		{
+        {
           "id": 9,
           "kind": "CREATURE",
           "name": "Blizzard",
@@ -409,7 +414,13 @@
           "type": "WALKER",
           "rank": "COMMANDER",
           "abilities": [
-            
+            {
+              "type": "FREEZE_UNITS",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "opponent_card",
+              "value": 1
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -424,7 +435,7 @@
             }
           }
         },
-		{
+        {
           "id": 9,
           "kind": "CREATURE",
           "name": "Froztbite",
@@ -437,7 +448,7 @@
           "type": "WALKER",
           "rank": "COMMANDER",
           "abilities": [
-           
+
           ],
           "cardViewInfo": {
             "position": {
@@ -487,7 +498,7 @@
             }
           }
         },
-		{
+        {
           "id": 11,
           "kind": "CREATURE",
           "name": "Maelstrom",
@@ -500,7 +511,12 @@
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
-            
+            {
+              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "opponent_all_cards|player_all_cards"
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -514,7 +530,7 @@
               "z": 0.6
             }
           }
-        }
+        },
         {
           "id": 11,
           "kind": "CREATURE",
@@ -529,10 +545,10 @@
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "MASSIVE_DAMAGE",
+              "type": "DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM",
               "activityType": "PASSIVE",
               "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS | opponent",
+              "targetType": "OPPONENT_ALL_CARDS",
               "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_WATER_WAVE"
@@ -551,12 +567,12 @@
             }
           }
         }
-		      ]
+      ]
     },
     {
       "name": "Earth",
       "cards": [
-	  {
+        {
           "id": 12,
           "kind": "CREATURE",
           "name": "Blocker",
@@ -581,7 +597,7 @@
             }
           }
         },
-	  {
+        {
           "id": 12,
           "kind": "CREATURE",
           "name": "Slab",
@@ -642,7 +658,7 @@
             }
           }
         },
-		{
+        {
           "id": 12,
           "kind": "CREATURE",
           "name": "Walley",
@@ -655,7 +671,7 @@
           "type": "WALKER",
           "rank": "OFFICER",
           "abilities": [
-            
+
           ],
           "cardViewInfo": {
             "position": {
@@ -670,7 +686,7 @@
             }
           }
         },
-		{
+        {
           "id": 12,
           "kind": "CREATURE",
           "name": "Tiny",
@@ -682,7 +698,7 @@
           "health": 7,
           "type": "WALKER",
           "rank": "OFFICER",
-d          "cardViewInfo": {
+          "cardViewInfo": {
             "position": {
               "x": -0.15,
               "y": 0.08,
@@ -756,7 +772,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 15,
           "kind": "CREATURE",
           "name": "Earthshaker",
@@ -768,16 +784,16 @@ d          "cardViewInfo": {
           "health": 4,
           "type": "WALKER",
           "rank": "COMMANDER",
-      "abilities": [
-        {
-          "type": "DESTROY_UNIT_BY_TYPE",
-          "activityType": "active",
-          "callType": "at_start",
-          "targetType": "opponent_card",
-          "affectObjectType": "none",
-          "cardType": "HEAVY"
-        }
-      ],
+          "abilities": [
+            {
+              "type": "DESTROY_UNIT_BY_TYPE",
+              "activityType": "active",
+              "callType": "at_start",
+              "targetType": "opponent_card",
+              "affectObjectType": "none",
+              "cardType": "HEAVY"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -791,7 +807,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 15,
           "kind": "CREATURE",
           "name": "Pyrite",
@@ -803,9 +819,9 @@ d          "cardViewInfo": {
           "health": 8,
           "type": "HEAVY",
           "rank": "COMMANDER",
-      "abilities": [
-        
-      ],
+          "abilities": [
+
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -819,7 +835,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 15,
           "kind": "CREATURE",
           "name": "Gaea",
@@ -831,9 +847,16 @@ d          "cardViewInfo": {
           "health": 7,
           "type": "WALKER",
           "rank": "GENERAL",
-      "abilities": [
-        
-      ],
+          "abilities": [
+            {
+              "type": "ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS",
+              "activityType": "passive",
+              "callType": "at_start",
+              "setType": "EARTH",
+              "health": 2,
+              "damage": 1
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -860,7 +883,7 @@ d          "cardViewInfo": {
           "type": "HEAVY",
           "rank": "GENERAL",
           "abilities": [
-           
+
           ],
           "cardViewInfo": {
             "position": {
@@ -880,7 +903,7 @@ d          "cardViewInfo": {
     {
       "name": "Air",
       "cards": [
-		{
+        {
           "id": 17,
           "kind": "CREATURE",
           "name": "Fumez",
@@ -892,7 +915,7 @@ d          "cardViewInfo": {
           "health": 1,
           "type": "WALKER",
           "rank": "MINION",
-		  "abilities": [
+          "abilities": [
             {
               "type": "ADD_GOO_CARRIER",
               "activityType": "passive",
@@ -939,7 +962,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 17,
           "kind": "CREATURE",
           "name": "Bouncer",
@@ -981,7 +1004,7 @@ d          "cardViewInfo": {
               "type": "LOWER_COST_OF_CARD_IN_HAND",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "player_card",
+              "targetType": "player_card"
             }
           ],
           "cardViewInfo": {
@@ -1031,7 +1054,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 19,
           "kind": "CREATURE",
           "name": "Gaz",
@@ -1045,11 +1068,16 @@ d          "cardViewInfo": {
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "ADD_GOO_CARRIER",
+              "type": "SHILED",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
-              "value": 7
+              "targetType": "none"
+            },
+            {
+              "type": "OVERFLOW_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 4
             }
           ],
           "cardViewInfo": {
@@ -1131,7 +1159,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 20,
           "kind": "CREATURE",
           "name": "MonZoon",
@@ -1226,7 +1254,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 22,
           "kind": "CREATURE",
           "name": "Mind Flayer",
@@ -1295,7 +1323,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 24,
           "kind": "CREATURE",
           "name": "Bloomer",
@@ -1307,15 +1335,15 @@ d          "cardViewInfo": {
           "health": 1,
           "type": "WALKER",
           "rank": "MINION",
-      "abilities": [
-        {
-          "type": "DRAW_CARD",
-          "activityType": "passive",
-          "callType": "at_start",
-          "targetType": "none",
-          "setType": "life",
-        }
-      ],
+          "abilities": [
+            {
+              "type": "DRAW_CARD",
+              "activityType": "passive",
+              "callType": "at_start",
+              "targetType": "none",
+              "setType": "life"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -1401,7 +1429,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 27,
           "kind": "CREATURE",
           "name": "Blight",
@@ -1414,7 +1442,7 @@ d          "cardViewInfo": {
           "type": "WALKER",
           "rank": "COMMANDER",
           "abilities": [
-            
+
           ],
           "cardViewInfo": {
             "position": {
@@ -1463,7 +1491,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 27,
           "kind": "CREATURE",
           "name": "Yggdrazil",
@@ -1476,7 +1504,7 @@ d          "cardViewInfo": {
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
-           
+
           ],
           "cardViewInfo": {
             "position": {
@@ -1525,7 +1553,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 29,
           "kind": "CREATURE",
           "name": "Z-Virus",
@@ -1537,14 +1565,14 @@ d          "cardViewInfo": {
           "health": 0,
           "type": "WALKER",
           "rank": "GENERAL",
-      "abilities": [
-        {
-          "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
-          "activityType": "active",
-          "callType": "AT_START",
-          "targetType": "PLAYER_CARD"
-        }
-      ],
+          "abilities": [
+            {
+              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "activityType": "active",
+              "callType": "AT_START",
+              "targetType": "PLAYER_CARD"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.05,
@@ -1563,7 +1591,7 @@ d          "cardViewInfo": {
     {
       "name": "Toxic",
       "cards": [
-	  {
+        {
           "id": 30,
           "kind": "CREATURE",
           "name": "Zpitter",
@@ -1576,7 +1604,13 @@ d          "cardViewInfo": {
           "type": "WALKER",
           "rank": "MINION",
           "abilities": [
-           
+            {
+              "type": "TAKE_DAMAGE_RANDOM_UNIT",
+              "activityType": "passive",
+              "callType": "AT_START",
+              "targetType": "OPPONENT_CARD",
+              "value": 1
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -1591,7 +1625,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 30,
           "kind": "CREATURE",
           "name": "Ectoplasm",
@@ -1604,7 +1638,12 @@ d          "cardViewInfo": {
           "type": "WALKER",
           "rank": "MINION",
           "abilities": [
-           
+            {
+              "type": "LOSE_GOO",
+              "activityType": "passive",
+              "callType": "AT_START",
+              "value": 1
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -1655,7 +1694,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		 {
+        {
           "id": 30,
           "kind": "CREATURE",
           "name": "Zeptic",
@@ -1724,7 +1763,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 32,
           "kind": "CREATURE",
           "name": "Hazzard",
@@ -1758,7 +1797,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 32,
           "kind": "CREATURE",
           "name": "Zeeter",
@@ -1770,14 +1809,14 @@ d          "cardViewInfo": {
           "health": 3,
           "type": "WALKER",
           "rank": "COMMANDER",
-      "abilities": [
-        {
-          "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
-          "activityType": "active",
-          "callType": "AT_START",
-          "targetType": "PLAYER_CARD"
-        }
-      ],
+          "abilities": [
+            {
+              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "activityType": "active",
+              "callType": "AT_START",
+              "targetType": "PLAYER_CARD"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.4,
@@ -1803,8 +1842,7 @@ d          "cardViewInfo": {
           "health": 3,
           "type": "FERAL",
           "rank": "COMMANDER",
-          "abilities": [
-          ],
+          "abilities": [],
           "cardViewInfo": {
             "position": {
               "x": -0.4,
@@ -1818,7 +1856,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 32,
           "kind": "CREATURE",
           "name": "Zludge",
@@ -1831,6 +1869,12 @@ d          "cardViewInfo": {
           "type": "WALKER",
           "rank": "COMMANDER",
           "abilities": [
+            {
+              "type": "RAGE",
+              "activityType": "passive",
+              "callType": "GOT_DAMAGE",
+              "value": 2
+            }
           ],
           "cardViewInfo": {
             "position": {
@@ -1881,7 +1925,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 33,
           "kind": "CREATURE",
           "name": "GooZilla",
@@ -1895,13 +1939,10 @@ d          "cardViewInfo": {
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "MASSIVE_DAMAGE",
-              "activityType": "PASSIVE",
-              "callType": "at_death",
-              "targetType": "player|PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS|opponent",
-              "affectObjectType": "none",
-              "value": 2,
-              "effectType": "MASSIVE_TOXIC_ALL"
+              "type": "USE_ALL_GOO_TO_INCREASE_STATS",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 2
             }
           ],
           "cardViewInfo": {
@@ -2038,16 +2079,7 @@ d          "cardViewInfo": {
           "health": 0,
           "type": "WALKER",
           "rank": "MINION",
-          "abilities": [
-            /*{
-              "type": "WEAPON",
-              "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "opponent_card|opponent",
-              "damage": 7,
-              "health": 2
-            }*/
-          ],
+          "abilities": [],
           "cardViewInfo": {
             "position": {
               "x": -0.2,
@@ -2061,7 +2093,7 @@ d          "cardViewInfo": {
             }
           }
         },
-		{
+        {
           "id": 30,
           "kind": "SPELL",
           "name": "Fresh Meat",
@@ -2073,16 +2105,7 @@ d          "cardViewInfo": {
           "health": 0,
           "type": "WALKER",
           "rank": "MINION",
-          "abilities": [
-            /*{
-              "type": "WEAPON",
-              "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "opponent_card|opponent",
-              "damage": 7,
-              "health": 2
-            }*/
-          ],
+          "abilities": [],
           "cardViewInfo": {
             "position": {
               "x": -0.2,
