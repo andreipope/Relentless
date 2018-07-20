@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                          //  card.cardId = 15; 
+                            //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Zeptic"));
                         }
 
                         playerDeck.Add(card.cardId); 
@@ -291,7 +291,7 @@ namespace LoomNetwork.CZB
         {
             //if (PlayerInfo.BoardSkills[0] != null && IsActive)
             //{
-            //    if (PlayerInfo.Mana >= PlayerInfo.BoardSkills[0].manaCost)
+            //    if (PlayerInfo.Goo >= PlayerInfo.BoardSkills[0].manaCost)
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(true);
             //    else
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);

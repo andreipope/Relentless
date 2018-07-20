@@ -444,7 +444,7 @@ namespace LoomNetwork.CZB
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
                 if (!Constants.DEV_MODE)
-                    player.Mana -= card.libraryCard.cost;
+                    player.Goo -= card.libraryCard.cost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 // {

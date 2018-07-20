@@ -50,10 +50,10 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (playerCallerOfAbility.Mana == 0)
+            if (playerCallerOfAbility.Goo == 0)
                 return;
 
-            playerCallerOfAbility.Mana = 0;
+            playerCallerOfAbility.Goo = 0;
             abilityUnitOwner.HP *= value;
             abilityUnitOwner.Damage *= value;
         }

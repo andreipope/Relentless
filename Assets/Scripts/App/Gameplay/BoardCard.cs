@@ -256,7 +256,7 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 return true;
 
-            return owner.Mana >= manaCost;
+            return owner.Goo >= manaCost;
         }
 
         public void IsHighlighted()

@@ -277,8 +277,8 @@ namespace LoomNetwork.CZB
             _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             _opponentHealthText = GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"));
+            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer", new Vector3(5.57f, 0, -6.08f));
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent", new Vector3(5.56f, 0, 4.75f));
 
 
             // improve find to get it from OBJECTS ON BOARD!!
@@ -360,7 +360,7 @@ namespace LoomNetwork.CZB
 
             player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
             player.PlayerHPChangedEvent += OnPlayerHPChanged;
-            player.PlayerManaChangedEvent += OnPlayerManaChanged;
+            player.PlayerManaChangedEvent += OnPlayerGooChanged;
             opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
             opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
             opponent.PlayerManaChangedEvent += OnOpponentManaChanged;
@@ -369,10 +369,10 @@ namespace LoomNetwork.CZB
 
             OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
             OnPlayerHPChanged(player.HP, player.HP);
-            OnPlayerManaChanged(player.Mana, player.Mana);
+            OnPlayerGooChanged(player.Goo, player.Goo);
             OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
             OnOpponentHPChanged(opponent.HP, opponent.HP);
-            OnOpponentManaChanged(opponent.Mana, opponent.Mana);
+            OnOpponentManaChanged(opponent.Goo, opponent.Goo);
         }
 
         private void OnPlayerDeckChangedEventHandler(int index)
@@ -473,11 +473,11 @@ namespace LoomNetwork.CZB
                 _playerHealthText.color = Color.red;
         }
 
-        private void OnPlayerManaChanged(int oldMana, int mana)
+        private void OnPlayerGooChanged(int oldGoo, int goo)
         {
             if (!_isPlayerInited)
                 return;
-            _playerManaBar.SetMana(mana);
+            _playerManaBar.SetGoo(goo);
         }
 
         private void OnOpponentHPChanged(int oldHealth, int health)
@@ -492,11 +492,11 @@ namespace LoomNetwork.CZB
                 _opponentHealthText.color = Color.red;
         }
 
-        private void OnOpponentManaChanged(int oldMana, int mana)
+        private void OnOpponentManaChanged(int oldGoo, int goo)
         {
             if (!_isPlayerInited)
                 return;
-            _opponentManaBar.SetMana(mana);
+            _opponentManaBar.SetGoo(goo);
         }
 
         private void OnStartTurnEventHandler()

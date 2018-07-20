@@ -353,7 +353,7 @@ namespace LoomNetwork.CZB
 
         private bool CardCanBePlayable(WorkingCard card)
         {
-            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Mana && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
+            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Goo && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
         }
 
         private bool UnitCanBeUsable(BoardUnit unit)
@@ -388,7 +388,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Mana -= card.libraryCard.cost;
+            _gameplayManager.OpponentPlayer.Goo -= card.libraryCard.cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
