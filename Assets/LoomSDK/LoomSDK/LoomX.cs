@@ -10,9 +10,10 @@ public static class LoomX
 {
     private static Contract _contract;
     private static readonly string FileName = Application.dataPath+"/PrivateKey.txt";
+    private static readonly string FileNameStr = Application.dataPath+"/PrivateKeyStr.txt";
     private static string Key_PrivateKey = "PrivateKey";
     
-    private static byte[] GetPrivateKeyFromFile()
+    public static byte[] GetPrivateKeyFromFile()
     {
         byte[] privateKey;
         if (File.Exists(FileName))
@@ -21,6 +22,9 @@ public static class LoomX
         {
             privateKey = CryptoUtils.GeneratePrivateKey();
             File.WriteAllBytes(FileName, privateKey);
+            
+            var privateKeyStr = Convert.ToBase64String(privateKey);
+            File.WriteAllText(FileNameStr, privateKeyStr);
         }
 
         return privateKey;

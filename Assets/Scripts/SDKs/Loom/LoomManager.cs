@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Loom.Unity3d;
 using UnityEngine;
+using Random = System.Random;
 
 public partial class LoomManager
 {
@@ -12,9 +13,9 @@ public partial class LoomManager
         LoomXCommandHandlers.Initialize();
     }
     
-    private static Contract _contract;
+    private Contract _contract;
     
-    public const string UserId = "a";
+    public static string UserId = string.Empty;
 
     private string _writerHost= "ws://127.0.0.1:46657/websocket";
     private string _readerHost = "ws://127.0.0.1:9999/queryws";
@@ -47,7 +48,8 @@ public partial class LoomManager
     
     public async Task Init(Action result = null)
     {
-        var privateKey = LoomX.GetPrivateKeyFromPlayerPrefs();
+        //var privateKey = LoomX.GetPrivateKeyFromPlayerPrefs();
+        var privateKey = LoomX.GetPrivateKeyFromFile();
         var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         var callerAddr = Address.FromPublicKey(publicKey);
 
@@ -78,7 +80,18 @@ public partial class LoomManager
         _contract = new Contract(client, contractAddr, callerAddr);
         
         result?.Invoke();
-    }   
+    }
+
+    public async Task CreateGuestUser()
+    {
+        var rand = new Random();
+        var user = "Guest_" + rand.Next(1, 1000000);
+        
+        UserId = user;
+        PlayerPrefs.SetString("User", UserId);
+            
+        await SignUp(UserId, var => {}); 
+    }
 }
         
         

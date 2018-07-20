@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using Loom.Unity3d.Zb;
 using LoomNetwork.Internal;
@@ -90,16 +91,9 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
 
-            try
-            {
-                var deckData = await LoomManager.Instance.GetDecks(LoomManager.UserId);
-                Debug.Log(deckData.ToString());
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(deckData.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("===== Deck Data Not Loaded ===== " + ex);
-            }
+            
+            //await GetCardLibraryData();
+            await GetDeckData();
             
             CachedCardsLibraryData.FillAllCards();
 
@@ -115,6 +109,36 @@ namespace LoomNetwork.CZB
 
 
             OnLoadCacheCompletedEvent?.Invoke();
+        }
+
+        private async Task GetCardLibraryData()
+        {
+            try
+            {
+                var cardLibrary = await LoomManager.Instance.GetCardLibrary();
+                Debug.Log(cardLibrary.ToString());
+                CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(cardLibrary.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("===== Card Library Not Loaded ===== " + ex);
+            }
+        }
+        
+        private async Task GetDeckData()
+        {
+            try
+            {
+                var deckData = await LoomManager.Instance.GetDecks(LoomManager.UserId);
+                Debug.Log(deckData.ToString());
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(deckData.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
+                // TODO : Removed code loading deck data from Resources
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
+            }
         }
 
         public void Update()

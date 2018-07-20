@@ -45,7 +45,16 @@ public static class LoomXCommandHandlers
 	{
 		LoomManager.Instance.WriteHost = writer;
 		LoomManager.Instance.ReaderHost = reader;
-		await LoomManager.Instance.Init(()=> { Debug.Log("LoomX Initialized..");});
+		await LoomManager.Instance.Init(() =>
+		{
+			Debug.Log("LoomX Initialized..");
+		});
 	}
 	
+	
+	[CommandHandler(Description = "Clear Player Prefs")]
+	private static void ClearPlayerPrefs()
+	{
+		PlayerPrefs.DeleteAll();
+	}
 }

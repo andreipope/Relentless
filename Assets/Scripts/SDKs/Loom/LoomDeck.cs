@@ -3,17 +3,18 @@ using System;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Loom.Unity3d.Zb;
-using LoomNetwork.CZB.Data;
 using UnityEngine;
+using Deck = LoomNetwork.CZB.Data.Deck;
+using ZbDeck = Loom.Unity3d.Zb.Deck;
 
 public partial class LoomManager
 {
     private const string GetDeckDataMethod = "GetDecks";
     private const string DeleteDeckMethod = "DeleteDeck";
-    private const string AddDeckMethod = "AddDeck";
+    private const string AddDeckMethod = "CreateDeck";
     private const string EditDeckMethod = "EditDeck";
     
-    public async Task<UserDecks> GetDecks(string userId)
+    public async Task<DeckList> GetDecks(string userId)
     {
         if (_contract == null)
             await Init();
@@ -22,7 +23,7 @@ public partial class LoomManager
             UserId = userId
         };
         
-        return await _contract.StaticCallAsync<UserDecks>(GetDeckDataMethod, request);
+        return await _contract.StaticCallAsync<DeckList>(GetDeckDataMethod, request);
     }
 
     public async Task DeleteDeck(string userId, string deckId, Action<string> errorResult)
@@ -52,11 +53,11 @@ public partial class LoomManager
         if (_contract == null)
             await Init();
         
-        var cards = new RepeatedField<CardInCollection>();
+        var cards = new RepeatedField<CardCollection>();
             
         for (var i = 0; i < deck.cards.Count; i++)
         {
-            var cardInCollection = new CardInCollection
+            var cardInCollection = new CardCollection
             {
                 CardId = deck.cards[i].cardId,
                 Amount = deck.cards[i].amount
@@ -68,7 +69,7 @@ public partial class LoomManager
         var request = new EditDeckRequest
         {
             UserId = userId,
-            Deck = new ZBDeck
+            Deck = new ZbDeck
             {
                 Name = deck.name,
                 HeroId = deck.heroId,
@@ -93,11 +94,11 @@ public partial class LoomManager
         if (_contract == null)
             await Init();
         
-        var cards = new RepeatedField<CardInCollection>();
+        var cards = new RepeatedField<CardCollection>();
             
         for (var i = 0; i < deck.cards.Count; i++)
         {
-            var cardInCollection = new CardInCollection
+            var cardInCollection = new CardCollection
             {
                 CardId = deck.cards[i].cardId,
                 Amount = deck.cards[i].amount
@@ -106,10 +107,10 @@ public partial class LoomManager
             cards.Add(cardInCollection);
         }
             
-        var request = new AddDeckRequest
+        var request = new CreateDeckRequest
         {
             UserId = userId,
-            Deck = new ZBDeck
+            Deck = new ZbDeck
             {
                 Name = deck.name,
                 HeroId = deck.heroId,

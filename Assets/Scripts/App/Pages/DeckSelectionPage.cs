@@ -8,9 +8,9 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using TMPro;
-using Loom.Unity3d.Zb;
-using LoomNetwork.CZB.Data;
 using System;
+using Deck = LoomNetwork.CZB.Data.Deck;
+using Hero = LoomNetwork.CZB.Data.Hero;
 
 namespace LoomNetwork.CZB
 {

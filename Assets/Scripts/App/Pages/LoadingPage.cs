@@ -171,10 +171,24 @@ namespace LoomNetwork.CZB
 				if(!string.IsNullOrEmpty(result))
 					OpenAlertDialog("Not Able to Create Account..");
 				else
+				{
 					Debug.Log(" ====== Account Created Successfully ==== ");
+					LoomManager.UserId = usernameText;
+					//OpenAlertDialog("Account Created Successfully");
+					// TODO : Removed code loading data manager
+					var dataManager = GameClient.Get<IDataManager>();
+					dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+					dataManager.StartLoadCache();
+				}
 					
 			});
         }
+
+	    private void OnLoadCacheComplete()
+	    {
+		    Debug.Log("Main Menu == ");
+		    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+	    }
 
         public void OnLoginButtonPressed()
         {
@@ -191,48 +205,18 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            if (string.IsNullOrEmpty(passwordText))
+            /*if (string.IsNullOrEmpty(passwordText))
             {
                 OpenAlertDialog("Please enter your password.");
                 return;
-            }
+            }*/
 	        
-	        /*var mapEntry = new MapEntry();
-	        mapEntry.Key = "Crypto";
-	        mapEntry.Value = "Currency";
-	        LoomManager.Instance.SetMessageWithResult(mapEntry, result =>
-	        {
-		        if (result != null)
-		        {
-			        if (result.CheckTx.Code != 0)
-			        {
-				        if (!string.IsNullOrEmpty(result.CheckTx.Error))
-					        OpenAlertDialog(result.CheckTx.Error);
-			        }
-			        else if (result.DeliverTx.Code != 0)
-			        {
-				        if (!string.IsNullOrEmpty(result.DeliverTx.Error))
-					        OpenAlertDialog(result.DeliverTx.Error);
-			        }
-			        else
-				        OpenAlertDialog("result = " + result);
-		        } 
-		        else
-		        {
-			        OpenAlertDialog("Connection Not Found.");
-		        }
-	        });*/
-	        
-	        /*LoomManager.Instance.GetMessage(mapEntry, result =>
-	        {
-		        if(result != null)
-			       Debug.Log("========= Result = " + result.Value);
-		        else
-			       Debug.Log("======= Key Not found ==== ");
-	        });*/
-	        
+	        LoomManager.UserId = usernameText;
+	        var dataManager = GameClient.Get<IDataManager>();
+	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+	        dataManager.StartLoadCache();
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
             /*ClientAPI.Login(usernameText, passwordText,
 				() =>
 				{
