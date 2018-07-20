@@ -2,13 +2,7 @@
 // https://loomx.io/
 
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
@@ -37,11 +31,11 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-        }
 
-        protected override void UnitOnAttackEventHandler(object info)
-        {
-            base.UnitOnAttackEventHandler(info);
+            if(_isAbilityResolved)
+            {
+                _battlegroundController.TakeControlUnit(playerCallerOfAbility, targetUnit);
+            }
         }
     }
 }

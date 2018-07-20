@@ -74,9 +74,7 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-            Player opponent = _gameplayManager.OpponentPlayer;
-            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.OpponentPlayer)
-                opponent = _gameplayManager.CurrentPlayer;
+            var opponent = _abilitiesController.GetOpponentPlayer(this);
 
             var creature = info as BoardUnit;
 

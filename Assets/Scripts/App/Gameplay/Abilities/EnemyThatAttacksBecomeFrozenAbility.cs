@@ -2,19 +2,17 @@
 // https://loomx.io/
 
 
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class RageAbility : AbilityBase
+    public class EnemyThatAttacksBecomeFrozenAbility : AbilityBase
     {
-        public int value = 0;
+        public int value = 1;
 
-        public RageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public EnemyThatAttacksBecomeFrozenAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            value = ability.value;
         }
 
         public override void Activate()
@@ -46,10 +44,11 @@ namespace LoomNetwork.CZB
         {
             base.UnitGotDamageEventHandler(from);
 
-            if (abilityCallType != Enumerators.AbilityCallType.GOT_DAMAGE)
+            if (abilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;
 
-            abilityUnitOwner.Damage += value;
+            if(from is BoardUnit)
+                (from as BoardUnit).Stun(value);
         }
     }
 }

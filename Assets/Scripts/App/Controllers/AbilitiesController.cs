@@ -199,7 +199,22 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS:
                     ability = new ReturnUnitsOnBoardToOwnersDecksAbility(cardKind, abilityData);
-                    break;     
+                    break;
+                case Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ADJACENT_ALLY_UNITS:
+                    ability = new TakeUnitTypeToAdjacentAllyUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ENEMY_THAT_ATTACKS_BECOME_FROZEN:
+                    ability = new EnemyThatAttacksBecomeFrozenAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT:
+                    ability = new TakeUnitTypeToAllyUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH:
+                    ability = new ReviveDiedUnitsOfTypeFromMatchAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
+                    ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
+                    break;
                 default:
                     break;
             }
@@ -503,6 +518,11 @@ namespace LoomNetwork.CZB
 
             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
             _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+        }
+
+        public Player GetOpponentPlayer(AbilityBase ability)
+        {
+            return ability.playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
         }
 
         public class ActiveAbility

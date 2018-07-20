@@ -686,5 +686,10 @@ namespace LoomNetwork.CZB
         {
             unit.Die();
         }
+
+        public void TakeControlUnit(Player to, BoardUnit unit)
+        {
+            // implement functionality of the take control
+        }
     }
 }

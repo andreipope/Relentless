@@ -29,6 +29,8 @@ namespace LoomNetwork.CZB
         public BoardUnit selfBoardCreature;
 
         public Enumerators.CardType targetUnitType;
+        public Enumerators.UnitStatusType targetUnitStatusType;
+        
 
         protected void Awake()
         {
@@ -53,27 +55,30 @@ namespace LoomNetwork.CZB
             base.Update();
         }
 
-        public override void OnCardSelected(BoardUnit creature)
+        public override void OnCardSelected(BoardUnit unit)
         {
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && creature.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
-                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
+            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && unit.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
+                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && unit.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if ((targetUnitType == Enumerators.CardType.NONE) || creature.Card.type == targetUnitType)
+                if ((targetUnitType == Enumerators.CardType.NONE) || unit.Card.type == targetUnitType)
                 {
-                    if (selfBoardCreature != creature)
+                    if ((targetUnitStatusType == Enumerators.UnitStatusType.NONE) || unit.UnitStatus == targetUnitStatusType)
                     {
-                        if (selectedCard != null)
-                            selectedCard.SetSelectedUnit(false);
+                        if (selfBoardCreature != unit)
+                        {
+                            if (selectedCard != null)
+                                selectedCard.SetSelectedUnit(false);
 
-                        selectedCard = creature;
-                        if (selectedPlayer != null)
-                            selectedPlayer.SetGlowStatus(false);
-                        selectedPlayer = null;
-                        CreateTarget(creature.transform.position);
-                        selectedCard.SetSelectedUnit(true);
+                            selectedCard = unit;
+                            if (selectedPlayer != null)
+                                selectedPlayer.SetGlowStatus(false);
+                            selectedPlayer = null;
+                            CreateTarget(unit.transform.position);
+                            selectedCard.SetSelectedUnit(true);
 
-                        OnCardSelectedEvent?.Invoke(creature);
+                            OnCardSelectedEvent?.Invoke(unit);
+                        }
                     }
                 }
             }

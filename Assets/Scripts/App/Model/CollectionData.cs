@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB.Data
 
         public CollectionCardData GetCardData(int id)
         {
-            foreach(var cardData in cards)
+            foreach (var cardData in cards)
             {
                 if (cardData.cardId == id)
                     return cardData;

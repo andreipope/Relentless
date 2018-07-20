@@ -221,6 +221,11 @@
             ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS,
             DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM,
             RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS,
+            TAKE_UNIT_TYPE_TO_ADJACENT_ALLY_UNITS,
+            ENEMY_THAT_ATTACKS_BECOME_FROZEN,
+            TAKE_UNIT_TYPE_TO_ALLY_UNIT,
+            REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
+            CHANGE_STAT_UNTILL_END_OF_TURN
         }
 
         public enum AbilityActivityType
@@ -237,7 +242,8 @@
             PERMANENT,
             AT_ATTACK,
             AT_DEATH,
-            GOT_DAMAGE
+            GOT_DAMAGE,
+            AT_DEFENCE
         }
 
         public enum StatType
@@ -424,6 +430,13 @@
         {
             ANY,
             ONLY_DIFFERENT
+        }
+
+        public enum UnitStatusType
+        {
+            NONE,
+
+            FROZEN,
         }
     }
 }

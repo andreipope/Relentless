@@ -44,6 +44,7 @@ namespace LoomNetwork.CZB
         public Enumerators.AbilityEffectType abilityEffectType;
 
         public Enumerators.CardType targetCardType = Enumerators.CardType.NONE;
+        public Enumerators.UnitStatusType targetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
@@ -111,6 +112,8 @@ namespace LoomNetwork.CZB
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = abilityUnitOwner;
             _targettingArrow.targetUnitType = targetCardType;
+            _targettingArrow.targetUnitStatusType = targetUnitStatusType;
+            
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(abilityUnitOwner.transform.position);
@@ -304,7 +307,7 @@ namespace LoomNetwork.CZB
 			
 		}
 
-        protected virtual void UnitGotDamageEventHandler()
+        protected virtual void UnitGotDamageEventHandler(object from)
         {
 
         }
