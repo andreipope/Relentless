@@ -610,6 +610,7 @@ namespace LoomNetwork.CZB
 
             if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             {
+                if(Damage > 0)
                 SetHighlightingEnabled(true);
 
                 AttackedThisTurn = false;
@@ -889,7 +890,7 @@ namespace LoomNetwork.CZB
 
         public bool UnitCanBeUsable()
         {
-            if (HP <= 0)
+            if (HP <= 0 || Damage <= 0)
                 return false;
 
             if (IsPlayable)
