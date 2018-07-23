@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
-using Loom.Unity3d.Zb;
 using LoomNetwork.Internal;
 using LoomNetwork.CZB.Data;
+using Deck = LoomNetwork.CZB.Data.Deck;
 
 namespace LoomNetwork.CZB
 {
@@ -129,15 +129,15 @@ namespace LoomNetwork.CZB
         {
             try
             {
-                var deckData = await LoomManager.Instance.GetDecks(LoomManager.UserId);
-                Debug.Log(deckData.ToString());
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(deckData.ToString());
+                var listDecksResponse = await LoomManager.Instance.GetDecks(LoomManager.UserId);
+                if(listDecksResponse != null)
+                    CachedDecksData.decks = JsonConvert.DeserializeObject<List<Deck>>(listDecksResponse.Decks.ToString());
             }
             catch (Exception ex)
             {
                 Debug.Log("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
                 // TODO : Removed code loading deck data from Resources
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
+                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
             }
         }
 

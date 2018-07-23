@@ -9,8 +9,8 @@ using Google.Protobuf;
 public static class LoomX
 {
     private static Contract _contract;
-    private static readonly string FileName = Application.dataPath+"/PrivateKey.txt";
-    private static readonly string FileNameStr = Application.dataPath+"/PrivateKeyStr.txt";
+    private static readonly string FileName = Application.persistentDataPath+"/PrivateKey.txt";
+    private static readonly string FileNameStr = Application.persistentDataPath+"/PrivateKeyStr.txt";
     private static string Key_PrivateKey = "PrivateKey";
     
     public static byte[] GetPrivateKeyFromFile()

@@ -14,16 +14,16 @@ public partial class LoomManager
     private const string AddDeckMethod = "CreateDeck";
     private const string EditDeckMethod = "EditDeck";
     
-    public async Task<DeckList> GetDecks(string userId)
+    public async Task<ListDecksResponse> GetDecks(string userId)
     {
         if (_contract == null)
             await Init();
         
-        var request = new GetDeckRequest {
+        var request = new ListDecksRequest {
             UserId = userId
         };
         
-        return await _contract.StaticCallAsync<DeckList>(GetDeckDataMethod, request);
+        return await _contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
     }
 
     public async Task DeleteDeck(string userId, string deckId, Action<string> errorResult)
