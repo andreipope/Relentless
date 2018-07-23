@@ -63,18 +63,18 @@ namespace Loom.Unity3d.Zb {
             "b3RpZmljYXRpb24YBiABKAgSEQoJZWxvX3Njb3JlGAcgASgDEhQKDGN1cnJl",
             "bnRfdGllchgIIAEoBRIcChRnYW1lX21lbWJlcnNoaXBfdGllchgJIAEoBSIk",
             "ChFHZXRBY2NvdW50UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIiIKD0dldERl",
-            "Y2tzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjIKDkdldERlY2tSZXF1ZXN0",
-            "Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgCIAEoCSI5ChFDcmVhdGVE",
-            "ZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sYAiABKAsyBS5E",
-            "ZWNrIjUKEURlbGV0ZURlY2tSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoH",
-            "ZGVja19pZBgCIAEoCSI3Cg9FZGl0RGVja1JlcXVlc3QSDwoHdXNlcl9pZBgB",
-            "IAEoCRITCgRkZWNrGAIgASgLMgUuRGVjayIoChBHZXREZWNrc1Jlc3BvbnNl",
-            "EhQKBWRlY2tzGAEgAygLMgUuRGVjayI2Cg1EZWNrc1Jlc3BvbnNlEg8KB3Vz",
-            "ZXJfaWQYASABKAkSFAoFZGVja3MYAiADKAsyBS5EZWNrIhgKFkxpc3RDYXJk",
-            "TGlicmFyeVJlcXVlc3QiMQoXTGlzdENhcmRMaWJyYXJ5UmVzcG9uc2USFgoE",
-            "c2V0cxgBIAMoCzIILkNhcmRTZXQiEQoPTGlzdEhlcm9SZXF1ZXN0IikKEExp",
-            "c3RIZXJvUmVzcG9uc2USFQoGaGVyb2VzGAEgAygLMgUuSGVyb0ISqgIPTG9v",
-            "bS5Vbml0eTNkLlpiYgZwcm90bzM="));
+            "Y2tzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjQKDkdldERlY2tSZXF1ZXN0",
+            "Eg8KB3VzZXJfaWQYASABKAkSEQoJZGVja19uYW1lGAIgASgJIjkKEUNyZWF0",
+            "ZURlY2tSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIF",
+            "LkRlY2siNwoRRGVsZXRlRGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIR",
+            "CglkZWNrX25hbWUYAiABKAkiNwoPRWRpdERlY2tSZXF1ZXN0Eg8KB3VzZXJf",
+            "aWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2siKAoQR2V0RGVja3NSZXNw",
+            "b25zZRIUCgVkZWNrcxgBIAMoCzIFLkRlY2siNgoNRGVja3NSZXNwb25zZRIP",
+            "Cgd1c2VyX2lkGAEgASgJEhQKBWRlY2tzGAIgAygLMgUuRGVjayIYChZMaXN0",
+            "Q2FyZExpYnJhcnlSZXF1ZXN0IjEKF0xpc3RDYXJkTGlicmFyeVJlc3BvbnNl",
+            "EhYKBHNldHMYASADKAsyCC5DYXJkU2V0IhEKD0xpc3RIZXJvUmVxdWVzdCIp",
+            "ChBMaXN0SGVyb1Jlc3BvbnNlEhUKBmhlcm9lcxgBIAMoCzIFLkhlcm9CEqoC",
+            "D0xvb20uVW5pdHkzZC5aYmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -96,9 +96,9 @@ namespace Loom.Unity3d.Zb {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.UpsertAccountRequest), global::Loom.Unity3d.Zb.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.GetAccountRequest), global::Loom.Unity3d.Zb.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.GetDecksRequest), global::Loom.Unity3d.Zb.GetDecksRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.GetDeckRequest), global::Loom.Unity3d.Zb.GetDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.GetDeckRequest), global::Loom.Unity3d.Zb.GetDeckRequest.Parser, new[]{ "UserId", "DeckName" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.CreateDeckRequest), global::Loom.Unity3d.Zb.CreateDeckRequest.Parser, new[]{ "UserId", "Deck" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.DeleteDeckRequest), global::Loom.Unity3d.Zb.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.DeleteDeckRequest), global::Loom.Unity3d.Zb.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckName" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.EditDeckRequest), global::Loom.Unity3d.Zb.EditDeckRequest.Parser, new[]{ "UserId", "Deck" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.GetDecksResponse), global::Loom.Unity3d.Zb.GetDecksResponse.Parser, new[]{ "Decks" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Unity3d.Zb.DecksResponse), global::Loom.Unity3d.Zb.DecksResponse.Parser, new[]{ "UserId", "Decks" }, null, null, null),
@@ -3902,7 +3902,7 @@ namespace Loom.Unity3d.Zb {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetDeckRequest(GetDeckRequest other) : this() {
       userId_ = other.userId_;
-      deckId_ = other.deckId_;
+      deckName_ = other.deckName_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3922,14 +3922,14 @@ namespace Loom.Unity3d.Zb {
       }
     }
 
-    /// <summary>Field number for the "deck_id" field.</summary>
-    public const int DeckIdFieldNumber = 2;
-    private string deckId_ = "";
+    /// <summary>Field number for the "deck_name" field.</summary>
+    public const int DeckNameFieldNumber = 2;
+    private string deckName_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string DeckId {
-      get { return deckId_; }
+    public string DeckName {
+      get { return deckName_; }
       set {
-        deckId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        deckName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -3947,7 +3947,7 @@ namespace Loom.Unity3d.Zb {
         return true;
       }
       if (UserId != other.UserId) return false;
-      if (DeckId != other.DeckId) return false;
+      if (DeckName != other.DeckName) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3955,7 +3955,7 @@ namespace Loom.Unity3d.Zb {
     public override int GetHashCode() {
       int hash = 1;
       if (UserId.Length != 0) hash ^= UserId.GetHashCode();
-      if (DeckId.Length != 0) hash ^= DeckId.GetHashCode();
+      if (DeckName.Length != 0) hash ^= DeckName.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3973,9 +3973,9 @@ namespace Loom.Unity3d.Zb {
         output.WriteRawTag(10);
         output.WriteString(UserId);
       }
-      if (DeckId.Length != 0) {
+      if (DeckName.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(DeckId);
+        output.WriteString(DeckName);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3988,8 +3988,8 @@ namespace Loom.Unity3d.Zb {
       if (UserId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
       }
-      if (DeckId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeckId);
+      if (DeckName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeckName);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4005,8 +4005,8 @@ namespace Loom.Unity3d.Zb {
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
-      if (other.DeckId.Length != 0) {
-        DeckId = other.DeckId;
+      if (other.DeckName.Length != 0) {
+        DeckName = other.DeckName;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4024,7 +4024,7 @@ namespace Loom.Unity3d.Zb {
             break;
           }
           case 18: {
-            DeckId = input.ReadString();
+            DeckName = input.ReadString();
             break;
           }
         }
@@ -4222,7 +4222,7 @@ namespace Loom.Unity3d.Zb {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public DeleteDeckRequest(DeleteDeckRequest other) : this() {
       userId_ = other.userId_;
-      deckId_ = other.deckId_;
+      deckName_ = other.deckName_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4242,14 +4242,14 @@ namespace Loom.Unity3d.Zb {
       }
     }
 
-    /// <summary>Field number for the "deck_id" field.</summary>
-    public const int DeckIdFieldNumber = 2;
-    private string deckId_ = "";
+    /// <summary>Field number for the "deck_name" field.</summary>
+    public const int DeckNameFieldNumber = 2;
+    private string deckName_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string DeckId {
-      get { return deckId_; }
+    public string DeckName {
+      get { return deckName_; }
       set {
-        deckId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        deckName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -4267,7 +4267,7 @@ namespace Loom.Unity3d.Zb {
         return true;
       }
       if (UserId != other.UserId) return false;
-      if (DeckId != other.DeckId) return false;
+      if (DeckName != other.DeckName) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4275,7 +4275,7 @@ namespace Loom.Unity3d.Zb {
     public override int GetHashCode() {
       int hash = 1;
       if (UserId.Length != 0) hash ^= UserId.GetHashCode();
-      if (DeckId.Length != 0) hash ^= DeckId.GetHashCode();
+      if (DeckName.Length != 0) hash ^= DeckName.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4293,9 +4293,9 @@ namespace Loom.Unity3d.Zb {
         output.WriteRawTag(10);
         output.WriteString(UserId);
       }
-      if (DeckId.Length != 0) {
+      if (DeckName.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(DeckId);
+        output.WriteString(DeckName);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -4308,8 +4308,8 @@ namespace Loom.Unity3d.Zb {
       if (UserId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
       }
-      if (DeckId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeckId);
+      if (DeckName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeckName);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4325,8 +4325,8 @@ namespace Loom.Unity3d.Zb {
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
-      if (other.DeckId.Length != 0) {
-        DeckId = other.DeckId;
+      if (other.DeckName.Length != 0) {
+        DeckName = other.DeckName;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4344,7 +4344,7 @@ namespace Loom.Unity3d.Zb {
             break;
           }
           case 18: {
-            DeckId = input.ReadString();
+            DeckName = input.ReadString();
             break;
           }
         }

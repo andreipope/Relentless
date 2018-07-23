@@ -17,11 +17,11 @@ public partial class LoomManager
     
     public static string UserId = string.Empty;
 
-    private string _writerHost= "ws://127.0.0.1:46657/websocket";
-    private string _readerHost = "ws://127.0.0.1:9999/queryws";
+    //private string _writerHost= "ws://127.0.0.1:46657/websocket";
+    //private string _readerHost = "ws://127.0.0.1:9999/queryws";
     
-    //private string _writerHost= "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
-    //private string _readerHost = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
+    private string _writerHost= "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
+    private string _readerHost = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
 
     public string WriteHost
     {

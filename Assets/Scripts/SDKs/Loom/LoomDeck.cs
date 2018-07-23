@@ -9,7 +9,7 @@ using ZbDeck = Loom.Unity3d.Zb.Deck;
 
 public partial class LoomManager
 {
-    private const string GetDeckDataMethod = "GetDecks";
+    private const string GetDeckDataMethod = "ListDecks";
     private const string DeleteDeckMethod = "DeleteDeck";
     private const string AddDeckMethod = "CreateDeck";
     private const string EditDeckMethod = "EditDeck";
@@ -33,7 +33,7 @@ public partial class LoomManager
         
         var request = new DeleteDeckRequest {
             UserId = userId,
-            DeckId = deckId
+            DeckName = deckId
         };
         
         try
