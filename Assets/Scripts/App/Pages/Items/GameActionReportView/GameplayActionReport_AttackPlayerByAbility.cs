@@ -7,12 +7,14 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Common;
+using System;
 
 namespace LoomNetwork.CZB
 {
     public class GameplayActionReport_AttackPlayerByAbility : ReportViewBase
     {
-        private BoardUnit _abilityUnitOwner;
+        private object _abilityOwner;
         private AbilityData _usedAbility;
         private int _abilityValue;
         private Player _abilityUsedOnPlayer;
@@ -26,16 +28,26 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _abilityUnitOwner = gameAction.parameters[0] as BoardUnit;
+            _abilityOwner = gameAction.parameters[0];
             _usedAbility = gameAction.parameters[1] as AbilityData;
             _abilityValue = (int)gameAction.parameters[2];
             _abilityUsedOnPlayer = gameAction.parameters[3] as Player;
 
-            previewImage.sprite = _abilityUnitOwner.sprite;
+            if (_abilityOwner is BoardUnit)
+            {
+                previewImage.sprite = (_abilityOwner as BoardUnit).sprite;
+                _attackingAbilityOwnerObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
+            }
+            else
+            {
+                var rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.libraryCard.cardRank);
+                string cardSetName = cardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.libraryCard);
+                previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.libraryCard.picture.ToLower()));
+                _attackingAbilityOwnerObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
+            }
 
             attackingPictureObject.SetActive(true);
 
-            _attackingAbilityOwnerObj = CreateCardPreview(_abilityUnitOwner.Card, Vector3.zero);
             _attackedPlayerObj = CreatePlayerPreview(_abilityUsedOnPlayer, Vector3.right * 6);
 
             GameObject cardView = _attackedPlayerObj.transform.Find("AttackingHealth").gameObject;

@@ -432,6 +432,11 @@ namespace LoomNetwork.CZB
                     break;
 
                 var card = cards[i];
+                var cardData = _dataManager.CachedCollectionData.GetCardData(card.id);
+
+                // hack !!!! CHECK IT!!!
+                if (cardData == null)
+                    continue;
 
                 BoardCard boardCard = CreateCard(card, _startPos + Vector3.right * stepX * i);
 

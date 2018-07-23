@@ -24,6 +24,8 @@ namespace LoomNetwork.CZB
         private IDataManager _dataManager;
         private IPlayerManager _playerManager;
 
+        private CardsController _cardsController;
+
         private GameObject _selfPage;
 
         private Button _buttonBack;
@@ -67,6 +69,8 @@ namespace LoomNetwork.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+
+            _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -336,13 +340,7 @@ namespace LoomNetwork.CZB
                 var n = i;
                 var card = cardsInPack[i];
 
-                string cardSetName = string.Empty;
-                //var sets = _dataManager.CachedCardsLibraryData.sets.Where(set => set.name != "Others");
-                foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-                {
-                    if (cardSet.cards.IndexOf(card) > -1)
-                        cardSetName = cardSet.name;
-                }
+                string cardSetName = _cardsController.GetSetOfCard(card);
 
                 GameObject go = null;
                 if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)

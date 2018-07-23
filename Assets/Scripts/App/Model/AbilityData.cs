@@ -20,7 +20,8 @@ namespace LoomNetwork.CZB.Data
         public string statType;
         public string setType;
         public string effectType;
-
+        public string cardType;
+        public string unitStatus;
 
         [JsonIgnore]
 		public Enumerators.AbilityType abilityType;
@@ -38,6 +39,10 @@ namespace LoomNetwork.CZB.Data
         public Enumerators.AbilityEffectType abilityEffectType;
         [JsonIgnore]
         public Enumerators.AttackInfoType attackInfoType;
+        [JsonIgnore]
+        public Enumerators.CardType targetCardType;
+        [JsonIgnore]
+        public Enumerators.UnitStatusType targetUnitStatusType; 
 
         public int value;
 
@@ -55,19 +60,34 @@ namespace LoomNetwork.CZB.Data
             abilityType = CastStringTuEnum<Enumerators.AbilityType>(type);
             abilityActivityType = CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
             abilityCallType = CastStringTuEnum<Enumerators.AbilityCallType>(callType);
-            abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
+
+            if (!string.IsNullOrEmpty(targetType))
+                abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
+            else abilityTargetTypes = new List<Enumerators.AbilityTargetType>();
 
             if (!string.IsNullOrEmpty(statType))
                 abilityStatType = CastStringTuEnum<Enumerators.StatType>(statType);
+            else abilityStatType = Enumerators.StatType.NONE;
 
             if (!string.IsNullOrEmpty(setType))
                 abilitySetType = CastStringTuEnum<Enumerators.SetType>(setType);
+            else abilitySetType = Enumerators.SetType.NONE;
 
             if (!string.IsNullOrEmpty(effectType))
                 abilityEffectType = CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
+            else abilityEffectType = Enumerators.AbilityEffectType.NONE;
 
             if (!string.IsNullOrEmpty(attackInfo))
                 attackInfoType = CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
+            else attackInfoType = Enumerators.AttackInfoType.ANY;
+
+            if (!string.IsNullOrEmpty(cardType))
+                targetCardType = CastStringTuEnum<Enumerators.CardType>(cardType);
+            else targetCardType = Enumerators.CardType.NONE;
+
+
+            if (!string.IsNullOrEmpty(unitStatus))
+                targetUnitStatusType = CastStringTuEnum<Enumerators.UnitStatusType>(unitStatus);
         }
 
         private T CastStringTuEnum<T>(string data)

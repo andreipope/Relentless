@@ -151,14 +151,19 @@ namespace LoomNetwork.CZB
             bool isChanged = false;
 
             var oldIndex = _leftHeroIndex;
-            _leftHeroIndex = Mathf.Clamp(_leftHeroIndex + direction, 0, _overlordObjects.Count - 1);
+            _leftHeroIndex += direction;
+
+            if (_leftHeroIndex < 0)
+                _leftHeroIndex = _overlordObjects.Count - 1;
+            else if (_leftHeroIndex >= _overlordObjects.Count)
+                _leftHeroIndex = 0;
 
             if (oldIndex != _leftHeroIndex)
                 isChanged = true;
 
             if (isChanged)
             {
-                _overlordsContainer.GetComponent<RectTransform>().anchoredPosition += Vector2.left * direction * 735;
+                _overlordsContainer.GetComponent<RectTransform>().anchoredPosition = (Vector2.left * _leftHeroIndex * 735);
                 _overlordObjects[_leftHeroIndex].Select();
             }    
         }
@@ -251,8 +256,11 @@ namespace LoomNetwork.CZB
 
                 _overlordNameText.text = split[0];
 
-                if (split.Length > 1)
-                    _overlordShortDescription.text = split[1].Substring(1);
+                //    if (split.Length > 1)
+                //      _overlordShortDescription.text = split[1].Substring(1);
+
+                _overlordDescriptionText.text = string.Empty;
+                _overlordShortDescription.text = string.Empty;
 
                 _elementIcon.sprite = _elementIconSprite;
 

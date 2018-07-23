@@ -42,8 +42,8 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECKS_AT_ALL = 6;
     
         internal static int DEFAULT_PLAYER_HP = 20;
-        internal static int DEFAULT_PLAYER_MANA = 0;
-        internal static int MAXIMUM_PLAYER_MANA = 10;
+        internal static int DEFAULT_PLAYER_GOO = 0;
+        internal static int MAXIMUM_PLAYER_GOO = 10;
 
         internal static int FIRST_GAME_TURN_INDEX = 1;
 
@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB.Common
         internal const string TAG_LIFE = "Life";
         internal const string TAG_DAMAGE = "Damage";
         internal const string TAG_HP = "HP";
-        internal const string TAG_MANA = "Mana";
+        internal const string TAG_MANA = "Goo";
 
         internal const string STAT_DAMAGE = "DMG";
         internal const string STAT_HP = "HP";
@@ -99,6 +99,6 @@ namespace LoomNetwork.CZB.Common
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
         
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = true;  
     }
 }

@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB
 
             var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(value);
 
-            string cardSetName = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(libraryCard) > -1).name;
+            string cardSetName = _cardsController.GetSetOfCard(libraryCard);
             var card = new WorkingCard(libraryCard, playerCallerOfAbility);
             var unit = CreateBoardUnit(card, cardSetName);
 

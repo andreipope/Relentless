@@ -12,62 +12,111 @@ namespace LoomNetwork.CZB
 {
     public class PlayerManaBarItem
     {
-        private GameObject selfObject;
-        private TextMeshPro _manaText;
-        private List<ManaBottleItem> _manaBottles;
+        private GameObject _selfObject,
+                            _arrowObject,
+            
+                            _overflowObject;
+
+        private TextMeshPro _gooAmountText,
+                            _overflowGooAmountText;
+        private List<GooBottleItem> _gooBottles;
+
+        private const int _meterArrowStep = 12;
+
+        private Vector3 _overflowPos;
+
+        private string _overflowPrefabPath;
 
         public PlayerManaBarItem() { }
 
-        public PlayerManaBarItem(GameObject gameObject)
+        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos)
         {
-            selfObject = gameObject;
-            _manaText = selfObject.transform.Find("ManaAmount/Text").GetComponent<TextMeshPro>();
-            _manaBottles = new List<ManaBottleItem>();
+            _overflowPrefabPath = "Prefabs/" + overflowPrefabName;
+            _overflowPos = overflowPos;
+            _selfObject = gameObject;
+            _gooAmountText = _selfObject.transform.Find("GooMeter/Text").GetComponent<TextMeshPro>();
+            _arrowObject = _selfObject.transform.Find("GooMeter/ArrowCenter").gameObject;
+            _gooBottles = new List<GooBottleItem>();
             GameObject bottle = null;
-            for (int i = 0; i < selfObject.transform.childCount; i++)
+            for (int i = 0; i < _selfObject.transform.childCount; i++)
             {
-                bottle = selfObject.transform.GetChild(i).gameObject;
-                if (bottle.name.Contains("ManaIcon"))
-                    _manaBottles.Add(new ManaBottleItem(bottle));
+                bottle = _selfObject.transform.GetChild(i).gameObject;
+                if (bottle.name.Contains("BottleGoo"))
+                    _gooBottles.Add(new GooBottleItem(bottle));
             }
+            _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
         }
 
-        public void SetMana(int mana)
+        public void SetGoo(int gooValue)
         {
-            _manaText.text = mana.ToString();
-            for (var i = 0; i < _manaBottles.Count; i++)
+            _gooAmountText.text = gooValue.ToString() + "/10";
+            
+            if (gooValue > 10 && _overflowObject == null)
+                CreateOverflow();
+            else if (gooValue < 11 && _overflowObject != null)
+                DestroyOverflow();
+
+            if (_overflowGooAmountText != null)
+                _overflowGooAmountText.text = gooValue.ToString() + "/10";
+
+            for (var i = 0; i < _gooBottles.Count; i++)
             {
-                if (i < mana)
-                    Active(_manaBottles[i]);
+                if (i < gooValue)
+                    Active(_gooBottles[i]);
                 else
-                   Disactive(_manaBottles[i]);
+                   Disactive(_gooBottles[i]);
             }
+            UpdateGooMeter(gooValue);
         }
 
 
-        public void Active(ManaBottleItem item)
+        public void Active(GooBottleItem item)
         {
             item.fullBoottle.DOFade(1.0f, 0.5f);
             item.glowBottle.DOFade(1.0f, 0.5f);
         }
 
-        public void Disactive(ManaBottleItem item)
+        public void Disactive(GooBottleItem item)
         {
             item.fullBoottle.DOFade(0.0f, 0.5f);
             item.glowBottle.DOFade(0.0f, 0.5f);
         }
 
+        private void UpdateGooMeter(int gooValue)
+        {
+            int targetRotation = 90 - _meterArrowStep * gooValue;
+            if (targetRotation < -90)
+                targetRotation = -90;
+            _arrowObject.transform.DORotate(Vector3.forward * targetRotation, 1f);
+            //_arrowObject.transform.localEulerAngles = Vector3.forward * (90 - _meterArrowStep);
+        }
 
-        public struct ManaBottleItem
+        private void CreateOverflow()
+        {
+            _overflowObject = MonoBehaviour.Instantiate<GameObject>(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(_overflowPrefabPath), _selfObject.transform);
+            _overflowObject.transform.localPosition = _overflowPos;
+            _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
+        }
+
+
+        private void DestroyOverflow()
+        {
+            Debug.Log("DestroyOverflow");
+            MonoBehaviour.Destroy(_overflowObject);
+            _overflowObject = null;
+            _overflowGooAmountText = null;
+        }
+
+        public struct GooBottleItem
         {
             public SpriteRenderer fullBoottle,
                                    glowBottle;
 
 
-            public ManaBottleItem(GameObject gameObject)
+            public GooBottleItem(GameObject gameObject)
             {
-                fullBoottle = gameObject.transform.Find("ManaIconBlue/goobottle_goo").GetComponent<SpriteRenderer>();
-                glowBottle = gameObject.transform.Find("ManaIconBlue/glow_goo").GetComponent<SpriteRenderer>();
+                fullBoottle = gameObject.transform.Find("Goo").GetComponent<SpriteRenderer>();
+                glowBottle = gameObject.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
             }
         }
     }

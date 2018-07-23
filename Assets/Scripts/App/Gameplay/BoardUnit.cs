@@ -22,6 +22,7 @@ namespace LoomNetwork.CZB
     {
         public event Action CreatureOnDieEvent;
         public event Action<object> CreatureOnAttackEvent;
+        public event Action<object> UnitGotDamageEvent;
 
         public event Action<int, int> CreatureHPChangedEvent;
         public event Action<int, int> CreatureDamageChangedEvent;
@@ -167,6 +168,10 @@ namespace LoomNetwork.CZB
         public int AdditionalAttack { get; set; }
         public int AdditionalDefense { get; set; }
 
+        public int DamageDebuffUntillEndOfTurn { get; private set; }
+        public int HPDebuffUntillEndOfTurn { get; private set; }
+
+        public Enumerators.UnitStatusType UnitStatus { get; set; }
 
         public BoardUnit(Transform parent)
         {
@@ -238,6 +243,8 @@ namespace LoomNetwork.CZB
             _glowSprite.enabled = false;
 
             IsCreatedThisTurn = true;
+
+            UnitStatus = Enumerators.UnitStatusType.NONE;
         }
 
         public bool IsHeavyUnit()
@@ -267,6 +274,24 @@ namespace LoomNetwork.CZB
                 _battlegroundController.KillBoardCard(this);
 
             CreatureOnDieEvent?.Invoke();
+        }
+
+        public void DebuffDamage(int value)
+        {
+            if (value == 0)
+                return;
+
+            DamageDebuffUntillEndOfTurn = value;
+            Damage -= DamageDebuffUntillEndOfTurn;
+        }
+
+        public void DebuffHealth(int value)
+        {
+            if (value == 0)
+                return;
+
+            HPDebuffUntillEndOfTurn = value;
+            HP -= HPDebuffUntillEndOfTurn;
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -585,6 +610,7 @@ namespace LoomNetwork.CZB
 
             if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             {
+                if(Damage > 0)
                 SetHighlightingEnabled(true);
 
                 AttackedThisTurn = false;
@@ -601,11 +627,23 @@ namespace LoomNetwork.CZB
             {
                 IsPlayable = true;
                 _frozenSprite.DOFade(0, 1);
+                UnitStatus = Enumerators.UnitStatusType.NONE;
             }
 
             HasBuffRush = false;
 
             CancelTargetingArrows();
+
+            if (DamageDebuffUntillEndOfTurn > 0)
+            {
+                Damage += DamageDebuffUntillEndOfTurn;
+                DamageDebuffUntillEndOfTurn = 0;
+            }
+            if (HPDebuffUntillEndOfTurn > 0)
+            {
+                HP += HPDebuffUntillEndOfTurn;
+                HPDebuffUntillEndOfTurn = 0;
+            }       
         }
 
 
@@ -628,6 +666,8 @@ namespace LoomNetwork.CZB
             IsPlayable = false;
 
             _frozenSprite.DOFade(1, 1);
+
+            UnitStatus = Enumerators.UnitStatusType.FROZEN;
             //sleepingParticles.Play();
         }
 
@@ -850,7 +890,7 @@ namespace LoomNetwork.CZB
 
         public bool UnitCanBeUsable()
         {
-            if (HP <= 0)
+            if (HP <= 0 || Damage <= 0)
                 return false;
 
             if (IsPlayable)
@@ -865,6 +905,17 @@ namespace LoomNetwork.CZB
                 return true;
 
             return false;
+        }
+
+        public void ThrowEventGotDamage(object from)
+        {
+            UnitGotDamageEvent?.Invoke(from);
+        }
+
+        public void MoveUnitFromBoardToDeck()
+        {
+            Die(true);
+            MonoBehaviour.Destroy(gameObject);
         }
     }
 

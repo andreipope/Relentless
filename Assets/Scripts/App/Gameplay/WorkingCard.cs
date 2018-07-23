@@ -30,12 +30,12 @@ namespace LoomNetwork.CZB
 
         public WorkingCard(Card card, Player player)
         {
-            libraryCard = card;
-            cardId = card.id;
+            libraryCard = card.Clone();
+            cardId = libraryCard.id;
             owner = player;
 
-            initialHealth = card.health;
-            initialDamage = card.damage;
+            initialHealth = libraryCard.health;
+            initialDamage = libraryCard.damage;
             health = initialHealth;
             damage = initialDamage;
 

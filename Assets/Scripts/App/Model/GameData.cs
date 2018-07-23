@@ -23,9 +23,9 @@ namespace LoomNetwork.CZB.Data
             public int startLifeValue;
             public int minLifeValue;
             public int maxLifeValue;
-            public int startManaValue;
-            public int minManaValue;
-            public int maxManaValue;
+            public int startGooValue;
+            public int minGooValue;
+            public int maxGooValue;
         }
     }
 }

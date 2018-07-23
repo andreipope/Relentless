@@ -43,6 +43,9 @@ namespace LoomNetwork.CZB
         public Enumerators.AffectObjectType affectObjectType;
         public Enumerators.AbilityEffectType abilityEffectType;
 
+        public Enumerators.CardType targetCardType = Enumerators.CardType.NONE;
+        public Enumerators.UnitStatusType targetUnitStatusType = Enumerators.UnitStatusType.NONE;
+
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
         public Enumerators.CardKind cardKind;
@@ -108,6 +111,9 @@ namespace LoomNetwork.CZB
             _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = abilityUnitOwner;
+            _targettingArrow.targetUnitType = targetCardType;
+            _targettingArrow.targetUnitStatusType = targetUnitStatusType;
+            
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
                 _targettingArrow.Begin(abilityUnitOwner.transform.position);
@@ -154,8 +160,9 @@ namespace LoomNetwork.CZB
             {
 				abilityUnitOwner.CreatureOnDieEvent += CreatureOnDieEventHandler;
                 abilityUnitOwner.CreatureOnAttackEvent += UnitOnAttackEventHandler;
+                abilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
-				if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
                   //  boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
@@ -286,10 +293,11 @@ namespace LoomNetwork.CZB
 
         protected virtual void CreatureOnDieEventHandler()
         {
-          //  if(targetCreature != null)
+            //  if(targetCreature != null)
             //    targetCreature.Card.DisconnectAbility((uint)abilityType);
 
             abilityUnitOwner.CreatureOnDieEvent -= CreatureOnDieEventHandler;
+            abilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
             _abilitiesController.DeactivateAbility(activityId);
             Dispose();
         }
@@ -298,6 +306,11 @@ namespace LoomNetwork.CZB
 		{
 			
 		}
+
+        protected virtual void UnitGotDamageEventHandler(object from)
+        {
+
+        }
 
         protected void SpellOnUsedEventHandler()
         {
@@ -323,6 +336,11 @@ namespace LoomNetwork.CZB
         {
             foreach (var id in _particleIds)
                 _particlesController.DestoryParticle(id);
+        }
+
+        protected object GetCaller()
+        {
+            return abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
         }
     }
 }

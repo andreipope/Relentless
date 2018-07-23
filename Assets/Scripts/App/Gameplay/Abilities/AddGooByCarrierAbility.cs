@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.Mana += value;
+            playerCallerOfAbility.Goo += value;
         }
     }
 }

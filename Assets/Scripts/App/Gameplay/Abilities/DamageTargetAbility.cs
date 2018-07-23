@@ -85,16 +85,18 @@ namespace LoomNetwork.CZB
         }
 
         private void ActionCompleted()
-        {           
+        {
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
                     //if (targetPlayer.id == playerCallerOfAbility.id)
-                    _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
+                    _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
-                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
+                    _battleController.AttackCreatureByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }

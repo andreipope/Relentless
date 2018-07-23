@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           // card.cardId = 1;
+                          //  card.cardId = 16;
                         }
                         playerDeck.Add(card.cardId);
                     }
@@ -222,7 +222,7 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
@@ -234,13 +234,14 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(spell))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
                     break;
             }
 
+            LetsThink();
             LetsThink();
         }
         // ai step 2
@@ -352,7 +353,7 @@ namespace LoomNetwork.CZB
 
         private bool CardCanBePlayable(WorkingCard card)
         {
-            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Mana && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
+            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Goo && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
         }
 
         private bool UnitCanBeUsable(BoardUnit unit)
@@ -387,15 +388,12 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Mana -= card.libraryCard.cost;
+            _gameplayManager.OpponentPlayer.Goo -= card.libraryCard.cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
         {
-            string cardSetName = string.Empty;
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
+            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
             var workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
@@ -909,7 +907,7 @@ namespace LoomNetwork.CZB
             }
 
             var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
-            targetingArrow.Begin(startObj.transform.position, isReverseArrow);
+            targetingArrow.Begin(startObj.transform.position);
 
             targetingArrow.SetTarget(targetObject);
 

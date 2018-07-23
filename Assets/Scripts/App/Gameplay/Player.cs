@@ -36,8 +36,8 @@ namespace LoomNetwork.CZB
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
 
-        private int _mana;
-        private int _manaOnCurrentTurn;
+        private int _goo;
+        private int _gooOnCurrentTurn;
         private int _health;
         private int _graveyardCardsCount = 0;
 
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
         private Animator _avatarAnimator, 
                          _deathAnimamtor;
 
-        private FadeTool _manaBarFadeTool;
+        private FadeTool _gooBarFadeTool;
 
 
         public GameObject PlayerObject { get { return _playerObject; } }
@@ -76,30 +76,30 @@ namespace LoomNetwork.CZB
 
         public string nickname;
 
-        public int ManaOnCurrentTurn
+        public int GooOnCurrentTurn
         {
-            get { return _manaOnCurrentTurn; }
+            get { return _gooOnCurrentTurn; }
             set
             {
-                _manaOnCurrentTurn = value;
-                _manaOnCurrentTurn = Mathf.Clamp(_manaOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_MANA);
+                _gooOnCurrentTurn = value;
+                _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_GOO);
             }
         }
 
-        public int Mana
+        public int Goo
         {
             get
             {
-                return _mana;
+                return _goo;
             }
             set
             {
-                var oldMana = _mana;
-                _mana = value;
+                var oldGoo = _goo;
+                _goo = value;
 
-                //_mana = Mathf.Clamp(_mana, 0, Constants.MAXIMUM_PLAYER_MANA);
+                //_goo = Mathf.Clamp(_goo, 0, Constants.MAXIMUM_PLAYER_goo);
 
-                PlayerManaChangedEvent?.Invoke(oldMana, _mana);
+                PlayerManaChangedEvent?.Invoke(oldGoo, _goo);
             }
         }
 
@@ -179,12 +179,12 @@ namespace LoomNetwork.CZB
             deckId = _gameplayManager.PlayerDeckId;
 
             _health = Constants.DEFAULT_PLAYER_HP;
-            _mana = Constants.DEFAULT_PLAYER_MANA;
+            _goo = Constants.DEFAULT_PLAYER_GOO;
 
             if (_gameplayManager.IsTutorial)
             {
-                ManaOnCurrentTurn = 10;
-                Mana = ManaOnCurrentTurn;
+                GooOnCurrentTurn = 10;
+                Goo = GooOnCurrentTurn;
             }
 
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
@@ -196,7 +196,7 @@ namespace LoomNetwork.CZB
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
             _deathAnimamtor = playerObject.transform.Find("HeroDeath").GetComponent<Animator>();
-            _manaBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
+            _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
 
             _avatarAnimator.enabled = false;
@@ -220,8 +220,8 @@ namespace LoomNetwork.CZB
 
            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
-                ManaOnCurrentTurn++;
-                Mana = ManaOnCurrentTurn;
+                GooOnCurrentTurn++;
+                Goo = GooOnCurrentTurn;
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
@@ -381,7 +381,7 @@ namespace LoomNetwork.CZB
 
         public void PlayerDie()
         {
-            _manaBarFadeTool.FadeIn();
+            _gooBarFadeTool.FadeIn();
 
             _avatarAnimator.enabled = true;
             _deathAnimamtor.enabled = true;

@@ -160,6 +160,13 @@ namespace LoomNetwork.CZB
         }
 
 
+        public void SetCardCost(int cost)
+        {
+            libraryCard.cost = cost;
+            manaCost = libraryCard.cost;
+            costText.text = manaCost.ToString();
+        }
+
         public virtual void UpdateAmount(int amount)
         {
             amountText.text = amount.ToString();
@@ -249,7 +256,7 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 return true;
 
-            return owner.Mana >= manaCost;
+            return owner.Goo >= manaCost;
         }
 
         public void IsHighlighted()

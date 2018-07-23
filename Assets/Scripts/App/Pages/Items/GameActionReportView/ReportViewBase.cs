@@ -47,6 +47,23 @@ namespace LoomNetwork.CZB
             selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
             previewImage = selfObject.transform.Find("Image").GetComponent<Image>();
 
+            var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
+            behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
+            behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
+
+            playerAvatarPreviewPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
+            attackingHealthPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
+
+            CreatePreviewPanel();
+        }
+
+        public virtual void SetInfo()
+        {
+
+        }
+
+        private void CreatePreviewPanel()
+        {
             reportActionPreviewPanel = MonoBehaviour.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));//new GameObject(gameAction.actionType.ToString());
             reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
             reportActionPreviewPanel.SetActive(false);
@@ -57,19 +74,7 @@ namespace LoomNetwork.CZB
             healPictureObject = reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
             healPictureObject.SetActive(false);
 
-            var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
-            behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
-            behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
-
-            playerAvatarPreviewPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
-            attackingHealthPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
-
             SetInfo();
-        }
-
-        public virtual void SetInfo()
-        {
-
         }
 
         public virtual void OnPointerExitEventHandler(PointerEventData obj)
@@ -86,8 +91,8 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject currentBoardCard = null;
-            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
-          
+            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
+
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
                 currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
@@ -148,7 +153,7 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject currentBoardCard = null;
-            string cardSetName = GameClient.Get<IDataManager>().CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
+            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {

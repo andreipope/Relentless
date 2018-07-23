@@ -98,17 +98,6 @@ namespace LoomNetwork.CZB
                 controller.Init();
         }
 
-        public string GetCardSet(Data.Card card)
-        {
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card) > -1)
-                    return cardSet.name;
-            }
-
-            return string.Empty;
-        }
-
         public void RearrangeHands()
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
