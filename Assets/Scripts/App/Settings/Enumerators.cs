@@ -174,7 +174,7 @@
             MINION,
             OFFICER,
             COMMANDER,
-            GENERAL
+            GENERAL,
         }
 
         public enum GameEndCondition

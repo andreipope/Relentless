@@ -320,7 +320,16 @@ namespace LoomNetwork.CZB
                 _elementSlotsOfCards[i].SetStatus(i < amount);
             }
 
-            InternalTools.GroupHorizontalObjects(_parentOfEditingGroupUI, 0.75f, 2f);
+            float offset = 0.5f;
+
+            if (maxCopies > 3)
+                offset = 0.8f;
+            else if (maxCopies > 2)
+                offset = 0.5f;
+            else if (maxCopies > 1)
+                offset = 0.7f;
+
+            InternalTools.GroupHorizontalObjects(_parentOfEditingGroupUI, offset, 2f);
         }
 
         private void OnMouseUpEventHandler(GameObject obj)
