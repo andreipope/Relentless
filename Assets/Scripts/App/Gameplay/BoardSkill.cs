@@ -179,7 +179,7 @@ namespace LoomNetwork.CZB
                 };
                     //skill.skillTargetType;
 
-                    fightTargetingArrow.Begin(selfObject.transform.position, !IsPrimary);
+                    fightTargetingArrow.Begin(selfObject.transform.position);
 
                     if (_tutorialManager.IsTutorial)
                         _tutorialManager.DeactivateSelectTarget();

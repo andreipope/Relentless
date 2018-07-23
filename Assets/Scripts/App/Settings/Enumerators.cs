@@ -249,7 +249,9 @@
         public enum StatType
         {
             HEALTH,
-            DAMAGE
+            DAMAGE,
+
+            NONE
         }
 
         public enum AbilityTargetType

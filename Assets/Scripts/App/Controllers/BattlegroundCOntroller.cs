@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
 
         private bool _battleDynamic = false;
 
-        public int TurnDuration { get; private set; }
+      //  public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
         public bool cardsZoomed = false;
@@ -103,10 +103,10 @@ namespace LoomNetwork.CZB
 
         private void LoadGameConfiguration()
         {
-            TurnDuration = Constants.DEFAULT_TURN_DURATION;
+           // TurnDuration = Constants.DEFAULT_TURN_DURATION;
 
-            if (_gameplayManager.IsTutorial)
-                TurnDuration = 10000000;
+          //  if (_gameplayManager.IsTutorial)
+           //     TurnDuration = 10000000;
         }
 
         public void KillBoardCard(BoardUnit card)
@@ -157,7 +157,7 @@ namespace LoomNetwork.CZB
 
             gameFinished = false;
 
-            _timerManager.StopTimer(RunTurnAsync);
+            //_timerManager.StopTimer(RunTurnAsync);
 
 
             if (_gameplayManager.IsTutorial)
@@ -185,13 +185,13 @@ namespace LoomNetwork.CZB
         {
             StartTurn();
 
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+        //    if (!_gameplayManager.IsTutorial)
+           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-            _timerManager.StopTimer(RunTurnAsync);
+           // _timerManager.StopTimer(RunTurnAsync);
 
             gameFinished = true;
             currentTurn = 0;
@@ -199,7 +199,7 @@ namespace LoomNetwork.CZB
             ClearBattleground();
         }
 
-        private void RunTurnAsync(object[] param)
+       /* private void RunTurnAsync(object[] param)
         {
             EndTurn();
 
@@ -207,7 +207,7 @@ namespace LoomNetwork.CZB
                 StartTurn();
             else
                 _timerManager.StopTimer(RunTurnAsync);
-        }
+        } */
 
         public void StartTurn()
         {
@@ -251,7 +251,6 @@ namespace LoomNetwork.CZB
 
                 foreach (var card in playerBoardCards)
                 {
-                    Debug.Log(card.Card.libraryCard.name);
                     card.SetHighlightingEnabled(true);
                 }
 
@@ -308,13 +307,13 @@ namespace LoomNetwork.CZB
 
         public void StopTurn()
         {
-            _timerManager.StopTimer(RunTurnAsync);
+         //   _timerManager.StopTimer(RunTurnAsync);
 
             EndTurn();
             StartTurn();
 
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+          //  if (!_gameplayManager.IsTutorial)
+           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)

@@ -907,7 +907,7 @@ namespace LoomNetwork.CZB
             }
 
             var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
-            targetingArrow.Begin(startObj.transform.position, isReverseArrow);
+            targetingArrow.Begin(startObj.transform.position);
 
             targetingArrow.SetTarget(targetObject);
 

@@ -358,7 +358,7 @@ namespace LoomNetwork.CZB
 
             Sequence animationSequence2 = DOTween.Sequence();
             //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
-            animationSequence2.Append(go.transform.DOMove(new Vector3(-6.57f, -1, 0), 0.7f));
+            animationSequence2.Append(go.transform.DOMove(new Vector3(-7.74f, -1, 0), 0.7f));
 
 
             animationSequence2.OnComplete(() =>
@@ -377,7 +377,7 @@ namespace LoomNetwork.CZB
 
 
                 Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(go.transform.DOMove(new Vector3(-6.57f, -4.352f, 0), .5f));
+                animationSequence5.Append(go.transform.DOMove(new Vector3(-7.74f, -4.352f, 0), .5f));
                 animationSequence5.OnComplete(() =>
                 {
                     MonoBehaviour.Destroy(go);
@@ -414,7 +414,7 @@ namespace LoomNetwork.CZB
 
             Sequence animationSequence2 = DOTween.Sequence();
             //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
-            animationSequence2.Append(go.transform.DOMove(new Vector3(6.535f, 14f, 0), .6f));
+            animationSequence2.Append(go.transform.DOMove(new Vector3(7.7f, 14f, 0), .6f));
 
             animationSequence2.OnComplete(() =>
             {
@@ -431,7 +431,7 @@ namespace LoomNetwork.CZB
                 animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0f, 0f), .2f));
 
                 Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(go.transform.DOMove(new Vector3(6.535f, 6.306f, 0), .5f));
+                animationSequence5.Append(go.transform.DOMove(new Vector3(7.7f, 6.306f, 0), .5f));
                 animationSequence5.OnComplete(() =>
                 {
                     MonoBehaviour.Destroy(go);

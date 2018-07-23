@@ -63,21 +63,27 @@ namespace LoomNetwork.CZB.Data
 
             if (!string.IsNullOrEmpty(targetType))
                 abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
+            else abilityTargetTypes = new List<Enumerators.AbilityTargetType>();
 
             if (!string.IsNullOrEmpty(statType))
                 abilityStatType = CastStringTuEnum<Enumerators.StatType>(statType);
+            else abilityStatType = Enumerators.StatType.NONE;
 
             if (!string.IsNullOrEmpty(setType))
                 abilitySetType = CastStringTuEnum<Enumerators.SetType>(setType);
+            else abilitySetType = Enumerators.SetType.NONE;
 
             if (!string.IsNullOrEmpty(effectType))
                 abilityEffectType = CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
+            else abilityEffectType = Enumerators.AbilityEffectType.NONE;
 
             if (!string.IsNullOrEmpty(attackInfo))
                 attackInfoType = CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
+            else attackInfoType = Enumerators.AttackInfoType.ANY;
 
             if (!string.IsNullOrEmpty(cardType))
                 targetCardType = CastStringTuEnum<Enumerators.CardType>(cardType);
+            else targetCardType = Enumerators.CardType.NONE;
 
 
             if (!string.IsNullOrEmpty(unitStatus))

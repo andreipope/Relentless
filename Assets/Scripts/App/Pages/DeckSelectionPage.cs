@@ -331,7 +331,7 @@ namespace LoomNetwork.CZB
                 _selectedDeckObjectControl = _selfObject.transform.Find("Panel_SelectedHordeObjects").gameObject;
 
                 _cardsInDeckCountText.text = SelfDeck.GetNumCards() + "/" + Constants.MAX_DECK_SIZE;
-                _descriptionText.text = SelfHero.name;
+                _descriptionText.text = deck.name;
 
                 _setTypeIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
                 _hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" + SelfHero.element.ToLower());

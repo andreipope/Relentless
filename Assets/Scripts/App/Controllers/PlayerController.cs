@@ -89,12 +89,12 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Zeptic"));
+                          //  playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Gaz"));
                         }
 
-                        playerDeck.Add(card.cardId); 
+                         playerDeck.Add(card.cardId); 
 
-                       // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Fire-Maw"));
+                        // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Gaz"));
                     }
                 }
             }
