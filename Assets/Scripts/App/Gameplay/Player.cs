@@ -36,8 +36,8 @@ namespace LoomNetwork.CZB
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
 
-        private int _mana;
-        private int _manaOnCurrentTurn;
+        private int _goo;
+        private int _gooOnCurrentTurn;
         private int _health;
         private int _graveyardCardsCount = 0;
 
@@ -54,12 +54,13 @@ namespace LoomNetwork.CZB
 
         private GameObject _avatarObject,
                            _avatarDeathObject,
-                           _avatarHeroHighlight;
+                           _avatarHeroHighlight,
+                           _avatarSelectedHighlight;
 
         private Animator _avatarAnimator, 
                          _deathAnimamtor;
 
-        private FadeTool _manaBarFadeTool;
+        private FadeTool _gooBarFadeTool;
 
 
         public GameObject PlayerObject { get { return _playerObject; } }
@@ -75,30 +76,30 @@ namespace LoomNetwork.CZB
 
         public string nickname;
 
-        public int ManaOnCurrentTurn
+        public int GooOnCurrentTurn
         {
-            get { return _manaOnCurrentTurn; }
+            get { return _gooOnCurrentTurn; }
             set
             {
-                _manaOnCurrentTurn = value;
-                _manaOnCurrentTurn = Mathf.Clamp(_manaOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_MANA);
+                _gooOnCurrentTurn = value;
+                _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_GOO);
             }
         }
 
-        public int Mana
+        public int Goo
         {
             get
             {
-                return _mana;
+                return _goo;
             }
             set
             {
-                var oldMana = _mana;
-                _mana = value;
+                var oldGoo = _goo;
+                _goo = value;
 
-                //_mana = Mathf.Clamp(_mana, 0, Constants.MAXIMUM_PLAYER_MANA);
+                //_goo = Mathf.Clamp(_goo, 0, Constants.MAXIMUM_PLAYER_goo);
 
-                PlayerManaChangedEvent?.Invoke(oldMana, _mana);
+                PlayerManaChangedEvent?.Invoke(oldGoo, _goo);
             }
         }
 
@@ -134,7 +135,7 @@ namespace LoomNetwork.CZB
 
         public List<BoardUnit> BoardCards { get; set; }
 
-        public List<WorkingCard> CardsInDeck { get; private set; }
+        public List<WorkingCard> CardsInDeck { get; set; }
         public List<WorkingCard> CardsInGraveyard { get; private set; }
         public List<WorkingCard> CardsInHand { get; private set; }
         public List<WorkingCard> CardsOnBoard { get; private set; }
@@ -178,12 +179,12 @@ namespace LoomNetwork.CZB
             deckId = _gameplayManager.PlayerDeckId;
 
             _health = Constants.DEFAULT_PLAYER_HP;
-            _mana = Constants.DEFAULT_PLAYER_MANA;
+            _goo = Constants.DEFAULT_PLAYER_GOO;
 
             if (_gameplayManager.IsTutorial)
             {
-                ManaOnCurrentTurn = 10;
-                Mana = ManaOnCurrentTurn;
+                GooOnCurrentTurn = 10;
+                Goo = GooOnCurrentTurn;
             }
 
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
@@ -191,10 +192,11 @@ namespace LoomNetwork.CZB
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _avatarDeathObject = playerObject.transform.Find("HeroDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
+            _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
             _deathAnimamtor = playerObject.transform.Find("HeroDeath").GetComponent<Animator>();
-            _manaBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
+            _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
 
             _avatarAnimator.enabled = false;
@@ -218,8 +220,8 @@ namespace LoomNetwork.CZB
 
            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
-                ManaOnCurrentTurn++;
-                Mana = ManaOnCurrentTurn;
+                GooOnCurrentTurn++;
+                Goo = GooOnCurrentTurn;
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
@@ -330,8 +332,7 @@ namespace LoomNetwork.CZB
         {
             CardsInDeck = new List<WorkingCard>();
 
-            if (!_gameplayManager.IsTutorial)
-                InternalTools.ShakeList(ref cards);// shake
+            cards = ShuffleCardsList(cards);
 
             foreach (var card in cards)
             {
@@ -344,6 +345,16 @@ namespace LoomNetwork.CZB
             }
 
             DeckChangedEvent?.Invoke(CardsInDeck.Count);
+        }
+
+        public List<T> ShuffleCardsList<T>(List<T> cards)
+        {
+            var array = cards;
+
+            if (!_gameplayManager.IsTutorial)
+                InternalTools.ShakeList<T>(ref array);// shake
+
+            return array;
         }
 
         public void SetFirstHand(bool isTutorial = false)
@@ -370,7 +381,7 @@ namespace LoomNetwork.CZB
 
         public void PlayerDie()
         {
-            _manaBarFadeTool.FadeIn();
+            _gooBarFadeTool.FadeIn();
 
             _avatarAnimator.enabled = true;
             _deathAnimamtor.enabled = true;
@@ -378,12 +389,19 @@ namespace LoomNetwork.CZB
             _avatarAnimator.Play(0);
             _deathAnimamtor.Play(0);
 
+            _skillsController.DisableSkillsContent(this);
+
             _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HERO_DEATH_SOUND_VOLUME, false, false);
 
             if(!_gameplayManager.IsTutorial)
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
         }
-  
+
+        public void SetGlowStatus(bool status)
+        {
+            _avatarSelectedHighlight.SetActive(status);
+        }
+
         #region handlers
 
 

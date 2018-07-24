@@ -115,6 +115,9 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.HP -= damageAttacking;
 
+                if (damageAttacking > 0)
+                    attackedUnit.ThrowEventGotDamage(attackingUnit);
+
                 damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
 
                 if (attackingUnit.HasBuffShield)
@@ -151,6 +154,9 @@ namespace LoomNetwork.CZB
                 }
 
                 attackedUnit.HP -= damage;
+
+                if (damage > 0)
+                    attackedUnit.ThrowEventGotDamage(attackingPlayer);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -185,8 +191,8 @@ namespace LoomNetwork.CZB
             {
                 //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
-                if (healingPlayer.HP > 30)
-                    healingPlayer.HP = 30;
+                if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                    healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,
@@ -217,7 +223,7 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(BoardUnit attackingUnit, AbilityData ability, BoardUnit attackedUnit)
+        public void AttackCreatureByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit)
         {
             int damage = ability.value;
 
@@ -230,19 +236,22 @@ namespace LoomNetwork.CZB
                 }
 
                 attackedUnit.HP -= damage;
+
+                if (damage > 0)
+                    attackedUnit.ThrowEventGotDamage(attacker);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
             new object[]
             {
-                attackingUnit,
+                attacker,
                 ability,
                 damage,
                 attackedUnit,
             }));
         }
 
-        public void AttackPlayerByAbility(BoardUnit attackingUnit, AbilityData ability, Player attackedPlayer)
+        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
@@ -252,7 +261,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY,
             new object[]
             {
-                attackingUnit,
+                attacker,
                 ability,
                 ability.value,
                 attackedPlayer
@@ -264,8 +273,8 @@ namespace LoomNetwork.CZB
             if (healedPlayer != null)
             {
                 healedPlayer.HP += ability.value;
-                if (healedPlayer.HP > 30)
-                    healedPlayer.HP = 30;
+                if (healedPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                    healedPlayer.HP = Constants.DEFAULT_PLAYER_HP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY,

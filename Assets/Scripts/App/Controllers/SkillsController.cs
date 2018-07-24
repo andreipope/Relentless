@@ -15,6 +15,8 @@ namespace LoomNetwork.CZB
         private IGameplayManager _gameplayManager;
         private ITutorialManager _tutorialManager;
         private IUIManager _uiManager;
+        private ITimerManager _timerManager;
+
         private VFXController _vfxController;
         private BattleController _battleController;
         private ActionsQueueController _actionsQueueController;
@@ -36,6 +38,7 @@ namespace LoomNetwork.CZB
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
 
             _vfxController = _gameplayManager.GetController<VFXController>();
             _battleController = _gameplayManager.GetController<BattleController>();
@@ -72,6 +75,20 @@ namespace LoomNetwork.CZB
                 SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.skills[primary], _gameplayManager.OpponentPlayer.SelfHero.skills[secondary]);
         }
 
+        public void DisableSkillsContent(Player player)
+        {
+            if(player.IsLocalPlayer)
+            {
+                _playerPrimarySkill.Hide();
+                _playerSecondarySkill.Hide();
+            }
+            else
+            {
+                opponentPrimarySkill.Hide();
+                opponentSecondarySkill.Hide();
+            }
+        }
+
 
         private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
@@ -99,14 +116,14 @@ namespace LoomNetwork.CZB
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary);
-            _playerSecondarySkill = new BoardSkill(rootPage.playerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary);
+            _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary, 2, true);
+            _playerSecondarySkill = new BoardSkill(rootPage.playerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary, 1, false);
         }
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary);
-            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary);
+            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary, 2, true);
+            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary, 1, false);
         }
 
         private void SkillParticleActionCompleted(object target)
@@ -300,31 +317,36 @@ namespace LoomNetwork.CZB
             WorkingCard returningCard = targetUnit.Card;
             Vector3 unitPosition = targetUnit.transform.position;
 
-            // STEP 1 - REMOVE UNIT FROM BOARD
-            unitOwner.BoardCards.Remove(targetUnit);
-
-            // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
             _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unitPosition);
-            targetUnit.Die(true);
-            MonoBehaviour.Destroy(targetUnit.gameObject);
 
-            // STEP 3 - REMOVE WORKING CARD FROM BOARD
-            unitOwner.RemoveCardFromBoard(returningCard);
-
-            // STEP 4 - RETURN CARD TO HAND
-            _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-            // STEP 4 - REARRANGE HANDS
-            _gameplayManager.RearrangeHands();
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
+            _timerManager.AddTimer((x) =>
             {
+
+                // STEP 1 - REMOVE UNIT FROM BOARD
+                unitOwner.BoardCards.Remove(targetUnit);
+
+                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE;
+                targetUnit.Die(true);
+                MonoBehaviour.Destroy(targetUnit.gameObject);
+
+                // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                unitOwner.RemoveCardFromBoard(returningCard);
+
+                // STEP 4 - RETURN CARD TO HAND
+                _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                // STEP 4 - REARRANGE HANDS
+                _gameplayManager.RearrangeHands();
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
+                {
                 owner,
                 skill,
                 targetUnit
-            }));
+                }));
 
-            _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+            }, null, 2f);
         }
 
         #endregion

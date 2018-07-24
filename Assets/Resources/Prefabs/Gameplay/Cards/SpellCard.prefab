@@ -231,6 +231,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &1457729426570008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4686869791698124}
+  m_Layer: 9
+  m_Name: DeckEditingGroupUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1507224444298890
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,6 +434,7 @@ Transform:
   - {fileID: 4679575028214484}
   - {fileID: 4269106716331254}
   - {fileID: 4199285308948080}
+  - {fileID: 4686869791698124}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -505,6 +521,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4301558640006318}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4686869791698124
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1457729426570008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -7.45, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4301558640006318}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4757342120203576
 Transform:
@@ -1609,7 +1638,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1612311136
+  randomSeed: -544771483
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4967,7 +4996,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1605507531
+  randomSeed: 2026126238
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -8325,7 +8354,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1269823509
+  randomSeed: -681898744
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -11683,7 +11712,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -40160321
+  randomSeed: -494715334
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -15041,7 +15070,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1501593976
+  randomSeed: 2029798448
   InitialModule:
     serializedVersion: 3
     enabled: 1

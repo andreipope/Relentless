@@ -80,5 +80,20 @@ namespace LoomNetwork.CZB.Helpers
             var rnd = new System.Random();
             list = list.OrderBy(item => rnd.Next()).ToList();
         }
+
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
+        {
+            int count = root.childCount;
+
+            float handWidth = spacing * count - 1;
+
+            var pivot = new Vector3(offset, 0, 0);
+
+            for (var i = 0; i < count; i++)
+            {
+                root.GetChild(i).localPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
+                pivot.x += handWidth / count;
+            }
+        }
     }
 }

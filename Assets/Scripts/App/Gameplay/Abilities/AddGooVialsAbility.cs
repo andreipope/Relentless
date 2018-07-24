@@ -55,8 +55,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.ManaOnCurrentTurn += value;
-            playerCallerOfAbility.Mana = playerCallerOfAbility.ManaOnCurrentTurn;
+            playerCallerOfAbility.GooOnCurrentTurn += value;
+            playerCallerOfAbility.Goo = playerCallerOfAbility.GooOnCurrentTurn;
         }
     }
 }

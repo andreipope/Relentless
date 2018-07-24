@@ -36,8 +36,6 @@ namespace LoomNetwork.CZB
 
         T GetController<T>() where T : IController;
 
-        string GetCardSet(Data.Card card);
-
         void RearrangeHands();
 
 

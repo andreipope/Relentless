@@ -7,6 +7,7 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -142,6 +143,8 @@ namespace LoomNetwork.CZB
 
             if (!_gameplayManager.IsTutorial)
             {
+                _gameplayManager.CurrentPlayer.CardsInDeck = _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
+
                 if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
                 {
                     AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
@@ -205,12 +208,24 @@ namespace LoomNetwork.CZB
 
             callback?.Invoke();
 
-           // UpdatePositionOfCardsForDistribution(card.WorkingCard.owner);
+            // UpdatePositionOfCardsForDistribution(card.WorkingCard.owner);
         }
 
-        public void AddCardToHand(Player player, WorkingCard card)
+        public void AddCardToHand(Player player, WorkingCard card = null)
         {
+            if (card == null)
+                card = player.CardsInDeck[0];
+
             player.RemoveCardFromDeck(card);
+            player.AddCardToHand(card);
+        }
+
+        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        {
+            if (card == null)
+                card = otherPlayer.CardsInDeck[0];
+
+            otherPlayer.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
         }
 
@@ -249,7 +264,7 @@ namespace LoomNetwork.CZB
 
         private BoardCard CreateBoardCard(WorkingCard card)
         {
-            string cardSetName = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.IndexOf(card.libraryCard) > -1).name;
+            string cardSetName = GetSetOfCard(card.libraryCard);
             GameObject go = null;
             BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -343,7 +358,7 @@ namespace LoomNetwork.CZB
 
             Sequence animationSequence2 = DOTween.Sequence();
             //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
-            animationSequence2.Append(go.transform.DOMove(new Vector3(-6.57f, -1, 0), 0.7f));
+            animationSequence2.Append(go.transform.DOMove(new Vector3(-7.74f, -1, 0), 0.7f));
 
 
             animationSequence2.OnComplete(() =>
@@ -362,7 +377,7 @@ namespace LoomNetwork.CZB
 
 
                 Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(go.transform.DOMove(new Vector3(-6.57f, -4.352f, 0), .5f));
+                animationSequence5.Append(go.transform.DOMove(new Vector3(-7.74f, -4.352f, 0), .5f));
                 animationSequence5.OnComplete(() =>
                 {
                     MonoBehaviour.Destroy(go);
@@ -399,7 +414,7 @@ namespace LoomNetwork.CZB
 
             Sequence animationSequence2 = DOTween.Sequence();
             //animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
-            animationSequence2.Append(go.transform.DOMove(new Vector3(6.535f, 14f, 0), .6f));
+            animationSequence2.Append(go.transform.DOMove(new Vector3(7.7f, 14f, 0), .6f));
 
             animationSequence2.OnComplete(() =>
             {
@@ -416,7 +431,7 @@ namespace LoomNetwork.CZB
                 animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0f, 0f), .2f));
 
                 Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(go.transform.DOMove(new Vector3(6.535f, 6.306f, 0), .5f));
+                animationSequence5.Append(go.transform.DOMove(new Vector3(7.7f, 6.306f, 0), .5f));
                 animationSequence5.OnComplete(() =>
                 {
                     MonoBehaviour.Destroy(go);
@@ -429,7 +444,7 @@ namespace LoomNetwork.CZB
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
                 if (!Constants.DEV_MODE)
-                    player.Mana -= card.libraryCard.cost;
+                    player.Goo -= card.libraryCard.cost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 // {
@@ -439,12 +454,7 @@ namespace LoomNetwork.CZB
 
                 var libraryCard = card.WorkingCard.libraryCard;
 
-                string cardSetName = string.Empty;
-                foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-                {
-                    if (cardSet.cards.IndexOf(libraryCard) > -1)
-                        cardSetName = cardSet.name;
-                }
+                string cardSetName = GetSetOfCard(libraryCard);
 
                 card.transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.enabled = false;
@@ -589,12 +599,7 @@ namespace LoomNetwork.CZB
 
         public void DrawCardInfo(WorkingCard card)
         {
-            string cardSetName = string.Empty;
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
-            }
+            string cardSetName = GetSetOfCard(card.libraryCard);
 
             GameObject go = null;
             BoardCard boardCard = null;
@@ -634,6 +639,35 @@ namespace LoomNetwork.CZB
 
             if (player.IsLocalPlayer)
                 cardObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
+        }
+
+        public void LowGooCostOfCardInHand(Player player, WorkingCard card = null)
+        {
+            if (card == null && player.CardsInHand.Count > 0)
+                card = player.CardsInHand[UnityEngine.Random.Range(0, player.CardsInHand.Count)];
+
+            if (card == null)
+                return;
+
+            if (player.IsLocalPlayer)
+            {
+                var boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
+
+                boardCard.SetCardCost(Mathf.Clamp(boardCard.manaCost - 1, 0, boardCard.manaCost));
+            }
+            else
+            {
+                card.libraryCard.cost = Mathf.Clamp(card.libraryCard.cost - 1, 0, card.libraryCard.cost);
+            }
+        }
+
+        public string GetSetOfCard(Card card)
+        {
+            var set = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.Find(y => y.id == card.id) != null);
+
+            if (set != null)
+                return set.name;
+            return string.Empty;
         }
     }
 }

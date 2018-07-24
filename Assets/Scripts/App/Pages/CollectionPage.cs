@@ -338,6 +338,11 @@ namespace LoomNetwork.CZB
                     break;
 
 				var card = cards[i];
+                var cardData = _dataManager.CachedCollectionData.GetCardData(card.id);
+
+                // hack !!!! CHECK IT!!!
+                if (cardData == null)
+                    continue;
 
                 GameObject go = null;
                 BoardCard boardCard = null;
@@ -351,8 +356,10 @@ namespace LoomNetwork.CZB
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                     boardCard = new SpellBoardCard(go);
                 }
+                
+               
 
-                var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
+                var amount = cardData.amount;
                 boardCard.Init(card, amount);
 				boardCard.SetHighlightingEnabled(false);
 				boardCard.transform.position = cardPositions[i % cardPositions.Count].position;

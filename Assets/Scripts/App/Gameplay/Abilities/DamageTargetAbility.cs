@@ -85,16 +85,18 @@ namespace LoomNetwork.CZB
         }
 
         private void ActionCompleted()
-        {           
+        {
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
                     //if (targetPlayer.id == playerCallerOfAbility.id)
-                    _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer);
+                    _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
-                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
+                    _battleController.AttackCreatureByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }
@@ -106,7 +108,7 @@ namespace LoomNetwork.CZB
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/toxicDamageVFX");
+                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
@@ -120,9 +122,13 @@ namespace LoomNetwork.CZB
                 default:
                     break;
             }
-            _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-            _vfxObject.transform.position = targetPosition;
-            _particlesController.RegisterParticleSystem(_vfxObject, true);
+
+            if (_vfxObject != null)
+            {
+                _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
+                _vfxObject.transform.position = targetPosition;
+                _particlesController.RegisterParticleSystem(_vfxObject, true);
+            }
         }
     }
 }

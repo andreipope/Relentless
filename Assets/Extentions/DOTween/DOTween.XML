@@ -121,12 +121,12 @@
             The eased value.
             </returns>
         </member>
-        <member name="M:DG.Tweening.Core.Easing.EaseManager.Evaluate(DG.Tweening.Tween,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:DG.Tweening.Core.Easing.EaseGooger.Evaluate(DG.Tweening.Tween,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             Returns a value between 0 and 1 (inclusive) based on the elapsed time and ease selected
             </summary>
         </member>
-        <member name="M:DG.Tweening.Core.Easing.EaseManager.Evaluate(DG.Tweening.Ease,DG.Tweening.EaseFunction,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:DG.Tweening.Core.Easing.EaseGooger.Evaluate(DG.Tweening.Ease,DG.Tweening.EaseFunction,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             Returns a value between 0 and 1 (inclusive) based on the elapsed time and ease selected
             </summary>

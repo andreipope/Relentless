@@ -44,6 +44,9 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
+
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+
             if (_isAbilityResolved)
             {
                 switch (affectObjectType)
@@ -53,13 +56,13 @@ namespace LoomNetwork.CZB
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         //else
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
-                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(abilityUnitOwner, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
+                        CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                         break;
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetUnit);
                         CreateAndMoveParticle(() =>
                         {
-                            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, targetUnit);
+                            _battleController.AttackCreatureByAbility(caller, abilityData, targetUnit);
 
                         }, targetUnit.transform.position);
                 
@@ -71,9 +74,7 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-            Player opponent = _gameplayManager.OpponentPlayer;
-            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.OpponentPlayer)
-                opponent = _gameplayManager.CurrentPlayer;
+            var opponent = _abilitiesController.GetOpponentPlayer(this);
 
             var creature = info as BoardUnit;
 
@@ -93,6 +94,8 @@ namespace LoomNetwork.CZB
                     break;
                 }
             }
+
+            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
 
             /*if (targetIndex == -1)
                 for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
@@ -119,7 +122,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, leftAdjustment);
+                    _battleController.AttackCreatureByAbility(caller, abilityData, leftAdjustment);
 
                 }, leftAdjustment.transform.position);
             }
@@ -130,7 +133,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, rightAdjastment);
+                    _battleController.AttackCreatureByAbility(caller, abilityData, rightAdjastment);
 
                 }, rightAdjastment.transform.position);
             }

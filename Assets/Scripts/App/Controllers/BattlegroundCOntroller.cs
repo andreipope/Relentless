@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
 
         private bool _battleDynamic = false;
 
-        public int TurnDuration { get; private set; }
+      //  public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
         public bool cardsZoomed = false;
@@ -103,10 +103,10 @@ namespace LoomNetwork.CZB
 
         private void LoadGameConfiguration()
         {
-            TurnDuration = Constants.DEFAULT_TURN_DURATION;
+           // TurnDuration = Constants.DEFAULT_TURN_DURATION;
 
-            if (_gameplayManager.IsTutorial)
-                TurnDuration = 10000000;
+          //  if (_gameplayManager.IsTutorial)
+           //     TurnDuration = 10000000;
         }
 
         public void KillBoardCard(BoardUnit card)
@@ -157,7 +157,7 @@ namespace LoomNetwork.CZB
 
             gameFinished = false;
 
-            _timerManager.StopTimer(RunTurnAsync);
+            //_timerManager.StopTimer(RunTurnAsync);
 
 
             if (_gameplayManager.IsTutorial)
@@ -166,6 +166,12 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
 
+            if (Constants.DEV_MODE)
+            {
+                _gameplayManager.CurrentPlayer.HP = 99;
+                //_gameplayManager.CurrentPlayer.GooOnCurrentTurn = 8;
+                //_gameplayManager.CurrentPlayer.Goo = 8;
+            }
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
 
@@ -179,13 +185,13 @@ namespace LoomNetwork.CZB
         {
             StartTurn();
 
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+        //    if (!_gameplayManager.IsTutorial)
+           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-            _timerManager.StopTimer(RunTurnAsync);
+           // _timerManager.StopTimer(RunTurnAsync);
 
             gameFinished = true;
             currentTurn = 0;
@@ -193,16 +199,15 @@ namespace LoomNetwork.CZB
             ClearBattleground();
         }
 
-        private void RunTurnAsync(object[] param)
+       /* private void RunTurnAsync(object[] param)
         {
-            Debug.Log("TURN END");
             EndTurn();
 
             if (!gameFinished)
                 StartTurn();
             else
                 _timerManager.StopTimer(RunTurnAsync);
-        }
+        } */
 
         public void StartTurn()
         {
@@ -246,7 +251,6 @@ namespace LoomNetwork.CZB
 
                 foreach (var card in playerBoardCards)
                 {
-                    Debug.Log(card.Card.libraryCard.name);
                     card.SetHighlightingEnabled(true);
                 }
 
@@ -303,13 +307,13 @@ namespace LoomNetwork.CZB
 
         public void StopTurn()
         {
-            _timerManager.StopTimer(RunTurnAsync);
+         //   _timerManager.StopTimer(RunTurnAsync);
 
             EndTurn();
             StartTurn();
 
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+          //  if (!_gameplayManager.IsTutorial)
+           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -501,12 +505,7 @@ namespace LoomNetwork.CZB
         {
             yield return new WaitForSeconds(0.3f);
 
-            string cardSetName = string.Empty;
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
-            }
+            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
             BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -571,20 +570,21 @@ namespace LoomNetwork.CZB
             var spacing = -1.5f;
             var scaling = 0.25f;
             var pivot = new Vector3(6f, -7.5f, 0f);
+            var twistPerCard = -5;
 
 
             if (cardsZoomed)
             {
-                spacing = -4.5f;
-                scaling = 0.4f;
-                pivot = new Vector3(-1, -5.5f, 0f);
+                spacing = -2.6f;
+                scaling = 0.31f;
+                pivot = new Vector3(-1.3f, -6.5f, 0f);
+                twistPerCard = -3;
             }
 
             foreach (var card in playerHandCards)
                 handWidth += spacing;
             handWidth -= spacing;
 
-            var twistPerCard = -5;
 
             if (playerHandCards.Count == 1)
                 twistPerCard = 0;
@@ -685,6 +685,16 @@ namespace LoomNetwork.CZB
             var card = playerHandCards.Find(x => x.gameObject.Equals(cardObject));
 
             return card;
+        }
+
+        public void DestroyBoardUnit(BoardUnit unit)
+        {
+            unit.Die();
+        }
+
+        public void TakeControlUnit(Player to, BoardUnit unit)
+        {
+            // implement functionality of the take control
         }
     }
 }

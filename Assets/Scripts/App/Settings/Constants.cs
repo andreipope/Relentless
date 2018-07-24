@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.17.2.ver";
+        internal const string CURRENT_VERSION = "0.0.18.1.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -28,7 +28,8 @@ namespace LoomNetwork.CZB.Common
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
-		internal static uint CARD_MINION_MAX_COPIES = 4;
+        internal static uint CARD_ITEM_MAX_COPIES = 2;
+        internal static uint CARD_MINION_MAX_COPIES = 4;
 		internal static uint CARD_OFFICER_MAX_COPIES = 2;
         internal static uint CARD_COMMANDER_MAX_COPIES = 2;
         internal static uint CARD_GENERAL_MAX_COPIES = 1;
@@ -41,9 +42,9 @@ namespace LoomNetwork.CZB.Common
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
     
-        internal static int DEFAULT_PLAYER_HP = 30;
-        internal static int DEFAULT_PLAYER_MANA = 0;
-        internal static int MAXIMUM_PLAYER_MANA = 10;
+        internal static int DEFAULT_PLAYER_HP = 20;
+        internal static int DEFAULT_PLAYER_GOO = 0;
+        internal static int MAXIMUM_PLAYER_GOO = 10;
 
         internal static int FIRST_GAME_TURN_INDEX = 1;
 
@@ -70,7 +71,7 @@ namespace LoomNetwork.CZB.Common
         internal const string TAG_LIFE = "Life";
         internal const string TAG_DAMAGE = "Damage";
         internal const string TAG_HP = "HP";
-        internal const string TAG_MANA = "Mana";
+        internal const string TAG_MANA = "Goo";
 
         internal const string STAT_DAMAGE = "DMG";
         internal const string STAT_HP = "HP";
@@ -97,8 +98,8 @@ namespace LoomNetwork.CZB.Common
 
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
-        internal static float CARD_DISTRIBUTION_TIME = 10f;
+        internal static float CARD_DISTRIBUTION_TIME = 5f;
         
-        internal const bool DEV_MODE = false;
+        internal const bool DEV_MODE = false;  
     }
 }

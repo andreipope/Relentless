@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           // card.cardId = 1;
+                          //  card.cardId = 16;
                         }
                         playerDeck.Add(card.cardId);
                     }
@@ -222,7 +222,7 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
@@ -234,13 +234,14 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(spell))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
-                    System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
                     break;
             }
 
+            LetsThink();
             LetsThink();
         }
         // ai step 2
@@ -352,12 +353,12 @@ namespace LoomNetwork.CZB
 
         private bool CardCanBePlayable(WorkingCard card)
         {
-            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Mana && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
+            return ((card.libraryCard.cost <= _gameplayManager.OpponentPlayer.Goo && _gameplayManager.OpponentPlayer.turn > _minTurnForAttack) || Constants.DEV_MODE);
         }
 
         private bool UnitCanBeUsable(BoardUnit unit)
         {
-            return (unit != null && unit.HP > 0 && (_unitNumberOfTunrsOnBoard[unit.Card.instanceId] >= 1 || unit.IsFeralUnit()) && unit.IsPlayable);
+            return unit.UnitCanBeUsable();
         }
 
         private void PlayCardOnBoard(WorkingCard card)
@@ -387,15 +388,12 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Mana -= card.libraryCard.cost;
+            _gameplayManager.OpponentPlayer.Goo -= card.libraryCard.cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
         {
-            string cardSetName = string.Empty;
-            foreach (var cardSet in _dataManager.CachedCardsLibraryData.sets)
-                if (cardSet.cards.IndexOf(card.libraryCard) > -1)
-                    cardSetName = cardSet.name;
+            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
             var workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
@@ -437,7 +435,7 @@ namespace LoomNetwork.CZB
                         else if (target is BoardUnit)
                             targetObject = (target as BoardUnit).gameObject;
 
-                        CreateOpponentTarget(createTargetArrow, boardCreature.gameObject, targetObject,
+                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, targetObject,
                                  () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target); });
                     }
                     else
@@ -478,7 +476,7 @@ namespace LoomNetwork.CZB
                     else if (target is BoardUnit)
                         targetObject = (target as BoardUnit).gameObject;
 
-                    CreateOpponentTarget(createTargetArrow, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
+                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
                         () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
                 }
 
@@ -877,7 +875,7 @@ namespace LoomNetwork.CZB
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {
-                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, (target as Player).AvatarObject, () =>
+                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player).AvatarObject, () =>
                 {
                     skill.fightTargetingArrow.selectedPlayer = target as Player;
                     skill.EndDoSkill();
@@ -889,7 +887,7 @@ namespace LoomNetwork.CZB
                 {
                     var unit = target as BoardUnit;
 
-                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.selfObject, unit.gameObject, () =>
+                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit.gameObject, () =>
                     {
                         skill.fightTargetingArrow.selectedCard = unit;
                         skill.EndDoSkill();
@@ -900,7 +898,7 @@ namespace LoomNetwork.CZB
 
 
         // rewrite
-        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, GameObject startObj, GameObject targetObject, System.Action action)
+        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, GameObject targetObject, System.Action action)
         {
             if (!createTargetArrow)
             {

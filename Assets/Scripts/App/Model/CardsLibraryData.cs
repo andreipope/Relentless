@@ -44,13 +44,27 @@ namespace LoomNetwork.CZB.Data
 
         public void FillAllCards()
         {
+
+            // remove cards without iamges
+            var cardsToRemoveFromSet = new List<Card>();
+
             _allCards = new List<Card>();
             int id = 0;
             foreach (var set in sets)
             {
                 foreach (var card in set.cards)
                 {
-                    card.id = id;
+
+                    // remove cards without iamges
+                    if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<UnityEngine.Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", 
+                        set.name.ToLower(), 
+                        card.rank.ToLower(), 
+                        card.picture.ToLower())) == null)
+                    {
+                        cardsToRemoveFromSet.Add(card);
+                        continue;
+                    }
+
                     card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
                     if(card.kind != null)
@@ -63,12 +77,25 @@ namespace LoomNetwork.CZB.Data
                     foreach (var ability in card.abilities)
                         ability.ParseData();
                     _allCards.Add(card);
+
+                    if (card.cardSetType != Enumerators.SetType.OTHERS)
+                        card.id = id;
+
                     id++;
                 }
             }
-        }
 
-        
+            // remove cards without iamges
+            foreach (var card in cardsToRemoveFromSet)
+            {
+                foreach (var set in sets)
+                {
+                    if (set.cards.Contains(card))
+                        set.cards.Remove(card);
+                }
+            }
+            cardsToRemoveFromSet.Clear();
+        }
     }
 
     public class CardSet

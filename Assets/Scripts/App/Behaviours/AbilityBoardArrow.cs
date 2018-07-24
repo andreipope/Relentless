@@ -28,6 +28,9 @@ namespace LoomNetwork.CZB
         public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
         public BoardUnit selfBoardCreature;
 
+        public Enumerators.CardType targetUnitType;
+        public Enumerators.UnitStatusType targetUnitStatusType;
+        
 
         protected void Awake()
         {
@@ -52,19 +55,31 @@ namespace LoomNetwork.CZB
             base.Update();
         }
 
-        public override void OnCardSelected(BoardUnit creature)
+        public override void OnCardSelected(BoardUnit unit)
         {
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && creature.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
-                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && creature.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
+            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && unit.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
+                (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && unit.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (selfBoardCreature != creature)
+                if ((targetUnitType == Enumerators.CardType.NONE) || unit.Card.type == targetUnitType)
                 {
-                    selectedCard = creature;
-                    selectedPlayer = null;
-                    CreateTarget(creature.transform.position);
+                    if ((targetUnitStatusType == Enumerators.UnitStatusType.NONE) || unit.UnitStatus == targetUnitStatusType)
+                    {
+                        if (selfBoardCreature != unit)
+                        {
+                            if (selectedCard != null)
+                                selectedCard.SetSelectedUnit(false);
 
-                    OnCardSelectedEvent?.Invoke(creature);
+                            selectedCard = unit;
+                            if (selectedPlayer != null)
+                                selectedPlayer.SetGlowStatus(false);
+                            selectedPlayer = null;
+                            CreateTarget(unit.transform.position);
+                            selectedCard.SetSelectedUnit(true);
+
+                            OnCardSelectedEvent?.Invoke(unit);
+                        }
+                    }
                 }
             }
         }
@@ -73,7 +88,8 @@ namespace LoomNetwork.CZB
         {
             if (selectedCard == creature)
             {
-                _targetObjectsGroup.SetActive(false);
+                selectedCard.SetSelectedUnit(false);
+                //  _targetObjectsGroup.SetActive(false);
                 selectedCard = null;
 
                 OnCardUnselectedevent?.Invoke(creature);
@@ -87,9 +103,11 @@ namespace LoomNetwork.CZB
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 selectedPlayer = player;
+                if (selectedCard != null)
+                    selectedCard.SetSelectedUnit(false);
                 selectedCard = null;
                 CreateTarget(player.AvatarObject.transform.position);
-
+                selectedPlayer.SetGlowStatus(true);
                 OnPlayerSelectedEvent?.Invoke(player);
             }
         }
@@ -98,7 +116,12 @@ namespace LoomNetwork.CZB
         {
             if (selectedPlayer == player)
             {
-                _targetObjectsGroup.SetActive(false);
+                if (selectedCard != null)
+                    selectedCard.SetSelectedUnit(false);
+                selectedCard = null;
+
+                selectedPlayer.SetGlowStatus(false);
+                //_targetObjectsGroup.SetActive(false);
                 selectedPlayer = null;
 
                 OnPlayerUnselectedEvent?.Invoke(player);

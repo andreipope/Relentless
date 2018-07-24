@@ -22,6 +22,9 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
+
+        private bool _handCardPreviewTimerStarted;
+
       //  private HeroController _heroController;
 
         public bool IsPlayerStunned { get; set; }
@@ -86,12 +89,12 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           // card.cardId = 51; 
+                          //  playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Gaz"));
                         }
 
                          playerDeck.Add(card.cardId); 
 
-                        //playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stapler"));
+                        // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Gaz"));
                     }
                 }
             }
@@ -226,9 +229,14 @@ namespace LoomNetwork.CZB
                         {
                             if (!_battlegroundController.isPreviewActive || topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
                             {
-                                _battlegroundController.DestroyCardPreview();
-                                _battlegroundController.CreateCardPreview(topmostBoardCard.WorkingCard, topmostBoardCard.transform.position, IsActive);
+                                if (!_handCardPreviewTimerStarted)
+                                {
+                                    GameClient.Get<ITimerManager>().AddTimer(HandCardPreview, new object[] { topmostBoardCard }, 3f);
+                                    _handCardPreviewTimerStarted = true;
+                                }
                             }
+                            if (_battlegroundController.isPreviewActive && _handCardPreviewTimerStarted && topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
+                                StopHandTimer();
                         }
                     }
                 }
@@ -236,6 +244,8 @@ namespace LoomNetwork.CZB
                 {
                     if (hitCards.Count > 0)
                     {
+                        StopHandTimer();
+
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
                         var selectedBoardCreature = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardCreature != null && (!_battlegroundController.isPreviewActive || selectedBoardCreature.Card.instanceId != _battlegroundController.currentPreviewedCardId))
@@ -247,10 +257,26 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
+                    StopHandTimer();
                     _battlegroundController.DestroyCardPreview();
                 }
             }
 
+        }
+
+        public void HandCardPreview(object[] param)
+        {
+            BoardCard card = param[0] as BoardCard;
+            _battlegroundController.CreateCardPreview(card.WorkingCard, card.transform.position, IsActive);
+        }
+
+        private void StopHandTimer()
+        {
+            if (_handCardPreviewTimerStarted)
+            {
+                GameClient.Get<ITimerManager>().StopTimer(HandCardPreview);
+                _handCardPreviewTimerStarted = false;
+            }
         }
 
         public void OnTurnEndedEventHandler()
@@ -265,7 +291,7 @@ namespace LoomNetwork.CZB
         {
             //if (PlayerInfo.BoardSkills[0] != null && IsActive)
             //{
-            //    if (PlayerInfo.Mana >= PlayerInfo.BoardSkills[0].manaCost)
+            //    if (PlayerInfo.Goo >= PlayerInfo.BoardSkills[0].manaCost)
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(true);
             //    else
             //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
