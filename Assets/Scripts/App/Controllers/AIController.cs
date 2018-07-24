@@ -432,14 +432,7 @@ namespace LoomNetwork.CZB
 
                     if (target != null)
                     {
-                        GameObject targetObject = null;
-
-                        if (target is Player)
-                            targetObject = (target as Player).AvatarObject;
-                        else if (target is BoardUnit)
-                            targetObject = (target as BoardUnit).gameObject;
-
-                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, targetObject,
+                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, target,
                                  () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target); });
                     }
                     else
@@ -473,14 +466,7 @@ namespace LoomNetwork.CZB
 
                 if (target != null)
                 {
-                    GameObject targetObject = null;
-
-                    if (target is Player)
-                        targetObject = (target as Player).AvatarObject;
-                    else if (target is BoardUnit)
-                        targetObject = (target as BoardUnit).gameObject;
-
-                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
+                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, target,
                         () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
                 }
 
@@ -879,7 +865,7 @@ namespace LoomNetwork.CZB
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {
-                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player).AvatarObject, () =>
+                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player), () =>
                 {
                     skill.fightTargetingArrow.selectedPlayer = target as Player;
                     skill.EndDoSkill();
@@ -891,7 +877,7 @@ namespace LoomNetwork.CZB
                 {
                     var unit = target as BoardUnit;
 
-                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit.gameObject, () =>
+                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit, () =>
                     {
                         skill.fightTargetingArrow.selectedCard = unit;
                         skill.EndDoSkill();
@@ -902,7 +888,7 @@ namespace LoomNetwork.CZB
 
 
         // rewrite
-        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, GameObject targetObject, System.Action action)
+        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, object target, System.Action action)
         {
             if (!createTargetArrow)
             {
@@ -913,16 +899,17 @@ namespace LoomNetwork.CZB
             var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
             targetingArrow.Begin(startObj.transform.position);
 
-            targetingArrow.SetTarget(targetObject);
+            targetingArrow.SetTarget(target);
 
             MainApp.Instance.StartCoroutine(RemoveOpponentTargetingArrow(targetingArrow, action));
 
             return targetingArrow;
         }
         // rewrite
-        private IEnumerator RemoveOpponentTargetingArrow(BoardArrow arrow, System.Action action)
+        private IEnumerator RemoveOpponentTargetingArrow(OpponentBoardArrow arrow, System.Action action)
         {
             yield return new WaitForSeconds(1f);
+            arrow.Dispose();
             MonoBehaviour.Destroy(arrow.gameObject);
 
             action?.Invoke();

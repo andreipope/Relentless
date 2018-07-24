@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
 
                          playerDeck.Add(card.cardId);
 
-                       // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Zludge"));
+                       // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Shroom"));
                     }
                 }
             }

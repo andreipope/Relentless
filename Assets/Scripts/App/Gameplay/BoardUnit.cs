@@ -808,6 +808,9 @@ namespace LoomNetwork.CZB
                     if (_tutorialManager.IsTutorial)
                         _tutorialManager.DeactivateSelectTarget();
                 }
+
+                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
             }
         }
 
@@ -858,9 +861,6 @@ namespace LoomNetwork.CZB
 
                 //sortingGroup.sortingOrder = 100;
 
-                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
-                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
                 _actionsQueueController.AddNewActionInToQueue((Action<object, Action>)((parameter, completeCallback) =>
                 {
                     attackedBoardObjectsThisTurn.Add(targetPlayer);
@@ -893,16 +893,13 @@ namespace LoomNetwork.CZB
 
                 _actionsQueueController.AddNewActionInToQueue(((parameter, completeCallback) =>
                 {
-                    _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
                     attackedBoardObjectsThisTurn.Add(targetCard);
 
                     //sortingGroup.sortingOrder = 100;
 
                     // play sound when target creature attack more than our
-                    if (targetCard.CurrentDamage > CurrentDamage)
-                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                   // if (targetCard.CurrentDamage > CurrentDamage)
+                    //    _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
                     _animationsController.DoFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, (Action)(() =>
                     {

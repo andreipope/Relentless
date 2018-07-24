@@ -191,50 +191,7 @@ namespace LoomNetwork.CZB
         //}
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
-        public void OnBoardCardKilledEventHandler(BoardUnit cardToDestroy)
-        {
-            if (cardToDestroy == null)
-                return;
-
-            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
-
-            cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
-
-            _timerManager.AddTimer((x) =>
-            {
-                cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
-
-                string cardDeathSoundName = cardToDestroy.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
-                float soundLength = 0f;
-
-                if (cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
-                {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-                    soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
-                }
-
-                _timerManager.AddTimer((t) =>
-                {
-                    cardToDestroy.ownerPlayer.BoardCards.Remove(cardToDestroy);
-                    cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
-                    cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
-
-                    _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
-
-                    cardToDestroy.transform.DOKill();
-                    MonoBehaviour.Destroy(cardToDestroy.gameObject);
-
-                    _timerManager.AddTimer((f) =>
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
-                    }, null, Time.deltaTime, false);
-
-                }, null, soundLength);
-
-            }, null, 1f);
-
-        }
+       
 
         private void DelayedCardDestroy(object[] card)
         {
@@ -252,7 +209,6 @@ namespace LoomNetwork.CZB
             {
                 _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
-                _battlegroundController.OnBoardCardKilledEvent += OnBoardCardKilledEventHandler;
                 _battlegroundController.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardUpdatedEventHandler;
                 _battlegroundController.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardUpdatedEventHandler;
 

@@ -27,6 +27,7 @@ namespace LoomNetwork.CZB
         protected ILoadObjectsManager _loadObjectsManager;
         protected IGameplayManager _gameplayManager;
         protected IDataManager _dataManager;
+        protected ITimerManager _timerManager;
 
         protected AbilityBoardArrow _targettingArrow;
         protected GameObject _vfxObject;
@@ -81,6 +82,7 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();

@@ -128,6 +128,7 @@ namespace LoomNetwork.CZB
 
             manaCost = libraryCard.cost;
 
+            WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.libraryCard.cardRank);
 
@@ -137,6 +138,11 @@ namespace LoomNetwork.CZB
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
+        }
+
+        private void PlayerGooChangedEventHandler(int obj)
+        {
+            UpdateCardsStatusEventHandler(WorkingCard.owner);
         }
 
         public virtual void Init(Card card, int amount = 0)

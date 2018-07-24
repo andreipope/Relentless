@@ -9,7 +9,8 @@ namespace LoomNetwork.CZB
 {
     public class OpponentBoardArrow : BattleBoardArrow
     {
-        private Vector3 _target = Vector3.zero;
+        private Vector3 _targetPosition = Vector3.zero;
+        private object _target;
 
         private void Awake()
         {
@@ -19,16 +20,41 @@ namespace LoomNetwork.CZB
 
         protected override void Update()
         {
-            UpdateLength(_target);
+            UpdateLength(_targetPosition);
         }
 
-        public void SetTarget(GameObject go)
+        public void SetTarget(object target)
         {
-            _target = go.transform.position;
-            _target.z = 0;
+            _target = target;
 
-            UpdateLength(_target);
-            CreateTarget(_target);
+            if (_target is Player)
+            {
+                _targetPosition = (_target as Player).AvatarObject.transform.position;
+                (_target as Player).SetGlowStatus(true);
+            }
+            else if (_target is BoardUnit)
+            {
+                _targetPosition = (_target as BoardUnit).transform.position;
+                (_target as BoardUnit).SetSelectedUnit(true);
+            }
+
+            _targetPosition.z = 0;
+
+            UpdateLength(_targetPosition);
+            CreateTarget(_targetPosition);
+        }
+
+        public void Dispose()
+        {
+            if(_target != null)
+            {
+                if (_target is Player)
+                    (_target as Player).SetGlowStatus(false);
+                else if (_target is BoardUnit)
+                    (_target as BoardUnit).SetSelectedUnit(false);
+
+                _target = null;
+            }
         }
     }
 }
