@@ -934,10 +934,9 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "ADD_GOO_CARRIER",
+              "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "value": 1
             }
           ],
@@ -1737,10 +1736,9 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "ADD_GOO_CARRIER",
+              "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "value": 2
             }
           ],
@@ -1806,10 +1804,9 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "ADD_GOO_CARRIER",
+              "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "value": 7
             }
           ],

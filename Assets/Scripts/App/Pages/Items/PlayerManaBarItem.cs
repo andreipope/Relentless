@@ -21,6 +21,10 @@ namespace LoomNetwork.CZB
                             _overflowGooAmountText;
         private List<GooBottleItem> _gooBottles;
 
+        private Transform _overflowBottleContainer;
+
+        private int _maxValue, _currentValue;
+
         private const int _meterArrowStep = 12;
 
         private Vector3 _overflowPos;
@@ -49,26 +53,50 @@ namespace LoomNetwork.CZB
 
         public void SetGoo(int gooValue)
         {
-            _gooAmountText.text = gooValue.ToString() + "/10";
-            
-            if (gooValue > 10 && _overflowObject == null)
-                CreateOverflow();
-            else if (gooValue < 11 && _overflowObject != null)
-                DestroyOverflow();
+            _currentValue = gooValue;
+            _gooAmountText.text = _currentValue.ToString() + "/" + _maxValue;
 
-            if (_overflowGooAmountText != null)
-                _overflowGooAmountText.text = gooValue.ToString() + "/10";
+            UpdateGooOVerflow();
 
             for (var i = 0; i < _gooBottles.Count; i++)
             {
-                if (i < gooValue)
+                if (i < _currentValue)
                     Active(_gooBottles[i]);
                 else
                    Disactive(_gooBottles[i]);
             }
-            UpdateGooMeter(gooValue);
+            UpdateGooMeter();
         }
 
+       
+
+        public void SetVialGoo(int maxValue)
+        {
+            _maxValue = maxValue;
+            _gooAmountText.text = _currentValue.ToString() + "/" + _maxValue;
+            for (var i = 0; i < _gooBottles.Count; i++)
+            {
+                _gooBottles[i].self.SetActive(i < _maxValue ? true : false);
+            }
+            UpdateGooOVerflow();
+        }
+
+        private void UpdateGooOVerflow()
+        {
+            if (_currentValue > _maxValue && _overflowObject == null)
+                CreateOverflow();
+            else if (_currentValue <= _maxValue && _overflowObject != null)
+                DestroyOverflow();
+
+            if (_overflowGooAmountText != null)
+            {
+                _overflowGooAmountText.text = _currentValue.ToString() + "/" + _maxValue;
+                for (int i = 0; i < _overflowBottleContainer.childCount; i++)
+                {
+                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false); ;
+                }
+            }
+        }
 
         public void Active(GooBottleItem item)
         {
@@ -82,9 +110,9 @@ namespace LoomNetwork.CZB
             item.glowBottle.DOFade(0.0f, 0.5f);
         }
 
-        private void UpdateGooMeter(int gooValue)
+        private void UpdateGooMeter()
         {
-            int targetRotation = 90 - _meterArrowStep * gooValue;
+            int targetRotation = 90 - _meterArrowStep * _currentValue;
             if (targetRotation < -90)
                 targetRotation = -90;
             _arrowObject.transform.DORotate(Vector3.forward * targetRotation, 1f);
@@ -93,9 +121,15 @@ namespace LoomNetwork.CZB
 
         private void CreateOverflow()
         {
-            _overflowObject = MonoBehaviour.Instantiate<GameObject>(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(_overflowPrefabPath), _selfObject.transform);
+            _overflowObject = MonoBehaviour.Instantiate<GameObject>(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(_overflowPrefabPath));
             _overflowObject.transform.localPosition = _overflowPos;
             _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
+            _overflowBottleContainer = _overflowObject.transform.Find("Bottles").transform;
+            for (int i = 0; i < _overflowBottleContainer.childCount; i++)
+            {
+                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false); ;
+            }
+            _selfObject.SetActive(false);
         }
 
 
@@ -104,19 +138,23 @@ namespace LoomNetwork.CZB
             Debug.Log("DestroyOverflow");
             MonoBehaviour.Destroy(_overflowObject);
             _overflowObject = null;
+            _overflowBottleContainer = null;
             _overflowGooAmountText = null;
+            _selfObject.SetActive(true);
         }
 
         public struct GooBottleItem
         {
             public SpriteRenderer fullBoottle,
                                    glowBottle;
+            public GameObject self;
 
 
             public GooBottleItem(GameObject gameObject)
             {
-                fullBoottle = gameObject.transform.Find("Goo").GetComponent<SpriteRenderer>();
-                glowBottle = gameObject.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
+                self = gameObject;
+                fullBoottle = self.transform.Find("Goo").GetComponent<SpriteRenderer>();
+                glowBottle = self.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
             }
         }
     }

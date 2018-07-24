@@ -18,8 +18,9 @@ namespace LoomNetwork.CZB
         public event Action OnEndTurnEvent;
         public event Action OnStartTurnEvent;
 
-        public event Action<int, int> PlayerHPChangedEvent;
-        public event Action<int, int> PlayerManaChangedEvent;
+        public event Action<int> PlayerHPChangedEvent;
+        public event Action<int> PlayerGooChangedEvent;
+        public event Action<int> PlayerVialGooChangedEvent;
         public event Action<int> DeckChangedEvent;
         public event Action<int> HandChangedEvent;
         public event Action<int> GraveyardChangedEvent;
@@ -83,6 +84,8 @@ namespace LoomNetwork.CZB
             {
                 _gooOnCurrentTurn = value;
                 _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_GOO);
+
+                PlayerVialGooChangedEvent?.Invoke(_gooOnCurrentTurn);
             }
         }
 
@@ -99,7 +102,7 @@ namespace LoomNetwork.CZB
 
                 //_goo = Mathf.Clamp(_goo, 0, Constants.MAXIMUM_PLAYER_goo);
 
-                PlayerManaChangedEvent?.Invoke(oldGoo, _goo);
+                PlayerGooChangedEvent?.Invoke(_goo);
             }
         }
 
@@ -116,7 +119,7 @@ namespace LoomNetwork.CZB
 
                 _health = Mathf.Clamp(_health, 0, 99);
 
-                PlayerHPChangedEvent?.Invoke(oldHealth, _health);
+                PlayerHPChangedEvent?.Invoke(_health);
             }
         }   
 
@@ -406,7 +409,7 @@ namespace LoomNetwork.CZB
         #region handlers
 
 
-        private void PlayerHPChangedEventHandler(int was, int now)
+        private void PlayerHPChangedEventHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {

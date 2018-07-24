@@ -277,8 +277,8 @@ namespace LoomNetwork.CZB
             _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             _opponentHealthText = GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer", new Vector3(5.57f, 0, -6.08f));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent", new Vector3(5.56f, 0, 4.75f));
+            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer", new Vector3(-3.55f, 0, -6.07f));
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent", new Vector3(9.77f, 0, 4.75f));
 
 
             // improve find to get it from OBJECTS ON BOARD!!
@@ -360,19 +360,23 @@ namespace LoomNetwork.CZB
 
             player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
             player.PlayerHPChangedEvent += OnPlayerHPChanged;
-            player.PlayerManaChangedEvent += OnPlayerGooChanged;
+            player.PlayerGooChangedEvent += OnPlayerGooChanged;
+            player.PlayerVialGooChangedEvent += OnPlayerVialGooChanged;
             opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
             opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
-            opponent.PlayerManaChangedEvent += OnOpponentManaChanged;
+            opponent.PlayerGooChangedEvent += OnOpponentGooChanged;
+            opponent.PlayerVialGooChangedEvent += OnOpponentVialGooChanged;
 
             player.OnStartTurnEvent += OnStartTurnEventHandler;
 
             OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
-            OnPlayerHPChanged(player.HP, player.HP);
-            OnPlayerGooChanged(player.Goo, player.Goo);
+            OnPlayerHPChanged(player.HP);
+            OnPlayerGooChanged(player.Goo);
+            OnPlayerVialGooChanged(player.GooOnCurrentTurn);
             OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
-            OnOpponentHPChanged(opponent.HP, opponent.HP);
-            OnOpponentManaChanged(opponent.Goo, opponent.Goo);
+            OnOpponentHPChanged(opponent.HP);
+            OnOpponentGooChanged(opponent.GooOnCurrentTurn);
+            OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
         }
 
         private void OnPlayerDeckChangedEventHandler(int index)
@@ -461,7 +465,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnPlayerHPChanged(int oldHealth, int health)
+        private void OnPlayerHPChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -473,14 +477,21 @@ namespace LoomNetwork.CZB
                 _playerHealthText.color = Color.red;
         }
 
-        private void OnPlayerGooChanged(int oldGoo, int goo)
+        private void OnPlayerGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentHPChanged(int oldHealth, int health)
+        private void OnPlayerVialGooChanged(int currentTurnGoo)
+        {
+            if (!_isPlayerInited)
+                return;
+            _playerManaBar.SetVialGoo(currentTurnGoo);
+        }
+
+        private void OnOpponentHPChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -492,12 +503,20 @@ namespace LoomNetwork.CZB
                 _opponentHealthText.color = Color.red;
         }
 
-        private void OnOpponentManaChanged(int oldGoo, int goo)
+        private void OnOpponentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
             _opponentManaBar.SetGoo(goo);
         }
+
+        private void OnOpponentVialGooChanged(int currentTurnGoo)
+        {
+            if (!_isPlayerInited)
+                return;
+            _opponentManaBar.SetVialGoo(currentTurnGoo);
+        }
+
 
         private void OnStartTurnEventHandler()
         {

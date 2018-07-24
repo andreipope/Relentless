@@ -227,16 +227,16 @@ namespace LoomNetwork.CZB
                         var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
                         if (topmostBoardCard != null && !topmostBoardCard.isPreview)
                         {
-                            if (!_battlegroundController.isPreviewActive || topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
-                            {
-                                if (!_handCardPreviewTimerStarted)
-                                {
-                                    GameClient.Get<ITimerManager>().AddTimer(HandCardPreview, new object[] { topmostBoardCard }, 3f);
-                                    _handCardPreviewTimerStarted = true;
-                                }
-                            }
-                            if (_battlegroundController.isPreviewActive && _handCardPreviewTimerStarted && topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
-                                StopHandTimer();
+                            //if (!_battlegroundController.isPreviewActive || topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
+                            //{
+                            //    if (!_handCardPreviewTimerStarted)
+                            //    {
+                            //        GameClient.Get<ITimerManager>().AddTimer(HandCardPreview, new object[] { topmostBoardCard }, 3f);
+                            //        _handCardPreviewTimerStarted = true;
+                            //    }
+                            //}
+                            //if (_battlegroundController.isPreviewActive && _handCardPreviewTimerStarted && topmostBoardCard.WorkingCard.instanceId != _battlegroundController.currentPreviewedCardId)
+                            //    StopHandTimer();
                         }
                     }
                 }
@@ -250,15 +250,15 @@ namespace LoomNetwork.CZB
                         var selectedBoardCreature = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardCreature != null && (!_battlegroundController.isPreviewActive || selectedBoardCreature.Card.instanceId != _battlegroundController.currentPreviewedCardId))
                         {
-                            _battlegroundController.DestroyCardPreview();
-                            _battlegroundController.CreateCardPreview(selectedBoardCreature.Card, selectedBoardCreature.transform.position, false);
+                            //_battlegroundController.DestroyCardPreview();
+                            //_battlegroundController.CreateCardPreview(selectedBoardCreature.Card, selectedBoardCreature.transform.position, false);
                         }
                     }
                 }
                 else
                 {
-                    StopHandTimer();
-                    _battlegroundController.DestroyCardPreview();
+                    //StopHandTimer();
+                    //_battlegroundController.DestroyCardPreview();
                 }
             }
 
