@@ -62,22 +62,18 @@ namespace LoomNetwork.CZB
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
-                    abilityUnitOwner.HP = ChangeValue(abilityUnitOwner.HP, value);
+                    abilityUnitOwner.BuffedHP = 0;
+                    abilityUnitOwner.CurrentHP = value;
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    abilityUnitOwner.Damage = ChangeValue(abilityUnitOwner.Damage, value);
+                    abilityUnitOwner.BuffedDamage = 0;
+                    abilityUnitOwner.CurrentDamage = value;
                     break;
                 default:
                     break;
             }
-        }
 
-        private int ChangeValue(int param, int valueChange)
-        {
-            param = param + valueChange;
-            if (param < 0)
-                param = 0;
-            return param;
+            _ranksController.UpdateRanksBuffs();
         }
     }
 }

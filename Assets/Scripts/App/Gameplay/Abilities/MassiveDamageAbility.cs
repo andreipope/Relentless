@@ -39,9 +39,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void CreatureOnDieEventHandler()
+        protected override void UnitOnDieEventHandler()
         {
-            base.CreatureOnDieEventHandler();
+            base.UnitOnDieEventHandler();
 			if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
 				return;
             Debug.Log("CreatureOnDieEventHandler");

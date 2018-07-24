@@ -10,6 +10,8 @@ namespace LoomNetwork.CZB
 {
     public class RageAbility : AbilityBase
     {
+        private bool _wasChanged = false;
+
         public int value = 0;
 
         public RageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
@@ -42,14 +44,31 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info);
         }
 
-        protected override void UnitGotDamageEventHandler(object from)
+        protected override void UnitHPChangedEventHandler(int oldHP, int newHP)
         {
-            base.UnitGotDamageEventHandler(from);
+            base.UnitHPChangedEventHandler(oldHP, newHP);
 
             if (abilityCallType != Enumerators.AbilityCallType.GOT_DAMAGE)
                 return;
 
-            abilityUnitOwner.Damage += value;
+            if (!_wasChanged)
+            {
+                if (abilityUnitOwner.CurrentHP < abilityUnitOwner.MaxCurrentHP)
+                {
+                    _wasChanged = true;
+                    abilityUnitOwner.BuffedDamage += value;
+                    abilityUnitOwner.CurrentDamage += value;
+                }
+            }
+            else
+            {
+                if (abilityUnitOwner.CurrentHP >= abilityUnitOwner.MaxCurrentHP)
+                {
+                    abilityUnitOwner.BuffedDamage -= value;
+                    abilityUnitOwner.CurrentDamage -= value;
+                    _wasChanged = false;
+                }
+            }
         }
     }
 }

@@ -225,7 +225,9 @@
             ENEMY_THAT_ATTACKS_BECOME_FROZEN,
             TAKE_UNIT_TYPE_TO_ALLY_UNIT,
             REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
-            CHANGE_STAT_UNTILL_END_OF_TURN
+            CHANGE_STAT_UNTILL_END_OF_TURN,
+            ATTACK_OVERLORD,
+            ADJACENT_UNITS_GET_HEAVY
         }
 
         public enum AbilityActivityType

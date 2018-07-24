@@ -22,6 +22,7 @@ namespace LoomNetwork.CZB
         protected ActionsQueueController _actionsQueueController;
         protected BattlegroundController _battlegroundController;
         protected CardsController _cardsController;
+        protected RanksController _ranksController;
 
         protected ILoadObjectsManager _loadObjectsManager;
         protected IGameplayManager _gameplayManager;
@@ -87,6 +88,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
 
             abilityData = ability;
             this.cardKind = cardKind;
@@ -158,8 +160,9 @@ namespace LoomNetwork.CZB
 
             if (this.cardKind == Enumerators.CardKind.CREATURE)
             {
-				abilityUnitOwner.CreatureOnDieEvent += CreatureOnDieEventHandler;
-                abilityUnitOwner.CreatureOnAttackEvent += UnitOnAttackEventHandler;
+				abilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
+                abilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
+                abilityUnitOwner.UnitHPChangedEvent += UnitHPChangedEventHandler;
                 abilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
                 if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
@@ -291,13 +294,15 @@ namespace LoomNetwork.CZB
          
         }
 
-        protected virtual void CreatureOnDieEventHandler()
+        protected virtual void UnitOnDieEventHandler()
         {
             //  if(targetCreature != null)
             //    targetCreature.Card.DisconnectAbility((uint)abilityType);
 
-            abilityUnitOwner.CreatureOnDieEvent -= CreatureOnDieEventHandler;
+            abilityUnitOwner.UnitOnDieEvent -= UnitOnDieEventHandler;
+            abilityUnitOwner.UnitHPChangedEvent -= UnitHPChangedEventHandler;
             abilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
+            
             _abilitiesController.DeactivateAbility(activityId);
             Dispose();
         }
@@ -307,10 +312,15 @@ namespace LoomNetwork.CZB
 			
 		}
 
-        protected virtual void UnitGotDamageEventHandler(object from)
+        protected virtual void UnitHPChangedEventHandler(int oldHP, int newHP)
         {
 
         }
+
+        protected virtual void UnitGotDamageEventHandler(object from)
+        {
+
+        } 
 
         protected void SpellOnUsedEventHandler()
         {
@@ -341,6 +351,11 @@ namespace LoomNetwork.CZB
         protected object GetCaller()
         {
             return abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+        }
+
+        protected Player GetOpponentOverlord()
+        {
+            return playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
         }
     }
 }

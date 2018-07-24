@@ -20,12 +20,12 @@ namespace LoomNetwork.CZB
 {
     public class BoardUnit
     {
-        public event Action CreatureOnDieEvent;
-        public event Action<object> CreatureOnAttackEvent;
+        public event Action UnitOnDieEvent;
+        public event Action<object> UnitOnAttackEvent;
         public event Action<object> UnitGotDamageEvent;
 
-        public event Action<int, int> CreatureHPChangedEvent;
-        public event Action<int, int> CreatureDamageChangedEvent;
+        public event Action<int, int> UnitHPChangedEvent;
+        public event Action<int, int> UnitDamageChangedEvent;
 
         private Action<int, int> damageChangedDelegate;
         private Action<int, int> healthChangedDelegate;
@@ -66,12 +66,17 @@ namespace LoomNetwork.CZB
 
         private Vector3 _initialScale;
 
-        private int _damage;
-        private int _health;
+ //       private int _buffedDamage;
+        private int _buffedHealth;
+
+        private int _currentDamage;
+        private int _currentHealth;
 
         private int _stunTurns = 0;
 
         private bool _readyForBuffs = false;
+
+        private bool _ignoreArrivalEndEvents = false;
 
         private BoardArrow abilitiesTargetingArrow;
         private BattleBoardArrow fightTargetingArrow;
@@ -106,38 +111,43 @@ namespace LoomNetwork.CZB
         public Enumerators.AttackInfoType attackInfoType = Enumerators.AttackInfoType.ANY;
 
 
-        public int Damage
+        public int MaxCurrentDamage { get { return initialDamage + BuffedDamage; } }
+        public int BuffedDamage { get; set; }
+
+        public int CurrentDamage
         {
             get
             {
-                return _damage;
+                return _currentDamage;
             }
             set
             {
-                var oldDamage = _damage;
-                _damage = value;
+                var oldDamage = _currentDamage;
 
+                _currentDamage = Mathf.Clamp(value, 0, 99999);
 
-                if (oldDamage != _damage)
-                    CreatureDamageChangedEvent?.Invoke(oldDamage, _damage);
+                if (oldDamage != _currentDamage)
+                    UnitDamageChangedEvent?.Invoke(oldDamage, _currentDamage);
             }
         }
 
-        public int HP
+        public int MaxCurrentHP { get { return initialHP + BuffedHP; } }
+        public int BuffedHP { get; set; }
+
+        public int CurrentHP
         {
             get
             {
-                return _health;
+                return _currentHealth;
             }
             set
             {
-                var oldHealth = _health;
-                _health = value;
+                var oldHealth = _currentHealth;
 
-                _health = Mathf.Clamp(_health, 0, 99);
+                _currentHealth = Mathf.Clamp(value, 0, 99);
 
-                if (oldHealth != _health)
-                    CreatureHPChangedEvent?.Invoke(oldHealth, _health);
+                if (oldHealth != _buffedHealth)
+                    UnitHPChangedEvent?.Invoke(oldHealth, _buffedHealth);
             }
         }
 
@@ -214,6 +224,7 @@ namespace LoomNetwork.CZB
             unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
 
             unitContentObject = _selfObject.transform.Find("Other").gameObject;
+            unitContentObject.SetActive(false);
 
             arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
 
@@ -265,15 +276,15 @@ namespace LoomNetwork.CZB
 
         public void Die(bool returnToHand = false)
         {
-            CreatureHPChangedEvent -= healthChangedDelegate;
-            CreatureDamageChangedEvent -= damageChangedDelegate;
+            UnitHPChangedEvent -= healthChangedDelegate;
+            UnitDamageChangedEvent -= damageChangedDelegate;
 
             _dead = true;
 
             if (!returnToHand)
                 _battlegroundController.KillBoardCard(this);
 
-            CreatureOnDieEvent?.Invoke();
+            UnitOnDieEvent?.Invoke();
         }
 
         public void DebuffDamage(int value)
@@ -282,7 +293,7 @@ namespace LoomNetwork.CZB
                 return;
 
             DamageDebuffUntillEndOfTurn = value;
-            Damage -= DamageDebuffUntillEndOfTurn;
+            CurrentDamage -= DamageDebuffUntillEndOfTurn;
         }
 
         public void DebuffHealth(int value)
@@ -291,7 +302,7 @@ namespace LoomNetwork.CZB
                 return;
 
             HPDebuffUntillEndOfTurn = value;
-            HP -= HPDebuffUntillEndOfTurn;
+            CurrentHP -= HPDebuffUntillEndOfTurn;
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -357,8 +368,8 @@ namespace LoomNetwork.CZB
             AdditionalDefense -= defenseToDelete;
             AdditionalAttack -= attackToDelete;
             AdditionalDamage -= damageToDelete;
-            HP -= defenseToDelete;
-            Damage -= attackToDelete;
+            BuffedHP -= defenseToDelete;
+            BuffedDamage -= attackToDelete;
 
             UpdateFrameByType();
         }
@@ -399,8 +410,8 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            HP += AdditionalDefense;
-            Damage += AdditionalAttack;
+            BuffedHP += AdditionalDefense;
+            BuffedDamage += AdditionalAttack;
 
             UpdateFrameByType();
         }
@@ -417,7 +428,8 @@ namespace LoomNetwork.CZB
             _shieldSprite.SetActive(HasBuffShield);
 
             _heavyFrame.SetActive(false);
-         //   _feralFrame.SetActive(false);
+            _frameSprite.enabled = true;
+            //   _feralFrame.SetActive(false);
 
             unitAnimator.enabled = true;
 
@@ -435,50 +447,73 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void SetAsHeavyUnit()
+        {
+            if (hasHeavy)
+                return;
+
+            hasHeavy = true;
+
+            _ignoreArrivalEndEvents = true;
+
+            unitContentObject.SetActive(false);
+            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.HEAVY).animator;
+            unitAnimator.StopPlayback();
+            unitAnimator.Play(0);
+            unitAnimator.SetTrigger("Active");
+        }
+
         public void ArrivalAnimationEventHandler(string param)
         {
             if (param.Equals("ArrivalAnimationDone"))
             {
                 unitContentObject.SetActive(true);
-                if (hasFeral)
+
+                if (!_ignoreArrivalEndEvents)
                 {
-                    //  frameSprite.sprite = frameSprites[1];
-                    StopSleepingParticles();
-                    if (ownerPlayer != null)
-                        SetHighlightingEnabled(true);
+                    if (hasFeral)
+                    {
+                        //  frameSprite.sprite = frameSprites[1];
+                        StopSleepingParticles();
+                        if (ownerPlayer != null)
+                            SetHighlightingEnabled(true);
+                    }
                 }
 
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
-                if (Card.libraryCard.cardRank == Enumerators.CardRank.COMMANDER)
+                if (!_ignoreArrivalEndEvents)
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
-                }
-                else
-                {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                }
-
-
-                if (Card.libraryCard.name.Equals("Freezzee"))
-                {
-                    var freezzees = GetEnemyUnitsList(this).FindAll(x => x.Card.libraryCard.id == Card.libraryCard.id);
-
-                    if (freezzees.Count > 0)
+                    if (Card.libraryCard.cardRank == Enumerators.CardRank.COMMANDER)
                     {
-                        foreach (var creature in freezzees)
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
+                    }
+                    else
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    }
+
+
+                    if (Card.libraryCard.name.Equals("Freezzee"))
+                    {
+                        var freezzees = GetEnemyUnitsList(this).FindAll(x => x.Card.libraryCard.id == Card.libraryCard.id);
+
+                        if (freezzees.Count > 0)
                         {
-                            creature.Stun(1);
-                            CreateFrozenVFX(creature.transform.position);
+                            foreach (var creature in freezzees)
+                            {
+                                creature.Stun(1);
+                                CreateFrozenVFX(creature.transform.position);
+                            }
                         }
                     }
+
+
+                    _readyForBuffs = true;
+                    _ranksController.UpdateRanksBuffs(ownerPlayer);
                 }
-
-
-                _readyForBuffs = true;
-                _ranksController.UpdateRanksBuffs(ownerPlayer);
             }
             else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
             {
@@ -489,6 +524,8 @@ namespace LoomNetwork.CZB
             }
 
             _initialScale = _selfObject.transform.localScale;
+
+            _ignoreArrivalEndEvents = false;
         }
 
         private void CreateFrozenVFX(Vector3 pos)
@@ -538,29 +575,32 @@ namespace LoomNetwork.CZB
                 _sleepingParticles.transform.position += Vector3.up * 0.7f;
             }
 
-            Damage = card.damage;
-            HP = card.health;
+            CurrentDamage = card.damage;
+            CurrentHP = card.health;
 
-            initialDamage = Damage;
-            initialHP = HP;
+            BuffedDamage = 0;
+            BuffedHP = 0;
 
-            _attackText.text = Damage.ToString();
-            _healthText.text = HP.ToString();
+            initialDamage = CurrentDamage;
+            initialHP = CurrentHP;
+
+            _attackText.text = CurrentDamage.ToString();
+            _healthText.text = CurrentHP.ToString();
 
             damageChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateUnitInfoText(_attackText, Damage, initialDamage);
+                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage);
             };
 
-            CreatureDamageChangedEvent += damageChangedDelegate;
+            UnitDamageChangedEvent += damageChangedDelegate;
 
             healthChangedDelegate = (oldValue, newValue) =>
             {
-                UpdateUnitInfoText(_healthText, HP, initialHP);
+                UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
                 CheckOnDie();
             };
 
-            CreatureHPChangedEvent += healthChangedDelegate;
+            UnitHPChangedEvent += healthChangedDelegate;
 
             switch (Card.libraryCard.cardType)
             {
@@ -593,7 +633,7 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if (HP <= 0 && !_dead)
+            if (CurrentHP <= 0 && !_dead)
                 Die();
         }
 
@@ -610,8 +650,8 @@ namespace LoomNetwork.CZB
 
             if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             {
-                if(Damage > 0)
-                SetHighlightingEnabled(true);
+                if (CurrentDamage > 0)
+                    SetHighlightingEnabled(true);
 
                 AttackedThisTurn = false;
 
@@ -636,12 +676,12 @@ namespace LoomNetwork.CZB
 
             if (DamageDebuffUntillEndOfTurn > 0)
             {
-                Damage += DamageDebuffUntillEndOfTurn;
+                CurrentDamage += DamageDebuffUntillEndOfTurn;
                 DamageDebuffUntillEndOfTurn = 0;
             }
             if (HPDebuffUntillEndOfTurn > 0)
             {
-                HP += HPDebuffUntillEndOfTurn;
+                CurrentHP += HPDebuffUntillEndOfTurn;
                 HPDebuffUntillEndOfTurn = 0;
             }       
         }
@@ -821,21 +861,21 @@ namespace LoomNetwork.CZB
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
                 _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                _actionsQueueController.AddNewActionInToQueue((Action<object, Action>)((parameter, completeCallback) =>
                 {
                     attackedBoardObjectsThisTurn.Add(targetPlayer);
 
-                    _animationsController.DoFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, () =>
+                    _animationsController.DoFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, (Action)(() =>
                     {
 
                         Vector3 positionOfVFX = targetPlayer.AvatarObject.transform.position;
-                       // positionOfVFX.y = 4.45f; // was used only for local player
+                        // positionOfVFX.y = 4.45f; // was used only for local player
 
-                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, Damage);
+                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, CurrentDamage);
 
                         _battleController.AttackPlayerByCreature(this, targetPlayer);
-                        CreatureOnAttackEvent?.Invoke(targetPlayer);
-                    },
+                        UnitOnAttackEvent?.Invoke(targetPlayer);
+                    }),
                     () =>
                     {
                         //sortingGroup.sortingOrder = 0;
@@ -843,7 +883,7 @@ namespace LoomNetwork.CZB
 
                         completeCallback?.Invoke();
                     });
-                });
+                }));
             }
             else if (target is BoardUnit)
             {
@@ -851,32 +891,32 @@ namespace LoomNetwork.CZB
                 SetHighlightingEnabled(false);
                 IsPlayable = false;
 
-                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
-                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+                _actionsQueueController.AddNewActionInToQueue(((parameter, completeCallback) =>
                 {
+                    _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+
                     attackedBoardObjectsThisTurn.Add(targetCard);
 
                     //sortingGroup.sortingOrder = 100;
 
                     // play sound when target creature attack more than our
-                    if (targetCard.Damage > Damage)
+                    if (targetCard.CurrentDamage > CurrentDamage)
                         _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
-                    _animationsController.DoFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, () =>
+                    _animationsController.DoFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, (Action)(() =>
                     {
-                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, Damage);
+                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, CurrentDamage);
 
                         _battleController.AttackCreatureByCreature(this, targetCard);
 
                         if(TakeFreezeToAttacked)
                             targetCard.Stun(1);
 
-                        targetCard.HP -= AdditionalDamage;
+                        targetCard.CurrentHP -= AdditionalDamage;
 
-                        CreatureOnAttackEvent?.Invoke(targetCard);
-                    },
+                        UnitOnAttackEvent?.Invoke(targetCard);
+                    }),
                     () =>
                     {
                         //sortingGroup.sortingOrder = 0;
@@ -884,13 +924,13 @@ namespace LoomNetwork.CZB
 
                         completeCallback?.Invoke();
                     });
-                });
+                }));
             }
         }
 
         public bool UnitCanBeUsable()
         {
-            if (HP <= 0 || Damage <= 0)
+            if (CurrentHP <= 0 || CurrentDamage <= 0)
                 return false;
 
             if (IsPlayable)

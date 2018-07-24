@@ -539,8 +539,9 @@ namespace LoomNetwork.CZB
                     //sequence.Play().OnComplete(() =>
                     //{ 
 
-
-                    player.RemoveCardFromHand(card.WorkingCard);
+                    //
+                    //  player.RemoveCardFromHand(card.WorkingCard);
+                    player.CardsInHand.Remove(card.WorkingCard);
                     _battlegroundController.playerHandCards.Remove(card);
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -548,6 +549,7 @@ namespace LoomNetwork.CZB
                     card.gameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
                     var boardSpell = new BoardSpell(card.gameObject, card.WorkingCard);
+                    boardSpell.transform.position = Vector3.zero;
 
                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
                     //});

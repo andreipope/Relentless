@@ -74,7 +74,7 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-            var opponent = _abilitiesController.GetOpponentPlayer(this);
+            var opponent = GetOpponentOverlord();
 
             var creature = info as BoardUnit;
 

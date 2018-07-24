@@ -53,7 +53,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            var opponent = _abilitiesController.GetOpponentPlayer(this);
+            var opponent = GetOpponentOverlord();
 
             foreach(var item in opponent.BoardCards)
             {

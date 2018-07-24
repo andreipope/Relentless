@@ -53,9 +53,17 @@ namespace LoomNetwork.CZB
             if (playerCallerOfAbility.Goo == 0)
                 return;
 
+            int increaseOn = 0;
+
             playerCallerOfAbility.Goo = 0;
-            abilityUnitOwner.HP *= value;
-            abilityUnitOwner.Damage *= value;
+
+            increaseOn = abilityUnitOwner.CurrentHP * value - abilityUnitOwner.CurrentHP;
+            abilityUnitOwner.BuffedHP += increaseOn;
+            abilityUnitOwner.CurrentHP += increaseOn;
+
+            increaseOn = abilityUnitOwner.CurrentDamage * value - abilityUnitOwner.CurrentDamage;
+            abilityUnitOwner.BuffedDamage += increaseOn;
+            abilityUnitOwner.CurrentDamage += increaseOn;
         }
     }
 }

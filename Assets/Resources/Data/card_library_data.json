@@ -685,11 +685,9 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "TAKE_UNIT_TYPE_TO_ADJACENT_ALLY_UNITS",
+              "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "player_card",
-              "cardType": "HEAVY"
+              "callType": "at_start"
             }
           ],
           "cardViewInfo": {

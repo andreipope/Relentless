@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
             GameObject attackViewPlayer = _attackedPlayerObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);
             var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            damageText.text = (-_attackingCreature.Damage).ToString();
+            damageText.text = (-_attackingCreature.CurrentDamage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up;
         }
 

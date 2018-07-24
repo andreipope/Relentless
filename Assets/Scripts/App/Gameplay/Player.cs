@@ -268,13 +268,14 @@ namespace LoomNetwork.CZB
             return cardObject;
         }
 
-        public void RemoveCardFromHand(WorkingCard card)
+        public void RemoveCardFromHand(WorkingCard card, bool silent = false)
         {
             CardsInHand.Remove(card);
 
             if (IsLocalPlayer)
             {
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                if (!silent)
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
             }
             else
             {

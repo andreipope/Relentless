@@ -215,6 +215,12 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
                     ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.ATTACK_OVERLORD:
+                    ability = new AttackOverlordAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
+                    ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
+                    break;            
                 default:
                     break;
             }
@@ -400,7 +406,7 @@ namespace LoomNetwork.CZB
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
-                                workingCard.owner.RemoveCardFromHand(workingCard);
+                                workingCard.owner.RemoveCardFromHand(workingCard, true);
                                 workingCard.owner.AddCardToBoard(workingCard);
 
                                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
@@ -434,9 +440,9 @@ namespace LoomNetwork.CZB
                                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                 _playerController.IsCardSelected = false;
-                              //  currentSpellCard = null;
+                                //  currentSpellCard = null;
 
-                               // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+                                // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
                             }
                             else
                             {

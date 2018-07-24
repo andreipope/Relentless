@@ -108,7 +108,11 @@ namespace LoomNetwork.CZB
                         {
                           //  card.cardId = 16;
                         }
-                        playerDeck.Add(card.cardId);
+
+
+
+                           playerDeck.Add(card.cardId);
+                     //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stormcaller"));               
                     }
                 }
 
@@ -687,8 +691,8 @@ namespace LoomNetwork.CZB
         {
             int power = 0;
             foreach (var creature in _gameplayManager.OpponentPlayer.BoardCards)
-                if (creature.HP > 0 && (_unitNumberOfTunrsOnBoard[creature.Card.instanceId] >= 1 || creature.IsFeralUnit()))
-                    power += creature.Damage;
+                if (creature.CurrentHP > 0 && (_unitNumberOfTunrsOnBoard[creature.Card.instanceId] >= 1 || creature.IsFeralUnit()))
+                    power += creature.CurrentDamage;
             return power;
         }
 
@@ -696,7 +700,7 @@ namespace LoomNetwork.CZB
         {
             int power = 0;
             foreach (var card in _gameplayManager.CurrentPlayer.BoardCards)
-                power += card.Damage;
+                power += card.CurrentDamage;
             return power;
         }
     
@@ -708,11 +712,11 @@ namespace LoomNetwork.CZB
 
             foreach (var item in list)
             {
-                if (item.HP < item.initialHP)
+                if (item.CurrentHP < item.initialHP)
                     finalList.Add(item);
             }
 
-            list = list.OrderBy(x => x.HP).OrderBy(y => y.HP.ToString().Length).ToList();
+            list = list.OrderBy(x => x.CurrentHP).OrderBy(y => y.CurrentHP.ToString().Length).ToList();
 
             return finalList;
         }
@@ -748,7 +752,7 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> GetUnitsOnBoard()
         {
-            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP > 0);
+            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0);
         }
 
         private BoardUnit GetRandomUnit(bool lowHP = false)
@@ -756,9 +760,9 @@ namespace LoomNetwork.CZB
             List<BoardUnit> eligibleUnits = null;
 
             if (!lowHP)
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP > 0 && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
             else
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP < x.initialHP && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP < x.MaxCurrentHP && !_attackedUnitTargets.Contains(x));
 
             if (eligibleUnits.Count > 0)
                 return eligibleUnits[_random.Next(0, eligibleUnits.Count)];
@@ -767,7 +771,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetTargetOpponentUnit()
         {
-            var eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.HP > 0);
+            var eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0);
 
             if (eligibleUnits.Count > 0)
             {
@@ -782,7 +786,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetRandomOpponentUnit()
         {
-            var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.HP > 0 && !_attackedUnitTargets.Contains(x));
+            var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
             if (eligibleCreatures.Count > 0)
                 return eligibleCreatures[_random.Next(0, eligibleCreatures.Count)];
             return null;
@@ -791,7 +795,7 @@ namespace LoomNetwork.CZB
         private bool OpponentHasHeavyUnits()
         {
             var board = _gameplayManager.CurrentPlayer.BoardCards;
-            var eligibleCreatures = board.FindAll(x => x.HP > 0);
+            var eligibleCreatures = board.FindAll(x => x.CurrentHP > 0);
             if (eligibleCreatures.Count > 0)
             {
                 var provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit());

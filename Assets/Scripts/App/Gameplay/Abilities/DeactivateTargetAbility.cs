@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
                 if (this.cardKind == Enumerators.CardKind.CREATURE)
                 {
                    // targetCreature.Card.DisconnectAbility((uint)abilityType);
-                    CreatureOnDieEventHandler();
+                    UnitOnDieEventHandler();
                 }
                 else if (this.cardKind == Enumerators.CardKind.SPELL)
                     SpellOnUsedEventHandler();
@@ -77,7 +77,7 @@ namespace LoomNetwork.CZB
                 {
                     if (this.cardKind == Enumerators.CardKind.CREATURE)
                     {
-                        CreatureOnDieEventHandler();
+                        UnitOnDieEventHandler();
                     }
                     else if (this.cardKind == Enumerators.CardKind.SPELL)
                         SpellOnUsedEventHandler();
