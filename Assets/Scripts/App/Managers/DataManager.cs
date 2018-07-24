@@ -96,6 +96,7 @@ namespace LoomNetwork.CZB
             
             //await GetCardLibraryData();
             await GetDeckData();
+            await GetCollectionData();
             
             CachedCardsLibraryData.FillAllCards();
 
@@ -111,6 +112,20 @@ namespace LoomNetwork.CZB
 
 
             OnLoadCacheCompletedEvent?.Invoke();
+        }
+
+        private async Task GetCollectionData()
+        {
+            try
+            {
+                var cardCollection = await LoomManager.Instance.GetCardCollection(LoomManager.UserId);
+                CustomDebug.Log(cardCollection.ToString());
+                CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(cardCollection.ToString());
+            }
+            catch (Exception ex)
+            {
+                CustomDebug.LogError("===== Card Collection Not Loaded ===== " + ex);
+            }
         }
 
         private async Task GetCardLibraryData()
@@ -259,12 +274,12 @@ namespace LoomNetwork.CZB
                             CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
                     }
                     break;
-                case Enumerators.CacheDataType.COLLECTION_DATA:
+                /*case Enumerators.CacheDataType.COLLECTION_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                     }
-                    break;
+                    break;*/
                 /*case Enumerators.CacheDataType.DECKS_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
