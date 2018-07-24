@@ -162,7 +162,7 @@ namespace LoomNetwork.CZB
 					OpenAlertDialog("Not Able to Create Account..");
 				else
 				{
-					Debug.Log(" ====== Account Created Successfully ==== ");
+					CustomDebug.Log(" ====== Account Created Successfully ==== ");
 					LoomManager.UserId = usernameText;
 					//OpenAlertDialog("Account Created Successfully");
 					// TODO : Removed code loading data manager
@@ -176,7 +176,6 @@ namespace LoomNetwork.CZB
 
 	    private void OnLoadCacheComplete()
 	    {
-		    Debug.Log("Main Menu == ");
 		    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 	    }
 

@@ -84,9 +84,11 @@ namespace LoomNetwork.CZB
 
         public async void StartLoadCache()
         {
+            // TODO : Remove creating guest user from here
+            await LoomManager.Instance.SetUser();
+            
+            
             Debug.Log("=== Start loading server ==== ");
-            
-            
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
@@ -116,12 +118,12 @@ namespace LoomNetwork.CZB
             try
             {
                 var cardLibrary = await LoomManager.Instance.GetCardLibrary();
-                Debug.Log(cardLibrary.ToString());
+                CustomDebug.Log(cardLibrary.ToString());
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(cardLibrary.ToString());
             }
             catch (Exception ex)
             {
-                Debug.LogError("===== Card Library Not Loaded ===== " + ex);
+                CustomDebug.LogError("===== Card Library Not Loaded ===== " + ex);
             }
         }
         
@@ -130,12 +132,17 @@ namespace LoomNetwork.CZB
             try
             {
                 var listDecksResponse = await LoomManager.Instance.GetDecks(LoomManager.UserId);
-                if(listDecksResponse != null)
-                    CachedDecksData.decks = JsonConvert.DeserializeObject<List<Deck>>(listDecksResponse.Decks.ToString());
+                if (listDecksResponse != null)
+                {
+                    CustomDebug.Log(listDecksResponse.ToString());
+                    CachedDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
+                }
+                else
+                    CustomDebug.Log(" List Deck Response is Null == ");
             }
             catch (Exception ex)
             {
-                Debug.Log("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
+                CustomDebug.LogError("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
                 // TODO : Removed code loading deck data from Resources
                 //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
             }

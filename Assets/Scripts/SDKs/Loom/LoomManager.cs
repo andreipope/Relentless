@@ -14,15 +14,17 @@ public partial class LoomManager
     }
     
     private Contract _contract;
-    
-    public static string UserId = string.Empty;
 
-    //private string _writerHost= "ws://127.0.0.1:46657/websocket";
-    //private string _readerHost = "ws://127.0.0.1:9999/queryws";
-    
+    public static string UserId = "Loom";
+
+    #if UNITY_EDITOR
+    private string _writerHost= "ws://127.0.0.1:46657/websocket";
+    private string _readerHost = "ws://127.0.0.1:9999/queryws";
+    #else
     private string _writerHost= "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
     private string _readerHost = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
-
+    #endif
+    
     public string WriteHost
     {
         get { return _writerHost; }
@@ -82,15 +84,26 @@ public partial class LoomManager
         result?.Invoke();
     }
 
-    public async Task CreateGuestUser()
+    public async Task SetUser()
+    {
+        if (!PlayerPrefs.HasKey("User"))
+        {
+            CreateGuestUser();
+            await SignUp(UserId, var => {});  
+        }
+        else
+            UserId = PlayerPrefs.GetString("User");
+        
+        CustomDebug.Log("User = " + UserId);
+    }
+
+    private void CreateGuestUser()
     {
         var rand = new Random();
-        var user = "Guest_" + rand.Next(1, 1000000);
+        var user = "LoomUser_" + rand.Next(1, 1000000);
         
         UserId = user;
         PlayerPrefs.SetString("User", UserId);
-            
-        await SignUp(UserId, var => {}); 
     }
 }
         

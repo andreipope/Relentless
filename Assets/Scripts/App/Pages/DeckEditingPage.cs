@@ -708,39 +708,35 @@ namespace LoomNetwork.CZB
 
         public async void OnDoneButtonPressed()
         {
-            Debug.Log("=================  Current Deck id = " + _currentDeckId);
             if (_currentDeckId == -1)
             {
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
-                Debug.Log(" ============== Creating new deck ====== ");
                 
                 await LoomManager.Instance.AddDeck(LoomManager.UserId, _currentDeck, result => 
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
-                        Debug.Log("Result === " + result);
+                        CustomDebug.Log("Result === " + result);
                         OpenAlertDialog("Not able to Add Deck..");
                     }
                     else
-                        Debug.Log(" ====== Add Deck Successfully ==== ");
-					
-                });
+                        CustomDebug.Log(" ====== Add Deck Successfully ==== ");
+			    });
             }
             else
             {
                 _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
-                Debug.Log("================ Updating new Deck =============== ");
                 
                 await LoomManager.Instance.EditDeck(LoomManager.UserId, _currentDeck, result => 
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
-                        Debug.Log("Result === " + result);
+                        CustomDebug.Log("Result === " + result);
                         OpenAlertDialog("Not able to Edit Deck..");
                     }
                     else
-                        Debug.Log(" ====== Edit Deck Successfully ==== ");
+                        CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
 					
                 });
             }

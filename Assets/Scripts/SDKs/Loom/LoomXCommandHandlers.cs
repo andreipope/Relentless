@@ -13,14 +13,14 @@ public static class LoomXCommandHandlers
 	[CommandHandler(Description = "Get Contract Write Host Link")]
 	private static void GetContractWriteLink()
 	{
-		Debug.Log("Link =  '" + LoomManager.Instance.WriteHost);
+		CustomDebug.Log("Link =  '" + LoomManager.Instance.WriteHost);
 	}
 	
 	
 	[CommandHandler(Description = "Get Contract Reader Host Link")]
 	private static void GetContractReaderLink()
 	{
-		Debug.Log("Link =  '" + LoomManager.Instance.ReaderHost);
+		CustomDebug.Log("Link =  '" + LoomManager.Instance.ReaderHost);
 	}
 	
 	
@@ -28,7 +28,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithWriteLink(string link)
 	{
 		LoomManager.Instance.WriteHost = link;
-		await LoomManager.Instance.Init(()=> { Debug.Log("LoomX Initialized..");});
+		await LoomManager.Instance.Init(()=> { CustomDebug.Log("LoomX Initialized..");});
 	}
 	
 	
@@ -36,7 +36,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithReaderLink(string link)
 	{
 		LoomManager.Instance.ReaderHost = link;
-		await LoomManager.Instance.Init(()=> { Debug.Log("LoomX Initialized..");});
+		await LoomManager.Instance.Init(()=> { CustomDebug.Log("LoomX Initialized..");});
 	}
 	
 	
@@ -47,7 +47,7 @@ public static class LoomXCommandHandlers
 		LoomManager.Instance.ReaderHost = reader;
 		await LoomManager.Instance.Init(() =>
 		{
-			Debug.Log("LoomX Initialized..");
+			CustomDebug.Log("LoomX Initialized..");
 		});
 	}
 	

@@ -154,17 +154,15 @@ namespace LoomNetwork.CZB
 
             LoadDeckObjects(_leftDeckIndex);
             
-            Debug.Log("Deleting Deck with " + deck.DeckId);
-            
             await LoomManager.Instance.DeleteDeck(LoomManager.UserId, deckName, result => 
             {
                 if (!string.IsNullOrEmpty(result))
                 {
-                    Debug.Log("Result === " + result);
+                    CustomDebug.Log("Result === " + result);
                     OpenAlertDialog("Not able to Delete Deck..");
                 }
                 else
-                    Debug.Log(" ====== Delete Deck Successfully ==== ");
+                    CustomDebug.Log(" ====== Delete Deck Successfully ==== ");
 					
             });
             
