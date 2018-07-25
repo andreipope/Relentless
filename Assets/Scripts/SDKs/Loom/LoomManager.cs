@@ -12,8 +12,6 @@ public partial class LoomManager
     {
         LoomXCommandHandlers.Initialize();
     }
-    
-    private Contract _contract;
 
     public static string UserId = "Loom";
 
@@ -36,6 +34,8 @@ public partial class LoomManager
         get { return _readerHost; }
         set { _readerHost = value; }
     }
+
+    public Contract Contract { get; private set; }
 
     public static LoomManager Instance
     {
@@ -79,7 +79,7 @@ public partial class LoomManager
         });
 
         var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
-        _contract = new Contract(client, contractAddr, callerAddr);
+        Contract = new Contract(client, contractAddr, callerAddr);
         
         result?.Invoke();
     }

@@ -8,11 +8,11 @@ public partial class LoomManager
     
     public async Task<ListCardLibraryResponse> GetCardLibrary()
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
 
         var request = new ListCardLibraryRequest();
         
-        return await _contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
+        return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
     }
 }

@@ -16,19 +16,19 @@ public partial class LoomManager
     
     public async Task<ListDecksResponse> GetDecks(string userId)
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
         
         var request = new ListDecksRequest {
             UserId = userId
         };
         
-        return await _contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+        return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
     }
 
     public async Task DeleteDeck(string userId, string deckId, Action<string> errorResult)
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
         
         var request = new DeleteDeckRequest {
@@ -38,7 +38,7 @@ public partial class LoomManager
         
         try
         {
-            await _contract.CallAsync(DeleteDeckMethod, request);
+            await Contract.CallAsync(DeleteDeckMethod, request);
             errorResult?.Invoke(string.Empty);
         }
         catch (Exception ex)
@@ -50,7 +50,7 @@ public partial class LoomManager
 
     public async Task EditDeck(string userId, Deck deck, Action<string> errorResult)
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
         
         var cards = new RepeatedField<CardCollection>();
@@ -79,7 +79,7 @@ public partial class LoomManager
         
         try
         {
-            await _contract.CallAsync(EditDeckMethod, request);
+            await Contract.CallAsync(EditDeckMethod, request);
             errorResult?.Invoke(string.Empty);
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public partial class LoomManager
 
     public async Task AddDeck(string userId, Deck deck, Action<string> errorResult)
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
         
         var cards = new RepeatedField<CardCollection>();
@@ -120,7 +120,7 @@ public partial class LoomManager
 
         try
         {
-            await _contract.CallAsync(AddDeckMethod, request);
+            await Contract.CallAsync(AddDeckMethod, request);
             errorResult?.Invoke(string.Empty);
         }
         catch (Exception ex)

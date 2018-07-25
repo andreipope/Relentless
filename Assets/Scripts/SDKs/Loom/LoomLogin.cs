@@ -10,7 +10,7 @@ public partial class LoomManager
     
     public async Task SignUp(string userId, Action<string> errorResult)
     {
-        if (_contract == null)
+        if (Contract == null)
             await Init();
         
         var req = new UpsertAccountRequest {
@@ -19,7 +19,7 @@ public partial class LoomManager
 
         try
         {
-            await _contract.CallAsync(CreateAccountMethod, req);
+            await Contract.CallAsync(CreateAccountMethod, req);
             errorResult?.Invoke(string.Empty);
         }
         catch (Exception ex)

@@ -7,7 +7,7 @@ public partial class LoomManager
     
 	public async Task<GetCollectionResponse> GetCardCollection(string userId)
 	{
-		if (_contract == null)
+		if (Contract == null)
 			await Init();
 
 		var request = new GetCollectionRequest
@@ -15,7 +15,7 @@ public partial class LoomManager
 			UserId = userId
 		};
         
-		return await _contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
+		return await Contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
 	}
 	
 }
