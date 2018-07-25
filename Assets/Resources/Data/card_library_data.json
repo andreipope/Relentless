@@ -2355,7 +2355,7 @@
           "kind": "CREATURE",
           "name": "GooZilla",
           "cost": 8,
-          "description": "<b>Entry</b>: Use all your goo for 2X Attack / Defense",
+          "description": "<b>Entry</b>: Return 4 goo, and use all your goo for 2X Attack / Defense",
           "flavorText": "",
           "picture": "GooZilla",
           "damage": 1,
@@ -2363,6 +2363,12 @@
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
+			{
+              "type": "OVERFLOW_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 4
+            },
             {
               "type": "USE_ALL_GOO_TO_INCREASE_STATS",
               "activityType": "passive",
