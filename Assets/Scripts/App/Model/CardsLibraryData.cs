@@ -42,6 +42,11 @@ namespace LoomNetwork.CZB.Data
             return Cards.Find(x => x.name == name).id;
         }
 
+        public Card GetCardFromName(string name)
+        {
+            return Cards.Find(x => x.name == name);
+        }
+
         public void FillAllCards()
         {
 

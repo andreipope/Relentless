@@ -504,7 +504,7 @@ namespace LoomNetwork.CZB
                         {
                             foreach (var creature in freezzees)
                             {
-                                creature.Stun(1);
+                                creature.Stun(Enumerators.StunType.FREEZE, 1);
                                 CreateFrozenVFX(creature.transform.position);
                             }
                         }
@@ -698,7 +698,7 @@ namespace LoomNetwork.CZB
         }
 
 
-        public void Stun(int turns)
+        public void Stun(Enumerators.StunType stunType, int turns)
         {
             Debug.Log("WAS STUNED");
             if (turns > _stunTurns)
@@ -908,7 +908,7 @@ namespace LoomNetwork.CZB
                         _battleController.AttackCreatureByCreature(this, targetCard);
 
                         if(TakeFreezeToAttacked)
-                            targetCard.Stun(1);
+                            targetCard.Stun(Enumerators.StunType.FREEZE, 1);
 
                         targetCard.CurrentHP -= AdditionalDamage;
 

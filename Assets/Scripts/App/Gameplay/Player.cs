@@ -406,6 +406,11 @@ namespace LoomNetwork.CZB
             _avatarSelectedHighlight.SetActive(status);
         }
 
+        public void Stun(Enumerators.StunType stunType, int turnsCount)
+        {
+            //todo implement logic
+        }
+
         #region handlers
 
 

@@ -81,6 +81,12 @@ namespace LoomNetwork.CZB.Helpers
             list = list.OrderBy(item => rnd.Next()).ToList();
         }
 
+        public static List<T> ShakeList<T>(List<T> list)
+        {
+            var rnd = new System.Random();
+            return list.OrderBy(item => rnd.Next()).ToList();
+        }
+
         public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
         {
             int count = root.childCount;
@@ -94,6 +100,27 @@ namespace LoomNetwork.CZB.Helpers
                 root.GetChild(i).localPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
                 pivot.x += handWidth / count;
             }
+        }
+
+        public static List<object> GetRandomElementsFromList(List<object> root, int count)
+        {
+            List<object> list = new List<object>();
+
+            if (root.Count < count)
+                list.AddRange(root);
+            else
+            {
+                object element = null;
+                for (int i = 0; i < count; i++)
+                {
+                    element = ShakeList(root).First(x => !list.Contains(x));
+
+                    if (element != null && element != default(List<object>))
+                        list.Add(element);
+                }
+            }
+
+            return list;
         }
     }
 }

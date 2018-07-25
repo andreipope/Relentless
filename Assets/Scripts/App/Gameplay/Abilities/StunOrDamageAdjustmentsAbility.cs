@@ -90,7 +90,7 @@ namespace LoomNetwork.CZB
                 if (leftAdjustment.IsStun)
                     _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, leftAdjustment);
                 else
-                    leftAdjustment.Stun(1);
+                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
                 //CreateVFX(leftAdjustment..transform.position);
             }
 
@@ -99,14 +99,14 @@ namespace LoomNetwork.CZB
                 if (rightAdjastment.IsStun)
                     _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, rightAdjastment);
                 else
-                    rightAdjastment.Stun(1);
+                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
                 //CreateVFX(targetCreature.transform.position);
             }
 
             if (creature.IsStun)
                 _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, creature);
             else
-                creature.Stun(1);
+                creature.Stun(Enumerators.StunType.FREEZE, 1);
         }
 
         protected override void UnitOnAttackEventHandler(object info)

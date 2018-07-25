@@ -4,6 +4,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -22,6 +23,8 @@ namespace LoomNetwork.CZB
 
             if (abilityCallType != Enumerators.AbilityCallType.AT_START)
                 return;
+
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
 
             Action();
         }
@@ -53,7 +56,10 @@ namespace LoomNetwork.CZB
             var opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
             foreach (var unit in opponent.BoardCards)
-                unit.Stun(value);
+            {
+                unit.Stun(Enumerators.StunType.FREEZE, value);
+                CreateVFX(unit.transform.position, true, 5f);
+            }
         }
     }
 }

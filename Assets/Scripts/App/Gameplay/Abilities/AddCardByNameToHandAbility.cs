@@ -7,13 +7,13 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class DamageEnemyUnitsAndFreezeThemAbility : AbilityBase
+    public class AddCardByNameToHandAbility : AbilityBase
     {
-        public int value;
+        public string name;
 
-        public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            value = ability.value;
+            name = ability.name;
         }
 
         public override void Activate()
@@ -41,22 +41,11 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
-        {
-            base.UnitOnAttackEventHandler(info);
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            var opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-
-            foreach (var unit in opponent.BoardCards)
-                _battleController.AttackCreatureByAbility(GetCaller(), abilityData, unit);
-
-            foreach (var unit in opponent.BoardCards)
-                unit.Stun(Enumerators.StunType.FREEZE, value);
+            _cardsController.CreateNewCardByNameAndAddToHand(playerCallerOfAbility, name);
         }
     }
 }

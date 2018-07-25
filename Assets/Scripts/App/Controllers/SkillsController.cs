@@ -232,7 +232,7 @@ namespace LoomNetwork.CZB
             if (target is BoardUnit)
             {
                 var unit = target as BoardUnit;
-                unit.Stun(skill.value);
+                unit.Stun(Enumerators.StunType.FREEZE, skill.value);
 
                 _vfxController.CreateVFX(Enumerators.SetType.WATER, unit.transform.position);
 

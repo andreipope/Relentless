@@ -227,7 +227,10 @@
             REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
             CHANGE_STAT_UNTILL_END_OF_TURN,
             ATTACK_OVERLORD,
-            ADJACENT_UNITS_GET_HEAVY
+            ADJACENT_UNITS_GET_HEAVY,
+            FREEZE_NUMBER_OF_RANDOM_ALLY,
+            ADD_CARD_BY_NAME_TO_HAND,
+            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS
         }
 
         public enum AbilityActivityType
@@ -441,6 +444,14 @@
             NONE,
 
             FROZEN,
+        }
+
+        public enum StunType
+        {
+            NONE,
+
+            FREEZE,
+            DISABLE,
         }
     }
 }

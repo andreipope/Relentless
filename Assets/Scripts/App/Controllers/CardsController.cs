@@ -601,8 +601,6 @@ namespace LoomNetwork.CZB
 
         public void DrawCardInfo(WorkingCard card)
         {
-            string cardSetName = GetSetOfCard(card.libraryCard);
-
             GameObject go = null;
             BoardCard boardCard = null;
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -670,6 +668,31 @@ namespace LoomNetwork.CZB
             if (set != null)
                 return set.name;
             return string.Empty;
+        }
+
+        public void CreateNewCardByNameAndAddToHand(Player player, string name)
+        {
+            var card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
+            var workingCard = new WorkingCard(card, player);
+            var boardCard = CreateBoardCard(workingCard);
+            boardCard.transform.position = Vector3.zero;
+            boardCard.transform.localScale = Vector3.zero;
+
+            float animationDuration = 1.5f;
+
+            boardCard.transform.DOScale(Vector3.one * .3f, animationDuration);
+
+            _timerManager.AddTimer((x) =>
+            {
+                _battlegroundController.playerHandCards.Add(boardCard);
+
+                player.CardsInHand.Add(workingCard);
+
+                if (player.IsLocalPlayer)
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                else
+                    _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
+            }, null, animationDuration);
         }
     }
 }

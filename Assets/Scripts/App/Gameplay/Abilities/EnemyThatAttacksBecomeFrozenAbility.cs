@@ -48,7 +48,7 @@ namespace LoomNetwork.CZB
                 return;
 
             if(from is BoardUnit)
-                (from as BoardUnit).Stun(value);
+                (from as BoardUnit).Stun(Enumerators.StunType.FREEZE, value);
         }
     }
 }

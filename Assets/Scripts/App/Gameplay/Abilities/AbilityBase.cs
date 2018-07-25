@@ -218,12 +218,17 @@ namespace LoomNetwork.CZB
             targetPlayer = null;
         }
 
-        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f) //todo make it async
+        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false) //todo make it async
         {
             if (_vfxObject != null)
             {
                 _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
-                _vfxObject.transform.position = (pos - Constants.VFX_OFFSET) + Vector3.forward;
+
+                if(!justPosition)
+                    _vfxObject.transform.position = (pos - Constants.VFX_OFFSET) + Vector3.forward;
+                else
+                    _vfxObject.transform.position = pos;
+
 
                 ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
                 

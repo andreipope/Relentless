@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
+        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             int playerPos = playerCallerOfAbility.IsLocalPlayer ? 1 : -1;
             
