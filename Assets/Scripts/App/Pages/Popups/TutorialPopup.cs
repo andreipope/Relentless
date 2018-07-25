@@ -57,7 +57,7 @@ namespace LoomNetwork.CZB
 
             _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
             _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _skipButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _skipButton.onClick.AddListener(_tutorialManager.SkipTutorial);
 
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 

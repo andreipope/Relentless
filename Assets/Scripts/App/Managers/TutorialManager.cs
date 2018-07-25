@@ -257,6 +257,12 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void SkipTutorial()
+        {
+            GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+        }
+
         public void ReportAction(Enumerators.TutorialReportAction action)
         {
             if(_tutorialStarted)
