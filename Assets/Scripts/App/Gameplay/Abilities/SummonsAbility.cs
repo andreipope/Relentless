@@ -55,9 +55,6 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (playerCallerOfAbility.BoardCards.Count >= Constants.MAX_BOARD_CREATURES)
-                return;
-
             foreach (var target in targetTypes)
             {
                 switch (target)
@@ -77,6 +74,9 @@ namespace LoomNetwork.CZB
 
         private void SpawnMinion(Player owner)
         {
+            if (owner.BoardCards.Count >= Constants.MAX_BOARD_CREATURES)
+                return;
+
             var libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
 
             string cardSetName = _cardsController.GetSetOfCard(libraryCard);
@@ -84,7 +84,7 @@ namespace LoomNetwork.CZB
             var unit = CreateBoardUnit(card, cardSetName, owner);
 
             owner.AddCardToBoard(card);
-            owner.BoardCards.Add(unit);               
+            owner.BoardCards.Add(unit);
 
             if (!owner.IsLocalPlayer)
             {
@@ -113,9 +113,12 @@ namespace LoomNetwork.CZB
             var boardUnit = new BoardUnit(_playerBoard.transform);
             boardUnit.transform.tag = owner.IsLocalPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
             boardUnit.transform.parent = _playerBoard.transform;
-            boardUnit.transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
+            boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnit.ownerPlayer = owner;
             boardUnit.SetObjectInfo(card, cardSetName);
+
+            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+                boardUnit.IsPlayable = true;
 
             boardUnit.PlayArrivalAnimation();
 

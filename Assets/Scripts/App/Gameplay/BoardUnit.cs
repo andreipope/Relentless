@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
         private GameObject _feralFrame,
                            _heavyFrame;
 
-        private Vector3 _initialScale;
+        private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
  //       private int _buffedDamage;
         private int _buffedHealth;
@@ -746,6 +746,9 @@ namespace LoomNetwork.CZB
 
         public void SetHighlightingEnabled(bool enabled)
         {
+            if (CurrentDamage <= 0)
+                enabled = false;
+
             _glowSprite.enabled = enabled;
         }
 

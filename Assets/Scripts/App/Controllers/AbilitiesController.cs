@@ -230,6 +230,12 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
                     ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.SWING:
+                    ability = new SwingAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
+                    ability = new TakeDefenseIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
+                    break;       
                 default:
                     break;
             }
