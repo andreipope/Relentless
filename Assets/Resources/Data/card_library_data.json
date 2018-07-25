@@ -280,80 +280,9 @@
               "z": 0.6
             }
           }
-        },
+        }
 
 
-		/*
-        {
-          "id": 2,
-          "kind": "CREATURE",
-          "name": "Werezomb",
-          "cost": 3,
-          "description": "<b>Entry</b>: A friendly zombie gets Feral",
-          "flavorText": "HOOOOOWWHOOO--UCH",
-          "picture": "Werezomb",
-          "damage": 1,
-          "health": 1,
-          "type": "WALKER",
-          "rank": "OFFICER",
-          "abilities": [
-            {
-              "type": "TAKE_UNIT_TYPE_TO_ALLY_UNIT",
-              "activityType": "active",
-              "callType": "at_start",
-              "targetType": "player_card",
-              "cardType": "FERAL"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.35,
-              "y": 0.1,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 7,
-          "kind": "CREATURE",
-          "name": "Gargantua",
-          "cost": 11,
-          "description": "<b>Entry:</b> 2 damage to all enemies",
-          "flavorText": "(sing) Under pressure... coming down on you...",
-          "picture": "Gargantua",
-          "damage": 6,
-          "health": 8,
-          "type": "HEAVY",
-          "rank": "GENERAL",
-          "abilities": [
-            {
-              "type": "MASSIVE_DAMAGE",
-              "activityType": "PASSIVE",
-              "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS|opponent",
-              "affectObjectType": "none",
-              "value": 2,
-              "effectType": "MASSIVE_FIRE"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        }*/
       ]
     },
     {
@@ -1049,161 +978,7 @@
             }
           }
         }
-		/*{
-          "id": 17,
-          "kind": "CREATURE",
-          "name": "Blocker",
-          "cost": 1,
-          "description": "<b>Heavy</b>",
-          "flavorText": "",
-          "picture": "Blocker",
-          "damage": 0,
-          "health": 3,
-          "type": "HEAVY",
-          "rank": "MINION",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.15,
-              "y": 0.08,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 19,
-          "kind": "CREATURE",
-          "name": "Rockky",
-          "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Water zombies",
-          "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
-          "picture": "Rockky",
-          "damage": 1,
-          "health": 1,
-          "type": "WALKER",
-          "rank": "MINION",
-          "abilities": [
-            {
-              "type": "MODIFICATOR_STATS",
-              "activityType": "passive",
-              "callType": "permanent",
-              "targetType": "none",
-              "statType": "damage",
-              "setType": "water",
-              "value": 1
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.15,
-              "y": 0.08,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 20,
-          "kind": "CREATURE",
-          "name": "Walley",
-          "cost": 4,
-          "description": "<b>Attack:</b> Adjacent zombies get Heavy",
-          "flavorText": "",
-          "picture": "Walley",
-          "damage": 2,
-          "health": 2,
-          "type": "WALKER",
-          "rank": "OFFICER",
-          "abilities": [
-            {
-              "type": "ADJACENT_UNITS_GET_HEAVY",
-              "activityType": "passive",
-              "callType": "at_start"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.15,
-              "y": 0.08,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 21,
-          "kind": "CREATURE",
-          "name": "Tiny",
-          "cost": 4,
-          "description": "<b>Heavy</b>",
-          "flavorText": "Znorlax, is that you?",
-          "picture": "Tiny",
-          "damage": 0,
-          "health": 7,
-          "type": "HEAVY",
-          "rank": "OFFICER",
-          "cardViewInfo": {
-            "position": {
-              "x": -0.15,
-              "y": 0.08,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        
-        {
-          "id": 23,
-          "kind": "CREATURE",
-          "name": "Bolderr",
-          "cost": 3,
-          "description": "<b>Entry:</b> 3 damage to a zombie",
-          "flavorText": "One more step, just one more step!",
-          "picture": "Bolderr",
-          "damage": 1,
-          "health": 2,
-          "type": "WALKER",
-          "rank": "COMMANDER",
-          "abilities": [
-            {
-              "type": "DAMAGE_TARGET",
-              "activityType": "active",
-              "callType": "at_start",
-              "targetType": "player_card|opponent_card|player|opponent",
-              "affectObjectType": "none",
-              "value": 3,
-              "effectType": "TARGET_ROCK"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": 0,
-              "y": 0.17,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },*/
+		
       ]
     },
     {
@@ -1551,41 +1326,7 @@
               "z": 0.6
             }
           }
-        },
-       /* {
-          "id": 22,
-          "kind": "CREATURE",
-          "name": "Mind Flayer",
-          "cost": 11,
-          "description": "<b>Entry:</b> Take control of an enemy zombie",
-          "flavorText": "Squid head or octopus head? You decide.",
-          "picture": "MindFlayer",
-          "damage": 7,
-          "health": 7,
-          "type": "WALKER",
-          "rank": "GENERAL",
-          "abilities": [
-            {
-              "type": "TAKE_CONTROL_ENEMY_UNIT",
-              "activityType": "active",
-              "callType": "at_start",
-              "targetType": "OPPONENT_CARD",
-              "value": 1,
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.15,
-              "y": -0.02,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        }*/
+        }
       ]
     },
     {
@@ -1945,104 +1686,7 @@
             }
           }
         }
-       /* {
-          "id": 27,
-          "kind": "CREATURE",
-          "name": "Blight",
-          "cost": 6,
-          "description": "<b>Delayed</b> 3: place 2 4/4 copies of this zombie in play and destroy this",
-          "flavorText": "",
-          "picture": "Blight",
-          "damage": 0,
-          "health": 6,
-          "type": "WALKER",
-          "rank": "COMMANDER",
-          "abilities": [
-
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.1,
-              "y": 0.35,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        
-        {
-          "id": 27,
-          "kind": "CREATURE",
-          "name": "Yggdrazil",
-          "cost": 11,
-          "description": "<b>Entry</b>: Revive all Life zombie that died this match",
-          "flavorText": "Can you still call it Tree of Life if it revives the dead? Can you even revive the dead? I'm so confuse...",
-          "picture": "Yggdrazil",
-          "damage": 4,
-          "health": 4,
-          "type": "WALKER",
-          "rank": "GENERAL",
-          "abilities": [
-            {
-              "type": "REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH",
-              "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "opponent_card|player_card",
-              "setType": "LIFE"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.1,
-              "y": 0.35,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 28,
-          "kind": "CREATURE",
-          "name": "Shammann",
-          "cost": 11,
-          "description": "<b>Turn:</b> summon a 2/2 zombie minion",
-          "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
-          "picture": "Shammann",
-          "damage": 5,
-          "health": 6,
-          "type": "WALKER",
-          "rank": "GENERAL",
-          "abilities": [
-            {
-              "type": "SUMMON",
-              "activityType": "passive",
-              "callType": "TURN_START",
-              "targetType": "NONE",
-              "value": 100
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.05,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },*/
-        
+      
       ]
     },
     {
@@ -2368,68 +2012,7 @@
             }
           }
         }
-       /*
        
-        {
-          "id": 32,
-          "kind": "CREATURE",
-          "name": "Zeeter",
-          "cost": 5,
-          "description": "<b>Entry: Devour</b> an ally zombie, gain its Atk and Def",
-          "flavorText": "When you're hungry, you'll eat just about anything. Even the zombie next to you",
-          "picture": "Zeeter",
-          "damage": 1,
-          "health": 1,
-          "type": "WALKER",
-          "rank": "OFFICER",
-          "abilities": [
-            {
-              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
-              "activityType": "active",
-              "callType": "AT_START",
-              "targetType": "PLAYER_CARD"
-            }
-          ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.4,
-              "y": 0.125,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-        {
-          "id": 32,
-          "kind": "CREATURE",
-          "name": "Hazmaz",
-          "cost": 2,
-          "description": "<b>Feral</b>",
-          "flavorText": "Being cooped up inside a plastic suit is no fun - now time this by a 1,000 with all the extra gases, something's gotta give...",
-          "picture": "Hazmaz",
-          "damage": 1,
-          "health": 2,
-          "type": "FERAL",
-          "rank": "MINION",
-          "abilities": [],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.4,
-              "y": 0.125,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
-            }
-          }
-        },
-		*/
       ]
     },
     {
@@ -2468,7 +2051,7 @@
           "cost": 2,
           "description": "Gain 1 empty Goo vials",
           "flavorText": "",
-          "picture": "package",
+          "picture": "goobeaker",
           "damage": 0,
           "health": 0,
           "type": "WALKER",
@@ -2502,7 +2085,7 @@
           "cost": 0,
           "description": "<b>Overflow</b> 1, disables 1 goo vial for next turn",
           "flavorText": "",
-          "picture": "package",
+          "picture": "taintedgoo",
           "damage": 0,
           "health": 0,
           "type": "WALKER",
@@ -2541,7 +2124,7 @@
           "cost": 0,
           "description": "<b>Overflow</b> 2, disables 2 goo vials for next turn",
           "flavorText": "",
-          "picture": "package",
+          "picture": "corruptedgoo",
           "damage": 0,
           "health": 0,
           "type": "WALKER",
@@ -2650,7 +2233,7 @@
           "cost": 5,
           "description": "Gain 2 empty Goo vials",
           "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
-          "picture": "GooBottles",
+          "picture": "goobottles",
           "damage": 0,
           "health": 0,
           "type": "WALKER",

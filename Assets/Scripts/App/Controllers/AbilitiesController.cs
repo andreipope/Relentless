@@ -164,7 +164,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.LOSE_GOO:
                     ability = new LoseGooAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.LOSE_GOO:
+                case Enumerators.AbilityType.DISABLE_NEXT_TURN_GOO:
                     ability = new DisableNextTurnGooAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.RAGE:
