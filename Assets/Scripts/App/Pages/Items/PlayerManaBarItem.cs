@@ -135,7 +135,6 @@ namespace LoomNetwork.CZB
 
         private void DestroyOverflow()
         {
-            Debug.Log("DestroyOverflow");
             MonoBehaviour.Destroy(_overflowObject);
             _overflowObject = null;
             _overflowBottleContainer = null;
