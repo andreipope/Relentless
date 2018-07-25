@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            var opponent = _abilitiesController.GetOpponentPlayer(this);
+            var opponent = GetOpponentOverlord();
             var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
 
             int targetIndex = -1;

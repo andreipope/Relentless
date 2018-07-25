@@ -47,31 +47,38 @@ namespace LoomNetwork.CZB
             WorkingCard returningCard = targetUnit.Card;
             Vector3 unitPosition = targetUnit.transform.position;
 
-            // STEP 1 - REMOVE UNIT FROM BOARD
-            unitOwner.BoardCards.Remove(targetUnit);
-
-            // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
             CreateVFX(unitPosition);
-            targetUnit.Die(true);
-            MonoBehaviour.Destroy(targetUnit.gameObject);
 
-            // STEP 3 - REMOVE WORKING CARD FROM BOARD
-            unitOwner.RemoveCardFromBoard(returningCard);
-
-            // STEP 4 - RETURN CARD TO HAND
-            _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-            // STEP 4 - REARRANGE HANDS
-            _gameplayManager.RearrangeHands();
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+            _timerManager.AddTimer((x) =>
             {
+                // STEP 1 - REMOVE UNIT FROM BOARD
+                unitOwner.BoardCards.Remove(targetUnit);
+
+                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
+                targetUnit.Die(true);
+                MonoBehaviour.Destroy(targetUnit.gameObject);
+
+                // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                unitOwner.RemoveCardFromBoard(returningCard);
+
+                // STEP 4 - RETURN CARD TO HAND
+                _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                // STEP 4 - REARRANGE HANDS
+                _gameplayManager.RearrangeHands();
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+                {
                 playerCallerOfAbility,
                 abilityData,
                 targetUnit
-            }));
+                }));
 
-            _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+
+
+                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+            }, null, 2f);
         }
     }
 }

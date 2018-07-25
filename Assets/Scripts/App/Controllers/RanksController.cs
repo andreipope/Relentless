@@ -173,8 +173,8 @@ namespace LoomNetwork.CZB
                 unit = units[random];
                 units.RemoveAt(random);
 
-                if (unit.HP < unit.initialHP)
-                    unit.HP++;
+                if (unit.CurrentHP < unit.MaxCurrentHP)
+                    unit.CurrentHP++;
             }
         }
 

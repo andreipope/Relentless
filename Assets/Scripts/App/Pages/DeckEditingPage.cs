@@ -199,7 +199,7 @@ namespace LoomNetwork.CZB
             if (_currentDeckId == -1)
             {
                 _currentDeck = new Deck();
-                _currentDeck.name = "Deck " + _dataManager.CachedDecksData.decks.Count;
+                _currentDeck.name = "Horde " + _dataManager.CachedDecksData.decks.Count;
                 _currentDeck.cards = new List<DeckCardData>();
             }
             else
@@ -524,7 +524,7 @@ namespace LoomNetwork.CZB
 
                   //  _currentDeck.AddCard(libraryCard.id);
 
-                    boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard.cardRank), card.amount);
+                    boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard), card.amount);
 
                     _collectionData.GetCardData(card.cardId).amount -= card.amount;
                     UpdateNumCardsText();
@@ -579,7 +579,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                boardCard.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(boardCard.libraryCard.cardRank), boardCard.cardsAmountDeckEditing);
+                boardCard.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(boardCard.libraryCard), boardCard.cardsAmountDeckEditing);
             }
         }
 
@@ -603,7 +603,7 @@ namespace LoomNetwork.CZB
             }
             var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
 
-            uint maxCopies = GetMaxCopiesValue(card.cardRank);
+            uint maxCopies = GetMaxCopiesValue(card);
             var cardRarity = "You cannot have more than ";
 
             if (existingCards != null && existingCards.amount == maxCopies)
@@ -652,13 +652,25 @@ namespace LoomNetwork.CZB
 
             _currentDeck.AddCard(card.id);
 
-            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card.cardRank), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
+            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
         }
 
-        public uint GetMaxCopiesValue(Enumerators.CardRank rarity)
+        public uint GetMaxCopiesValue(Card card)
         {
+            Enumerators.CardRank rank = card.cardRank;
             uint maxCopies = 0;
-            switch (rarity)
+
+
+            var setName = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
+
+            if(setName.ToLower().Equals("item"))
+            {
+                maxCopies = Constants.CARD_ITEM_MAX_COPIES;
+                return maxCopies;
+            }
+            
+           
+            switch (rank)
             {
                 case Enumerators.CardRank.MINION:
                     maxCopies = Constants.CARD_MINION_MAX_COPIES;
@@ -671,7 +683,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
-                    break;
+                    break;                    
             }
             return maxCopies;
         }

@@ -4,6 +4,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -22,6 +23,8 @@ namespace LoomNetwork.CZB
 
             if (abilityCallType != Enumerators.AbilityCallType.AT_START)
                 return;
+
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
         }
@@ -57,6 +60,7 @@ namespace LoomNetwork.CZB
                 var randomUnit = opponent.BoardCards[UnityEngine.Random.Range(0, opponent.BoardCards.Count)];
 
                 _battleController.AttackCreatureByAbility(GetCaller(), abilityData, randomUnit);
+                CreateVFX(randomUnit.transform.position, true, 5f);
             }
         }
     }

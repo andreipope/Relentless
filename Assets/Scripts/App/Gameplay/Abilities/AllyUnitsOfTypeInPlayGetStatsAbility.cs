@@ -58,8 +58,11 @@ namespace LoomNetwork.CZB
             {
                 if(unit.Card.libraryCard.cardSetType.Equals(setType))
                 {
-                    unit.Damage += damage;
-                    unit.HP += health;
+                    unit.BuffedDamage += damage;
+                    unit.CurrentDamage += damage;
+
+                    unit.BuffedHP += health;
+                    unit.CurrentHP += health;
                 }   
             }
         }

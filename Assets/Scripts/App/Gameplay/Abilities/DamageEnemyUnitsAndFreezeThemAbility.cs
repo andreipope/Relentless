@@ -56,7 +56,7 @@ namespace LoomNetwork.CZB
                 _battleController.AttackCreatureByAbility(GetCaller(), abilityData, unit);
 
             foreach (var unit in opponent.BoardCards)
-                unit.Stun(value);
+                unit.Stun(Enumerators.StunType.FREEZE, value);
         }
     }
 }

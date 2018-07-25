@@ -79,7 +79,7 @@ namespace LoomNetwork.CZB
         {
             if (attackingUnit != null && attackedPlayer != null)
             {
-                attackedPlayer.HP -= attackingUnit.Damage;
+                attackedPlayer.HP -= attackingUnit.CurrentDamage;
             }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
@@ -105,7 +105,7 @@ namespace LoomNetwork.CZB
                 additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                damageAttacking = attackingUnit.Damage + additionalDamageAttacker;
+                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker;
 
                 if (attackedUnit.HasBuffShield)
                 {
@@ -113,12 +113,12 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damageAttacking;
+                attackedUnit.CurrentHP -= damageAttacking;
 
                 if (damageAttacking > 0)
                     attackedUnit.ThrowEventGotDamage(attackingUnit);
 
-                damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
+                damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
                 if (attackingUnit.HasBuffShield)
                 {
@@ -126,7 +126,7 @@ namespace LoomNetwork.CZB
                     attackingUnit.UseShieldFromBuff();
                 }
 
-                attackingUnit.HP -= damageAttacked;
+                attackingUnit.CurrentHP -= damageAttacked;
             }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
@@ -153,7 +153,7 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damage;
+                attackedUnit.CurrentHP -= damage;
 
                 if (damage > 0)
                     attackedUnit.ThrowEventGotDamage(attackingPlayer);
@@ -208,9 +208,9 @@ namespace LoomNetwork.CZB
         {
             if (healedCreature != null)
             {
-                healedCreature.HP += skill.value;
-                if (healedCreature.HP > healedCreature.Card.initialHealth)
-                    healedCreature.HP = healedCreature.Card.initialHealth;
+                healedCreature.CurrentHP += skill.value;
+                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
+                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
             }
             
 
@@ -235,7 +235,7 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damage;
+                attackedUnit.CurrentHP -= damage;
 
                 if (damage > 0)
                     attackedUnit.ThrowEventGotDamage(attacker);
@@ -291,9 +291,9 @@ namespace LoomNetwork.CZB
         {
             if (healedCreature != null)
             {
-                healedCreature.HP += ability.value;
-                if (healedCreature.HP > healedCreature.Card.initialHealth)
-                    healedCreature.HP = healedCreature.Card.initialHealth;
+                healedCreature.CurrentHP += ability.value;
+                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
+                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,

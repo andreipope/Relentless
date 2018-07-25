@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
             if(info is BoardUnit)
             {
                 var creature = info as BoardUnit;
-                creature.Stun(value);
+                creature.Stun(Enumerators.StunType.FREEZE, value);
 				CreateVFX(creature.transform.position);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]

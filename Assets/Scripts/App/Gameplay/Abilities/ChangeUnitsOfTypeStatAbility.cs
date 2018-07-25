@@ -64,10 +64,12 @@ namespace LoomNetwork.CZB
                 switch (statType)
                 {
                     case Enumerators.StatType.DAMAGE:
-                        unit.Damage += value;
+                        unit.BuffedDamage += value;
+                        unit.CurrentDamage += value;
                         break;
                     case Enumerators.StatType.HEALTH:
-                        unit.HP += value;
+                        unit.BuffedHP += value;
+                        unit.CurrentHP += value;
                         break;
                     default: break;
                 }

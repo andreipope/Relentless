@@ -39,9 +39,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void CreatureOnDieEventHandler()
+        protected override void UnitOnDieEventHandler()
         {
-            base.CreatureOnDieEventHandler();
+            base.UnitOnDieEventHandler();
 			if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
 				return;
             Debug.Log("CreatureOnDieEventHandler");
@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
+        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             int playerPos = playerCallerOfAbility.IsLocalPlayer ? 1 : -1;
             

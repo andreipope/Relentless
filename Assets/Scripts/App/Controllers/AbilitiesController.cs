@@ -116,9 +116,6 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.ADD_GOO_CARRIER:
-                    ability = new AddGooByCarrierAbility(cardKind, abilityData);
-                    break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
                     break;
@@ -167,6 +164,9 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.LOSE_GOO:
                     ability = new LoseGooAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DISABLE_NEXT_TURN_GOO:
+                    ability = new DisableNextTurnGooAbility(cardKind, abilityData);
+                    break;
                 case Enumerators.AbilityType.RAGE:
                     ability = new RageAbility(cardKind, abilityData);
                     break;
@@ -214,6 +214,21 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
                     ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ATTACK_OVERLORD:
+                    ability = new AttackOverlordAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
+                    ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FREEZE_NUMBER_OF_RANDOM_ALLY:
+                    ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
+                    ability = new AddCardByNameToHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
+                    ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);
                     break;
                 default:
                     break;
@@ -400,7 +415,7 @@ namespace LoomNetwork.CZB
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
-                                workingCard.owner.RemoveCardFromHand(workingCard);
+                                workingCard.owner.RemoveCardFromHand(workingCard, true);
                                 workingCard.owner.AddCardToBoard(workingCard);
 
                                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
@@ -434,9 +449,9 @@ namespace LoomNetwork.CZB
                                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                 _playerController.IsCardSelected = false;
-                              //  currentSpellCard = null;
+                                //  currentSpellCard = null;
 
-                               // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+                                // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
                             }
                             else
                             {

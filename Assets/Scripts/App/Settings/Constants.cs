@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.18.1.ver";
+        internal const string CURRENT_VERSION = "0.0.19.2.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -28,7 +28,8 @@ namespace LoomNetwork.CZB.Common
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
-		internal static uint CARD_MINION_MAX_COPIES = 4;
+        internal static uint CARD_ITEM_MAX_COPIES = 2;
+        internal static uint CARD_MINION_MAX_COPIES = 4;
 		internal static uint CARD_OFFICER_MAX_COPIES = 2;
         internal static uint CARD_COMMANDER_MAX_COPIES = 2;
         internal static uint CARD_GENERAL_MAX_COPIES = 1;

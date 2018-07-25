@@ -108,7 +108,11 @@ namespace LoomNetwork.CZB
                         {
                           //  card.cardId = 16;
                         }
-                        playerDeck.Add(card.cardId);
+
+
+
+                           playerDeck.Add(card.cardId);
+                     //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stormcaller"));               
                     }
                 }
 
@@ -428,14 +432,7 @@ namespace LoomNetwork.CZB
 
                     if (target != null)
                     {
-                        GameObject targetObject = null;
-
-                        if (target is Player)
-                            targetObject = (target as Player).AvatarObject;
-                        else if (target is BoardUnit)
-                            targetObject = (target as BoardUnit).gameObject;
-
-                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, targetObject,
+                        CreateOpponentTarget(createTargetArrow, false, boardCreature.gameObject, target,
                                  () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target); });
                     }
                     else
@@ -469,14 +466,7 @@ namespace LoomNetwork.CZB
 
                 if (target != null)
                 {
-                    GameObject targetObject = null;
-
-                    if (target is Player)
-                        targetObject = (target as Player).AvatarObject;
-                    else if (target is BoardUnit)
-                        targetObject = (target as BoardUnit).gameObject;
-
-                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, targetObject,
+                    CreateOpponentTarget(createTargetArrow, false, _gameplayManager.OpponentPlayer.AvatarObject, target,
                         () => { _abilitiesController.CallAbility(card.libraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target); });
                 }
 
@@ -687,8 +677,8 @@ namespace LoomNetwork.CZB
         {
             int power = 0;
             foreach (var creature in _gameplayManager.OpponentPlayer.BoardCards)
-                if (creature.HP > 0 && (_unitNumberOfTunrsOnBoard[creature.Card.instanceId] >= 1 || creature.IsFeralUnit()))
-                    power += creature.Damage;
+                if (creature.CurrentHP > 0 && (_unitNumberOfTunrsOnBoard[creature.Card.instanceId] >= 1 || creature.IsFeralUnit()))
+                    power += creature.CurrentDamage;
             return power;
         }
 
@@ -696,7 +686,7 @@ namespace LoomNetwork.CZB
         {
             int power = 0;
             foreach (var card in _gameplayManager.CurrentPlayer.BoardCards)
-                power += card.Damage;
+                power += card.CurrentDamage;
             return power;
         }
     
@@ -708,11 +698,11 @@ namespace LoomNetwork.CZB
 
             foreach (var item in list)
             {
-                if (item.HP < item.initialHP)
+                if (item.CurrentHP < item.initialHP)
                     finalList.Add(item);
             }
 
-            list = list.OrderBy(x => x.HP).OrderBy(y => y.HP.ToString().Length).ToList();
+            list = list.OrderBy(x => x.CurrentHP).OrderBy(y => y.CurrentHP.ToString().Length).ToList();
 
             return finalList;
         }
@@ -748,7 +738,7 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> GetUnitsOnBoard()
         {
-            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP > 0);
+            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0);
         }
 
         private BoardUnit GetRandomUnit(bool lowHP = false)
@@ -756,9 +746,9 @@ namespace LoomNetwork.CZB
             List<BoardUnit> eligibleUnits = null;
 
             if (!lowHP)
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP > 0 && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
             else
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.HP < x.initialHP && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP < x.MaxCurrentHP && !_attackedUnitTargets.Contains(x));
 
             if (eligibleUnits.Count > 0)
                 return eligibleUnits[_random.Next(0, eligibleUnits.Count)];
@@ -767,7 +757,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetTargetOpponentUnit()
         {
-            var eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.HP > 0);
+            var eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0);
 
             if (eligibleUnits.Count > 0)
             {
@@ -782,7 +772,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetRandomOpponentUnit()
         {
-            var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.HP > 0 && !_attackedUnitTargets.Contains(x));
+            var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
             if (eligibleCreatures.Count > 0)
                 return eligibleCreatures[_random.Next(0, eligibleCreatures.Count)];
             return null;
@@ -791,7 +781,7 @@ namespace LoomNetwork.CZB
         private bool OpponentHasHeavyUnits()
         {
             var board = _gameplayManager.CurrentPlayer.BoardCards;
-            var eligibleCreatures = board.FindAll(x => x.HP > 0);
+            var eligibleCreatures = board.FindAll(x => x.CurrentHP > 0);
             if (eligibleCreatures.Count > 0)
             {
                 var provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit());
@@ -875,7 +865,7 @@ namespace LoomNetwork.CZB
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {
-                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player).AvatarObject, () =>
+                skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, (target as Player), () =>
                 {
                     skill.fightTargetingArrow.selectedPlayer = target as Player;
                     skill.EndDoSkill();
@@ -887,7 +877,7 @@ namespace LoomNetwork.CZB
                 {
                     var unit = target as BoardUnit;
 
-                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit.gameObject, () =>
+                    skill.fightTargetingArrow = CreateOpponentTarget(true, skill.IsPrimary, skill.selfObject, unit, () =>
                     {
                         skill.fightTargetingArrow.selectedCard = unit;
                         skill.EndDoSkill();
@@ -898,7 +888,7 @@ namespace LoomNetwork.CZB
 
 
         // rewrite
-        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, GameObject targetObject, System.Action action)
+        private OpponentBoardArrow CreateOpponentTarget(bool createTargetArrow, bool isReverseArrow, GameObject startObj, object target, System.Action action)
         {
             if (!createTargetArrow)
             {
@@ -909,16 +899,17 @@ namespace LoomNetwork.CZB
             var targetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
             targetingArrow.Begin(startObj.transform.position);
 
-            targetingArrow.SetTarget(targetObject);
+            targetingArrow.SetTarget(target);
 
             MainApp.Instance.StartCoroutine(RemoveOpponentTargetingArrow(targetingArrow, action));
 
             return targetingArrow;
         }
         // rewrite
-        private IEnumerator RemoveOpponentTargetingArrow(BoardArrow arrow, System.Action action)
+        private IEnumerator RemoveOpponentTargetingArrow(OpponentBoardArrow arrow, System.Action action)
         {
             yield return new WaitForSeconds(1f);
+            arrow.Dispose();
             MonoBehaviour.Destroy(arrow.gameObject);
 
             action?.Invoke();
