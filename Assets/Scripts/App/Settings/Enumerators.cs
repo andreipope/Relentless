@@ -231,7 +231,9 @@
             ADJACENT_UNITS_GET_HEAVY,
             FREEZE_NUMBER_OF_RANDOM_ALLY,
             ADD_CARD_BY_NAME_TO_HAND,
-            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS
+            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS,
+            SWING,
+            TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN
         }
 
         public enum AbilityActivityType

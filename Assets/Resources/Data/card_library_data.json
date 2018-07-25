@@ -1036,7 +1036,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.15,
-              "y": 0.08,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -1093,9 +1093,15 @@
           "health": 3,
           "type": "HEAVY",
           "rank": "COMMANDER",
-          "abilities": [
-
-          ],
+      "abilities": [
+        {
+          "type": "TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN",
+          "activityType": "passive",
+          "callType": "at_start",
+          "value": 2,
+          "health": 10
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -1149,9 +1155,14 @@
           "health": 8,
           "type": "HEAVY",
           "rank": "GENERAL",
-          "abilities": [
-
-          ],
+      "abilities": [
+        {
+          "type": "SWING",
+          "activityType": "passive",
+          "callType": "at_attack",
+          "value": 4
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -1320,7 +1331,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.2,
-              "y": 0.18,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -1375,8 +1386,20 @@
           "health": 3,
           "type": "WALKER",
           "rank": "OFFICER",
-          "abilities": [
-          ],
+      "abilities": [
+        {
+          "type": "SWING",
+          "activityType": "passive",
+          "callType": "at_attack",
+          "value": 1
+        },
+        {
+          "type": "DAMAGE_TARGET",
+          "activityType": "active",
+          "callType": "at_start",
+          "value": 1
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -1823,7 +1846,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.1,
-              "y": 0.35,
+              "y": 0,
               "z": 0
             },
             "scale": {
