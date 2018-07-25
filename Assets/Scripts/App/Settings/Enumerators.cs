@@ -210,6 +210,7 @@
             LOWER_COST_OF_CARD_IN_HAND,
             OVERFLOW_GOO,
             LOSE_GOO,
+            DISABLE_NEXT_TURN_GOO,
             RAGE,
             FREEZE_UNITS,
             TAKE_DAMAGE_RANDOM_UNIT,

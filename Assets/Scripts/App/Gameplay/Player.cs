@@ -77,6 +77,8 @@ namespace LoomNetwork.CZB
 
         public string nickname;
 
+        public int currentGooModificator;
+
         public int GooOnCurrentTurn
         {
             get { return _gooOnCurrentTurn; }
@@ -224,7 +226,8 @@ namespace LoomNetwork.CZB
            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooOnCurrentTurn++;
-                Goo = GooOnCurrentTurn;
+                Goo = GooOnCurrentTurn + currentGooModificator;
+                currentGooModificator = 0;
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
