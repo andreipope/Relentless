@@ -1663,7 +1663,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "value": 2
+              "value": 3
             },
 			{
               "type": "SUMMON",
@@ -2452,8 +2452,8 @@
           "id": 30,
           "kind": "SPELL",
           "name": "Tainted Goo",
-          "cost": 0,
-          "description": "<b>Overflow</b> 1, disables 1 goo vial for next turn",
+          "cost": 2,
+          "description": "<b>Overflow</b> 3, disables 1 goo vial for next turn",
           "flavorText": "",
           "picture": "taintedgoo",
           "damage": 0,
@@ -2465,7 +2465,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "value": 1
+              "value": 3
             },
 			{
               "type": "DISABLE_NEXT_TURN_GOO",
@@ -2491,8 +2491,8 @@
           "id": 30,
           "kind": "SPELL",
           "name": "Corrupted Goo",
-          "cost": 0,
-          "description": "<b>Overflow</b> 2, disables 2 goo vials for next turn",
+          "cost": 4,
+          "description": "<b>Overflow</b> 6, disables 2 goo vials for next turn",
           "flavorText": "",
           "picture": "corruptedgoo",
           "damage": 0,
@@ -2504,7 +2504,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "value": 2
+              "value": 6
             },
 			{
               "type": "DISABLE_NEXT_TURN_GOO",
@@ -2600,7 +2600,7 @@
           "id": 36,
           "kind": "SPELL",
           "name": "Goo Bottle",
-          "cost": 5,
+          "cost": 4,
           "description": "Gain 2 empty Goo vials",
           "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
           "picture": "goobottles",
