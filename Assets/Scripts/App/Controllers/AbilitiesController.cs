@@ -220,7 +220,16 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
                     ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
-                    break;            
+                    break;
+                case Enumerators.AbilityType.FREEZE_NUMBER_OF_RANDOM_ALLY:
+                    ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
+                    ability = new AddCardByNameToHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
+                    ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
                 default:
                     break;
             }
