@@ -1377,11 +1377,11 @@
 		{
           "id": 21,
           "kind": "CREATURE",
-          "name": "Stormcaller",
+          "name": "Ztormmcaller",
           "cost": 5,
           "description": "<b>Entry:</b> 1 damage to a zombie, <b>Swing</b> 1",
           "flavorText": "Thor's best student just got a little angrier...",
-          "picture": "Stormcaller",
+          "picture": "ztormmcaller",
           "damage": 3,
           "health": 3,
           "type": "WALKER",
@@ -2331,7 +2331,7 @@
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
               "callType": "at_death",
-              "targetType": "player|PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS|opponent",
+              "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
               "affectObjectType": "none",
               "value": 3,
               "effectType": "MASSIVE_TOXIC_ALL"
@@ -2471,7 +2471,7 @@
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "value": 1
+              "value": -1
             }
 		  ],
           "cardViewInfo": {
@@ -2510,7 +2510,7 @@
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
               "callType": "at_start",
-              "value": 2
+              "value": -2
             }
 		  ],
           "cardViewInfo": {

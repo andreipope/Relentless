@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.currentGooModificator = value;
+            playerCallerOfAbility.currentGooModificator += value;
         }
     }
 }
