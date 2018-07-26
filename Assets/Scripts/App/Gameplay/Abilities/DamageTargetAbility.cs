@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
                     //  playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
-                    _battleController.AttackCreatureByAbility(caller, abilityData, targetUnit);
+                    _battleController.AttackUnitByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }

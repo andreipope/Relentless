@@ -236,7 +236,10 @@
             TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN,
             GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS,
             ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK,
-            UNIT_WEAPON
+            UNIT_WEAPON,
+            TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
+            DELAYED_LOSE_HEAVY_GAIN_ATTACK,
+            DELAYED_GAIN_ATTACK
         }
 
         public enum AbilityActivityType
@@ -254,7 +257,8 @@
             AT_ATTACK,
             AT_DEATH,
             GOT_DAMAGE,
-            AT_DEFENCE
+            AT_DEFENCE,
+            TURN_END
         }
 
         public enum StatType

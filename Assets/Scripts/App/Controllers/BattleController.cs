@@ -77,10 +77,14 @@ namespace LoomNetwork.CZB
 
         public void AttackPlayerByCreature(BoardUnit attackingUnit, Player attackedPlayer)
         {
+            int damageAttacking = attackingUnit.CurrentDamage;
+
             if (attackingUnit != null && attackedPlayer != null)
             {
-                attackedPlayer.HP -= attackingUnit.CurrentDamage;
+                attackedPlayer.HP -= damageAttacking;
             }
+
+            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
 
@@ -92,7 +96,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureByCreature(BoardUnit attackingUnit, BoardUnit attackedUnit)
+        public void AttackCreatureByCreature(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
         {
             int damageAttacked = 0;
             int damageAttacking = 0;
@@ -105,7 +109,7 @@ namespace LoomNetwork.CZB
                 additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker;
+                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (attackedUnit.HasBuffShield)
                 {
@@ -128,6 +132,8 @@ namespace LoomNetwork.CZB
 
                 attackingUnit.CurrentHP -= damageAttacked;
             }
+
+            attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
 
@@ -223,9 +229,12 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit)
+        public void AttackUnitByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit, int damageOverride = -1)
         {
             int damage = ability.value;
+
+            if (damageOverride > 0)
+                damage = damageOverride;
 
             if (attackedUnit != null)
             {

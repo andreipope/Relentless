@@ -10,8 +10,14 @@ namespace LoomNetwork.CZB
 {
     public class DelayedAbilityBase : AbilityBase
     {
+        protected int _delayedTurnsLeft = 0;
+
+        public int delay = 0;
+
         public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
+            delay = ability.delay;
+            _delayedTurnsLeft = delay;
         }
 
         public override void Activate()
@@ -36,9 +42,36 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void OnEndTurnEventHandler()
         {
-            base.UnitOnAttackEventHandler(info);
+            base.OnEndTurnEventHandler();
+
+            if (abilityCallType != Enumerators.AbilityCallType.TURN_END)
+                return;
+
+            CountDelay();
+        }
+
+        protected override void OnStartTurnEventHandler()
+        {
+            base.OnStartTurnEventHandler();
+
+            if (abilityCallType != Enumerators.AbilityCallType.TURN_START)
+                return;
+
+            CountDelay();
+        }
+
+        private void CountDelay()
+        {
+            if (_delayedTurnsLeft == 0)
+            {
+                Action();
+
+                _abilitiesController.DeactivateAbility(activityId);
+            }
+
+            _delayedTurnsLeft--;
         }
 
         public override void Action(object info = null)

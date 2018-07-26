@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB
     public class BoardUnit
     {
         public event Action UnitOnDieEvent;
-        public event Action<object> UnitOnAttackEvent;
+        public event Action<object, int> UnitOnAttackEvent;
         public event Action<object> UnitGotDamageEvent;
 
         public event Action<int, int> UnitHPChangedEvent;
@@ -180,6 +180,9 @@ namespace LoomNetwork.CZB
 
         public int DamageDebuffUntillEndOfTurn { get; private set; }
         public int HPDebuffUntillEndOfTurn { get; private set; }
+
+        public bool IsAttacking { get; private set; }
+        
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
@@ -462,6 +465,25 @@ namespace LoomNetwork.CZB
 
             unitContentObject.SetActive(false);
             unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.HEAVY).animator;
+            unitAnimator.StopPlayback();
+            unitAnimator.Play(0);
+            unitAnimator.SetTrigger("Active");
+
+            _readyForBuffs = true;
+        }
+
+        public void SetAsWalkerUnit()
+        {
+            if (!hasHeavy)
+                return;
+
+            hasHeavy = false;
+            hasFeral = false;
+
+            _ignoreArrivalEndEvents = true;
+
+            unitContentObject.SetActive(false);
+            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.WALKER).animator;
             unitAnimator.StopPlayback();
             unitAnimator.Play(0);
             unitAnimator.SetTrigger("Active");
@@ -856,6 +878,8 @@ namespace LoomNetwork.CZB
                 return;
             }
 
+            IsAttacking = true;
+
             var sortingGroup = _selfObject.GetComponent<SortingGroup>();
 
             if (target is Player)
@@ -882,13 +906,12 @@ namespace LoomNetwork.CZB
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, CurrentDamage);
 
                         _battleController.AttackPlayerByCreature(this, targetPlayer);
-                        UnitOnAttackEvent?.Invoke(targetPlayer);
                     }),
                     () =>
                     {
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
-
+                        IsAttacking = false;
                         completeCallback?.Invoke();
                     });
                 }));
@@ -913,20 +936,16 @@ namespace LoomNetwork.CZB
                     {
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, CurrentDamage);
 
-                        _battleController.AttackCreatureByCreature(this, targetCard);
+                        _battleController.AttackCreatureByCreature(this, targetCard, AdditionalDamage);
 
                         if(TakeFreezeToAttacked)
                             targetCard.Stun(Enumerators.StunType.FREEZE, 1);
-
-                        targetCard.CurrentHP -= AdditionalDamage;
-
-                        UnitOnAttackEvent?.Invoke(targetCard);
                     }),
                     () =>
                     {
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
-
+                        IsAttacking = false;
                         completeCallback?.Invoke();
                     });
                 }));
@@ -961,6 +980,11 @@ namespace LoomNetwork.CZB
         {
             Die(true);
             MonoBehaviour.Destroy(gameObject);
+        }
+
+        public void ThrowOnAttackEvent(object target, int damage)
+        {
+            UnitOnAttackEvent?.Invoke(target, damage);
         }
     }
 

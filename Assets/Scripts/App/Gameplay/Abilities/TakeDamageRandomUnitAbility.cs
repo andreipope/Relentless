@@ -44,9 +44,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         public override void Action(object info = null)
@@ -59,7 +59,7 @@ namespace LoomNetwork.CZB
             {
                 var randomUnit = opponent.BoardCards[UnityEngine.Random.Range(0, opponent.BoardCards.Count)];
 
-                _battleController.AttackCreatureByAbility(GetCaller(), abilityData, randomUnit);
+                _battleController.AttackUnitByAbility(GetCaller(), abilityData, randomUnit);
                 CreateVFX(randomUnit.transform.position, true, 5f);
             }
         }

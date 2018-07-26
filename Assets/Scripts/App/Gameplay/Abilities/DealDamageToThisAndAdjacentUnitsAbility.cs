@@ -71,7 +71,7 @@ namespace LoomNetwork.CZB
 
         private void TakeDamageToUnit(BoardUnit unit)
         {
-            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, unit);
+            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, unit);
             CreateVFX(unit.transform.position, true, 5f);
         }
     }

@@ -314,7 +314,7 @@ namespace LoomNetwork.CZB
             Dispose();
         }
 
-		protected virtual void UnitOnAttackEventHandler(object info)
+		protected virtual void UnitOnAttackEventHandler(object info, int damage)
 		{
 			
 		}

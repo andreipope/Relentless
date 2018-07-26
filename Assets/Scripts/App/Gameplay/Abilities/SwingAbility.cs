@@ -35,9 +35,9 @@ namespace LoomNetwork.CZB
         }
 
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
 
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
@@ -73,7 +73,7 @@ namespace LoomNetwork.CZB
 
         private void TakeDamageToUnit(BoardUnit unit)
         {
-            _battleController.AttackCreatureByAbility(abilityUnitOwner, abilityData, unit);
+            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, unit);
             CreateVFX(unit.transform.position, true, 5f);
         }
     }

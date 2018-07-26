@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
                         Action(targetUnit);
                         CreateAndMoveParticle(() =>
                         {
-                            _battleController.AttackCreatureByAbility(caller, abilityData, targetUnit);
+                            _battleController.AttackUnitByAbility(caller, abilityData, targetUnit);
 
                         }, targetUnit.transform.position);
                 
@@ -122,7 +122,7 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(caller, abilityData, leftAdjustment);
+                    _battleController.AttackUnitByAbility(caller, abilityData, leftAdjustment);
 
                 }, leftAdjustment.transform.position);
             }
@@ -133,15 +133,15 @@ namespace LoomNetwork.CZB
                 //CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(() =>
                 {
-                    _battleController.AttackCreatureByAbility(caller, abilityData, rightAdjastment);
+                    _battleController.AttackUnitByAbility(caller, abilityData, rightAdjastment);
 
                 }, rightAdjastment.transform.position);
             }
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             Action(info);

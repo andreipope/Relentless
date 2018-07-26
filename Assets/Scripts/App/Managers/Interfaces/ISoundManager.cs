@@ -11,6 +11,9 @@ namespace LoomNetwork.CZB
 {
     public interface ISoundManager
     {
+        bool SfxMuted { get; set; }
+        bool MusicMuted { get; set; }
+
         float GetSoundLength(Enumerators.SoundType soundType, string namePattern);
 
         void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
@@ -27,5 +30,8 @@ namespace LoomNetwork.CZB
         void TurnOffSound();
         void StopPlaying(Enumerators.SoundType soundType, int id = 0);
         void StopPlaying(List<AudioClip> clips, int id = 0);
+
+        void SetSoundMuted(bool status);
+        void SetMusicMuted(bool status);
     }
 }

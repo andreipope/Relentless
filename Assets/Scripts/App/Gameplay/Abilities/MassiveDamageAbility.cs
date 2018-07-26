@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
                         //player.BoardCards.CopyTo(creatures);
                         foreach (var cardOpponent in opponent.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(caller, abilityData, cardOpponent);
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardOpponent);
                         }
                         CreateVFX(Vector3.up * 1.5f);
                         //Array.Clear(creatures, 0, creatures.Length);
@@ -80,7 +80,7 @@ namespace LoomNetwork.CZB
                         //cards = null;
                         foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(caller, abilityData, cardPlayer);
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardPlayer);
                             CreateVFX(cardPlayer.transform.position);
                         }
                         break;

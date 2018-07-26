@@ -52,6 +52,7 @@ namespace LoomNetwork.CZB.Data
         public string name;
         public int turns;
         public int count;
+        public int delay;
 
 
         public AbilityData()

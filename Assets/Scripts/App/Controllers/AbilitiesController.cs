@@ -85,6 +85,7 @@ namespace LoomNetwork.CZB
                     ability = CreateAbilityByType(kind, ability)
                 };
 
+                activeAbility.ability.activityId = activeAbility.id;
                 activeAbility.ability.playerCallerOfAbility = caller;
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
 
@@ -244,7 +245,17 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.UNIT_WEAPON:
                     ability = new UnitWeaponAbility(cardKind, abilityData);
-                    break; 
+                    break;
+                case Enumerators.AbilityType.TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS:
+                    ability = new TakeDamageAtEndOfTurnToThis(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_LOSE_HEAVY_GAIN_ATTACK:
+                    ability = new DelayedLoseHeavyGainAttackAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_GAIN_ATTACK:
+                    ability = new DelayedGainAttackAbility(cardKind, abilityData);
+                    break;
+                    
                 default:
                     break;
             }

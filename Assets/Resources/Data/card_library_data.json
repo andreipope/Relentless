@@ -619,9 +619,15 @@
           "health": 6,
           "type": "WALKER",
           "rank": "COMMANDER",
-          "abilities": [
-
-          ],
+      "abilities": [
+        {
+          "type": "DELAYED_GAIN_ATTACK",
+          "activityType": "passive",
+          "callType": "turn_start",
+          "value": 6,
+          "delay": 1
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": -0.7,
@@ -1135,9 +1141,15 @@
           "health": 8,
           "type": "HEAVY",
           "rank": "COMMANDER",
-          "abilities": [
-
-          ],
+      "abilities": [
+        {
+          "type": "DELAYED_LOSE_HEAVY_GAIN_ATTACK",
+          "activityType": "passive",
+          "callType": "turn_start",
+          "value": 4,
+          "delay": 2
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": 0,
@@ -2424,6 +2436,7 @@
           "type": "UNIT_WEAPON",
           "activityType": "active",
           "callType": "at_start",
+          "targetType": "player_card|opponent_card",
           "value": 4,
           "damage": 4
         }

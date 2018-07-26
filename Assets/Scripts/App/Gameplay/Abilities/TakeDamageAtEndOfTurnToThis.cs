@@ -3,16 +3,16 @@
 
 
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class GainNumberOfLifeForEachDamageThisDealsAbility : AbilityBase
+    public class TakeDamageAtEndOfTurnToThis : AbilityBase
     {
         public int value = 0;
 
-        public GainNumberOfLifeForEachDamageThisDealsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Update()
@@ -39,26 +39,22 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void OnEndTurnEventHandler()
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.OnEndTurnEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+            if (abilityCallType != Enumerators.AbilityCallType.AT_END)
                 return;
 
-            Action(damage);
+            Action();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            int damageDeal = (int)info;
-
-            abilityUnitOwner.BuffedHP += (value * damageDeal);
-            abilityUnitOwner.CurrentHP += (value * damageDeal);
-
-            CreateVFX(abilityUnitOwner.transform.position, true);
+            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner);
+            CreateVFX(abilityUnitOwner.transform.position, true, 5f);
         }
     }
 }

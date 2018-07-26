@@ -39,16 +39,42 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
+
+            if(_isAbilityResolved)
+            {
+                Action();
+            }
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
+        }
+
+        protected override void OnEndTurnEventHandler()
+        {
+            base.OnEndTurnEventHandler();
+
+            ActionEnd();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
+
+            if(targetUnit != null)
+            {
+                targetUnit.CurrentDamage += value;
+                targetUnit.BuffedDamage += value;
+
+                CreateVFX(targetUnit.transform.position, true, 5f);
+            }
+        }
+
+        private void ActionEnd()
+        {
+            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner, damage);
+            CreateVFX(targetUnit.transform.position, true, 5f);
         }
     }
 }

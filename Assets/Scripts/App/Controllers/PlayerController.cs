@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                          //  playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Gaz"));
+                           //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Froztbite"));
                         }
 
                         playerDeck.Add(card.cardId);
@@ -305,11 +305,11 @@ namespace LoomNetwork.CZB
                     }
                     else
                     {
-                        if (_selectedBoardUnit != null)
+                        if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
                         {
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
-                            HandCardPreview(new object[] { _topmostBoardCard.WorkingCard });
+                            HandCardPreview(new object[] { _selectedBoardUnit.Card });
                         }
                     }
 
