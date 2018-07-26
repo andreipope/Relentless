@@ -988,7 +988,7 @@
             }
           }
         },
-		{
+        {
           "id": 22,
           "kind": "CREATURE",
           "name": "Spiker",
@@ -1000,6 +1000,14 @@
           "health": 3,
           "type": "HEAVY",
           "rank": "OFFICER",
+          "abilities": [
+            {
+              "type": "ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK",
+              "activityType": "passive",
+              "callType": "permanent",
+              "value": 1
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.62,
@@ -1805,9 +1813,14 @@
           "health": 4,
           "type": "WALKER",
           "rank": "OFFICER",
-          "abilities": [
-
-          ],
+      "abilities": [
+        {
+          "type": "GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS",
+          "activityType": "passive",
+          "callType": "at_attack",
+          "value": 1
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": -0.1,
@@ -2406,7 +2419,15 @@
           "health": 0,
           "type": "WALKER",
           "rank": "MINION",
-          "abilities": [],
+      "abilities": [
+        {
+          "type": "UNIT_WEAPON",
+          "activityType": "active",
+          "callType": "at_start",
+          "value": 4,
+          "damage": 4
+        }
+      ],
           "cardViewInfo": {
             "position": {
               "x": -0.2,

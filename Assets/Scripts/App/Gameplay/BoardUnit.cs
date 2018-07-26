@@ -369,7 +369,9 @@ namespace LoomNetwork.CZB
             AdditionalAttack -= attackToDelete;
             AdditionalDamage -= damageToDelete;
             BuffedHP -= defenseToDelete;
+            CurrentHP -= defenseToDelete;
             BuffedDamage -= attackToDelete;
+            CurrentDamage -= attackToDelete;
 
             UpdateFrameByType();
         }
@@ -411,7 +413,9 @@ namespace LoomNetwork.CZB
             }
 
             BuffedHP += AdditionalDefense;
+            CurrentHP += AdditionalDefense;
             BuffedDamage += AdditionalAttack;
+            CurrentDamage += AdditionalAttack;
 
             UpdateFrameByType();
         }
@@ -461,6 +465,8 @@ namespace LoomNetwork.CZB
             unitAnimator.StopPlayback();
             unitAnimator.Play(0);
             unitAnimator.SetTrigger("Active");
+
+            _readyForBuffs = true;
         }
 
         public void ArrivalAnimationEventHandler(string param)
@@ -479,7 +485,6 @@ namespace LoomNetwork.CZB
                             SetHighlightingEnabled(true);
                     }
                 }
-
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 

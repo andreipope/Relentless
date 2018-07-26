@@ -111,7 +111,7 @@ namespace LoomNetwork.CZB
 
 
                            playerDeck.Add(card.cardId);
-                     //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Stormcaller"));               
+                     //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Crater"));               
                     }
                 }
 

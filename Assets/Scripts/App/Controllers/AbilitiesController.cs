@@ -235,7 +235,16 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
                     ability = new TakeDefenseIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
-                    break;       
+                    break;
+                case Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK:
+                    ability = new AdditionalDamageToHeavyInAttackAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS:
+                    ability = new GainNumberOfLifeForEachDamageThisDealsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.UNIT_WEAPON:
+                    ability = new UnitWeaponAbility(cardKind, abilityData);
+                    break; 
                 default:
                     break;
             }
@@ -314,21 +323,29 @@ namespace LoomNetwork.CZB
             return available;
         }
 
-        public int GetStatModificatorByAbility(WorkingCard attacker, WorkingCard attacked)
+        public int GetStatModificatorByAbility(BoardUnit attacker, BoardUnit attacked)
         {
             int value = 0;
 
-            var attackedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacked.cardId);
-            var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
+            var attackedCard = attacker.Card.libraryCard;
+            var attackerCard = attacked.Card.libraryCard;
 
-            var abilities = attackerCard.abilities.FindAll(x =>
-            x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
+            var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
             for (int i = 0; i < abilities.Count; i++)
             {
                 if (attackedCard.cardSetType == abilities[i].abilitySetType)
                     value += abilities[i].value;
             }
+
+            abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK);
+
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (attacked.HasBuffHeavy || attacked.hasHeavy)
+                    value += abilities[i].value;
+            }
+
             return value;
         }
 

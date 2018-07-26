@@ -1,4 +1,4 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
+﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
 
@@ -8,22 +8,17 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class AddGooVialsAbility : AbilityBase
+    public class DelayedAbilityBase : AbilityBase
     {
-        public int value = 1;
-
-        public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            this.value = ability.value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            Debug.Log("Activate");
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-            Action();
         }
 
         public override void Update()
@@ -39,19 +34,16 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
+        }
 
-            if (_isAbilityResolved)
-            {
-
-            }
+        protected override void UnitOnAttackEventHandler(object info)
+        {
+            base.UnitOnAttackEventHandler(info);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
-
-            playerCallerOfAbility.GooOnCurrentTurn += value;
-            //playerCallerOfAbility.Goo = playerCallerOfAbility.GooOnCurrentTurn;
         }
     }
 }

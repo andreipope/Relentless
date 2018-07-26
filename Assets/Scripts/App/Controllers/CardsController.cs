@@ -672,27 +672,44 @@ namespace LoomNetwork.CZB
 
         public void CreateNewCardByNameAndAddToHand(Player player, string name)
         {
-            var card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
-            var workingCard = new WorkingCard(card, player);
-            var boardCard = CreateBoardCard(workingCard);
-            boardCard.transform.position = Vector3.zero;
-            boardCard.transform.localScale = Vector3.zero;
-
             float animationDuration = 1.5f;
 
-            boardCard.transform.DOScale(Vector3.one * .3f, animationDuration);
+            var card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
+            var workingCard = new WorkingCard(card, player);
 
-            _timerManager.AddTimer((x) =>
+            if (player.IsLocalPlayer)
             {
-                _battlegroundController.playerHandCards.Add(boardCard);
+                var boardCard = CreateBoardCard(workingCard);
 
-                player.CardsInHand.Add(workingCard);
+                boardCard.transform.position = Vector3.zero;
+                boardCard.transform.localScale = Vector3.zero; 
 
-                if (player.IsLocalPlayer)
+                boardCard.transform.DOScale(Vector3.one * .3f, animationDuration);
+
+                _timerManager.AddTimer((x) =>
+                {
+                    _battlegroundController.playerHandCards.Add(boardCard);
+
+                    player.CardsInHand.Add(workingCard);
+
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                else
+
+                }, null, animationDuration);
+            }
+            else
+            {
+                var boardCard = AddCardToOpponentHand(workingCard);
+                boardCard.transform.position = Vector3.zero;
+                boardCard.transform.localScale = Vector3.zero;
+
+                boardCard.transform.DOScale(Vector3.one, animationDuration);
+
+                _timerManager.AddTimer((x) =>
+                {
+                    player.CardsInHand.Add(workingCard);
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
-            }, null, animationDuration);
+                }, null, animationDuration);
+            }
         }
     }
 }

@@ -2,11 +2,6 @@
 // https://loomx.io/
 
 
-
-﻿﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 using LoomNetwork.CZB.Data;
@@ -60,14 +55,22 @@ namespace LoomNetwork.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
-                    if (targetUnit.Card.libraryCard.cardSetType == setType || setType == Enumerators.SetType.NONE)
                     {
-                        //if (statType == Enumerators.StatType.DAMAGE)
-                        //    targetCreature.Damage.AddModifier(new Modifier(value));
-                        //else if (statType == Enumerators.StatType.HEALTH)
-                        //    targetCreature.HP.AddModifier(new Modifier(value));
+                        if (targetUnit.Card.libraryCard.cardSetType == setType || setType == Enumerators.SetType.NONE)
+                        {
+                            if (statType == Enumerators.StatType.DAMAGE)
+                            {
+                                targetUnit.BuffedDamage += value;
+                                targetUnit.CurrentDamage += value;
+                            }
+                            else if (statType == Enumerators.StatType.HEALTH)
+                            {
+                                targetUnit.BuffedHP += value;
+                                targetUnit.CurrentHP += value;
+                            }
 
-                        CreateVFX(targetUnit.transform.position);
+                            CreateVFX(targetUnit.transform.position);
+                        }
                     }
                     break;
                 default: break;

@@ -46,9 +46,6 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-            if (_isAbilityResolved)
-            {
-            }
         }
 
         protected override void UnitOnAttackEventHandler(object info)
@@ -57,17 +54,15 @@ namespace LoomNetwork.CZB
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             
-			string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
-
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
-                    abilityUnitOwner.BuffedHP = 0;
-                    abilityUnitOwner.CurrentHP = value;
+                    abilityUnitOwner.BuffedHP += value;
+                    abilityUnitOwner.CurrentHP += value;
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    abilityUnitOwner.BuffedDamage = 0;
-                    abilityUnitOwner.CurrentDamage = value;
+                    abilityUnitOwner.BuffedDamage += value;
+                    abilityUnitOwner.CurrentDamage += value;
                     break;
                 default:
                     break;
