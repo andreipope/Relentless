@@ -44,6 +44,8 @@ namespace LoomNetwork.CZB
 
         private bool _isDead;
 
+        private int _turnsLeftToFreeFromStun = 0;
+
         private Hero _selfHero;
 
         private List<WorkingCard> _cardsInDeck;
@@ -147,6 +149,8 @@ namespace LoomNetwork.CZB
 
         public List<BoardCard> CardsPreparingToHand { get; set; }
 
+        public bool IsStunned { get; private set; }
+
 
         public Player(GameObject playerObject, bool isOpponent)
         {
@@ -228,6 +232,14 @@ namespace LoomNetwork.CZB
                 GooOnCurrentTurn++;
                 Goo = GooOnCurrentTurn + currentGooModificator;
                 currentGooModificator = 0;
+
+                if (_turnsLeftToFreeFromStun > 0 && IsStunned)
+                {
+                    _turnsLeftToFreeFromStun--;
+
+                    if (_turnsLeftToFreeFromStun <= 0)
+                        IsStunned = false;
+                }
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
@@ -412,6 +424,10 @@ namespace LoomNetwork.CZB
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
             //todo implement logic
+
+            IsStunned = true;
+            _turnsLeftToFreeFromStun = turnsCount;
+
         }
 
         #region handlers
