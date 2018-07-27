@@ -66,6 +66,8 @@ namespace LoomNetwork.CZB
 
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
+        private Enumerators.CardType _initialUnitType;
+
  //       private int _buffedDamage;
         private int _buffedHealth;
 
@@ -434,32 +436,36 @@ namespace LoomNetwork.CZB
         {
             _shieldSprite.SetActive(HasBuffShield);
 
-            _heavyFrame.SetActive(false);
-            _frameSprite.enabled = true;
-            //   _feralFrame.SetActive(false);
-
-            unitAnimator.enabled = true;
-
-            if (HasBuffHeavy && !hasHeavy)
+            if (HasBuffHeavy)
+                SetAsHeavyUnit(true);
+            else
             {
-                unitAnimator.enabled = false;
-                _frameSprite.enabled = false;
-                _heavyFrame.SetActive(true);
-            }
-            else if (HasBuffRush && !hasFeral)
-            {
-                //unitAnimator.enabled = false;
-                //_frameSprite.enabled = false;
-                //_feralFrame.SetActive(true);
+                switch(_initialUnitType)
+                {
+                    case Enumerators.CardType.WALKER:
+                        SetAsWalkerUnit();
+                        break;
+                    case Enumerators.CardType.FERAL:
+                        SetAsFeralUnit();
+                        break;
+                    case Enumerators.CardType.HEAVY:
+                        SetAsHeavyUnit();
+                        break;
+                    default: break;
+                }
             }
         }
 
-        public void SetAsHeavyUnit()
+        public void SetAsHeavyUnit(bool buff = false)
         {
             if (hasHeavy)
                 return;
 
-            hasHeavy = true;
+            if (!buff)
+            {
+                hasHeavy = true;
+                hasFeral = false;
+            }
 
             _ignoreArrivalEndEvents = true;
 
@@ -472,18 +478,43 @@ namespace LoomNetwork.CZB
             _readyForBuffs = true;
         }
 
-        public void SetAsWalkerUnit()
+        public void SetAsWalkerUnit(bool buff = false)
         {
-            if (!hasHeavy)
+            if (!hasHeavy && !hasFeral)
                 return;
 
-            hasHeavy = false;
-            hasFeral = false;
+            if (!buff)
+            {
+                hasHeavy = false;
+                hasFeral = false;
+            }
 
             _ignoreArrivalEndEvents = true;
 
             unitContentObject.SetActive(false);
             unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.WALKER).animator;
+            unitAnimator.StopPlayback();
+            unitAnimator.Play(0);
+            unitAnimator.SetTrigger("Active");
+
+            _readyForBuffs = true;
+        }
+
+        public void SetAsFeralUnit(bool buff = false)
+        {
+            if (hasFeral)
+                return;
+
+            if (!buff)
+            {
+                hasHeavy = false;
+                hasFeral = true;
+            }
+
+            _ignoreArrivalEndEvents = true;
+
+            unitContentObject.SetActive(false);
+            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.FERAL).animator;
             unitAnimator.StopPlayback();
             unitAnimator.Play(0);
             unitAnimator.SetTrigger("Active");
@@ -629,7 +660,9 @@ namespace LoomNetwork.CZB
 
             UnitHPChangedEvent += healthChangedDelegate;
 
-            switch (Card.libraryCard.cardType)
+            _initialUnitType = Card.libraryCard.cardType;
+
+            switch (_initialUnitType)
             {
                 case Enumerators.CardType.FERAL:
                     hasFeral = true;

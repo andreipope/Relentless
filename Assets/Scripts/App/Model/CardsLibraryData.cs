@@ -49,7 +49,7 @@ namespace LoomNetwork.CZB.Data
 
         public void FillAllCards()
         {
-            bool removeCardsWithoutGraphics = true;
+            bool removeCardsWithoutGraphics = false;
 
             // remove cards without iamges
             var cardsToRemoveFromSet = new List<Card>();

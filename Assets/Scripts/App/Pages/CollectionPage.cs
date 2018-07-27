@@ -157,8 +157,8 @@ namespace LoomNetwork.CZB
 				cardPositions.Add(placeholder);
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1; //1 - tutorial
-            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
+            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
+            CalculateNumberOfPages();
 
             _cardSetsSlider.value = 0;
             LoadCards(0, 0);
@@ -273,28 +273,33 @@ namespace LoomNetwork.CZB
 
 		#endregion
 
-		public void MoveCardsPage(int direction)
-		{
+        public void MoveCardsPage(int direction)
+        {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+
             currentPage += direction;
 
-			if (currentPage < 0)
-			{
+            if (currentPage < 0)
+            {
                 currentSet += direction;
 
                 if (currentSet < 0)
                 {
                     currentSet = numSets - 1;
+                    CalculateNumberOfPages();
                     currentPage = numPages - 1;
                 }
                 else
                 {
+                    CalculateNumberOfPages();
+
                     currentPage = numPages - 1;
+
                     currentPage = currentPage < 0 ? 0 : currentPage;
-                }                   
+                }
             }
             else if (currentPage >= numPages)
-			{
+            {
                 currentSet += direction;
 
                 if (currentSet >= numSets)
@@ -308,20 +313,27 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
+            CalculateNumberOfPages();
+
             _cardSetsSlider.value = currentSet;
 
-			LoadCards(currentPage, currentSet);
-		}
+            LoadCards(currentPage, currentSet);
+        }
 
-		public void OnNextPageButtonPressed()
+
+        private void CalculateNumberOfPages()
+        {
+            numPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
+        }
+
+        public void OnNextPageButtonPressed()
 		{
 			
 		}
 
 		public void LoadCards(int page, int setIndex)
 		{
-            CorrectSetIndex(ref setIndex);
+           // CorrectSetIndex(ref setIndex);
 
             var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
             var cards = set.cards;

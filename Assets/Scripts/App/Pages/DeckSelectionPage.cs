@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
 
 
         private int _leftDeckIndex = 0;
-        private int _decksCount = 3;
+      //  private int _decksCount = 3;
 
         // new horde deck object
         private GameObject _newHordeDeckObject;
@@ -90,9 +90,8 @@ namespace LoomNetwork.CZB
         {
             //todod improve I guess
             _selectedDeck = _dataManager.CachedUserLocalData.lastSelectedDeckId;
-            _leftDeckIndex = Mathf.Clamp(_selectedDeck, 0, _dataManager.CachedDecksData.decks.Count);
 
-            LoadDeckObjects(_leftDeckIndex);
+            LoadDeckObjects();
             _selfPage.SetActive(true);
         }
 
@@ -110,16 +109,14 @@ namespace LoomNetwork.CZB
         }
 
 
-        private void FillHordeDecks(int startIndex, int count)
+        private void FillHordeDecks()
         {
             ResetHordeDecks();
             _hordeDecks = new List<HordeDeckObject>();
 
             HordeDeckObject hordeDeck = null;
-            for (int i = startIndex; i < _dataManager.CachedDecksData.decks.Count; i++)
+            for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
             {
-                if (i >= count || startIndex >= _dataManager.CachedDecksData.decks.Count)
-                    break;
                 int id = i;
 
                 hordeDeck = new HordeDeckObject(_containerOfDecks,
@@ -150,7 +147,7 @@ namespace LoomNetwork.CZB
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             _dataManager.SaveAllCache();
 
-            LoadDeckObjects(_leftDeckIndex);
+            LoadDeckObjects();
         }
 
         private void HordeDeckSelectedEventHandler(HordeDeckObject deck)
@@ -177,22 +174,34 @@ namespace LoomNetwork.CZB
             _dataManager.SaveAllCache();
         }
 
-        private void LoadDeckObjects(int startIndex)
+        private void LoadDeckObjects()
         {
-            FillHordeDecks(startIndex, _decksCount);
+            FillHordeDecks();
 
-            if (_hordeDecks.Count < 3 && _dataManager.CachedDecksData.decks.Count < Constants.MAX_DECKS_AT_ALL)
-            {
-                _newHordeDeckObject.transform.SetAsLastSibling();
-                _newHordeDeckObject.SetActive(true);
-            }
-            else
-                _newHordeDeckObject.SetActive(false);
+            _newHordeDeckObject.transform.SetAsLastSibling();
+            _newHordeDeckObject.SetActive(true);
 
             var deck = _hordeDecks.Find(x => x.DeckId == _dataManager.CachedUserLocalData.lastSelectedDeckId);
             if (deck != null)
                 HordeDeckSelectedEventHandler(deck);
+
+            CenterTheSelectedDeck();
         }
+
+        private void CenterTheSelectedDeck()
+        {
+            if (_hordeDecks.Count < 2)
+                return;
+
+            int index = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
+
+            _leftDeckIndex = index - 1;
+            if (_leftDeckIndex < 0)
+                _leftDeckIndex = 0;
+
+            _containerOfDecks.GetComponent<RectTransform>().anchoredPosition = (Vector2.left * _leftDeckIndex * 580f);
+        }
+
 
         #region Buttons Handlers
 
@@ -221,20 +230,13 @@ namespace LoomNetwork.CZB
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
-            _leftDeckIndex = Mathf.Clamp(_leftDeckIndex - 1, 0, _dataManager.CachedDecksData.decks.Count);
-            LoadDeckObjects(_leftDeckIndex);
+            SwitchOverlordObject(-1);
         }
 
         private void RightArrowButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-
-            if (_dataManager.CachedDecksData.decks.Count < 3)
-                _leftDeckIndex = 0;
-            else
-                _leftDeckIndex = Mathf.Clamp(_leftDeckIndex + 1, 0, _dataManager.CachedDecksData.decks.Count - 2);
-
-            LoadDeckObjects(_leftDeckIndex);
+            SwitchOverlordObject(1);
         }
 
         // new horde deck object
@@ -265,6 +267,29 @@ namespace LoomNetwork.CZB
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
+        private void SwitchOverlordObject(int direction)
+        {
+            bool isChanged = false;
+
+            if (_hordeDecks.Count < 2)
+                return;
+
+            var oldIndex = _leftDeckIndex;
+            _leftDeckIndex += direction;
+
+            if (_leftDeckIndex < 0)
+                _leftDeckIndex = _hordeDecks.Count - 2;
+            else if (_leftDeckIndex >= _hordeDecks.Count-1)
+                _leftDeckIndex = 0;
+
+            if (oldIndex != _leftDeckIndex)
+                isChanged = true;
+
+            if (isChanged)
+            {
+                _containerOfDecks.GetComponent<RectTransform>().anchoredPosition = (Vector2.left * _leftDeckIndex * 580f);
+            }
+        }
         public class HordeDeckObject
         {
             public event Action<HordeDeckObject> HordeDeckSelectedEvent;

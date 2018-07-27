@@ -13,6 +13,8 @@ namespace LoomNetwork.CZB
         public List<BoardUnit> BoardCards;
         public BoardUnit owner;
 
+        public bool ignoreHeavy = false;
+
         private void Awake()
         {
             Init();
@@ -46,7 +48,7 @@ namespace LoomNetwork.CZB
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && unit.transform.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()))
+                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || ignoreHeavy)
                 {
                     if(selectedCard != null)
                         selectedCard.SetSelectedUnit(false);
@@ -91,7 +93,7 @@ namespace LoomNetwork.CZB
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned")))
             {
                 var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke)
+                if (!opponentHasProvoke || ignoreHeavy) 
                 {
                     selectedPlayer = player;
 

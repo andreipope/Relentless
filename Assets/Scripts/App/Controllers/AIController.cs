@@ -37,6 +37,7 @@ namespace LoomNetwork.CZB
         private List<ActionItem> _allActions;
 
         private List<BoardUnit> _attackedUnitTargets;
+        private List<BoardUnit> _unitsToIgnoreThisTurn;
 
         private GameObject fightTargetingArrowPrefab;// rewrite
 
@@ -85,6 +86,7 @@ namespace LoomNetwork.CZB
             fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _attackedUnitTargets = new List<BoardUnit>();
+            _unitsToIgnoreThisTurn = new List<BoardUnit>();
 
             var playerDeck = new List<int>();
 
@@ -105,16 +107,13 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                          //  card.cardId = 16;
+                            //  card.cardId = 16;
                         }
 
-
-
-                           playerDeck.Add(card.cardId);
-                     //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Crater"));               
+                        playerDeck.Add(card.cardId);
+                        // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Fire-Maw"));               
                     }
                 }
-
             }
 
             _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
@@ -176,6 +175,7 @@ namespace LoomNetwork.CZB
             ThreadTool.Instance.AbortAllThreads(this);
 
             _attackedUnitTargets.Clear();
+            _unitsToIgnoreThisTurn.Clear();
         }
 
         private void DoAIBrain()
@@ -253,19 +253,22 @@ namespace LoomNetwork.CZB
                 {
                     foreach (var unit in unitsOnBoard)
                     {
-                        if (UnitCanBeUsable(unit))
+                        while (UnitCanBeUsable(unit))
                         {
-                            var attackedUnit = GetTargetOpponentUnit();
-                            if (attackedUnit != null)
+                            if (UnitCanBeUsable(unit))
                             {
-                                ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedUnit); });
+                                var attackedUnit = GetTargetOpponentUnit();
+                                if (attackedUnit != null)
+                                {
+                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedUnit); });
 
-                                alreadyUsedUnits.Add(unit);
+                                    alreadyUsedUnits.Add(unit);
 
-                                LetsThink();
+                                    LetsThink();
 
-                                if (!OpponentHasHeavyUnits())
-                                    break;
+                                    if (!OpponentHasHeavyUnits())
+                                        break;
+                                }
                             }
                         }
                     }
@@ -281,10 +284,13 @@ namespace LoomNetwork.CZB
                 {
                     foreach (var unit in unitsOnBoard)
                     {
-                        if (UnitCanBeUsable(unit))
+                        while (UnitCanBeUsable(unit))
                         {
-                            ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                            LetsThink();
+                            if (UnitCanBeUsable(unit))
+                            {
+                                ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
+                                LetsThink();
+                            }
                         }
                     }
                 }
@@ -292,25 +298,28 @@ namespace LoomNetwork.CZB
                 {
                     foreach (var unit in unitsOnBoard)
                     {
-                        if (UnitCanBeUsable(unit))
+                        while (UnitCanBeUsable(unit))
                         {
-                            if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
+                            if (UnitCanBeUsable(unit))
                             {
-                                ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                                LetsThink();
-                            }
-                            else
-                            {
-                                var attackedCreature = GetRandomOpponentUnit();
-                                if (attackedCreature != null)
+                                if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                                 {
-                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedCreature); });
+                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
                                     LetsThink();
                                 }
                                 else
                                 {
-                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                                    LetsThink();
+                                    var attackedCreature = GetRandomOpponentUnit();
+                                    if (attackedCreature != null)
+                                    {
+                                        ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedCreature); });
+                                        LetsThink();
+                                    }
+                                    else
+                                    {
+                                        ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
+                                        LetsThink();
+                                    }
                                 }
                             }
                         }
@@ -686,7 +695,7 @@ namespace LoomNetwork.CZB
             return power;
         }
     
-        private List<BoardUnit> GetUnitsWithLowHP()
+        private List<BoardUnit> GetUnitsWithLowHP(List<BoardUnit> unitsToIgnore = null)
         {
             List<BoardUnit> finalList = new List<BoardUnit>();
 
@@ -694,11 +703,15 @@ namespace LoomNetwork.CZB
 
             foreach (var item in list)
             {
-                if (item.CurrentHP < item.initialHP)
+                if (item.CurrentHP < item.MaxCurrentHP)
                     finalList.Add(item);
             }
 
-            list = list.OrderBy(x => x.CurrentHP).OrderBy(y => y.CurrentHP.ToString().Length).ToList();
+            if (unitsToIgnore != null)
+                finalList = finalList.FindAll(x => !unitsToIgnore.Contains(x));
+
+
+            finalList = finalList.OrderBy(x => x.CurrentHP).OrderBy(y => y.CurrentHP.ToString().Length).ToList();
 
             return finalList;
         }
@@ -766,9 +779,13 @@ namespace LoomNetwork.CZB
             return null;
         }
 
-        private BoardUnit GetRandomOpponentUnit()
+        private BoardUnit GetRandomOpponentUnit(List<BoardUnit> unitsToIgnore = null)
         {
             var eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
+
+            if (unitsToIgnore != null)
+                eligibleCreatures = eligibleCreatures.FindAll(x => !unitsToIgnore.Contains(x));
+
             if (eligibleCreatures.Count > 0)
                 return eligibleCreatures[_random.Next(0, eligibleCreatures.Count)];
             return null;
@@ -833,20 +850,26 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.SetType.AIR:
                     {
-                        var units = GetUnitsWithLowHP();
+                        var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 
                         if (units.Count > 0)
                         {
                             target = units[0];
+
+                            _unitsToIgnoreThisTurn.Add(target as BoardUnit);
+
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
                         {
-                            var unit = GetRandomOpponentUnit();
+                            var unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
 
                             if (unit != null)
                             {
                                 target = unit;
+
+                                _unitsToIgnoreThisTurn.Add(target as BoardUnit);
+
                                 selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                             }
                             else return;

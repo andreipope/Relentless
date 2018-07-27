@@ -276,7 +276,7 @@ namespace LoomNetwork.CZB
         private void InitObjects()
         {
             numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
-            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)_cardAmount);
+            CalculateNumberOfPages();
 
             LoadCards(0, 0);
         }
@@ -399,7 +399,7 @@ namespace LoomNetwork.CZB
 
             CalculateNumberOfPages();
 
-            LoadCards(_currentElementPage, currentSet, true);
+            LoadCards(_currentElementPage, currentSet);
         }
 
         private void CalculateNumberOfPages()
@@ -407,7 +407,7 @@ namespace LoomNetwork.CZB
             _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)_cardAmount);
         }
 
-        public void LoadCards(int page, int setIndex, bool needCast = false)
+        public void LoadCards(int page, int setIndex)
         {
             _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
 

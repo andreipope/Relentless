@@ -179,7 +179,10 @@ namespace LoomNetwork.CZB
                 };
                     //skill.skillTargetType;
 
-                    fightTargetingArrow.Begin(selfObject.transform.position);
+                    //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
+                        fightTargetingArrow.ignoreHeavy = true;
+
+                        fightTargetingArrow.Begin(selfObject.transform.position);
 
                     if (_tutorialManager.IsTutorial)
                         _tutorialManager.DeactivateSelectTarget();
