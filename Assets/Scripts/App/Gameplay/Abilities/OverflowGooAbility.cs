@@ -45,7 +45,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.Goo += value;
+            if(cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement)
+                playerCallerOfAbility.Goo += value;
         }
     }
 }

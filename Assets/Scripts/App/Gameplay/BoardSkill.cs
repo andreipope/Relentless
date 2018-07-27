@@ -241,7 +241,7 @@ namespace LoomNetwork.CZB
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 29)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 31)
                 return true;
 
             if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner))

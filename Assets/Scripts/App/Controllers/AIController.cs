@@ -92,8 +92,8 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add("Izze");
-                playerDeck.Add("Jetter");
+                playerDeck.Add("MonZoon");
+                playerDeck.Add("Burrrnn");
                 playerDeck.Add("Golem");
                 playerDeck.Add("Rockky");
                 playerDeck.Add("Rockky");
@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
                 foreach (var card in _dataManager.CachedOpponentDecksData.decks[deckId].cards)
                 {
                     for (var i = 0; i < card.amount; i++)
-                    {
+                    {                                                                                               
                         if (Constants.DEV_MODE)
                         {
                             //  card.cardId = 16;

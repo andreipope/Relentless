@@ -45,7 +45,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            _cardsController.CreateNewCardByNameAndAddToHand(playerCallerOfAbility, name);
+            if((name != "Corrupted Goo" && name != "Tainted Goo") || (name == "Corrupted Goo" || name == "Tainted Goo") && (cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement))
+                _cardsController.CreateNewCardByNameAndAddToHand(playerCallerOfAbility, name);
         }
     }
 }

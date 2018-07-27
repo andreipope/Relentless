@@ -28,14 +28,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
+              "x": -0.05,
               "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -67,14 +67,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
-              "y": 0,
+              "x": -0.15,
+              "y": 0.2,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -92,7 +92,7 @@
           "rank": "OFFICER",
           "cardViewInfo": {
             "position": {
-              "x": -0.35,
+              "x": -0.30,
               "y": 0.1,
               "z": 0
             },
@@ -162,8 +162,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.35,
-              "y": 0.1,
+              "x": -0.1,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -201,8 +201,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
-              "y": 0,
+              "x": -0.15,
+              "y": 0.2,
               "z": 0
             },
             "scale": {
@@ -252,7 +252,7 @@
           "kind": "CREATURE",
           "name": "Zhampion",
           "cost": 5,
-          "description": "<b>Feral, Entry:</b> If this is your only zombie in play, it gains +2/+2",
+          "description": "<b>Feral, Entry:</b> Spawn a two 1/1 enemy Pyromaz zombies ",
           "flavorText": "",
           "picture": "Zhampion",
           "damage": 5,
@@ -261,16 +261,18 @@
           "rank": "COMMANDER",
           "abilities": [
             {
-              "type": "FIRST_UNIT_IN_PLAY",
+              "type": "SUMMON",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 2
+              "callType": "AT_START",
+              "targetType": "opponent",
+              "count": 2,
+              "name": "Pyromaz"
             }
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
-              "y": 0,
+              "x": -0.1,
+              "y": 0.05,
               "z": 0
             },
             "scale": {
@@ -305,14 +307,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.6,
-              "y": 0.6,
-              "z": 0.6
+              "x": 0.55,
+              "y": 0.55,
+              "z": 0.55
             }
           }
         },
@@ -340,7 +342,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
+              "x": -0.20,
               "y": 0,
               "z": 0
             },
@@ -451,7 +453,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.1,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
@@ -487,8 +489,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.7,
-              "y": 0.03,
+              "x": -0.4,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -522,8 +524,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.3,
-              "y": 0,
+              "x": -0.15,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -562,7 +564,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.3,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
@@ -596,8 +598,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.7,
-              "y": 0.03,
+              "x": 0.05,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -630,8 +632,8 @@
       ],
           "cardViewInfo": {
             "position": {
-              "x": -0.7,
-              "y": 0.03,
+              "x": -0.3,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -677,12 +679,6 @@
             }
           }
         },
-        
-        
-        
-       
-       
-        
         {
           "id": 15,
           "kind": "CREATURE",
@@ -733,7 +729,7 @@
               "type": "DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM",
               "activityType": "PASSIVE",
               "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS",
+              "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_WATER_WAVE"
@@ -782,8 +778,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.15,
-              "y": 0.08,
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -819,7 +815,7 @@
           "cardViewInfo": {
             "position": {
               "x": 0,
-              "y": 0.17,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -843,8 +839,8 @@
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
-              "x": -0.15,
-              "y": 0.08,
+              "x": -0.6,
+              "y": 0.,
               "z": 0
             },
             "scale": {
@@ -868,8 +864,8 @@
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
-              "x": -0.15,
-              "y": 0.08,
+              "x": 0,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -901,8 +897,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.62,
-              "y": 0,
+              "x": -0.07,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -958,8 +954,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.15,
-              "y": 0.08,
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -984,7 +980,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.15,
-              "y": 0.08,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -1016,14 +1012,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.62,
+              "x": 0,
               "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.55,
-              "y": 0.55,
-              "z": 0.55
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -1049,7 +1045,7 @@
 		  ],
           "cardViewInfo": {
             "position": {
-              "x": -0.15,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
@@ -1153,7 +1149,7 @@
           "cardViewInfo": {
             "position": {
               "x": 0,
-              "y": 0,
+              "y": -0.25,
               "z": 0
             },
             "scale": {
@@ -1250,14 +1246,14 @@
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
-              "x": -0.2,
-              "y": 0.18,
+              "x": -0.3,
+              "y": 0.2,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -1283,14 +1279,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.7,
+              "y": 0.7,
+              "z": 0.7
             }
           }
         },
@@ -1350,14 +1346,14 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.2,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -1444,7 +1440,7 @@
           "damage": 2,
           "health": 3,
           "type": "HEAVY",
-          "rank": "MINION",
+          "rank": "OFFICER",
           "cardViewInfo": {
             "position": {
               "x": -0.2,
@@ -1621,7 +1617,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.3,
+              "x": -0.2,
               "y": 0,
               "z": 0
             },
@@ -1696,7 +1692,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0,
+              "x": -0.1,
               "y": 0,
               "z": 0
             },
@@ -1731,7 +1727,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.85,
+              "x": 0.35,
               "y": 0,
               "z": 0
             },
@@ -1766,7 +1762,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.1,
-              "y": 0.35,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -1836,7 +1832,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.1,
-              "y": 0.35,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -1912,7 +1908,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.1,
-              "y": 0.35,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -2014,7 +2010,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.1,
-              "y": 0.35,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -2154,8 +2150,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.15,
-              "y": 0.1,
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -2190,7 +2186,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.2,
-              "y": 0.06,
+              "y": 0.1,
               "z": 0
             },
             "scale": {
@@ -2262,8 +2258,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.4,
-              "y": 0.125,
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -2295,8 +2291,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.4,
-              "y": 0.125,
+              "x": 0,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -2314,7 +2310,7 @@
           "description": "<b>Entry</b>: Lose 1 Goo",
           "flavorText": "",
           "picture": "Ectoplasm",
-          "damage": 3,
+          "damage": 2,
           "health": 2,
           "type": "WALKER",
           "rank": "MINION",
@@ -2328,7 +2324,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": 0.15,
+              "x": 0,
               "y": 0.1,
               "z": 0
             },
@@ -2364,8 +2360,8 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.2,
-              "y": 0,
+              "x": -0.1,
+              "y": -0.2,
               "z": 0
             },
             "scale": {
@@ -2403,7 +2399,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.2,
+              "x": 0.4,
               "y": 0,
               "z": 0
             },
@@ -2473,84 +2469,6 @@
               "callType": "at_start",
               "targetType": "none",
               "value": 1
-            }
-		  ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.55,
-              "y": 0.55,
-              "z": 0.55
-            }
-          }
-        },
-		{
-          "id": 30,
-          "kind": "SPELL",
-          "name": "Tainted Goo",
-          "cost": 2,
-          "description": "<b>Overflow</b> 3, disables 1 goo vial for next turn",
-          "flavorText": "",
-          "picture": "taintedgoo",
-          "damage": 0,
-          "health": 0,
-          "type": "WALKER",
-          "rank": "MINION",
-          "abilities": [
-            {
-              "type": "OVERFLOW_GOO",
-              "activityType": "passive",
-              "callType": "at_start",
-              "value": 3
-            },
-			{
-              "type": "DISABLE_NEXT_TURN_GOO",
-              "activityType": "passive",
-              "callType": "at_start",
-              "value": -1
-            }
-		  ],
-          "cardViewInfo": {
-            "position": {
-              "x": -0.2,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 0.55,
-              "y": 0.55,
-              "z": 0.55
-            }
-          }
-        },
-		{
-          "id": 30,
-          "kind": "SPELL",
-          "name": "Corrupted Goo",
-          "cost": 4,
-          "description": "<b>Overflow</b> 6, disables 2 goo vials for next turn",
-          "flavorText": "",
-          "picture": "corruptedgoo",
-          "damage": 0,
-          "health": 0,
-          "type": "WALKER",
-          "rank": "MINION",
-          "abilities": [
-           {
-              "type": "OVERFLOW_GOO",
-              "activityType": "passive",
-              "callType": "at_start",
-              "value": 6
-            },
-			{
-              "type": "DISABLE_NEXT_TURN_GOO",
-              "activityType": "passive",
-              "callType": "at_start",
-              "value": -2
             }
 		  ],
           "cardViewInfo": {
@@ -2723,14 +2641,14 @@
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
-              "x": -0.18,
-              "y": -0.03,
+              "x": -0.45,
+              "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -2746,15 +2664,15 @@
           "type": "WALKER",
           "rank": "MINION",
           "cardViewInfo": {
-            "position": {
-              "x": -0.18,
-              "y": -0.03,
+             "position": {
+              "x": -0.45,
+              "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -2771,14 +2689,14 @@
           "rank": "MINION",
           "cardViewInfo": {
             "position": {
-              "x": -0.18,
-              "y": -0.03,
+              "x": -0.45,
+              "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
         },
@@ -2795,17 +2713,95 @@
           "rank": "GENERAL",
           "cardViewInfo": {
             "position": {
-              "x": -0.18,
-              "y": -0.03,
+              "x": -0.45,
+              "y": 0,
               "z": 0
             },
             "scale": {
-              "x": 0.62,
-              "y": 0.62,
-              "z": 0.62
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
             }
           }
-        }
+        },
+		{
+          "id": 30,
+          "kind": "SPELL",
+          "name": "Tainted Goo",
+          "cost": 2,
+          "description": "<b>Overflow</b> 3, disables 1 goo vial for next turn",
+          "flavorText": "",
+          "picture": "taintedgoo",
+          "damage": 0,
+          "health": 0,
+          "type": "WALKER",
+          "rank": "MINION",
+          "abilities": [
+            {
+              "type": "OVERFLOW_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 3
+            },
+			{
+              "type": "DISABLE_NEXT_TURN_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": -1
+            }
+		  ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.55,
+              "y": 0.55,
+              "z": 0.55
+            }
+          }
+        },
+		{
+          "id": 30,
+          "kind": "SPELL",
+          "name": "Corrupted Goo",
+          "cost": 4,
+          "description": "<b>Overflow</b> 6, disables 2 goo vials for next turn",
+          "flavorText": "",
+          "picture": "corruptedgoo",
+          "damage": 0,
+          "health": 0,
+          "type": "WALKER",
+          "rank": "MINION",
+          "abilities": [
+           {
+              "type": "OVERFLOW_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": 6
+            },
+			{
+              "type": "DISABLE_NEXT_TURN_GOO",
+              "activityType": "passive",
+              "callType": "at_start",
+              "value": -2
+            }
+		  ],
+          "cardViewInfo": {
+            "position": {
+              "x": -0.2,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.55,
+              "y": 0.55,
+              "z": 0.55
+            }
+          }
+        },
       ]
     }
   ]

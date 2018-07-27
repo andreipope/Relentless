@@ -84,7 +84,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add("Vindrom");
+                playerDeck.Add("GooZilla");
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Burrrnn");

@@ -34,6 +34,7 @@ namespace LoomNetwork.CZB
                            _playedCardPrefab;
 
         private Button _buttonBack;
+        private ButtonTextOffset _buttonKeep;
 
        // private List<CardInGraveyard> _cards;
 
@@ -97,8 +98,10 @@ namespace LoomNetwork.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
+            _buttonKeep = _selfPage.transform.Find("KeepButton").GetComponent<ButtonTextOffset>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
           //  _cards = new List<CardInGraveyard>();
@@ -171,6 +174,7 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive(true);
 
             StartGame();
+            KeepButtonVisibility(false);
         }
 
 
@@ -498,6 +502,17 @@ namespace LoomNetwork.CZB
 
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+        }
+
+        public void KeepButtonOnClickHandler()
+        {
+            _gameplayManager.GetController<CardsController>().EndCardDistribution();
+            KeepButtonVisibility(false);
+        }
+
+        public void KeepButtonVisibility(bool visible)
+        {
+            _buttonKeep.gameObject.SetActive(visible);
         }
 
         #endregion

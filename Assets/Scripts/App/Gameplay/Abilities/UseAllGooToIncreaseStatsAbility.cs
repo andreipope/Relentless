@@ -55,15 +55,15 @@ namespace LoomNetwork.CZB
 
             int increaseOn = 0;
 
-            playerCallerOfAbility.Goo = 0;
-
-            increaseOn = abilityUnitOwner.CurrentHP * value - abilityUnitOwner.CurrentHP;
+            increaseOn = playerCallerOfAbility.Goo * value;
             abilityUnitOwner.BuffedHP += increaseOn;
             abilityUnitOwner.CurrentHP += increaseOn;
 
-            increaseOn = abilityUnitOwner.CurrentDamage * value - abilityUnitOwner.CurrentDamage;
+            increaseOn = playerCallerOfAbility.Goo * value;
             abilityUnitOwner.BuffedDamage += increaseOn;
             abilityUnitOwner.CurrentDamage += increaseOn;
+
+            playerCallerOfAbility.Goo = 0;
         }
     }
 }

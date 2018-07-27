@@ -97,12 +97,14 @@ namespace LoomNetwork.CZB
         {
             CardDistribution = true;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.5f);
+            GameClient.Get<ICameraManager>().FadeIn(0.5f, 0, false);
 
-            if (!_gameplayManager.IsTutorial)
-                _timerManager.AddTimer(DirectlyEndCardDistribution, null, Constants.CARD_DISTRIBUTION_TIME);
-            else
+            if (_gameplayManager.IsTutorial)
                 EndCardDistribution();
+            else
+                _uiManager.GetPage<GameplayPage>().KeepButtonVisibility(true);
+
+            //_timerManager.AddTimer(DirectlyEndCardDistribution, null, Constants.CARD_DISTRIBUTION_TIME);
         }
 
         public void EndCardDistribution()
@@ -184,11 +186,11 @@ namespace LoomNetwork.CZB
             int count = player.CardsPreparingToHand.Count;
 
             var handWidth = 0.0f;
-            var spacing = -3f;
+            var spacing = -5f;
 
             handWidth += spacing * count - 1;
 
-            var pivot = new Vector3(-1.5f, 0, 0);
+            var pivot = new Vector3(-3f, 0, 0);
 
             Vector3 moveToPosition = Vector3.zero;
 
@@ -196,6 +198,7 @@ namespace LoomNetwork.CZB
             {
                 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
                 player.CardsPreparingToHand[i].transform.DOMove(moveToPosition, 1f, false);
+                player.CardsPreparingToHand[i].transform.DOScale(Vector3.one * 0.4f, 1);
 
                 pivot.x += handWidth / count;
             }

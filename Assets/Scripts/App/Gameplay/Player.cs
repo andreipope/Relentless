@@ -190,12 +190,6 @@ namespace LoomNetwork.CZB
             _health = Constants.DEFAULT_PLAYER_HP;
             _goo = Constants.DEFAULT_PLAYER_GOO;
 
-            if (_gameplayManager.IsTutorial)
-            {
-                GooOnCurrentTurn = 10;
-                Goo = GooOnCurrentTurn;
-            }
-
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
@@ -221,6 +215,8 @@ namespace LoomNetwork.CZB
         public void CallOnEndTurnEvent()
         {
             OnEndTurnEvent?.Invoke();
+            if (Goo > GooOnCurrentTurn)
+                Goo = GooOnCurrentTurn;
         }
 
         public void CallOnStartTurnEvent()

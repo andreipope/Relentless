@@ -71,17 +71,17 @@ namespace LoomNetwork.CZB.Gameplay
         {
         }
 
-        public void FadeIn(Action callback = null, int level = 0)
+        public void FadeIn(Action callback = null, int level = 0, bool isLastSibling = true)
         {
 			_fadeGoalValue = 1f;
-			PrepareFading(true, level);
+			PrepareFading(true, level, isLastSibling);
             _timerManager.AddTimer(Fade, new object[] { true, callback, level }, _fadeDelay, true);
         }
 
-		public void FadeIn(float fadeValue, int level = 0)
+		public void FadeIn(float fadeValue, int level = 0, bool isLastSibling = true)
 		{
             _fadeGoalValue = fadeValue;
-			PrepareFading(true, level);
+			PrepareFading(true, level, isLastSibling);
 			_timerManager.AddTimer(Fade, new object[] { true, null, level }, _fadeDelay, true);
 		}
 
@@ -100,11 +100,12 @@ namespace LoomNetwork.CZB.Gameplay
             _timerManager.AddTimer(Fade, new object[] { false, callback, level }, _fadeDelay, true);
         }
 
-        private void PrepareFading(bool fadeIn, int level)
+        private void PrepareFading(bool fadeIn, int level, bool isLastSibling = true)
         {
             _timerManager.StopTimer(Fade);
             _fadeImageGroups[level].alpha = fadeIn ? 0f : _fadeGoalValue;
-            _fadeImageGroups[level].transform.SetAsLastSibling();
+            if(isLastSibling)
+                _fadeImageGroups[level].transform.SetAsLastSibling();
             _fadeImageGroups[level].gameObject.SetActive(true);
             _isFading = true;
         }

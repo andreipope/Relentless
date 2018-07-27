@@ -202,7 +202,13 @@ namespace LoomNetwork.CZB
 
 
             if (_gameplayManager.IsTutorial)
-                _gameplayManager.OpponentPlayer.HP = 8;
+            {
+                _gameplayManager.OpponentPlayer.HP = 12;
+                _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
+                _gameplayManager.OpponentPlayer.Goo = 10;
+                _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
+                _gameplayManager.CurrentPlayer.Goo = 7;
+            }
 
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
