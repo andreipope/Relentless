@@ -6,64 +6,45 @@
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 1,
-          "amount": 2
-        },
-        {
-          "cardId": 12,
+          "cardName": "Pyromaz",
           "amount": 4
         },
         {
-          "cardId": 22,
+          "cardName": "Modo",
           "amount": 2
         },
         {
-          "cardId": 25,
-          "amount": 3
-        },
-        {
-          "cardId": 26,
+          "cardName": "Cerberus",
           "amount": 1
         },
         {
-          "cardId": 5,
+          "cardName": "Jetter",
+          "amount": 2
+        },
+
+        {
+          "cardName": "Tiny",
           "amount": 2
         },
         {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 24,
-          "amount": 2
-        },
-        {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 16,
+          "cardName": "Quazi",
           "amount": 4
         },
         {
-          "cardId": 9,
-          "amount": 2
+          "cardName": "Fire-Maw",
+          "amount": 1
+        },
+        {
+          "cardName": "Burrrnn",
+          "amount": 1
+        },
+        {
+          "cardName": "Rockky",
+          "amount": 1
+        },
+        {
+          "cardName": "Werezomb",
+          "amount": 1
         }
       ]
     },
@@ -73,64 +54,68 @@
       "actions": "TEST|TEST2",
       "cards": [
         {
-          "cardId": 26,
+          "cardName": "Tiny",
           "amount": 2
         },
         {
-          "cardId": 19,
+          "cardName": "Crater",
           "amount": 1
         },
         {
-          "cardId": 18,
+          "cardName": "Walley",
+          "amount": 1
+        },
+        {
+          "cardName": "Spiker",
           "amount": 2
         },
         {
-          "cardId": 9,
+          "cardName": "Earthshaker",
           "amount": 2
         },
         {
-          "cardId": 7,
+          "cardName": "IgneouZ",
+          "amount": 2
+        },
+        {
+          "cardName": "Zeus",
           "amount": 1
         },
         {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 8,
+          "cardName": "Poizom",
           "amount": 4
         },
         {
-          "cardId":11,
+          "cardName": "Werezomb",
           "amount": 1
         },
         {
-          "cardId": 21,
+          "cardName": "Gargantua",
+          "amount": 1
+        },
+        {
+          "cardName": "Izze",
           "amount": 2
         },
         {
-          "cardId": 23,
+          "cardName": "Znowman",
+          "amount": 2
+        },
+        {
+          "cardName": "Rockky",
+          "amount": 2
+        },
+        {
+          "cardName": "Cherno-bill",
           "amount": 1
         },
         {
-          "cardId":25,
+          "cardName": "Ghoul",
+          "amount": 2
+        },
+        {
+          "cardName": "Pyromaz",
           "amount": 4
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 4,
-          "amount": 4
-        },
-        {
-          "cardId": 2,
-          "amount": 2
         }
       ]
     },
@@ -140,64 +125,68 @@
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 20,
+          "cardName": "Tiny",
+          "amount": 2
+        },
+        {
+          "cardName": "Crater",
+          "amount": 1
+        },
+        {
+          "cardName": "Walley",
+          "amount": 1
+        },
+        {
+          "cardName": "Spiker",
+          "amount": 2
+        },
+        {
+          "cardName": "Earthshaker",
+          "amount": 2
+        },
+        {
+          "cardName": "IgneouZ",
+          "amount": 2
+        },
+        {
+          "cardName": "Zeus",
+          "amount": 1
+        },
+        {
+          "cardName": "Poizom",
           "amount": 4
         },
         {
-          "cardId": 22,
-          "amount": 2
-        },
-        {
-          "cardId": 21,
-          "amount": 2
-        },
-        {
-          "cardId": 23,
+          "cardName": "Werezomb",
           "amount": 1
         },
         {
-          "cardId": 24,
-          "amount": 3
+          "cardName": "Gargantua",
+          "amount": 1
         },
         {
-          "cardId": 25,
+          "cardName": "Izze",
+          "amount": 2
+        },
+        {
+          "cardName": "Znowman",
+          "amount": 2
+        },
+        {
+          "cardName": "Rockky",
+          "amount": 2
+        },
+        {
+          "cardName": "Cherno-bill",
+          "amount": 1
+        },
+        {
+          "cardName": "Ghoul",
+          "amount": 2
+        },
+        {
+          "cardName": "Pyromaz",
           "amount": 4
-        },
-        {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 14,
-          "amount": 2
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 6,
-          "amount": 1
-        },
-        {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 9,
-          "amount": 2
-        },
-        {
-          "cardId": 12,
-          "amount": 3
         }
       ]
     },
@@ -207,67 +196,75 @@
       "actions": "TEST|TEST2",
       "cards": [
         {
-          "cardId": 4,
-          "amount": 4
-        },
-        {
-          "cardId": 6,
+          "cardName": "Izze",
           "amount": 2
         },
         {
-          "cardId": 7,
+          "cardName": "Znowman",
+          "amount": 2
+        },
+        {
+          "cardName": "Ozmoziz",
+          "amount": 2
+        },
+        {
+          "cardName": "Jetter",
+          "amount": 2
+        },
+        {
+          "cardName": "Geyzer",
+          "amount": 2
+        },
+        {
+          "cardName": "Rockky",
+          "amount": 2
+        },
+        {
+          "cardName": "Azuraz",
           "amount": 1
         },
         {
-          "cardId": 14,
+          "cardName": "Bloomer",
           "amount": 2
         },
         {
-          "cardId": 18,
+          "cardName": "Zap",
           "amount": 2
         },
         {
-          "cardId": 15,
+          "cardName": "Shroom",
+          "amount": 2
+        },
+        {
+          "cardName": "Sapper",
           "amount": 1
         },
         {
-          "cardId": 24,
-          "amount": 3
-        },
-        {
-          "cardId": 25,
-          "amount": 2
-        },
-        {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 13,
-          "amount": 2
-        },
-        {
-          "cardId": 5,
-          "amount": 2
-        },
-        {
-          "cardId": 3,
+          "cardName": "Keeper",
           "amount": 1
         },
         {
-          "cardId": 17,
+          "cardName": "Puffer",
           "amount": 2
         },
         {
-          "cardId": 11,
+          "cardName": "Hazzard",
+          "amount": 2
+        },
+        {
+          "cardName": "Ghoul",
           "amount": 1
         },
         {
-          "cardId": 10,
+          "cardName": "Goo Beaker",
           "amount": 2
         },
         {
-          "cardId": 9,
+          "cardName": "Burrrnn",
+          "amount": 2
+        },
+        {
+          "cardName": "Werezomb",
           "amount": 1
         }
       ]
@@ -278,64 +275,76 @@
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 12,
-          "amount": 4
-        },
-        {
-          "cardId": 13,
+          "cardName": "Izze",
           "amount": 2
         },
         {
-          "cardId": 14,
+          "cardName": "Znowman",
           "amount": 2
         },
         {
-          "cardId": 15,
+          "cardName": "Ozmoziz",
+          "amount": 2
+        },
+        {
+          "cardName": "Jetter",
+          "amount": 2
+        },
+        {
+          "cardName": "Geyzer",
+          "amount": 2
+        },
+        {
+          "cardName": "Rockky",
+          "amount": 2
+        },
+        {
+          "cardName": "Azuraz",
           "amount": 1
         },
         {
-          "cardId": 18,
+          "cardName": "Bloomer",
           "amount": 2
         },
         {
-          "cardId": 19,
+          "cardName": "Zap",
+          "amount": 2
+        },
+        {
+          "cardName": "Shroom",
+          "amount": 2
+        },
+        {
+          "cardName": "Sapper",
           "amount": 1
         },
         {
-          "cardId": 23,
+          "cardName": "Keeper",
           "amount": 1
         },
         {
-          "cardId": 24,
-          "amount": 3
-        },
-        {
-          "cardId": 26,
+          "cardName": "Puffer",
           "amount": 2
         },
         {
-          "cardId": 9,
+          "cardName": "Hazzard",
           "amount": 2
         },
         {
-          "cardId": 1,
+          "cardName": "Ghoul",
+          "amount": 1
+        },
+        {
+          "cardName": "Goo Beaker",
           "amount": 2
         },
         {
-          "cardId": 4,
+          "cardName": "Burrrnn",
           "amount": 2
         },
         {
-          "cardId": 22,
-          "amount": 2
-        },
-        {
-          "cardId": 2,
-          "amount": 2
-        },
-        {
-          "cardId": 6,
-          "amount": 2
+          "cardName": "Werezomb",
+          "amount": 1
         }
       ]
     },
@@ -345,64 +354,76 @@
       "actions": "TEST",
       "cards": [
         {
-          "cardId": 26,
+          "cardName": "Izze",
           "amount": 2
         },
         {
-          "cardId": 19,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
+          "cardName": "Znowman",
           "amount": 2
         },
         {
-          "cardId": 9,
+          "cardName": "Ozmoziz",
           "amount": 2
         },
         {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 8,
-          "amount": 4
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 21,
+          "cardName": "Jetter",
           "amount": 2
         },
         {
-          "cardId": 23,
-          "amount": 1
-        },
-        {
-          "cardId": 25,
-          "amount": 4
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 6,
+          "cardName": "Geyzer",
           "amount": 2
         },
         {
-          "cardId": 4,
-          "amount": 4
+          "cardName": "Rockky",
+          "amount": 2
         },
         {
-          "cardId": 2,
+          "cardName": "Azuraz",
+          "amount": 1
+        },
+        {
+          "cardName": "Bloomer",
           "amount": 2
+        },
+        {
+          "cardName": "Zap",
+          "amount": 2
+        },
+        {
+          "cardName": "Shroom",
+          "amount": 2
+        },
+        {
+          "cardName": "Sapper",
+          "amount": 1
+        },
+        {
+          "cardName": "Keeper",
+          "amount": 1
+        },
+        {
+          "cardName": "Puffer",
+          "amount": 2
+        },
+        {
+          "cardName": "Hazzard",
+          "amount": 2
+        },
+        {
+          "cardName": "Ghoul",
+          "amount": 1
+        },
+        {
+          "cardName": "Goo Beaker",
+          "amount": 2
+        },
+        {
+          "cardName": "Burrrnn",
+          "amount": 2
+        },
+        {
+          "cardName": "Werezomb",
+          "amount": 1
         }
       ]
     }

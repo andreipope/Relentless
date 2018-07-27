@@ -168,7 +168,7 @@ namespace LoomNetwork.CZB
         {
             ChangeStatePopup(true);
 
-			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
+			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.name).amount;
 			_selectedCollectionCard.UpdateAmount(amount);
 
             UpdateGooValue();
@@ -350,7 +350,7 @@ namespace LoomNetwork.CZB
                     break;
 
 				var card = cards[i];
-                var cardData = _dataManager.CachedCollectionData.GetCardData(card.id);
+                var cardData = _dataManager.CachedCollectionData.GetCardData(card.name);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)

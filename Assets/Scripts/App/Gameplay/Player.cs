@@ -335,7 +335,7 @@ namespace LoomNetwork.CZB
             GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
         }
 
-        public void SetDeck(List<int> cards)
+        public void SetDeck(List<string> cards)
         {
             CardsInDeck = new List<WorkingCard>();
 
@@ -345,10 +345,10 @@ namespace LoomNetwork.CZB
             {
 #if UNITY_EDITOR
                 if (IsLocalPlayer && Constants.DEV_MODE)
-                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card /* 15 */), this)); // special card id
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card /* 15 */), this)); // special card id
                 else
 #endif
-                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCard(card), this));
+                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
             DeckChangedEvent?.Invoke(CardsInDeck.Count);

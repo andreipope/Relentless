@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
         private void CloseDesintegratePopup()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
 			_uiManager.DrawPopup<CardInfoPopup>(libraryCard);
 
 			//(_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
@@ -118,7 +118,7 @@ namespace LoomNetwork.CZB
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.amount);
 
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.id == _cardData.cardId);
+            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
             GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.cardRank + 1));
 
 			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();

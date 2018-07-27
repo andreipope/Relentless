@@ -88,15 +88,15 @@ namespace LoomNetwork.CZB
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
 
-            var playerDeck = new List<int>();
+            var playerDeck = new List<string>();
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Izze"));
-                playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Jetter"));
-                playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Golem"));
-                playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Rockky"));
-                playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Rockky"));
+                playerDeck.Add("Izze");
+                playerDeck.Add("Jetter");
+                playerDeck.Add("Golem");
+                playerDeck.Add("Rockky");
+                playerDeck.Add("Rockky");
             }
             else
             {
@@ -110,7 +110,7 @@ namespace LoomNetwork.CZB
                             //  card.cardId = 16;
                         }
 
-                        playerDeck.Add(card.cardId);
+                        playerDeck.Add(card.cardName);
                         // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Fire-Maw"));               
                     }
                 }

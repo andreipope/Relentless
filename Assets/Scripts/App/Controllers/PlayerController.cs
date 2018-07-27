@@ -80,15 +80,15 @@ namespace LoomNetwork.CZB
         {
             _gameplayManager.CurrentPlayer = new Player(GameObject.Find("Player"), false);
 
-            var playerDeck = new List<int>();
+            var playerDeck = new List<string>();
 
             if (_gameplayManager.IsTutorial)
             {
-                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Vindrom") );
-                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
-                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
-                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Burrrnn") );
-                playerDeck.Add( _dataManager.CachedCardsLibraryData.GetCardIdFromName("Azuraz") ); 
+                playerDeck.Add("Vindrom");
+                playerDeck.Add("Burrrnn");
+                playerDeck.Add("Burrrnn");
+                playerDeck.Add("Burrrnn");
+                playerDeck.Add("Azuraz"); 
             }
             else
             {
@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
                            //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Froztbite"));
                         }
 
-                        playerDeck.Add(card.cardId);
+                        playerDeck.Add(card.cardName);
                     }
                 }
             }

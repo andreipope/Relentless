@@ -18,17 +18,17 @@ namespace LoomNetwork.CZB.Data
         {
         }
 
-        public CollectionCardData GetCardData(int id)
+        public CollectionCardData GetCardData(string id)
         {
             foreach (var cardData in cards)
             {
-                if (cardData.cardId == id)
+                if (cardData.cardName == id)
                     return cardData;
             }
             return null;
         }
 
-        public void ChangeAmount(int idCard, int amoundChangeFactor)
+        public void ChangeAmount(string idCard, int amoundChangeFactor)
         {
             GetCardData(idCard).amount += amoundChangeFactor;
         }
@@ -36,7 +36,7 @@ namespace LoomNetwork.CZB.Data
 
     public class CollectionCardData
     {
-        public int cardId;
+        public string cardName;
         public int amount;
 
         public CollectionCardData()

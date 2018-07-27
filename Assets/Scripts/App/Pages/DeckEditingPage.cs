@@ -191,7 +191,7 @@ namespace LoomNetwork.CZB
             {
                 cardData = new CollectionCardData();
                 cardData.amount = card.amount;
-                cardData.cardId = card.cardId;
+                cardData.cardName = card.cardName;
                 _collectionData.cards.Add(cardData);
             }
 
@@ -212,7 +212,7 @@ namespace LoomNetwork.CZB
                 foreach (var item in _dataManager.CachedDecksData.decks[_currentDeckId].cards)
                 {
                     cardDat = new DeckCardData();
-                    cardDat.cardId = item.cardId;
+                    cardDat.cardName = item.cardName;
                     cardDat.amount = item.amount;
                     _currentDeck.cards.Add(cardDat);
                 }
@@ -432,7 +432,7 @@ namespace LoomNetwork.CZB
                     break;
 
                 var card = cards[i];
-                var cardData = _dataManager.CachedCollectionData.GetCardData(card.id);
+                var cardData = _dataManager.CachedCollectionData.GetCardData(card.name);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)
@@ -473,7 +473,7 @@ namespace LoomNetwork.CZB
                 go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                 boardCard = new SpellBoardCard(go);
             }
-            var amount = _collectionData.GetCardData(card.id).amount;
+            var amount = _collectionData.GetCardData(card.name).amount;
 
             boardCard.Init(card, amount);
             boardCard.SetHighlightingEnabled(false);
@@ -497,13 +497,13 @@ namespace LoomNetwork.CZB
 
             foreach (var card in deck.cards)
             {
-                var libraryCard = _dataManager.CachedCardsLibraryData.GetCard(card.cardId);
-                UpdateCardAmount(card.cardId, card.amount);
+                var libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(card.cardName);
+                UpdateCardAmount(card.cardName, card.amount);
 
                 var itemFound = false;
                 foreach (var item in _createdHordeCards)
                 {
-                    if (item.libraryCard.id == card.cardId)
+                    if (item.libraryCard.name == card.cardName)
                     {
                         itemFound = true;
                         //item.AddCard();
@@ -526,7 +526,7 @@ namespace LoomNetwork.CZB
 
                     boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard), card.amount);
 
-                    _collectionData.GetCardData(card.cardId).amount -= card.amount;
+                    _collectionData.GetCardData(card.cardName).amount -= card.amount;
                     UpdateNumCardsText();
                 }
             }
@@ -561,12 +561,12 @@ namespace LoomNetwork.CZB
         public void RemoveCardFromDeck(Card card)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
-            var collectionCardData = _collectionData.GetCardData(card.id);
+            var collectionCardData = _collectionData.GetCardData(card.name);
             collectionCardData.amount++;
-            UpdateCardAmount(card.id, collectionCardData.amount);
+            UpdateCardAmount(card.name, collectionCardData.amount);
             BoardCard boardCard = _createdHordeCards.Find((item) => item.libraryCard.id == card.id);
             boardCard.cardsAmountDeckEditing--;
-            _currentDeck.RemoveCard(card.id);
+            _currentDeck.RemoveCard(card.name);
 
             if (boardCard.cardsAmountDeckEditing == 0)
             {
@@ -595,13 +595,13 @@ namespace LoomNetwork.CZB
                 OpenAlertDialog("It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
                 return;
             }
-            var collectionCardData = _collectionData.GetCardData(card.id);
+            var collectionCardData = _collectionData.GetCardData(card.name);
             if (collectionCardData.amount == 0)
             {
                 OpenAlertDialog("You don't have enough cards of this type. \n Buy or earn new packs to get more cards!");
                 return;
             }
-            var existingCards = _currentDeck.cards.Find(x => x.cardId == card.id);
+            var existingCards = _currentDeck.cards.Find(x => x.cardName == card.name);
 
             uint maxCopies = GetMaxCopiesValue(card);
             var cardRarity = "You cannot have more than ";
@@ -631,7 +631,7 @@ namespace LoomNetwork.CZB
             }
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
             collectionCardData.amount--;
-            UpdateCardAmount(card.id, collectionCardData.amount);
+            UpdateCardAmount(card.name, collectionCardData.amount);
 
             if (!itemFound)
             {
@@ -650,9 +650,9 @@ namespace LoomNetwork.CZB
                 CalculateVisibility();
             }
 
-            _currentDeck.AddCard(card.id);
+            _currentDeck.AddCard(card.name);
 
-            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardId == foundItem.libraryCard.id).amount);
+            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardName == foundItem.libraryCard.name).amount);
         }
 
         public uint GetMaxCopiesValue(Card card)
@@ -688,11 +688,11 @@ namespace LoomNetwork.CZB
             return maxCopies;
         }
 
-        public void UpdateCardAmount(int cardId, int amount)
+        public void UpdateCardAmount(string cardId, int amount)
         {
             foreach (var card in _createdArmyCards)
             {
-                if (card.libraryCard.id == cardId)
+                if (card.libraryCard.name == cardId)
                 {
                     card.UpdateAmount(amount);
                     break;

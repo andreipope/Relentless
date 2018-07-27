@@ -49,41 +49,6 @@ namespace LoomNetwork.CZB.Data
             opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
         }
 
-        public void AddCard(int cardId)
-        {
-            bool wasAdded = false;
-            foreach (var card in cards)
-            {
-                if (card.cardId == cardId)
-                {
-                    card.amount++;
-                    wasAdded = true;
-                }
-            }
-            if (!wasAdded)
-            {
-                DeckCardData cardData = new DeckCardData();
-                cardData.cardId = cardId;
-                cardData.amount = 1;
-                cards.Add(cardData);
-            }
-        }
-
-        public void RemoveCard(int cardId)
-        {
-            foreach (var card in cards)
-            {
-                if (card.cardId == cardId)
-                {
-                    card.amount--;
-                    if (card.amount < 1)
-                    {
-                        cards.Remove(card);
-                        break;
-                    }
-                }
-            }
-        }
 
         public int GetNumCards()
         {
