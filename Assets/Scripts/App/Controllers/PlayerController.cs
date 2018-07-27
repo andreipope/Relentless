@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           //   playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Froztbite"));
+                             // playerDeck.Add("Maelstrom");
                         }
 
                         playerDeck.Add(card.cardName);

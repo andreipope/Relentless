@@ -77,6 +77,7 @@ namespace LoomNetwork.CZB
         {
             _selfPage.SetActive(false);
             _leftHeroIndex = 0;
+            _overlordsContainer.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             ResetOverlordObjects();
         }
 

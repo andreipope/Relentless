@@ -26,6 +26,7 @@ public class HandBoardCard
 
     protected bool startedDrag;
     protected Vector3 initialPos;
+    protected Vector3 initialRotation;
 
     private bool _isHandCard = true;
 
@@ -92,6 +93,10 @@ public class HandBoardCard
         {
             startedDrag = true;
             initialPos = transform.position;
+            initialRotation = transform.eulerAngles;
+
+            transform.eulerAngles = Vector3.zero;
+
             _playerController.IsCardSelected = true;
             _alreadySelected = true;
         }
@@ -138,6 +143,7 @@ public class HandBoardCard
             else
             {
                 transform.position = initialPos;
+                transform.eulerAngles = initialRotation;
                 if (_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ActivateSelectTarget();
@@ -153,6 +159,7 @@ public class HandBoardCard
             transform.DOMove(initialPos, 0.5f).OnComplete(() => 
             {
                 transform.position = initialPos;
+                transform.eulerAngles = initialRotation;
                 _isReturnToHand = false;
             });
         }
@@ -161,6 +168,7 @@ public class HandBoardCard
     public void ResetToInitialPosition()
     {
         transform.position = initialPos;
+        transform.eulerAngles = initialRotation;
     }
 
     public void ResetToHandAnimation()

@@ -57,6 +57,9 @@ namespace LoomNetwork.CZB
 
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
+            if (abilityUnitOwner != null && unit.Equals(abilityUnitOwner))
+                return;
+
             // implement animation
 
             unit.ownerPlayer.AddCardToDeck(new WorkingCard(unit.Card.libraryCard.Clone(), unit.ownerPlayer));

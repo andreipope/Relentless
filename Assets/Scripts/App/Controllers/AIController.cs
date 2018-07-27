@@ -111,7 +111,7 @@ namespace LoomNetwork.CZB
                         }
 
                         playerDeck.Add(card.cardName);
-                        // playerDeck.Add(_dataManager.CachedCardsLibraryData.GetCardIdFromName("Fire-Maw"));               
+                        // playerDeck.Add("Fire-Maw");               
                     }
                 }
             }

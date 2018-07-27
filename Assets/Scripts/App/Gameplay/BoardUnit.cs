@@ -95,6 +95,8 @@ namespace LoomNetwork.CZB
 
         private bool _dead = false;
 
+        private bool _arrivalDone = false;
+
         public bool AttackedThisTurn = false;
 
         public bool hasFeral;
@@ -281,6 +283,8 @@ namespace LoomNetwork.CZB
 
         public void Die(bool returnToHand = false)
         {
+            _timerManager.StopTimer(CheckIsCanDie);
+
             UnitHPChangedEvent -= healthChangedDelegate;
             UnitDamageChangedEvent -= damageChangedDelegate;
 
@@ -584,6 +588,8 @@ namespace LoomNetwork.CZB
             _initialScale = _selfObject.transform.localScale;
 
             _ignoreArrivalEndEvents = false;
+
+            _arrivalDone = true;
         }
 
         private void CreateFrozenVFX(Vector3 pos)
@@ -1011,13 +1017,35 @@ namespace LoomNetwork.CZB
 
         public void MoveUnitFromBoardToDeck()
         {
-            Die(true);
-            MonoBehaviour.Destroy(gameObject);
+            try
+            {
+                Die(true);
+
+                if (_arrivalDone)
+                    MonoBehaviour.Destroy(gameObject);
+                else
+                {
+                    _timerManager.AddTimer(CheckIsCanDie, null, Time.deltaTime, true);
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
         }
 
         public void ThrowOnAttackEvent(object target, int damage)
         {
             UnitOnAttackEvent?.Invoke(target, damage);
+        }
+
+        private void CheckIsCanDie(object[] param)
+        {
+            if(_arrivalDone)
+            {
+                _timerManager.StopTimer(CheckIsCanDie);
+                MonoBehaviour.Destroy(gameObject);
+            }
         }
     }
 

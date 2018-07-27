@@ -1,59 +1,58 @@
 {
   "decks": [
-	{
+    {
       "heroId": 1,
       "name": "Default",
       "cards": [
         {
-          "cardId": 0,
+          "cardName": "Pyromaz",
           "amount": 4
         },
         {
-          "cardId": 4,
+          "cardName": "Burrrnn",
           "amount": 4
         },
-		{
-          "cardId": 8,
+        {
+          "cardName": "Izze",
           "amount": 4
         },
-		{
-          "cardId": 12,
+        {
+          "cardName": "Zhatterer",
           "amount": 4
         },
-		{
-          "cardId": 16,
+        {
+          "cardName": "Rockky",
           "amount": 4
         },
-		{
-          "cardId": 20,
+        {
+          "cardName": "Blocker",
           "amount": 4
         },
-		{
-          "cardId": 1,
+        {
+          "cardName": "Cerberus",
           "amount": 1
         },
-		{
-          "cardId": 5,
+        {
+          "cardName": "Gargantua",
           "amount": 1
         },
-		{
-          "cardId": 2,
+        {
+          "cardName": "Zhampion",
           "amount": 1
         },
-		{
-          "cardId": 14,
+        {
+          "cardName": "Fire-Maw",
           "amount": 1
         },
-		{
-          "cardId": 3,
+        {
+          "cardName": "Modo",
           "amount": 1
         },
-		{
-          "cardId": 25,
+        {
+          "cardName": "Werezomb",
           "amount": 1
         }
       ]
-    },
-
+    }
   ]
 }
