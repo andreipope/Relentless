@@ -666,7 +666,7 @@ namespace LoomNetwork.CZB
 
         public string GetSetOfCard(Card card)
         {
-            var set = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.Find(y => y.id == card.id) != null);
+            var set = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.Find(y => y.name == card.name) != null);
 
             if (set != null)
                 return set.name;
