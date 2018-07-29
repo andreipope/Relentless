@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB.Data
         public int health;
         public string rank;
         public string type;
+        public string frame;
         public List<AbilityData> abilities = new List<AbilityData>();
         public CardViewInfo cardViewInfo = new CardViewInfo();
 
@@ -63,6 +64,7 @@ namespace LoomNetwork.CZB.Data
             card.cardType = cardType;
             card.abilities = abilities;
             card.cardViewInfo = cardViewInfo;
+            card.frame = frame;
 
             return card;
         }
