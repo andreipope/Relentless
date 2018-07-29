@@ -134,7 +134,12 @@ namespace LoomNetwork.CZB
 
             var setName = libraryCard.cardSetType.ToString();
 
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(libraryCard.frame))
+                frameName = "Images/Cards/Frames/" + libraryCard.frame;
+
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
@@ -160,7 +165,12 @@ namespace LoomNetwork.CZB
 
             var setName = libraryCard.cardSetType.ToString();
 
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(libraryCard.frame))
+                frameName = "Images/Cards/Frames/" + libraryCard.frame;
+
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
         }
