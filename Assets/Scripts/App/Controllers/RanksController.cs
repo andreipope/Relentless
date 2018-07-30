@@ -79,7 +79,6 @@ namespace LoomNetwork.CZB
                     LifeRankBuff(units, rank);
                     break;
             }
-
             foreach (var unit in units)
                 unit.ApplyBuffs();
         }

@@ -653,8 +653,7 @@ namespace LoomNetwork.CZB
                 if (isMove)
                     card.isNewCard = false;
 
-                card.transform.DOScale(Vector3.one * scaling, 0.5f);
-                card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist);
+                card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist, Vector3.one * scaling);
 
                 pivot.x += handWidth / playerHandCards.Count;
 

@@ -737,7 +737,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.1,
+              "x": -0.17,
               "y": 0,
               "z": 0
             },
@@ -880,7 +880,7 @@
           "kind": "CREATURE",
           "name": "Pit",
           "cost": 1,
-          "description": "<b>Heavy</b>, at the end of the turn add <b>Tainted Goo</b> to your Hand ",
+          "description": "<b>Heavy, Entry</b>: Add a Tainted Goo to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 0,
@@ -1028,7 +1028,7 @@
           "kind": "CREATURE",
           "name": "Crater",
           "cost": 3,
-          "description": "<b>Heavy.</b> at the end of the turn add <b>Corrupted Goo</b> to your Hand",
+          "description": "<b>Heavy, Entry</b>: Add a Corrupted Goo to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 1,
@@ -1307,7 +1307,6 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "setType": "none"
             }
           ],
@@ -1646,7 +1645,6 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "setType": "life"
             }
           ],
@@ -2608,7 +2606,7 @@
               "activityType": "passive",
               "callType": "at_start",
               "targetType": "opponent_all_cards",
-              "value": -3
+              "damage": -3
             }
           ],
           "cardViewInfo": {

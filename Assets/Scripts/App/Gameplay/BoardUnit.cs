@@ -24,11 +24,11 @@ namespace LoomNetwork.CZB
         public event Action<object, int> UnitOnAttackEvent;
         public event Action<object> UnitGotDamageEvent;
 
-        public event Action<int, int> UnitHPChangedEvent;
-        public event Action<int, int> UnitDamageChangedEvent;
+        public event Action UnitHPChangedEvent;
+        public event Action UnitDamageChangedEvent;
 
-        private Action<int, int> damageChangedDelegate;
-        private Action<int, int> healthChangedDelegate;
+        private Action damageChangedDelegate;
+        private Action healthChangedDelegate;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
@@ -67,9 +67,6 @@ namespace LoomNetwork.CZB
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private Enumerators.CardType _initialUnitType;
-
- //       private int _buffedDamage;
-        private int _buffedHealth;
 
         private int _currentDamage;
         private int _currentHealth;
@@ -129,9 +126,8 @@ namespace LoomNetwork.CZB
                 var oldDamage = _currentDamage;
 
                 _currentDamage = Mathf.Clamp(value, 0, 99999);
-
                 if (oldDamage != _currentDamage)
-                    UnitDamageChangedEvent?.Invoke(oldDamage, _currentDamage);
+                    UnitDamageChangedEvent?.Invoke();
             }
         }
 
@@ -149,9 +145,8 @@ namespace LoomNetwork.CZB
                 var oldHealth = _currentHealth;
 
                 _currentHealth = Mathf.Clamp(value, 0, 99);
-
-                if (oldHealth != _buffedHealth)
-                    UnitHPChangedEvent?.Invoke(oldHealth, _buffedHealth);
+                if (oldHealth != _currentHealth)
+                    UnitHPChangedEvent?.Invoke();
             }
         }
 
@@ -298,11 +293,13 @@ namespace LoomNetwork.CZB
 
         public void DebuffDamage(int value)
         {
+            Debug.Log(value);
+
             if (value == 0)
                 return;
-
             DamageDebuffUntillEndOfTurn = value;
-            CurrentDamage -= DamageDebuffUntillEndOfTurn;
+            CurrentDamage += DamageDebuffUntillEndOfTurn;
+            Debug.Log(DamageDebuffUntillEndOfTurn);
         }
 
         public void DebuffHealth(int value)
@@ -316,6 +313,7 @@ namespace LoomNetwork.CZB
 
         public void BuffUnit(Enumerators.BuffType type)
         {
+            Debug.Log("_readyForBuffs - " + _readyForBuffs);
             if (!_readyForBuffs)
                 return;
 
@@ -389,7 +387,7 @@ namespace LoomNetwork.CZB
         {
             if (!_readyForBuffs)
                 return;
-
+            Debug.Log(HasBuffShield);
             foreach (var buff in _buffsOnUnit)
             {
                 switch(buff)
@@ -661,15 +659,16 @@ namespace LoomNetwork.CZB
             _attackText.text = CurrentDamage.ToString();
             _healthText.text = CurrentHP.ToString();
 
-            damageChangedDelegate = (oldValue, newValue) =>
+            damageChangedDelegate = () =>
             {
                 UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage);
             };
 
             UnitDamageChangedEvent += damageChangedDelegate;
 
-            healthChangedDelegate = (oldValue, newValue) =>
+            healthChangedDelegate = () =>
             {
+                Debug.Log("UUUU");
                 UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
                 CheckOnDie();
             };

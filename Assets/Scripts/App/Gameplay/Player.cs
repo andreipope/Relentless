@@ -282,7 +282,6 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 cardObject = _cardsController.AddCardToHand(card, silent);
-
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else

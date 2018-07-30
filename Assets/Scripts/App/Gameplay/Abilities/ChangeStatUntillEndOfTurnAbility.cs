@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             var opponent = GetOpponentOverlord();
-
+                UnityEngine.Debug.Log("__" + opponent.BoardCards.Count);
             foreach(var item in opponent.BoardCards)
             {
                 item.DebuffDamage(damage);
