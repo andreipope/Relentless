@@ -480,7 +480,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "at_attack",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
@@ -1413,6 +1413,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "at_start",
+              "targetType": "player_card|opponent_card",
               "value": 1
             }
           ],
@@ -1859,7 +1860,7 @@
               "type": "SUMMON",
               "activityType": "passive",
               "callType": "AT_START",
-              "targetType": "opponent",
+              "targetType": "player",
               "count": 1,
               "name": "Zombie Feral"
             }
@@ -2044,7 +2045,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "earth",
               "value": 1
             }
           ],
@@ -2101,7 +2102,7 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "TAKE_DAMAGE_RANDOM_UNIT",
+              "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
               "callType": "AT_START",
               "targetType": "OPPONENT_CARD",

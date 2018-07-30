@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureByCreature(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
+        public void AttackUnitByUnit(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
         {
             int damageAttacked = 0;
             int damageAttacking = 0;
@@ -132,6 +132,9 @@ namespace LoomNetwork.CZB
                 }
 
                 attackingUnit.CurrentHP -= damageAttacked;
+
+                if (damageAttacking > 0)
+                    attackedUnit.ThrowEventGotDamage(attackingUnit);
             }
 
             attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
@@ -148,7 +151,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
+        public void AttackUnitBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
         {
             int damage = (skill.value + modifier);
 
@@ -162,8 +165,8 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.CurrentHP -= damage;
 
-                if (damage > 0)
-                    attackedUnit.ThrowEventGotDamage(attackingPlayer);
+               // if (damage > 0)
+                 //   attackedUnit.ThrowEventGotDamage(attackingPlayer);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -211,7 +214,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealCreatureBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
@@ -247,8 +250,8 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.CurrentHP -= damage;
 
-                if (damage > 0)
-                    attackedUnit.ThrowEventGotDamage(attacker);
+              //  if (damage > 0)
+                //    attackedUnit.ThrowEventGotDamage(attacker);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
@@ -297,7 +300,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealCreatureByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
+        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {

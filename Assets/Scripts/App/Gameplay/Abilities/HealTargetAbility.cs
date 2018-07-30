@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
                     _battleController.HealPlayerByAbility(caller, abilityData, targetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    _battleController.HealCreatureByAbility(caller, abilityData, targetUnit);
+                    _battleController.HealUnitByAbility(caller, abilityData, targetUnit);
                     break;
                 default: break;
             }

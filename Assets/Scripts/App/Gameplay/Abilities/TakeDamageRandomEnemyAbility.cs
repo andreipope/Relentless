@@ -4,15 +4,17 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Helpers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class TakeDamageRandomUnitAbility : AbilityBase
+    public class TakeDamageRandomEnemyAbility : AbilityBase
     {
         public int value = 0;
 
-        public TakeDamageRandomUnitAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -53,14 +55,25 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            var opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            List<object> allies = new List<object>();
 
-            if (opponent.BoardCards.Count > 0)
+            allies.AddRange(GetOpponentOverlord().BoardCards);
+            allies.Add(GetOpponentOverlord());
+
+            allies = InternalTools.GetRandomElementsFromList(allies, 1);
+
+            for (int i = 0; i < allies.Count; i++)
             {
-                var randomUnit = opponent.BoardCards[UnityEngine.Random.Range(0, opponent.BoardCards.Count)];
-
-                _battleController.AttackUnitByAbility(GetCaller(), abilityData, randomUnit);
-                CreateVFX(randomUnit.transform.position, true, 5f);
+                if (allies[i] is Player)
+                {
+                    _battleController.AttackPlayerByAbility(GetCaller(), abilityData, (allies[i] as Player));
+                    CreateVFX((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
+                }
+                else if (allies[i] is BoardUnit)
+                {
+                    _battleController.AttackUnitByAbility(GetCaller(), abilityData, (allies[i] as BoardUnit));
+                    CreateVFX((allies[i] as BoardUnit).transform.position, true, 5f);
+                }
             }
         }
     }

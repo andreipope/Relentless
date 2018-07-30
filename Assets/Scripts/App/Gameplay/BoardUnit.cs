@@ -469,6 +469,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = true;
                 hasFeral = false;
+                _initialUnitType = Enumerators.CardType.HEAVY;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -491,6 +492,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = false;
                 hasFeral = false;
+                _initialUnitType = Enumerators.CardType.WALKER;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -513,6 +515,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = false;
                 hasFeral = true;
+                _initialUnitType = Enumerators.CardType.FERAL;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -524,6 +527,13 @@ namespace LoomNetwork.CZB
             unitAnimator.SetTrigger("Active");
 
             _readyForBuffs = true;
+        }
+
+        public void BuffShield()
+        {
+            BuffUnit(Enumerators.BuffType.SHIELD);
+            HasBuffShield = true;
+            _shieldSprite.SetActive(true);
         }
 
         public void ArrivalAnimationEventHandler(string param)
@@ -975,7 +985,7 @@ namespace LoomNetwork.CZB
                     {
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, CurrentDamage);
 
-                        _battleController.AttackCreatureByCreature(this, targetCard, AdditionalDamage);
+                        _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
                         if(TakeFreezeToAttacked)
                             targetCard.Stun(Enumerators.StunType.FREEZE, 1);

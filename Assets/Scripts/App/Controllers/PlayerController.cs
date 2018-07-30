@@ -99,10 +99,10 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                             // playerDeck.Add("Maelstrom");
+                           // playerDeck.Add("Mountain");
                         }
 
-                        playerDeck.Add(card.cardName);
+                           playerDeck.Add(card.cardName);
                     }
                 }
             }

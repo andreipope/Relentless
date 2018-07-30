@@ -58,8 +58,6 @@ namespace LoomNetwork.CZB
 
         private GameObject _zippingVFX;
 
-        private int _graveYardTopOffset;
-
         private int _currentDeckId;
 
         private bool _isPlayerInited = false;
@@ -123,9 +121,6 @@ namespace LoomNetwork.CZB
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
-
-
-            _graveYardTopOffset = 0;
 
             _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
 

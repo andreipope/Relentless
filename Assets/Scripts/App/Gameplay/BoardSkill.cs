@@ -91,8 +91,15 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
                 return;
 
-            if (IsSkillReady)
-                SetHighlightingEnabled(true);
+            if (owner.IsStunned)
+            {
+                BlockSkill();
+            }
+            else
+            {
+                if (IsSkillReady)
+                    SetHighlightingEnabled(true);
+            }
 
             _cooldownText.text = _cooldown.ToString();
         }
@@ -135,6 +142,12 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void BlockSkill()
+        {
+            _usedInThisTurn = true;
+            SetHighlightingEnabled(false);
+        }
+
         //public void OnTriggerEnter2D(Collider2D collider)
         //{
         //    if (collider.transform.parent != null)
@@ -166,7 +179,9 @@ namespace LoomNetwork.CZB
 
             if (owner.IsLocalPlayer)
             {
-                if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+                if (skill.overlordSkill != Enumerators.OverlordSkill.DRAW &&
+                    skill.overlordSkill != Enumerators.OverlordSkill.HARDEN &&
+                    skill.overlordSkill != Enumerators.OverlordSkill.MEND)
                 {
                     fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
@@ -208,7 +223,9 @@ namespace LoomNetwork.CZB
             if (owner.IsLocalPlayer && _tutorialManager.IsTutorial)
                 _tutorialManager.ActivateSelectTarget();
 
-            if (owner.SelfHero.heroElement == Enumerators.SetType.EARTH)
+            if (skill.overlordSkill == Enumerators.OverlordSkill.DRAW ||
+                skill.overlordSkill == Enumerators.OverlordSkill.HARDEN ||
+                skill.overlordSkill == Enumerators.OverlordSkill.MEND)
                 _skillsController.DoSkillAction(this, owner);
             else
             {
@@ -244,7 +261,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 31)
                 return true;
 
-            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn)
                 return false;
 
             return true;

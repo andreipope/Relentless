@@ -174,8 +174,8 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.FREEZE_UNITS:
                     ability = new FreezeUnitsAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_UNIT:
-                    ability = new TakeDamageRandomUnitAbility(cardKind, abilityData);
+                case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY:
+                    ability = new TakeDamageRandomEnemyAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
                     ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
