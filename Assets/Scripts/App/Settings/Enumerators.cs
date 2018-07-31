@@ -210,9 +210,10 @@
             LOWER_COST_OF_CARD_IN_HAND,
             OVERFLOW_GOO,
             LOSE_GOO,
+            DISABLE_NEXT_TURN_GOO,
             RAGE,
             FREEZE_UNITS,
-            TAKE_DAMAGE_RANDOM_UNIT,
+            TAKE_DAMAGE_RANDOM_ENEMY,
             TAKE_CONTROL_ENEMY_UNIT,
             SHILED,
             DESTROY_FROZEN_UNIT,
@@ -225,7 +226,20 @@
             ENEMY_THAT_ATTACKS_BECOME_FROZEN,
             TAKE_UNIT_TYPE_TO_ALLY_UNIT,
             REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
-            CHANGE_STAT_UNTILL_END_OF_TURN
+            CHANGE_STAT_UNTILL_END_OF_TURN,
+            ATTACK_OVERLORD,
+            ADJACENT_UNITS_GET_HEAVY,
+            FREEZE_NUMBER_OF_RANDOM_ALLY,
+            ADD_CARD_BY_NAME_TO_HAND,
+            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS,
+            SWING,
+            TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN,
+            GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS,
+            ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK,
+            UNIT_WEAPON,
+            TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
+            DELAYED_LOSE_HEAVY_GAIN_ATTACK,
+            DELAYED_GAIN_ATTACK
         }
 
         public enum AbilityActivityType
@@ -243,7 +257,8 @@
             AT_ATTACK,
             AT_DEATH,
             GOT_DAMAGE,
-            AT_DEFENCE
+            AT_DEFENCE,
+            TURN_END
         }
 
         public enum StatType
@@ -344,10 +359,13 @@
             PLAY_UNIT_CARD,
             PLAY_SPELL_CARD,
             STUN_CREATURE_BY_ABILITY,
-            STUN_CREATURE_BY_SKILL,
+            STUN_UNIT_BY_SKILL,
             SUMMON_UNIT_CARD,
             RETURN_TO_HAND_CARD_ABILITY,
-            RETURN_TO_HAND_CARD_SKILL
+            RETURN_TO_HAND_CARD_SKILL,
+
+            DRAW_CARD_SKILL,
+            STUN_PLAYER_BY_SKILL
         }
 
 
@@ -439,6 +457,62 @@
             NONE,
 
             FROZEN,
+        }
+
+        public enum StunType
+        {
+            NONE,
+
+            FREEZE,
+            DISABLE,
+        }
+
+        public enum OverlordSkill
+        {
+            NONE,
+
+            // AIR
+            PUSH,
+            DRAW,
+            WIND_SHIELD,
+            WIND_WALL,
+            RETREAT,
+
+            // EARTH
+            HARDEN,
+            STONESKIN,
+            FORTIFY,
+            PHALANX,
+            FORTRESS,
+
+            // FIRE
+            FIRE_BOLT,
+            RABIES,
+            FIREBALL,
+            MASS_RABIES,
+            METEOR_SHOWER,
+
+            // LIFE
+            HEALING_TOUCH,
+            MEND,
+            RESSURECT,
+            ENHANCE,
+            REANIMATE,
+
+            // TOXIC
+            POISON_DART,
+            TOXIC_POWER,
+            BREAKOUT,
+            INFECT,
+            EPIDEMIC,
+
+            // WATER
+            FREEZE,
+            ICE_BOLT,
+            ICE_WALL,
+            SHATTER,
+            BLIZZARD
+       
         }
     }
 }

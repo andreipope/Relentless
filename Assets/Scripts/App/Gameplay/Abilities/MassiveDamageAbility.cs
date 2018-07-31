@@ -39,9 +39,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void CreatureOnDieEventHandler()
+        protected override void UnitOnDieEventHandler()
         {
-            base.CreatureOnDieEventHandler();
+            base.UnitOnDieEventHandler();
 			if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
 				return;
             Debug.Log("CreatureOnDieEventHandler");
@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
                         //player.BoardCards.CopyTo(creatures);
                         foreach (var cardOpponent in opponent.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(caller, abilityData, cardOpponent);
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardOpponent);
                         }
                         CreateVFX(Vector3.up * 1.5f);
                         //Array.Clear(creatures, 0, creatures.Length);
@@ -80,7 +80,7 @@ namespace LoomNetwork.CZB
                         //cards = null;
                         foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
                         {
-                            _battleController.AttackCreatureByAbility(caller, abilityData, cardPlayer);
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardPlayer);
                             CreateVFX(cardPlayer.transform.position);
                         }
                         break;
@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f)
+        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             int playerPos = playerCallerOfAbility.IsLocalPlayer ? 1 : -1;
             

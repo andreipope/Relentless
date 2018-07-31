@@ -2,11 +2,6 @@
 // https://loomx.io/
 
 
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 using LoomNetwork.CZB.Data;
@@ -56,7 +51,7 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             playerCallerOfAbility.GooOnCurrentTurn += value;
-            playerCallerOfAbility.Goo = playerCallerOfAbility.GooOnCurrentTurn;
+            //playerCallerOfAbility.Goo = playerCallerOfAbility.GooOnCurrentTurn;
         }
     }
 }

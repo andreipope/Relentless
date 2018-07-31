@@ -56,15 +56,15 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             if(info is BoardUnit)
             {
                 var creature = info as BoardUnit;
-                creature.Stun(value);
+                creature.Stun(Enumerators.StunType.FREEZE, value);
 				CreateVFX(creature.transform.position);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]

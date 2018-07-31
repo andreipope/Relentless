@@ -41,9 +41,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         public override void Action(object info = null)
@@ -53,9 +53,17 @@ namespace LoomNetwork.CZB
             if (playerCallerOfAbility.Goo == 0)
                 return;
 
+            int increaseOn = 0;
+
+            increaseOn = playerCallerOfAbility.Goo * value;
+            abilityUnitOwner.BuffedHP += increaseOn;
+            abilityUnitOwner.CurrentHP += increaseOn;
+
+            increaseOn = playerCallerOfAbility.Goo * value;
+            abilityUnitOwner.BuffedDamage += increaseOn;
+            abilityUnitOwner.CurrentDamage += increaseOn;
+
             playerCallerOfAbility.Goo = 0;
-            abilityUnitOwner.HP *= value;
-            abilityUnitOwner.Damage *= value;
         }
     }
 }

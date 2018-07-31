@@ -41,9 +41,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         public override void Action(object info = null)
@@ -53,8 +53,12 @@ namespace LoomNetwork.CZB
             if (playerCallerOfAbility.BoardCards.Count == 0 ||
                 (playerCallerOfAbility.BoardCards.Count == 1 && playerCallerOfAbility.BoardCards[0].Equals(abilityUnitOwner)))
             {
-                abilityUnitOwner.HP += value;
-                abilityUnitOwner.Damage += value;
+
+                abilityUnitOwner.BuffedHP += value;
+                abilityUnitOwner.CurrentHP += value;
+
+                abilityUnitOwner.BuffedDamage += value;
+                abilityUnitOwner.CurrentDamage += value;
             }
         }
     }

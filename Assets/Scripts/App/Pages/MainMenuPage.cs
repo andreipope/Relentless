@@ -113,6 +113,10 @@ namespace LoomNetwork.CZB
 
             _logoAnimator.SetBool("LogoShow", true);
 
+            _buttonMusic.SetStatus(!_soundManager.MusicMuted);
+            _buttonSFX.SetStatus(!_soundManager.SfxMuted);
+
+
             /*if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
                 _logoAnimator.SetBool("LogoShow", true);
 
@@ -178,14 +182,15 @@ namespace LoomNetwork.CZB
         private void OnValueChangedEventMusic(bool value)
 		{
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
-
-
+           // _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
+            _soundManager.SetMusicMuted(!value);
         }
+
         private void OnValueChangedEventSFX(bool value)
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
+          //  _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
+            _soundManager.SetSoundMuted(!value);
         }
         #endregion
 

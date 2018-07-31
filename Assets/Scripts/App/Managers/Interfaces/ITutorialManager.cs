@@ -20,6 +20,7 @@ namespace LoomNetwork.CZB
         void ActivateSelectTarget();
         void DeactivateSelectTarget();
         void NextButtonClickHandler();
+        void SkipTutorial();
         //void StopTimer(Action<object[]> handler);
         //void AddTimer(Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false, bool storeTimer = false);
     }

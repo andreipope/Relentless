@@ -49,6 +49,11 @@ namespace LoomNetwork.CZB.Data
         public int damage;
         public int health;
         public string attackInfo;
+        public string name;
+        public int turns;
+        public int count;
+        public int delay;
+
 
         public AbilityData()
         {

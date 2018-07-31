@@ -46,38 +46,29 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-            if (_isAbilityResolved)
-            {
-            }
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
             if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
                 return;
             
-			string statName = statType == Enumerators.StatType.HEALTH ? "HP" : "DMG";
-
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
-                    abilityUnitOwner.HP = ChangeValue(abilityUnitOwner.HP, value);
+                    abilityUnitOwner.BuffedHP += value;
+                    abilityUnitOwner.CurrentHP += value;
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    abilityUnitOwner.Damage = ChangeValue(abilityUnitOwner.Damage, value);
+                    abilityUnitOwner.BuffedDamage += value;
+                    abilityUnitOwner.CurrentDamage += value;
                     break;
                 default:
                     break;
             }
-        }
 
-        private int ChangeValue(int param, int valueChange)
-        {
-            param = param + valueChange;
-            if (param < 0)
-                param = 0;
-            return param;
+            _ranksController.UpdateRanksBuffs();
         }
     }
 }

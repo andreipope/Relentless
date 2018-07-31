@@ -40,13 +40,16 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            int health = targetUnit.HP;
-            int damage = targetUnit.Damage;
+            int health = targetUnit.initialHP;
+            int damage = targetUnit.initialDamage;
 
             _battlegroundController.DestroyBoardUnit(targetUnit);
 
-            abilityUnitOwner.HP += health;
-            abilityUnitOwner.Damage += damage;
+            abilityUnitOwner.BuffedHP += health;
+            abilityUnitOwner.CurrentHP += health;
+
+            abilityUnitOwner.BuffedDamage += damage;
+            abilityUnitOwner.CurrentDamage += damage;
         }
     }
 }

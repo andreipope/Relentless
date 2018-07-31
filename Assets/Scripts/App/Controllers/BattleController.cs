@@ -77,10 +77,14 @@ namespace LoomNetwork.CZB
 
         public void AttackPlayerByCreature(BoardUnit attackingUnit, Player attackedPlayer)
         {
+            int damageAttacking = attackingUnit.CurrentDamage;
+
             if (attackingUnit != null && attackedPlayer != null)
             {
-                attackedPlayer.HP -= attackingUnit.Damage;
+                attackedPlayer.HP -= damageAttacking;
             }
+
+            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
 
@@ -92,20 +96,21 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureByCreature(BoardUnit attackingUnit, BoardUnit attackedUnit)
+        public void AttackUnitByUnit(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
         {
             int damageAttacked = 0;
             int damageAttacking = 0;
 
             if (attackingUnit != null && attackedUnit != null)
             {
-                int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit.Card, attackedUnit.Card);
-                int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedUnit.Card, attackingUnit.Card);
+                int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit, attackedUnit);
+                int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit);
 
-                additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
-                additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
+                //Removed for now
+                //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
+                //additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                damageAttacking = attackingUnit.Damage + additionalDamageAttacker;
+                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (attackedUnit.HasBuffShield)
                 {
@@ -113,12 +118,12 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damageAttacking;
+                attackedUnit.CurrentHP -= damageAttacking;
 
                 if (damageAttacking > 0)
                     attackedUnit.ThrowEventGotDamage(attackingUnit);
 
-                damageAttacked = attackedUnit.Damage + additionalDamageAttacked;
+                damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
                 if (attackingUnit.HasBuffShield)
                 {
@@ -126,8 +131,13 @@ namespace LoomNetwork.CZB
                     attackingUnit.UseShieldFromBuff();
                 }
 
-                attackingUnit.HP -= damageAttacked;
+                attackingUnit.CurrentHP -= damageAttacked;
+
+                if (damageAttacking > 0)
+                    attackedUnit.ThrowEventGotDamage(attackingUnit);
             }
+
+            attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
 
@@ -141,7 +151,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void AttackCreatureBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
+        public void AttackUnitBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
         {
             int damage = (skill.value + modifier);
 
@@ -153,10 +163,10 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damage;
+                attackedUnit.CurrentHP -= damage;
 
-                if (damage > 0)
-                    attackedUnit.ThrowEventGotDamage(attackingPlayer);
+               // if (damage > 0)
+                 //   attackedUnit.ThrowEventGotDamage(attackingPlayer);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -204,13 +214,13 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealCreatureBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
-                healedCreature.HP += skill.value;
-                if (healedCreature.HP > healedCreature.Card.initialHealth)
-                    healedCreature.HP = healedCreature.Card.initialHealth;
+                healedCreature.CurrentHP += skill.value;
+                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
+                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
             }
             
 
@@ -223,9 +233,12 @@ namespace LoomNetwork.CZB
             }));
         }
     
-        public void AttackCreatureByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit)
+        public void AttackUnitByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit, int damageOverride = -1)
         {
             int damage = ability.value;
+
+            if (damageOverride > 0)
+                damage = damageOverride;
 
             if (attackedUnit != null)
             {
@@ -235,10 +248,10 @@ namespace LoomNetwork.CZB
                     attackedUnit.UseShieldFromBuff();
                 }
 
-                attackedUnit.HP -= damage;
+                attackedUnit.CurrentHP -= damage;
 
-                if (damage > 0)
-                    attackedUnit.ThrowEventGotDamage(attacker);
+              //  if (damage > 0)
+                //    attackedUnit.ThrowEventGotDamage(attacker);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
@@ -287,13 +300,13 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        public void HealCreatureByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
+        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
         {
             if (healedCreature != null)
             {
-                healedCreature.HP += ability.value;
-                if (healedCreature.HP > healedCreature.Card.initialHealth)
-                    healedCreature.HP = healedCreature.Card.initialHealth;
+                healedCreature.CurrentHP += ability.value;
+                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
+                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,

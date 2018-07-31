@@ -42,6 +42,7 @@ namespace LoomNetwork.CZB
 
         protected Vector3 positionOnHand;
         protected Vector3 rotationOnHand;
+        protected Vector3 scaleOnHand;
 
         protected AnimationEventTriggering animationEventTriggering;
         protected OnBehaviourHandler behaviourHandler;
@@ -128,15 +129,26 @@ namespace LoomNetwork.CZB
 
             manaCost = libraryCard.cost;
 
+            WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.libraryCard.cardRank);
 
             var setName = libraryCard.cardSetType.ToString();
 
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(libraryCard.frame))
+                frameName = "Images/Cards/Frames/" + libraryCard.frame;
+
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
+        }
+
+        private void PlayerGooChangedEventHandler(int obj)
+        {
+            UpdateCardsStatusEventHandler(WorkingCard.owner);
         }
 
         public virtual void Init(Card card, int amount = 0)
@@ -154,7 +166,12 @@ namespace LoomNetwork.CZB
 
             var setName = libraryCard.cardSetType.ToString();
 
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity));
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(libraryCard.frame))
+                frameName = "Images/Cards/Frames/" + libraryCard.frame;
+
+            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
         }
@@ -172,13 +189,14 @@ namespace LoomNetwork.CZB
             amountText.text = amount.ToString();
         }
 
-        public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation)
+        public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation, Vector3 scale)
         {
             if (isPreview)
                 return;
 
             positionOnHand = position;
             rotationOnHand = rotation;
+            scaleOnHand = scale;
 
             if (!isNewCard)
             {
@@ -199,7 +217,7 @@ namespace LoomNetwork.CZB
         {
             if (isPreview)
                 return;
-
+            transform.DOScale(scaleOnHand, 0.5f);
             transform.DOMove(positionOnHand, 0.5f);
             transform.DORotate(rotationOnHand, 0.5f);
         }

@@ -20,9 +20,10 @@ namespace LoomNetwork.CZB
     {
         private IAppStateManager _appStateManager;
         private ILocalizationManager _localizationManager;
+        private ILoadObjectsManager _loadObjectsManager;
 
 
-		private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
+        private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
         public event Action OnLoadCacheCompletedEvent;
 
@@ -74,6 +75,7 @@ namespace LoomNetwork.CZB
         {
             _appStateManager = GameClient.Get<IAppStateManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -319,6 +321,19 @@ namespace LoomNetwork.CZB
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(Resources.Load("Data/opponent_decks_data").ToString());
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(Resources.Load("Data/credits_data").ToString());
+                CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
+                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
+               // CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
+                CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
+                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
+                CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);
+
+                var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
+                if (collectionLibrary == null)
+                    FillFullCollection();
+                else
+                    CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(collectionLibrary.text);
             }
         }
 
@@ -349,6 +364,54 @@ namespace LoomNetwork.CZB
                 return Utilites.Encrypt(JsonConvert.SerializeObject(obj, Formatting.Indented), Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
             else
                 return JsonConvert.SerializeObject(obj, Formatting.Indented);
+        }
+
+        private void FillFullCollection()
+        {
+            CachedCollectionData = new CollectionData();
+            CachedCollectionData.cards = new List<CollectionCardData>();
+
+            foreach (var set in CachedCardsLibraryData.sets)
+            {
+                foreach (var card in set.cards)
+                {
+                    CachedCollectionData.cards.Add(new CollectionCardData()
+                    {
+                        amount = (int)GetMaxCopiesValue(card, set.name),
+                        cardName = card.name
+                    });
+                }
+            }
+        }
+
+        public uint GetMaxCopiesValue(Card card, string setName)
+        {
+            Enumerators.CardRank rank = card.cardRank;
+            uint maxCopies = 0;
+
+            if (setName.ToLower().Equals("item"))
+            {
+                maxCopies = Constants.CARD_ITEM_MAX_COPIES;
+                return maxCopies;
+            }
+
+
+            switch (rank)
+            {
+                case Enumerators.CardRank.MINION:
+                    maxCopies = Constants.CARD_MINION_MAX_COPIES;
+                    break;
+                case Enumerators.CardRank.OFFICER:
+                    maxCopies = Constants.CARD_OFFICER_MAX_COPIES;
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    maxCopies = Constants.CARD_COMMANDER_MAX_COPIES;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
+                    break;
+            }
+            return maxCopies;
         }
     }
 }

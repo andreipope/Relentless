@@ -41,16 +41,16 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            var opponent = _abilitiesController.GetOpponentPlayer(this);
+            var opponent = GetOpponentOverlord();
             var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
 
             int targetIndex = -1;

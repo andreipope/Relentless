@@ -77,8 +77,8 @@ public class LoomDeckTest
             heroId = 0,
             name = "Gaurav"
         };
-        deck.AddCard(0);
-        deck.AddCard(1);
+        //deck.AddCard(0);
+        //deck.AddCard(1);
 
         var response = string.Empty;
         await LoomManager.Instance.AddDeck(user, deck, result => { response = result; });
@@ -95,8 +95,8 @@ public class LoomDeckTest
             heroId = 0,
             name = "Gaurav"
         };
-        deck.AddCard(0);
-        deck.AddCard(1);
+        //deck.AddCard(0);
+        //deck.AddCard(1);
 
         var response = string.Empty;
         await LoomManager.Instance.AddDeck(user, deck, result => { response = result; });
@@ -114,8 +114,8 @@ public class LoomDeckTest
             heroId = 0,
             name = "Gaurav"
         };
-        deck.AddCard(-10);
-        deck.AddCard(-41);
+        //deck.AddCard(-10);
+        //deck.AddCard(-41);
 
         var response = string.Empty;
         await LoomManager.Instance.AddDeck(user, deck, result => { response = result; });
@@ -132,8 +132,8 @@ public class LoomDeckTest
         {
             name = "Default"
         };
-        deck.AddCard(0);
-        deck.AddCard(1);
+        //deck.AddCard(0);
+        //deck.AddCard(1);
 
         var response = string.Empty;
         await LoomManager.Instance.EditDeck(user, deck, result => { response = result; });
@@ -149,8 +149,8 @@ public class LoomDeckTest
             heroId = 0,
             name = "Gaurav"
         };
-        deck.AddCard(0);
-        deck.AddCard(1);
+        //deck.AddCard(0);
+        //deck.AddCard(1);
 
         var response = string.Empty;
         await LoomManager.Instance.EditDeck(user, deck, result => { response = result; });
@@ -168,8 +168,8 @@ public class LoomDeckTest
             heroId = 0,
             name = "GauravRandomDeck"
         };
-        deck.AddCard(-10);
-        deck.AddCard(-41);
+        //deck.AddCard(-10);
+        //deck.AddCard(-41);
 
         var response = string.Empty;
         await LoomManager.Instance.EditDeck(user, deck, result => { response = result; });

@@ -35,9 +35,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         protected override void UnitGotDamageEventHandler(object from)
@@ -48,7 +48,7 @@ namespace LoomNetwork.CZB
                 return;
 
             if(from is BoardUnit)
-                (from as BoardUnit).Stun(value);
+                (from as BoardUnit).Stun(Enumerators.StunType.FREEZE, value);
         }
     }
 }

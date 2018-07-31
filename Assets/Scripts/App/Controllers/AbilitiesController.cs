@@ -85,6 +85,7 @@ namespace LoomNetwork.CZB
                     ability = CreateAbilityByType(kind, ability)
                 };
 
+                activeAbility.ability.activityId = activeAbility.id;
                 activeAbility.ability.playerCallerOfAbility = caller;
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
 
@@ -115,9 +116,6 @@ namespace LoomNetwork.CZB
 					break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
-                    break;
-                case Enumerators.AbilityType.ADD_GOO_CARRIER:
-                    ability = new AddGooByCarrierAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
@@ -167,14 +165,17 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.LOSE_GOO:
                     ability = new LoseGooAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DISABLE_NEXT_TURN_GOO:
+                    ability = new DisableNextTurnGooAbility(cardKind, abilityData);
+                    break;
                 case Enumerators.AbilityType.RAGE:
                     ability = new RageAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.FREEZE_UNITS:
                     ability = new FreezeUnitsAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_UNIT:
-                    ability = new TakeDamageRandomUnitAbility(cardKind, abilityData);
+                case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY:
+                    ability = new TakeDamageRandomEnemyAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
                     ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
@@ -215,6 +216,46 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
                     ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.ATTACK_OVERLORD:
+                    ability = new AttackOverlordAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
+                    ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FREEZE_NUMBER_OF_RANDOM_ALLY:
+                    ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
+                    ability = new AddCardByNameToHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
+                    ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.SWING:
+                    ability = new SwingAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
+                    ability = new TakeDefenseIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK:
+                    ability = new AdditionalDamageToHeavyInAttackAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS:
+                    ability = new GainNumberOfLifeForEachDamageThisDealsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.UNIT_WEAPON:
+                    ability = new UnitWeaponAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS:
+                    ability = new TakeDamageAtEndOfTurnToThis(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_LOSE_HEAVY_GAIN_ATTACK:
+                    ability = new DelayedLoseHeavyGainAttackAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_GAIN_ATTACK:
+                    ability = new DelayedGainAttackAbility(cardKind, abilityData);
+                    break;
+                    
                 default:
                     break;
             }
@@ -293,21 +334,29 @@ namespace LoomNetwork.CZB
             return available;
         }
 
-        public int GetStatModificatorByAbility(WorkingCard attacker, WorkingCard attacked)
+        public int GetStatModificatorByAbility(BoardUnit attacker, BoardUnit attacked)
         {
             int value = 0;
 
-            var attackedCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacked.cardId);
-            var attackerCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCard(attacker.cardId);
+            var attackedCard = attacker.Card.libraryCard;
+            var attackerCard = attacked.Card.libraryCard;
 
-            var abilities = attackerCard.abilities.FindAll(x =>
-            x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
+            var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
             for (int i = 0; i < abilities.Count; i++)
             {
                 if (attackedCard.cardSetType == abilities[i].abilitySetType)
                     value += abilities[i].value;
             }
+
+            abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK);
+
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (attacked.HasBuffHeavy || attacked.hasHeavy)
+                    value += abilities[i].value;
+            }
+
             return value;
         }
 
@@ -400,7 +449,7 @@ namespace LoomNetwork.CZB
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
-                                workingCard.owner.RemoveCardFromHand(workingCard);
+                                workingCard.owner.RemoveCardFromHand(workingCard, true);
                                 workingCard.owner.AddCardToBoard(workingCard);
 
                                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
@@ -434,9 +483,9 @@ namespace LoomNetwork.CZB
                                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                 _playerController.IsCardSelected = false;
-                              //  currentSpellCard = null;
+                                //  currentSpellCard = null;
 
-                               // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
+                                // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
                             }
                             else
                             {

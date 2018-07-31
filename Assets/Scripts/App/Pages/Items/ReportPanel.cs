@@ -32,7 +32,7 @@ namespace LoomNetwork.CZB
 
         private List<ReportViewBase> _allReports;
 
-        private float _graveYardTopOffset;
+        private float _graveYardTopOffset = 0;
 
         public ReportPanelItem() { }
 
@@ -53,6 +53,9 @@ namespace LoomNetwork.CZB
             playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
 
             _actionsQueueController.GotNewActionReportEvent += GotNewActionReportEventHandler;
+
+            _graveYardTopOffset = 0;
+            _reportGroup.padding.top = 0;
         }
 
         public void Update()
@@ -72,6 +75,9 @@ namespace LoomNetwork.CZB
             foreach (var item in _allReports)
                 item.Dispose();
             _allReports.Clear();
+
+            _graveYardTopOffset = 0;
+            _reportGroup.padding.top = 0;
         }
 
         private void GotNewActionReportEventHandler(GameActionReport report)
@@ -118,7 +124,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.ActionType.STUN_CREATURE_BY_ABILITY:
                     reportView = new GameplayActionReport_StunCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.STUN_CREATURE_BY_SKILL:
+                case Enumerators.ActionType.STUN_UNIT_BY_SKILL:
                     reportView = new GameplayActionReport_StunCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.SUMMON_UNIT_CARD:
@@ -130,19 +136,8 @@ namespace LoomNetwork.CZB
             if (reportView != null)
                 _allReports.Add(reportView);
 
-         //   reportView.selfObject.transform.SetAsLastSibling();
-
-
             if (_allReports.Count > 4)
                 _graveYardTopOffset = -80f - (120f * (_allReports.Count - 5));
-
-            //if (_reportGroup.padding.top > _graveYardTopOffset)
-            //{
-            //    _reportGroup.padding.top = Mathf.FloorToInt(Mathf.Lerp((float)_reportGroup.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 1f));
-
-            //    // _timerManager.StopTimer(MoveReportGroupObjects);
-            //    // _timerManager.AddTimer(MoveReportGroupObjects, null, Time.deltaTime, true);
-            //}
         }
     }
 }

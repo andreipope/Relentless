@@ -16,8 +16,8 @@ namespace LoomNetwork.CZB.Gameplay
         bool IsFading { get; }
         Enumerators.FadeState CurrentFadeState { get; }
 
-		void FadeIn(Action callback = null, int level = 0);
-		void FadeIn(float fadeTo, int level = 0);
+		void FadeIn(Action callback = null, int level = 0, bool isLastSibling = true);
+		void FadeIn(float fadeTo, int level = 0, bool isLastSibling = true);
         void FadeOut(Action callback = null, int level = 0, bool immediately = false);
     }
 }

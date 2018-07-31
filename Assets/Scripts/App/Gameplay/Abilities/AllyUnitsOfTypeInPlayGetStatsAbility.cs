@@ -45,9 +45,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info)
+        protected override void UnitOnAttackEventHandler(object info, int damage)
         {
-            base.UnitOnAttackEventHandler(info);
+            base.UnitOnAttackEventHandler(info, damage);
         }
 
         public override void Action(object info = null)
@@ -58,8 +58,11 @@ namespace LoomNetwork.CZB
             {
                 if(unit.Card.libraryCard.cardSetType.Equals(setType))
                 {
-                    unit.Damage += damage;
-                    unit.HP += health;
+                    unit.BuffedDamage += damage;
+                    unit.CurrentDamage += damage;
+
+                    unit.BuffedHP += health;
+                    unit.CurrentHP += health;
                 }   
             }
         }

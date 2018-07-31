@@ -79,7 +79,6 @@ namespace LoomNetwork.CZB
                     LifeRankBuff(units, rank);
                     break;
             }
-
             foreach (var unit in units)
                 unit.ApplyBuffs();
         }
@@ -173,8 +172,8 @@ namespace LoomNetwork.CZB
                 unit = units[random];
                 units.RemoveAt(random);
 
-                if (unit.HP < unit.initialHP)
-                    unit.HP++;
+                if (unit.CurrentHP < unit.MaxCurrentHP)
+                    unit.CurrentHP++;
             }
         }
 

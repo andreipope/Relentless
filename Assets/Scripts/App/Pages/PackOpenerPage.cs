@@ -405,7 +405,7 @@ namespace LoomNetwork.CZB
                 animationSequence4.AppendInterval(2f);
 
                 _cardsTurned++;
-                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.id, 1);
+                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.name, 1);
             });
         }
     }

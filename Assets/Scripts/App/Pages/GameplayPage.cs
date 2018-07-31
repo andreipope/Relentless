@@ -34,6 +34,7 @@ namespace LoomNetwork.CZB
                            _playedCardPrefab;
 
         private Button _buttonBack;
+        private ButtonTextOffset _buttonKeep;
 
        // private List<CardInGraveyard> _cards;
 
@@ -56,8 +57,6 @@ namespace LoomNetwork.CZB
                                _opponentGraveyardStatusTexture;
 
         private GameObject _zippingVFX;
-
-        private int _graveYardTopOffset;
 
         private int _currentDeckId;
 
@@ -97,8 +96,10 @@ namespace LoomNetwork.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
+            _buttonKeep = _selfPage.transform.Find("KeepButton").GetComponent<ButtonTextOffset>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
           //  _cards = new List<CardInGraveyard>();
@@ -120,9 +121,6 @@ namespace LoomNetwork.CZB
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
-
-
-            _graveYardTopOffset = 0;
 
             _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
 
@@ -171,6 +169,7 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive(true);
 
             StartGame();
+            KeepButtonVisibility(false);
         }
 
 
@@ -191,50 +190,7 @@ namespace LoomNetwork.CZB
         //}
 
         //TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
-        public void OnBoardCardKilledEventHandler(BoardUnit cardToDestroy)
-        {
-            if (cardToDestroy == null)
-                return;
-
-            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
-
-            cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
-
-            _timerManager.AddTimer((x) =>
-            {
-                cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false); // CHECK SHAKE!!
-
-                string cardDeathSoundName = cardToDestroy.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
-                float soundLength = 0f;
-
-                if (cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
-                {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-                    soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
-                }
-
-                _timerManager.AddTimer((t) =>
-                {
-                    cardToDestroy.ownerPlayer.BoardCards.Remove(cardToDestroy);
-                    cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
-                    cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
-
-                    _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
-
-                    cardToDestroy.transform.DOKill();
-                    MonoBehaviour.Destroy(cardToDestroy.gameObject);
-
-                    _timerManager.AddTimer((f) =>
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
-                    }, null, Time.deltaTime, false);
-
-                }, null, soundLength);
-
-            }, null, 1f);
-
-        }
+       
 
         private void DelayedCardDestroy(object[] card)
         {
@@ -252,7 +208,6 @@ namespace LoomNetwork.CZB
             {
                 _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
-                _battlegroundController.OnBoardCardKilledEvent += OnBoardCardKilledEventHandler;
                 _battlegroundController.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardUpdatedEventHandler;
                 _battlegroundController.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardUpdatedEventHandler;
 
@@ -277,8 +232,8 @@ namespace LoomNetwork.CZB
             _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             _opponentHealthText = GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer", new Vector3(5.57f, 0, -6.08f));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent", new Vector3(5.56f, 0, 4.75f));
+            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer", new Vector3(-3.55f, 0, -6.07f));
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent", new Vector3(9.77f, 0, 4.75f));
 
 
             // improve find to get it from OBJECTS ON BOARD!!
@@ -360,19 +315,23 @@ namespace LoomNetwork.CZB
 
             player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
             player.PlayerHPChangedEvent += OnPlayerHPChanged;
-            player.PlayerManaChangedEvent += OnPlayerGooChanged;
+            player.PlayerGooChangedEvent += OnPlayerGooChanged;
+            player.PlayerVialGooChangedEvent += OnPlayerVialGooChanged;
             opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
             opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
-            opponent.PlayerManaChangedEvent += OnOpponentManaChanged;
+            opponent.PlayerGooChangedEvent += OnOpponentGooChanged;
+            opponent.PlayerVialGooChangedEvent += OnOpponentVialGooChanged;
 
             player.OnStartTurnEvent += OnStartTurnEventHandler;
 
             OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
-            OnPlayerHPChanged(player.HP, player.HP);
-            OnPlayerGooChanged(player.Goo, player.Goo);
+            OnPlayerHPChanged(player.HP);
+            OnPlayerGooChanged(player.Goo);
+            OnPlayerVialGooChanged(player.GooOnCurrentTurn);
             OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
-            OnOpponentHPChanged(opponent.HP, opponent.HP);
-            OnOpponentManaChanged(opponent.Goo, opponent.Goo);
+            OnOpponentHPChanged(opponent.HP);
+            OnOpponentGooChanged(opponent.GooOnCurrentTurn);
+            OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
         }
 
         private void OnPlayerDeckChangedEventHandler(int index)
@@ -461,7 +420,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnPlayerHPChanged(int oldHealth, int health)
+        private void OnPlayerHPChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -473,14 +432,21 @@ namespace LoomNetwork.CZB
                 _playerHealthText.color = Color.red;
         }
 
-        private void OnPlayerGooChanged(int oldGoo, int goo)
+        private void OnPlayerGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentHPChanged(int oldHealth, int health)
+        private void OnPlayerVialGooChanged(int currentTurnGoo)
+        {
+            if (!_isPlayerInited)
+                return;
+            _playerManaBar.SetVialGoo(currentTurnGoo);
+        }
+
+        private void OnOpponentHPChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -492,12 +458,20 @@ namespace LoomNetwork.CZB
                 _opponentHealthText.color = Color.red;
         }
 
-        private void OnOpponentManaChanged(int oldGoo, int goo)
+        private void OnOpponentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
             _opponentManaBar.SetGoo(goo);
         }
+
+        private void OnOpponentVialGooChanged(int currentTurnGoo)
+        {
+            if (!_isPlayerInited)
+                return;
+            _opponentManaBar.SetVialGoo(currentTurnGoo);
+        }
+
 
         private void OnStartTurnEventHandler()
         {
@@ -523,6 +497,17 @@ namespace LoomNetwork.CZB
 
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+        }
+
+        public void KeepButtonOnClickHandler()
+        {
+            _gameplayManager.GetController<CardsController>().EndCardDistribution();
+            KeepButtonVisibility(false);
+        }
+
+        public void KeepButtonVisibility(bool visible)
+        {
+            _buttonKeep.gameObject.SetActive(visible);
         }
 
         #endregion

@@ -89,6 +89,20 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void BlockSkill(Player player, Enumerators.SkillType type)
+        {
+            if (player.IsLocalPlayer)
+            {
+                _playerPrimarySkill.BlockSkill();
+                _playerSecondarySkill.BlockSkill();
+            }
+            else
+            {
+                opponentPrimarySkill.BlockSkill();
+                opponentSecondarySkill.BlockSkill();
+            }
+        }
+
 
         private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
@@ -116,14 +130,14 @@ namespace LoomNetwork.CZB
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary, 2, true);
-            _playerSecondarySkill = new BoardSkill(rootPage.playerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary, 1, false);
+            _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary, 3, true);
+            _playerSecondarySkill = new BoardSkill(rootPage.playerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary, 4, false);
         }
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary, 2, true);
-            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary, 1, false);
+            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary, 3, true);
+            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary, 4, false);
         }
 
         private void SkillParticleActionCompleted(object target)
@@ -197,31 +211,47 @@ namespace LoomNetwork.CZB
             }
         }
 
-
         private void DoActionByType(BoardSkill skill, object target)
         {
-            switch(skill.owner.SelfHero.heroElement)
+            switch(skill.skill.overlordSkill)
             {
-                case Enumerators.SetType.WATER:
+                case Enumerators.OverlordSkill.FREEZE:
                     FreezeAction(skill.owner, skill.skill, target);
                     break;
-                case Enumerators.SetType.TOXIC:
-                    ToxicDamageAction(skill.owner, skill.skill, target);
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                    IceBoltAction(skill.owner, skill.skill, target);
                     break;
-                case Enumerators.SetType.FIRE:
-                    FireDamageAction(skill.owner, skill.skill, target);
+                case Enumerators.OverlordSkill.POISON_DART:
+                    PoisonDartAction(skill.owner, skill.skill, target);
                     break;
-                case Enumerators.SetType.LIFE:
-                    HealAnyAction(skill.owner, skill.skill, target);
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                    ToxicPowerAction(skill.owner, skill.skill, target);
                     break;
-                case Enumerators.SetType.EARTH:
-                    HealAction(skill.owner, skill.skill);
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                    HealingTouchAction(skill.owner, skill.skill, target);
                     break;
-                case Enumerators.SetType.AIR:
-                    CardReturnAction(skill.owner, skill.skill, target);
+                case Enumerators.OverlordSkill.MEND:
+                    MendAction(skill.owner, skill.skill, target);
                     break;
-                default:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
+                     FireballAction(skill.owner, skill.skill, target);
                     break;
+                case Enumerators.OverlordSkill.RABIES:
+                    RabiesAction(skill.owner, skill.skill, target);
+                    break;
+                case Enumerators.OverlordSkill.HARDEN:
+                    HardenAction(skill.owner, skill.skill);
+                    break;
+                case Enumerators.OverlordSkill.STONESKIN:
+                    StoneskinAction(skill.owner, skill.skill, target);
+                    break;
+                case Enumerators.OverlordSkill.PUSH:
+                    PushAction(skill.owner, skill.skill, target);
+                    break;
+                case Enumerators.OverlordSkill.DRAW:
+                    DrawAction(skill.owner, skill.skill, target);
+                    break;
+                default: break;
             }
         }
 
@@ -232,11 +262,11 @@ namespace LoomNetwork.CZB
             if (target is BoardUnit)
             {
                 var unit = target as BoardUnit;
-                unit.Stun(skill.value);
+                unit.Stun(Enumerators.StunType.FREEZE, skill.value);
 
                 _vfxController.CreateVFX(Enumerators.SetType.WATER, unit.transform.position);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_SKILL, new object[]
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
                 {
                     owner,
                     unit
@@ -244,21 +274,31 @@ namespace LoomNetwork.CZB
             }
             else if (target is Player)
             {
+                var player = target as Player;
 
+                player.Stun(Enumerators.StunType.FREEZE, skill.value);
+
+                _vfxController.CreateVFX(Enumerators.SetType.WATER, player.AvatarObject.transform.position);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
+                {
+                    owner,
+                    player
+                }));
             }
         }
 
-        private void ToxicDamageAction(Player owner, HeroSkill skill, object target)
+        private void PoisonDartAction(Player owner, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
         }
 
-        private void FireDamageAction(Player owner, HeroSkill skill, object target)
+        private void FireballAction(Player owner, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
         }
 
-        private void HealAnyAction(Player owner, HeroSkill skill, object target)
+        private void HealingTouchAction(Player owner, HeroSkill skill, object target)
         {
             if (target is Player)
             {
@@ -272,13 +312,13 @@ namespace LoomNetwork.CZB
             {
                 var unit = target as BoardUnit;
 
-                _battleController.HealCreatureBySkill(owner, skill, unit);
+                _battleController.HealUnitBySkill(owner, skill, unit);
 
                 _vfxController.CreateVFX(Enumerators.SetType.LIFE, unit.transform.position);
             }
         }
 
-        private void HealAction(Player owner, HeroSkill skill)
+        private void HardenAction(Player owner, HeroSkill skill)
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
@@ -301,16 +341,16 @@ namespace LoomNetwork.CZB
                 var creature = target as BoardUnit;
                 var attackModifier = 0;
 
-                if (creature.Card.libraryCard.cardSetType == setType)
-                    attackModifier = 1;
+              //  if (creature.Card.libraryCard.cardSetType == setType)
+               //     attackModifier = 1;
 
-                _battleController.AttackCreatureBySkill(owner, skill, creature, attackModifier);
+                _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
 
                 _vfxController.CreateVFX(attackType, creature.transform.position);
             }
         }
         
-        private void CardReturnAction(Player owner, HeroSkill skill, object target)
+        private void PushAction(Player owner, HeroSkill skill, object target)
         {
             BoardUnit targetUnit = (target as BoardUnit);
             Player unitOwner = targetUnit.ownerPlayer;
@@ -347,6 +387,60 @@ namespace LoomNetwork.CZB
 
                 _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
             }, null, 2f);
+        }
+
+
+        private void DrawAction(Player owner, HeroSkill skill, object target)
+        {
+            _cardsController.AddCardToHand(owner);
+
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.DRAW_CARD_SKILL, new object[]
+            {
+                owner,
+                skill
+            }));
+        }
+
+        private void StoneskinAction(Player owner, HeroSkill skill, object target)
+        {
+            BoardUnit unit = target as BoardUnit;
+
+            unit.BuffedHP += skill.value;
+            unit.CurrentHP += skill.value;
+        }
+
+        private void RabiesAction(Player owner, HeroSkill skill, object target)
+        {
+            BoardUnit unit = target as BoardUnit;
+
+            unit.SetAsFeralUnit();
+        }
+
+        private void ToxicPowerAction(Player owner, HeroSkill skill, object target)
+        {
+            BoardUnit unit = target as BoardUnit;
+
+            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+
+            unit.BuffedDamage += skill.attack;
+            unit.CurrentDamage += skill.attack;
+        }
+
+        private void IceBoltAction(Player owner, HeroSkill skill, object target)
+        {
+            BoardUnit unit = target as BoardUnit;
+
+            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+
+            if(unit.CurrentHP > 0)
+            {
+                unit.Stun(Enumerators.StunType.FREEZE, 1);
+            }
+        }
+
+        private void MendAction(Player owner, HeroSkill skill, object target)
+        {
+            owner.HP = Mathf.Clamp(owner.HP + skill.value, 0, owner.MaxCurrentHP);
         }
 
         #endregion

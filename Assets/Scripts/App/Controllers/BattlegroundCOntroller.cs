@@ -16,7 +16,6 @@ namespace LoomNetwork.CZB
 {
     public class BattlegroundController : IController
     {
-        public event Action<BoardUnit> OnBoardCardKilledEvent;
         public event Action<int> OnPlayerGraveyardUpdatedEvent;
         public event Action<int> OnOpponentGraveyardUpdatedEvent;
         public event Action OnTurnStartedEvent;
@@ -35,6 +34,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private PlayerController _playerController;
         private AIController _aiController;
+        private RanksController _ranksController;
 
         private bool _battleDynamic = false;
 
@@ -84,6 +84,8 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
 
+            _ranksController = _gameplayManager.GetController<RanksController>();
+
             LoadGameConfiguration();
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
@@ -109,9 +111,48 @@ namespace LoomNetwork.CZB
            //     TurnDuration = 10000000;
         }
 
-        public void KillBoardCard(BoardUnit card)
+        public void KillBoardCard(BoardUnit cardToDestroy)
         {
-            OnBoardCardKilledEvent?.Invoke(card);
+            if (cardToDestroy == null)
+                return;
+
+            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
+
+            cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
+
+            _timerManager.AddTimer((x) =>
+            {
+                cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+
+                string cardDeathSoundName = cardToDestroy.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
+                float soundLength = 0f;
+
+                if (!cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                {
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
+                    soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                }
+
+                _timerManager.AddTimer((t) =>
+                {
+                    cardToDestroy.ownerPlayer.BoardCards.Remove(cardToDestroy);
+                    cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
+                    cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
+
+                    _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
+
+                    cardToDestroy.transform.DOKill();
+                    MonoBehaviour.Destroy(cardToDestroy.gameObject);
+
+                    _timerManager.AddTimer((f) =>
+                    {
+                        UpdatePositionOfBoardUnitsOfOpponent();
+                        UpdatePositionOfBoardUnitsOfPlayer();
+                    }, null, Time.deltaTime, false);
+
+                }, null, soundLength);
+
+            }, null, 1f);
         }
 
         public void CheckGameDynamic()
@@ -161,7 +202,13 @@ namespace LoomNetwork.CZB
 
 
             if (_gameplayManager.IsTutorial)
-                _gameplayManager.OpponentPlayer.HP = 8;
+            {
+                _gameplayManager.OpponentPlayer.HP = 12;
+                _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
+                _gameplayManager.OpponentPlayer.Goo = 10;
+                _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
+                _gameplayManager.CurrentPlayer.Goo = 7;
+            }
 
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
@@ -606,8 +653,7 @@ namespace LoomNetwork.CZB
                 if (isMove)
                     card.isNewCard = false;
 
-                card.transform.DOScale(Vector3.one * scaling, 0.5f);
-                card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist);
+                card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist, Vector3.one * scaling);
 
                 pivot.x += handWidth / playerHandCards.Count;
 
