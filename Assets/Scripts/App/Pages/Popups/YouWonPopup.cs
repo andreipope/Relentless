@@ -31,9 +31,9 @@ namespace LoomNetwork.CZB
                             _winTutorialPackObject,
                             _winPackObject;
 
-        private MenuButtonNoGlow _buttonOk;
+        private Button _buttonOk;
 
-        private SpriteRenderer _selectHeroImage;
+        private SpriteRenderer _selectHeroSpriteRenderer;
 
 
         //private TextMeshProUGUI _nameHeroText;
@@ -46,12 +46,12 @@ namespace LoomNetwork.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroImage = _selfPage.transform.Find("YouWonPopup/YouWonPanel/HeroAbility").GetComponent<SpriteRenderer>();
-            _winTutorialPackObject = _selfPage.transform.Find("YouWonPopup/YouWonPanel/UI/WinPackTutorial").gameObject;
-            _winPackObject = _selfPage.transform.Find("YouWonPopup/YouWonPanel/UI/WinPack").gameObject;
+            _selectHeroSpriteRenderer = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero").GetComponent<SpriteRenderer>();
+            _winTutorialPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPackTutorial").gameObject;
+            _winPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPack").gameObject;
             //_nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
-            _buttonOk = _selfPage.transform.Find("YouWonPopup/YouWonPanel/UI/Button_Ok").GetComponent<MenuButtonNoGlow>();
-            _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
+            _buttonOk = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
             Hide();
         }
@@ -81,7 +81,7 @@ namespace LoomNetwork.CZB
             int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[GameClient.Get<IGameplayManager>().PlayerDeckId].heroId;
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
-            _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
+            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
             //_nameHeroText.text = heroName + " Hero";
 
