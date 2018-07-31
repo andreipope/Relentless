@@ -35,8 +35,8 @@ namespace LoomNetwork.CZB
 
         public void UpdateRanksBuffs(Player player)
         {
-            foreach (var unit in player.BoardCards)
-                unit.ClearBuffs();
+            //foreach (var unit in player.BoardCards)
+            //    unit.ClearBuffs();
 
             for (int i = 0; i < 6; i++)
                 UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i);
@@ -52,8 +52,9 @@ namespace LoomNetwork.CZB
                     highestRank = unit.Card.libraryCard.cardRank;
             }
 
-            var weakerUnitsList = elementFilter.Where((unit) => unit.Card.libraryCard.cardRank != highestRank).ToList();
-            DoRankUpgrades(weakerUnitsList, element, highestRank);
+            var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
+            if(weakerUnitsList.Count > 0)
+                DoRankUpgrades(weakerUnitsList, element, highestRank);
         }
 
         public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
@@ -83,119 +84,172 @@ namespace LoomNetwork.CZB
                 unit.ApplyBuffs();
         }
 
-        private void ToxicRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
-        {
-            foreach (var unit in units)
-            {
-                for (int i = 0; i < (int)rank; i++)
-                    unit.BuffUnit(Enumerators.BuffType.ATTACK);
-            }
-        }
-
         private void AirRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
-            foreach (var unit in units)
+            List<Enumerators.BuffType> buffs =  new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
             {
-                for (int i = 0; i < (int)rank; i++)
-                    unit.BuffUnit(Enumerators.BuffType.SHIELD);
-
-                switch (rank)
-                {
-                    case Enumerators.CardRank.OFFICER:
-                        break;
-                    case Enumerators.CardRank.COMMANDER:
-                        unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                        break;
-                    case Enumerators.CardRank.GENERAL:
-                        unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                        unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                        break;
-                }
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 3;
+                    break;
             }
+            BuffRandomAlly(units, count, buffs);
         }
 
         private void EarthRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
-            foreach (var unit in units)
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
             {
-                for (int i = 0; i < (int)rank; i++)
-                    unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-
-                switch (rank)
-                {
-                    case Enumerators.CardRank.OFFICER:
-                        break;
-                    case Enumerators.CardRank.COMMANDER:
-                        unit.BuffUnit(Enumerators.BuffType.HEAVY);
-                        break;
-                    case Enumerators.CardRank.GENERAL:
-                        unit.BuffUnit(Enumerators.BuffType.DEFENCE);
-                        unit.BuffUnit(Enumerators.BuffType.HEAVY);
-                        break;
-                }
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.HEAVY);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.HEAVY);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.HEAVY);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 3;
+                    break;
             }
+            BuffRandomAlly(units, count, buffs);
         }
 
         private void FireRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
-            foreach (var unit in units)
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
             {
-                for (int i = 0; i < (int)rank; i++)
-                    unit.BuffUnit(Enumerators.BuffType.RUSH);
-
-                switch (rank)
-                {
-                    case Enumerators.CardRank.OFFICER:
-                        break;
-                    case Enumerators.CardRank.COMMANDER:
-                        unit.BuffUnit(Enumerators.BuffType.ATTACK);
-                        break;
-                    case Enumerators.CardRank.GENERAL:
-                        unit.BuffUnit(Enumerators.BuffType.ATTACK);
-                        unit.BuffUnit(Enumerators.BuffType.ATTACK);
-                        break;
-                }
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.RUSH);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
             }
+            BuffRandomAlly(units, count, buffs);
         }
 
         private void LifeRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
-            int cycles = (int)rank;
-            if (cycles > units.Count)
-                cycles = units.Count;
-
-            BoardUnit unit;
-            int random;
-            for (int i = 0; i < cycles; i++)
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
             {
-                random = Random.Range(0, units.Count);
-                unit = units[random];
-                units.RemoveAt(random);
-
-                if (unit.CurrentHP < unit.MaxCurrentHP)
-                    unit.CurrentHP++;
+                case Enumerators.CardRank.OFFICER:
+                    //buffs.Add(Enumerators.BuffType.SHIELD);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    //buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    //buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    count = 3;
+                    break;
             }
+            BuffRandomAlly(units, count, buffs);
+        }
+
+        private void ToxicRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        {
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
+            {
+                case Enumerators.CardRank.OFFICER:
+                    //buffs.Add(Enumerators.BuffType.SHIELD);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    //buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                   // buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
+            }
+            BuffRandomAlly(units, count, buffs);
         }
 
         private void WaterRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
+            {
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
+            }
+            BuffRandomAlly(units, count, buffs);
+        }
+
+        private void BuffHorde(List<BoardUnit> units, Enumerators.BuffType buffType)
+        {
             foreach (var unit in units)
             {
-                for (int i = 0; i < (int)rank; i++)
-                    unit.BuffUnit(Enumerators.BuffType.FREEZE);
+                Debug.Log(unit.Card.libraryCard.name);
 
-                switch (rank)
+                unit.BuffUnit(buffType);
+            }
+        }
+
+        private void BuffRandomAlly(List<BoardUnit> units, int count, List<Enumerators.BuffType> buffTypes)
+        {
+            int random;
+            for (int i = 0; i < count; i++)
+            {
+                if (units.Count == 0)
                 {
-                    case Enumerators.CardRank.OFFICER:
-                        break;
-                    case Enumerators.CardRank.COMMANDER:
-                        unit.BuffUnit(Enumerators.BuffType.DAMAGE);
-                        break;
-                    case Enumerators.CardRank.GENERAL:
-                        unit.BuffUnit(Enumerators.BuffType.DAMAGE);
-                        unit.BuffUnit(Enumerators.BuffType.DAMAGE);
-                        break;
+                    Debug.Log("break");
+                    break;
                 }
+                Debug.Log(i);
+                random = Random.Range(0, units.Count);
+                Debug.Log(random + "/" + units.Count + "/" + count);
+
+                foreach(Enumerators.BuffType buffs in  buffTypes)
+                    units[random].BuffUnit(buffs);
+                units.RemoveAt(random);
+                
             }
         }
     }

@@ -388,11 +388,10 @@ namespace LoomNetwork.CZB
 
         public void SetFirstHand(bool isTutorial = false)
         {
-            for (int i = 0; i < CardsInDeck.Count; i++)
+            if (isTutorial)
+                return;
+            for (int i = 0; i < Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME; i++)
             {
-                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
-                    break;
-
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 else

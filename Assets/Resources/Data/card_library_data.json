@@ -323,21 +323,18 @@
           "kind": "CREATURE",
           "name": "Cerberus",
           "cost": 12,
-          "description": "<b>Feral, Flash x2</b>",
+          "description": "<b>Attack:</b> Deal damage before receiving damage",
           "flavorText": "If you look closely enough, the one in the middle is the most good looking... er, least bad looking",
           "picture": "Cerberus",
-          "damage": 8,
+          "damage": 7,
           "health": 8,
-          "type": "FERAL",
+          "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "ATTACK_NUMBER_OF_TIMES_PER_TURN",
+              "type": "PRIORITY_ATTACK",
               "activityType": "passive",
-              "callType": "PERMANENT",
-              "targetType": "player_card",
-              "value": 3,
-              "attackInfo": "ONLY_DIFFERENT"
+              "callType": "at_start"
             }
           ],
           "cardViewInfo": {
@@ -717,11 +714,11 @@
           "kind": "CREATURE",
           "name": "Tzunamy",
           "cost": 11,
-          "description": "<b>Entry:</b> 2 damage to all enemies, then Freeze them",
+          "description": "<b>Entry:</b> 2 damage to all enemies, then <b>Freeze</b> them",
           "flavorText": "Bringing a nice, big shower, cleaning an entire city at a time.",
           "picture": "Tzunamy",
           "damage": 6,
-          "health": 7,
+          "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
@@ -1197,10 +1194,10 @@
           "kind": "CREATURE",
           "name": "Gaea",
           "cost": 11,
-          "description": "<b>Entry</b>: All ally Earth zombies in play get +1/+2",
+          "description": "<b>Entry</b>: All ally Earth zombies in play get +1 Atk",
           "flavorText": "",
           "picture": "Gaea",
-          "damage": 5,
+          "damage": 4,
           "health": 7,
           "type": "WALKER",
           "rank": "GENERAL",
@@ -1210,7 +1207,7 @@
               "activityType": "passive",
               "callType": "at_start",
               "setType": "EARTH",
-              "health": 2,
+              "health": 0,
               "damage": 1
             }
           ],
@@ -1557,10 +1554,10 @@
           "kind": "CREATURE",
           "name": "Zeuz",
           "cost": 11,
-          "description": "<b>Entry:</b> 3 damage to all enemy zombies",
+          "description": "<b>Entry:</b> 3 damage to all enemies",
           "flavorText": "From mount Zolimpus in the sky - fear Ze-might of ZeuZ!",
           "picture": "Zeuz",
-          "damage": 6,
+          "damage": 5,
           "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
@@ -1569,7 +1566,7 @@
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
               "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS",
+              "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "value": 3,
               "effectType": "MASSIVE_LIGHTNING"
             }
@@ -1922,7 +1919,7 @@
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 11,
-          "description": "<b>Turn:</b> summon a 2/2 zombie minion",
+          "description": "<b>Turn:</b> Summon two 1/1 zombie minions",
           "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
           "picture": "Shammann",
           "damage": 5,
@@ -1935,8 +1932,8 @@
               "activityType": "passive",
               "callType": "TURN_START",
               "targetType": "player",
-              "count": 1,
-              "name": "Zombie 2/2"
+              "count": 2,
+              "name": "Zombie 1/1"
             }
           ],
           "cardViewInfo": {
@@ -1990,11 +1987,11 @@
           "kind": "CREATURE",
           "name": "Yggdrazil",
           "cost": 11,
-          "description": "<b>Entry</b>: Revive all Life zombie that died this match",
+          "description": "<b>Entry</b>: Reanimate all Life zombies that died this match",
           "flavorText": "Can you still call it Tree of Life if it revives the dead? Can you even revive the dead? I'm so confuse...",
           "picture": "Yggdrazil",
           "damage": 4,
-          "health": 4,
+          "health": 5,
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [

@@ -320,10 +320,9 @@ namespace LoomNetwork.CZB
 
         public void BuffUnit(Enumerators.BuffType type)
         {
-            Debug.Log("_readyForBuffs - " + _readyForBuffs);
             if (!_readyForBuffs)
                 return;
-
+            UnityEngine.Debug.Log(Card.libraryCard.name + " Buffed " + type);
             _buffsOnUnit.Add(type);
         }
 
@@ -394,7 +393,6 @@ namespace LoomNetwork.CZB
         {
             if (!_readyForBuffs)
                 return;
-            Debug.Log(HasBuffShield);
             foreach (var buff in _buffsOnUnit)
             {
                 switch(buff)
@@ -675,7 +673,6 @@ namespace LoomNetwork.CZB
 
             healthChangedDelegate = () =>
             {
-                Debug.Log("UUUU");
                 UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
                 CheckOnDie();
             };
@@ -782,7 +779,6 @@ namespace LoomNetwork.CZB
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            Debug.Log("WAS STUNED");
             if (turns > _stunTurns)
                 _stunTurns = turns;
             IsPlayable = false;
