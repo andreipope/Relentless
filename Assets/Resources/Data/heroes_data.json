@@ -20,7 +20,7 @@
         },
         {
           "title": "STONESKIN",
-          "skill": "STONESKIN",
+          "skill": "STONE_SKIN",
           "skillType": 4,
           "skillTargetType": [ 0 ],
           "cost": 2,

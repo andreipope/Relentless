@@ -15,12 +15,13 @@ namespace LoomNetwork.CZB
         private void Awake()
         {
             Init();
+            SetInverse();
         }
 
 
         protected override void Update()
         {
-            UpdateLength(_targetPosition);
+            UpdateLength(_targetPosition, false);
         }
 
         public void SetTarget(object target)
@@ -40,13 +41,13 @@ namespace LoomNetwork.CZB
 
             _targetPosition.z = 0;
 
-            UpdateLength(_targetPosition);
+            UpdateLength(_targetPosition, false);
             CreateTarget(_targetPosition);
         }
 
         public void Dispose()
         {
-            if(_target != null)
+            if (_target != null)
             {
                 if (_target is Player)
                     (_target as Player).SetGlowStatus(false);

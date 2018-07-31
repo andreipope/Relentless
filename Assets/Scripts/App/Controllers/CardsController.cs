@@ -69,6 +69,12 @@ namespace LoomNetwork.CZB
             opponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
+            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+        }
+
+        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        {
+            CardDistribution = false;
         }
 
         public void Dispose()

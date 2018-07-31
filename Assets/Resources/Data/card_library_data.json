@@ -1966,10 +1966,10 @@
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "AT_START",
-              "targetType": "PLAYER_CARD"
+              "value": -1
             }
           ],
           "cardViewInfo": {
@@ -2209,10 +2209,11 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "AT_START",
-              "targetType": "PLAYER_CARD"
+              "targetType": "PLAYER_CARD",
+              "value": 1
             }
           ],
           "cardViewInfo": {

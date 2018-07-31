@@ -115,6 +115,7 @@ namespace LoomNetwork.CZB
         public int MaxCurrentDamage { get { return initialDamage + BuffedDamage; } }
         public int BuffedDamage { get; set; }
 
+
         public int CurrentDamage
         {
             get
@@ -181,7 +182,11 @@ namespace LoomNetwork.CZB
         public int HPDebuffUntillEndOfTurn { get; private set; }
 
         public bool IsAttacking { get; private set; }
-        
+
+        public bool IsAllAbilitiesResolvedAtStart { get; set; }
+
+        public bool IsReanimated { get; set; }
+        public bool AttackAsFirst { get; set; }
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
@@ -258,6 +263,8 @@ namespace LoomNetwork.CZB
             IsCreatedThisTurn = true;
 
             UnitStatus = Enumerators.UnitStatusType.NONE;
+
+            IsAllAbilitiesResolvedAtStart = true;
         }
 
         public bool IsHeavyUnit()
@@ -708,7 +715,7 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if (CurrentHP <= 0 && !_dead)
+            if (CurrentHP <= 0 && !_dead && IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 Die();
         }
 
@@ -821,7 +828,7 @@ namespace LoomNetwork.CZB
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            if (CurrentDamage <= 0)
+            if (!UnitCanBeUsable())
                 enabled = false;
 
             _glowSprite.enabled = enabled;
@@ -953,7 +960,7 @@ namespace LoomNetwork.CZB
 
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, CurrentDamage);
 
-                        _battleController.AttackPlayerByCreature(this, targetPlayer);
+                        _battleController.AttackPlayerByUnit(this, targetPlayer);
                     }),
                     () =>
                     {

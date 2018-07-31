@@ -360,8 +360,12 @@ namespace LoomNetwork.CZB
 
                 _setTypeIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
                 _hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" + SelfHero.element.ToLower());
-                _firstSkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + SelfHero.element.ToUpper());
-                _secondSkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + SelfHero.element.ToUpper());
+
+                var skillPrimary = SelfHero.skills[SelfHero.primarySkill];
+                var skillSecondary = SelfHero.skills[SelfHero.secondarySkill];
+
+                _firstSkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + SelfHero.element.ToUpper() + "_" + skillPrimary.skill.ToLower());
+                _secondSkillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + SelfHero.element.ToUpper() + "_" + skillSecondary.skill.ToLower());
 
                 _selectButton.onClick.AddListener(SelectButtonOnClickHandler);
                 _editButton.onClick.AddListener(EditButtonOnClickHandler);
