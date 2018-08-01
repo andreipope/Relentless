@@ -164,7 +164,7 @@ namespace LoomNetwork.CZB
         private void BuyButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
@@ -176,7 +176,7 @@ namespace LoomNetwork.CZB
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)

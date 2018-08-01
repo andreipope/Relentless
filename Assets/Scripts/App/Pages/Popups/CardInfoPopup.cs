@@ -22,6 +22,8 @@ namespace LoomNetwork.CZB
             get { return _selfPage; }
         }
 
+		private bool disableMelt = true;
+
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private GameObject _selfPage;
@@ -84,6 +86,8 @@ namespace LoomNetwork.CZB
             _card = data as Card;
             _description.text = _card.flavorText;
 
+			Debug.Log (_card.flavorText);
+
             _amountAward.text = (5 * ((int)_card.cardRank + 1)).ToString();
 
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.name);
@@ -114,17 +118,21 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             int amount = _cardData.amount;
-            if (amount == 0)
-                _desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
-            else
-            {
-                /*cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);*/
-                Hide();
-                _uiManager.DrawPopup<DesintigrateCardPopup>(_cardData);
-                (_uiManager.GetPopup<DesintigrateCardPopup>() as DesintigrateCardPopup).cardTransform = cardTransform;
-            }   
+
+			if (!disableMelt) {
+				if (amount == 0)
+					_desintegrateButton.GetComponent<MenuButtonNoGlow> ().interactable = false;
+	            //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
+	            else {
+					/*cardTransform.DOKill();
+	                cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);*/
+					Hide ();
+					_uiManager.DrawPopup<DesintigrateCardPopup> (_cardData);
+					(_uiManager.GetPopup<DesintigrateCardPopup> () as DesintigrateCardPopup).cardTransform = cardTransform;
+				}   
+			} else {
+				_uiManager.DrawPopup<WarningPopup> ("Melting is Disabled\nfor version " + Constants.CURRENT_VERSION + ".\n Thanks for helping us make this game Awesome\n-Loom Team");
+			}
 		}
     }
 }
