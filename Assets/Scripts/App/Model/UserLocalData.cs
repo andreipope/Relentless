@@ -12,6 +12,7 @@ namespace LoomNetwork.CZB.Data
         public Enumerators.Language appLanguage;
         public bool tutorial = true;
         public int lastSelectedDeckId;
+		public bool agreedTerms = false;
         public bool openedFirstPack = false;
 
         public UserLocalData()

@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 using LoomNetwork.CZB.Common;
 using TMPro;
 using DG.Tweening;
@@ -14,7 +16,7 @@ using LoomNetwork.Internal;
 
 namespace LoomNetwork.CZB
 {
-    public class CollectionPage : IUIElement
+	public class CollectionPage : IUIElement
     {
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
@@ -29,6 +31,8 @@ namespace LoomNetwork.CZB
         private Button  _buttonArrowLeft,
                         _buttonArrowRight;
 
+		private TextMeshProUGUI _cardCounter;
+
 		public List<Transform> cardPositions;
 
         public GameObject _cardCreaturePrefab,
@@ -38,7 +42,7 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI gooValueText;
 
-        private Slider _cardSetsSlider;
+		private GameObject _cardSetsIcons;
 
 		private int numPages;
 		private int currentPage;
@@ -71,7 +75,9 @@ namespace LoomNetwork.CZB
             _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
             _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
 
-            _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
+			_cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
+
+			_cardSetsIcons = _selfPage.transform.Find ("Panel_Header/Icons").gameObject;
 
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
@@ -79,11 +85,13 @@ namespace LoomNetwork.CZB
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
-            _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
+            //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
 			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
+
+
 
             _createdBoardCards = new List<BoardCard>();
 
@@ -94,7 +102,7 @@ namespace LoomNetwork.CZB
         {
             if (_selfPage.activeInHierarchy)
             {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf)
+				if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf &&  !_uiManager.GetPopup<WarningPopup>().Self.activeSelf)
                 {
                     if (!_isPopupChangedStart && _selectedBoardCard != null)
                     {
@@ -160,8 +168,10 @@ namespace LoomNetwork.CZB
             numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
-            _cardSetsSlider.value = 0;
+            //_cardSetsSlider.value = 0;
             LoadCards(0, 0);
+
+			_cardCounter.text = _dataManager.CachedCollectionData.cards.Count.ToString () + "/" + _dataManager.CachedCardsLibraryData.Cards.Count.ToString ();
         }
 
         private void ClosePopupInfo()
@@ -226,7 +236,7 @@ namespace LoomNetwork.CZB
         private void ChangeStatePopup(bool isStart)
         {
             _isPopupChangedStart = isStart;
-            _cardSetsSlider.interactable = !isStart;
+            //_cardSetsSlider.interactable = !isStart;
             _buttonBuy.interactable = !isStart;
             _buttonOpen.interactable = !isStart;
             _buttonArrowLeft.interactable = !isStart;
@@ -315,10 +325,21 @@ namespace LoomNetwork.CZB
 
             CalculateNumberOfPages();
 
-            _cardSetsSlider.value = currentSet;
+            //_cardSetsSlider.value = currentSet;
 
             LoadCards(currentPage, currentSet);
         }
+
+		private void highlightCorrectIcon () {
+			for (int i = 0; i < _cardSetsIcons.transform.childCount; i++) {
+				GameObject c = _cardSetsIcons.transform.GetChild (i).GetChild (0).gameObject;
+				if (i == currentSet) {
+					c.SetActive (true);
+				} else {
+					c.SetActive (false);
+				}
+			}
+		}
 
 
         private void CalculateNumberOfPages()
@@ -381,6 +402,8 @@ namespace LoomNetwork.CZB
 
                 _createdBoardCards.Add(boardCard);
             }
+
+			highlightCorrectIcon ();
 		}
 
 		private void OpenAlertDialog(string msg)

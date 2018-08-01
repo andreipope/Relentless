@@ -15,6 +15,10 @@ namespace LoomNetwork.CZB
         public Card card;
         public bool isActive;
         public bool isHordeItem = false;
+        public float doubleClickDelay = 0.5f;
+
+        private float _lastClickTime;
+        private int _clickCount;
 
         private void Awake()
         {
@@ -29,12 +33,32 @@ namespace LoomNetwork.CZB
                 var hit = Physics2D.Raycast(mousePos, Vector2.zero);
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
-                    if(!isHordeItem)
-                        scene.AddCardToDeck(card);
-                    else
-                        scene.RemoveCardFromDeck(card);
+                    if (_clickCount == 0 || Time.unscaledTime - _lastClickTime < doubleClickDelay)
+                    {
+                        _clickCount++;
+                        _lastClickTime = Time.unscaledTime;
+                    } else
+                    {
+                        _lastClickTime = Time.unscaledTime;
+                        _clickCount = 1;
+                    }
+
+                    if (_clickCount == 2)
+                    {
+                        DoAction();
+
+                        _lastClickTime = Time.unscaledTime;
+                        _clickCount = 0;
+                    }
                 }
             }
+        }
+
+        private void DoAction() {
+            if (!isHordeItem)
+                scene.AddCardToDeck(this, card);
+            else
+                scene.RemoveCardFromDeck(this, card);
         }
     }
 }

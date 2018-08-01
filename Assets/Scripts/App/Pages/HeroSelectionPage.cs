@@ -196,6 +196,9 @@ namespace LoomNetwork.CZB
             private Image _overlordPicture;
             private Image _elementIcon;
 
+			private Sprite _overlordPictureSprite;
+			private Sprite _overlordPictureGraySprite;
+
             private Sprite _elementIconSprite;
 
             private TextMeshProUGUI _overlordNameText,
@@ -226,6 +229,8 @@ namespace LoomNetwork.CZB
                 _overlordDescriptionText = _rightContentObject.transform.Find("Text_LongDescription").GetComponent<TextMeshProUGUI>();
                 _overlordShortDescription = _rightContentObject.transform.Find("Text_ShortDescription").GetComponent<TextMeshProUGUI>();
 
+				_overlordPictureSprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" + SelfHero.element.ToLower() + "_hero");
+				_overlordPictureGraySprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" + SelfHero.element.ToLower() + "_hero_bnw_wide");
                 _overlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" + SelfHero.element.ToLower() + "_hero");
                 _elementIconSprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
 
@@ -253,6 +258,8 @@ namespace LoomNetwork.CZB
 
                 IsSelected = true;
 
+				_overlordPicture.sprite = _overlordPictureSprite;
+
                 string[] split = SelfHero.name.Split(',');
 
                 _overlordNameText.text = split[0];
@@ -279,6 +286,8 @@ namespace LoomNetwork.CZB
                     return;
 
                 IsSelected = false;
+
+				_overlordPicture.sprite = _overlordPictureGraySprite;
 
                 _highlightObject.SetActive(false);
                 _grayoutObject.SetActive(true);

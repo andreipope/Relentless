@@ -20,10 +20,11 @@ public class ActionData
 
     public void ParseData()
     {
-        foreach (var action in actions)
-        {
-            action.ParseData();
-        }
+		if (actions != null) {
+			foreach (var action in actions) {
+				action.ParseData ();
+			}
+		}
     }
 
     public List<ActionItem> GetActions(Enumerators.AIActionType[] types)

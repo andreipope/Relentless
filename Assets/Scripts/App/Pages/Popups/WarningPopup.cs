@@ -36,7 +36,7 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             //_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
             _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<MenuButtonNoGlow>();

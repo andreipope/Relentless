@@ -12,6 +12,9 @@ namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
+		private bool disableShop = true;
+		private bool disablePacks = true;
+
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private IPlayerManager _playerManager;
@@ -104,12 +107,22 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AppState.SHOP:
                     {
-                        _uiManager.SetPage<ShopPage>();
+						if (!disableShop) {
+							_uiManager.SetPage<ShopPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     {
-                        _uiManager.SetPage<PackOpenerPage>();
+						if (!disablePacks) {
+							_uiManager.SetPage<PackOpenerPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Opening Packs is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.GAMEPLAY:
