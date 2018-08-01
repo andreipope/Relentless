@@ -10,6 +10,7 @@ using UnityEngine.Rendering;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
@@ -558,7 +559,7 @@ namespace LoomNetwork.CZB
             CalculateVisibility();
         }
 
-        public void RemoveCardFromDeck(Card card)
+        public void RemoveCardFromDeck(DeckBuilderCard sender, Card card)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
             var collectionCardData = _collectionData.GetCardData(card.name);
@@ -581,9 +582,30 @@ namespace LoomNetwork.CZB
             {
                 boardCard.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(boardCard.libraryCard), boardCard.cardsAmountDeckEditing);
             }
+
+            // Animated moving card
+            if (sender != null)
+            {
+                BoardCard animatedCard = CreateCard(card, sender.transform.position);
+                animatedCard.gameObject.GetComponent<SortingGroup>().sortingOrder++;
+
+                Vector3 animatedCardDestination = new Vector3(0, -10f);
+                foreach (BoardCard createdArmyCard in _createdArmyCards)
+                {
+                    if (createdArmyCard.gameObject.activeSelf && createdArmyCard.libraryCard == card)
+                    {
+                        animatedCardDestination = createdArmyCard.transform.position;
+                        break;
+                    }
+                }
+
+                Sequence animatedCardSequence = DOTween.Sequence();
+                animatedCardSequence.Append(animatedCard.transform.DOMove(animatedCardDestination, .3f));
+                animatedCardSequence.AppendCallback(() => Object.Destroy(animatedCard.gameObject));
+            }
         }
 
-        public void AddCardToDeck(Card card)
+        public void AddCardToDeck(DeckBuilderCard sender, Card card)
         {
             if (_currentDeck == null)
             {
@@ -653,6 +675,27 @@ namespace LoomNetwork.CZB
             _currentDeck.AddCard(card.name);
 
             foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardName == foundItem.libraryCard.name).amount);
+
+            // Animated moving card
+            if (sender != null)
+            {
+                BoardCard animatedCard = CreateCard(card, sender.transform.position);
+                animatedCard.gameObject.GetComponent<SortingGroup>().sortingOrder++;
+
+                Vector3 animatedCardDestination = new Vector3(0, 10f);
+                foreach (BoardCard createdHordeCard in _createdHordeCards)
+                {
+                    if (createdHordeCard.gameObject.activeSelf && createdHordeCard.libraryCard == card)
+                    {
+                        animatedCardDestination = createdHordeCard.transform.position;
+                        break;
+                    }
+                }
+
+                Sequence animatedCardSequence = DOTween.Sequence();
+                animatedCardSequence.Append(animatedCard.transform.DOMove(animatedCardDestination, .3f));
+                animatedCardSequence.AppendCallback(() => Object.Destroy(animatedCard.gameObject));
+            }
         }
 
         public uint GetMaxCopiesValue(Card card)
@@ -668,8 +711,8 @@ namespace LoomNetwork.CZB
                 maxCopies = Constants.CARD_ITEM_MAX_COPIES;
                 return maxCopies;
             }
-            
-           
+
+
             switch (rank)
             {
                 case Enumerators.CardRank.MINION:
@@ -683,7 +726,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
-                    break;                    
+                    break;
             }
             return maxCopies;
         }
