@@ -114,7 +114,7 @@ namespace LoomNetwork.CZB
                 //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 //additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                if (attackingUnit.AttackAsFirst && !attackedUnit.AttackAsFirst)
+                if ((!attackingUnit.AttackAsFirst && !attackedUnit.AttackAsFirst) || attackingUnit.AttackAsFirst)
                 {
                     damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
@@ -181,21 +181,22 @@ namespace LoomNetwork.CZB
                         if (damageAttacking > 0)
                             attackedUnit.ThrowEventGotDamage(attackingUnit);
                     }
-                }               
-            }
+                }
 
-            attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+                attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
-            new object[]
-            {
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
+                new object[]
+                {
                 attackingUnit,
                 damageAttacking,
                 attackedUnit,
                 damageAttacked
-            }));
+                }));
+            }
         }
 
         public void AttackUnitBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
