@@ -13,8 +13,6 @@ namespace LoomNetwork.CZB
 {
     public class MainMenuPage : IUIElement
     {
-		private bool disableShop = true;
-		private bool disablePacks = true;
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
@@ -166,11 +164,7 @@ namespace LoomNetwork.CZB
         private void BuyButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-			if (!disableShop) {
-				_stateManager.ChangeAppState (Common.Enumerators.AppState.SHOP);
-			} else {
-				OpenAlertDialog ("Shop\nis Disabled");
-			}
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
@@ -182,11 +176,7 @@ namespace LoomNetwork.CZB
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-			if (!disablePacks) {
-				_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
-			} else {
-				OpenAlertDialog ("Opening Packs\nis Disabled");
-			}
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)
