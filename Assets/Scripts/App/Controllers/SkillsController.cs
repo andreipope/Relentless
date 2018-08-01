@@ -218,21 +218,23 @@ namespace LoomNetwork.CZB
             switch (skill.skill.overlordSkill)
             {
                 case Enumerators.OverlordSkill.ICE_BOLT:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
+                    break;
                 case Enumerators.OverlordSkill.FREEZE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
                     break;
-                case Enumerators.OverlordSkill.TOXIC_POWER:
                 case Enumerators.OverlordSkill.POISON_DART:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
                     break;
                 case Enumerators.OverlordSkill.FIREBALL:
                 case Enumerators.OverlordSkill.FIRE_BOLT:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
-                case Enumerators.OverlordSkill.MEND:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.MEND:
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.PUSH:
@@ -298,7 +300,7 @@ namespace LoomNetwork.CZB
                 var unit = target as BoardUnit;
                 unit.Stun(Enumerators.StunType.FREEZE, skill.value);
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
                 {
@@ -312,7 +314,7 @@ namespace LoomNetwork.CZB
 
                 player.Stun(Enumerators.StunType.FREEZE, skill.value);
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), player.AvatarObject.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
                 {
@@ -325,7 +327,7 @@ namespace LoomNetwork.CZB
         private void PoisonDartAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"), target);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
         }
 
         private void FireballAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -342,7 +344,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealPlayerBySkill(owner, skill, player);
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player.AvatarObject.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
             }
             else
             {
@@ -350,7 +352,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealUnitBySkill(owner, skill, unit);
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
             }
         }
 
@@ -358,7 +360,7 @@ namespace LoomNetwork.CZB
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/GreenHealVFX"), owner.AvatarObject.transform.position - Vector3.right * 2.3f);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), owner);
         }
 
         private void AttackWithModifiers(Player owner, BoardSkill boardSkill, HeroSkill skill, object target, Enumerators.SetType attackType, Enumerators.SetType setType)
@@ -389,7 +391,7 @@ namespace LoomNetwork.CZB
             WorkingCard returningCard = targetUnit.Card;
             Vector3 unitPosition = targetUnit.transform.position;
 
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unitPosition);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), targetUnit);
 
             _timerManager.AddTimer((x) =>
             {
@@ -445,7 +447,7 @@ namespace LoomNetwork.CZB
                 unit.BuffedHP += skill.value;
                 unit.CurrentHP += skill.value;
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/GreenHealVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), unit);
             }
         }
 
@@ -457,7 +459,7 @@ namespace LoomNetwork.CZB
 
                 unit.SetAsFeralUnit();
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/GreenHealVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
             }
         }
 
@@ -473,7 +475,7 @@ namespace LoomNetwork.CZB
                 unit.BuffedDamage += skill.attack;
                 unit.CurrentDamage += skill.attack;
 
-                //_vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Toxic_ImpactVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
             }
         }
 
@@ -491,15 +493,18 @@ namespace LoomNetwork.CZB
                     unit.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"), unit);
             }
         }
 
         private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             owner.HP = Mathf.Clamp(owner.HP + skill.value, 0, owner.MaxCurrentHP);
-
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/GreenHealVFX"), owner.AvatarObject.transform.position);
+            //TODO: remove this empty gameobject logic
+            Transform transform = new GameObject().transform;
+            transform.position = owner.AvatarObject.transform.position;
+            transform.position += Vector3.up * 2;
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
         }
 
         #endregion

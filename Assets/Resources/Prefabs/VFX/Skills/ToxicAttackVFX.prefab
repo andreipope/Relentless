@@ -56,7 +56,6 @@ GameObject:
   - component: {fileID: 198595086349184760}
   - component: {fileID: 199321973467466780}
   - component: {fileID: 108930681706349430}
-  - component: {fileID: 114831843580003202}
   m_Layer: 8
   m_Name: ToxicAttackVFX
   m_TagString: Untagged
@@ -203,19 +202,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114831843580003202
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1255014774328118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f54e17d705a2894d88787e24190ebfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  life: 0.3
-  killAfterLife: 1
 --- !u!198 &198224604828526930
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -276,7 +262,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -2110071835
+  randomSeed: -932218453
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3646,7 +3632,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1697094476
+  randomSeed: -198559571
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -6968,7 +6954,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: 401506628
+  randomSeed: 1382636
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -13708,7 +13694,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -371210852
+  randomSeed: 1898860877
   InitialModule:
     serializedVersion: 3
     enabled: 1

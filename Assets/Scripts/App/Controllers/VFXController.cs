@@ -185,12 +185,15 @@ namespace LoomNetwork.CZB
 
             Vector3 position = Vector3.zero;
 
+
             if (target is BoardUnit)
                 position = (target as BoardUnit).transform.position;
-            else if(target is Player)
+            else if (target is Player)
                 position = (target as Player).AvatarObject.transform.position;
+            else if (target is Transform)
+                position = (target as Transform).transform.position;
 
-            var particle = MonoBehaviour.Instantiate(prefab);
+         var particle = MonoBehaviour.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
