@@ -110,7 +110,7 @@ namespace LoomNetwork.CZB
 						if (!disableShop) {
 							_uiManager.SetPage<ShopPage> ();
 						} else {
-						_uiManager.DrawPopup<WarningPopup> ("Shop is Disabled\nfor version " + Constants.CURRENT_VERSION + ".\n Thanks for helping us make this game Awesome\n-Loom Team");
+						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
 							return;
 						}
                     }
@@ -120,7 +120,7 @@ namespace LoomNetwork.CZB
 						if (!disablePacks) {
 							_uiManager.SetPage<PackOpenerPage> ();
 						} else {
-						_uiManager.DrawPopup<WarningPopup> ("Opening Packs is Disabled\nfor version " + Constants.CURRENT_VERSION + ".\n Thanks for helping us make this game Awesome\n-Loom Team");
+						_uiManager.DrawPopup<WarningPopup> ("The Opening Packs is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
 							return;
 						}
                     }
