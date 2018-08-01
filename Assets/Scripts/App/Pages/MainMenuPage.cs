@@ -19,6 +19,7 @@ namespace LoomNetwork.CZB
 		private IAppStateManager _stateManager;
 		private ISoundManager _soundManager;
         private IPlayerManager _playerManager;
+		private IDataManager _dataManager;
 
         private GameObject _selfPage;
 
@@ -48,6 +49,7 @@ namespace LoomNetwork.CZB
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+			_dataManager = GameClient.Get<IDataManager> ();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -116,6 +118,9 @@ namespace LoomNetwork.CZB
             _buttonMusic.SetStatus(!_soundManager.MusicMuted);
             _buttonSFX.SetStatus(!_soundManager.SfxMuted);
 
+			if (!_dataManager.CachedUserLocalData.agreedTerms) {
+				_uiManager.DrawPopup<TermsPopup> ();
+			}
 
             /*if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
                 _logoAnimator.SetBool("LogoShow", true);
@@ -164,7 +169,7 @@ namespace LoomNetwork.CZB
         private void BuyButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
@@ -176,7 +181,7 @@ namespace LoomNetwork.CZB
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)

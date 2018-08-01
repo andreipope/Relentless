@@ -31,12 +31,12 @@ namespace LoomNetwork.CZB
                             _winTutorialPackObject,
                             _winPackObject;
 
-        private MenuButtonNoGlow _buttonOk;
+        private Button _buttonOk;
 
-        private Image _selectHeroImage;
+        private SpriteRenderer _selectHeroSpriteRenderer;
 
 
-        private TextMeshProUGUI _nameHeroText;
+        //private TextMeshProUGUI _nameHeroText;
 
         public void Init()
         {
@@ -46,12 +46,12 @@ namespace LoomNetwork.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroImage = _selfPage.transform.Find("Panel_Objects/Image_SelectHero").GetComponent<Image>();
-            _winTutorialPackObject = _selfPage.transform.Find("Panel_Objects/WinPackTutorial").gameObject;
-            _winPackObject = _selfPage.transform.Find("Panel_Objects/WinPack").gameObject;
-            _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
-            _buttonOk = _selfPage.transform.Find("Panel_Objects/Button_Ok").GetComponent<MenuButtonNoGlow>();
-            _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
+            _selectHeroSpriteRenderer = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero").GetComponent<SpriteRenderer>();
+            _winTutorialPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPackTutorial").gameObject;
+            _winPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPack").gameObject;
+            //_nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
+            _buttonOk = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
             Hide();
         }
@@ -81,9 +81,9 @@ namespace LoomNetwork.CZB
             int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks[GameClient.Get<IGameplayManager>().PlayerDeckId].heroId;
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
-            _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + heroName.ToLower());
+            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
-            _nameHeroText.text = heroName + " Hero";
+            //_nameHeroText.text = heroName + " Hero";
 
             _winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
 			_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
@@ -105,7 +105,7 @@ namespace LoomNetwork.CZB
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
-            _uiManager.HidePopup<YouWonPopup>();          
+            _uiManager.HidePopup<YouWonPopup>();
         }
 
     }

@@ -69,6 +69,7 @@ namespace LoomNetwork.CZB
             _uiPopups.Add(new ConfirmationPopup());
             _uiPopups.Add(new LoadingGameplayPopup());
             _uiPopups.Add(new PlayerOrderPopup());
+            _uiPopups.Add (new TermsPopup ());
 
             foreach (var popup in _uiPopups)
                 popup.Init();
