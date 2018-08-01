@@ -411,6 +411,7 @@ namespace LoomNetwork.CZB
                 var boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
                 var boardCreature = boardUnitElement.gameObject;
                 boardCreature.tag = Constants.TAG_OPPONENT_OWNED;
+                boardCreature.transform.position = Vector3.zero;
                 boardUnitElement.ownerPlayer = card.owner;
 
                 boardUnitElement.SetObjectInfo(workingCard, cardSetName);

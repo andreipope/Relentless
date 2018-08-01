@@ -77,7 +77,6 @@ namespace LoomNetwork.CZB
             _vfxObject.transform.position = Utilites.CastVFXPosition(abilityUnitOwner.transform.position);
             targetPosition = Utilites.CastVFXPosition(targetPosition);
             _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-            Debug.Log(targetPosition);
             ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
 
             if(!autoDestroy)

@@ -360,7 +360,12 @@ namespace LoomNetwork.CZB
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), owner);
+            //TODO: remove this empty gameobject logic
+            Transform transform = new GameObject().transform;
+            transform.position = owner.AvatarObject.transform.position;
+            transform.position -= Vector3.up * 3.3f;
+
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
         }
 
         private void AttackWithModifiers(Player owner, BoardSkill boardSkill, HeroSkill skill, object target, Enumerators.SetType attackType, Enumerators.SetType setType)
@@ -447,7 +452,12 @@ namespace LoomNetwork.CZB
                 unit.BuffedHP += skill.value;
                 unit.CurrentHP += skill.value;
 
-                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), unit);
+                //TODO: remove this empty gameobject logic
+                Transform transform = new GameObject().transform;
+                transform.position = unit.transform.position;
+                transform.position -= Vector3.up * 3.3f;
+
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
             }
         }
 

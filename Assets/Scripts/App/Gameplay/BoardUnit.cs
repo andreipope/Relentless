@@ -567,6 +567,8 @@ namespace LoomNetwork.CZB
                 }
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
+                if (ownerPlayer.IsLocalPlayer)
+                    _shieldSprite.transform.position = new Vector3(_shieldSprite.transform.position.x, _shieldSprite.transform.position.y, -_shieldSprite.transform.position.z);
 
                 if (!_ignoreArrivalEndEvents)
                 {
