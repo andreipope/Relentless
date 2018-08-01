@@ -282,7 +282,7 @@ namespace LoomNetwork.CZB
             LoadCards(0, 0);
         }
 
-        
+
 
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
@@ -379,7 +379,7 @@ namespace LoomNetwork.CZB
                     CalculateNumberOfPages();
 
                     _currentElementPage = _numElementPages - 1;
-                  
+
                     _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
                 }
             }
