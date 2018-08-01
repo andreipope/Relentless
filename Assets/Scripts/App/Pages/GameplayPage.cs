@@ -264,10 +264,12 @@ namespace LoomNetwork.CZB
             }
 
 
+            /*
             _timerManager.AddTimer((x) =>
             {
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { currentPlayerHero, currentOpponentHero });
             }, null, 4f);
+            */
 
             _isPlayerInited = true;
         }
