@@ -1,8 +1,7 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
@@ -53,7 +52,7 @@ namespace LoomNetwork.CZB
 
             _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
             _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
-            _creditsListScroll.enabled = false;
+            //_creditsListScroll.enabled = false;
             _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
@@ -72,7 +71,7 @@ namespace LoomNetwork.CZB
         {
             if(_isActive)
             {
-                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 100;
+                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 125;
             }
         }
 
@@ -97,17 +96,17 @@ namespace LoomNetwork.CZB
         private void FillCredits()
         {
             CreditView credit = null;
-            CrediSubSectiontView section = null;
+            CreditSubSectionView section = null;
             for (int i = 0; i < _dataManager.CachedCreditsData.creditsInfo.Count; i++)
             {
                 if (i > 0)
-                    section = new CrediSubSectiontView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
+                    section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
                 for (int j = 0; j < _dataManager.CachedCreditsData.creditsInfo[i].credits.Count; j++)
                 {
                     credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].FullName, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].Post);
                     _credits.Add(credit);
                 }
-                    
+
             }
         }
 
@@ -137,18 +136,22 @@ namespace LoomNetwork.CZB
             fullNameText = selfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
             postText = selfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
             fullNameText.text = name;
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                fullNameText.gameObject.SetActive(false);
+            }
             postText.text = post;
         }
     }
 
-    public class CrediSubSectiontView
+    public class CreditSubSectionView
     {
         public GameObject selfObject;
         public TextMeshProUGUI sectionText;
 
-        public CrediSubSectiontView() { }
+        public CreditSubSectionView() { }
 
-        public CrediSubSectiontView(GameObject prefab, Transform parent, string section)
+        public CreditSubSectionView(GameObject prefab, Transform parent, string section)
         {
             selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
             sectionText = selfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();
