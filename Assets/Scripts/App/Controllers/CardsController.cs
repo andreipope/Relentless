@@ -69,6 +69,12 @@ namespace LoomNetwork.CZB
             opponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
+            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+        }
+
+        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        {
+            CardDistribution = false;
         }
 
         public void Dispose()
@@ -134,7 +140,7 @@ namespace LoomNetwork.CZB
                     card.HandBoardCard.enabled = true;
                 }, null, 2f);
             }
-
+            
             if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
             {
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
@@ -142,11 +148,11 @@ namespace LoomNetwork.CZB
             }
 
             CardDistribution = false;
-
+            
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck = _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
-
+                 /*
                 if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
                 {
                     AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
@@ -158,14 +164,16 @@ namespace LoomNetwork.CZB
                     AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
                     AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
                     AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-                }
+                }    
                 _timerManager.AddTimer((x) =>
                 {
                     _battlegroundController.StartGameplayTurns();
-                }, null, 2f);
+                }, null, 2f); */
+
+                _battlegroundController.StartGameplayTurns();
             }
             else
-                _battlegroundController.StartGameplayTurns();
+                _battlegroundController.StartGameplayTurns();    
         }
 
         private void DirectlyEndCardDistribution(object[] param)
@@ -217,7 +225,12 @@ namespace LoomNetwork.CZB
         public void AddCardToHand(Player player, WorkingCard card = null)
         {
             if (card == null)
+            {
+                if (player.CardsInDeck.Count == 0)
+                    return;
+
                 card = player.CardsInDeck[0];
+            }
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
@@ -492,7 +505,7 @@ namespace LoomNetwork.CZB
 
                     player.BoardCards.Insert(indexOfCard, boardUnit);
 
-                    //_ranksController.UpdateRanksBuffs(player);
+                    _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
 
                     _timerManager.AddTimer((creat) =>
                     {
@@ -589,7 +602,7 @@ namespace LoomNetwork.CZB
                     RemoveOpponentCard(new object[] { randomCard });
 
                     _timerManager.AddTimer((x) => { completePlayCardCallback?.Invoke(card, target); }, null, 0.1f);
-                    _ranksController.UpdateRanksBuffs(player);
+                    _ranksController.UpdateRanksBuffs(player, card.libraryCard.cardRank);
                     _timerManager.AddTimer((x) =>
                     {
                         player.GraveyardCardsCount++;

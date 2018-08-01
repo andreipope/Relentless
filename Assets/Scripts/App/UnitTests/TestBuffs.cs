@@ -14,7 +14,7 @@ public class TestBuffs : MonoBehaviour
             {
                 item.ClearBuffs();
                 item.BuffUnit(LoomNetwork.CZB.Common.Enumerators.BuffType.RUSH);
-                item.ApplyBuffs();
+                //item.ApplyBuffs();
             }
         }
 
@@ -23,7 +23,7 @@ public class TestBuffs : MonoBehaviour
             foreach (var item in GameClient.Get<IGameplayManager>().CurrentPlayer.BoardCards)
             {
                 item.ClearBuffs();
-                item.ApplyBuffs();
+                //item.ApplyBuffs();
             }
         }
     }

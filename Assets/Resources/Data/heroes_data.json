@@ -5,297 +5,174 @@
       "icon": "icon",
       "name": "Brakuus, The Guardian",
       "element": "EARTH",
-	  "experience": 0,
-	  "level": 0,
-	  "skills" : [
-		{
-			"title": "Deffence",
-			"skillType": 4,
-			"skillTargetType": [ 0 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		},
-		{
-			"title": "Deffence",
-			"skillType": 4,
-			"skillTargetType": [ 0 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		},
-		{
-			"title": "Deffence",
-			"skillType": 4,
-			"skillTargetType": [ 0 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		},
-		{
-			"title": "Deffence",
-			"skillType": 4,
-			"skillTargetType": [ 0 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		},
-		{
-			"title": "Deffence",
-			"skillType": 4,
-			"skillTargetType": [ 0 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 2
-		}
-	  ],
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "HARDEN",
+          "skill": "HARDEN",
+          "skillType": 4,
+          "skillTargetType": [ 0 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 2
+        },
+        {
+          "title": "STONESKIN",
+          "skill": "STONE_SKIN",
+          "skillType": 4,
+          "skillTargetType": [ 0 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        }
+      ],
       "primarySkill": 0,
-	  "secondarySkill": 1
+      "secondarySkill": 1
     },
     {
       "heroId": 1,
       "icon": "icon",
       "name": "Razu, The Fire Daemon",
       "element": "FIRE",
-	  "experience": 0,
-	  "level": 0,
-	  "skills" : [
-		{
-			"title": "Fireball",
-			"skillType": 2,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		},
-		{
-			"title": "Fireball",
-			"skillType": 2,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		},
-		{
-			"title": "Fireball",
-			"skillType": 2,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		},
-		{
-			"title": "Fireball",
-			"skillType": 2,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		},
-		{
-			"title": "Fireball",
-			"skillType": 2,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		}
-	  ],
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Fire Bolt",
+          "skill": "FIRE_BOLT",
+          "skillType": 2,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        },
+        {
+          "title": "Fireball",
+          "skill": "RABIES",
+          "skillType": 2,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        }
+      ],
       "primarySkill": 0,
-	  "secondarySkill": 1
+      "secondarySkill": 1
     },
     {
       "heroId": 2,
       "icon": "icon",
       "name": "Vash'Kala, The Ancient One",
       "element": "WATER",
-	  "experience": 0,
-	  "level": 0,
-	  "skills" : [
-		  {
-			"title": "Freeze target for 1 turn",
-			"skillType": 0,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Freeze target for 1 turn",
-			"skillType": 0,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Freeze target for 1 turn",
-			"skillType": 0,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Freeze target for 1 turn",
-			"skillType": 0,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Freeze target for 1 turn",
-			"skillType": 0,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  }
-	  ],
-      "primarySkill": 1, 
-	  "secondarySkill": 3
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Freeze target for 1 turn",
+          "skill": "FREEZE",
+          "skillType": 0,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        },
+        {
+          "title": "Ice bolt",
+          "skill": "ICE_BOLT",
+          "skillType": 0,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 2
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 3,
       "icon": "icon",
       "name": "Kalile, Tempest of Storms",
       "element": "AIR",
-	  "experience": 0,
-	  "level": 0,
-	  "skills" : [
-		  {
-			"title": "Return Zombie",
-			"skillType": 5,
-			"skillTargetType": [ 2, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 0
-		  },
-		  {
-			"title": "Return Zombie",
-			"skillType": 5,
-			"skillTargetType": [ 2, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 0
-		  },
-		  {
-			"title": "Return Zombie",
-			"skillType": 5,
-			"skillTargetType": [ 2, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 0
-		  },
-		  {
-			"title": "Return Zombie",
-			"skillType": 5,
-			"skillTargetType": [ 2, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 0
-		  },
-		  {
-			"title": "Return Zombie",
-			"skillType": 5,
-			"skillTargetType": [ 2, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 0
-		  }
-
-	  ],
-      "primarySkill": 3,
-	  "secondarySkill": 2
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "PUSH",
+          "skill": "PUSH",
+          "skillType": 5,
+          "skillTargetType": [ 2, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 0
+        },
+        {
+          "title": "DRAW",
+          "skill": "DRAW",
+          "skillType": 5,
+          "skillTargetType": [ 2, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 0
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 4,
       "icon": "icon",
       "name": "Mhalik, Lord of Pestilence",
       "element": "TOXIC",
-	  "experience": 0,
-	  "level": 0,
-	  "skills" : [
-		  {
-			"title": "Toxic Damage",
-			"skillType": 1,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Toxic Damage",
-			"skillType": 1,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Toxic Damage",
-			"skillType": 1,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Toxic Damage",
-			"skillType": 1,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  },
-		  {
-			"title": "Toxic Damage",
-			"skillType": 1,
-			"skillTargetType": [ 1, 2, 4, 5 ],
-			"cost": 2,
-			"cooldown": 2,
-			"initialCooldown":2,
-			"value": 1
-		  }
-	  ],
-      "primarySkill": 3,
-	  "secondarySkill": 2
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "POISON DART",
+          "skill": "POISON_DART",
+          "skillType": 1,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1
+        },
+        {
+          "title": "Toxic power",
+          "skill": "TOXIC_POWER",
+          "skillType": 1,
+          "skillTargetType": [ 1, 2, 4, 5 ],
+          "cost": 2,
+          "cooldown": 2,
+          "initialCooldown": 2,
+          "value": 1,
+          "attack": 2
+
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 5,
       "icon": "icon",
       "name": "Valash, Natures Warden",
       "element": "LIFE",
-	  "experience": 0,
-	  "level": 0,
+      "experience": 0,
+      "level": 0,
       "skills": [
         {
-          "title": "Life Defense",
+          "title": "HEALING TOUCH",
+          "skill": "HEALING_TOUCH",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -303,35 +180,9 @@
           "initialCooldown": 2,
           "value": 1
         },
-		{
-          "title": "Life Defense",
-          "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
-          "cost": 2,
-          "cooldown": 2,
-          "initialCooldown": 2,
-          "value": 1
-        },
-		{
-          "title": "Life Defense",
-          "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
-          "cost": 2,
-          "cooldown": 2,
-          "initialCooldown": 2,
-          "value": 1
-        },
-		{
-          "title": "Life Defense",
-          "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
-          "cost": 2,
-          "cooldown": 2,
-          "initialCooldown": 2,
-          "value": 1
-        },
-		{
-          "title": "Life Defense",
+        {
+          "title": "MEND",
+          "skill": "MEND",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -340,8 +191,8 @@
           "value": 1
         }
       ],
-      "primarySkill": 0, 
-	  "secondarySkill": 0
+      "primarySkill": 0,
+      "secondarySkill": 1
     }
   ]
 }

@@ -7,6 +7,7 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -177,42 +178,28 @@ namespace LoomNetwork.CZB
         }
 
 
-        public void CreateVFX(GameObject prefab, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        public void CreateVFX(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
-            var particle = MonoBehaviour.Instantiate(prefab);
+            if (prefab == null)
+                return;
+
+            Vector3 position = Vector3.zero;
+
+
+            if (target is BoardUnit)
+                position = (target as BoardUnit).transform.position;
+            else if (target is Player)
+                position = (target as Player).AvatarObject.transform.position;
+            else if (target is Transform)
+                position = (target as Transform).transform.position;
+
+         var particle = MonoBehaviour.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-        public void CreateSkillVFX(Enumerators.SetType setType, Vector3 from, object target, Action<object> callbackComplete)
+        public void CreateSkillVFX(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
         {
-            GameObject prefab = null;
-
-            switch (setType)
-            {
-                case Enumerators.SetType.WATER:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
-                    break;
-                case Enumerators.SetType.TOXIC:
-                    //prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
-                    prefab = new GameObject();
-                    break;
-                case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
-                    break;
-                case Enumerators.SetType.LIFE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
-                    break;
-                case Enumerators.SetType.EARTH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
-                    break;
-                case Enumerators.SetType.AIR:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
-                    break;
-                default:
-                    break;
-            }
- 
             if (target == null)
                 return;
 
@@ -239,6 +226,23 @@ namespace LoomNetwork.CZB
                         MonoBehaviour.Destroy(particleSystem);
                 });
             }
+        }
+
+        public void SpawnGotDamageEffect(object onObject, int count)
+        {
+            Transform target = null;
+
+            if (onObject is BoardUnit)
+                target = (onObject as BoardUnit).transform;
+            else if (onObject is Player)
+                target = (onObject as Player).AvatarObject.transform;
+
+            var effect = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));
+            effect.transform.Find("Text_Info").GetComponent<TextMeshPro>().text = count.ToString();
+            effect.transform.SetParent(target, false);
+            effect.transform.localPosition = Vector3.zero;
+
+            MonoBehaviour.Destroy(effect, 2.5f);
         }
     }
 }

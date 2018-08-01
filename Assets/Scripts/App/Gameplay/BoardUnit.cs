@@ -24,11 +24,11 @@ namespace LoomNetwork.CZB
         public event Action<object, int> UnitOnAttackEvent;
         public event Action<object> UnitGotDamageEvent;
 
-        public event Action<int, int> UnitHPChangedEvent;
-        public event Action<int, int> UnitDamageChangedEvent;
+        public event Action UnitHPChangedEvent;
+        public event Action UnitDamageChangedEvent;
 
-        private Action<int, int> damageChangedDelegate;
-        private Action<int, int> healthChangedDelegate;
+        private Action damageChangedDelegate;
+        private Action healthChangedDelegate;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
@@ -42,6 +42,7 @@ namespace LoomNetwork.CZB
         private ActionsQueueController _actionsQueueController;
         private VFXController _vfxController;
         private RanksController _ranksController;
+        private AbilitiesController _abilitiesController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -67,9 +68,6 @@ namespace LoomNetwork.CZB
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private Enumerators.CardType _initialUnitType;
-
- //       private int _buffedDamage;
-        private int _buffedHealth;
 
         private int _currentDamage;
         private int _currentHealth;
@@ -118,6 +116,7 @@ namespace LoomNetwork.CZB
         public int MaxCurrentDamage { get { return initialDamage + BuffedDamage; } }
         public int BuffedDamage { get; set; }
 
+
         public int CurrentDamage
         {
             get
@@ -129,9 +128,8 @@ namespace LoomNetwork.CZB
                 var oldDamage = _currentDamage;
 
                 _currentDamage = Mathf.Clamp(value, 0, 99999);
-
                 if (oldDamage != _currentDamage)
-                    UnitDamageChangedEvent?.Invoke(oldDamage, _currentDamage);
+                    UnitDamageChangedEvent?.Invoke();
             }
         }
 
@@ -149,9 +147,8 @@ namespace LoomNetwork.CZB
                 var oldHealth = _currentHealth;
 
                 _currentHealth = Mathf.Clamp(value, 0, 99);
-
-                if (oldHealth != _buffedHealth)
-                    UnitHPChangedEvent?.Invoke(oldHealth, _buffedHealth);
+                if (oldHealth != _currentHealth)
+                    UnitHPChangedEvent?.Invoke();
             }
         }
 
@@ -186,7 +183,11 @@ namespace LoomNetwork.CZB
         public int HPDebuffUntillEndOfTurn { get; private set; }
 
         public bool IsAttacking { get; private set; }
-        
+
+        public bool IsAllAbilitiesResolvedAtStart { get; set; }
+
+        public bool IsReanimated { get; set; }
+        public bool AttackAsFirst { get; set; }
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
@@ -205,6 +206,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -263,6 +265,8 @@ namespace LoomNetwork.CZB
             IsCreatedThisTurn = true;
 
             UnitStatus = Enumerators.UnitStatusType.NONE;
+
+            IsAllAbilitiesResolvedAtStart = true;
         }
 
         public bool IsHeavyUnit()
@@ -298,11 +302,13 @@ namespace LoomNetwork.CZB
 
         public void DebuffDamage(int value)
         {
+            Debug.Log(value);
+
             if (value == 0)
                 return;
-
             DamageDebuffUntillEndOfTurn = value;
-            CurrentDamage -= DamageDebuffUntillEndOfTurn;
+            CurrentDamage += DamageDebuffUntillEndOfTurn;
+            Debug.Log(DamageDebuffUntillEndOfTurn);
         }
 
         public void DebuffHealth(int value)
@@ -318,7 +324,7 @@ namespace LoomNetwork.CZB
         {
             if (!_readyForBuffs)
                 return;
-
+            UnityEngine.Debug.Log(Card.libraryCard.name + " Buffed " + type);
             _buffsOnUnit.Add(type);
         }
 
@@ -385,46 +391,53 @@ namespace LoomNetwork.CZB
             UpdateFrameByType();
         }
 
-        public void ApplyBuffs()
+        public void ApplyBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
                 return;
 
-            foreach (var buff in _buffsOnUnit)
-            {
-                switch(buff)
-                {
-                    case Enumerators.BuffType.ATTACK:
-                        AdditionalAttack++;
-                        break;
-                    case Enumerators.BuffType.DAMAGE:
-                        AdditionalDamage++;
-                        break;
-                    case Enumerators.BuffType.DEFENCE:
-                        AdditionalDefense++;
-                        break;
-                    case Enumerators.BuffType.FREEZE:
-                        TakeFreezeToAttacked = true;
-                        break;
-                    case Enumerators.BuffType.HEAVY:
-                        HasBuffHeavy = true;
-                        break;
-                    case Enumerators.BuffType.RUSH:
-                        HasBuffRush = true;
-                       // IsPlayable = !_attacked;
-                        _sleepingParticles.gameObject.SetActive(false);
-                        break;
-                    case Enumerators.BuffType.SHIELD:
-                        HasBuffShield = true;
-                        break;
-                    default: break;
-                }
-            }
 
-            BuffedHP += AdditionalDefense;
-            CurrentHP += AdditionalDefense;
-            BuffedDamage += AdditionalAttack;
-            CurrentDamage += AdditionalAttack;
+            //foreach (var buff in _buffsOnUnit)
+            //{
+            switch (type)
+            {
+                case Enumerators.BuffType.ATTACK:
+                    CurrentDamage++;
+                    break;
+                case Enumerators.BuffType.DAMAGE:
+                    //AdditionalDamage++;
+                    break;
+                case Enumerators.BuffType.DEFENCE:
+                    CurrentHP++;
+                    break;
+                case Enumerators.BuffType.FREEZE:
+                    TakeFreezeToAttacked = true;
+                    break;
+                case Enumerators.BuffType.HEAVY:
+                    HasBuffHeavy = true;
+                    break;
+                case Enumerators.BuffType.RUSH:
+                    HasBuffRush = true;
+                    // IsPlayable = !_attacked;
+                    _sleepingParticles.gameObject.SetActive(false);
+                    break;
+                case Enumerators.BuffType.SHIELD:
+                    HasBuffShield = true;
+                    break;
+                case Enumerators.BuffType.REANIMATE_UNIT:
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this, Card.libraryCard, ownerPlayer);
+                    break;
+                case Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK, this, Card.libraryCard, ownerPlayer);
+                    break;
+                default: break;
+            }
+            //}
+
+            //BuffedHP += AdditionalDefense;
+            //CurrentHP += BuffedHP;
+            //BuffedDamage += AdditionalAttack;
+            //CurrentDamage += BuffedDamage;
 
             UpdateFrameByType();
         }
@@ -469,6 +482,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = true;
                 hasFeral = false;
+                _initialUnitType = Enumerators.CardType.HEAVY;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -491,6 +505,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = false;
                 hasFeral = false;
+                _initialUnitType = Enumerators.CardType.WALKER;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -513,6 +528,7 @@ namespace LoomNetwork.CZB
             {
                 hasHeavy = false;
                 hasFeral = true;
+                _initialUnitType = Enumerators.CardType.FERAL;
             }
 
             _ignoreArrivalEndEvents = true;
@@ -524,6 +540,13 @@ namespace LoomNetwork.CZB
             unitAnimator.SetTrigger("Active");
 
             _readyForBuffs = true;
+        }
+
+        public void BuffShield()
+        {
+            BuffUnit(Enumerators.BuffType.SHIELD);
+            HasBuffShield = true;
+            _shieldSprite.SetActive(true);
         }
 
         public void ArrivalAnimationEventHandler(string param)
@@ -544,6 +567,8 @@ namespace LoomNetwork.CZB
                 }
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
+                if (ownerPlayer.IsLocalPlayer)
+                    _shieldSprite.transform.position = new Vector3(_shieldSprite.transform.position.x, _shieldSprite.transform.position.y, -_shieldSprite.transform.position.z);
 
                 if (!_ignoreArrivalEndEvents)
                 {
@@ -651,14 +676,14 @@ namespace LoomNetwork.CZB
             _attackText.text = CurrentDamage.ToString();
             _healthText.text = CurrentHP.ToString();
 
-            damageChangedDelegate = (oldValue, newValue) =>
+            damageChangedDelegate = () =>
             {
                 UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage);
             };
 
             UnitDamageChangedEvent += damageChangedDelegate;
 
-            healthChangedDelegate = (oldValue, newValue) =>
+            healthChangedDelegate = () =>
             {
                 UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
                 CheckOnDie();
@@ -699,7 +724,7 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if (CurrentHP <= 0 && !_dead)
+            if (CurrentHP <= 0 && !_dead && IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 Die();
         }
 
@@ -722,7 +747,7 @@ namespace LoomNetwork.CZB
                 AttackedThisTurn = false;
 
                 IsCreatedThisTurn = false;
-            }
+            } 
         }
 
         public void OnEndTurn()
@@ -766,7 +791,6 @@ namespace LoomNetwork.CZB
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            Debug.Log("WAS STUNED");
             if (turns > _stunTurns)
                 _stunTurns = turns;
             IsPlayable = false;
@@ -812,7 +836,7 @@ namespace LoomNetwork.CZB
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            if (CurrentDamage <= 0)
+            if (!UnitCanBeUsable())
                 enabled = false;
 
             _glowSprite.enabled = enabled;
@@ -944,7 +968,7 @@ namespace LoomNetwork.CZB
 
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, CurrentDamage);
 
-                        _battleController.AttackPlayerByCreature(this, targetPlayer);
+                        _battleController.AttackPlayerByUnit(this, targetPlayer);
                     }),
                     () =>
                     {
@@ -975,7 +999,7 @@ namespace LoomNetwork.CZB
                     {
                         _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, CurrentDamage);
 
-                        _battleController.AttackCreatureByCreature(this, targetCard, AdditionalDamage);
+                        _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
                         if(TakeFreezeToAttacked)
                             targetCard.Stun(Enumerators.StunType.FREEZE, 1);
@@ -993,7 +1017,7 @@ namespace LoomNetwork.CZB
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHP <= 0 || CurrentDamage <= 0)
+            if (CurrentHP <= 0 || CurrentDamage <= 0 || IsStun)
                 return false;
 
             if (IsPlayable)

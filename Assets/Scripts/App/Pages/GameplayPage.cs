@@ -58,8 +58,6 @@ namespace LoomNetwork.CZB
 
         private GameObject _zippingVFX;
 
-        private int _graveYardTopOffset;
-
         private int _currentDeckId;
 
         private bool _isPlayerInited = false;
@@ -123,9 +121,6 @@ namespace LoomNetwork.CZB
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
-
-
-            _graveYardTopOffset = 0;
 
             _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
 
@@ -273,8 +268,11 @@ namespace LoomNetwork.CZB
 
         public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
-            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            var skillPrim = hero.skills[hero.primarySkill];
+            var skillSecond = hero.skills[hero.secondarySkill];
+
+            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement.ToString() +"_" + skillPrim.skill.ToLower());
+            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement.ToString() + "_" + skillSecond.skill.ToLower());
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;

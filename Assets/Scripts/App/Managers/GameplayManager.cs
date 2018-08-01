@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
 
             if (!_dataManager.CachedUserLocalData.tutorial)
             {
-                Constants.ZOMBIES_SOUND_VOLUME *= 3;
+                Constants.ZOMBIES_SOUND_VOLUME = 0.25f;
                 Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
             }
         }

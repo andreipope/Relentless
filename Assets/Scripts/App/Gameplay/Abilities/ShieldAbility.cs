@@ -47,8 +47,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            abilityUnitOwner.BuffUnit(Enumerators.BuffType.SHIELD);
-            abilityUnitOwner.UpdateFrameByType();
+            abilityUnitOwner.BuffShield();
         }
     }
 }

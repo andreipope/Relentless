@@ -61,17 +61,19 @@ namespace LoomNetwork.CZB.Helpers
             return data.Replace(LINE_BREAK, "\n");
         }
 
-        public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null)
+        public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
         {
-            parent.layer = layer;
-
+            if(!parentIgnored)
+                parent.layer = layer;
+            bool ignored;
             for (int i = 0; i < parent.transform.childCount; i++)
             {
-                if (ignoreNames == null || !ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name))
+                ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
+                if ((ignoreNames == null || !ignored) && !parentIgnored)
                     parent.transform.GetChild(i).gameObject.layer = layer;
 
                 if (parent.transform.GetChild(i).childCount > 0)
-                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames);
+                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames, ignored);
             }
         }
 

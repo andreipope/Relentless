@@ -44,9 +44,9 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage);
         }
 
-        protected override void UnitHPChangedEventHandler(int oldHP, int newHP)
+        protected override void UnitHPChangedEventHandler()
         {
-            base.UnitHPChangedEventHandler(oldHP, newHP);
+            base.UnitHPChangedEventHandler();
 
             if (abilityCallType != Enumerators.AbilityCallType.GOT_DAMAGE)
                 return;

@@ -8,18 +8,26 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-    public class DevourZombieAndCombineStatsAbility : AbilityBase
+    public class DevourZombiesAndCombineStatsAbility : AbilityBase
     {
-        public DevourZombieAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int value;
+
+        public DevourZombiesAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-          
+            value = ability.value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
+            if (abilityCallType != Enumerators.AbilityCallType.AT_START)
+                return;
+
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            if (value == -1)
+                DevourAllAllyZombies();
         }
 
         public override void Update() { }
@@ -30,26 +38,35 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
+            if (_isAbilityResolved && value > 0)
+                DevourTargetZombie(targetUnit);
         }
 
-        public override void Action(object info = null)
+        private void DevourAllAllyZombies()
         {
-            base.Action(info);
+            var units = playerCallerOfAbility.BoardCards;
 
-            int health = targetUnit.initialHP;
-            int damage = targetUnit.initialDamage;
+            foreach (var unit in units)
+                DevourTargetZombie(unit);
+        }
 
-            _battlegroundController.DestroyBoardUnit(targetUnit);
+        private void DevourTargetZombie(BoardUnit unit)
+        {
+            if (unit.Equals(abilityUnitOwner))
+                return;
+
+            int health = unit.initialHP;
+            int damage = unit.initialDamage;
+
+            _battlegroundController.DestroyBoardUnit(unit);
 
             abilityUnitOwner.BuffedHP += health;
             abilityUnitOwner.CurrentHP += health;
 
             abilityUnitOwner.BuffedDamage += damage;
             abilityUnitOwner.CurrentDamage += damage;
+
+            CreateVFX(unit.transform.position, true, 5f);
         }
     }
 }

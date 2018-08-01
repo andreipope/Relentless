@@ -42,6 +42,7 @@ namespace LoomNetwork.CZB
 
         protected Vector3 positionOnHand;
         protected Vector3 rotationOnHand;
+        protected Vector3 scaleOnHand;
 
         protected AnimationEventTriggering animationEventTriggering;
         protected OnBehaviourHandler behaviourHandler;
@@ -188,13 +189,14 @@ namespace LoomNetwork.CZB
             amountText.text = amount.ToString();
         }
 
-        public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation)
+        public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation, Vector3 scale)
         {
             if (isPreview)
                 return;
 
             positionOnHand = position;
             rotationOnHand = rotation;
+            scaleOnHand = scale;
 
             if (!isNewCard)
             {
@@ -215,7 +217,7 @@ namespace LoomNetwork.CZB
         {
             if (isPreview)
                 return;
-
+            transform.DOScale(scaleOnHand, 0.5f);
             transform.DOMove(positionOnHand, 0.5f);
             transform.DORotate(rotationOnHand, 0.5f);
         }

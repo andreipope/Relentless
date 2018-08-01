@@ -205,7 +205,7 @@
             CHANGE_STAT_OF_CREATURES_BY_TYPE,
             ATTACK_NUMBER_OF_TIMES_PER_TURN,
             DRAW_CARD,
-            DEVOUR_ZOMBIE_AND_COMBINE_STATS,
+            DEVOUR_ZOMBIES_AND_COMBINE_STATS,
             DESTROY_UNIT_BY_TYPE,
             LOWER_COST_OF_CARD_IN_HAND,
             OVERFLOW_GOO,
@@ -213,7 +213,7 @@
             DISABLE_NEXT_TURN_GOO,
             RAGE,
             FREEZE_UNITS,
-            TAKE_DAMAGE_RANDOM_UNIT,
+            TAKE_DAMAGE_RANDOM_ENEMY,
             TAKE_CONTROL_ENEMY_UNIT,
             SHILED,
             DESTROY_FROZEN_UNIT,
@@ -239,7 +239,10 @@
             UNIT_WEAPON,
             TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
             DELAYED_LOSE_HEAVY_GAIN_ATTACK,
-            DELAYED_GAIN_ATTACK
+            DELAYED_GAIN_ATTACK,
+            REANIMATE_UNIT,
+            PRIORITY_ATTACK,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK
         }
 
         public enum AbilityActivityType
@@ -258,7 +261,7 @@
             AT_DEATH,
             GOT_DAMAGE,
             AT_DEFENCE,
-            TURN_END
+            TURN_END,
         }
 
         public enum StatType
@@ -359,10 +362,15 @@
             PLAY_UNIT_CARD,
             PLAY_SPELL_CARD,
             STUN_CREATURE_BY_ABILITY,
-            STUN_CREATURE_BY_SKILL,
+            STUN_UNIT_BY_SKILL,
             SUMMON_UNIT_CARD,
             RETURN_TO_HAND_CARD_ABILITY,
-            RETURN_TO_HAND_CARD_SKILL
+            RETURN_TO_HAND_CARD_SKILL,
+
+            DRAW_CARD_SKILL,
+            STUN_PLAYER_BY_SKILL,
+
+            REANIMATE_UNIT_BY_ABILITY
         }
 
 
@@ -432,7 +440,9 @@
             ATTACK,
             FREEZE,
             DAMAGE,
-            HEAL_ALLY
+            HEAL_ALLY,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            REANIMATE_UNIT
         }
 
         public enum BuffActivityType
@@ -462,6 +472,54 @@
 
             FREEZE,
             DISABLE,
+        }
+
+        public enum OverlordSkill
+        {
+            NONE,
+
+            // AIR
+            PUSH,
+            DRAW,
+            WIND_SHIELD,
+            WIND_WALL,
+            RETREAT,
+
+            // EARTH
+            HARDEN,
+            STONE_SKIN,
+            FORTIFY,
+            PHALANX,
+            FORTRESS,
+
+            // FIRE
+            FIRE_BOLT,
+            RABIES,
+            FIREBALL,
+            MASS_RABIES,
+            METEOR_SHOWER,
+
+            // LIFE
+            HEALING_TOUCH,
+            MEND,
+            RESSURECT,
+            ENHANCE,
+            REANIMATE,
+
+            // TOXIC
+            POISON_DART,
+            TOXIC_POWER,
+            BREAKOUT,
+            INFECT,
+            EPIDEMIC,
+
+            // WATER
+            FREEZE,
+            ICE_BOLT,
+            ICE_WALL,
+            SHATTER,
+            BLIZZARD
+       
         }
     }
 }

@@ -323,21 +323,18 @@
           "kind": "CREATURE",
           "name": "Cerberus",
           "cost": 12,
-          "description": "<b>Feral, Flash x2</b>",
+          "description": "<b>Attack:</b> Deal damage before receiving damage",
           "flavorText": "If you look closely enough, the one in the middle is the most good looking... er, least bad looking",
           "picture": "Cerberus",
-          "damage": 8,
+          "damage": 7,
           "health": 8,
-          "type": "FERAL",
+          "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "ATTACK_NUMBER_OF_TIMES_PER_TURN",
+              "type": "PRIORITY_ATTACK",
               "activityType": "passive",
-              "callType": "PERMANENT",
-              "targetType": "player_card",
-              "value": 3,
-              "attackInfo": "ONLY_DIFFERENT"
+              "callType": "at_start"
             }
           ],
           "cardViewInfo": {
@@ -480,7 +477,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "at_attack",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
@@ -717,11 +714,11 @@
           "kind": "CREATURE",
           "name": "Tzunamy",
           "cost": 11,
-          "description": "<b>Entry:</b> 2 damage to all enemies, then Freeze them",
+          "description": "<b>Entry:</b> 2 damage to all enemies, then <b>Freeze</b> them",
           "flavorText": "Bringing a nice, big shower, cleaning an entire city at a time.",
           "picture": "Tzunamy",
           "damage": 6,
-          "health": 7,
+          "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
@@ -737,7 +734,7 @@
           ],
           "cardViewInfo": {
             "position": {
-              "x": -0.1,
+              "x": -0.17,
               "y": 0,
               "z": 0
             },
@@ -880,7 +877,7 @@
           "kind": "CREATURE",
           "name": "Pit",
           "cost": 1,
-          "description": "<b>Heavy</b>, at the end of the turn add <b>Tainted Goo</b> to your Hand ",
+          "description": "<b>Heavy, Entry</b>: Add a Tainted Goo to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 0,
@@ -1028,7 +1025,7 @@
           "kind": "CREATURE",
           "name": "Crater",
           "cost": 3,
-          "description": "<b>Heavy.</b> at the end of the turn add <b>Corrupted Goo</b> to your Hand",
+          "description": "<b>Heavy, Entry</b>: Add a Corrupted Goo to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 1,
@@ -1197,10 +1194,10 @@
           "kind": "CREATURE",
           "name": "Gaea",
           "cost": 11,
-          "description": "<b>Entry</b>: All ally Earth zombies in play get +1/+2",
+          "description": "<b>Entry</b>: All ally Earth zombies in play get +1 Atk",
           "flavorText": "",
           "picture": "Gaea",
-          "damage": 5,
+          "damage": 4,
           "health": 7,
           "type": "WALKER",
           "rank": "GENERAL",
@@ -1210,7 +1207,7 @@
               "activityType": "passive",
               "callType": "at_start",
               "setType": "EARTH",
-              "health": 2,
+              "health": 0,
               "damage": 1
             }
           ],
@@ -1262,7 +1259,7 @@
           "kind": "CREATURE",
           "name": "Wheezy",
           "cost": 2,
-          "description": "<b>Entry:</b> A random card in your hand gets -1 cost",
+          "description": "<b>Entry:</b> A random card in your Hand gets -1 cost",
           "flavorText": "Ommmmmmmmmmm",
           "picture": "Wheezy",
           "damage": 1,
@@ -1307,7 +1304,6 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "setType": "none"
             }
           ],
@@ -1329,7 +1325,7 @@
           "kind": "CREATURE",
           "name": "Fumez",
           "cost": 2,
-          "description": "<b>Entry:</b> add <b>Tainted Goo</b> to your Hand",
+          "description": "<b>Entry:</b> Add a <b>Tainted Goo</b> to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 1,
@@ -1413,6 +1409,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "at_start",
+              "targetType": "player_card|opponent_card|player|opponent",
               "value": 1
             }
           ],
@@ -1459,7 +1456,7 @@
           "kind": "CREATURE",
           "name": "Gaz",
           "cost": 4,
-          "description": "<b>Guard, Entry:</b> add <b>Corrupted Goo</b> to your Hand",
+          "description": "<b>Guard, Entry:</b> Add a <b>Corrupted Goo</b> to your Hand",
           "flavorText": "",
           "picture": "embryo",
           "damage": 2,
@@ -1499,7 +1496,7 @@
           "kind": "CREATURE",
           "name": "Draft",
           "cost": 5,
-          "description": "<b>Entry:</b> Draw a card from enemy deck",
+          "description": "<b>Entry:</b> Draw a card from the enemy deck",
           "flavorText": "",
           "picture": "Draft",
           "damage": 4,
@@ -1557,10 +1554,10 @@
           "kind": "CREATURE",
           "name": "Zeuz",
           "cost": 11,
-          "description": "<b>Entry:</b> 3 damage to all enemy zombies",
+          "description": "<b>Entry:</b> 3 damage to all enemies",
           "flavorText": "From mount Zolimpus in the sky - fear Ze-might of ZeuZ!",
           "picture": "Zeuz",
-          "damage": 6,
+          "damage": 5,
           "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
@@ -1569,7 +1566,7 @@
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
               "callType": "at_start",
-              "targetType": "OPPONENT_ALL_CARDS",
+              "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "value": 3,
               "effectType": "MASSIVE_LIGHTNING"
             }
@@ -1645,7 +1642,6 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "at_start",
-              "targetType": "none",
               "setType": "life"
             }
           ],
@@ -1847,7 +1843,7 @@
           "kind": "CREATURE",
           "name": "Keeper",
           "cost": 3,
-          "description": "<b>Entry:</b> Summon a 1/1 <b>Feral</b> zombie",
+          "description": "<b>Entry:</b> Summon a 1/1 <b>Feral</b> zombie minion",
           "flavorText": "Down boy! Down!",
           "picture": "embryo",
           "damage": 1,
@@ -1859,7 +1855,7 @@
               "type": "SUMMON",
               "activityType": "passive",
               "callType": "AT_START",
-              "targetType": "opponent",
+              "targetType": "player",
               "count": 1,
               "name": "Zombie Feral"
             }
@@ -1923,7 +1919,7 @@
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 11,
-          "description": "<b>Turn:</b> summon a 2/2 zombie minion",
+          "description": "<b>Turn:</b> Summon two 1/1 zombie minions",
           "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
           "picture": "Shammann",
           "damage": 5,
@@ -1936,8 +1932,8 @@
               "activityType": "passive",
               "callType": "TURN_START",
               "targetType": "player",
-              "count": 1,
-              "name": "Zombie 2/2"
+              "count": 2,
+              "name": "Zombie 1/1"
             }
           ],
           "cardViewInfo": {
@@ -1967,10 +1963,10 @@
           "rank": "GENERAL",
           "abilities": [
             {
-              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "AT_START",
-              "targetType": "PLAYER_CARD"
+              "value": -1
             }
           ],
           "cardViewInfo": {
@@ -1991,11 +1987,11 @@
           "kind": "CREATURE",
           "name": "Yggdrazil",
           "cost": 11,
-          "description": "<b>Entry</b>: Revive all Life zombie that died this match",
+          "description": "<b>Entry</b>: Reanimate all Life zombies that died this match",
           "flavorText": "Can you still call it Tree of Life if it revives the dead? Can you even revive the dead? I'm so confuse...",
           "picture": "Yggdrazil",
           "damage": 4,
-          "health": 4,
+          "health": 5,
           "type": "WALKER",
           "rank": "GENERAL",
           "abilities": [
@@ -2044,7 +2040,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "earth",
               "value": 1
             }
           ],
@@ -2101,7 +2097,7 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "TAKE_DAMAGE_RANDOM_UNIT",
+              "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
               "callType": "AT_START",
               "targetType": "OPPONENT_CARD",
@@ -2210,10 +2206,11 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "DEVOUR_ZOMBIE_AND_COMBINE_STATS",
+              "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "AT_START",
-              "targetType": "PLAYER_CARD"
+              "targetType": "PLAYER_CARD",
+              "value": 1
             }
           ],
           "cardViewInfo": {
@@ -2307,7 +2304,7 @@
           "kind": "CREATURE",
           "name": "Ectoplasm",
           "cost": 1,
-          "description": "<b>Entry</b>: Lose 1 Goo",
+          "description": "<b>Entry</b>: Lose 1 goo",
           "flavorText": "",
           "picture": "Ectoplasm",
           "damage": 2,
@@ -2607,7 +2604,7 @@
               "activityType": "passive",
               "callType": "at_start",
               "targetType": "opponent_all_cards",
-              "value": -3
+              "damage": -3
             }
           ],
           "cardViewInfo": {

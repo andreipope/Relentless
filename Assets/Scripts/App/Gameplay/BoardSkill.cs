@@ -91,8 +91,15 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
                 return;
 
-            if (IsSkillReady)
-                SetHighlightingEnabled(true);
+            if (owner.IsStunned)
+            {
+                BlockSkill();
+            }
+            else
+            {
+                if (IsSkillReady)
+                    SetHighlightingEnabled(true);
+            }
 
             _cooldownText.text = _cooldown.ToString();
         }
@@ -135,6 +142,12 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void BlockSkill()
+        {
+            _usedInThisTurn = true;
+            SetHighlightingEnabled(false);
+        }
+
         //public void OnTriggerEnter2D(Collider2D collider)
         //{
         //    if (collider.transform.parent != null)
@@ -166,18 +179,31 @@ namespace LoomNetwork.CZB
 
             if (owner.IsLocalPlayer)
             {
-                if (owner.SelfHero.heroElement != Enumerators.SetType.EARTH)
+                if (skill.overlordSkill != Enumerators.OverlordSkill.DRAW &&
+                    skill.overlordSkill != Enumerators.OverlordSkill.HARDEN &&
+                    skill.overlordSkill != Enumerators.OverlordSkill.MEND)
                 {
                     fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
-                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
-                {
-                    Enumerators.SkillTargetType.PLAYER,
-                    Enumerators.SkillTargetType.OPPONENT,
-                    Enumerators.SkillTargetType.OPPONENT_CARD,
-                    Enumerators.SkillTargetType.PLAYER_CARD
-                };
-                    //skill.skillTargetType;
+                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>();
+                    switch (skill.overlordSkill)
+                    {
+                        case Enumerators.OverlordSkill.PUSH:
+                        case Enumerators.OverlordSkill.STONE_SKIN:
+                        case Enumerators.OverlordSkill.HARDEN:
+                        case Enumerators.OverlordSkill.RABIES:
+                        case Enumerators.OverlordSkill.TOXIC_POWER:
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER_CARD);
+
+                            break;
+                        default:
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT);
+                            break;
+                    }
 
                     //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
                         fightTargetingArrow.ignoreHeavy = true;
@@ -208,7 +234,9 @@ namespace LoomNetwork.CZB
             if (owner.IsLocalPlayer && _tutorialManager.IsTutorial)
                 _tutorialManager.ActivateSelectTarget();
 
-            if (owner.SelfHero.heroElement == Enumerators.SetType.EARTH)
+            if (skill.overlordSkill == Enumerators.OverlordSkill.DRAW ||
+                skill.overlordSkill == Enumerators.OverlordSkill.HARDEN ||
+                skill.overlordSkill == Enumerators.OverlordSkill.MEND)
                 _skillsController.DoSkillAction(this, owner);
             else
             {
@@ -244,7 +272,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 31)
                 return true;
 
-            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn)
                 return false;
 
             return true;

@@ -111,7 +111,7 @@ namespace LoomNetwork.CZB
                         }
 
                         playerDeck.Add(card.cardName);
-                        // playerDeck.Add("Fire-Maw");               
+                      //   playerDeck.Add("Pushhh");               
                     }
                 }
             }
@@ -336,7 +336,7 @@ namespace LoomNetwork.CZB
         // ai step 3
         private void UsePlayerSkills()
         { 
-            if (_gameplayManager.IsTutorial)
+            if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
 
             ThreadTool.Instance.RunInMainThread(() =>
@@ -411,6 +411,7 @@ namespace LoomNetwork.CZB
                 var boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
                 var boardCreature = boardUnitElement.gameObject;
                 boardCreature.tag = Constants.TAG_OPPONENT_OWNED;
+                boardCreature.transform.position = Vector3.zero;
                 boardUnitElement.ownerPlayer = card.owner;
 
                 boardUnitElement.SetObjectInfo(workingCard, cardSetName);
@@ -810,15 +811,18 @@ namespace LoomNetwork.CZB
             Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
 
 #region find target
-            switch (skill.owner.SelfHero.heroElement)
+            switch (skill.skill.overlordSkill)
             {
-                case Enumerators.SetType.EARTH:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.DRAW:
                     {
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
                         target = _gameplayManager.OpponentPlayer;
                     }
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                case Enumerators.OverlordSkill.MEND:              
                     {
                         target = _gameplayManager.OpponentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -832,9 +836,11 @@ namespace LoomNetwork.CZB
                         }
                     }
                     break;
-                case Enumerators.SetType.FIRE:
-                case Enumerators.SetType.TOXIC:
-                case Enumerators.SetType.WATER:
+                case Enumerators.OverlordSkill.POISON_DART:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                case Enumerators.OverlordSkill.FREEZE:
+                case Enumerators.OverlordSkill.FIRE_BOLT:                    
                     {
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -848,7 +854,8 @@ namespace LoomNetwork.CZB
                         }
                     }
                     break;
-                case Enumerators.SetType.AIR:
+                case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.OverlordSkill.RABIES:
                     {
                         var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 

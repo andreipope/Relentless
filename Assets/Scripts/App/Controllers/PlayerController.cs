@@ -88,7 +88,7 @@ namespace LoomNetwork.CZB
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Burrrnn");
-                playerDeck.Add("Azuraz"); 
+                playerDeck.Add("Azuraz");
             }
             else
             {
@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                             // playerDeck.Add("Maelstrom");
+                            //  playerDeck.Add("Cynderman");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -319,6 +319,21 @@ namespace LoomNetwork.CZB
                     // _selectedBoardUnit = null;
                 }
             }
+        }
+
+
+        public void HideCardPreview()
+        {
+            if (!_startedOnClickDelay)
+                return;
+
+            StopHandTimer();
+            _battlegroundController.DestroyCardPreview();
+
+            _delayTimerOfClick = 0f;
+            _startedOnClickDelay = false;
+            _topmostBoardCard = null;
+            _selectedBoardUnit = null;
         }
 
         public void HandCardPreview(object[] param)

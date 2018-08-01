@@ -81,6 +81,9 @@ public class HandBoardCard
                 _canceledPlay = true;
                 OnMouseUp(null);
             }
+
+            if (Vector3.Distance(initialPos, transform.position) > 1f)
+                _playerController.HideCardPreview();
         }
     }
 

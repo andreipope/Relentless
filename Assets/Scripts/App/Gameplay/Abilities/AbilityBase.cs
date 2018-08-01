@@ -319,7 +319,7 @@ namespace LoomNetwork.CZB
 			
 		}
 
-        protected virtual void UnitHPChangedEventHandler(int oldHP, int newHP)
+        protected virtual void UnitHPChangedEventHandler()
         {
 
         }

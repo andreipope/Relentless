@@ -28,6 +28,8 @@ namespace LoomNetwork.CZB
 
         private GameObject _playerObject;
 
+        private GameObject _freezedHighlightObject;
+
         private IDataManager _dataManager;
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
@@ -79,6 +81,8 @@ namespace LoomNetwork.CZB
 
         public string nickname;
 
+        public int initialHP;
+
         public int currentGooModificator;
 
         public int GooOnCurrentTurn
@@ -102,9 +106,9 @@ namespace LoomNetwork.CZB
             set
             {
                 var oldGoo = _goo;
-                _goo = value;
+              // _goo = value;
 
-                //_goo = Mathf.Clamp(_goo, 0, Constants.MAXIMUM_PLAYER_goo);
+                _goo = Mathf.Clamp(value, 0,999999);
 
                 PlayerGooChangedEvent?.Invoke(_goo);
             }
@@ -151,6 +155,10 @@ namespace LoomNetwork.CZB
 
         public bool IsStunned { get; private set; }
 
+    
+        public int BuffedHP { get; set; }
+        public int MaxCurrentHP { get { return initialHP + BuffedHP; } }
+
 
         public Player(GameObject playerObject, bool isOpponent)
         {
@@ -188,6 +196,8 @@ namespace LoomNetwork.CZB
             deckId = _gameplayManager.PlayerDeckId;
 
             _health = Constants.DEFAULT_PLAYER_HP;
+            initialHP = _health;
+            BuffedHP = 0;
             _goo = Constants.DEFAULT_PLAYER_GOO;
 
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
@@ -201,6 +211,7 @@ namespace LoomNetwork.CZB
             _deathAnimamtor = playerObject.transform.Find("HeroDeath").GetComponent<Animator>();
             _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
+            _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject; 
 
             _avatarAnimator.enabled = false;
             _deathAnimamtor.enabled = false;
@@ -234,7 +245,11 @@ namespace LoomNetwork.CZB
                     _turnsLeftToFreeFromStun--;
 
                     if (_turnsLeftToFreeFromStun <= 0)
+                    {
                         IsStunned = false;
+
+                        _freezedHighlightObject.SetActive(false);
+                    }
                 }
 
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
@@ -267,7 +282,6 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 cardObject = _cardsController.AddCardToHand(card, silent);
-
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else
@@ -374,11 +388,10 @@ namespace LoomNetwork.CZB
 
         public void SetFirstHand(bool isTutorial = false)
         {
-            for (int i = 0; i < CardsInDeck.Count; i++)
+            if (isTutorial)
+                return;
+            for (int i = 0; i < Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME; i++)
             {
-                if (i >= Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME || (isTutorial))
-                    break;
-
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 else
@@ -421,8 +434,12 @@ namespace LoomNetwork.CZB
         {
             //todo implement logic
 
+            _freezedHighlightObject.SetActive(true);
             IsStunned = true;
             _turnsLeftToFreeFromStun = turnsCount;
+
+            _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
+            _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
 
         }
 

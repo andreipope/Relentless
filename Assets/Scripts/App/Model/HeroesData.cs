@@ -20,10 +20,12 @@ namespace LoomNetwork.CZB.Data
         [JsonIgnore]
         public List<Hero> Heroes
         {
-            get {
+            get
+            {
                 if (!_casted)
                     CastData();
-                return heroes; }
+                return heroes;
+            }
         }
 
         public HeroesData()
@@ -36,9 +38,10 @@ namespace LoomNetwork.CZB.Data
             foreach (var item in heroes)
             {
                 item.heroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.element);
+                item.CastSkills();
                 item.ValidateSkillLocking();
             }
-            _casted = true;           
+            _casted = true;
         }
     }
 
@@ -64,25 +67,43 @@ namespace LoomNetwork.CZB.Data
         public void ValidateSkillLocking()
         {
             int skillId = level % 4;
-            for(int i = 0; i < skillId; i++)
+            for (int i = 0; i < skillId; i++)
                 skills[i].unlocked = true;
+        }
+
+        public void CastSkills()
+        {
+            foreach (var skill in skills)
+                skill.CastData();
         }
     }
 
     public class HeroSkill
     {
         public string title;
+        public string skill;
         public List<Enumerators.SkillTargetType> skillTargetType;
         public int cooldown;
         public int initialCooldown;
         public int value;
 
+        public int attack;
+        public int health;
+
         [JsonIgnore]
         public bool unlocked;
+        [JsonIgnore]
+        public Enumerators.OverlordSkill overlordSkill;
 
         public HeroSkill()
         {
+          
+        }
 
+        public void CastData()
+        {
+            if (!string.IsNullOrEmpty(skill))
+                overlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(skill);
         }
     }
 }

@@ -139,6 +139,7 @@ namespace LoomNetwork.CZB
 
         public void StartTutorial()
         {
+            _currentStep = 0;
             _isBubbleShow = true;
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
@@ -162,7 +163,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager.HidePopup<TutorialPopup>();
             _tutorialStarted = false;
-            _currentStep = 0;
         }
 
         public void Update()
