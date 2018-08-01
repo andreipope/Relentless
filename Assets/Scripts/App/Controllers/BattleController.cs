@@ -128,9 +128,8 @@ namespace LoomNetwork.CZB
 
                     _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
 
-
-                    if (damageAttacking > 0)
-                        attackedUnit.ThrowEventGotDamage(attackingUnit);
+                    // if (damageAttacking > 0)
+                    attackedUnit.ThrowEventGotDamage(attackingUnit);
 
                     damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
@@ -144,8 +143,21 @@ namespace LoomNetwork.CZB
 
                     _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
 
-                    if (damageAttacking > 0)
-                        attackedUnit.ThrowEventGotDamage(attackingUnit);
+                    //  if (damageAttacked > 0)
+                    attackingUnit.ThrowEventGotDamage(attackedUnit);
+
+
+                    attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
+                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked);
+
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
+new object[]
+{
+                attackingUnit,
+                damageAttacking,
+                attackedUnit,
+                damageAttacked
+}));
                 }
                 else if (attackedUnit.AttackAsFirst)
                 {
@@ -161,8 +173,10 @@ namespace LoomNetwork.CZB
 
                     _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
 
-                    if (damageAttacking > 0)
-                        attackedUnit.ThrowEventGotDamage(attackingUnit);
+                    // if (damageAttacked > 0)
+                    attackingUnit.ThrowEventGotDamage(attackedUnit);
+
+                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked);
 
                     if (attackingUnit.CurrentHP > 0)
                     {
@@ -178,24 +192,24 @@ namespace LoomNetwork.CZB
 
                         _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
 
-                        if (damageAttacking > 0)
-                            attackedUnit.ThrowEventGotDamage(attackingUnit);
+                        //  if (damageAttacking > 0)
+                        attackedUnit.ThrowEventGotDamage(attackingUnit);
+
+                        attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
                     }
+
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
+new object[]
+{
+                attackedUnit,
+                damageAttacked,
+                attackingUnit,
+                damageAttacking
+}));
+
                 }
 
-
-                attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
-
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
-                new object[]
-                {
-                attackingUnit,
-                damageAttacking,
-                attackedUnit,
-                damageAttacked
-                }));
             }
         }
 

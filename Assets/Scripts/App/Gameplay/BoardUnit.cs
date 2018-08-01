@@ -42,6 +42,7 @@ namespace LoomNetwork.CZB
         private ActionsQueueController _actionsQueueController;
         private VFXController _vfxController;
         private RanksController _ranksController;
+        private AbilitiesController _abilitiesController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -205,6 +206,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _vfxController = _gameplayManager.GetController<VFXController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -393,37 +395,43 @@ namespace LoomNetwork.CZB
         {
             if (!_readyForBuffs)
                 return;
-    
+
 
             //foreach (var buff in _buffsOnUnit)
             //{
-                switch(type)
-                {
-                    case Enumerators.BuffType.ATTACK:
+            switch (type)
+            {
+                case Enumerators.BuffType.ATTACK:
                     CurrentDamage++;
-                        break;
-                    case Enumerators.BuffType.DAMAGE:
-                        //AdditionalDamage++;
-                        break;
-                    case Enumerators.BuffType.DEFENCE:
+                    break;
+                case Enumerators.BuffType.DAMAGE:
+                    //AdditionalDamage++;
+                    break;
+                case Enumerators.BuffType.DEFENCE:
                     CurrentHP++;
-                        break;
-                    case Enumerators.BuffType.FREEZE:
-                        TakeFreezeToAttacked = true;
-                        break;
-                    case Enumerators.BuffType.HEAVY:
-                        HasBuffHeavy = true;
-                        break;
-                    case Enumerators.BuffType.RUSH:
-                        HasBuffRush = true;
-                       // IsPlayable = !_attacked;
-                        _sleepingParticles.gameObject.SetActive(false);
-                        break;
-                    case Enumerators.BuffType.SHIELD:
-                        HasBuffShield = true;
-                        break;
-                    default: break;
-                }
+                    break;
+                case Enumerators.BuffType.FREEZE:
+                    TakeFreezeToAttacked = true;
+                    break;
+                case Enumerators.BuffType.HEAVY:
+                    HasBuffHeavy = true;
+                    break;
+                case Enumerators.BuffType.RUSH:
+                    HasBuffRush = true;
+                    // IsPlayable = !_attacked;
+                    _sleepingParticles.gameObject.SetActive(false);
+                    break;
+                case Enumerators.BuffType.SHIELD:
+                    HasBuffShield = true;
+                    break;
+                case Enumerators.BuffType.REANIMATE_UNIT:
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this, Card.libraryCard, ownerPlayer);
+                    break;
+                case Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK, this, Card.libraryCard, ownerPlayer);
+                    break;
+                default: break;
+            }
             //}
 
             //BuffedHP += AdditionalDefense;
@@ -737,7 +745,7 @@ namespace LoomNetwork.CZB
                 AttackedThisTurn = false;
 
                 IsCreatedThisTurn = false;
-            }
+            } 
         }
 
         public void OnEndTurn()
@@ -1007,7 +1015,7 @@ namespace LoomNetwork.CZB
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHP <= 0 || CurrentDamage <= 0)
+            if (CurrentHP <= 0 || CurrentDamage <= 0 || IsStun)
                 return false;
 
             if (IsPlayable)

@@ -261,6 +261,10 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.PRIORITY_ATTACK:
                     ability = new PriorityAttackAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
+                    ability = new DestroyTargetUnitAfterAttackAbility(cardKind, abilityData);
+                    break;
+                    
                 default:
                     break;
             }
@@ -600,6 +604,39 @@ namespace LoomNetwork.CZB
         public Player GetOpponentPlayer(AbilityBase ability)
         {
             return ability.playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+        }
+
+
+        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
+        {
+            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.cardKind, target, owner, card);
+            activeAbility.ability.Activate();
+        }
+
+        private AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
+        {
+            AbilityData abilityData = null;
+
+            switch (ability)
+            {
+                case Enumerators.AbilityType.REANIMATE_UNIT:
+                    abilityData = new AbilityData();
+                    abilityData.type = "REANIMATE_UNIT";
+                    abilityData.activityType = "PASSIVE";
+                    abilityData.callType = "AT_DEATH";
+                    abilityData.ParseData();
+                    break;
+                case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
+                    abilityData = new AbilityData();
+                    abilityData.type = "DESTROY_TARGET_UNIT_AFTER_ATTACK";
+                    abilityData.activityType = "PASSIVE";
+                    abilityData.callType = "AT_ATTACK";
+                    abilityData.ParseData();
+                    break;
+                default: break;
+            }
+
+            return abilityData;
         }
 
         public class ActiveAbility

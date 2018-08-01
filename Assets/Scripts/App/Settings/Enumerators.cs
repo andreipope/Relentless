@@ -241,7 +241,8 @@
             DELAYED_LOSE_HEAVY_GAIN_ATTACK,
             DELAYED_GAIN_ATTACK,
             REANIMATE_UNIT,
-            PRIORITY_ATTACK
+            PRIORITY_ATTACK,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK
         }
 
         public enum AbilityActivityType
@@ -260,7 +261,7 @@
             AT_DEATH,
             GOT_DAMAGE,
             AT_DEFENCE,
-            TURN_END
+            TURN_END,
         }
 
         public enum StatType
@@ -439,7 +440,9 @@
             ATTACK,
             FREEZE,
             DAMAGE,
-            HEAL_ALLY
+            HEAL_ALLY,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            REANIMATE_UNIT
         }
 
         public enum BuffActivityType

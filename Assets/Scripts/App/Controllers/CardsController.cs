@@ -225,7 +225,12 @@ namespace LoomNetwork.CZB
         public void AddCardToHand(Player player, WorkingCard card = null)
         {
             if (card == null)
+            {
+                if (player.CardsInDeck.Count == 0)
+                    return;
+
                 card = player.CardsInDeck[0];
+            }
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);

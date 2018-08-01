@@ -180,6 +180,9 @@ namespace LoomNetwork.CZB
 
         public void CreateVFX(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
+            if (prefab == null)
+                return;
+
             Vector3 position = Vector3.zero;
 
             if (target is BoardUnit)
