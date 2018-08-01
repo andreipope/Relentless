@@ -68,7 +68,7 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            _ranksController.UpdateRanksBuffs();
+            //_ranksController.UpdateRanksBuffs();
         }
     }
 }

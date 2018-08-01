@@ -139,7 +139,7 @@ namespace LoomNetwork.CZB
                     cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
                     cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
 
-                    _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
+                    //_ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
 
                     cardToDestroy.transform.DOKill();
                     MonoBehaviour.Destroy(cardToDestroy.gameObject);

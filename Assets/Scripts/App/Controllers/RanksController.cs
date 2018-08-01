@@ -33,26 +33,27 @@ namespace LoomNetwork.CZB
             UpdateRanksBuffs(_gameplayManager.OpponentPlayer);
         }
 
-        public void UpdateRanksBuffs(Player player)
+        public void UpdateRanksBuffs(Player player, Enumerators.CardRank rank = Enumerators.CardRank.MINION)
         {
             //foreach (var unit in player.BoardCards)
             //    unit.ClearBuffs();
 
             for (int i = 0; i < 6; i++)
-                UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i);
+                UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i, rank);
         }
 
-        private void UpdateRanksByElements(List<BoardUnit> units, Enumerators.SetType element)
+        private void UpdateRanksByElements(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
         {
             var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == element).ToList();
-            Enumerators.CardRank highestRank = Enumerators.CardRank.MINION;
-            foreach (var unit in elementFilter)
+            Enumerators.CardRank highestRank = rank;
+            /*foreach (var unit in elementFilter)
             {
                 if ((int)unit.Card.libraryCard.cardRank > (int)highestRank)
                     highestRank = unit.Card.libraryCard.cardRank;
-            }
+            } */
 
             var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
+
             if(weakerUnitsList.Count > 0)
                 DoRankUpgrades(weakerUnitsList, element, highestRank);
         }
@@ -80,8 +81,9 @@ namespace LoomNetwork.CZB
                     LifeRankBuff(units, rank);
                     break;
             }
-            foreach (var unit in units)
-                unit.ApplyBuffs();
+           
+            //foreach (var unit in units)
+             //   unit.ApplyBuffs();
         }
 
         private void AirRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
@@ -238,16 +240,14 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < count; i++)
             {
                 if (units.Count == 0)
-                {
-                    Debug.Log("break");
                     break;
-                }
-                Debug.Log(i);
                 random = Random.Range(0, units.Count);
-                Debug.Log(random + "/" + units.Count + "/" + count);
 
-                foreach(Enumerators.BuffType buffs in  buffTypes)
-                    units[random].BuffUnit(buffs);
+                foreach (Enumerators.BuffType buff in buffTypes)
+                {
+                    //units[random].BuffUnit(buffs);
+                    units[random].ApplyBuff(buff);
+                }
                 units.RemoveAt(random);
                 
             }

@@ -389,22 +389,24 @@ namespace LoomNetwork.CZB
             UpdateFrameByType();
         }
 
-        public void ApplyBuffs()
+        public void ApplyBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
                 return;
-            foreach (var buff in _buffsOnUnit)
-            {
-                switch(buff)
+    
+
+            //foreach (var buff in _buffsOnUnit)
+            //{
+                switch(type)
                 {
                     case Enumerators.BuffType.ATTACK:
-                        AdditionalAttack++;
+                    CurrentDamage++;
                         break;
                     case Enumerators.BuffType.DAMAGE:
-                        AdditionalDamage++;
+                        //AdditionalDamage++;
                         break;
                     case Enumerators.BuffType.DEFENCE:
-                        AdditionalDefense++;
+                    CurrentHP++;
                         break;
                     case Enumerators.BuffType.FREEZE:
                         TakeFreezeToAttacked = true;
@@ -422,12 +424,12 @@ namespace LoomNetwork.CZB
                         break;
                     default: break;
                 }
-            }
+            //}
 
-            BuffedHP += AdditionalDefense;
-            CurrentHP += AdditionalDefense;
-            BuffedDamage += AdditionalAttack;
-            CurrentDamage += AdditionalAttack;
+            //BuffedHP += AdditionalDefense;
+            //CurrentHP += BuffedHP;
+            //BuffedDamage += AdditionalAttack;
+            //CurrentDamage += BuffedDamage;
 
             UpdateFrameByType();
         }

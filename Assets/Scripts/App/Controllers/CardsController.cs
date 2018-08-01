@@ -500,7 +500,7 @@ namespace LoomNetwork.CZB
 
                     player.BoardCards.Insert(indexOfCard, boardUnit);
 
-                    //_ranksController.UpdateRanksBuffs(player);
+                    _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
 
                     _timerManager.AddTimer((creat) =>
                     {
@@ -597,7 +597,7 @@ namespace LoomNetwork.CZB
                     RemoveOpponentCard(new object[] { randomCard });
 
                     _timerManager.AddTimer((x) => { completePlayCardCallback?.Invoke(card, target); }, null, 0.1f);
-                    _ranksController.UpdateRanksBuffs(player);
+                    _ranksController.UpdateRanksBuffs(player, card.libraryCard.cardRank);
                     _timerManager.AddTimer((x) =>
                     {
                         player.GraveyardCardsCount++;

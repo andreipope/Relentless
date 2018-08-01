@@ -1409,7 +1409,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "at_start",
-              "targetType": "player_card|opponent_card",
+              "targetType": "player_card|opponent_card|player|opponent",
               "value": 1
             }
           ],

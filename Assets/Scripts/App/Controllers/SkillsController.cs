@@ -417,7 +417,7 @@ namespace LoomNetwork.CZB
                 targetUnit
                 }));
 
-                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+                //_gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
             }, null, 2f);
         }
 
