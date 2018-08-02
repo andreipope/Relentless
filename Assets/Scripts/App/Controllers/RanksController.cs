@@ -38,22 +38,15 @@ namespace LoomNetwork.CZB
             //foreach (var unit in player.BoardCards)
             //    unit.ClearBuffs();
 
-            for (int i = 0; i < 6; i++)
-                UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i, rank);
+            UpdateRanksByElements(player.BoardCards, player.SelfHero.heroElement, rank);
+            //for (int i = 0; i < 6; i++)
+            //  UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i, rank);
         }
 
-        private void UpdateRanksByElements(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
+        private void UpdateRanksByElements(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank highestRank)
         {
-            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == element).ToList();
-            Enumerators.CardRank highestRank = rank;
-            /*foreach (var unit in elementFilter)
-            {
-                if ((int)unit.Card.libraryCard.cardRank > (int)highestRank)
-                    highestRank = unit.Card.libraryCard.cardRank;
-            } */
-
+            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == element && (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
             var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
-
             if(weakerUnitsList.Count > 0)
                 DoRankUpgrades(weakerUnitsList, element, highestRank);
         }

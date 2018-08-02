@@ -185,7 +185,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     _battlegroundController.StopTurn();
-                }, null, 2f);
+                }, null, 1f);
                 return;
             }
 
@@ -207,7 +207,7 @@ namespace LoomNetwork.CZB
                     }
                 }, this);
 
-            }, null, 2f);
+            }, null, 1f);
         }
         // ai step 1
         private void PlayCardsFromHand()
@@ -217,6 +217,8 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
+                    LetsThink();
+                    LetsThink();
                     LetsThink();
                 }
 
@@ -230,12 +232,12 @@ namespace LoomNetwork.CZB
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
                     LetsThink();
+                    LetsThink();
                 }
 
                 if (Constants.DEV_MODE)
                     break;
             }
-
             LetsThink();
             LetsThink();
         }
@@ -325,8 +327,6 @@ namespace LoomNetwork.CZB
                         }
                     }
                 }
-
-                LetsThink();
             }
             catch(System.Exception ex)
             {
@@ -353,6 +353,7 @@ namespace LoomNetwork.CZB
                     DoBoardSkill(_skillsController.opponentSecondarySkill);
             });
 
+            LetsThink();
             LetsThink();
         }
 

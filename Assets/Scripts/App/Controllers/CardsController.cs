@@ -505,7 +505,7 @@ namespace LoomNetwork.CZB
 
                     player.BoardCards.Insert(indexOfCard, boardUnit);
 
-                    _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
+                    //_ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
 
                     _timerManager.AddTimer((creat) =>
                     {

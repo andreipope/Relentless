@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.20.3.ver";
+        internal const string CURRENT_VERSION = "0.0.20.4.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -52,7 +52,7 @@ namespace LoomNetwork.CZB.Common
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 
-        internal static int DELAY_BETWEEN_AI_ACTIONS = 2000;
+        internal static int DELAY_BETWEEN_AI_ACTIONS = 1200;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";

@@ -567,7 +567,7 @@ namespace LoomNetwork.CZB
                 }
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
-                if (ownerPlayer.IsLocalPlayer)
+                if (!ownerPlayer.IsLocalPlayer)
                     _shieldSprite.transform.position = new Vector3(_shieldSprite.transform.position.x, _shieldSprite.transform.position.y, -_shieldSprite.transform.position.z);
 
                 if (!_ignoreArrivalEndEvents)
@@ -599,7 +599,7 @@ namespace LoomNetwork.CZB
 
 
                     _readyForBuffs = true;
-                    _ranksController.UpdateRanksBuffs(ownerPlayer);
+                    _ranksController.UpdateRanksBuffs(ownerPlayer, Card.libraryCard.cardRank);
                 }
             }
             else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
@@ -698,15 +698,27 @@ namespace LoomNetwork.CZB
                 case Enumerators.CardType.FERAL:
                     hasFeral = true;
                     IsPlayable = true;
-                    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    _timerManager.AddTimer((x)=>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    }, null, .55f, false);
+                    
                     break;
                 case Enumerators.CardType.HEAVY:
-                    _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    _timerManager.AddTimer((x) =>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    }, null, 1f, false);
+
                     hasHeavy = true;
                     break;
                 case Enumerators.CardType.WALKER:
                 default:
+                    _timerManager.AddTimer((x) =>
+                    { 
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
+                    }, null, .6f, false);
+
                     break;
             }
 
