@@ -2378,8 +2378,7 @@ MonoBehaviour:
   m_text: ZOMBIE ARMY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9ebc016c0284b448b89f1cdb88416b4c, type: 2}
-  m_sharedMaterial: {fileID: 21866595372282448, guid: 9ebc016c0284b448b89f1cdb88416b4c,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1e3b5606de2954ed482596513167bd8a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2822,7 +2821,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 8.500001
+  m_padding: 0
   m_canvasRenderer: {fileID: 222377620212961734}
   m_TextComponent: {fileID: 114453116079597540}
   m_materialReferenceIndex: 1
@@ -2932,7 +2931,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 8.500001
+  m_padding: 0
   m_canvasRenderer: {fileID: 222791556542484442}
   m_TextComponent: {fileID: 114756745598847592}
   m_materialReferenceIndex: 1

@@ -6,6 +6,8 @@
 ﻿using LoomNetwork.CZB.Common;
 using System;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 
 namespace LoomNetwork.CZB
@@ -110,7 +112,7 @@ namespace LoomNetwork.CZB
 						if (!disableShop) {
 							_uiManager.SetPage<ShopPage> ();
 						} else {
-						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
 							return;
 						}
                     }
@@ -120,7 +122,7 @@ namespace LoomNetwork.CZB
 						if (!disablePacks) {
 							_uiManager.SetPage<PackOpenerPage> ();
 						} else {
-						_uiManager.DrawPopup<WarningPopup> ("The Opening Packs is Disabled\nfor version " + Constants.CURRENT_VERSION + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+						_uiManager.DrawPopup<WarningPopup> ("The Pack Opener is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
 							return;
 						}
                     }
