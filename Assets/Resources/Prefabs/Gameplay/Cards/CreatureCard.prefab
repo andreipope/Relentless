@@ -307,7 +307,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4317305380474698}
-  - component: {fileID: 212316404963119818}
   m_Layer: 9
   m_Name: cover
   m_TagString: Untagged
@@ -506,7 +505,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4882842410358972}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4346061700400162
 Transform:
@@ -711,6 +710,7 @@ Transform:
   - {fileID: 4682805762981766}
   - {fileID: 4769598164437718}
   - {fileID: 224058354156220066}
+  - {fileID: 4317305380474698}
   m_Father: {fileID: 4518991848397230}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
