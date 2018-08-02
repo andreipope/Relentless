@@ -85,6 +85,13 @@ namespace LoomNetwork.CZB
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
+			Button[] iconButtons = _cardSetsIcons.GetComponentsInChildren<Button> ();
+			foreach (Button item in iconButtons) {
+				item.onClick.AddListener (delegate {
+					iconSetButtonClick (item);
+				});
+			}
+
             //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -155,6 +162,12 @@ namespace LoomNetwork.CZB
                 item.Dispose();
             _createdBoardCards.Clear();
         }
+
+		private void iconSetButtonClick (Button toggleObj) {
+			currentSet = toggleObj.transform.GetSiblingIndex ();
+			currentPage = 0;
+			LoadCards (currentPage, currentSet);
+		}
 
         private void InitObjects()
         {
