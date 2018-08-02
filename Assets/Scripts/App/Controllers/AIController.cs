@@ -214,6 +214,9 @@ namespace LoomNetwork.CZB
         {
             foreach (var unit in GetUnitCardsInHand())
             {
+                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+                    break;
+
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
@@ -222,8 +225,8 @@ namespace LoomNetwork.CZB
                     LetsThink();
                 }
 
-                if (Constants.DEV_MODE)
-                    break;
+              //  if (Constants.DEV_MODE)
+               //     break;
             }
 
             foreach (var spell in GetSpellCardsInHand())
@@ -235,8 +238,8 @@ namespace LoomNetwork.CZB
                     LetsThink();
                 }
 
-                if (Constants.DEV_MODE)
-                    break;
+               // if (Constants.DEV_MODE)
+               //     break;
             }
             LetsThink();
             LetsThink();
@@ -376,7 +379,7 @@ namespace LoomNetwork.CZB
         private void PlayCardOnBoard(WorkingCard card)
         {
             var target = GetAbilityTarget(card);
-            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_CREATURES)
+            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_UNITS)
             {
                 //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                 //    if (target.Count == 0)

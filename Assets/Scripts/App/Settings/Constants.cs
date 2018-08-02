@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB.Common
         internal static uint CARD_GENERAL_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
-        internal static uint MAX_BOARD_CREATURES = 6;
+        internal static uint MAX_BOARD_UNITS = 6;
 
         internal static int DEFAULT_TURN_DURATION = 60;
         internal static int MAX_DECK_SIZE = 30;

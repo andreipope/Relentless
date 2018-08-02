@@ -128,7 +128,7 @@ namespace LoomNetwork.CZB
                 var oldDamage = _currentDamage;
 
                 _currentDamage = Mathf.Clamp(value, 0, 99999);
-                if (oldDamage != _currentDamage)
+               // if (oldDamage != _currentDamage)
                     UnitDamageChangedEvent?.Invoke();
             }
         }
@@ -147,7 +147,7 @@ namespace LoomNetwork.CZB
                 var oldHealth = _currentHealth;
 
                 _currentHealth = Mathf.Clamp(value, 0, 99);
-                if (oldHealth != _currentHealth)
+             //   if (oldHealth != _currentHealth)
                     UnitHPChangedEvent?.Invoke();
             }
         }
@@ -280,6 +280,11 @@ namespace LoomNetwork.CZB
         }
 
 
+        public void Update()
+        {
+            CheckOnDie();
+        }
+
         public void Reset()
         {
           
@@ -296,8 +301,6 @@ namespace LoomNetwork.CZB
 
             if (!returnToHand)
                 _battlegroundController.KillBoardCard(this);
-
-            UnitOnDieEvent?.Invoke();
         }
 
         public void DebuffDamage(int value)
@@ -736,7 +739,7 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if (CurrentHP <= 0 && !_dead && IsAllAbilitiesResolvedAtStart && _arrivalDone)
+            if (CurrentHP <= 0 && (!_dead || gameObject != null) && IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 Die();
         }
 
@@ -851,7 +854,8 @@ namespace LoomNetwork.CZB
             if (!UnitCanBeUsable())
                 enabled = false;
 
-            _glowSprite.enabled = enabled;
+            if (_glowSprite)
+                _glowSprite.enabled = enabled;
         }
 
         public void StopSleepingParticles()
@@ -987,8 +991,13 @@ namespace LoomNetwork.CZB
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                         IsAttacking = false;
-                        completeCallback?.Invoke();
+                       // completeCallback?.Invoke();
                     });
+
+                    _timerManager.AddTimer((x) =>
+                    {
+                        completeCallback?.Invoke();
+                    }, null, 1.5f);
                 }));
             }
             else if (target is BoardUnit)
@@ -1021,8 +1030,12 @@ namespace LoomNetwork.CZB
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                         IsAttacking = false;
-                        completeCallback?.Invoke();
                     });
+
+                    _timerManager.AddTimer((x) =>
+                    {
+                        completeCallback?.Invoke();
+                    }, null, 1.5f);
                 }));
             }
         }
@@ -1074,7 +1087,12 @@ namespace LoomNetwork.CZB
         {
             UnitOnAttackEvent?.Invoke(target, damage);
         }
+        public void ThrowOnDieEvent()
+        {
+            UnitOnDieEvent?.Invoke();
+        }
 
+      
         private void CheckIsCanDie(object[] param)
         {
             if(_arrivalDone)

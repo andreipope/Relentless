@@ -1536,6 +1536,15 @@
           "health": 6,
           "type": "WALKER",
           "rank": "COMMANDER",
+          "abilities": [
+            {
+              "type": "COSTS_LESS_IF_CARD_TYPE_IN_HAND",
+              "activityType": "passive",
+              "callType": "IN_HAND",
+              "targetType": "player",
+              "setType": "air",
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.075,

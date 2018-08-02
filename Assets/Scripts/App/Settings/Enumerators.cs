@@ -242,7 +242,8 @@
             DELAYED_GAIN_ATTACK,
             REANIMATE_UNIT,
             PRIORITY_ATTACK,
-            DESTROY_TARGET_UNIT_AFTER_ATTACK
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            COSTS_LESS_IF_CARD_TYPE_IN_HAND,
         }
 
         public enum AbilityActivityType
@@ -262,6 +263,8 @@
             GOT_DAMAGE,
             AT_DEFENCE,
             TURN_END,
+
+            IN_HAND
         }
 
         public enum StatType

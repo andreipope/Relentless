@@ -56,6 +56,8 @@ namespace LoomNetwork.CZB
         public bool isNewCard = false;
         public bool isPreview;
 
+        public int initialCost;
+
         public Card libraryCard;
 
         public int manaCost { get; protected set; }
@@ -128,6 +130,7 @@ namespace LoomNetwork.CZB
             isNewCard = true;
 
             manaCost = libraryCard.cost;
+            initialCost = manaCost;
 
             WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
 
@@ -161,6 +164,7 @@ namespace LoomNetwork.CZB
             costText.text = libraryCard.cost.ToString();
 
             manaCost = libraryCard.cost;
+            initialCost = manaCost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
 
@@ -182,6 +186,13 @@ namespace LoomNetwork.CZB
             libraryCard.cost = cost;
             manaCost = libraryCard.cost;
             costText.text = manaCost.ToString();
+
+            if(manaCost > initialCost)
+                costText.color = Color.red;
+            else if(manaCost < initialCost)
+                costText.color = Color.green;
+            else
+                costText.color = Color.white;
         }
 
         public virtual void UpdateAmount(int amount)

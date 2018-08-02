@@ -25,6 +25,7 @@ namespace LoomNetwork.CZB
         public event Action<int> HandChangedEvent;
         public event Action<int> GraveyardChangedEvent;
         public event Action<int> BoardChangedEvent;
+        public event Action<WorkingCard> CardPlayedEvent;
 
         private GameObject _playerObject;
 
@@ -441,6 +442,16 @@ namespace LoomNetwork.CZB
             _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
 
+        }
+
+        public void ThrowPlayCardEvent(WorkingCard card)
+        {
+            CardPlayedEvent?.Invoke(card);
+        }
+
+        public void ThrowOnHandChanged()
+        {
+            HandChangedEvent?.Invoke(CardsInHand.Count);
         }
 
         #region handlers
