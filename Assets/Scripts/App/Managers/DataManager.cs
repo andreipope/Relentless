@@ -98,7 +98,7 @@ namespace LoomNetwork.CZB
             
             //await GetCardLibraryData();
             await GetDeckData();
-            await GetCollectionData();
+            //await GetCollectionData();
             
             CachedCardsLibraryData.FillAllCards();
 
@@ -276,12 +276,12 @@ namespace LoomNetwork.CZB
                             CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
                     }
                     break;
-                /*case Enumerators.CacheDataType.COLLECTION_DATA:
+                case Enumerators.CacheDataType.COLLECTION_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                     }
-                    break;*/
+                    break;
                 /*case Enumerators.CacheDataType.DECKS_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
@@ -314,17 +314,10 @@ namespace LoomNetwork.CZB
         {
             if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH)))
             {
-                CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(Resources.Load("Data/card_library_data").ToString());
-                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(Resources.Load("Data/heroes_data").ToString());
-                CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(Resources.Load("Data/collection_data").ToString());
-                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(Resources.Load("Data/decks_data").ToString());
-                CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(Resources.Load("Data/opponent_decks_data").ToString());
-                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(Resources.Load("Data/action_data").ToString());
-                CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(Resources.Load("Data/credits_data").ToString());
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
                 CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
-               // CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
+                //CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
+                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);

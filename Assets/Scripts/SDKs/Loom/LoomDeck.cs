@@ -59,10 +59,10 @@ public partial class LoomManager
         {
             var cardInCollection = new CardCollection
             {
-                //CardId = deck.cards[i].cardId,
+                CardName = deck.cards[i].cardName,
                 Amount = deck.cards[i].amount
             };
-            Debug.Log("Card in collection = " + cardInCollection.CardId + " , " + cardInCollection.Amount);
+            Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
             cards.Add(cardInCollection);
         }
         
@@ -100,10 +100,10 @@ public partial class LoomManager
         {
             var cardInCollection = new CardCollection
             {
-                //CardId = deck.cards[i].cardId,
+                CardName = deck.cards[i].cardName,
                 Amount = deck.cards[i].amount
             };
-            Debug.Log("Card in collection = " + cardInCollection.CardId + " , " + cardInCollection.Amount);
+            Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
             cards.Add(cardInCollection);
         }
             
