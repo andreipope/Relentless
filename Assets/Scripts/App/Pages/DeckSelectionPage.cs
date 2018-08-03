@@ -98,8 +98,11 @@ namespace LoomNetwork.CZB
 			_secondSkill = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill").GetComponent<Image>();
 			_metalBoxBG = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection").GetComponent<Image> ();
 
-			_firstSkill.GetComponent<Button> ().onClick.AddListener (SkillButtonOnClickHandler);
-			_secondSkill.GetComponent<Button> ().onClick.AddListener (SkillButtonOnClickHandler);
+            _firstSkill.GetComponent<MultiPointerClickHandler>().SingleClickReceived += () => SkillButtonOnSingleClickHandler(0);
+            _secondSkill.GetComponent<MultiPointerClickHandler>().SingleClickReceived += () => SkillButtonOnSingleClickHandler(1);
+
+            _firstSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () => SkillButtonOnDoubleClickHandler(0);
+            _secondSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () => SkillButtonOnDoubleClickHandler(1);
 
             // new horde deck object
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
@@ -280,7 +283,7 @@ namespace LoomNetwork.CZB
         {
 			FillDeckInfo ();
 
-			if (_hordeDecks.Count < 1) 
+			if (_hordeDecks.Count < 1)
 				return;
 
             int index = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
@@ -330,12 +333,29 @@ namespace LoomNetwork.CZB
             SwitchOverlordObject(1);
         }
 
-		private void SkillButtonOnClickHandler() 
+        private void SkillButtonOnSingleClickHandler(int skillIndex)
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            foreach (HordeDeckObject item in _hordeDecks) {
+                if (item.DeckId == _selectedDeck)
+                {
+                    HeroSkill skill =
+                        skillIndex == 0 ?
+                            item.SelfHero.skills[item.SelfHero.primarySkill] :
+                            item.SelfHero.skills[item.SelfHero.secondarySkill];
+
+                    _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
+                    break;
+                }
+            }
+        }
+
+		private void SkillButtonOnDoubleClickHandler(int skillIndex)
 		{
 			_soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 			foreach (HordeDeckObject item in _hordeDecks) {
 				if (item.DeckId == _selectedDeck) {
-					_uiManager.DrawPopup<OverlordAbiltySelectionPopup> (item.SelfHero);
+					_uiManager.DrawPopup<OverlordAbilitySelectionPopup> (item.SelfHero);
 					break;
 				}
 			}

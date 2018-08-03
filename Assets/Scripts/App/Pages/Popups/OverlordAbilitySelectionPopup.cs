@@ -13,7 +13,7 @@ using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
-	public class OverlordAbiltySelectionPopup : IUIPopup
+	public class OverlordAbilitySelectionPopup : IUIPopup
     {
         public GameObject Self
         {
@@ -21,9 +21,6 @@ namespace LoomNetwork.CZB
         }
 
         public static Action OnHidePopupEvent;
-
-        private const int ABILITY_LIST_SIZE = 5;
-        private const int MAX_SELECTED_ABILITIES = 2;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
@@ -39,6 +36,9 @@ namespace LoomNetwork.CZB
 		private Image _heroImage;
         private List<AbilityInstance> _abilities;
 		private Hero _heroData;
+
+        private const int ABILITY_LIST_SIZE = 5;
+        private const int MAX_SELECTED_ABILITIES = 2;
 
         public void Init()
         {
@@ -59,6 +59,14 @@ namespace LoomNetwork.CZB
 			_abilitiesGroup = _selfPage.transform.Find ("Abilities").gameObject;
 
 			_heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
+
+            _abilities = new List<AbilityInstance>();
+            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+            {
+                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
+                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
+                _abilities.Add(abilityInstance);
+            }
 
             Hide();
         }
@@ -111,20 +119,15 @@ namespace LoomNetwork.CZB
 			_heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/Heroes/hero_" + heroData.element.ToLower ());
 			_heroImage.SetNativeSize ();
 
-            _abilities = new List<AbilityInstance>();
 		    for (int i = 0; i < ABILITY_LIST_SIZE; i++)
 		    {
-		        HeroSkill skill = heroData.skills[0];
+		        HeroSkill skill = null;
 		        if (i < heroData.skills.Count)
 		        {
 		            skill = heroData.skills[i];
 		        }
-                _abilities.Add(new AbilityInstance(_abilitiesGroup.transform, skill));
-		    }
-
-		    foreach (AbilityInstance abilityInstance in _abilities)
-		    {
-		        abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
+                _abilities[i].Skill = skill;
+		        _abilities[i].AllowMultiSelect = false;
 		    }
 		}
 
@@ -136,15 +139,18 @@ namespace LoomNetwork.CZB
         private class AbilityInstance : IDisposable
         {
             public GameObject SelfObject;
-            public HeroSkill Skill;
 
             public event Action<AbilityInstance> SelectionChanged;
 
             private ILoadObjectsManager _loadObjectsManager;
+            private HeroSkill _skill;
+
             private Toggle _abilityToggle;
             private Image _glowImage;
             private Image _abilityIconImage;
+            private bool _allowMultiSelect;
             private bool _isSelected;
+            private Transform _parentGameObject;
 
             public bool IsSelected
             {
@@ -159,12 +165,39 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            public AbilityInstance(Transform root, HeroSkill skill) {
+            public bool AllowMultiSelect
+            {
+                get
+                {
+                    return _allowMultiSelect;
+                }
+                set
+                {
+                    _abilityToggle.group = value ? null : _parentGameObject.GetComponent<ToggleGroup>();
+                }
+            }
+
+            public HeroSkill Skill
+            {
+                get
+                {
+                    return _skill;
+                }
+                set
+                {
+                    if (_skill == value)
+                        return;
+
+                    _skill = value;
+                    UpdateUIState();
+                }
+            }
+
+            public AbilityInstance(Transform root) {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                Skill = skill;
-                SelfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"));
-                SelfObject.transform.SetParent(root);
+                _parentGameObject = root;
+                SelfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"), root, false);
 
                 _abilityToggle = SelfObject.GetComponent<Toggle>();
                 _abilityToggle.group = root.GetComponent<ToggleGroup>();
@@ -174,21 +207,27 @@ namespace LoomNetwork.CZB
 
                 _abilityToggle.onValueChanged.AddListener(OnToggleValueChanged);
 
+                UpdateUIState();
+            }
+
+            private void OnToggleValueChanged(bool selected) {
+                _isSelected = selected;
+                UpdateUIState();
+
+                SelectionChanged?.Invoke(this);
+            }
+
+            private void UpdateUIState() {
+                _glowImage.gameObject.SetActive(_isSelected);
+
+                _abilityToggle.interactable = Skill != null;
                 if (Skill != null)
                 {
                     _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.iconPath);
                 } else
                 {
                     _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
-                    _abilityToggle.interactable = false;
                 }
-            }
-
-            private void OnToggleValueChanged(bool selected) {
-                _isSelected = selected;
-                _glowImage.gameObject.SetActive(selected);
-
-                SelectionChanged?.Invoke(this);
             }
 
             public void Dispose() {
