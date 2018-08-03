@@ -358,8 +358,8 @@ namespace LoomNetwork.CZB
         {
             int value = 0;
 
-            var attackedCard = attacker.Card.libraryCard;
-            var attackerCard = attacked.Card.libraryCard;
+            var attackedCard = attacked.Card.libraryCard;
+            var attackerCard = attacker.Card.libraryCard;
 
             var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
@@ -398,9 +398,29 @@ namespace LoomNetwork.CZB
             return abils;
         }
 
-        public bool HasUnitTypeOnBoard(Player player, Enumerators.CardType type)
+        public bool HasUnitTypeOnBoard(WorkingCard workingCard, AbilityData ability)
         {
-            return player.BoardCards.FindAll(x => x.Card.type == type).Count > 0;
+            if (ability.abilityTargetTypes.Count == 0)
+                return false;
+
+            var opponent = workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            var player = workingCard.owner;
+
+            foreach (var target in ability.abilityTargetTypes)
+            {
+                if(target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    if (player.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                        return true;
+                }
+                else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
+                {
+                    if (opponent.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         public void CallAbility(Card libraryCard, BoardCard card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<BoardCard> action, bool isPlayer, Action onCompleteCallback, object target = null, HandBoardCard handCard = null)
@@ -449,10 +469,13 @@ namespace LoomNetwork.CZB
 
                 if (ability.targetCardType != Enumerators.CardType.NONE)
                 {
-                    if(!HasUnitTypeOnBoard(workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer, ability.targetCardType))
+                    if(!HasUnitTypeOnBoard(workingCard, ability))
                     {
                         CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+
                         onCompleteCallback?.Invoke();
+
+                        ResolveAllAbilitiesOnUnit(boardObject);
 
                         return;
                     }

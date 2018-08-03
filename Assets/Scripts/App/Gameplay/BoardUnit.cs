@@ -478,7 +478,7 @@ namespace LoomNetwork.CZB
 
         public void SetAsHeavyUnit(bool buff = false)
         {
-            if (hasHeavy)
+            if (hasHeavy || HasBuffHeavy)
                 return;
 
             if (!buff)
@@ -501,13 +501,14 @@ namespace LoomNetwork.CZB
 
         public void SetAsWalkerUnit(bool buff = false)
         {
-            if (!hasHeavy && !hasFeral)
+            if (!hasHeavy && !hasFeral && !HasBuffHeavy)
                 return;
 
             if (!buff)
             {
                 hasHeavy = false;
                 hasFeral = false;
+                HasBuffHeavy = false;
                 _initialUnitType = Enumerators.CardType.WALKER;
             }
 
@@ -530,6 +531,7 @@ namespace LoomNetwork.CZB
             if (!buff)
             {
                 hasHeavy = false;
+                HasBuffHeavy = false;
                 hasFeral = true;
                 _initialUnitType = Enumerators.CardType.FERAL;
             }
@@ -543,6 +545,12 @@ namespace LoomNetwork.CZB
             unitAnimator.SetTrigger("Active");
 
             _readyForBuffs = true;
+
+            if (!AttackedThisTurn && !IsPlayable)
+            {
+                IsPlayable = true;
+                SetHighlightingEnabled(true);
+            }
         }
 
         public void BuffShield()
@@ -739,8 +747,13 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if (CurrentHP <= 0 && (!_dead || gameObject != null) && IsAllAbilitiesResolvedAtStart && _arrivalDone)
-                Die();
+            if (CurrentHP <= 0 && !_dead)
+            {
+                Debug.Log(IsAllAbilitiesResolvedAtStart + " | " + _arrivalDone);
+
+                if (IsAllAbilitiesResolvedAtStart && _arrivalDone)
+                    Die();
+            }
         }
 
         public void PlayArrivalAnimation()

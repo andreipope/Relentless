@@ -64,8 +64,12 @@ namespace LoomNetwork.CZB
 
         private void ReviveUnit(WorkingCard workingCard)
         {
-            var libraryCard = workingCard.libraryCard.Clone();
             var playerOwner = workingCard.owner;
+
+            if (playerOwner.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+                return;
+
+            var libraryCard = workingCard.libraryCard.Clone();
 
             string cardSetName = _cardsController.GetSetOfCard(libraryCard);
             var card = new WorkingCard(libraryCard, playerOwner);

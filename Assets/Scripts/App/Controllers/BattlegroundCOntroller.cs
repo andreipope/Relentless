@@ -128,11 +128,6 @@ namespace LoomNetwork.CZB
             if (cardToDestroy == null)
                 return;
 
-            if (_cardsInDestroy.Contains(cardToDestroy))
-                return;
-
-            _cardsInDestroy.Add(cardToDestroy);
-
             bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
 
             cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
@@ -162,10 +157,8 @@ namespace LoomNetwork.CZB
                     cardToDestroy.transform.DOKill();
                     MonoBehaviour.Destroy(cardToDestroy.gameObject);
 
-                    _cardsInDestroy.Remove(cardToDestroy);
-
                     _timerManager.AddTimer((f) =>
-                    {
+                    { 
                         UpdatePositionOfBoardUnitsOfOpponent();
                         UpdatePositionOfBoardUnitsOfPlayer();
                     }, null, Time.deltaTime, false);

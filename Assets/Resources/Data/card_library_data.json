@@ -108,7 +108,7 @@
           "kind": "CREATURE",
           "name": "Cynderman",
           "cost": 4,
-          "description": "<b>Enter:</b> 2 damage to a zombie",
+          "description": "<b>Entry:</b> 2 damage to a zombie",
           "flavorText": "Hot, so very hot - all the time!",
           "picture": "cynderman",
           "damage": 2,
@@ -120,7 +120,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "at_start",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 2,
               "effectType": "TARGET_FIRE"
@@ -157,7 +157,7 @@
               "activityType": "active",
               "callType": "at_start",
               "targetType": "player_card",
-              "cardType": "FERAL"
+              "unitType": "FERAL"
             }
           ],
           "cardViewInfo": {
@@ -252,7 +252,7 @@
           "kind": "CREATURE",
           "name": "Zhampion",
           "cost": 5,
-          "description": "<b>Feral, Entry:</b> Spawn a two 1/1 enemy Pyromaz zombies ",
+          "description": "<b>Feral, Entry:</b> Summon two 1/1 enemy Pyromaz zombies",
           "flavorText": "",
           "picture": "Zhampion",
           "damage": 5,
@@ -680,14 +680,14 @@
           "id": 15,
           "kind": "CREATURE",
           "name": "Maelstrom",
-          "cost": 11,
-          "description": "<b>Entry:</b> Return all zombies into their owners' decks",
+          "cost": 8,
+          "description": "<b>Entry:</b> Return all zombies to their owners' Hands",
           "flavorText": "",
           "picture": "Maelstrom",
-          "damage": 8,
-          "health": 8,
+          "damage": 5,
+          "health": 5,
           "type": "WALKER",
-          "rank": "GENERAL",
+          "rank": "COMMANDER",
           "abilities": [
             {
               "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
@@ -1070,7 +1070,7 @@
               "type": "DESTROY_UNIT_BY_TYPE",
               "activityType": "active",
               "callType": "at_start",
-              "targetType": "opponent_card",
+              "targetType": "opponent_card|player_card",
               "affectObjectType": "none",
               "cardType": "HEAVY"
             }

@@ -240,8 +240,8 @@ new object[]
             if (healedCreature != null)
             {
                 healedCreature.CurrentHP += skill.value;
-                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
-                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
+                if (healedCreature.CurrentHP > healedCreature.MaxCurrentHP)
+                    healedCreature.CurrentHP = healedCreature.MaxCurrentHP;
             }
             
 
@@ -332,8 +332,8 @@ new object[]
             if (healedCreature != null)
             {
                 healedCreature.CurrentHP += ability.value;
-                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
-                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
+                if (healedCreature.CurrentHP > healedCreature.MaxCurrentHP)
+                    healedCreature.CurrentHP = healedCreature.MaxCurrentHP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,
