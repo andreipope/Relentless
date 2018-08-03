@@ -118,8 +118,6 @@ namespace LoomNetwork.CZB
             //todod improve I guess
             _selectedDeck = _dataManager.CachedUserLocalData.lastSelectedDeckId;
 
-			Debug.Log (_selectedDeck);
-
             LoadDeckObjects();
             _selfPage.SetActive(true);
         }
@@ -168,8 +166,6 @@ namespace LoomNetwork.CZB
 					}
 				}
 			}
-
-			Debug.Log (deck);
 
 			if (deck != null) {
 				_textDescription.gameObject.SetActive (true);
@@ -259,13 +255,30 @@ namespace LoomNetwork.CZB
             if (deck != null)
                 HordeDeckSelectedEventHandler(deck);
 
+			if (_hordeDecks.Count > 0) {
+				bool found = false;
+				foreach (HordeDeckObject item in _hordeDecks) {
+					if (item.DeckId == _selectedDeck) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					_selectedDeck = _hordeDecks [0].DeckId;
+				}
+			} else {
+				_selectedDeck = 9999;
+			}
+
             CenterTheSelectedDeck();
         }
 
         private void CenterTheSelectedDeck()
         {
-            if (_hordeDecks.Count <= 1)
-                return;
+			FillDeckInfo ();
+
+			if (_hordeDecks.Count < 1) 
+				return;
 
             int index = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
 
@@ -273,10 +286,6 @@ namespace LoomNetwork.CZB
             if (_leftDeckIndex < -1)
                 _leftDeckIndex = -1;
 
-			Debug.Log ("Centering Deck index:");
-			Debug.Log (_leftDeckIndex);
-
-			FillDeckInfo ();
 			DOTween.KillAll ();
 			DOTween.To (() => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition, x => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition = x, (Vector2.left * _leftDeckIndex * 580f), 0.5f);
         }
@@ -393,25 +402,20 @@ namespace LoomNetwork.CZB
         {
             bool isChanged = false;
 
-            if (_hordeDecks.Count <= 1)
+            if (_hordeDecks.Count < 1)
                 return;
 
             var oldIndex = _leftDeckIndex;
             _leftDeckIndex += direction;
-
-			Debug.Log ("What Happens");
-			Debug.Log (oldIndex);
-			Debug.Log (_leftDeckIndex);
 
             if (_leftDeckIndex < -1)
                 _leftDeckIndex = _hordeDecks.Count - 1;
             else if (_leftDeckIndex >= _hordeDecks.Count)
                 _leftDeckIndex = -1;
 
-			Debug.Log (_leftDeckIndex);
             if (oldIndex != _leftDeckIndex)
                 isChanged = true;
-			Debug.Log (isChanged);
+
             if (isChanged)
             {
 				if (_leftDeckIndex + 1 < _hordeDecks.Count) {
