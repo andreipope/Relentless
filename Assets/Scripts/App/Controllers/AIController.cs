@@ -9,6 +9,7 @@ using System.Collections;
 using UnityEngine;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using System;
 
 namespace LoomNetwork.CZB
 {
@@ -104,18 +105,14 @@ namespace LoomNetwork.CZB
                 foreach (var card in _dataManager.CachedOpponentDecksData.decks[deckId].cards)
                 {
                     for (var i = 0; i < card.amount; i++)
-                    {                                                                                               
-                        if (Constants.DEV_MODE)
-                        {
-                            //  card.cardId = 16;
-                        }
-
+                    {
                         playerDeck.Add(card.cardName);
-                      //   playerDeck.Add("Pushhh");               
+                       // playerDeck.Add("Pyrite");
                     }
                 }
-            }
 
+            }
+        
             _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
 
             _gameplayManager.OpponentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
@@ -212,37 +209,44 @@ namespace LoomNetwork.CZB
         // ai step 1
         private void PlayCardsFromHand()
         {
-            foreach (var unit in GetUnitCardsInHand())
+            try
             {
-                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
-                    break;
-
-                if (CardCanBePlayable(unit))
+                foreach (var unit in GetUnitCardsInHand())
                 {
-                    ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
-                    LetsThink();
-                    LetsThink();
-                    LetsThink();
+                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+                        break;
+
+                    if (CardCanBePlayable(unit))
+                    {
+                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
+                        LetsThink();
+                        LetsThink();
+                        LetsThink();
+                    }
+
+                    //  if (Constants.DEV_MODE)
+                    //     break;
                 }
 
-              //  if (Constants.DEV_MODE)
-               //     break;
-            }
-
-            foreach (var spell in GetSpellCardsInHand())
-            {
-                if (CardCanBePlayable(spell))
+                foreach (var spell in GetSpellCardsInHand())
                 {
-                    ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
-                    LetsThink();
-                    LetsThink();
-                }
+                    if (CardCanBePlayable(spell))
+                    {
+                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
+                        LetsThink();
+                        LetsThink();
+                    }
 
-               // if (Constants.DEV_MODE)
-               //     break;
+                    // if (Constants.DEV_MODE)
+                    //     break;
+                }
+                LetsThink();
+                LetsThink();
             }
-            LetsThink();
-            LetsThink();
+            catch(Exception ex)
+            {
+                Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+            }
         }
         // ai step 2
         private void UseUnitsOnBoard()
@@ -338,26 +342,33 @@ namespace LoomNetwork.CZB
         }
         // ai step 3
         private void UsePlayerSkills()
-        { 
-            if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
+        {
+            try
+            {
+                if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
+          
+                ThreadTool.Instance.RunInMainThread(() =>
+                {
+                    if (_skillsController.opponentPrimarySkill.IsSkillReady)
+                        DoBoardSkill(_skillsController.opponentPrimarySkill);
+                });
 
-            ThreadTool.Instance.RunInMainThread(() =>
+                LetsThink();
+
+                ThreadTool.Instance.RunInMainThread(() =>
+                {
+                    if (_skillsController.opponentSecondarySkill.IsSkillReady)
+                        DoBoardSkill(_skillsController.opponentSecondarySkill);
+                });
+
+                LetsThink();
+                LetsThink();
+            }
+            catch (Exception ex)
             {
-                if (_skillsController.opponentPrimarySkill.IsSkillReady)
-                    DoBoardSkill(_skillsController.opponentPrimarySkill);
-            });
-
-            LetsThink();
-
-            ThreadTool.Instance.RunInMainThread(() =>
-            {
-                if (_skillsController.opponentSecondarySkill.IsSkillReady)
-                    DoBoardSkill(_skillsController.opponentSecondarySkill);
-            });
-
-            LetsThink();
-            LetsThink();
+                Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
         // some thinking - delay between general actions

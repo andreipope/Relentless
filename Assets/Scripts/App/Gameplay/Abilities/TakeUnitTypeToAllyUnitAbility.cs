@@ -9,11 +9,11 @@ namespace LoomNetwork.CZB
 {
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
-        public Enumerators.CardType cardType;
+        public Enumerators.CardType unitType;
 
         public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-            cardType = ability.targetCardType;
+            unitType = ability.targetUnitType;
         }
 
         public override void Activate()
@@ -51,14 +51,13 @@ namespace LoomNetwork.CZB
             if (unit == null)
                 return;
 
-            // implement functionality for animations
-            switch (cardType)
+            switch (unitType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.hasHeavy = true;
+                    unit.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.hasFeral = true;
+                    unit.SetAsFeralUnit();
                     break;
             }
         }

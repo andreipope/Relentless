@@ -188,7 +188,9 @@ namespace LoomNetwork.CZB
 				_hordeType.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/UI/ElementIcons/Icon_element_" + deck.SelfHero.element.ToLower ());
 				_firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper () + "_" + deck.SelfHero.skills [deck.SelfHero.primarySkill].skill.ToLower ());
 				_secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper () + "_" + deck.SelfHero.skills [deck.SelfHero.secondarySkill].skill.ToLower ());
-			} else {
+
+                _battleButton.interactable = true;
+            } else {
 				_textDescription.gameObject.SetActive (false);
 				_textCardsCount.gameObject.SetActive (false);
 				_hordePicture.gameObject.SetActive (false);

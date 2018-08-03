@@ -117,10 +117,9 @@ namespace LoomNetwork.CZB
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.name = player.FullName;
-            _opponentOverlordNameText.name = opponent.FullName;
+            _playerOverlordNameText.text = player.name;
+            _opponentOverlordNameText.text = opponent.name;
 
-            Debug.Log(player.element);
             _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.element.ToLower());
             _opponentOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + opponent.element.ToLower());
 
@@ -131,6 +130,8 @@ namespace LoomNetwork.CZB
             //   {
             DoAnimationOfWhoseTurn();
 
+
+           // return;
             _timerManager.AddTimer((x) =>
             {
                 _selfAnimator.SetTrigger("Exit");
@@ -154,23 +155,24 @@ namespace LoomNetwork.CZB
             float rotateAngle = 90f;
             RotateMode mode = RotateMode.Fast;
 
+            _playerCardBackObject.SetActive(true);
+            _playerCardFrontObject.SetActive(false);
+            _playerFirstTurnObject.SetActive(false);
+            _playerSecondTurnObject.SetActive(false);
 
-            float offsetPlayer = 0;
-            float offsetOpponent = 0;
+            _opponentCardBackObject.SetActive(true);
+            _opponentCardFrontObject.SetActive(false);
+            _opponentFirstTurnObject.SetActive(false);
+            _opponentSecondTurnObject.SetActive(false);
 
-            if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
-                offsetOpponent = 180;
-            else
-                offsetPlayer = 180;
+            bool isFrontViewOpponent = false;
+            bool isFrontViewPlayer = false;
 
-            _opponentTurnRootObject.transform.localEulerAngles = new Vector3(0, offsetOpponent, 0);
-            _playerTurnRootObject.transform.localEulerAngles = new Vector3(0, offsetPlayer, 0);
+            bool isLatestSecondOpponent =  !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer);
+            bool isLatestSecondPlayer =  !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
 
-            bool activeSecondOpponent = offsetOpponent > 0 ? true : false;
-            bool activeSecond = offsetPlayer > 0 ? true : false;
-
-            CheckPlayerObjects(ref activeSecond);
-            CheckOpponentObjects(ref activeSecondOpponent);
+            bool startWithSecondOpponent = !isLatestSecondOpponent;
+            bool startWithSecondPlayer = !isLatestSecondPlayer;
 
             // opponent
 
@@ -179,13 +181,13 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, offsetOpponent + index * rotateAngle), rotateTime, mode));
+                sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
                 sequenceOpponent.AppendCallback(() =>
                 {
-                    if (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f == 0 ||
-                        Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f == 0)
+                    if ((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f  < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45) || 
+                        (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) -270f > -45))
                     {
-                        CheckOpponentObjects(ref activeSecondOpponent);
+                        CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index, ref startWithSecondOpponent);
                     }
                 });
             }
@@ -197,13 +199,13 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, offsetPlayer + index * rotateAngle), rotateTime, mode));
+                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0,  index * rotateAngle), rotateTime, mode));
                 sequence.AppendCallback(() =>
                 {
-                    if (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f == 0 ||
-                        Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f == 0)
+                    if ((Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45) ||
+                        (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45))
                     {
-                        CheckPlayerObjects(ref activeSecond);
+                       CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
                     }
                 });
             }
@@ -211,98 +213,127 @@ namespace LoomNetwork.CZB
             sequence.Play();
         }
 
-        private void CheckPlayerObjects(ref bool activeSecond, bool ignore = false)
-        {
-            if (!ignore)
-                activeSecond = !activeSecond;
 
-            _playerFirstTurnObject.SetActive(!activeSecond);
-            _playerCardFrontObject.SetActive(!activeSecond);
-            _playerSecondTurnObject.SetActive(activeSecond);
-            _playerCardBackObject.SetActive(activeSecond);
+
+
+        private void CheckPlayerObjects(ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)
+        {
+            isFrontView = !isFrontView;
+
+            _playerCardFrontObject.SetActive(isFrontView);
+            _playerCardBackObject.SetActive(!isFrontView);
 
 
             float finalRotate = _playerTurnRootObject.transform.localEulerAngles.y;
 
             if (Mathf.Abs(finalRotate) >= 180)
             {
-                if (activeSecond)
+                _playerFirstTurnObject.SetActive(false);
+                _playerSecondTurnObject.SetActive(false);
+
+                if (isFrontView)
                 {
-                    _playerFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _playerSecondTurnObject.transform.localScale = Vector3.one;
                     _playerCardBackObject.transform.localScale = Vector3.one;
                 }
                 else
                 {
-                    _playerFirstTurnObject.transform.localScale = Vector3.one;
                     _playerCardFrontObject.transform.localScale = Vector3.one;
-                    _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _playerCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
             }
             else if (Mathf.Abs(finalRotate) >= 0)
             {
-                if (!activeSecond)
+                if (startWithSecondPlayer)
+                {
+                    _playerFirstTurnObject.SetActive(false);
+                    _playerSecondTurnObject.SetActive(true);
+
+                    startWithSecondPlayer = false;
+                }
+                else
+                {
+                    _playerFirstTurnObject.SetActive(true);
+                    _playerSecondTurnObject.SetActive(false);
+
+                    startWithSecondPlayer = true;
+                }
+
+                if (isFrontView)
                 {
                     _playerFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+                    _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+
                     _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _playerSecondTurnObject.transform.localScale = Vector3.one;
                     _playerCardBackObject.transform.localScale = Vector3.one;
                 }
                 else
                 {
                     _playerFirstTurnObject.transform.localScale = Vector3.one;
+                    _playerSecondTurnObject.transform.localScale = Vector3.one;
+
                     _playerCardFrontObject.transform.localScale = Vector3.one;
-                    _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _playerCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
             }
         }
 
-        private void CheckOpponentObjects(ref bool activeSecondOpponent, bool ignore = false)
+        private void CheckOpponentObjects(ref bool isFrontView, bool isLatestSecondOpponent, int index, ref bool startWithSecondOpponent)
         {
-            if (!ignore)
-                activeSecondOpponent = !activeSecondOpponent;
+            isFrontView = !isFrontView;
 
-            _opponentFirstTurnObject.SetActive(!activeSecondOpponent);
-            _opponentCardFrontObject.SetActive(!activeSecondOpponent);
-            _opponentSecondTurnObject.SetActive(activeSecondOpponent);
-            _opponentCardBackObject.SetActive(activeSecondOpponent);
+            _opponentCardFrontObject.SetActive(isFrontView);
+            _opponentCardBackObject.SetActive(!isFrontView);
 
             float finalRotate = _opponentTurnRootObject.transform.localEulerAngles.y;
 
             if (Mathf.Abs(finalRotate) >= 180)
             {
-                if (activeSecondOpponent)
+                _opponentFirstTurnObject.SetActive(false);
+                _opponentSecondTurnObject.SetActive(false);
+
+                if (isFrontView)
                 {
-                    _opponentFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _opponentSecondTurnObject.transform.localScale = Vector3.one;
                     _opponentCardBackObject.transform.localScale = Vector3.one;
                 }
                 else
                 {
-                    _opponentFirstTurnObject.transform.localScale = Vector3.one;
                     _opponentCardFrontObject.transform.localScale = Vector3.one;
-                    _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _opponentCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
             }
             else if (Mathf.Abs(finalRotate) >= 0)
             {
-                if (!activeSecondOpponent)
+                if (startWithSecondOpponent)
+                {
+                    _opponentFirstTurnObject.SetActive(false);
+                    _opponentSecondTurnObject.SetActive(true);
+
+                    startWithSecondOpponent = false;
+                }
+                else
+                {
+                    _opponentFirstTurnObject.SetActive(true);
+                    _opponentSecondTurnObject.SetActive(false);
+
+                    startWithSecondOpponent = true;
+                }
+
+                if (isFrontView)
                 {
                     _opponentFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+                    _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+
                     _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _opponentSecondTurnObject.transform.localScale = Vector3.one;
                     _opponentCardBackObject.transform.localScale = Vector3.one;
                 }
                 else
                 {
                     _opponentFirstTurnObject.transform.localScale = Vector3.one;
+                    _opponentSecondTurnObject.transform.localScale = Vector3.one;
+
                     _opponentCardFrontObject.transform.localScale = Vector3.one;
-                    _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
                     _opponentCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
             }
