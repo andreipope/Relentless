@@ -22,20 +22,22 @@ namespace LoomNetwork.CZB
 
         public static Action OnHidePopupEvent;
 
+        private const int ABILITY_LIST_SIZE = 5;
+        private const int MAX_SELECTED_ABILITIES = 2;
+
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
 		private IDataManager _dataManager;
         private GameObject _selfPage;
 
-		private ButtonShiftingContent _continueButton;
-		private ButtonShiftingContent _buyButton;
+		private Button _continueButton;
+		private Button _buyButton;
 		private GameObject _abilitiesGroup;
 		private TextMeshProUGUI _title;
 		private TextMeshProUGUI _skillName;
 		private TextMeshProUGUI _skillDescription;
 		private Image _heroImage;
-		private Button _firstSkill;
-		private Button _secondSkill;
+        private List<AbilityInstance> _abilities;
 		private Hero _heroData;
 
         public void Init()
@@ -47,7 +49,7 @@ namespace LoomNetwork.CZB
 			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-			_continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<ButtonShiftingContent>();
+			_continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
 			_continueButton.onClick.AddListener(CloseButtonHandler);
 
 			_title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
@@ -58,22 +60,17 @@ namespace LoomNetwork.CZB
 
 			_heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
 
-			_firstSkill = _abilitiesGroup.transform.GetChild (0).GetChild (2).GetComponent<Button> ();
-			_secondSkill = _abilitiesGroup.transform.GetChild (1).GetChild (2).GetComponent<Button> ();
-
-			_firstSkill.onClick.AddListener(delegate {
-				SkillSelectOnClickHandler (_firstSkill);
-			});
-
-			_secondSkill.onClick.AddListener(delegate {
-				SkillSelectOnClickHandler (_secondSkill);
-			});
-
             Hide();
         }
-			
+
 		public void Dispose()
 		{
+		    foreach (AbilityInstance abilityInstance in _abilities)
+		    {
+		        abilityInstance.Dispose();
+		    }
+
+            _abilities.Clear();
 		}
 
         public void CloseButtonHandler()
@@ -100,7 +97,7 @@ namespace LoomNetwork.CZB
         public void Show(object data)
 		{
 			FillInfo ((Hero) data);
-			SkillSelectOnClickHandler (_firstSkill);
+		    _abilities[0].IsSelected = true;
             Show();
         }
 
@@ -109,27 +106,94 @@ namespace LoomNetwork.CZB
 
         }
 
-		private void SkillSelectOnClickHandler (Button _skillButton) {
-			HeroSkill skill = _heroData.skills [_skillButton.transform.parent.GetSiblingIndex()];
-			_skillName.text = skill.title;
-			_skillDescription.text = skill.description;
-
-			for (int i = 0; i < _abilitiesGroup.transform.childCount; i++) {
-				Transform item = _abilitiesGroup.transform.GetChild (i);
-				if (item == _skillButton.transform.parent) {
-					item.GetChild (0).gameObject.SetActive (true);
-				} else {
-					item.GetChild (0).gameObject.SetActive (false);
-				}
-			}
-		}
-
 		private void FillInfo (Hero heroData) {
 			_heroData = heroData;
 			_heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/Heroes/hero_" + heroData.element.ToLower ());
 			_heroImage.SetNativeSize ();
-			_abilitiesGroup.transform.GetChild(0).transform.GetChild(2).GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/UI/ICons/" + heroData.skills[0].iconPath);
-			_abilitiesGroup.transform.GetChild(1).transform.GetChild(2).GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/UI/ICons/" + heroData.skills[1].iconPath);
+
+            _abilities = new List<AbilityInstance>();
+		    for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+		    {
+		        HeroSkill skill = heroData.skills[0];
+		        if (i < heroData.skills.Count)
+		        {
+		            skill = heroData.skills[i];
+		        }
+                _abilities.Add(new AbilityInstance(_abilitiesGroup.transform, skill));
+		    }
+
+		    foreach (AbilityInstance abilityInstance in _abilities)
+		    {
+		        abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
+		    }
 		}
+
+        private void AbilityInstanceOnSelectionChanged(AbilityInstance ability) {
+            _skillName.text = ability.Skill.title;
+            _skillDescription.text = ability.Skill.description;
+        }
+
+        private class AbilityInstance : IDisposable
+        {
+            public GameObject SelfObject;
+            public HeroSkill Skill;
+
+            public event Action<AbilityInstance> SelectionChanged;
+
+            private ILoadObjectsManager _loadObjectsManager;
+            private Toggle _abilityToggle;
+            private Image _glowImage;
+            private Image _abilityIconImage;
+            private bool _isSelected;
+
+            public bool IsSelected
+            {
+                get
+                {
+                    return _isSelected;
+                }
+                set
+                {
+                    _isSelected = value;
+                    _abilityToggle.isOn = value;
+                }
+            }
+
+            public AbilityInstance(Transform root, HeroSkill skill) {
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+                Skill = skill;
+                SelfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"));
+                SelfObject.transform.SetParent(root);
+
+                _abilityToggle = SelfObject.GetComponent<Toggle>();
+                _abilityToggle.group = root.GetComponent<ToggleGroup>();
+
+                _glowImage = SelfObject.transform.Find("Glow").GetComponent<Image>();
+                _abilityIconImage = SelfObject.transform.Find("AbilityIcon").GetComponent<Image>();
+
+                _abilityToggle.onValueChanged.AddListener(OnToggleValueChanged);
+
+                if (Skill != null)
+                {
+                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.iconPath);
+                } else
+                {
+                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
+                    _abilityToggle.interactable = false;
+                }
+            }
+
+            private void OnToggleValueChanged(bool selected) {
+                _isSelected = selected;
+                _glowImage.gameObject.SetActive(selected);
+
+                SelectionChanged?.Invoke(this);
+            }
+
+            public void Dispose() {
+                MonoBehaviour.Destroy(SelfObject);
+            }
+        }
     }
 }
