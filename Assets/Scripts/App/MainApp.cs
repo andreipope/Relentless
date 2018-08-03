@@ -27,6 +27,7 @@ namespace LoomNetwork.CZB
 
         private void Awake()
         {
+            Application.targetFrameRate = 60;
             if(Instance != null)
             {
                 Destroy(gameObject);
