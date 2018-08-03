@@ -13,6 +13,8 @@
         {
           "title": "HARDEN",
           "skill": "HARDEN",
+		  "iconPath": "overlordability_earth",
+		  "description": "Add 2 Def to the Overlord.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
           "cost": 2,
@@ -23,6 +25,8 @@
         {
           "title": "STONESKIN",
           "skill": "STONE_SKIN",
+		  "iconPath": "overlordability_earth_stone_skin",
+		  "description": "Give a friendly zombie +1 Def.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
           "cost": 2,
@@ -47,6 +51,8 @@
         {
           "title": "Fire Bolt",
           "skill": "FIRE_BOLT",
+		  "iconPath": "overlordability_fire",
+		  "description": "Deal 1 damage to target.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -57,6 +63,8 @@
         {
           "title": "Fireball",
           "skill": "RABIES",
+		  "iconPath": "overlordability_fire_rabies",
+		  "description": "Give friendly zombie feral.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -81,6 +89,8 @@
         {
           "title": "Freeze target for 1 turn",
           "skill": "FREEZE",
+		  "iconPath": "overlordability_water",
+		  "description": "Freeze an enemy zombie.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -91,6 +101,8 @@
         {
           "title": "Ice bolt",
           "skill": "ICE_BOLT",
+		  "iconPath": "overlordability_water_ice_bolt",
+		  "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -115,6 +127,8 @@
         {
           "title": "PUSH",
           "skill": "PUSH",
+		  "iconPath": "overlordability_air_push",
+		  "description": "Return a friendly zombie to your hand.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
           "cost": 2,
@@ -125,6 +139,8 @@
         {
           "title": "DRAW",
           "skill": "DRAW",
+		  "iconPath": "overlordability_air_draw",
+		  "description": "Draw a card.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
           "cost": 2,
@@ -149,6 +165,8 @@
         {
           "title": "POISON DART",
           "skill": "POISON_DART",
+		  "iconPath": "overlordability_toxic",
+		  "description": "Deal 1 damage to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -159,6 +177,8 @@
         {
           "title": "Toxic power",
           "skill": "TOXIC_POWER",
+		  "iconPath": "overlordability_toxic_toxic_power",
+		  "description": "Deal 1 damage to a zombie and give it +1 Atk.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -185,6 +205,8 @@
         {
           "title": "HEALING TOUCH",
           "skill": "HEALING_TOUCH",
+		  "iconPath": "overlordability_life",
+		  "description": "Restore 2 Def to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -195,6 +217,8 @@
         {
           "title": "MEND",
           "skill": "MEND",
+		  "iconPath": "overlordability_life_mend",
+		  "description": "Restore 4 Def to your Overlord.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,

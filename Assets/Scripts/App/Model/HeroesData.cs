@@ -86,6 +86,8 @@ namespace LoomNetwork.CZB.Data
     {
         public string title;
         public string skill;
+		public string iconPath;
+		public string description;
         public List<Enumerators.SkillTargetType> skillTargetType;
         public int cooldown;
         public int initialCooldown;
