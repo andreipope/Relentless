@@ -39,11 +39,11 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK || !isAttacker)
                 return;
 
             Action(damage);

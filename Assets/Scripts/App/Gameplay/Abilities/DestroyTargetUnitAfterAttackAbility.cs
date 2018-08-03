@@ -28,11 +28,11 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void UnitOnAttackEventHandler(object from, int damage)
+        protected override void UnitOnAttackEventHandler(object from, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(from, damage);
-                
-            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+            base.UnitOnAttackEventHandler(from, damage, isAttacker);
+
+            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK || !isAttacker)
                 return;
 
             Action(from);

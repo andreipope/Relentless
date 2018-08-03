@@ -244,7 +244,9 @@ namespace LoomNetwork.CZB
                 card = otherPlayer.CardsInDeck[0];
 
             otherPlayer.RemoveCardFromDeck(card);
+            // player.AddCardToHandFromOpponentDeck(otherPlayer, card);
             player.AddCardToHand(card);
+
         }
 
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
@@ -752,6 +754,13 @@ namespace LoomNetwork.CZB
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
                 }, null, animationDuration);
             }
+        }
+
+        public BoardCard GetBoardCard(WorkingCard card)
+        {
+            var boardCard = CreateBoardCard(card);
+
+            return boardCard;
         }
     }
 }

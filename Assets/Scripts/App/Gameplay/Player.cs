@@ -39,6 +39,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
+        private AnimationsController _animationsController;
 
         private int _goo;
         private int _gooOnCurrentTurn;
@@ -175,6 +176,7 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _animationsController = _gameplayManager.GetController<AnimationsController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -295,6 +297,15 @@ namespace LoomNetwork.CZB
             HandChangedEvent?.Invoke(CardsInHand.Count);
 
             return cardObject;
+        }
+
+        public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)
+        {
+            CardsInHand.Add(card);
+
+            _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+
+            HandChangedEvent?.Invoke(CardsInHand.Count);
         }
 
         public void RemoveCardFromHand(WorkingCard card, bool silent = false)
