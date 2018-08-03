@@ -25,11 +25,11 @@ namespace LoomNetwork.CZB
 
         private GameObject _selfPage;
 
-        private Button _buttonBuy,
-                                _buttonOpen,
-                                _buttonBack;
+        private ButtonShiftingContent _buttonBuy,
+                                _buttonOpen;
         private Button  _buttonArrowLeft,
-                        _buttonArrowRight;
+                        _buttonArrowRight,
+                        _buttonBack;
 
 		private TextMeshProUGUI _cardCounter;
 
@@ -44,11 +44,20 @@ namespace LoomNetwork.CZB
 
 		private GameObject _cardSetsIcons;
 
-		private int numPages;
-		private int currentPage;
+        private int _numSets,
+                    _currentSet,
+                    _currentElementPage,
+                    _numElementPages;
 
-        private int numSets;
-        private int currentSet;
+        private Toggle _airToggle,
+                        _earthToggle,
+                        _fireToggle,
+                        _waterToggle,
+                        _toxicTogggle,
+                        _lifeToggle,
+                        _itemsToggle;
+        private ToggleGroup _toggleGroup;
+
 
 
         private CardInfoPopupHandler _cardInfoPopupHandler;
@@ -73,15 +82,24 @@ namespace LoomNetwork.CZB
 
             gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
-			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<Button>();
-			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<Button>();
-			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<Button>();
-            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
-            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
+			_buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
+			_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<ButtonShiftingContent>();
+			_buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonArrowLeft = _selfPage.transform.Find("Button_ArrowLeft").GetComponent<Button>();
+            _buttonArrowRight = _selfPage.transform.Find("Button_ArrowRight").GetComponent<Button>();
 
-			_cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
+            _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
+            _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
+            _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
+            _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
+            _toxicTogggle = _selfPage.transform.Find("ElementsToggles/Toxic").GetComponent<Toggle>();
+            _fireToggle = _selfPage.transform.Find("ElementsToggles/Fire").GetComponent<Toggle>();
+            _earthToggle = _selfPage.transform.Find("ElementsToggles/Earth").GetComponent<Toggle>();
+            _itemsToggle = _selfPage.transform.Find("ElementsToggles/Items").GetComponent<Toggle>();
 
-			_cardSetsIcons = _selfPage.transform.Find ("Panel_Header/Icons").gameObject;
+            _cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
+
+			_cardSetsIcons = _selfPage.transform.Find ("ElementsToggles").gameObject;
 
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
@@ -89,12 +107,13 @@ namespace LoomNetwork.CZB
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
-			Button[] iconButtons = _cardSetsIcons.GetComponentsInChildren<Button> ();
-			foreach (Button item in iconButtons) {
-				item.onClick.AddListener (delegate {
-					iconSetButtonClick (item);
-				});
-			}
+            _airToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
+            _lifeToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
+            _waterToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER); });
+            _toxicTogggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC); });
+            _fireToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE); });
+            _earthToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH); });
+            _itemsToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM); });
 
             //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
@@ -166,9 +185,9 @@ namespace LoomNetwork.CZB
         }
 
 		private void iconSetButtonClick (Button toggleObj) {
-			currentSet = toggleObj.transform.GetSiblingIndex ();
-			currentPage = 0;
-			LoadCards (currentPage, currentSet);
+			_currentSet = toggleObj.transform.GetSiblingIndex ();
+            _currentElementPage = 0;
+			LoadCards (_currentElementPage, _currentSet);
 		}
 
         private void InitObjects()
@@ -180,7 +199,7 @@ namespace LoomNetwork.CZB
 				cardPositions.Add(placeholder);
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
+            _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
             //_cardSetsSlider.value = 0;
@@ -196,7 +215,14 @@ namespace LoomNetwork.CZB
             gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
         }
 
-#region Buttons Handlers
+        #region Buttons Handlers
+
+        private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _currentSet = (int)type;
+            LoadCards(0, (int)type);
+        }
 
         private void ChangeStatePopup(bool isStart)
         {
@@ -207,15 +233,7 @@ namespace LoomNetwork.CZB
             _buttonArrowRight.interactable = !isStart;
             _buttonBack.interactable = !isStart;
         }
-
-        private void CardSetsSliderOnValueChangedHandler(float value)
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            currentPage = 0;
-            currentSet = (int)value;
-            LoadCards(0, (int)value);
-        }
-
+ 
         private void BuyButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -245,59 +263,56 @@ namespace LoomNetwork.CZB
 		}
 
 
-		#endregion
+        #endregion
 
         public void MoveCardsPage(int direction)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
 
-            currentPage += direction;
+            _currentElementPage += direction;
 
-            if (currentPage < 0)
+            if (_currentElementPage < 0)
             {
-                currentSet += direction;
+                _currentSet += direction;
 
-                if (currentSet < 0)
+                if (_currentSet < 0)
                 {
-                    currentSet = numSets - 1;
+                    _currentSet = _numSets - 1;
                     CalculateNumberOfPages();
-                    currentPage = numPages - 1;
+                    _currentElementPage = _numElementPages - 1;
                 }
                 else
                 {
                     CalculateNumberOfPages();
 
-                    currentPage = numPages - 1;
+                    _currentElementPage = _numElementPages - 1;
 
-                    currentPage = currentPage < 0 ? 0 : currentPage;
+                    _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
                 }
             }
-            else if (currentPage >= numPages)
+            else if (_currentElementPage >= _numElementPages)
             {
-                currentSet += direction;
+                _currentSet += direction;
 
-                if (currentSet >= numSets)
+                if (_currentSet >= _numSets)
                 {
-                    currentSet = 0;
-                    currentPage = 0;
+                    _currentSet = 0;
+                    _currentElementPage = 0;
                 }
                 else
                 {
-                    currentPage = 0;
+                    _currentElementPage = 0;
                 }
             }
 
             CalculateNumberOfPages();
-
-            //_cardSetsSlider.value = currentSet;
-
-            LoadCards(currentPage, currentSet);
+            LoadCards(_currentElementPage, _currentSet);
         }
 
 		private void highlightCorrectIcon () {
 			for (int i = 0; i < _cardSetsIcons.transform.childCount; i++) {
 				GameObject c = _cardSetsIcons.transform.GetChild (i).GetChild (0).gameObject;
-				if (i == currentSet) {
+				if (i == _currentSet) {
 					c.SetActive (true);
 				} else {
 					c.SetActive (false);
@@ -308,7 +323,7 @@ namespace LoomNetwork.CZB
 
         private void CalculateNumberOfPages()
         {
-            numPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
+            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[_currentSet].cards.Count / (float)cardPositions.Count);
         }
 
         public void OnNextPageButtonPressed()

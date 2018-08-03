@@ -29,31 +29,25 @@ namespace LoomNetwork.CZB
 
         private TMP_InputField _deckNameInputField;
 
-        private Button _buttonBack,
-                                //_buttonBuy,
-                                //_buttonOpen,
+        private ButtonShiftingContent _buttonBuy,
                                 _buttonSave,
                                 _buttonArmy;
         private Button _buttonArmyArrowLeft,
                        _buttonArmyArrowRight,
                         _buttonHordeArrowLeft,
-                       _buttonHordeArrowRight;
-
-        //private ScrollRect _cardsListScrollRect;
+                       _buttonHordeArrowRight,
+                        _buttonBack;
 
         private TMP_Text _cardAmountText;
 
         private Deck _currentDeck;
 
-        // private Slider _cardSetsSlider;
-
-        private int _numElementPages,
+        private int _numSets, 
+                    _currentSet, 
                     _currentElementPage,
+                    _numElementPages,
                     _numHordePages,
                     _currentHordePage;
-
-        private int _numSets;
-        private int _currentSet;
 
         private Toggle _airToggle,
                         _earthToggle,
@@ -63,19 +57,14 @@ namespace LoomNetwork.CZB
                         _lifeToggle,
                         _itemsToggle;
 
-        //private List<Transform> cardPositions;
-
-        private GameObject _cardCreaturePrefab;
-        private GameObject _cardSpellPrefab;
-        //private GameObject _cardPlaceholdersPrefab;
-        //private GameObject _cardListContent;
-
-        private GameObject _backgroundCanvasPrefab;
+        private GameObject _cardCreaturePrefab,
+                            _cardSpellPrefab,
+                            _backgroundCanvasPrefab;
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId;
-        private int _currentHeroId;
+        private int _currentDeckId, 
+                    _currentHeroId;
 
         private const int CARDS_PER_PAGE = 5;
         private Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
@@ -149,11 +138,10 @@ namespace LoomNetwork.CZB
 
             _deckNameInputField = _selfPage.transform.Find("DeckTitleInputText").GetComponent<TMP_InputField>();
 
-            _buttonBack = _selfPage.transform.Find("BackButton").GetComponent<Button>();
-            //_buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
-            //_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
-            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<Button>();
-            _buttonArmy = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
+            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<ButtonShiftingContent>();
+            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
             _buttonArmyArrowLeft = _selfPage.transform.Find("Army/ArrowLeftButton").GetComponent<Button>();
             _buttonArmyArrowRight = _selfPage.transform.Find("Army/ArrowRightButton").GetComponent<Button>();
             _armyCardsContainer = _selfPage.transform.Find("Army/Cards").GetComponent<RectTransform>();
@@ -164,13 +152,10 @@ namespace LoomNetwork.CZB
             _hordeCardsContainer = _selfPage.transform.Find("Horde/Cards").GetComponent<RectTransform>();
             _hordeScrollNotifier = _selfPage.transform.Find("Horde/ScrollArea").GetComponent<SimpleScrollNotifier>();
 
-            //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
-
             _buttonBack.onClick.AddListener(BackButtonHandler);
-            //_buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonSave.onClick.AddListener(SaveButtonHandler);
             _buttonArmy.onClick.AddListener(ArmyButtonHandler);
-            //_buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
 
             _airToggle.onValueChanged.AddListener((state) => { if(state)ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
             _lifeToggle.onValueChanged.AddListener((state) => { if(state)ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
@@ -321,7 +306,6 @@ namespace LoomNetwork.CZB
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-          //  _currentElementPage = 0;
             _currentSet = (int)type;
             LoadCards(0, (int)type);
         }
@@ -334,11 +318,11 @@ namespace LoomNetwork.CZB
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
-        //private void BuyButtonHandler()
-        //{
-        //    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-        //    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
-        //}
+        private void BuyButtonHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
+        }
 
         private void ArmyButtonHandler()
         {

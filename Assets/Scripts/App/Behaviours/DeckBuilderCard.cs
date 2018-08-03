@@ -1,8 +1,7 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
 using UnityEngine;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Data;
@@ -10,49 +9,24 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class DeckBuilderCard : MonoBehaviour, IPointerClickHandler, IScrollHandler
+    public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
         public DeckEditingPage scene;
         public Card card;
         public bool isActive;
         public bool isHordeItem = false;
-
-        public float doubleClickDelay = 0.3f;
-
-        private float _lastClickTime;
-        private int _clickCount;
+        private MultiPointerClickHandler _multiPointerClickHandler;
 
         private void Awake()
         {
             isActive = true;
+            _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
+            _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
+            _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
         }
 
-        private void Update() {
-            if (_clickCount == 1 && Time.unscaledTime > _lastClickTime + doubleClickDelay)
-            {
-                SingleClickAction();
-                _clickCount = 0;
-            }
-        }
-
-        public void OnPointerClick(PointerEventData eventData) {
-            if (_clickCount == 0 || Time.unscaledTime - _lastClickTime < doubleClickDelay)
-            {
-                _clickCount++;
-                _lastClickTime = Time.unscaledTime;
-            } else
-            {
-                _lastClickTime = Time.unscaledTime;
-                _clickCount = 1;
-            }
-
-            if (_clickCount == 2)
-            {
-                DoubleClickAction();
-
-                _lastClickTime = Time.unscaledTime;
-                _clickCount = 0;
-            }
+        public void OnScroll(PointerEventData eventData) {
+            scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
         }
 
         private void SingleClickAction() {
@@ -64,10 +38,6 @@ namespace LoomNetwork.CZB
                 scene.AddCardToDeck(this, card);
             else
                 scene.RemoveCardFromDeck(this, card);
-        }
-
-        public void OnScroll(PointerEventData eventData) {
-            scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
         }
     }
 }

@@ -310,6 +310,8 @@ namespace LoomNetwork.CZB
             if (value == 0)
                 return;
             DamageDebuffUntillEndOfTurn = value;
+            if (CurrentDamage + DamageDebuffUntillEndOfTurn < 0)
+                DamageDebuffUntillEndOfTurn += CurrentDamage + DamageDebuffUntillEndOfTurn;
             CurrentDamage += DamageDebuffUntillEndOfTurn;
             Debug.Log(DamageDebuffUntillEndOfTurn);
         }
@@ -320,7 +322,7 @@ namespace LoomNetwork.CZB
                 return;
 
             HPDebuffUntillEndOfTurn = value;
-            CurrentHP -= HPDebuffUntillEndOfTurn;
+            CurrentHP += HPDebuffUntillEndOfTurn;
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -793,14 +795,14 @@ namespace LoomNetwork.CZB
 
             CancelTargetingArrows();
 
-            if (DamageDebuffUntillEndOfTurn > 0)
+            if (DamageDebuffUntillEndOfTurn != 0)
             {
-                CurrentDamage += DamageDebuffUntillEndOfTurn;
+                CurrentDamage -= DamageDebuffUntillEndOfTurn;
                 DamageDebuffUntillEndOfTurn = 0;
             }
-            if (HPDebuffUntillEndOfTurn > 0)
+            if (HPDebuffUntillEndOfTurn != 0)
             {
-                CurrentHP += HPDebuffUntillEndOfTurn;
+                CurrentHP -= HPDebuffUntillEndOfTurn;
                 HPDebuffUntillEndOfTurn = 0;
             }       
         }
