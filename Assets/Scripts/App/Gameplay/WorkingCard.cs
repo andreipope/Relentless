@@ -23,6 +23,8 @@ namespace LoomNetwork.CZB
                    health,
                    damage;
 
+        public int initialCost;
+
         public Enumerators.CardType type;
 
         public bool IsPlayable { get; set; }
@@ -38,6 +40,7 @@ namespace LoomNetwork.CZB
             initialDamage = libraryCard.damage;
             health = initialHealth;
             damage = initialDamage;
+            initialCost = libraryCard.cost;
 
             type = libraryCard.cardType;
 

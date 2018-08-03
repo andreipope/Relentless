@@ -148,7 +148,9 @@ namespace LoomNetwork.CZB
             }
 
             CardDistribution = false;
-            
+
+            _gameplayManager.CurrentPlayer.ThrowOnHandChanged();
+
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck = _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
@@ -304,6 +306,8 @@ namespace LoomNetwork.CZB
             handCard.CheckStatusOfHighlight();
             boardCard.transform.localScale = Vector3.one * .3f;
 
+            _abilitiesController.CallAbilitiesInHand(boardCard, card);
+
             return boardCard;
         }
 
@@ -314,6 +318,8 @@ namespace LoomNetwork.CZB
             go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
 
             _battlegroundController.opponentHandCards.Add(go);
+
+            _abilitiesController.CallAbilitiesInHand(null, card);
 
             return go;
         }
@@ -478,6 +484,8 @@ namespace LoomNetwork.CZB
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
                 // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
 
+                player.ThrowPlayCardEvent(card.WorkingCard);
+
                 if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
                 {
                     int indexOfCard = 0;
@@ -505,7 +513,7 @@ namespace LoomNetwork.CZB
 
                     player.BoardCards.Insert(indexOfCard, boardUnit);
 
-                    _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
+                    //_ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
 
                     _timerManager.AddTimer((creat) =>
                     {
@@ -591,6 +599,8 @@ namespace LoomNetwork.CZB
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
 
+            player.ThrowPlayCardEvent(card);
+
             randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(() =>
             {
                 //GameClient.Get<ITimerManager>().AddTimer(DestroyRandomCard, new object[] { randomCard }, 1f, false);
@@ -657,7 +667,7 @@ namespace LoomNetwork.CZB
                 cardObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
         }
 
-        public void LowGooCostOfCardInHand(Player player, WorkingCard card = null)
+        public void LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
         {
             if (card == null && player.CardsInHand.Count > 0)
                 card = player.CardsInHand[UnityEngine.Random.Range(0, player.CardsInHand.Count)];
@@ -669,13 +679,29 @@ namespace LoomNetwork.CZB
             {
                 var boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
 
-                boardCard.SetCardCost(Mathf.Clamp(boardCard.manaCost - 1, 0, boardCard.manaCost));
+                boardCard.SetCardCost(Mathf.Clamp(boardCard.manaCost - value, 0, boardCard.manaCost));
             }
             else
             {
-                card.libraryCard.cost = Mathf.Clamp(card.libraryCard.cost - 1, 0, card.libraryCard.cost);
+                card.libraryCard.cost = Mathf.Clamp(card.libraryCard.cost - value, 0, card.libraryCard.cost);
             }
         }
+
+        public void SetGooCostOfCardInHand(Player player, WorkingCard card, int value, BoardCard boardCard = null)
+        {
+            if (player.IsLocalPlayer)
+            {
+                if (boardCard == null)
+                    boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
+
+                boardCard.SetCardCost(Mathf.Clamp(value, 0, 99));
+            }
+            else
+            {
+                card.libraryCard.cost = Mathf.Clamp(value, 0, 99);
+            }
+        }
+
 
         public string GetSetOfCard(Card card)
         {

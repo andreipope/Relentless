@@ -53,10 +53,12 @@ namespace LoomNetwork.CZB
         public Enumerators.CardKind cardKind;
 
         public Data.Card cardOwnerOfAbility;
+        public WorkingCard mainWorkingCard;
 
         public BoardUnit abilityUnitOwner;
         public Player playerCallerOfAbility;
         public BoardSpell boardSpell;
+        public BoardCard boardCard;
 
         public BoardUnit targetUnit;
         public Player targetPlayer;
@@ -160,19 +162,19 @@ namespace LoomNetwork.CZB
             playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if (this.cardKind == Enumerators.CardKind.CREATURE)
+            if (this.cardKind == Enumerators.CardKind.CREATURE && abilityUnitOwner != null)
             {
-				abilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
+                abilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
                 abilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
                 abilityUnitOwner.UnitHPChangedEvent += UnitHPChangedEventHandler;
                 abilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
                 if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
-                  //  boardCreature.Card.ConnectAbility((uint)abilityType);
+                    //  boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
             }
-            else if (this.cardKind == Enumerators.CardKind.SPELL)
+            else if (this.cardKind == Enumerators.CardKind.SPELL && boardSpell != null)
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
 
             if (playerCallerOfAbility.IsLocalPlayer)

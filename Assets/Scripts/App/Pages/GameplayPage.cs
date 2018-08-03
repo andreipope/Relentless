@@ -263,14 +263,6 @@ namespace LoomNetwork.CZB
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
-
-            /*
-            _timerManager.AddTimer((x) =>
-            {
-                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { currentPlayerHero, currentOpponentHero });
-            }, null, 4f);
-            */
-
             _isPlayerInited = true;
         }
 

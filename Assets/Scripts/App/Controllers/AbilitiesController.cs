@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner)
+        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner, WorkingCard workingCard)
         {
             lock (_lock)
             {
@@ -88,11 +88,20 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.activityId = activeAbility.id;
                 activeAbility.ability.playerCallerOfAbility = caller;
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
+                activeAbility.ability.mainWorkingCard = workingCard;
 
-                if (kind == Enumerators.CardKind.CREATURE)
-                    activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
-                else
-                    activeAbility.ability.boardSpell = boardObject as BoardSpell;
+                if (boardObject != null)
+                {
+                    if (boardObject is BoardCard)
+                        activeAbility.ability.boardCard = boardObject as BoardCard;
+                    else
+                    { 
+                        if (kind == Enumerators.CardKind.CREATURE)
+                            activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
+                        else
+                            activeAbility.ability.boardSpell = boardObject as BoardSpell;
+                    }
+                }
 
                 _activeAbilities.Add(activeAbility);
 
@@ -264,7 +273,9 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
                     ability = new DestroyTargetUnitAfterAttackAbility(cardKind, abilityData);
                     break;
-                    
+                case Enumerators.AbilityType.COSTS_LESS_IF_CARD_TYPE_IN_HAND:
+                    ability = new CostsLessIfCardTypeInHandAbility(cardKind, abilityData);
+                    break;    
                 default:
                     break;
             }
@@ -405,7 +416,7 @@ namespace LoomNetwork.CZB
             ActiveAbility activeAbility = null;
             foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
             {
-                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.owner, libraryCard);
+                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.owner, libraryCard, workingCard);
                 //Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
                 if (IsAbilityCanActivateTargetAtStart(item))
                     canUseAbility = true;
@@ -606,10 +617,9 @@ namespace LoomNetwork.CZB
             return ability.playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
         }
 
-
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
         {
-            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.cardKind, target, owner, card);
+            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.cardKind, target, owner, card, null);
             activeAbility.ability.Activate();
         }
 
@@ -637,6 +647,13 @@ namespace LoomNetwork.CZB
             }
 
             return abilityData;
+        }
+
+        public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)
+        {
+            var handAbilities = card.libraryCard.abilities.FindAll(x => x.abilityCallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+            foreach (var ability in handAbilities)
+                CreateActiveAbility(ability, card.libraryCard.cardKind, boardCard, card.owner, card.libraryCard, card).ability.Activate();
         }
 
         public class ActiveAbility

@@ -185,7 +185,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     _battlegroundController.StopTurn();
-                }, null, 2f);
+                }, null, 1f);
                 return;
             }
 
@@ -207,21 +207,26 @@ namespace LoomNetwork.CZB
                     }
                 }, this);
 
-            }, null, 2f);
+            }, null, 1f);
         }
         // ai step 1
         private void PlayCardsFromHand()
         {
             foreach (var unit in GetUnitCardsInHand())
             {
+                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+                    break;
+
                 if (CardCanBePlayable(unit))
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
                     LetsThink();
+                    LetsThink();
+                    LetsThink();
                 }
 
-                if (Constants.DEV_MODE)
-                    break;
+              //  if (Constants.DEV_MODE)
+               //     break;
             }
 
             foreach (var spell in GetSpellCardsInHand())
@@ -230,12 +235,12 @@ namespace LoomNetwork.CZB
                 {
                     ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
                     LetsThink();
+                    LetsThink();
                 }
 
-                if (Constants.DEV_MODE)
-                    break;
+               // if (Constants.DEV_MODE)
+               //     break;
             }
-
             LetsThink();
             LetsThink();
         }
@@ -325,8 +330,6 @@ namespace LoomNetwork.CZB
                         }
                     }
                 }
-
-                LetsThink();
             }
             catch(System.Exception ex)
             {
@@ -354,6 +357,7 @@ namespace LoomNetwork.CZB
             });
 
             LetsThink();
+            LetsThink();
         }
 
         // some thinking - delay between general actions
@@ -375,7 +379,7 @@ namespace LoomNetwork.CZB
         private void PlayCardOnBoard(WorkingCard card)
         {
             var target = GetAbilityTarget(card);
-            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_CREATURES)
+            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_UNITS)
             {
                 //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                 //    if (target.Count == 0)
