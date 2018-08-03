@@ -42,9 +42,12 @@ namespace LoomNetwork.CZB
         {
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
+
+            if (!isAttacker)
+                return;
 
             _numberOfAttacksWas++;
 

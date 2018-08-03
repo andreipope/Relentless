@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB
     public class BoardUnit
     {
         public event Action UnitOnDieEvent;
-        public event Action<object, int> UnitOnAttackEvent;
+        public event Action<object, int, bool> UnitOnAttackEvent;
         public event Action<object> UnitGotDamageEvent;
 
         public event Action UnitHPChangedEvent;
@@ -1083,9 +1083,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void ThrowOnAttackEvent(object target, int damage)
+        public void ThrowOnAttackEvent(object target, int damage, bool isAttacker)
         {
-            UnitOnAttackEvent?.Invoke(target, damage);
+            UnitOnAttackEvent?.Invoke(target, damage, isAttacker);
         }
         public void ThrowOnDieEvent()
         {

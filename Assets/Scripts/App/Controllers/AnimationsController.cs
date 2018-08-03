@@ -86,5 +86,11 @@ namespace LoomNetwork.CZB
                 currentCreature.PlayArrivalAnimation();
             }
         }
+
+
+        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
+        {
+             //   if(toHand)
+        }
     }
 }

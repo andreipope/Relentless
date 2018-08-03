@@ -86,7 +86,7 @@ namespace LoomNetwork.CZB
                 attackedPlayer.HP -= damageAttacking;
             }
 
-            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking);
+            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking, true);
 
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
@@ -114,23 +114,25 @@ namespace LoomNetwork.CZB
                 //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 //additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
-                if ((!attackingUnit.AttackAsFirst && !attackedUnit.AttackAsFirst) || attackingUnit.AttackAsFirst)
+
+                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
+
+                if (attackedUnit.HasBuffShield)
                 {
-                    damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
+                    damageAttacking = 0;
+                    attackedUnit.UseShieldFromBuff();
+                }
 
-                    if (attackedUnit.HasBuffShield)
-                    {
-                        damageAttacking = 0;
-                        attackedUnit.UseShieldFromBuff();
-                    }
+                attackedUnit.CurrentHP -= damageAttacking;
 
-                    attackedUnit.CurrentHP -= damageAttacking;
+                _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
 
-                    _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
+                // if (damageAttacking > 0)
+                attackedUnit.ThrowEventGotDamage(attackingUnit);
+                attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking, true);
 
-                    // if (damageAttacking > 0)
-                    attackedUnit.ThrowEventGotDamage(attackingUnit);
-
+                if ((attackedUnit.CurrentHP > 0 && attackingUnit.AttackAsFirst) || !attackingUnit.AttackAsFirst)
+                {
                     damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
                     if (attackingUnit.HasBuffShield)
@@ -146,11 +148,10 @@ namespace LoomNetwork.CZB
                     //  if (damageAttacked > 0)
                     attackingUnit.ThrowEventGotDamage(attackedUnit);
 
+                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked, false);
+                }
 
-                    attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
-                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked);
-
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
 new object[]
 {
                 attackingUnit,
@@ -158,56 +159,8 @@ new object[]
                 attackedUnit,
                 damageAttacked
 }));
-                }
-                else if (attackedUnit.AttackAsFirst)
-                {
-                    damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
-                    if (attackingUnit.HasBuffShield)
-                    {
-                        damageAttacked = 0;
-                        attackingUnit.UseShieldFromBuff();
-                    }
 
-                    attackingUnit.CurrentHP -= damageAttacked;
-
-                    _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
-
-                    // if (damageAttacked > 0)
-                    attackingUnit.ThrowEventGotDamage(attackedUnit);
-
-                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked);
-
-                    if (attackingUnit.CurrentHP > 0)
-                    {
-                        damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
-
-                        if (attackedUnit.HasBuffShield)
-                        {
-                            damageAttacking = 0;
-                            attackedUnit.UseShieldFromBuff();
-                        }
-
-                        attackedUnit.CurrentHP -= damageAttacking;
-
-                        _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
-
-                        //  if (damageAttacking > 0)
-                        attackedUnit.ThrowEventGotDamage(attackingUnit);
-
-                        attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
-                    }
-
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
-new object[]
-{
-                attackedUnit,
-                damageAttacked,
-                attackingUnit,
-                damageAttacking
-}));
-
-                }
 
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             }

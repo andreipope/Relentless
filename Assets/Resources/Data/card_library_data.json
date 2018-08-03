@@ -466,7 +466,7 @@
           "kind": "CREATURE",
           "name": "Jetter",
           "cost": 4,
-          "description": "<b>Attack:</b> 1 damage to a zombie.",
+          "description": "<b>Entry:</b> 1 damage to a zombie.",
           "flavorText": "Most welcomed during hot summer days on the busy city streets",
           "picture": "Jetter",
           "damage": 3,
@@ -477,7 +477,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_attack",
+              "callType": "at_start",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
