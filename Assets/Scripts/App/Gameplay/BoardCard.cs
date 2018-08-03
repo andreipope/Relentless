@@ -324,15 +324,19 @@ namespace LoomNetwork.CZB
             _cardsController.ReturnCardToDeck(this, () =>
             {
                 WorkingCard.owner.DistributeCard();
-            });  
+            });
         }
 
         // editing deck page
-        public void SetAmountOfCardsInEditingPage(DeckEditingPage page, bool init, uint maxCopies, int amount)
+        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount)
         {
             cardsAmountDeckEditing = amount;
             if (init)
             {
+                foreach (Transform child in _parentOfEditingGroupUI)
+                {
+                    MonoBehaviour.Destroy(child.gameObject);
+                }
                 foreach (var item in _elementSlotsOfCards)
                     MonoBehaviour.Destroy(item.selfObject);
                 _elementSlotsOfCards.Clear();

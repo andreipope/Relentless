@@ -50,10 +50,8 @@ namespace LoomNetwork.CZB
         private int numSets;
         private int currentSet;
 
-        private BoardCard _selectedBoardCard;
-        private BoardCard _selectedCollectionCard;
 
-        private bool _isPopupChangedStart;
+        private CardInfoPopupHandler _cardInfoPopupHandler;
 
         private List<BoardCard> _createdBoardCards;
 
@@ -63,6 +61,12 @@ namespace LoomNetwork.CZB
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
 			_dataManager = GameClient.Get<IDataManager>();
+
+            _cardInfoPopupHandler = new CardInfoPopupHandler();
+            _cardInfoPopupHandler.Init();
+            _cardInfoPopupHandler.StateChanging += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
+            _cardInfoPopupHandler.StateChanged += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
+            _cardInfoPopupHandler.Closing += UpdateGooValue;
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -85,6 +89,13 @@ namespace LoomNetwork.CZB
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
+			Button[] iconButtons = _cardSetsIcons.GetComponentsInChildren<Button> ();
+			foreach (Button item in iconButtons) {
+				item.onClick.AddListener (delegate {
+					iconSetButtonClick (item);
+				});
+			}
+
             //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
 
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -102,13 +113,10 @@ namespace LoomNetwork.CZB
         {
             if (_selfPage.activeInHierarchy)
             {
-				if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf &&  !_uiManager.GetPopup<WarningPopup>().Self.activeSelf)
+                _cardInfoPopupHandler.Update();
+                if (_cardInfoPopupHandler.IsInteractable)
                 {
-                    if (!_isPopupChangedStart && _selectedBoardCard != null)
-                    {
-                        ClosePopupInfo();
-                    }
-                    if (!_isPopupChangedStart && Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButtonDown(0))
                     {
                         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                         var hit = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -118,7 +126,7 @@ namespace LoomNetwork.CZB
                             {
                                 if (hit.collider.gameObject == _createdBoardCards[i].gameObject)
                                 {
-                                    CardSelected(_createdBoardCards[i]);
+                                    _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
                                 }
                             }
                         }
@@ -147,6 +155,7 @@ namespace LoomNetwork.CZB
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
             ResetBoardCards();
+            _cardInfoPopupHandler.Dispose();
         }
 
         private void ResetBoardCards()
@@ -155,6 +164,12 @@ namespace LoomNetwork.CZB
                 item.Dispose();
             _createdBoardCards.Clear();
         }
+
+		private void iconSetButtonClick (Button toggleObj) {
+			currentSet = toggleObj.transform.GetSiblingIndex ();
+			currentPage = 0;
+			LoadCards (currentPage, currentSet);
+		}
 
         private void InitObjects()
         {
@@ -174,26 +189,7 @@ namespace LoomNetwork.CZB
 			_cardCounter.text = _dataManager.CachedCollectionData.cards.Count.ToString () + "/" + _dataManager.CachedCardsLibraryData.Cards.Count.ToString ();
         }
 
-        private void ClosePopupInfo()
-        {
-            ChangeStatePopup(true);
 
-			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.name).amount;
-			_selectedCollectionCard.UpdateAmount(amount);
-
-            UpdateGooValue();
-
-			Sequence sequence = DOTween.Sequence();
-            sequence.Append(_selectedBoardCard.transform.DOScale(_selectedCollectionCard.transform.localScale, .3f));
-			sequence.Join(_selectedBoardCard.transform.DOMove(_selectedCollectionCard.transform.position, .3f));
-			sequence.Join(_selectedBoardCard.transform.DORotate(_selectedCollectionCard.transform.eulerAngles, .3f));
-			sequence.OnComplete(() =>
-			{
-				MonoBehaviour.Destroy(_selectedBoardCard.gameObject);
-				_selectedBoardCard = null;
-                ChangeStatePopup(false);
-            });
-        }
 
         public void UpdateGooValue()
         {
@@ -202,40 +198,8 @@ namespace LoomNetwork.CZB
 
 #region Buttons Handlers
 
-        private void CardSelected(BoardCard card)
-        {
-            ChangeStatePopup(true);
-            _selectedCollectionCard = card;
-            _selectedBoardCard = new BoardCard(MonoBehaviour.Instantiate(card.gameObject));
-            _selectedBoardCard.gameObject.name = "CardPreview";
-            Utilites.SetLayerRecursively(_selectedBoardCard.gameObject, 11);
-
-			Sequence mySequence = DOTween.Sequence();
-			mySequence.Append(_selectedBoardCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
-			mySequence.Append(_selectedBoardCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
-
-			Sequence mySequence2 = DOTween.Sequence();
-			mySequence2.Append(_selectedBoardCard.transform.DOMove(new Vector3(-4.3f, 1.2f, 5), .4f));
-			mySequence2.Append(_selectedBoardCard.transform.DOMove(new Vector3(-4.3f, .8f, 5), .2f));
-
-			Sequence mySequence3 = DOTween.Sequence();
-			mySequence3.Append(_selectedBoardCard.transform.DOScale(new Vector3(.9f, .9f, .9f), .4f));
-			mySequence3.Append(_selectedBoardCard.transform.DOScale(new Vector3(.72f, .72f, .72f), .2f));
-            mySequence3.OnComplete(() =>
-            {
-                ChangeStatePopup(false);
-            });
-
-
-			_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
-            _uiManager.GetPopup<CardInfoPopup>().cardTransform = _selectedBoardCard.transform;
-
-            _createdBoardCards.Add(_selectedBoardCard);
-        }
-
         private void ChangeStatePopup(bool isStart)
         {
-            _isPopupChangedStart = isStart;
             //_cardSetsSlider.interactable = !isStart;
             _buttonBuy.interactable = !isStart;
             _buttonOpen.interactable = !isStart;
@@ -349,7 +313,7 @@ namespace LoomNetwork.CZB
 
         public void OnNextPageButtonPressed()
 		{
-			
+
 		}
 
 		public void LoadCards(int page, int setIndex)
@@ -389,8 +353,8 @@ namespace LoomNetwork.CZB
                     go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
                     boardCard = new SpellBoardCard(go);
                 }
-                
-               
+
+
 
                 var amount = cardData.amount;
                 boardCard.Init(card, amount);

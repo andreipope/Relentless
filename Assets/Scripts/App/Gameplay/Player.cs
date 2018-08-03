@@ -193,7 +193,7 @@ namespace LoomNetwork.CZB
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
-            nickname = _selfHero.name;
+            nickname = _selfHero.FullName;
             deckId = _gameplayManager.PlayerDeckId;
 
             _health = Constants.DEFAULT_PLAYER_HP;

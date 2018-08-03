@@ -37,6 +37,7 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+			_dataManager = GameClient.Get<IDataManager> ();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TermsPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
@@ -79,6 +80,8 @@ namespace LoomNetwork.CZB
 
         public void CloseButtonHandler()
         {
+			_dataManager.CachedUserLocalData.agreedTerms = true;
+			_dataManager.SaveAllCache ();
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             Hide();
         }

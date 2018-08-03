@@ -50,6 +50,8 @@ namespace LoomNetwork.CZB.Data
         public int heroId;
         public string icon;
         public string name;
+        public string shortDescription;
+        public string longDescription;
         public string element;
         public int experience;
         public int level;
@@ -58,6 +60,8 @@ namespace LoomNetwork.CZB.Data
         public List<HeroSkill> skills;
         public int primarySkill;
         public int secondarySkill;
+
+        public string FullName => $"{name}, {shortDescription}";
 
         public Hero()
         {
