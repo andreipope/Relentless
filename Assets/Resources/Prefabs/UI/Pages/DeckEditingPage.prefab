@@ -2239,8 +2239,7 @@ MonoBehaviour:
   m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9ebc016c0284b448b89f1cdb88416b4c, type: 2}
-  m_sharedMaterial: {fileID: 21866595372282448, guid: 9ebc016c0284b448b89f1cdb88416b4c,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1e3b5606de2954ed482596513167bd8a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2663,7 +2662,7 @@ MonoBehaviour:
   m_text: DECK NAME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9ebc016c0284b448b89f1cdb88416b4c, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: bc11c07e9ce016247b4398dbb9547583, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1e3b5606de2954ed482596513167bd8a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

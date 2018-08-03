@@ -399,5 +399,10 @@ namespace LoomNetwork.Internal
         {
             return new Vector3(position.x, position.z, position.y);
         }
+
+        public static Color SetAlpha(this Color color, float alpha) {
+            color.a = alpha;
+            return color;
+        }
     }
 }

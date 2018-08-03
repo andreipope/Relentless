@@ -113,8 +113,8 @@ namespace LoomNetwork.CZB
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.name = player.name;
-            _opponentOverlordNameText.name = opponent.name;
+            _playerOverlordNameText.name = player.FullName;
+            _opponentOverlordNameText.name = opponent.FullName;
 
             Debug.Log(player.element);
             _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.element.ToLower());

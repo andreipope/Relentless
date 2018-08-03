@@ -60,7 +60,6 @@ namespace LoomNetwork.CZB
         }
 
         private void DoubleClickAction() {
-            Debug.Log("double click");
             if (!isHordeItem)
                 scene.AddCardToDeck(this, card);
             else
