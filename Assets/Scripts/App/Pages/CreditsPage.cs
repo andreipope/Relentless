@@ -23,6 +23,7 @@ namespace LoomNetwork.CZB
         private GameObject _selfPage;
 
         private Button _buttonBack;
+        private ButtonShiftingContent _buttonThanks;
 
         private GameObject _creditListItemPrefab,
                            _creditSubsectionListItemPrefab;
@@ -52,13 +53,13 @@ namespace LoomNetwork.CZB
 
             _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
             _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
-            //_creditsListScroll.enabled = false;
-            _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks").GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonThanks.onClick.AddListener(BackButtonOnClickHandler);
 
             _dataManager.OnLoadCacheCompletedEvent += OnLoadCacheCompletedEventHandler;
-
             Hide();
         }
 
@@ -71,7 +72,7 @@ namespace LoomNetwork.CZB
         {
             if(_isActive)
             {
-                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 125;
+                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 70;
             }
         }
 
@@ -106,8 +107,8 @@ namespace LoomNetwork.CZB
                     credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].FullName, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].Post);
                     _credits.Add(credit);
                 }
-
             }
+            _buttonThanks.transform.parent.SetAsLastSibling();
         }
 
         private void OpenAlertDialog(string msg)

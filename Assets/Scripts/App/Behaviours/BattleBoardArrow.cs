@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
         {
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19 &&
                                                 _gameplayManager.TutorialStep != 28 &&
-                                                _gameplayManager.TutorialStep != 31))
+                                                _gameplayManager.TutorialStep != 32))
                 return;
 
             if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(player))

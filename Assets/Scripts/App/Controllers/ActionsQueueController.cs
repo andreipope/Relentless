@@ -106,6 +106,8 @@ namespace LoomNetwork.CZB
 
         private ITimerManager _timerManager;
 
+        private bool _actionDone = false;
+
         public Action<T, Action> action;
         public T parameter;
         public GameActionReport report;
@@ -121,11 +123,21 @@ namespace LoomNetwork.CZB
 
         public void DoAction()
         {
-            action?.Invoke(parameter, ActionDoneCallback);
+            try
+            {
+                action?.Invoke(parameter, ActionDoneCallback);
+            }
+            catch(Exception ex)
+            {
+                if(!_actionDone)
+                ActionDoneCallback();
+            }
         }
 
         private void ActionDoneCallback()
         {
+            _actionDone = true;
+
             //small delay between actions
             _timerManager.AddTimer((x) =>
             {

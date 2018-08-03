@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner)
+        public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner, WorkingCard workingCard)
         {
             lock (_lock)
             {
@@ -88,11 +88,20 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.activityId = activeAbility.id;
                 activeAbility.ability.playerCallerOfAbility = caller;
                 activeAbility.ability.cardOwnerOfAbility = cardOwner;
+                activeAbility.ability.mainWorkingCard = workingCard;
 
-                if (kind == Enumerators.CardKind.CREATURE)
-                    activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
-                else
-                    activeAbility.ability.boardSpell = boardObject as BoardSpell;
+                if (boardObject != null)
+                {
+                    if (boardObject is BoardCard)
+                        activeAbility.ability.boardCard = boardObject as BoardCard;
+                    else
+                    { 
+                        if (kind == Enumerators.CardKind.CREATURE)
+                            activeAbility.ability.abilityUnitOwner = boardObject as BoardUnit;
+                        else
+                            activeAbility.ability.boardSpell = boardObject as BoardSpell;
+                    }
+                }
 
                 _activeAbilities.Add(activeAbility);
 
@@ -264,7 +273,9 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
                     ability = new DestroyTargetUnitAfterAttackAbility(cardKind, abilityData);
                     break;
-                    
+                case Enumerators.AbilityType.COSTS_LESS_IF_CARD_TYPE_IN_HAND:
+                    ability = new CostsLessIfCardTypeInHandAbility(cardKind, abilityData);
+                    break;    
                 default:
                     break;
             }
@@ -347,8 +358,8 @@ namespace LoomNetwork.CZB
         {
             int value = 0;
 
-            var attackedCard = attacker.Card.libraryCard;
-            var attackerCard = attacked.Card.libraryCard;
+            var attackedCard = attacked.Card.libraryCard;
+            var attackerCard = attacker.Card.libraryCard;
 
             var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
@@ -387,9 +398,29 @@ namespace LoomNetwork.CZB
             return abils;
         }
 
-        public bool HasUnitTypeOnBoard(Player player, Enumerators.CardType type)
+        public bool HasUnitTypeOnBoard(WorkingCard workingCard, AbilityData ability)
         {
-            return player.BoardCards.FindAll(x => x.Card.type == type).Count > 0;
+            if (ability.abilityTargetTypes.Count == 0)
+                return false;
+
+            var opponent = workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            var player = workingCard.owner;
+
+            foreach (var target in ability.abilityTargetTypes)
+            {
+                if(target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    if (player.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                        return true;
+                }
+                else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
+                {
+                    if (opponent.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         public void CallAbility(Card libraryCard, BoardCard card, WorkingCard workingCard, Enumerators.CardKind kind, object boardObject, Action<BoardCard> action, bool isPlayer, Action onCompleteCallback, object target = null, HandBoardCard handCard = null)
@@ -405,7 +436,7 @@ namespace LoomNetwork.CZB
             ActiveAbility activeAbility = null;
             foreach (var item in libraryCard.abilities) //todo improve it bcoz can have queue of abilities with targets
             {
-                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.owner, libraryCard);
+                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.owner, libraryCard, workingCard);
                 //Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
                 if (IsAbilityCanActivateTargetAtStart(item))
                     canUseAbility = true;
@@ -438,10 +469,13 @@ namespace LoomNetwork.CZB
 
                 if (ability.targetCardType != Enumerators.CardType.NONE)
                 {
-                    if(!HasUnitTypeOnBoard(workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer, ability.targetCardType))
+                    if(!HasUnitTypeOnBoard(workingCard, ability))
                     {
                         CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+
                         onCompleteCallback?.Invoke();
+
+                        ResolveAllAbilitiesOnUnit(boardObject);
 
                         return;
                     }
@@ -606,10 +640,9 @@ namespace LoomNetwork.CZB
             return ability.playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
         }
 
-
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
         {
-            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.cardKind, target, owner, card);
+            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.cardKind, target, owner, card, null);
             activeAbility.ability.Activate();
         }
 
@@ -637,6 +670,13 @@ namespace LoomNetwork.CZB
             }
 
             return abilityData;
+        }
+
+        public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)
+        {
+            var handAbilities = card.libraryCard.abilities.FindAll(x => x.abilityCallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+            foreach (var ability in handAbilities)
+                CreateActiveAbility(ability, card.libraryCard.cardKind, boardCard, card.owner, card.libraryCard, card).ability.Activate();
         }
 
         public class ActiveAbility

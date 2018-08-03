@@ -25,6 +25,7 @@ namespace LoomNetwork.CZB
         public event Action<int> HandChangedEvent;
         public event Action<int> GraveyardChangedEvent;
         public event Action<int> BoardChangedEvent;
+        public event Action<WorkingCard> CardPlayedEvent;
 
         private GameObject _playerObject;
 
@@ -38,6 +39,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
+        private AnimationsController _animationsController;
 
         private int _goo;
         private int _gooOnCurrentTurn;
@@ -174,6 +176,7 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _animationsController = _gameplayManager.GetController<AnimationsController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -192,7 +195,7 @@ namespace LoomNetwork.CZB
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
-            nickname = _selfHero.name;
+            nickname = _selfHero.FullName;
             deckId = _gameplayManager.PlayerDeckId;
 
             _health = Constants.DEFAULT_PLAYER_HP;
@@ -294,6 +297,15 @@ namespace LoomNetwork.CZB
             HandChangedEvent?.Invoke(CardsInHand.Count);
 
             return cardObject;
+        }
+
+        public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)
+        {
+            CardsInHand.Add(card);
+
+            _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+
+            HandChangedEvent?.Invoke(CardsInHand.Count);
         }
 
         public void RemoveCardFromHand(WorkingCard card, bool silent = false)
@@ -441,6 +453,16 @@ namespace LoomNetwork.CZB
             _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
 
+        }
+
+        public void ThrowPlayCardEvent(WorkingCard card)
+        {
+            CardPlayedEvent?.Invoke(card);
+        }
+
+        public void ThrowOnHandChanged()
+        {
+            HandChangedEvent?.Invoke(CardsInHand.Count);
         }
 
         #region handlers

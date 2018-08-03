@@ -502,6 +502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1022427339}
   - component: {fileID: 1022427338}
+  - component: {fileID: 1022427340}
   m_Layer: 0
   m_Name: CameraUI_1
   m_TagString: Untagged
@@ -558,6 +559,21 @@ Transform:
   m_Father: {fileID: 1265724705}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1022427340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1022427337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1690312454, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 32
+  m_MaxRayIntersections: 0
 --- !u!1 &1027686444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,7 +1172,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Alpha 0.0.20.3
+  m_Text: Alpha 0.0.20.4
 --- !u!222 &1759763181
 CanvasRenderer:
   m_ObjectHideFlags: 0

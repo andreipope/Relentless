@@ -3,7 +3,9 @@
     {
       "heroId": 0,
       "icon": "icon",
-      "name": "Brakuus, The Guardian",
+      "name": "Brakuus",
+      "shortDescription": "The Guardian",
+      "longDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin mollis cursus magna, ac faucibus arcu laoreet eu. Donec ex urna, aliquet eu lacus quis, scelerisque rutrum ipsum. ",
       "element": "EARTH",
       "experience": 0,
       "level": 0,
@@ -11,6 +13,8 @@
         {
           "title": "HARDEN",
           "skill": "HARDEN",
+		  "iconPath": "overlordability_earth",
+		  "description": "Add 2 Def to the Overlord.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
           "cost": 2,
@@ -21,6 +25,8 @@
         {
           "title": "STONESKIN",
           "skill": "STONE_SKIN",
+		  "iconPath": "overlordability_earth_stone_skin",
+		  "description": "Give a friendly zombie +1 Def.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
           "cost": 2,
@@ -35,7 +41,9 @@
     {
       "heroId": 1,
       "icon": "icon",
-      "name": "Razu, The Fire Daemon",
+      "name": "Razu",
+      "shortDescription": "The Fire Daemon",
+      "longDescription": "Maecenas tristique ac magna vel dapibus. Quisque orci mi, varius id quam at, aliquam condimentum dui. Fusce a sollicitudin tortor. Donec aliquet aliquam aliquet. Suspendisse at aliquam ipsum.",
       "element": "FIRE",
       "experience": 0,
       "level": 0,
@@ -43,6 +51,8 @@
         {
           "title": "Fire Bolt",
           "skill": "FIRE_BOLT",
+		  "iconPath": "overlordability_fire",
+		  "description": "Deal 1 damage to target.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -53,6 +63,8 @@
         {
           "title": "Fireball",
           "skill": "RABIES",
+		  "iconPath": "overlordability_fire_rabies",
+		  "description": "Give friendly zombie feral.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -67,7 +79,9 @@
     {
       "heroId": 2,
       "icon": "icon",
-      "name": "Vash'Kala, The Ancient One",
+      "name": "Vash'Kala",
+      "shortDescription": "The Ancient One",
+      "longDescription": "Vestibulum purus justo, dictum vitae iaculis a, maximus ut lacus. Aenean et cursus magna. Ut sit amet eros sodales, consequat lorem egestas, placerat eros.",
       "element": "WATER",
       "experience": 0,
       "level": 0,
@@ -75,6 +89,8 @@
         {
           "title": "Freeze target for 1 turn",
           "skill": "FREEZE",
+		  "iconPath": "overlordability_water",
+		  "description": "Freeze an enemy zombie.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -85,6 +101,8 @@
         {
           "title": "Ice bolt",
           "skill": "ICE_BOLT",
+		  "iconPath": "overlordability_water_ice_bolt",
+		  "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -99,7 +117,9 @@
     {
       "heroId": 3,
       "icon": "icon",
-      "name": "Kalile, Tempest of Storms",
+      "name": "Kalile",
+      "shortDescription": "Tempest of Storms",
+      "longDescription": "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla auctor nisi id sem efficitur, eget finibus erat cursus. Integer pulvinar elit ac rutrum scelerisque. ",
       "element": "AIR",
       "experience": 0,
       "level": 0,
@@ -107,6 +127,8 @@
         {
           "title": "PUSH",
           "skill": "PUSH",
+		  "iconPath": "overlordability_air_push",
+		  "description": "Return a friendly zombie to your hand.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
           "cost": 2,
@@ -117,6 +139,8 @@
         {
           "title": "DRAW",
           "skill": "DRAW",
+		  "iconPath": "overlordability_air_draw",
+		  "description": "Draw a card.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
           "cost": 2,
@@ -131,7 +155,9 @@
     {
       "heroId": 4,
       "icon": "icon",
-      "name": "Mhalik, Lord of Pestilence",
+      "name": "Mhalik",
+      "shortDescription": "Lord of Pestilence",
+      "longDescription": "Maecenas lacus est, rutrum non massa sit amet, ultricies feugiat risus. Nam a ligula ex. Fusce semper, nibh sit amet maximus volutpat, orci eros tincidunt eros, vitae commodo magna nunc vitae.",
       "element": "TOXIC",
       "experience": 0,
       "level": 0,
@@ -139,6 +165,8 @@
         {
           "title": "POISON DART",
           "skill": "POISON_DART",
+		  "iconPath": "overlordability_toxic",
+		  "description": "Deal 1 damage to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -149,13 +177,15 @@
         {
           "title": "Toxic power",
           "skill": "TOXIC_POWER",
+		  "iconPath": "overlordability_toxic_toxic_power",
+		  "description": "Deal 1 damage to a zombie and give it +1 Atk.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
           "cooldown": 2,
           "initialCooldown": 2,
           "value": 1,
-          "attack": 2
+          "attack": 1
 
         }
       ],
@@ -165,7 +195,9 @@
     {
       "heroId": 5,
       "icon": "icon",
-      "name": "Valash, Natures Warden",
+      "name": "Valash",
+      "shortDescription": "Natures Warden",
+      "longDescription": "Vivamus sed tellus ac erat gravida tempor vel at mauris. Aliquam egestas eget dolor sed aliquet. Pellentesque aliquam vel eros id luctus. In iaculis orci sed aliquam pellentesque.",
       "element": "LIFE",
       "experience": 0,
       "level": 0,
@@ -173,6 +205,8 @@
         {
           "title": "HEALING TOUCH",
           "skill": "HEALING_TOUCH",
+		  "iconPath": "overlordability_life",
+		  "description": "Restore 2 Def to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,
@@ -183,6 +217,8 @@
         {
           "title": "MEND",
           "skill": "MEND",
+		  "iconPath": "overlordability_life_mend",
+		  "description": "Restore 4 Def to your Overlord.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
           "cost": 2,

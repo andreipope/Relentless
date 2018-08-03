@@ -109,9 +109,9 @@ namespace LoomNetwork.CZB
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

@@ -123,6 +123,8 @@ namespace LoomNetwork.CZB
                                  _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
                                  _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
+                                 _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
                                  _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -192,11 +194,12 @@ namespace LoomNetwork.CZB
 				_currentStep == 26 ||
                 _currentStep == 29 ||
                 _currentStep == 30 ||
-                _currentStep == 32 ||
+                _currentStep == 31 ||
                 _currentStep == 33 ||
                 _currentStep == 34 ||
                 _currentStep == 35 ||
-                _currentStep == 36
+                _currentStep == 36 ||
+                _currentStep == 37
                 )
                 NextStep();
             if (_currentStep == 11 && paused)
@@ -218,7 +221,7 @@ namespace LoomNetwork.CZB
             if (_currentStep == 11)
                 GameClient.Get<ITimerManager>().AddTimer((x) => { GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn(); }, null, 5f, false);
 
-            if (_currentStep != 31)
+            if (_currentStep != 32)
                 NextStepCommonEndActions();       
             else
                 GameClient.Get<ITimerManager>().AddTimer((x) => { NextStepCommonEndActions(); }, time:2f);
@@ -291,7 +294,7 @@ namespace LoomNetwork.CZB
                         NextStep();
                         break;
                 case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 31)
+                    if (_currentStep == 32)
                         NextStep();
                         break;
                     default:

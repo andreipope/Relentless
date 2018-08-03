@@ -74,7 +74,7 @@ namespace LoomNetwork.CZB
 
         private void SpawnMinion(Player owner)
         {
-            if (owner.BoardCards.Count >= Constants.MAX_BOARD_CREATURES)
+            if (owner.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
                 return;
 
             var libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();

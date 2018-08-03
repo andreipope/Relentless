@@ -1,60 +1,39 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
 using UnityEngine;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Data;
+using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class DeckBuilderCard : MonoBehaviour
+    public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
         public DeckEditingPage scene;
         public Card card;
         public bool isActive;
         public bool isHordeItem = false;
-        public float doubleClickDelay = 0.5f;
-
-        private float _lastClickTime;
-        private int _clickCount;
+        private MultiPointerClickHandler _multiPointerClickHandler;
 
         private void Awake()
         {
             isActive = true;
+            _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
+            _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
+            _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
         }
 
-        private void Update()
-        {
-            if (isActive && Input.GetMouseButtonDown(0))
-            {
-                var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                var hit = Physics2D.Raycast(mousePos, Vector2.zero);
-                if (hit.collider != null && hit.collider.gameObject == gameObject)
-                {
-                    if (_clickCount == 0 || Time.unscaledTime - _lastClickTime < doubleClickDelay)
-                    {
-                        _clickCount++;
-                        _lastClickTime = Time.unscaledTime;
-                    } else
-                    {
-                        _lastClickTime = Time.unscaledTime;
-                        _clickCount = 1;
-                    }
-
-                    if (_clickCount == 2)
-                    {
-                        DoAction();
-
-                        _lastClickTime = Time.unscaledTime;
-                        _clickCount = 0;
-                    }
-                }
-            }
+        public void OnScroll(PointerEventData eventData) {
+            scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
         }
 
-        private void DoAction() {
+        private void SingleClickAction() {
+            scene.SelectCard(this, card);
+        }
+
+        private void DoubleClickAction() {
             if (!isHordeItem)
                 scene.AddCardToDeck(this, card);
             else

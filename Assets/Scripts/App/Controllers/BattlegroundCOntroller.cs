@@ -38,6 +38,8 @@ namespace LoomNetwork.CZB
 
         private bool _battleDynamic = false;
 
+        private List<BoardUnit> _cardsInDestroy;
+
       //  public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
@@ -86,9 +88,13 @@ namespace LoomNetwork.CZB
 
             _ranksController = _gameplayManager.GetController<RanksController>();
 
+            _cardsInDestroy = new List<BoardUnit>();
+
             LoadGameConfiguration();
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+
+         
         }
 
         public void Dispose()
@@ -100,6 +106,12 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
             {
                 CheckGameDynamic();
+
+                foreach (var item in playerBoardCards)
+                    item.Update();
+
+                foreach (var item in opponentBoardCards)
+                    item.Update();
             }
         }
 
@@ -141,11 +153,12 @@ namespace LoomNetwork.CZB
 
                     //_ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
 
+                    cardToDestroy.ThrowOnDieEvent();
                     cardToDestroy.transform.DOKill();
                     MonoBehaviour.Destroy(cardToDestroy.gameObject);
 
                     _timerManager.AddTimer((f) =>
-                    {
+                    { 
                         UpdatePositionOfBoardUnitsOfOpponent();
                         UpdatePositionOfBoardUnitsOfPlayer();
                     }, null, Time.deltaTime, false);
@@ -190,6 +203,8 @@ namespace LoomNetwork.CZB
 
             playerGraveyardCards.Clear();
             opponentGraveyardCards.Clear();
+
+            _cardsInDestroy.Clear();
         }
 
         public void InitializeBattleground()

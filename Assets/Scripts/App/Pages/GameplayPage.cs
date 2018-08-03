@@ -255,21 +255,13 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.text = currentPlayerHero.name;
+                _playerNameText.text = currentPlayerHero.FullName;
             }
             if (currentOpponentHero != null)
             {
                 SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
-                _opponentNameText.text = currentOpponentHero.name;
+                _opponentNameText.text = currentOpponentHero.FullName;
             }
-
-
-            /*
-            _timerManager.AddTimer((x) =>
-            {
-                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { currentPlayerHero, currentOpponentHero });
-            }, null, 4f);
-            */
 
             _isPlayerInited = true;
         }

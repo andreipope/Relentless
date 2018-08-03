@@ -30,8 +30,8 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI _description,
                                 _amountAward;
-        private MenuButtonNoGlow _backButton,
-                                _desintegrateButton;
+        private Button _backButton;
+        private ButtonShiftingContent _buttonMelt;
 		private TextMeshProUGUI _buttonText;
 
         private Card _card;
@@ -46,17 +46,17 @@ namespace LoomNetwork.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-			_desintegrateButton = _selfPage.transform.Find("DesintegrateArea/DesintegrateButton").GetComponent<MenuButtonNoGlow>();
-			_backButton = _selfPage.transform.Find("BackButton").GetComponent<MenuButtonNoGlow>();
+			_buttonMelt = _selfPage.transform.Find("MeltArea/Button_Melt").GetComponent<ButtonShiftingContent>();
+			_backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
 
-			_desintegrateButton.onClickEvent.AddListener(DesintegrateButtonHandler);
-			_backButton.onClickEvent.AddListener(Hide);
+			_buttonMelt.onClick.AddListener(DesintegrateButtonHandler);
+			_backButton.onClick.AddListener(Hide);
 			_selfPage.GetComponent<Button>().onClick.AddListener(ClosePopup);
 
 
-			_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
-			_amountAward = _selfPage.transform.Find("DesintegrateArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
+			_description = _selfPage.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
+			_amountAward = _selfPage.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
 
             Hide();
         }
@@ -109,9 +109,9 @@ namespace LoomNetwork.CZB
 		public void UpdateCardAmount()
 		{
 			if (_cardData.amount == 0)
-				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+				_buttonMelt.GetComponent<ButtonShiftingContent>().interactable = false;
 			else
-				_desintegrateButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+				_buttonMelt.GetComponent<ButtonShiftingContent>().interactable = true;
 		}
 
         private void DesintegrateButtonHandler()
@@ -121,7 +121,7 @@ namespace LoomNetwork.CZB
 
 			if (!disableMelt) {
 				if (amount == 0)
-					_desintegrateButton.GetComponent<MenuButtonNoGlow> ().interactable = false;
+					_buttonMelt.GetComponent<MenuButtonNoGlow> ().interactable = false;
 	            //_uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
 	            else {
 					/*cardTransform.DOKill();
@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
 					(_uiManager.GetPopup<DesintigrateCardPopup> () as DesintigrateCardPopup).cardTransform = cardTransform;
 				}   
 			} else {
-				_uiManager.DrawPopup<WarningPopup> ("Melting is Disabled\nfor version " + Constants.CURRENT_VERSION + ".\n Thanks for helping us make this game Awesome\n-Loom Team");
+				_uiManager.DrawPopup<WarningPopup> ("Melting is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + ".\n Thanks for helping us make this game Awesome\n-Loom Team");
 			}
 		}
     }
