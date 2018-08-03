@@ -358,8 +358,8 @@ namespace LoomNetwork.CZB
         {
             int value = 0;
 
-            var attackedCard = attacker.Card.libraryCard;
-            var attackerCard = attacked.Card.libraryCard;
+            var attackedCard = attacked.Card.libraryCard;
+            var attackerCard = attacker.Card.libraryCard;
 
             var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
