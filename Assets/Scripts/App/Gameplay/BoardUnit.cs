@@ -310,6 +310,8 @@ namespace LoomNetwork.CZB
             if (value == 0)
                 return;
             DamageDebuffUntillEndOfTurn = value;
+            if (CurrentDamage + DamageDebuffUntillEndOfTurn < 0)
+                DamageDebuffUntillEndOfTurn += CurrentDamage + DamageDebuffUntillEndOfTurn;
             CurrentDamage += DamageDebuffUntillEndOfTurn;
             Debug.Log(DamageDebuffUntillEndOfTurn);
         }
@@ -320,7 +322,7 @@ namespace LoomNetwork.CZB
                 return;
 
             HPDebuffUntillEndOfTurn = value;
-            CurrentHP -= HPDebuffUntillEndOfTurn;
+            CurrentHP += HPDebuffUntillEndOfTurn;
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -478,8 +480,10 @@ namespace LoomNetwork.CZB
 
         public void SetAsHeavyUnit(bool buff = false)
         {
-            if (hasHeavy || HasBuffHeavy)
+            if (hasHeavy)
                 return;
+
+
 
             if (!buff)
             {
@@ -610,7 +614,7 @@ namespace LoomNetwork.CZB
 
 
                     _readyForBuffs = true;
-                    _ranksController.UpdateRanksBuffs(ownerPlayer, Card.libraryCard.cardRank);
+                    _ranksController.UpdateRanksByElements(ownerPlayer.BoardCards, Card.libraryCard);
                 }
             }
             else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
@@ -735,8 +739,8 @@ namespace LoomNetwork.CZB
 
             if (hasHeavy)
             {
-                //   glowSprite.gameObject.SetActive(false);
-                //  pictureMaskTransform.localScale = new Vector3(50, 55, 1);
+                // glowSprite.gameObject.SetActive(false);
+                // pictureMaskTransform.localScale = new Vector3(50, 55, 1);
                 // frameSprite.sprite = frameSprites[2];
             }
             SetHighlightingEnabled(false);
@@ -749,8 +753,6 @@ namespace LoomNetwork.CZB
         {
             if (CurrentHP <= 0 && !_dead)
             {
-                Debug.Log(IsAllAbilitiesResolvedAtStart + " | " + _arrivalDone);
-
                 if (IsAllAbilitiesResolvedAtStart && _arrivalDone)
                     Die();
             }
@@ -793,14 +795,14 @@ namespace LoomNetwork.CZB
 
             CancelTargetingArrows();
 
-            if (DamageDebuffUntillEndOfTurn > 0)
+            if (DamageDebuffUntillEndOfTurn != 0)
             {
-                CurrentDamage += DamageDebuffUntillEndOfTurn;
+                CurrentDamage -= DamageDebuffUntillEndOfTurn;
                 DamageDebuffUntillEndOfTurn = 0;
             }
-            if (HPDebuffUntillEndOfTurn > 0)
+            if (HPDebuffUntillEndOfTurn != 0)
             {
-                CurrentHP += HPDebuffUntillEndOfTurn;
+                CurrentHP -= HPDebuffUntillEndOfTurn;
                 HPDebuffUntillEndOfTurn = 0;
             }       
         }

@@ -34,9 +34,7 @@ namespace LoomNetwork.CZB
                            _playedCardPrefab;
 
         private Button _buttonBack;
-        private ButtonTextOffset _buttonKeep;
-
-       // private List<CardInGraveyard> _cards;
+        private ButtonShiftingContent _buttonKeep;
 
         private PlayerManaBarItem _playerManaBar,
                                   _opponentManaBar;
@@ -95,8 +93,8 @@ namespace LoomNetwork.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
-            _buttonKeep = _selfPage.transform.Find("KeepButton").GetComponent<ButtonTextOffset>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);

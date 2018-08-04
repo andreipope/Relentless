@@ -27,7 +27,7 @@ namespace LoomNetwork.CZB
 
 		private TextMeshProUGUI _text;
         //private MenuButton _button;
-        private MenuButtonNoGlow _gotItButton;
+        private ButtonShiftingContent _gotItButton;
 		//private TextMeshProUGUI _buttonText;
 
         public void Init()
@@ -39,10 +39,10 @@ namespace LoomNetwork.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             //_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
-            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<MenuButtonNoGlow>();
+            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
 
             //_button.onClickEvent.AddListener(Hide);
-            _gotItButton.onClickEvent.AddListener(CloseButtonHandler);
+            _gotItButton.onClick.AddListener(CloseButtonHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 

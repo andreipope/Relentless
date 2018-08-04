@@ -144,16 +144,16 @@ namespace LoomNetwork.CZB
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
-			OverlordAbilitySelectionPopup.OnHidePopupEvent += AbilityPopupClosedEvent;
-			_uiManager.DrawPopup<OverlordAbilitySelectionPopup> (_currentOverlordObject.SelfHero);
+            OverlordAbilitySelectionPopup.OnHidePopupEvent += AbilityPopupClosedEvent;
+            _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_currentOverlordObject.SelfHero);
         }
 
-		private void AbilityPopupClosedEvent()
-		{
-			OverlordAbilitySelectionPopup.OnHidePopupEvent -= AbilityPopupClosedEvent;
-			_uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.heroId;
-			_appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
-		}
+        private void AbilityPopupClosedEvent()
+        {
+            OverlordAbilitySelectionPopup.OnHidePopupEvent -= AbilityPopupClosedEvent;
+            _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.heroId;
+            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
+        }
 
         private void LeftArrowButtonOnClickHandler()
         {

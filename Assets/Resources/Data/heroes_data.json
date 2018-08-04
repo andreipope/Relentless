@@ -185,7 +185,7 @@
           "cooldown": 2,
           "initialCooldown": 2,
           "value": 1,
-          "attack": 2
+          "attack": 1
 
         }
       ],
