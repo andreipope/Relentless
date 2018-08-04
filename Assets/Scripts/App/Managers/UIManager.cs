@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
 			_uiPages.Add(new LoadingPage());
 			_uiPages.Add(new MainMenuPage());
 			_uiPages.Add(new HeroSelectionPage());
-			_uiPages.Add(new DeckSelectionPage());
+			_uiPages.Add(new HordeSelectionPage());
             _uiPages.Add(new CollectionPage());
             _uiPages.Add(new DeckEditingPage());
             _uiPages.Add(new ShopPage());

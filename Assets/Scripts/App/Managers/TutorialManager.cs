@@ -141,16 +141,22 @@ namespace LoomNetwork.CZB
 
         public void StartTutorial()
         {
-            _currentStep = 0;
-            _isBubbleShow = true;
-            _uiManager.DrawPopup<TutorialPopup>();
-            _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
-            UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _currentStep = 0;
+                _isBubbleShow = true;
+                _uiManager.DrawPopup<TutorialPopup>();
+                _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
+                UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
+
+            }, null, 4f, false);
+
             _tutorialStarted = true;
 
-           // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
-          //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+
+            // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+            //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
         }
 
         public void StopTutorial()
