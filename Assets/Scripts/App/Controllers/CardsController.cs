@@ -614,7 +614,7 @@ namespace LoomNetwork.CZB
                     RemoveOpponentCard(new object[] { randomCard });
 
                     _timerManager.AddTimer((x) => { completePlayCardCallback?.Invoke(card, target); }, null, 0.1f);
-                    _ranksController.UpdateRanksBuffs(player, card.libraryCard.cardRank);
+                    _ranksController.UpdateRanksByElements(player.BoardCards, card.libraryCard);
                     _timerManager.AddTimer((x) =>
                     {
                         player.GraveyardCardsCount++;

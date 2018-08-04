@@ -27,28 +27,12 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void UpdateRanksBuffs()
+        public void UpdateRanksByElements(List<BoardUnit> units, Data.Card card)
         {
-            UpdateRanksBuffs(_gameplayManager.CurrentTurnPlayer);
-            UpdateRanksBuffs(_gameplayManager.OpponentPlayer);
-        }
-
-        public void UpdateRanksBuffs(Player player, Enumerators.CardRank rank = Enumerators.CardRank.MINION)
-        {
-            //foreach (var unit in player.BoardCards)
-            //    unit.ClearBuffs();
-
-            UpdateRanksByElements(player.BoardCards, player.SelfHero.heroElement, rank);
-            //for (int i = 0; i < 6; i++)
-            //  UpdateRanksByElements(player.BoardCards, (Enumerators.SetType)i, rank);
-        }
-
-        private void UpdateRanksByElements(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank highestRank)
-        {
-            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == element && (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
-            var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)highestRank).ToList();
+            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
+            var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
             if(weakerUnitsList.Count > 0)
-                DoRankUpgrades(weakerUnitsList, element, highestRank);
+                DoRankUpgrades(weakerUnitsList, card.cardSetType, card.cardRank);
         }
 
         public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)

@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
 					break;
                 case Enumerators.AppState.DECK_SELECTION:
 					{
-						_uiManager.SetPage<DeckSelectionPage>();
+						_uiManager.SetPage<HordeSelectionPage>();
 					}
 					break;
                 case Enumerators.AppState.COLLECTION:

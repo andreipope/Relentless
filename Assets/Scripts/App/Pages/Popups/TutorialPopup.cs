@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
 
 		private TextMeshProUGUI _text;
 		private GameObject _yesnoObject;
-		private Button _nextButton, _playButton, _skipButton;
+		private ButtonShiftingContent _nextButton, _playButton, _skipButton;
         private GameObject _focusedObject;
 		private GameObject _bubbleObject;
 		private Image _janeImage;
@@ -49,9 +49,9 @@ namespace LoomNetwork.CZB
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
-            _nextButton = _selfPage.transform.Find("NextButton").GetComponent<Button>();
-            _playButton = _selfPage.transform.Find("PlayButton").GetComponent<Button>();
-            _skipButton = _selfPage.transform.Find("SkipButton").GetComponent<Button>();
+            _nextButton = _selfPage.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
+            _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
+            _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
 
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
 

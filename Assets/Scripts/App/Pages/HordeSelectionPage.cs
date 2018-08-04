@@ -10,11 +10,12 @@ using LoomNetwork.CZB.Common;
 using TMPro;
 using LoomNetwork.CZB.Data;
 using System;
+using System.Linq;
 using DG.Tweening;
 
 namespace LoomNetwork.CZB
 {
-    public class DeckSelectionPage : IUIElement
+    public class HordeSelectionPage : IUIElement
     {
         private IUIManager _uiManager;
         private ILoadObjectsManager _loadObjectsManager;
@@ -26,30 +27,26 @@ namespace LoomNetwork.CZB
 
         private GameObject _selfPage;
 
-        private Button _collectionButton,
-                       _backButton,
-                       _battleButton,
+        private Button _backButton,
+                        _battleButton,
                        _leftArrowButton,
                        _rightArrowButton,
 					   _deleteButton,
 					   _editButton;
 
-		private TextMeshProUGUI _textDescription;
-		private TextMeshProUGUI _textCardsCount;
-		private Image _hordePicture;
-		private Image _hordePictureGlow;
-		private Image _hordeType;
-		private Image _firstSkill;
-		private Image _secondSkill;
-		private Image _metalBoxBG;
+        private ButtonShiftingContent _buttonArmy;
 
-        private Transform _containerOfDecks;
+        private Image _firstSkill,
+                      _secondSkill;
+
+        private Transform _containerOfDecks, _hordeSelection;
 
         private List<HordeDeckObject> _hordeDecks;
         private int _selectedDeck = -1;
+        private int _scrolledDeck = -1;
 
-
-        private int _leftDeckIndex = -1;
+        private const int HORDE_ITEM_SPACE = 570,
+                            HORDE_CONTAINER_XOFFSET = 60;
       //  private int _decksCount = 3;
 
         // new horde deck object
@@ -67,46 +64,43 @@ namespace LoomNetwork.CZB
             _appStateManager = GameClient.Get<IAppStateManager>();
             _matchManager = GameClient.Get<IMatchManager>();
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckSelectionPage"), _uiManager.Canvas.transform, false);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
-            _collectionButton = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
+            _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
+
+            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
             _battleButton = _selfPage.transform.Find("Button_Battle").GetComponent<Button>();
             _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
-            _collectionButton.onClick.AddListener(CollectionButtonOnClickHandler);
+
+            _editButton = _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Edit").GetComponent<Button>();
+            _deleteButton = _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Delete").GetComponent<Button>();
+            _firstSkill = _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill").GetComponent<Image>();
+            _secondSkill = _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill").GetComponent<Image>();
+
+
+            _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/Selection");
+
+            // new horde deck object
+            _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
+            _newHordeDeckButton = _newHordeDeckObject.transform.Find("Image_BaackgroundGeneral").GetComponent<Button>();
+
+            _buttonArmy.onClick.AddListener(CollectionButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
             _battleButton.onClick.AddListener(BattleButtonOnClickHandler);
             _leftArrowButton.onClick.AddListener(LeftArrowButtonOnClickHandler);
             _rightArrowButton.onClick.AddListener(RightArrowButtonOnClickHandler);
 
-            _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
-
-			_editButton = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedHordeObjects/Button_Edit").GetComponent<Button> ();
-			_deleteButton = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedHordeObjects/Button_Delete").GetComponent<Button> ();
-
-			_editButton.onClick.AddListener(EditButtonOnClickHandler);
-			_deleteButton.onClick.AddListener (DeleteButtonOnClickHandler);
-
-			_textDescription = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_Description/Text_Description").GetComponent<TextMeshProUGUI>();
-			_textCardsCount = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_DeckFillInfo/Text_CardsCount").GetComponent<TextMeshProUGUI>();
-			_hordePicture = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedBlock/Image_HordePicture").GetComponent<Image>();
-			_hordePictureGlow = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedBlock/Image_Glow").GetComponent<Image>();
-			_hordeType = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_HordeType/Image").GetComponent<Image>();
-			_firstSkill = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill").GetComponent<Image>();
-			_secondSkill = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill").GetComponent<Image>();
-			_metalBoxBG = _selfPage.transform.Find ("Panel_DecksContainer/MetalBox_Selection").GetComponent<Image> ();
+            _editButton.onClick.AddListener(EditButtonOnClickHandler);
+            _deleteButton.onClick.AddListener(DeleteButtonOnClickHandler);
 
             _firstSkill.GetComponent<MultiPointerClickHandler>().SingleClickReceived += () => SkillButtonOnSingleClickHandler(0);
             _secondSkill.GetComponent<MultiPointerClickHandler>().SingleClickReceived += () => SkillButtonOnSingleClickHandler(1);
 
             _firstSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () => SkillButtonOnDoubleClickHandler(0);
             _secondSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () => SkillButtonOnDoubleClickHandler(1);
-
-            // new horde deck object
-            _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
-            _newHordeDeckButton = _newHordeDeckObject.transform.Find("Image_BaackgroundGeneral").GetComponent<Button>();
 
             _newHordeDeckButton.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
 
@@ -123,6 +117,7 @@ namespace LoomNetwork.CZB
         {
             //todod improve I guess
             _selectedDeck = _dataManager.CachedUserLocalData.lastSelectedDeckId;
+            _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
             _selfPage.SetActive(true);
@@ -133,7 +128,7 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive(false);
             ResetHordeDecks();
 
-            _leftDeckIndex = -1;
+            _scrolledDeck = -1;
         }
 
         public void Dispose()
@@ -155,58 +150,19 @@ namespace LoomNetwork.CZB
                                                 _dataManager.CachedDecksData.decks[i],
                                                 _dataManager.CachedHeroesData.Heroes.Find(x => x.heroId == _dataManager.CachedDecksData.decks[i].heroId),
                                                 id);
-                //hordeDeck.HordeDeckSelectedEvent += HordeDeckSelectedEventHandler;
-                //hordeDeck.DeleteDeckEvent += DeleteDeckEventHandler;
+                hordeDeck.HordeDeckSelectedEvent += HordeDeckSelectedEventHandler;
+                hordeDeck.DeleteDeckEvent += DeleteDeckEventHandler;
 
                 _hordeDecks.Add(hordeDeck);
             }
+            _newHordeDeckObject.transform.localPosition = Vector3.right * HORDE_ITEM_SPACE * _hordeDecks.Count;
         }
 
-		private void FillDeckInfo () {
-			HordeDeckObject deck = null;
-			if (_selectedDeck != null) {
-				foreach (HordeDeckObject item in _hordeDecks) {
-					if (item.DeckId == _selectedDeck) {
-						deck = item;
-						break;
-					}
-				}
-			}
-
-			if (deck != null) {
-				_textDescription.gameObject.SetActive (true);
-				_textCardsCount.gameObject.SetActive (true);
-				_hordePicture.gameObject.SetActive (true);
-				_hordePictureGlow.gameObject.SetActive (true);
-				_hordeType.gameObject.SetActive (true);
-				_firstSkill.gameObject.SetActive (true);
-				_secondSkill.gameObject.SetActive (true);
-				_metalBoxBG.enabled = true;
-				_editButton.gameObject.SetActive (true);
-				_deleteButton.gameObject.SetActive (true);
-
-				_textDescription.text = deck.SelfDeck.name;
-				_textCardsCount.text = deck.SelfDeck.GetNumCards () + "/" + Constants.MAX_DECK_SIZE;
-				_hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/UI/ChooseHorde/hordeselect_deck_" + deck.SelfHero.element.ToLower ());
-				_hordeType.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/UI/ElementIcons/Icon_element_" + deck.SelfHero.element.ToLower ());
-				_firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper () + "_" + deck.SelfHero.skills [deck.SelfHero.primarySkill].skill.ToLower ());
-				_secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite> ("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper () + "_" + deck.SelfHero.skills [deck.SelfHero.secondarySkill].skill.ToLower ());
-			} else {
-				_textDescription.gameObject.SetActive (false);
-				_textCardsCount.gameObject.SetActive (false);
-				_hordePicture.gameObject.SetActive (false);
-				_hordePictureGlow.gameObject.SetActive (false);
-				_hordeType.gameObject.SetActive (false);
-				_firstSkill.gameObject.SetActive (false);
-				_secondSkill.gameObject.SetActive (false);
-				_metalBoxBG.enabled = false;
-				_editButton.gameObject.SetActive (false);
-				_deleteButton.gameObject.SetActive (false);
-			}
-		}
 
         private void ResetHordeDecks()
         {
+            _hordeSelection.SetParent(_containerOfDecks.parent, false);
+            _hordeSelection.gameObject.SetActive(false);
             if (_hordeDecks != null)
             {
                 foreach (var element in _hordeDecks)
@@ -227,27 +183,28 @@ namespace LoomNetwork.CZB
 
         private void HordeDeckSelectedEventHandler(HordeDeckObject deck)
         {
-            foreach (var element in _hordeDecks)
+            if (_hordeSelection.gameObject.activeSelf)
             {
-                if (!element.Equals(deck))
-                    element.Deselect();
-                else
-                    element.Select();
+                var horde = _hordeDecks.Single((item) => item.DeckId == _selectedDeck);
+                horde.Deselect();
             }
+            deck.Select();
+
+            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper() + "_" + deck.SelfHero.skills[deck.SelfHero.primarySkill].skill.ToLower());
+            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper() + "_" + deck.SelfHero.skills[deck.SelfHero.secondarySkill].skill.ToLower());
+
+            _hordeSelection.transform.SetParent(deck.selectionContainer, false);
+            _hordeSelection.gameObject.SetActive(true);
 
             if (deck.SelfDeck.GetNumCards() < Constants.MAX_DECK_SIZE && !Constants.DEV_MODE)
-            {
                 _battleButton.interactable = false;
-                //   OpenAlertDialog("You should have 30 cards inside your deck to use it for battle");
-                // return;
-            }
             else
                 _battleButton.interactable = true;
 
             _selectedDeck = deck.DeckId;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeck;
             _dataManager.SaveAllCache();
-			CenterTheSelectedDeck ();
+            deck.selectionContainer.parent.SetAsLastSibling();
         }
 
         private void LoadDeckObjects()
@@ -281,19 +238,17 @@ namespace LoomNetwork.CZB
 
         private void CenterTheSelectedDeck()
         {
-			FillDeckInfo ();
-
 			if (_hordeDecks.Count < 1)
 				return;
 
-            int index = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
+            _scrolledDeck = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
 
-            _leftDeckIndex = index - 1;
-            if (_leftDeckIndex < -1)
-                _leftDeckIndex = -1;
-
-			DOTween.KillAll ();
-			DOTween.To (() => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition, x => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition = x, (Vector2.left * _leftDeckIndex * 580f), 0.5f);
+            if (_scrolledDeck < 2)
+                _scrolledDeck = 0;
+            else
+                _scrolledDeck--;
+ 
+            _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - HORDE_ITEM_SPACE * _scrolledDeck, 420 , 0);
         }
 
 
@@ -438,34 +393,16 @@ namespace LoomNetwork.CZB
 
             if (_hordeDecks.Count < 1)
                 return;
+            var oldIndex = _scrolledDeck;
+            _scrolledDeck += direction;
 
-            var oldIndex = _leftDeckIndex;
-            _leftDeckIndex += direction;
+            if (_scrolledDeck > _hordeDecks.Count - 2)
+                _scrolledDeck = _hordeDecks.Count - 2;
+            if (_scrolledDeck < 0)
+                _scrolledDeck = 0;
 
-            if (_leftDeckIndex < -1)
-                _leftDeckIndex = _hordeDecks.Count - 1;
-            else if (_leftDeckIndex >= _hordeDecks.Count)
-                _leftDeckIndex = -1;
-
-            if (oldIndex != _leftDeckIndex)
-                isChanged = true;
-
-            if (isChanged)
-            {
-				if (_leftDeckIndex + 1 < _hordeDecks.Count) {
-					_selectedDeck = _hordeDecks [_leftDeckIndex + 1].DeckId;
-					_dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeck;
-					_dataManager.SaveAllCache ();
-				} else {
-					_selectedDeck = 999999;
-				}
-
-				FillDeckInfo ();
-
-				DOTween.KillAll ();
-				DOTween.To (() => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition, x => _containerOfDecks.GetComponent<RectTransform> ().anchoredPosition = x, (Vector2.left * _leftDeckIndex * 580f), 0.5f).OnComplete (() => {
-				});
-            }
+            if (oldIndex != _scrolledDeck)
+                _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - HORDE_ITEM_SPACE * _scrolledDeck, 420, 0);
         }
         public class HordeDeckObject
         {
@@ -486,12 +423,16 @@ namespace LoomNetwork.CZB
             private TextMeshProUGUI _descriptionText,
                                     _cardsInDeckCountText;
 
+            private Button _buttonSelect;
+
             public int DeckId { get; private set; }
 
             public Deck SelfDeck { get; private set; }
             public Hero SelfHero { get; private set; }
 
             public bool IsSelected { get; private set; }
+
+            public Transform selectionContainer;
 
             public HordeDeckObject(Transform parent, Deck deck, Hero hero, int id)
             {
@@ -506,6 +447,9 @@ namespace LoomNetwork.CZB
                 _soundManager = GameClient.Get<ISoundManager>();
 
                 _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_HordeSelectionObject"), parent, false);
+                _selfObject.transform.localPosition = Vector3.right * HORDE_ITEM_SPACE * id;
+
+                selectionContainer = _selfObject.transform.Find("SelectionContainer");
 
                 _setTypeIcon = _selfObject.transform.Find("Panel_HordeType/Image").GetComponent<Image>();
                 _hordePicture = _selfObject.transform.Find("Image_HordePicture").GetComponent<Image>();
@@ -513,11 +457,15 @@ namespace LoomNetwork.CZB
                 _descriptionText = _selfObject.transform.Find("Panel_Description/Text_Description").GetComponent<TextMeshProUGUI>();
                 _cardsInDeckCountText = _selfObject.transform.Find("Panel_DeckFillInfo/Text_CardsCount").GetComponent<TextMeshProUGUI>();
 
+                _buttonSelect = _selfObject.transform.Find("Button_Select").GetComponent<Button>();
+
                 _cardsInDeckCountText.text = SelfDeck.GetNumCards() + "/" + Constants.MAX_DECK_SIZE;
                 _descriptionText.text = deck.name;
 
                 _setTypeIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
                 _hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" + SelfHero.element.ToLower());
+
+                _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }
 
 
@@ -530,6 +478,7 @@ namespace LoomNetwork.CZB
             {
                 if (IsSelected)
                     return;
+                _buttonSelect.gameObject.SetActive(false);
 
                 IsSelected = true;
             }
@@ -538,6 +487,7 @@ namespace LoomNetwork.CZB
             {
                 if (!IsSelected)
                     return;
+                _buttonSelect.gameObject.SetActive(true);
 
                 IsSelected = false;
             }
@@ -545,8 +495,7 @@ namespace LoomNetwork.CZB
             private void SelectButtonOnClickHandler()
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-
-                HordeDeckSelectedEvent?.Invoke(this);
+               HordeDeckSelectedEvent?.Invoke(this);
             }
         }
     }

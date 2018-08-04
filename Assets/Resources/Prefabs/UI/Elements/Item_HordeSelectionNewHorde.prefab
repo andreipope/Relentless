@@ -54,7 +54,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224314873038756818}
   - component: {fileID: 222823534616211320}
-  - component: {fileID: 114004566882239834}
   m_Layer: 5
   m_Name: Item_HordeSelectionNewHorde
   m_TagString: Untagged
@@ -97,25 +96,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114004566882239834
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1395085655555238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 555
-  m_PreferredHeight: 847
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!114 &114135865761304334
 MonoBehaviour:
   m_ObjectHideFlags: 1

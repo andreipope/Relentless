@@ -73,8 +73,6 @@ namespace LoomNetwork.CZB
                 abilityData,
                 targetUnit
                 }));
-
-                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
             }, null, 2f);
         }
     }
