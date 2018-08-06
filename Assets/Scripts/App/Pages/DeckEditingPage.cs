@@ -423,7 +423,8 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < _dataManager.CachedCardsLibraryData.sets.Count; i++)
             {
                 CardSet cardSet = _dataManager.CachedCardsLibraryData.sets[i];
-                cardIndex = cardSet.cards.IndexOf(c => c.id == card.id);
+                cardIndex = cardSet.cards.FindIndex(c => c.id == card.id);
+                
                 if (cardIndex != -1)
                 {
                     setIndex = i;
@@ -741,14 +742,14 @@ namespace LoomNetwork.CZB
             Vector3 sourceCardPosition,
             Card targetLibraryCard,
             bool targetCardWasAlreadyPresent,
-            IList<BoardCard> targetRowCards,
+            List<BoardCard> targetRowCards,
             Action<int> setPageIndexAction
         ) {
             BoardCard animatedCard = CreateCard(targetLibraryCard, sourceCardPosition, null);
             animatedCard.transform.Find("Amount").gameObject.SetActive(false);
             animatedCard.gameObject.GetComponent<SortingGroup>().sortingOrder++;
 
-            int foundItemIndex = targetRowCards.IndexOf(c => c.libraryCard.id == targetLibraryCard.id);
+            int foundItemIndex = targetRowCards.FindIndex(c => c.libraryCard.id == targetLibraryCard.id);
             setPageIndexAction(foundItemIndex / CARDS_PER_PAGE);
 
             BoardCard targetCard = targetRowCards.First(card => card.libraryCard.id == targetLibraryCard.id);

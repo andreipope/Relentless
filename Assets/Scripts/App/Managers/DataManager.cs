@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
             //await GetCardLibraryData();
             await GetDeckData();
             //await GetCollectionData();
-            await GetHeroesData();
+            //await GetHeroesData();
             
             CachedCardsLibraryData.FillAllCards();
 
@@ -279,13 +279,12 @@ namespace LoomNetwork.CZB
                             CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                     }
                     break;
-                /*case Enumerators.CacheDataType.HEROES_DATA:
+                case Enumerators.CacheDataType.HEROES_DATA:
 					{
 						if (File.Exists(_cacheDataPathes[type]))
                             CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
 					}
 					break;
-					*/
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))

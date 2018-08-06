@@ -11,6 +11,7 @@ using TMPro;
 using System;
 using System.Linq;
 using DG.Tweening;
+using LoomNetwork.CZB.Data;
 using Deck = LoomNetwork.CZB.Data.Deck;
 using Hero = LoomNetwork.CZB.Data.Hero;
 
