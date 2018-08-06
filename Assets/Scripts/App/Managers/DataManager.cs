@@ -99,6 +99,7 @@ namespace LoomNetwork.CZB
             //await GetCardLibraryData();
             await GetDeckData();
             //await GetCollectionData();
+            await GetHeroesData();
             
             CachedCardsLibraryData.FillAllCards();
 
@@ -114,6 +115,20 @@ namespace LoomNetwork.CZB
 
 
             OnLoadCacheCompletedEvent?.Invoke();
+        }
+
+        private async Task GetHeroesData()
+        {
+            try
+            {
+                var heroesList = await LoomManager.Instance.GetHeroesList(LoomManager.UserId);
+                CustomDebug.Log(heroesList.ToString());
+                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+            }
+            catch (Exception ex)
+            {
+                CustomDebug.LogError("===== Heroes List not Loaded ===== " + ex);
+            }
         }
 
         private async Task GetCollectionData()
@@ -264,12 +279,13 @@ namespace LoomNetwork.CZB
                             CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                     }
                     break;
-                case Enumerators.CacheDataType.HEROES_DATA:
+                /*case Enumerators.CacheDataType.HEROES_DATA:
 					{
 						if (File.Exists(_cacheDataPathes[type]))
                             CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
 					}
 					break;
+					*/
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
