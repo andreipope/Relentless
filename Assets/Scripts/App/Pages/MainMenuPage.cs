@@ -19,17 +19,16 @@ namespace LoomNetwork.CZB
 		private IAppStateManager _stateManager;
 		private ISoundManager _soundManager;
         private IPlayerManager _playerManager;
+		private IDataManager _dataManager;
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow //_buttonPlay,
-                            _buttonCollection;
-        //_buttonCredits;
-        //_buttonBuy,
-        //_buttonOpen;
+        private MenuButtonNoGlow _buttonArmy;
 
-        private Button _buttonPlay, _buttonBuy, _buttonOpen,
-                       _buttonCredits;
+        private Button _buttonPlay, _buttonDeck;
+
+        private ButtonShiftingContent _buttonBuy, _buttonOpen,
+                       _buttonCredits, _buttonTutorial;
 
         private MenuButtonToggle _buttonMusic,
                                  _buttonSFX;
@@ -48,32 +47,31 @@ namespace LoomNetwork.CZB
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+			_dataManager = GameClient.Get<IDataManager> ();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
-            //_buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<MenuButtonNoGlow>();
-            _buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<Button>();
-            _buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<Button>();
-
-            _packsCount = _selfPage.transform.Find("OpenButton/Count").GetComponent<TextMeshProUGUI>();
-
-            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<Button>();
-
-            //Debug.Log(_buttonCredits);
+            _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
+            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
+            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
+            _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
+            _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
+            _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonCollection.onClickEvent.AddListener(OnClickCollection);
-            //_buttonCredits.onClickEvent.AddListener(OnClickCredits);
+            _buttonDeck.onClick.AddListener(OnClickPlay);
+            _buttonArmy.onClickEvent.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
+            _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
 
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
@@ -107,7 +105,7 @@ namespace LoomNetwork.CZB
         public void Show()
         {
             _selfPage.SetActive(true);
-            _buttonCollection.interactable = true;
+            _buttonArmy.interactable = true;
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
 
@@ -116,6 +114,9 @@ namespace LoomNetwork.CZB
             _buttonMusic.SetStatus(!_soundManager.MusicMuted);
             _buttonSFX.SetStatus(!_soundManager.SfxMuted);
 
+			if (!_dataManager.CachedUserLocalData.agreedTerms) {
+				_uiManager.DrawPopup<TermsPopup> ();
+			}
 
             /*if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
                 _logoAnimator.SetBool("LogoShow", true);
@@ -138,7 +139,7 @@ namespace LoomNetwork.CZB
         }
 
 #region Buttons Handlers
-        public void OnClickPlay()
+        private void OnClickPlay()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
@@ -150,21 +151,26 @@ namespace LoomNetwork.CZB
             else
                 _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
+
+        private void  TutorialButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
+            GameClient.Get<IGameplayManager>().IsTutorial = true;
+            (_uiManager.GetPage<GameplayPage>() as GameplayPage).CurrentDeckId = 0;
+            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+        }
+
 		private void OnClickCollection()
 		{
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.COLLECTION);
 		}
-		private void OnClickCredits()
-		{
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            OpenAlertDialog("Coming Soon");
-		}
 
         private void BuyButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.SHOP);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
@@ -176,7 +182,7 @@ namespace LoomNetwork.CZB
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
+			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
 
         private void OnValueChangedEventMusic(bool value)

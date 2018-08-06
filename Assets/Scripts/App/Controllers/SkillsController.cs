@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
                     {
                         var targetPlayer = skill.fightTargetingArrow.selectedPlayer;
 
-                        _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, targetPlayer, (x) =>
+                        _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, targetPlayer, (x) =>
                         {
                             skill.UseSkill(targetPlayer);
                             DoActionByType(skill, targetPlayer);
@@ -188,7 +188,7 @@ namespace LoomNetwork.CZB
                     {
                         var targetUnit = skill.fightTargetingArrow.selectedCard;
 
-                        _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, targetUnit, (x) =>
+                        _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, targetUnit, (x) =>
                         {
                             DoActionByType(skill, targetUnit);
                             skill.UseSkill(targetUnit);
@@ -201,7 +201,7 @@ namespace LoomNetwork.CZB
                 }
                 else if(target != null)
                 {
-                    _vfxController.CreateSkillVFX(skill.owner.SelfHero.heroElement, skill.selfObject.transform.position, target, (x) =>
+                    _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, target, (x) =>
                     {
                         DoActionByType(skill, target);
                         skill.UseSkill(target);
@@ -211,45 +211,81 @@ namespace LoomNetwork.CZB
             }
         }
 
+        private GameObject GetVFXPrefabBySkill(BoardSkill skill)
+        {
+            GameObject prefab = null;
+
+            switch (skill.skill.overlordSkill)
+            {
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
+                    break;
+                case Enumerators.OverlordSkill.FREEZE:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
+                    break;
+                case Enumerators.OverlordSkill.POISON_DART:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
+                    break;
+                case Enumerators.OverlordSkill.FIREBALL:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
+                    break;
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
+                    break;
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.MEND:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.OverlordSkill.DRAW:
+                default:
+                    prefab = new GameObject();
+                    break;
+            }
+
+            return prefab;
+        }
+
         private void DoActionByType(BoardSkill skill, object target)
         {
             switch(skill.skill.overlordSkill)
             {
                 case Enumerators.OverlordSkill.FREEZE:
-                    FreezeAction(skill.owner, skill.skill, target);
+                    FreezeAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.ICE_BOLT:
-                    IceBoltAction(skill.owner, skill.skill, target);
+                    IceBoltAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.POISON_DART:
-                    PoisonDartAction(skill.owner, skill.skill, target);
+                    PoisonDartAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.TOXIC_POWER:
-                    ToxicPowerAction(skill.owner, skill.skill, target);
+                    ToxicPowerAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
-                    HealingTouchAction(skill.owner, skill.skill, target);
+                    HealingTouchAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.MEND:
-                    MendAction(skill.owner, skill.skill, target);
+                    MendAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.FIRE_BOLT:
-                     FireballAction(skill.owner, skill.skill, target);
+                     FireballAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.RABIES:
-                    RabiesAction(skill.owner, skill.skill, target);
+                    RabiesAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.HARDEN:
-                    HardenAction(skill.owner, skill.skill);
+                    HardenAction(skill.owner, skill, skill.skill);
                     break;
-                case Enumerators.OverlordSkill.STONESKIN:
-                    StoneskinAction(skill.owner, skill.skill, target);
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                    StoneskinAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.PUSH:
-                    PushAction(skill.owner, skill.skill, target);
+                    PushAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.DRAW:
-                    DrawAction(skill.owner, skill.skill, target);
+                    DrawAction(skill.owner, skill, skill.skill, target);
                     break;
                 default: break;
             }
@@ -257,14 +293,14 @@ namespace LoomNetwork.CZB
 
         #region actions
 
-        private void FreezeAction(Player owner, HeroSkill skill, object target)
+        private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             if (target is BoardUnit)
             {
                 var unit = target as BoardUnit;
                 unit.Stun(Enumerators.StunType.FREEZE, skill.value);
 
-                _vfxController.CreateVFX(Enumerators.SetType.WATER, unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
                 {
@@ -278,7 +314,7 @@ namespace LoomNetwork.CZB
 
                 player.Stun(Enumerators.StunType.FREEZE, skill.value);
 
-                _vfxController.CreateVFX(Enumerators.SetType.WATER, player.AvatarObject.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
                 {
@@ -288,17 +324,19 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PoisonDartAction(Player owner, HeroSkill skill, object target)
+        private void PoisonDartAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            AttackWithModifiers(owner, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+            AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
         }
 
-        private void FireballAction(Player owner, HeroSkill skill, object target)
+        private void FireballAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            AttackWithModifiers(owner, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
+            AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), target);
         }
 
-        private void HealingTouchAction(Player owner, HeroSkill skill, object target)
+        private void HealingTouchAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             if (target is Player)
             {
@@ -306,7 +344,7 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealPlayerBySkill(owner, skill, player);
 
-                _vfxController.CreateVFX(Enumerators.SetType.LIFE, player.AvatarObject.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
             }
             else
             {
@@ -314,18 +352,23 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealUnitBySkill(owner, skill, unit);
 
-                _vfxController.CreateVFX(Enumerators.SetType.LIFE, unit.transform.position);
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
             }
         }
 
-        private void HardenAction(Player owner, HeroSkill skill)
+        private void HardenAction(Player owner, BoardSkill boardSkill, HeroSkill skill)
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
-            _vfxController.CreateVFX(Enumerators.SetType.EARTH, owner.AvatarObject.transform.position - Vector3.right * 2.3f);
+            //TODO: remove this empty gameobject logic
+            Transform transform = new GameObject().transform;
+            transform.position = owner.AvatarObject.transform.position;
+            transform.position -= Vector3.up * 3.3f;
+
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
         }
 
-        private void AttackWithModifiers(Player owner, HeroSkill skill, object target, Enumerators.SetType attackType, Enumerators.SetType setType)
+        private void AttackWithModifiers(Player owner, BoardSkill boardSkill, HeroSkill skill, object target, Enumerators.SetType attackType, Enumerators.SetType setType)
         {
             if (target is Player)
             {
@@ -333,8 +376,6 @@ namespace LoomNetwork.CZB
                 //TODO additional damage to heros
 
                 _battleController.AttackPlayerBySkill(owner, skill, player);
-
-                _vfxController.CreateVFX(attackType, player.AvatarObject.transform.position);
             }
             else
             {
@@ -345,19 +386,17 @@ namespace LoomNetwork.CZB
                //     attackModifier = 1;
 
                 _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
-
-                _vfxController.CreateVFX(attackType, creature.transform.position);
             }
         }
         
-        private void PushAction(Player owner, HeroSkill skill, object target)
+        private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             BoardUnit targetUnit = (target as BoardUnit);
             Player unitOwner = targetUnit.ownerPlayer;
             WorkingCard returningCard = targetUnit.Card;
             Vector3 unitPosition = targetUnit.transform.position;
 
-            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unitPosition);
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), targetUnit);
 
             _timerManager.AddTimer((x) =>
             {
@@ -385,14 +424,16 @@ namespace LoomNetwork.CZB
                 targetUnit
                 }));
 
-                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+                //_gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
             }, null, 2f);
         }
 
 
-        private void DrawAction(Player owner, HeroSkill skill, object target)
+        private void DrawAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             _cardsController.AddCardToHand(owner);
+
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"), owner);
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.DRAW_CARD_SKILL, new object[]
             {
@@ -401,46 +442,79 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        private void StoneskinAction(Player owner, HeroSkill skill, object target)
+        private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            BoardUnit unit = target as BoardUnit;
-
-            unit.BuffedHP += skill.value;
-            unit.CurrentHP += skill.value;
-        }
-
-        private void RabiesAction(Player owner, HeroSkill skill, object target)
-        {
-            BoardUnit unit = target as BoardUnit;
-
-            unit.SetAsFeralUnit();
-        }
-
-        private void ToxicPowerAction(Player owner, HeroSkill skill, object target)
-        {
-            BoardUnit unit = target as BoardUnit;
-
-            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
-
-            unit.BuffedDamage += skill.attack;
-            unit.CurrentDamage += skill.attack;
-        }
-
-        private void IceBoltAction(Player owner, HeroSkill skill, object target)
-        {
-            BoardUnit unit = target as BoardUnit;
-
-            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
-
-            if(unit.CurrentHP > 0)
+            if (target != null && target is BoardUnit)
             {
-                unit.Stun(Enumerators.StunType.FREEZE, 1);
+
+                BoardUnit unit = target as BoardUnit;
+
+                unit.BuffedHP += skill.value;
+                unit.CurrentHP += skill.value;
+
+                //TODO: remove this empty gameobject logic
+                Transform transform = new GameObject().transform;
+                transform.position = unit.transform.position;
+                transform.position -= Vector3.up * 3.3f;
+
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
             }
         }
 
-        private void MendAction(Player owner, HeroSkill skill, object target)
+        private void RabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
+        {
+            if (target != null && target is BoardUnit)
+            {
+                BoardUnit unit = target as BoardUnit;
+
+                unit.SetAsFeralUnit();
+
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
+            }
+        }
+
+        private void ToxicPowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
+        {
+            if (target != null && target is BoardUnit)
+            {
+
+                BoardUnit unit = target as BoardUnit;
+
+                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+
+                unit.BuffedDamage += skill.attack;
+                unit.CurrentDamage += skill.attack;
+
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
+            }
+        }
+
+        private void IceBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
+        {
+            if (target != null && target is BoardUnit)
+            {
+
+                BoardUnit unit = target as BoardUnit;
+
+                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+
+                if (unit.CurrentHP > 0)
+                {
+                    unit.Stun(Enumerators.StunType.FREEZE, 1);
+                }
+
+                _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"), unit);
+            }
+        }
+
+        private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             owner.HP = Mathf.Clamp(owner.HP + skill.value, 0, owner.MaxCurrentHP);
+            //TODO: remove this empty gameobject logic
+            Transform transform = new GameObject().transform;
+            transform.position = owner.AvatarObject.transform.position;
+            transform.position += Vector3.up * 2;
+            _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
         }
 
         #endregion

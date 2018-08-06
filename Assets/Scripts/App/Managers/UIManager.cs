@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
 			_uiPages.Add(new LoadingPage());
 			_uiPages.Add(new MainMenuPage());
 			_uiPages.Add(new HeroSelectionPage());
-			_uiPages.Add(new DeckSelectionPage());
+			_uiPages.Add(new HordeSelectionPage());
             _uiPages.Add(new CollectionPage());
             _uiPages.Add(new DeckEditingPage());
             _uiPages.Add(new ShopPage());
@@ -67,7 +67,11 @@ namespace LoomNetwork.CZB
             _uiPopups.Add(new YouWonPopup());
             _uiPopups.Add(new YourTurnPopup());
             _uiPopups.Add(new ConfirmationPopup());
-            _uiPopups.Add(new LoadingGameplayPopup());        
+            _uiPopups.Add(new LoadingGameplayPopup());
+            _uiPopups.Add(new PlayerOrderPopup());
+            _uiPopups.Add(new TermsPopup ());
+            _uiPopups.Add(new OverlordAbilitySelectionPopup());
+            _uiPopups.Add(new OverlordAbilityTooltipPopup());
 
             foreach (var popup in _uiPopups)
                 popup.Init();

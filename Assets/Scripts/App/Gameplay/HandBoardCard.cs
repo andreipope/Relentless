@@ -81,6 +81,9 @@ public class HandBoardCard
                 _canceledPlay = true;
                 OnMouseUp(null);
             }
+
+            if (Vector3.Distance(initialPos, transform.position) > 1f)
+                _playerController.HideCardPreview();
         }
     }
 
@@ -128,7 +131,7 @@ public class HandBoardCard
 
         bool playable = true;
         if (_canceledPlay || !cardView.CanBeBuyed(ownerPlayer) || (cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
-                                                     ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_CREATURES))
+                                                     ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS))
             playable = false;
         
 

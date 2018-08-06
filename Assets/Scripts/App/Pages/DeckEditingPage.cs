@@ -1,16 +1,19 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
 using System.Linq;
 using System.Collections.Generic;
+using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using Newtonsoft.Json.Utilities;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -25,31 +28,25 @@ namespace LoomNetwork.CZB
 
         private TMP_InputField _deckNameInputField;
 
-        private Button _buttonBack,
-                                //_buttonBuy,
-                                //_buttonOpen,
+        private ButtonShiftingContent _buttonBuy,
                                 _buttonSave,
                                 _buttonArmy;
         private Button _buttonArmyArrowLeft,
                        _buttonArmyArrowRight,
                         _buttonHordeArrowLeft,
-                       _buttonHordeArrowRight;
-
-        //private ScrollRect _cardsListScrollRect;
+                       _buttonHordeArrowRight,
+                        _buttonBack;
 
         private TMP_Text _cardAmountText;
 
         private Deck _currentDeck;
 
-        // private Slider _cardSetsSlider;
-
-        private int _numElementPages,
+        private int _numSets, 
+                    _currentSet, 
                     _currentElementPage,
+                    _numElementPages,
                     _numHordePages,
                     _currentHordePage;
-
-        private int numSets;
-        private int currentSet;
 
         private Toggle _airToggle,
                         _earthToggle,
@@ -59,21 +56,16 @@ namespace LoomNetwork.CZB
                         _lifeToggle,
                         _itemsToggle;
 
-        //private List<Transform> cardPositions;
-
-        private GameObject _cardCreaturePrefab;
-        private GameObject _cardSpellPrefab;
-        //private GameObject _cardPlaceholdersPrefab;
-        //private GameObject _cardListContent;
-
-        private GameObject _backgroundCanvasPrefab;
+        private GameObject _cardCreaturePrefab,
+                            _cardSpellPrefab,
+                            _backgroundCanvasPrefab;
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId;
-        private int _currentHeroId;
+        private int _currentDeckId, 
+                    _currentHeroId;
 
-        private const int _cardAmount = 5;
+        private const int CARDS_PER_PAGE = 5;
         private Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>()
         {
                 { Enumerators.SetType.FIRE, Enumerators.SetType.WATER},
@@ -99,6 +91,11 @@ namespace LoomNetwork.CZB
                                 _createdHordeCards;
 
         private ToggleGroup _toggleGroup;
+        private RectTransform _armyCardsContainer;
+        private RectTransform _hordeCardsContainer;
+        private SimpleScrollNotifier _armyScrollNotifier;
+        private SimpleScrollNotifier _hordeScrollNotifier;
+        private CardInfoPopupHandler _cardInfoPopupHandler;
 
         public void Init()
         {
@@ -106,6 +103,14 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
+
+            _cardInfoPopupHandler = new CardInfoPopupHandler();
+            _cardInfoPopupHandler.Init();
+            _cardInfoPopupHandler.PreviewCardInstantiated += boardCard =>
+            {
+                boardCard.transform.Find("Amount").gameObject.SetActive(false);
+                boardCard.SetAmountOfCardsInEditingPage(true, 0, 0);
+            };
 
             _collectionData = new CollectionData();
             _collectionData.cards = new List<CollectionCardData>();
@@ -132,23 +137,24 @@ namespace LoomNetwork.CZB
 
             _deckNameInputField = _selfPage.transform.Find("DeckTitleInputText").GetComponent<TMP_InputField>();
 
-            _buttonBack = _selfPage.transform.Find("BackButton").GetComponent<Button>();
-            //_buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
-            //_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
-            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<Button>();
-            _buttonArmy = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
+            _buttonSave = _selfPage.transform.Find("Button_Save").GetComponent<ButtonShiftingContent>();
+            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
             _buttonArmyArrowLeft = _selfPage.transform.Find("Army/ArrowLeftButton").GetComponent<Button>();
             _buttonArmyArrowRight = _selfPage.transform.Find("Army/ArrowRightButton").GetComponent<Button>();
+            _armyCardsContainer = _selfPage.transform.Find("Army/Cards").GetComponent<RectTransform>();
+            _armyScrollNotifier = _selfPage.transform.Find("Army/ScrollArea").GetComponent<SimpleScrollNotifier>();
+
             _buttonHordeArrowLeft = _selfPage.transform.Find("Horde/ArrowLeftButton").GetComponent<Button>();
             _buttonHordeArrowRight = _selfPage.transform.Find("Horde/ArrowRightButton").GetComponent<Button>();
-
-            //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
+            _hordeCardsContainer = _selfPage.transform.Find("Horde/Cards").GetComponent<RectTransform>();
+            _hordeScrollNotifier = _selfPage.transform.Find("Horde/ScrollArea").GetComponent<SimpleScrollNotifier>();
 
             _buttonBack.onClick.AddListener(BackButtonHandler);
-            //_buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonSave.onClick.AddListener(SaveButtonHandler);
             _buttonArmy.onClick.AddListener(ArmyButtonHandler);
-            //_buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
 
             _airToggle.onValueChanged.AddListener((state) => { if(state)ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
             _lifeToggle.onValueChanged.AddListener((state) => { if(state)ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
@@ -162,6 +168,16 @@ namespace LoomNetwork.CZB
             _buttonArmyArrowRight.onClick.AddListener(ArmyArrowRightButtonHandler);
             _buttonHordeArrowLeft.onClick.AddListener(HordeArrowLeftButtonHandler);
             _buttonHordeArrowRight.onClick.AddListener(HordeArrowRightButtonHandler);
+
+            _armyScrollNotifier.Scrolled += v =>
+            {
+                ScrollCardList(false, v);
+            };
+
+            _hordeScrollNotifier.Scrolled += v =>
+            {
+                ScrollCardList(true, v);
+            };
 
             _deckNameInputField.onEndEdit.AddListener(OnDeckNameInputFieldEndedEdit);
 
@@ -177,6 +193,8 @@ namespace LoomNetwork.CZB
             if (_selfPage.activeInHierarchy)
             {
                 UpdateNumCardsText();
+
+                _cardInfoPopupHandler.Update();
             }
         }
 
@@ -230,6 +248,8 @@ namespace LoomNetwork.CZB
             ResetArmyCards();
             ResetHordeItems();
             WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
+
+            _cardInfoPopupHandler.Dispose();
         }
 
 
@@ -273,20 +293,19 @@ namespace LoomNetwork.CZB
 
         private void InitObjects()
         {
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
+            _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
             LoadCards(0, 0);
         }
 
-        
+
 
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-          //  _currentElementPage = 0;
-            currentSet = (int)type;
+            _currentSet = (int)type;
             LoadCards(0, (int)type);
         }
 
@@ -298,11 +317,11 @@ namespace LoomNetwork.CZB
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
-        //private void BuyButtonHandler()
-        //{
-        //    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-        //    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
-        //}
+        private void BuyButtonHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
+        }
 
         private void ArmyButtonHandler()
         {
@@ -363,11 +382,11 @@ namespace LoomNetwork.CZB
 
             if (_currentElementPage < 0)
             {
-               currentSet += direction;
+               _currentSet += direction;
 
-                if (currentSet < 0)
+                if (_currentSet < 0)
                 {
-                    currentSet = numSets - 1;
+                    _currentSet = _numSets - 1;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -376,17 +395,17 @@ namespace LoomNetwork.CZB
                     CalculateNumberOfPages();
 
                     _currentElementPage = _numElementPages - 1;
-                  
+
                     _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
                 }
             }
             else if (_currentElementPage >= _numElementPages)
             {
-                currentSet += direction;
+                _currentSet += direction;
 
-                if (currentSet >= numSets)
+                if (_currentSet >= _numSets)
                 {
-                    currentSet = 0;
+                    _currentSet = 0;
                     _currentElementPage = 0;
                 }
                 else
@@ -395,14 +414,34 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            CalculateNumberOfPages();
+            UpdateCardsPage();
+        }
 
-            LoadCards(_currentElementPage, currentSet);
+        private bool GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex) {
+            setIndex = -1;
+            cardIndex = -1;
+            for (int i = 0; i < _dataManager.CachedCardsLibraryData.sets.Count; i++)
+            {
+                CardSet cardSet = _dataManager.CachedCardsLibraryData.sets[i];
+                cardIndex = cardSet.cards.IndexOf(c => c.id == card.id);
+                if (cardIndex != -1)
+                {
+                    setIndex = i;
+                    break;
+                }
+            }
+
+            return false;
+        }
+
+        private void UpdateCardsPage() {
+            CalculateNumberOfPages();
+            LoadCards(_currentElementPage, _currentSet);
         }
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)_cardAmount);
+            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[_currentSet].cards.Count / (float)CARDS_PER_PAGE);
         }
 
         public void LoadCards(int page, int setIndex)
@@ -416,13 +455,10 @@ namespace LoomNetwork.CZB
             var cards = set.cards;
             //_currentSetName = set.name;
 
-            var startIndex = page * _cardAmount;
-            var endIndex = Mathf.Min(startIndex + _cardAmount, cards.Count);
+            var startIndex = page * CARDS_PER_PAGE;
+            var endIndex = Mathf.Min(startIndex + CARDS_PER_PAGE, cards.Count);
 
             ResetArmyCards();
-
-            Vector3 _startPos = new Vector3(-7f, -2.4f, 0);
-            float stepX = 3.4f;
 
             for (var i = startIndex; i < endIndex; i++)
             {
@@ -436,7 +472,7 @@ namespace LoomNetwork.CZB
                 if (cardData == null)
                     continue;
 
-                BoardCard boardCard = CreateCard(card, _startPos + Vector3.right * stepX * i);
+                BoardCard boardCard = CreateCard(card, Vector3.zero, _armyCardsContainer);
 
                 var deckBuilderCard = boardCard.gameObject.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.scene = this;
@@ -444,20 +480,9 @@ namespace LoomNetwork.CZB
 
                 _createdArmyCards.Add(boardCard);
             }
-
-            RepositionArmyCards();
         }
 
-        private void RepositionArmyCards()
-        {
-            Vector3 _startPos = new Vector3(-7f, -2.4f, 0);
-            float stepX = 3.4f;
-
-            for (int i = 0; i < _createdArmyCards.Count; i++)
-                _createdArmyCards[i].transform.position = _startPos + Vector3.right * stepX * i;
-        }
-
-        public BoardCard CreateCard(Card card, Vector3 pos)
+        public BoardCard CreateCard(Card card, Vector3 worldPos, RectTransform root)
         {
             BoardCard boardCard = null;
             GameObject go = null;
@@ -475,10 +500,24 @@ namespace LoomNetwork.CZB
 
             boardCard.Init(card, amount);
             boardCard.SetHighlightingEnabled(false);
-            boardCard.transform.position = pos;
+            boardCard.transform.position = worldPos;
             boardCard.transform.localScale = Vector3.one * 0.3f;
             boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
             boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+
+            boardCard.gameObject.SetLayerRecursively(LayerMask.NameToLayer("UI"));
+            boardCard.transform.SetParent(_uiManager.Canvas.transform, true);
+            RectTransform cardRectTransform = boardCard.gameObject.AddComponent<RectTransform>();
+
+            if (root != null)
+            {
+                cardRectTransform.SetParent(root);
+            }
+
+            Vector3 anchoredPos = boardCard.transform.localPosition;
+            anchoredPos.z = 0;
+            boardCard.transform.localPosition = anchoredPos;
+
             return boardCard;
         }
 
@@ -510,7 +549,7 @@ namespace LoomNetwork.CZB
                 }
                 if (!itemFound)
                 {
-                    BoardCard boardCard = CreateCard(libraryCard, Vector3.zero);
+                    BoardCard boardCard = CreateCard(libraryCard, Vector3.zero, _hordeCardsContainer);
                     boardCard.transform.Find("Amount").gameObject.SetActive(false);
 
                     var deckBuilderCard = boardCard.gameObject.AddComponent<DeckBuilderCard>();
@@ -522,7 +561,7 @@ namespace LoomNetwork.CZB
 
                   //  _currentDeck.AddCard(libraryCard.id);
 
-                    boardCard.SetAmountOfCardsInEditingPage(this, true, GetMaxCopiesValue(libraryCard), card.amount);
+                    boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(libraryCard), card.amount);
 
                     _collectionData.GetCardData(card.cardName).amount -= card.amount;
                     UpdateNumCardsText();
@@ -533,7 +572,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateTopDeck()
         {
-            _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
+            _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / CARDS_PER_PAGE);
             _currentHordePage = 0;
             RepositionHordeCards();
         }
@@ -542,7 +581,7 @@ namespace LoomNetwork.CZB
         {
             for(int i = 0; i < _createdHordeCards.Count; i++)
             {
-                if (((i + 1) > _currentHordePage * _cardAmount) && ((i + 1) < (_currentHordePage + 1) * _cardAmount + 1))
+                if (((i + 1) > _currentHordePage * CARDS_PER_PAGE) && ((i + 1) < (_currentHordePage + 1) * CARDS_PER_PAGE + 1))
                     _createdHordeCards[i].gameObject.SetActive(true);
                 else
                     _createdHordeCards[i].gameObject.SetActive(false);
@@ -551,12 +590,10 @@ namespace LoomNetwork.CZB
 
         private void RepositionHordeCards()
         {
-            for (int i = 0; i < _createdHordeCards.Count; i++)
-                _createdHordeCards[i].transform.position = new Vector3(-7.9f + 3.85f * (i % _cardAmount), 3, 0);
             CalculateVisibility();
         }
 
-        public void RemoveCardFromDeck(Card card)
+        public void RemoveCardFromDeck(DeckBuilderCard sender, Card card)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
             var collectionCardData = _collectionData.GetCardData(card.name);
@@ -565,6 +602,36 @@ namespace LoomNetwork.CZB
             BoardCard boardCard = _createdHordeCards.Find((item) => item.libraryCard.id == card.id);
             boardCard.cardsAmountDeckEditing--;
             _currentDeck.RemoveCard(card.name);
+
+            // Animated moving card
+            if (sender != null)
+            {
+
+                int setIndex, cardIndex;
+                GetSetAndIndexForCard(boardCard.libraryCard, out setIndex, out cardIndex);
+                _currentSet = setIndex;
+                _currentElementPage = cardIndex / CARDS_PER_PAGE;
+                UpdateCardsPage();
+
+                Vector3 senderPosition = sender.transform.position;
+
+                // Wait for 1 frame for UI to rebuild itself
+                Sequence waitSequence = DOTween.Sequence();
+                waitSequence.AppendInterval(Time.fixedDeltaTime);
+                waitSequence.AppendCallback(() =>
+                {
+                    CreateExchangeAnimationCard(
+                        senderPosition,
+                        boardCard.libraryCard,
+                        true,
+                        _createdArmyCards,
+                        pageIndex =>
+                        {
+
+                        }
+                    );
+                });
+            }
 
             if (boardCard.cardsAmountDeckEditing == 0)
             {
@@ -577,11 +644,11 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                boardCard.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(boardCard.libraryCard), boardCard.cardsAmountDeckEditing);
+                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.libraryCard), boardCard.cardsAmountDeckEditing);
             }
         }
 
-        public void AddCardToDeck(Card card)
+        public void AddCardToDeck(DeckBuilderCard sender, Card card)
         {
             if (_currentDeck == null)
             {
@@ -633,7 +700,7 @@ namespace LoomNetwork.CZB
 
             if (!itemFound)
             {
-                BoardCard boardCard = CreateCard(card, new Vector3(-7.9f + 3.85f * (_createdHordeCards.Count % _cardAmount), 3, 0));
+                BoardCard boardCard = CreateCard(card, Vector3.zero, _hordeCardsContainer);
                 boardCard.transform.Find("Amount").gameObject.SetActive(false);
                 foundItem = boardCard;
 
@@ -644,20 +711,70 @@ namespace LoomNetwork.CZB
 
                 _createdHordeCards.Add(boardCard);
 
-                _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / _cardAmount);
+                _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / CARDS_PER_PAGE);
                 CalculateVisibility();
             }
 
             _currentDeck.AddCard(card.name);
 
-            foundItem.SetAmountOfCardsInEditingPage(this, false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardName == foundItem.libraryCard.name).amount);
+            foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card), _currentDeck.cards.Find(x => x.cardName == foundItem.libraryCard.name).amount);
+
+            // Animated moving card
+            if (sender != null)
+            {
+                CreateExchangeAnimationCard(
+                    sender.transform.position,
+                    foundItem.libraryCard,
+                    itemFound,
+                    _createdHordeCards,
+                    pageIndex =>
+                    {
+                        _currentHordePage = pageIndex;
+                        CalculateVisibility();
+                        Canvas.ForceUpdateCanvases();
+                    }
+                    );
+            }
+        }
+
+        private void CreateExchangeAnimationCard(
+            Vector3 sourceCardPosition,
+            Card targetLibraryCard,
+            bool targetCardWasAlreadyPresent,
+            IList<BoardCard> targetRowCards,
+            Action<int> setPageIndexAction
+        ) {
+            BoardCard animatedCard = CreateCard(targetLibraryCard, sourceCardPosition, null);
+            animatedCard.transform.Find("Amount").gameObject.SetActive(false);
+            animatedCard.gameObject.GetComponent<SortingGroup>().sortingOrder++;
+
+            int foundItemIndex = targetRowCards.IndexOf(c => c.libraryCard.id == targetLibraryCard.id);
+            setPageIndexAction(foundItemIndex / CARDS_PER_PAGE);
+
+            BoardCard targetCard = targetRowCards.First(card => card.libraryCard.id == targetLibraryCard.id);
+            Vector3 animatedCardDestination = targetCard.transform.position;
+
+            if (!targetCardWasAlreadyPresent)
+            {
+                targetCard.gameObject.SetActive(false);
+            }
+
+            Sequence animatedCardSequence = DOTween.Sequence();
+            animatedCardSequence.Append(animatedCard.transform.DOMove(animatedCardDestination, .3f));
+            animatedCardSequence.AppendCallback(() => Object.Destroy(animatedCard.gameObject));
+            animatedCardSequence.AppendCallback(() =>
+            {
+                if (!targetCardWasAlreadyPresent)
+                {
+                    targetCard.gameObject.SetActive(true);
+                }
+            });
         }
 
         public uint GetMaxCopiesValue(Card card)
         {
             Enumerators.CardRank rank = card.cardRank;
             uint maxCopies = 0;
-
 
             var setName = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
@@ -666,8 +783,7 @@ namespace LoomNetwork.CZB
                 maxCopies = Constants.CARD_ITEM_MAX_COPIES;
                 return maxCopies;
             }
-            
-           
+
             switch (rank)
             {
                 case Enumerators.CardRank.MINION:
@@ -681,7 +797,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
-                    break;                    
+                    break;
             }
             return maxCopies;
         }
@@ -775,6 +891,34 @@ namespace LoomNetwork.CZB
                 default:
                     break;
             }
+        }
+
+        public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta) {
+            if (isHordeItem)
+            {
+                if (scrollDelta.y > 0.5f)
+                {
+                    HordeArrowRightButtonHandler();
+                } else if (scrollDelta.y < -0.5f)
+                {
+                    HordeArrowLeftButtonHandler();
+                }
+            } else
+            {
+                MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));
+            }
+        }
+
+        public void SelectCard(DeckBuilderCard deckBuilderCard, Card card) {
+            BoardCard boardCard = null;
+            if (deckBuilderCard.isHordeItem)
+            {
+                boardCard = _createdHordeCards.First(c => c.libraryCard.id == card.id);
+            } else
+            {
+                boardCard = _createdArmyCards.First(c => c.libraryCard.id == card.id);
+            }
+            _cardInfoPopupHandler.SelectCard(boardCard);
         }
     }
 }

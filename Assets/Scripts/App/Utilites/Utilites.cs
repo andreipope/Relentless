@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace LoomNetwork.Internal
 {
-    public class Utilites
+    public static class Utilites
     {
         #region asset bundles and cache
 
@@ -361,7 +361,7 @@ namespace LoomNetwork.Internal
 		#endregion cryptography
 
 
-		public static void SetLayerRecursively(GameObject obj, int layer)
+		public static void SetLayerRecursively(this GameObject obj, int layer)
 		{
 			obj.layer = layer;
 
@@ -418,6 +418,11 @@ namespace LoomNetwork.Internal
         public static Vector3 CastVFXPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
+        }
+
+        public static Color SetAlpha(this Color color, float alpha) {
+            color.a = alpha;
+            return color;
         }
     }
 }

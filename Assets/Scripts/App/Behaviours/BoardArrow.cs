@@ -75,6 +75,16 @@ public class BoardArrow : MonoBehaviour
         }
     }
 
+    public void SetInverse(bool isInverse = true)
+    {
+        var scaleX = 1;
+
+        if (isInverse)
+            scaleX = -1;
+
+        _selfObject.transform.localScale = new Vector3(scaleX, 1, 1);
+    }
+
     public void Begin(Vector2 from, bool isInverse = true)
     {
         _isInverse = isInverse;
@@ -84,12 +94,7 @@ public class BoardArrow : MonoBehaviour
         //   _rootObjectsGroup.transform.position = _fromPosition;
         _arrowObject.transform.position = _fromPosition;
 
-        var scaleX = 1;
-
-        if (isInverse)
-            scaleX = -1;
-
-        _selfObject.transform.localScale = new Vector3(scaleX, 1, 1);
+        SetInverse(isInverse);
 
         //  if (this._isInverse)
         //     _arrowObject.transform.localScale = new Vector3(-1, _arrowObject.transform.localScale.y, _arrowObject.transform.localScale.z);
@@ -101,10 +106,12 @@ public class BoardArrow : MonoBehaviour
         _targetObjectsGroup.transform.position = target;
 
         float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
-       // float rootObjectsOffset = 21f;
+        // float rootObjectsOffset = 21f;
 
-       // if (isInverse)
-        //    rootObjectsOffset = -5f;
+        var scaleX = 1f;
+
+        if (!isInverse)
+            scaleX = -1f;
 
         _arrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
       //  _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
@@ -112,7 +119,7 @@ public class BoardArrow : MonoBehaviour
         var scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
 
 
-        _arrowObject.transform.localScale = new Vector3(1, scaleY, 1);
+        _arrowObject.transform.localScale = new Vector3(scaleX, scaleY, _arrowObject.transform.localScale.z);
     }
 
 

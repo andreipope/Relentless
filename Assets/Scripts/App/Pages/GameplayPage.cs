@@ -34,9 +34,7 @@ namespace LoomNetwork.CZB
                            _playedCardPrefab;
 
         private Button _buttonBack;
-        private ButtonTextOffset _buttonKeep;
-
-       // private List<CardInGraveyard> _cards;
+        private ButtonShiftingContent _buttonKeep;
 
         private PlayerManaBarItem _playerManaBar,
                                   _opponentManaBar;
@@ -95,8 +93,8 @@ namespace LoomNetwork.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
-            _buttonKeep = _selfPage.transform.Find("KeepButton").GetComponent<ButtonTextOffset>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
@@ -255,12 +253,12 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.text = currentPlayerHero.name;
+                _playerNameText.text = currentPlayerHero.FullName;
             }
             if (currentOpponentHero != null)
             {
                 SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
-                _opponentNameText.text = currentOpponentHero.name;
+                _opponentNameText.text = currentOpponentHero.FullName;
             }
 
             _isPlayerInited = true;
@@ -268,8 +266,11 @@ namespace LoomNetwork.CZB
 
         public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
-            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/hero_icon_" + hero.heroElement.ToString());
+            var skillPrim = hero.skills[hero.primarySkill];
+            var skillSecond = hero.skills[hero.secondarySkill];
+
+            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement.ToString() +"_" + skillPrim.skill.ToLower());
+            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement.ToString() + "_" + skillSecond.skill.ToLower());
 
             var heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement.ToString() + "_EXP");
             var transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;

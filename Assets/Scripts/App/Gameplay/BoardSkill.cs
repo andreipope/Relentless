@@ -185,14 +185,25 @@ namespace LoomNetwork.CZB
                 {
                     fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
-                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>()
-                {
-                    Enumerators.SkillTargetType.PLAYER,
-                    Enumerators.SkillTargetType.OPPONENT,
-                    Enumerators.SkillTargetType.OPPONENT_CARD,
-                    Enumerators.SkillTargetType.PLAYER_CARD
-                };
-                    //skill.skillTargetType;
+                    fightTargetingArrow.targetsType = new System.Collections.Generic.List<Enumerators.SkillTargetType>();
+                    switch (skill.overlordSkill)
+                    {
+                        case Enumerators.OverlordSkill.PUSH:
+                        case Enumerators.OverlordSkill.STONE_SKIN:
+                        case Enumerators.OverlordSkill.HARDEN:
+                        case Enumerators.OverlordSkill.RABIES:
+                        case Enumerators.OverlordSkill.TOXIC_POWER:
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER_CARD);
+
+                            break;
+                        default:
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER_CARD);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.PLAYER);
+                            fightTargetingArrow.targetsType.Add(Enumerators.SkillTargetType.OPPONENT);
+                            break;
+                    }
 
                     //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
                         fightTargetingArrow.ignoreHeavy = true;
@@ -258,7 +269,7 @@ namespace LoomNetwork.CZB
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 31)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
                 return true;
 
             if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn)

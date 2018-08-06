@@ -205,7 +205,7 @@
             CHANGE_STAT_OF_CREATURES_BY_TYPE,
             ATTACK_NUMBER_OF_TIMES_PER_TURN,
             DRAW_CARD,
-            DEVOUR_ZOMBIE_AND_COMBINE_STATS,
+            DEVOUR_ZOMBIES_AND_COMBINE_STATS,
             DESTROY_UNIT_BY_TYPE,
             LOWER_COST_OF_CARD_IN_HAND,
             OVERFLOW_GOO,
@@ -239,7 +239,11 @@
             UNIT_WEAPON,
             TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
             DELAYED_LOSE_HEAVY_GAIN_ATTACK,
-            DELAYED_GAIN_ATTACK
+            DELAYED_GAIN_ATTACK,
+            REANIMATE_UNIT,
+            PRIORITY_ATTACK,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            COSTS_LESS_IF_CARD_TYPE_IN_HAND,
         }
 
         public enum AbilityActivityType
@@ -258,7 +262,9 @@
             AT_DEATH,
             GOT_DAMAGE,
             AT_DEFENCE,
-            TURN_END
+            TURN_END,
+
+            IN_HAND
         }
 
         public enum StatType
@@ -365,7 +371,9 @@
             RETURN_TO_HAND_CARD_SKILL,
 
             DRAW_CARD_SKILL,
-            STUN_PLAYER_BY_SKILL
+            STUN_PLAYER_BY_SKILL,
+
+            REANIMATE_UNIT_BY_ABILITY
         }
 
 
@@ -435,7 +443,9 @@
             ATTACK,
             FREEZE,
             DAMAGE,
-            HEAL_ALLY
+            HEAL_ALLY,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            REANIMATE_UNIT
         }
 
         public enum BuffActivityType
@@ -480,7 +490,7 @@
 
             // EARTH
             HARDEN,
-            STONESKIN,
+            STONE_SKIN,
             FORTIFY,
             PHALANX,
             FORTRESS,

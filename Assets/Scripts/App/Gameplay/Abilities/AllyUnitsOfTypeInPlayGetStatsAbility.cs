@@ -45,9 +45,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
@@ -56,8 +56,9 @@ namespace LoomNetwork.CZB
 
             foreach (var unit in playerCallerOfAbility.BoardCards)
             {
-                if(unit.Card.libraryCard.cardSetType.Equals(setType))
+                if(unit.Card.libraryCard.cardSetType.Equals(setType) && unit != abilityUnitOwner)
                 {
+                    
                     unit.BuffedDamage += damage;
                     unit.CurrentDamage += damage;
 

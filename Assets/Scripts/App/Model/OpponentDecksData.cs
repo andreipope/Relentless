@@ -23,10 +23,11 @@ namespace LoomNetwork.CZB.Data
 
         public void ParseData()
         {
-            foreach (var deck in decks)
-            {
-                deck.ParseData();
-            }
+			if (decks != null) {
+				foreach (var deck in decks) {
+					deck.ParseData ();
+				}
+			}
         }
     }
 

@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
 
             _selfPage.transform.localScale = Vector3.zero;
             _selfPage.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
-            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 2f, false);
+            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 4f, false);
         }
 
         public void Show(object data)
@@ -80,12 +80,7 @@ namespace LoomNetwork.CZB
 
         private void HideDelay(object[] param)
         {
-            var sequence = DOTween.Sequence();
-            sequence.Append(_selfPage.transform.DOScale(0.0f, 0.2f).SetEase(Ease.OutCubic));
-            sequence.OnComplete(() => 
-            {
-                Hide();
-            });
+            Hide();
         }
 
         public void Update()

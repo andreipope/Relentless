@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
 
             if (!_dataManager.CachedUserLocalData.tutorial)
             {
-                Constants.ZOMBIES_SOUND_VOLUME *= 3;
+                Constants.ZOMBIES_SOUND_VOLUME = 0.25f;
                 Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
             }
         }
@@ -103,7 +103,7 @@ namespace LoomNetwork.CZB
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
             GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();    
+            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -171,16 +171,26 @@ namespace LoomNetwork.CZB
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 
-            CurrentTurnPlayer = CurrentPlayer;// local player starts as first
-
-            GetController<PlayerController>().SetHand();
 
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
                 GetController<AIController>().InitializePlayer();
 
+            if (!IsTutorial)
+                CurrentTurnPlayer = UnityEngine.Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+            else
+                CurrentTurnPlayer = CurrentPlayer;
+
+
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
-            GetController<CardsController>().StartCardDistribution();
+
+            if (!IsTutorial)
+                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
+            else
+            {
+                GetController<PlayerController>().SetHand();
+                GetController<CardsController>().StartCardDistribution();
+            }
 
             GameEnded = false;
 

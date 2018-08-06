@@ -41,9 +41,9 @@ namespace LoomNetwork.CZB
             base.OnInputEndEventHandler();
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage)
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage);
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
@@ -52,11 +52,28 @@ namespace LoomNetwork.CZB
 
             var opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
-            foreach (var unit in opponent.BoardCards)
-                _battleController.AttackUnitByAbility(GetCaller(), abilityData, unit);
 
-            foreach (var unit in opponent.BoardCards)
-                unit.Stun(Enumerators.StunType.FREEZE, value);
+            foreach (var target in abilityTargetTypes)
+            {
+                switch (target)
+                {
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+
+                        foreach (var unit in opponent.BoardCards)
+                            _battleController.AttackUnitByAbility(GetCaller(), abilityData, unit);
+
+                        foreach (var unit in opponent.BoardCards)
+                            unit.Stun(Enumerators.StunType.FREEZE, value);
+                        break;
+                  
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        _battleController.AttackPlayerByAbility(GetCaller(), abilityData, opponent);
+                        opponent.Stun(Enumerators.StunType.FREEZE, value);
+                        break;
+                   
+                    default: break;
+                }
+            }
         }
     }
 }

@@ -44,8 +44,12 @@ namespace LoomNetwork.CZB
             else
                 partWay = Vector3.Lerp(originalPos, target.transform.position, 0.7f);
 
+           // Debug.LogError(originalPos + " -> " + target.transform.position);
+
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(() =>
             {
+               // Debug.LogError(originalPos + " =? " + target.transform.position);
+
                 DOTween.Sequence()
                     .Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f))
                     .Append(target.GetComponent<Image>().DOColor(Color.white, 0.25f))
@@ -56,6 +60,9 @@ namespace LoomNetwork.CZB
 
                 source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(() =>
                 {
+                  //  Debug.LogError(originalPos + " <- " + target.transform.position);
+
+
                     if (onCompleteCallback != null)
                         onCompleteCallback();
 
@@ -78,6 +85,12 @@ namespace LoomNetwork.CZB
                 currentCreature = param[0] as BoardUnit;
                 currentCreature.PlayArrivalAnimation();
             }
+        }
+
+
+        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
+        {
+             //   if(toHand)
         }
     }
 }

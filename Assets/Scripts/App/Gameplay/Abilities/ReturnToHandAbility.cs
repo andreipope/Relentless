@@ -47,7 +47,7 @@ namespace LoomNetwork.CZB
             WorkingCard returningCard = targetUnit.Card;
             Vector3 unitPosition = targetUnit.transform.position;
 
-            CreateVFX(unitPosition);
+            CreateVFX(unitPosition, true, 3f, true);
 
             _timerManager.AddTimer((x) =>
             {
@@ -73,11 +73,6 @@ namespace LoomNetwork.CZB
                 abilityData,
                 targetUnit
                 }));
-
-                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
-
-
-                _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
             }, null, 2f);
         }
     }

@@ -6,12 +6,17 @@
 ﻿using LoomNetwork.CZB.Common;
 using System;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 
 namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
+		private bool disableShop = true;
+		private bool disablePacks = true;
+
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private IPlayerManager _playerManager;
@@ -89,7 +94,7 @@ namespace LoomNetwork.CZB
 					break;
                 case Enumerators.AppState.DECK_SELECTION:
 					{
-						_uiManager.SetPage<DeckSelectionPage>();
+						_uiManager.SetPage<HordeSelectionPage>();
 					}
 					break;
                 case Enumerators.AppState.COLLECTION:
@@ -104,12 +109,22 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AppState.SHOP:
                     {
-                        _uiManager.SetPage<ShopPage>();
+						if (!disableShop) {
+							_uiManager.SetPage<ShopPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     {
-                        _uiManager.SetPage<PackOpenerPage>();
+						if (!disablePacks) {
+							_uiManager.SetPage<PackOpenerPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Pack Opener is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.GAMEPLAY:

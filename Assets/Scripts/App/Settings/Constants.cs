@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.19.7.ver";
+        internal const string CURRENT_VERSION = "0.0.20.6.ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB.Common
         internal static uint CARD_GENERAL_MAX_COPIES = 1;
 		internal static uint CARDS_IN_PACK = 5;
 
-        internal static uint MAX_BOARD_CREATURES = 6;
+        internal static uint MAX_BOARD_UNITS = 6;
 
         internal static int DEFAULT_TURN_DURATION = 60;
         internal static int MAX_DECK_SIZE = 30;
@@ -52,7 +52,7 @@ namespace LoomNetwork.CZB.Common
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 
-        internal static int DELAY_BETWEEN_AI_ACTIONS = 2000;
+        internal static int DELAY_BETWEEN_AI_ACTIONS = 1200;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB.Common
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
-        internal const float POPUP_APPEAR_ON_CLICK_DELAY = 1.5f;
+        internal const float POPUP_APPEAR_ON_CLICK_DELAY = 1f;
 
         internal const bool DEV_MODE = false;  
     }

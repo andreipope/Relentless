@@ -16,6 +16,7 @@ namespace LoomNetwork.CZB
 
         private ActionsQueueController _actionsQueueController;
         private AbilitiesController _abilitiesController;
+        private VFXController _vfxController;
 
         private Dictionary<Enumerators.SetType, Enumerators.SetType> _strongerElemental,
                                                                      _weakerElemental;
@@ -31,6 +32,7 @@ namespace LoomNetwork.CZB
 
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _vfxController = _gameplayManager.GetController<VFXController>();
 
             FillStrongersAndWeakers();
         }
@@ -75,7 +77,7 @@ namespace LoomNetwork.CZB
             return modifier;
         }
 
-        public void AttackPlayerByCreature(BoardUnit attackingUnit, Player attackedPlayer)
+        public void AttackPlayerByUnit(BoardUnit attackingUnit, Player attackedPlayer)
         {
             int damageAttacking = attackingUnit.CurrentDamage;
 
@@ -84,7 +86,9 @@ namespace LoomNetwork.CZB
                 attackedPlayer.HP -= damageAttacking;
             }
 
-            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking);
+            attackingUnit.ThrowOnAttackEvent(attackedPlayer, damageAttacking, true);
+
+            _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
 
@@ -110,6 +114,7 @@ namespace LoomNetwork.CZB
                 //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
                 //additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
 
+
                 damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (attackedUnit.HasBuffShield)
@@ -120,35 +125,45 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.CurrentHP -= damageAttacking;
 
-                if (damageAttacking > 0)
-                    attackedUnit.ThrowEventGotDamage(attackingUnit);
+                _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
 
-                damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
+                // if (damageAttacking > 0)
+                attackedUnit.ThrowEventGotDamage(attackingUnit);
+                attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking, true);
 
-                if (attackingUnit.HasBuffShield)
+                if ((attackedUnit.CurrentHP > 0 && attackingUnit.AttackAsFirst) || !attackingUnit.AttackAsFirst)
                 {
-                    damageAttacked = 0;
-                    attackingUnit.UseShieldFromBuff();
+                    damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
+
+                    if (attackingUnit.HasBuffShield)
+                    {
+                        damageAttacked = 0;
+                        attackingUnit.UseShieldFromBuff();
+                    }
+
+                    attackingUnit.CurrentHP -= damageAttacked;
+
+                    _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
+
+                    //  if (damageAttacked > 0)
+                    attackingUnit.ThrowEventGotDamage(attackedUnit);
+
+                    attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked, false);
                 }
 
-                attackingUnit.CurrentHP -= damageAttacked;
-
-                if (damageAttacking > 0)
-                    attackedUnit.ThrowEventGotDamage(attackingUnit);
-            }
-
-            attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking);
-
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
-            new object[]
-            {
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE,
+new object[]
+{
                 attackingUnit,
                 damageAttacking,
                 attackedUnit,
                 damageAttacked
-            }));
+}));
+
+
+
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+            }
         }
 
         public void AttackUnitBySkill(Player attackingPlayer, HeroSkill skill, BoardUnit attackedUnit, int modifier)
@@ -165,8 +180,10 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.CurrentHP -= damage;
 
-               // if (damage > 0)
-                 //   attackedUnit.ThrowEventGotDamage(attackingPlayer);
+                _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
+
+                // if (damage > 0)
+                //   attackedUnit.ThrowEventGotDamage(attackingPlayer);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL,
@@ -183,16 +200,20 @@ namespace LoomNetwork.CZB
         {
             if (attackedPlayer != null)
             {
-                attackedPlayer.HP -= skill.value;
-            }
+                int damage = skill.value;
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL,
-            new object[]
-            {
+                attackedPlayer.HP -= damage;
+
+                _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL,
+                new object[]
+                {
                 attackingPlayer,
                 skill,
                 attackedPlayer
-            }));
+                }));
+            }
         }
 
         public void HealPlayerBySkill(Player healingPlayer, HeroSkill skill, Player healedPlayer)
@@ -219,8 +240,8 @@ namespace LoomNetwork.CZB
             if (healedCreature != null)
             {
                 healedCreature.CurrentHP += skill.value;
-                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
-                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
+                if (healedCreature.CurrentHP > healedCreature.MaxCurrentHP)
+                    healedCreature.CurrentHP = healedCreature.MaxCurrentHP;
             }
             
 
@@ -250,35 +271,41 @@ namespace LoomNetwork.CZB
 
                 attackedUnit.CurrentHP -= damage;
 
-              //  if (damage > 0)
+                //  if (damage > 0)
                 //    attackedUnit.ThrowEventGotDamage(attacker);
-            }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
-            new object[]
-            {
+                _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY,
+                new object[]
+                {
                 attacker,
                 ability,
                 damage,
                 attackedUnit,
-            }));
+                }));
+            }
         }
 
         public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
-                attackedPlayer.HP -= ability.value;
-            }
+                int damage = ability.value;
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY,
-            new object[]
-            {
+                attackedPlayer.HP -= damage;
+
+                _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY,
+                new object[]
+                {
                 attacker,
                 ability,
                 ability.value,
                 attackedPlayer
-            }));
+                }));
+            }
         }
 
         public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer)
@@ -305,8 +332,8 @@ namespace LoomNetwork.CZB
             if (healedCreature != null)
             {
                 healedCreature.CurrentHP += ability.value;
-                if (healedCreature.CurrentHP > healedCreature.Card.initialHealth)
-                    healedCreature.CurrentHP = healedCreature.Card.initialHealth;
+                if (healedCreature.CurrentHP > healedCreature.MaxCurrentHP)
+                    healedCreature.CurrentHP = healedCreature.MaxCurrentHP;
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY,

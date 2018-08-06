@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
             if ((setType == Enumerators.SetType.NONE) ||
-                (setType != Enumerators.SetType.NONE && playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType == setType).Count > 0))
+                (setType != Enumerators.SetType.NONE && playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType == setType && x != abilityUnitOwner).Count > 0))
             {
                 if (abilityTargetTypes.Count > 0)
                 {

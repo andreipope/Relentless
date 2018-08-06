@@ -42,9 +42,9 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
                 if (button == null) return;
 
-                DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 0.5f, 0.3f);
-                DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.3f);
-                DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.3f);
+                DoFadeForChildren(button, 0.5f, 0.3f);
+                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(onClickOverlay, 0, 0.3f);
             }
             else
             {
@@ -57,20 +57,26 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
                 if (button == null) return;
 
-                DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 1f, 0.3f);
-                DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.3f);
-                DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.3f);
+                DoFadeForChildren(button, 1f, 0.3f);
+                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(onClickOverlay, 0, 0.3f);
             }
         }
     }
 
-    public void DoFadeForChildren(TextMeshProUGUI[] tms, float val, float duration)
+    public void DoFadeForChildren(Image parent, float val, float duration)
     {
+		TextMeshProUGUI[] tms = parent.GetComponentsInChildren<TextMeshProUGUI>();
         foreach (var item in tms)
         {
             item.DOKill();
             item.DOFade(val, duration);
         }
+		Image[] imgs = parent.GetComponentsInChildren<Image> ();
+		foreach (var item in imgs) {
+			item.DOKill ();
+			item.DOFade (val, duration);
+		}
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -84,10 +90,10 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             if (button == null) return;
 
-            DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 1, 0.25f);
+            DoFadeForChildren(button, 0f, 0.25f);
+            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
             if (!Input.GetMouseButton(0))
-                DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.25f);
+                DoFadeForChildren(onClickOverlay, 0, 0.25f);
         }
     }
 
@@ -102,10 +108,10 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             if (button == null) return;
 
-            DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 1f, 0.25f);
-            DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.25f);
+            DoFadeForChildren(button, 1f, 0.25f);
+            DoFadeForChildren(onHoverOverlay, 0, 0.25f);
             if (!Input.GetMouseButton(0))
-                DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.25f);
+                DoFadeForChildren(onClickOverlay, 0, 0.25f);
         }
     }
 
@@ -126,10 +132,10 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             if (button == null) return;
 
-            DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 0f, 0.25f);
+            DoFadeForChildren(button, 0f, 0.25f);
             if (isHovered)
-                DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.25f);
-            DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 1, 0.25f);
+                DoFadeForChildren(onHoverOverlay, 0, 0.25f);
+            DoFadeForChildren(onClickOverlay, 1, 0.25f);
         }
 	}
 
@@ -145,9 +151,9 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             if (button == null) return;
 
-            DoFadeForChildren(button.GetComponentsInChildren<TextMeshProUGUI>(), 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 1, 0.25f);
-            DoFadeForChildren(onClickOverlay.GetComponentsInChildren<TextMeshProUGUI>(), 0, 0.25f);
+            DoFadeForChildren(button, 0f, 0.25f);
+            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
+            DoFadeForChildren(onClickOverlay, 0, 0.25f);
         }
     }
 }
