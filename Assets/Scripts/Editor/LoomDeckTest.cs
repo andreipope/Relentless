@@ -1,7 +1,7 @@
 ﻿using System;
 using Loom.Unity3d.Zb;
 using LoomNetwork.CZB.Data;
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine;
 using Deck = LoomNetwork.CZB.Data.Deck;

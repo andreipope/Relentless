@@ -12,7 +12,7 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
-using Newtonsoft.Json.Utilities;
+using Loom.Newtonsoft.Json.Utilities;
 using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB

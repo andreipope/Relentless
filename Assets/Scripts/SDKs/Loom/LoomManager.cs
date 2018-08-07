@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Threading.Tasks;
-using Loom.Unity3d;
+using Loom.Client;
 using UnityEngine;
 using Random = System.Random;
 
@@ -71,10 +71,7 @@ public partial class LoomManager
         };
         
         client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]{
-            new NonceTxMiddleware{
-                PublicKey = publicKey,
-                Client = client
-            },
+            new NonceTxMiddleware(publicKey, client),
             new SignedTxMiddleware(privateKey)
         });
 

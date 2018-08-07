@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Threading.Tasks;
-using Google.Protobuf.Collections;
+using Loom.Google.Protobuf.Collections;
 using Loom.Unity3d.Zb;
 using UnityEngine;
 using Deck = LoomNetwork.CZB.Data.Deck;

@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using System;
 using LoomNetwork.Internal;
 
