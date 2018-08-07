@@ -52,8 +52,6 @@ namespace LoomNetwork.CZB
         private SpriteRenderer _pictureSprite;
         private SpriteRenderer _frozenSprite;
         private SpriteRenderer _glowSprite;
-        private SpriteRenderer _frameSprite;
-        private SpriteRenderer _animationSprite;
         private GameObject _shieldSprite;
 
         private GameObject _glowSelectedObjectSprite;
@@ -215,11 +213,9 @@ namespace LoomNetwork.CZB
 
             _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
-            _pictureSprite = _selfObject.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>();
+            _pictureSprite = _selfObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = _selfObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             _glowSprite = _selfObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
-            _frameSprite = _selfObject.transform.Find("GraphicsAnimation").GetComponent<SpriteRenderer>();
-            _animationSprite = _selfObject.transform.Find("GraphicsAnimation").GetComponent<SpriteRenderer>();
             _shieldSprite = _selfObject.transform.Find("Other/Shield").gameObject;
 
             _glowSelectedObjectSprite = _selfObject.transform.Find("Other/GlowSelectedObject").gameObject;
@@ -232,22 +228,22 @@ namespace LoomNetwork.CZB
 
             _sleepingParticles = _selfObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
 
-            unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
+            //unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
 
             unitContentObject = _selfObject.transform.Find("Other").gameObject;
             unitContentObject.SetActive(false);
 
-            arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
+            //arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
 
             _onBehaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
 
-            arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
+            //arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
 
             _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
             _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
             _onBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             _onBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
-
+            /*
             animatorControllers = new List<UnitAnimatorInfo>();
             for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
             {
@@ -257,7 +253,7 @@ namespace LoomNetwork.CZB
                     cardType = (Enumerators.CardType)i
                 });
             }
-
+              */
             _buffsOnUnit = new List<Enumerators.BuffType>();
             attackedBoardObjectsThisTurn = new List<object>();
 
@@ -623,7 +619,6 @@ namespace LoomNetwork.CZB
             {
                 InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
-                _animationSprite.sortingOrder = -_animationSprite.sortingOrder;
                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;
             }
 
@@ -700,7 +695,7 @@ namespace LoomNetwork.CZB
             _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
             _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
 
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
+            //unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
             if (Card.type == Enumerators.CardType.WALKER)
             {
                 _sleepingParticles.transform.position += Vector3.up * 0.7f;
@@ -772,8 +767,8 @@ namespace LoomNetwork.CZB
             }
             SetHighlightingEnabled(false);
 
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
+            //unitAnimator.StopPlayback();
+            //unitAnimator.Play(0);
         }
 
         private void CheckOnDie()
@@ -787,7 +782,10 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            unitAnimator.SetTrigger("Active");
+            Debug.Log("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
+            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
+            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Model/SpriteContainer");
+            _pictureSprite.transform.SetParent(spriteContainerTransform, false);
         }
 
         public void OnStartTurn()
