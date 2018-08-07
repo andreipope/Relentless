@@ -43,6 +43,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
         private RanksController _ranksController;
         private AbilitiesController _abilitiesController;
+        private CardsController _cardsController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -207,6 +208,7 @@ namespace LoomNetwork.CZB
             _vfxController = _gameplayManager.GetController<VFXController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -660,7 +662,7 @@ namespace LoomNetwork.CZB
             return _gameplayManager.CurrentPlayer.BoardCards;
         }
 
-        public void SetObjectInfo(WorkingCard card, string setName = "")
+        public void SetObjectInfo(WorkingCard card)
         {
             Card = card;
 
@@ -668,7 +670,32 @@ namespace LoomNetwork.CZB
             if (!ownerPlayer.IsLocalPlayer)
                 _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x, _sleepingParticles.transform.localPosition.y, 3f);
 
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRank.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
+            string setName = _cardsController.GetSetOfCard(card.libraryCard);
+            string rank = Card.libraryCard.cardRank.ToString().ToLower();
+            string picture = Card.libraryCard.picture.ToLower();
+
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+
+            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+
+
+            // DEBUG FOR FIDNING PROBLEM WITH PICTURE NOT FOUND
+            if(_pictureSprite.sprite == null)
+            {
+                string data = string.Empty;
+
+                data += "---------- BEGIN: " + Time.time + "----------------" + Environment.NewLine;
+                data += card.libraryCard.name + Environment.NewLine;
+                data += rank + " | " + picture + setName + Environment.NewLine;
+                data += fullPathToPicture + Environment.NewLine;
+                data += "---------- END: " + Time.time + "----------------";
+
+                Debug.LogError(data);
+
+                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.libraryCard.name + "_PICTURE_ERROR.txt";
+                System.IO.File.WriteAllText(pathToLogFolder, data);
+                System.Diagnostics.Process.Start(pathToLogFolder);
+            }
 
             _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
             _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
@@ -693,14 +720,14 @@ namespace LoomNetwork.CZB
 
             damageChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage);
+                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage, MaxCurrentDamage);
             };
 
             UnitDamageChangedEvent += damageChangedDelegate;
 
             healthChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
+                UpdateUnitInfoText(_healthText, CurrentHP, initialHP, MaxCurrentHP);
                 CheckOnDie();
             };
 
@@ -843,7 +870,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat)
+        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
         {
             if (text == null || !text)
                 return;
@@ -852,7 +879,7 @@ namespace LoomNetwork.CZB
 
             if (stat > initialStat)
                 text.color = Color.green;
-            else if (stat < initialStat)
+            else if (stat < initialStat || stat < maxCurrentStat)
                 text.color = Color.red;
             else
             {

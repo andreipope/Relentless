@@ -165,6 +165,7 @@ namespace LoomNetwork.CZB
             _tutorialStarted = false;
             GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
+            GameClient.Get<IDataManager>().SaveAllCache();
         }
 
         public void CancelTutorial()

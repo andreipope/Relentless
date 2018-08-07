@@ -333,7 +333,9 @@ namespace LoomNetwork.CZB
 
 		public void LoadCards(int page, int setIndex)
 		{
-           // CorrectSetIndex(ref setIndex);
+            // CorrectSetIndex(ref setIndex);
+
+            _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
 
             var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
             var cards = set.cards;
