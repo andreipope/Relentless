@@ -30,6 +30,6 @@ public class CustomDebug
         strBuilder.Append(message);
         strBuilder.Append(ColorClose);
         strBuilder.Append(SizeClose);
-        Debug.Log(strBuilder);
+        Debug.LogError(strBuilder);
     }
 }

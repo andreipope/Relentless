@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
-    
+
         internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_GOO = 0;
         internal static int MAXIMUM_PLAYER_GOO = 10;
@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB.Common
         internal const string LAYER_HAND_CARDS = "HandCards";
         internal const string LAYER_BOARD_CARDS = "BoardCards";
         internal const string LAYER_DEFAULT = "Default";
-        internal const string LAYER_FOREGROUND = "Foreground";        
+        internal const string LAYER_FOREGROUND = "Foreground";
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";
@@ -102,6 +102,6 @@ namespace LoomNetwork.CZB.Common
 
         internal const float POPUP_APPEAR_ON_CLICK_DELAY = 1f;
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE = true;
     }
 }
