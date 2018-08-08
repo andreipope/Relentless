@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                       // playerDeck.Add("Pyrite");
+                       // playerDeck.Add("Zeuz");
                     }
                 }
 
@@ -251,6 +251,8 @@ namespace LoomNetwork.CZB
         // ai step 2
         private void UseUnitsOnBoard()
         {
+          //  return;
+
             try
             {
                 var unitsOnBoard = new List<BoardUnit>();
@@ -343,6 +345,8 @@ namespace LoomNetwork.CZB
         // ai step 3
         private void UsePlayerSkills()
         {
+          //  return;
+
             try
             {
                 if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
@@ -417,8 +421,6 @@ namespace LoomNetwork.CZB
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
         {
-            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
-
             var workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -429,7 +431,7 @@ namespace LoomNetwork.CZB
                 boardCreature.transform.position = Vector3.zero;
                 boardUnitElement.ownerPlayer = card.owner;
 
-                boardUnitElement.SetObjectInfo(workingCard, cardSetName);
+                boardUnitElement.SetObjectInfo(workingCard);
                 _battlegroundController.opponentBoardCards.Add(boardUnitElement);
 
                 boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board

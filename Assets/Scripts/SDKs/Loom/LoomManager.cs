@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Threading.Tasks;
-using Loom.Unity3d;
+using Loom.Client;
 using UnityEngine;
 using Random = System.Random;
 
@@ -22,6 +22,9 @@ public partial class LoomManager
     private string _writerHost= "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
     private string _readerHost = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
     #endif
+
+    public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
+    public event ContractCreatedEventHandler ContractCreated;
     
     public string WriteHost
     {
@@ -36,6 +39,11 @@ public partial class LoomManager
     }
 
     public Contract Contract { get; private set; }
+
+    public bool IsConnected =>
+        Contract != null &&
+        Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
+        Contract.Client.WriteClient.ConnectionState >= RpcConnectionState.Connecting;
 
     public static LoomManager Instance
     {
@@ -55,12 +63,12 @@ public partial class LoomManager
         var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         var callerAddr = Address.FromPublicKey(publicKey);
 
-        var writer = RPCClientFactory.Configure()
+        var writer = RpcClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
             .WithWebSocket(_writerHost)
             .Create();
 
-        var reader = RPCClientFactory.Configure()
+        var reader = RpcClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
             .WithWebSocket(_readerHost)
             .Create();
@@ -71,15 +79,15 @@ public partial class LoomManager
         };
         
         client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]{
-            new NonceTxMiddleware{
-                PublicKey = publicKey,
-                Client = client
-            },
+            new NonceTxMiddleware(publicKey, client),
             new SignedTxMiddleware(privateKey)
         });
 
         var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
+        Contract oldContract = Contract;
         Contract = new Contract(client, contractAddr, callerAddr);
+        ContractCreated?.Invoke(oldContract, Contract);
+        
         
         result?.Invoke();
     }

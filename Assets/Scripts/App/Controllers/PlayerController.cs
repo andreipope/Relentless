@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            //  playerDeck.Add("Cynderman");
+                           //   playerDeck.Add("Zludge");
                         }
 
                         playerDeck.Add(card.cardName);

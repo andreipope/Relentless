@@ -12,7 +12,7 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
-using Newtonsoft.Json.Utilities;
+using Loom.Newtonsoft.Json.Utilities;
 using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
@@ -215,7 +215,7 @@ namespace LoomNetwork.CZB
             if (_currentDeckId == -1)
             {
                 _currentDeck = new Deck();
-                _currentDeck.name = "Horde " + _dataManager.CachedDecksData.decks.Count;
+                _currentDeck.name = "HORDE " + _dataManager.CachedDecksData.decks.Count;
                 _currentDeck.cards = new List<DeckCardData>();
             }
             else

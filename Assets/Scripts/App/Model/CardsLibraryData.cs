@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using System;
 using LoomNetwork.Internal;
 
@@ -73,7 +73,7 @@ namespace LoomNetwork.CZB.Data
 						card.cardSetType = (Enumerators.SetType)Enum.Parse (typeof(Enumerators.SetType), set.name.ToUpper ()); //todo improve this shit!
 
 						if (card.kind != null)
-							card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind> (card.kind);
+								card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind> (card.kind);
 						if (card.rank != null)
 							card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank> (card.rank);
 						if (card.type != null)

@@ -91,7 +91,8 @@ namespace LoomNetwork.CZB
                 _originalShiftedChildPosition;
         }
 
-        private void OnValidate() {
+        protected override void OnValidate() {
+            base.OnValidate();
             if (ShiftedChild == null)
                 return;
 

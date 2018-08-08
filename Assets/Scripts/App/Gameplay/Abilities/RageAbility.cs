@@ -48,8 +48,8 @@ namespace LoomNetwork.CZB
         {
             base.UnitHPChangedEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.GOT_DAMAGE)
-                return;
+            // if (abilityCallType != Enumerators.AbilityCallType.GOT_DAMAGE)
+            //      return;
 
             if (!_wasChanged)
             {

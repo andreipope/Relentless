@@ -3,7 +3,7 @@
 
 
 
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using System;
 using LoomNetwork.CZB.Common;
 using UnityEngine;

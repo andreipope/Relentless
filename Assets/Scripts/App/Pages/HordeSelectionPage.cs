@@ -335,6 +335,9 @@ namespace LoomNetwork.CZB
         // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()
         {
+            if (ShowConnectionLostPopupIfNeeded())
+                return;
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
             _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = -1;
@@ -344,6 +347,9 @@ namespace LoomNetwork.CZB
 
 		private void DeleteButtonOnClickHandler()
 		{
+		    if (ShowConnectionLostPopupIfNeeded())
+		        return;
+
 			HordeDeckObject deck = null;
 			foreach (HordeDeckObject item in _hordeDecks) {
 				if (item.DeckId == _selectedDeck) {
@@ -363,6 +369,9 @@ namespace LoomNetwork.CZB
 
 		private void EditButtonOnClickHandler()
 		{
+		    if (ShowConnectionLostPopupIfNeeded())
+		        return;
+
 			if (_selectedDeck != null) {
 				_soundManager.PlaySound (Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
@@ -420,6 +429,15 @@ namespace LoomNetwork.CZB
             if (oldIndex != _scrolledDeck)
                 _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - HORDE_ITEM_SPACE * _scrolledDeck, 420, 0);
         }
+
+        private bool ShowConnectionLostPopupIfNeeded() {
+            if (LoomManager.Instance.IsConnected)
+                return false;
+            
+            _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");
+            return true;
+        }
+        
         public class HordeDeckObject
         {
             public event Action<HordeDeckObject> HordeDeckSelectedEvent;

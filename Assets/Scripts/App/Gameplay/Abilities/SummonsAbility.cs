@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
             boardUnit.transform.parent = _playerBoard.transform;
             boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnit.ownerPlayer = owner;
-            boardUnit.SetObjectInfo(card, cardSetName);
+            boardUnit.SetObjectInfo(card);
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
                 boardUnit.IsPlayable = true;

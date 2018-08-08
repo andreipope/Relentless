@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
         public event Action Opening;
         public event Action<BoardCard> PreviewCardInstantiated;
 
-        public BoardCard _previewCard;
+        private BoardCard _previewCard;
         private BoardCard _selectedCollectionCard;
 
         public bool IsStateChanging { get; private set; }

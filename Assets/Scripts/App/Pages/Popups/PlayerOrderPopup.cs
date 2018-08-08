@@ -88,6 +88,16 @@ namespace LoomNetwork.CZB
         {
             _selfAnimator.StopPlayback();
 
+            _playerCardBackObject.SetActive(true);
+            _playerCardFrontObject.SetActive(false);
+            _playerFirstTurnObject.SetActive(false);
+            _playerSecondTurnObject.SetActive(false);
+
+            _opponentCardBackObject.SetActive(true);
+            _opponentCardFrontObject.SetActive(false);
+            _opponentFirstTurnObject.SetActive(false);
+            _opponentSecondTurnObject.SetActive(false);
+
             _selfPage.SetActive(false);
         }
 
@@ -131,7 +141,7 @@ namespace LoomNetwork.CZB
             DoAnimationOfWhoseTurn();
 
 
-           // return;
+            // return;
             _timerManager.AddTimer((x) =>
             {
                 _selfAnimator.SetTrigger("Exit");
@@ -168,8 +178,8 @@ namespace LoomNetwork.CZB
             bool isFrontViewOpponent = false;
             bool isFrontViewPlayer = false;
 
-            bool isLatestSecondOpponent =  !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer);
-            bool isLatestSecondPlayer =  !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
+            bool isLatestSecondOpponent = !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer);
+            bool isLatestSecondPlayer = !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
 
             bool startWithSecondOpponent = !isLatestSecondOpponent;
             bool startWithSecondPlayer = !isLatestSecondPlayer;
@@ -184,8 +194,8 @@ namespace LoomNetwork.CZB
                 sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
                 sequenceOpponent.AppendCallback(() =>
                 {
-                    if ((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f  < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45) || 
-                        (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) -270f > -45))
+                    if ((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45) ||
+                        (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45))
                     {
                         CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index, ref startWithSecondOpponent);
                     }
@@ -199,13 +209,13 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0,  index * rotateAngle), rotateTime, mode));
+                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
                 sequence.AppendCallback(() =>
                 {
                     if ((Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45) ||
                         (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45))
                     {
-                       CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
+                        CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
                     }
                 });
             }
