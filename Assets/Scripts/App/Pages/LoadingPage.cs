@@ -103,11 +103,14 @@ namespace LoomNetwork.CZB
 					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
                     if (Input.GetMouseButtonUp(0))
                     {
-                        _loginForm.SetActive(true);
-                        _pressAnyText.gameObject.SetActive(false);
+                        //_loginForm.SetActive(true);
+						if (_pressAnyText.gameObject.activeSelf) {
+							_pressAnyText.gameObject.SetActive (false);
 
-                        //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
-                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+							_uiManager.DrawPopup<LoginPopup> ();
+						}
                     }
                 }
             }
