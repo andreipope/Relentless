@@ -454,7 +454,7 @@ namespace LoomNetwork.CZB
             var cardWidth = 0.0f;
             foreach (var card in playerBoardCards)
             {
-                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = 3;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -518,7 +518,7 @@ namespace LoomNetwork.CZB
 
             foreach (var card in opponentBoardCards)
             {
-                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = 5;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }

@@ -71,9 +71,8 @@ namespace LoomNetwork.CZB
 
             var libraryCard = workingCard.libraryCard.Clone();
 
-            string cardSetName = _cardsController.GetSetOfCard(libraryCard);
             var card = new WorkingCard(libraryCard, playerOwner);
-            var unit = CreateBoardUnit(card, cardSetName);
+            var unit = CreateBoardUnit(card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
             playerOwner.AddCardToBoard(card);
@@ -84,7 +83,7 @@ namespace LoomNetwork.CZB
             else _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
         }
 
-        private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName)
+        private BoardUnit CreateBoardUnit(WorkingCard card)
         {
             var cardObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
 
@@ -95,7 +94,7 @@ namespace LoomNetwork.CZB
             boardUnit.transform.parent = _playerBoard.transform;
             boardUnit.transform.position = new Vector2(1.9f * playerCallerOfAbility.BoardCards.Count, 0);
             boardUnit.ownerPlayer = playerCallerOfAbility;
-            boardUnit.SetObjectInfo(card, cardSetName);
+            boardUnit.SetObjectInfo(card);
 
             boardUnit.PlayArrivalAnimation();
 

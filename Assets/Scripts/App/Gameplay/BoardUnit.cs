@@ -43,6 +43,7 @@ namespace LoomNetwork.CZB
         private VFXController _vfxController;
         private RanksController _ranksController;
         private AbilitiesController _abilitiesController;
+        private CardsController _cardsController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -51,8 +52,6 @@ namespace LoomNetwork.CZB
         private SpriteRenderer _pictureSprite;
         private SpriteRenderer _frozenSprite;
         private SpriteRenderer _glowSprite;
-        private SpriteRenderer _frameSprite;
-        private SpriteRenderer _animationSprite;
         private GameObject _shieldSprite;
 
         private GameObject _glowSelectedObjectSprite;
@@ -207,17 +206,16 @@ namespace LoomNetwork.CZB
             _vfxController = _gameplayManager.GetController<VFXController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
 
             _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
-            _pictureSprite = _selfObject.transform.Find("GraphicsAnimation/PictureRoot/CreaturePicture").GetComponent<SpriteRenderer>();
+            _pictureSprite = _selfObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = _selfObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             _glowSprite = _selfObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
-            _frameSprite = _selfObject.transform.Find("GraphicsAnimation").GetComponent<SpriteRenderer>();
-            _animationSprite = _selfObject.transform.Find("GraphicsAnimation").GetComponent<SpriteRenderer>();
             _shieldSprite = _selfObject.transform.Find("Other/Shield").gameObject;
 
             _glowSelectedObjectSprite = _selfObject.transform.Find("Other/GlowSelectedObject").gameObject;
@@ -230,22 +228,22 @@ namespace LoomNetwork.CZB
 
             _sleepingParticles = _selfObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
 
-            unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
+            //unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
 
             unitContentObject = _selfObject.transform.Find("Other").gameObject;
             unitContentObject.SetActive(false);
 
-            arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
+            //arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
 
             _onBehaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
 
-            arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
+            //arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
 
             _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
             _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
             _onBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             _onBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
-
+            /*
             animatorControllers = new List<UnitAnimatorInfo>();
             for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
             {
@@ -255,7 +253,7 @@ namespace LoomNetwork.CZB
                     cardType = (Enumerators.CardType)i
                 });
             }
-
+              */
             _buffsOnUnit = new List<Enumerators.BuffType>();
             attackedBoardObjectsThisTurn = new List<object>();
 
@@ -621,7 +619,6 @@ namespace LoomNetwork.CZB
             {
                 InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
-                _animationSprite.sortingOrder = -_animationSprite.sortingOrder;
                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;
             }
 
@@ -660,7 +657,7 @@ namespace LoomNetwork.CZB
             return _gameplayManager.CurrentPlayer.BoardCards;
         }
 
-        public void SetObjectInfo(WorkingCard card, string setName = "")
+        public void SetObjectInfo(WorkingCard card)
         {
             Card = card;
 
@@ -668,12 +665,37 @@ namespace LoomNetwork.CZB
             if (!ownerPlayer.IsLocalPlayer)
                 _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x, _sleepingParticles.transform.localPosition.y, 3f);
 
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), Card.libraryCard.cardRank.ToString().ToLower(), Card.libraryCard.picture.ToLower()));
+            string setName = _cardsController.GetSetOfCard(card.libraryCard);
+            string rank = Card.libraryCard.cardRank.ToString().ToLower();
+            string picture = Card.libraryCard.picture.ToLower();
+
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+
+            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+
+
+            // DEBUG FOR FIDNING PROBLEM WITH PICTURE NOT FOUND
+            if(_pictureSprite.sprite == null)
+            {
+                string data = string.Empty;
+
+                data += "---------- BEGIN: " + Time.time + "----------------" + Environment.NewLine;
+                data += card.libraryCard.name + Environment.NewLine;
+                data += rank + " | " + picture + setName + Environment.NewLine;
+                data += fullPathToPicture + Environment.NewLine;
+                data += "---------- END: " + Time.time + "----------------";
+
+                Debug.LogError(data);
+
+                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.libraryCard.name + "_PICTURE_ERROR.txt";
+                System.IO.File.WriteAllText(pathToLogFolder, data);
+                System.Diagnostics.Process.Start(pathToLogFolder);
+            }
 
             _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
             _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
 
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
+            //unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
             if (Card.type == Enumerators.CardType.WALKER)
             {
                 _sleepingParticles.transform.position += Vector3.up * 0.7f;
@@ -693,14 +715,14 @@ namespace LoomNetwork.CZB
 
             damageChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage);
+                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage, MaxCurrentDamage);
             };
 
             UnitDamageChangedEvent += damageChangedDelegate;
 
             healthChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_healthText, CurrentHP, initialHP);
+                UpdateUnitInfoText(_healthText, CurrentHP, initialHP, MaxCurrentHP);
                 CheckOnDie();
             };
 
@@ -745,8 +767,8 @@ namespace LoomNetwork.CZB
             }
             SetHighlightingEnabled(false);
 
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
+            //unitAnimator.StopPlayback();
+            //unitAnimator.Play(0);
         }
 
         private void CheckOnDie()
@@ -760,7 +782,10 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            unitAnimator.SetTrigger("Active");
+            Debug.Log("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
+            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
+            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Model/SpriteContainer");
+            _pictureSprite.transform.SetParent(spriteContainerTransform, false);
         }
 
         public void OnStartTurn()
@@ -843,7 +868,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat)
+        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
         {
             if (text == null || !text)
                 return;
@@ -852,7 +877,7 @@ namespace LoomNetwork.CZB
 
             if (stat > initialStat)
                 text.color = Color.green;
-            else if (stat < initialStat)
+            else if (stat < initialStat || stat < maxCurrentStat)
                 text.color = Color.red;
             else
             {

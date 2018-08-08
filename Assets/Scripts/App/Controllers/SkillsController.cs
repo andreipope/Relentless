@@ -449,8 +449,11 @@ namespace LoomNetwork.CZB
 
                 BoardUnit unit = target as BoardUnit;
 
-                unit.BuffedHP += skill.value;
-                unit.CurrentHP += skill.value;
+               // if (_cardsController.GetSetOfCard(unit.Card.libraryCard).Equals(owner.SelfHero.element)) // task http://joxi.ru/vAWlnRZC16RqVr
+                {
+                    unit.BuffedHP += skill.value;
+                    unit.CurrentHP += skill.value;
+                }
 
                 //TODO: remove this empty gameobject logic
                 Transform transform = new GameObject().transform;

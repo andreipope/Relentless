@@ -478,8 +478,6 @@ namespace LoomNetwork.CZB
 
                 var libraryCard = card.WorkingCard.libraryCard;
 
-                string cardSetName = GetSetOfCard(libraryCard);
-
                 card.transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.enabled = false;
 
@@ -506,7 +504,7 @@ namespace LoomNetwork.CZB
                     boardUnit.transform.parent = _playerBoard.transform;
                     boardUnit.transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
                     boardUnit.ownerPlayer = card.WorkingCard.owner;
-                    boardUnit.SetObjectInfo(card.WorkingCard, cardSetName);
+                    boardUnit.SetObjectInfo(card.WorkingCard);
 
                     _battlegroundController.playerHandCards.Remove(card);
                     _battlegroundController.playerBoardCards.Add(boardUnit);
@@ -707,7 +705,7 @@ namespace LoomNetwork.CZB
 
         public string GetSetOfCard(Card card)
         {
-            var set = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.Find(y => y.name == card.name) != null);
+            var set = _dataManager.CachedCardsLibraryData.sets.Find(x => x.cards.Find(y => y.name.Equals(card.name)) != null);
 
             if (set != null)
                 return set.name;

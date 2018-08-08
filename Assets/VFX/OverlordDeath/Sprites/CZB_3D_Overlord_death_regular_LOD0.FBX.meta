@@ -1,0 +1,189 @@
+fileFormatVersion: 2
+guid: 0940ca42d50fae34aa913f103fae8a35
+timeCreated: 1532093257
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Overlord_regular_LOD0_frame
+    100004: Overlord_regular_LOD0_gauge_left
+    100006: Overlord_regular_LOD0_gauge_right
+    100008: Overlord_regular_LOD0_pipe_bottom
+    100010: Overlord_regular_LOD0_pipe_left
+    100012: Overlord_regular_LOD0_pipe_right
+    100014: Overlord_regular_LOD0_plate
+    100016: Overlord_regular_LOD0_shutter1_left
+    100018: Overlord_regular_LOD0_shutter1_right
+    100020: Overlord_regular_LOD0_shutter2_left
+    100022: Overlord_regular_LOD0_shutter2_right
+    100024: Overlord_regular_LOD0_shutter3_left
+    100026: Overlord_regular_LOD0_shutter3_right
+    100028: Overlord_regular_LOD0_shutter4_left
+    100030: Overlord_regular_LOD0_shutter4_right
+    100032: Overlord_regular_LOD0_shutter5_left
+    100034: Overlord_regular_LOD0_shutter5_right
+    100036: Overlord_regular_LOD0_shutter6_left
+    100038: Overlord_regular_LOD0_shutter6_right
+    100040: Overlord_regular_LOD0_tube_left
+    100042: Overlord_regular_LOD0_tube_right
+    400000: //RootNode
+    400002: Overlord_regular_LOD0_frame
+    400004: Overlord_regular_LOD0_gauge_left
+    400006: Overlord_regular_LOD0_gauge_right
+    400008: Overlord_regular_LOD0_pipe_bottom
+    400010: Overlord_regular_LOD0_pipe_left
+    400012: Overlord_regular_LOD0_pipe_right
+    400014: Overlord_regular_LOD0_plate
+    400016: Overlord_regular_LOD0_shutter1_left
+    400018: Overlord_regular_LOD0_shutter1_right
+    400020: Overlord_regular_LOD0_shutter2_left
+    400022: Overlord_regular_LOD0_shutter2_right
+    400024: Overlord_regular_LOD0_shutter3_left
+    400026: Overlord_regular_LOD0_shutter3_right
+    400028: Overlord_regular_LOD0_shutter4_left
+    400030: Overlord_regular_LOD0_shutter4_right
+    400032: Overlord_regular_LOD0_shutter5_left
+    400034: Overlord_regular_LOD0_shutter5_right
+    400036: Overlord_regular_LOD0_shutter6_left
+    400038: Overlord_regular_LOD0_shutter6_right
+    400040: Overlord_regular_LOD0_tube_left
+    400042: Overlord_regular_LOD0_tube_right
+    2300000: Overlord_regular_LOD0_frame
+    2300002: Overlord_regular_LOD0_gauge_left
+    2300004: Overlord_regular_LOD0_gauge_right
+    2300006: Overlord_regular_LOD0_pipe_bottom
+    2300008: Overlord_regular_LOD0_pipe_left
+    2300010: Overlord_regular_LOD0_pipe_right
+    2300012: Overlord_regular_LOD0_plate
+    2300014: Overlord_regular_LOD0_shutter1_left
+    2300016: Overlord_regular_LOD0_shutter1_right
+    2300018: Overlord_regular_LOD0_shutter2_left
+    2300020: Overlord_regular_LOD0_shutter2_right
+    2300022: Overlord_regular_LOD0_shutter3_left
+    2300024: Overlord_regular_LOD0_shutter3_right
+    2300026: Overlord_regular_LOD0_shutter4_left
+    2300028: Overlord_regular_LOD0_shutter4_right
+    2300030: Overlord_regular_LOD0_shutter5_left
+    2300032: Overlord_regular_LOD0_shutter5_right
+    2300034: Overlord_regular_LOD0_shutter6_left
+    2300036: Overlord_regular_LOD0_shutter6_right
+    2300038: Overlord_regular_LOD0_tube_left
+    2300040: Overlord_regular_LOD0_tube_right
+    3300000: Overlord_regular_LOD0_frame
+    3300002: Overlord_regular_LOD0_gauge_left
+    3300004: Overlord_regular_LOD0_gauge_right
+    3300006: Overlord_regular_LOD0_pipe_bottom
+    3300008: Overlord_regular_LOD0_pipe_left
+    3300010: Overlord_regular_LOD0_pipe_right
+    3300012: Overlord_regular_LOD0_plate
+    3300014: Overlord_regular_LOD0_shutter1_left
+    3300016: Overlord_regular_LOD0_shutter1_right
+    3300018: Overlord_regular_LOD0_shutter2_left
+    3300020: Overlord_regular_LOD0_shutter2_right
+    3300022: Overlord_regular_LOD0_shutter3_left
+    3300024: Overlord_regular_LOD0_shutter3_right
+    3300026: Overlord_regular_LOD0_shutter4_left
+    3300028: Overlord_regular_LOD0_shutter4_right
+    3300030: Overlord_regular_LOD0_shutter5_left
+    3300032: Overlord_regular_LOD0_shutter5_right
+    3300034: Overlord_regular_LOD0_shutter6_left
+    3300036: Overlord_regular_LOD0_shutter6_right
+    3300038: Overlord_regular_LOD0_tube_left
+    3300040: Overlord_regular_LOD0_tube_right
+    4300000: Overlord_regular_LOD0_frame
+    4300002: Overlord_regular_LOD0_plate
+    4300004: Overlord_regular_LOD0_pipe_right
+    4300006: Overlord_regular_LOD0_pipe_left
+    4300008: Overlord_regular_LOD0_pipe_bottom
+    4300010: Overlord_regular_LOD0_gauge_right
+    4300012: Overlord_regular_LOD0_gauge_left
+    4300014: Overlord_regular_LOD0_tube_right
+    4300016: Overlord_regular_LOD0_tube_left
+    4300018: Overlord_regular_LOD0_shutter3_left
+    4300020: Overlord_regular_LOD0_shutter2_left
+    4300022: Overlord_regular_LOD0_shutter1_left
+    4300024: Overlord_regular_LOD0_shutter6_left
+    4300026: Overlord_regular_LOD0_shutter5_left
+    4300028: Overlord_regular_LOD0_shutter4_left
+    4300030: Overlord_regular_LOD0_shutter2_right
+    4300032: Overlord_regular_LOD0_shutter6_right
+    4300034: Overlord_regular_LOD0_shutter5_right
+    4300036: Overlord_regular_LOD0_shutter4_right
+    4300038: Overlord_regular_LOD0_shutter3_right
+    4300040: Overlord_regular_LOD0_shutter1_right
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 133.6486
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

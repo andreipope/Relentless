@@ -222,8 +222,12 @@ new object[]
             {
                 //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
-                if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
-                    healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
+
+                if (skill.overlordSkill != Enumerators.OverlordSkill.HARDEN)
+                {
+                    if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                        healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
+                }
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,
