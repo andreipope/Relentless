@@ -50,11 +50,4 @@ public static class LoomXCommandHandlers
 			CustomDebug.Log("LoomX Initialized..");
 		});
 	}
-	
-	
-	[CommandHandler(Description = "Clear Player Prefs")]
-	private static void ClearPlayerPrefs()
-	{
-		PlayerPrefs.DeleteAll();
-	}
 }

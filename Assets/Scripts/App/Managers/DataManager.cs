@@ -96,10 +96,6 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < count; i++)
                 LoadCachedData((Enumerators.CacheDataType)i);
 
-
-            //await GetCardLibraryData();
-            //await GetCollectionData();
-
             CachedCardsLibraryData.FillAllCards();
 
             CachedOpponentDecksData.ParseData();

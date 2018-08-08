@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
 using UnityEngine;
@@ -7,6 +8,9 @@ using Random = System.Random;
 
 public partial class LoomManager
 {
+    private static readonly string PrivateKeyFileName = Application.persistentDataPath+"/PrivateKey.key";
+    private static readonly string UserNameFileName = Application.persistentDataPath+"/UserName.txt";
+    
     private static LoomManager _instance;
     private LoomManager()
     {
@@ -58,8 +62,7 @@ public partial class LoomManager
     
     public async Task Init(Action result = null)
     {
-        //var privateKey = LoomX.GetPrivateKeyFromPlayerPrefs();
-        var privateKey = LoomX.GetPrivateKeyFromFile();
+        var privateKey = GetPrivateKeyFromFile();
         var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         var callerAddr = Address.FromPublicKey(publicKey);
 
@@ -94,13 +97,13 @@ public partial class LoomManager
 
     public async Task SetUser()
     {
-        if (!PlayerPrefs.HasKey("User"))
+        if (!File.Exists(UserNameFileName))
         {
             CreateGuestUser();
             await SignUp(UserId, var => {});  
         }
         else
-            UserId = PlayerPrefs.GetString("User");
+            UserId = File.ReadAllText(UserNameFileName);
         
         CustomDebug.Log("User = " + UserId);
     }
@@ -111,30 +114,21 @@ public partial class LoomManager
         var user = "LoomUser_" + rand.Next(1, 1000000);
         
         UserId = user;
-        PlayerPrefs.SetString("User", UserId);
+        File.WriteAllText(UserNameFileName, UserId);
+    }
+    
+
+    public static byte[] GetPrivateKeyFromFile()
+    {
+        byte[] privateKey;
+        if (File.Exists(PrivateKeyFileName))
+            privateKey = File.ReadAllBytes(PrivateKeyFileName);
+        else
+        {
+            privateKey = CryptoUtils.GeneratePrivateKey();
+            File.WriteAllBytes(PrivateKeyFileName, privateKey);
+        }
+
+        return privateKey;
     }
 }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
