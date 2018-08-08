@@ -1,0 +1,117 @@
+fileFormatVersion: 2
+guid: fc61dcb40a4ad484ca88bfa84cb96222
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: BackBone
+    100002: FangMain
+    100004: //RootNode
+    100006: feral_zombie_LOD0
+    100008: LowerFang
+    100010: LowerFang001
+    100012: LowerFang002
+    100014: LowerFang003
+    100016: Root
+    100018: UpperFang
+    100020: UpperFang001
+    100022: UpperFang002
+    100024: UpperFangAll
+    400000: BackBone
+    400002: FangMain
+    400004: //RootNode
+    400006: feral_zombie_LOD0
+    400008: LowerFang
+    400010: LowerFang001
+    400012: LowerFang002
+    400014: LowerFang003
+    400016: Root
+    400018: UpperFang
+    400020: UpperFang001
+    400022: UpperFang002
+    400024: UpperFangAll
+    2100000: default
+    4300000: feral_zombie_LOD0
+    7400000: Take 001
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: feral_zombie_LOD0
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 2
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
