@@ -28,6 +28,10 @@ namespace Loom.Client
         private IRpcClient readClient;
         private ILogger logger = NullLogger.Instance;
 
+        public IRpcClient WriteClient => this.writeClient;
+
+        public IRpcClient ReadClient => this.readClient;
+        
         /// <summary>
         /// Middleware to apply when committing transactions.
         /// </summary>

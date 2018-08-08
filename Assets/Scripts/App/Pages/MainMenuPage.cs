@@ -1,8 +1,9 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System.Threading.Tasks;
+using App.Utilites;
+using Loom.Client;
 using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
@@ -38,6 +39,7 @@ namespace LoomNetwork.CZB
         private Animator _logoAnimator;
 
         private bool _logoShowed;
+        private TextMeshProUGUI _connectionStatusText;
 
         public void Init()
         {
@@ -64,6 +66,8 @@ namespace LoomNetwork.CZB
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
+            
+            _connectionStatusText = _selfPage.transform.Find("ConnectionStatusText").GetComponent<TextMeshProUGUI>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
@@ -75,8 +79,25 @@ namespace LoomNetwork.CZB
 
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
-
+            
+            LoomManager.Instance.ContractCreated += LoomManagerOnContractCreated;
+            
             Hide();
+            
+        }
+
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state) {
+            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
+        }
+
+        private void UpdateConnectionStateUI() {
+            if (!_selfPage.activeSelf)
+                return;
+
+            _connectionStatusText.text = 
+                LoomManager.Instance.IsConnected ? 
+                    "<color=green>Online</color>" : 
+                    "<color=red>Offline</color>";
         }
 
         public void Update()
@@ -89,7 +110,7 @@ namespace LoomNetwork.CZB
             }
 
             /*  FOR TESTING
-            if(Input.GetKeyUp(KeyCode.Z))
+            if(Input.GetKeyUp(KeyCode.Z))he
             {
                 Debug.Log("BATTLEGROUND");
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
@@ -126,11 +147,31 @@ namespace LoomNetwork.CZB
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
                 _logoShowed = true;
             } */
+            
+
+            /*if (LoomManager.Instance.Contract != null)
+            {
+                LoomManagerOnContractCreated(null, LoomManager.Instance.Contract);
+            }*/
+
+            UpdateConnectionStateUI();
+        }
+
+        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract) {
+            if (oldContract != null)
+            {
+                oldContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                oldContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
+            newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
         }
 
         public void Hide()
         {
             _selfPage.SetActive(false);
+            //LoomManager.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            //LoomManager.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
         }
 
         public void Dispose()
