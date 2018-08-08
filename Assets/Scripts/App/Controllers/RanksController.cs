@@ -139,15 +139,15 @@ namespace LoomNetwork.CZB
             switch (rank)
             {
                 case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE_UNIT);
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
                     break;
                 case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE_UNIT);
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.REANIMATE_UNIT);
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
@@ -162,15 +162,15 @@ namespace LoomNetwork.CZB
             switch (rank)
             {
                 case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK);
+                    buffs.Add(Enumerators.BuffType.DESTROY);
                     break;
                 case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK);
+                    buffs.Add(Enumerators.BuffType.DESTROY);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK);
+                    buffs.Add(Enumerators.BuffType.DESTROY);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;

@@ -32,6 +32,7 @@ namespace LoomNetwork.CZB
         public CollectionData CachedCollectionData { get; set; }
         public DecksData CachedDecksData { get; set; }
         public OpponentDecksData CachedOpponentDecksData { get; set; }
+        public BuffsTooltipData CachedBuffsTooltipData { get; set; }
 
         public ActionData CachedActionsLibraryData { get; set;}
 
@@ -63,6 +64,7 @@ namespace LoomNetwork.CZB
             CachedOpponentDecksData = new OpponentDecksData();
             CachedActionsLibraryData = new ActionData();
             CachedCreditsData = new CreditsData();
+            CachedBuffsTooltipData = new BuffsTooltipData();
         }
 
         public void Dispose()
@@ -176,9 +178,14 @@ namespace LoomNetwork.CZB
                         File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedActionsLibraryData));
                     }
                     break;
-                case Enumerators.CacheDataType. CREDITS_DATA:
+                case Enumerators.CacheDataType.CREDITS_DATA:
                     {
                         File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
+                    }
+                    break;
+                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
+                    {
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
                     }
                     break;
                 default: break;
@@ -242,6 +249,12 @@ namespace LoomNetwork.CZB
                             CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPathes[type]);
                     }
                     break;
+                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
+                    {
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedBuffsTooltipData = DeserializeObjectFromPath<BuffsTooltipData>(_cacheDataPathes[type]);
+                    }
+                    break;
                 default: break;
             }
         }
@@ -257,6 +270,7 @@ namespace LoomNetwork.CZB
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);
+                CachedBuffsTooltipData = JsonConvert.DeserializeObject<BuffsTooltipData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
 
                 var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
                 if (collectionLibrary == null)
@@ -277,6 +291,7 @@ namespace LoomNetwork.CZB
             _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_OPPONENT_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_DECKS_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH));
             _cacheDataPathes.Add(Enumerators.CacheDataType.CREDITS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_CREDITS_DATA_FILE_PATH));
+            _cacheDataPathes.Add(Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_BUFFS_TOOLTIP_DATA_FILE_PATH));
         }
 
         private T DeserializeObjectFromPath<T>(string path)
@@ -341,6 +356,11 @@ namespace LoomNetwork.CZB
                     break;
             }
             return maxCopies;
+        }
+
+        public BuffInfo GetBuffInfoByType(string type)
+        {
+            return CachedBuffsTooltipData.buffs.Find(x => x.type.ToLower().Equals(type.ToLower()));
         }
     }
 }

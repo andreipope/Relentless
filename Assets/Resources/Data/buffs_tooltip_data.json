@@ -1,0 +1,99 @@
+{
+  "buffs": [
+    {
+      "name": "Feral",
+      "tooltip": "Can attack when this enters the battleground",
+      "type" :  "FERAL"
+    },
+    {
+      "name": "Heavy",
+      "tooltip": "Enemies must attack this",
+      "type": "HEAVY"
+    },
+    {
+      "name": "Entry",
+      "tooltip": "Ability activates when this zombie enters the battleground",
+      "type": "ENTRY"
+    },
+    {
+      "name": "Death",
+      "tooltip": "Ability activates when this zombie dies",
+      "type": "DEATH"
+    },
+    {
+      "name": "Attack",
+      "tooltip": "Ability activates when this zombie attacks",
+      "type": "ATTACK"
+    },
+    {
+      "name": "Freeze",
+      "tooltip": "A Frozen zombie loses its next attack",
+      "type": "FREEZE"
+    },
+    {
+      "name": "Flash",
+      "tooltip": "This zombie can attack twice",
+      "type": "FLASH"
+    },
+    {
+      "name": "Destroy",
+      "tooltip": "Zombies damaged by this are removed from battleground",
+      "type": "DESTROY"
+    },
+    {
+      "name": "Distract",
+      "tooltip": "Zombie with this status is unable to use its ability",
+      "type": "DISTRACT"
+    },
+    {
+      "name": "Swing X",
+      "tooltip": "Deal X damage to adjacent zombies to target",
+      "type": "SWING"
+    },
+    {
+      "name": "Rage X",
+      "tooltip": "If damaged, get +X attack",
+      "type": "RAGE"
+    },
+    {
+      "name": "Delayed X",
+      "tooltip": "Ability activates after X turns in play",
+      "type": "DELAYED"
+    },
+    {
+      "name": "Turn",
+      "tooltip": "Ability activates at the start of each turn while in play",
+      "type": "TURN"
+    },
+    {
+      "name": "End",
+      "tooltip": "Ability activates at the end of each turn while in play",
+      "type": "END"
+    },
+    {
+      "name": "Overflow X",
+      "tooltip": "Get X Goo over the max goo available, for this turn only",
+      "type": "OVERFLOW"
+    },
+    {
+      "name": "Shield",
+      "tooltip": "Shield will absorb the next attack completely and be removed",
+      "type": "SHIELD"
+    },
+    {
+      "name": "Devour",
+      "tooltip": "Killing a zombie will gain its attack and / or defense values",
+      "type": "DEVOUR"
+    },
+    {
+      "name": "Shatter X",
+      "tooltip": "Deal +X damage to Frozen enemies",
+      "type": "SHATTER"
+    },
+    {
+      "name": "Reanimate",
+      "tooltip": "Resummon this zombie when it is Destroyed",
+      "type": "REANIMATE"
+    }
+  ]
+}

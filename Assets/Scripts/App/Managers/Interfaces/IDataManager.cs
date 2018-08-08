@@ -28,5 +28,7 @@ namespace LoomNetwork.CZB
         void SaveCache(Enumerators.CacheDataType type);
 
         Sprite GetSpriteFromTexture(Texture2D texture);
+
+        BuffInfo GetBuffInfoByType(string type);
     }
 }

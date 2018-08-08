@@ -298,7 +298,7 @@ namespace LoomNetwork.CZB
 
         public bool IsAbilityCallsAtStart(AbilityData ability)
         {
-            if (ability.abilityCallType == Enumerators.AbilityCallType.AT_START)
+            if (ability.abilityCallType == Enumerators.AbilityCallType.ENTRY)
                 return true;
             return false;
         }
@@ -654,13 +654,15 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.AbilityType.REANIMATE_UNIT:
                     abilityData = new AbilityData();
+                    abilityData.buffType = "REANIMATE";
                     abilityData.type = "REANIMATE_UNIT";
                     abilityData.activityType = "PASSIVE";
                     abilityData.callType = "AT_DEATH";
                     abilityData.ParseData();
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
-                    abilityData = new AbilityData();
+                    abilityData = new AbilityData();         
+                    abilityData.buffType = "DESTROY";
                     abilityData.type = "DESTROY_TARGET_UNIT_AFTER_ATTACK";
                     abilityData.activityType = "PASSIVE";
                     abilityData.callType = "AT_ATTACK";

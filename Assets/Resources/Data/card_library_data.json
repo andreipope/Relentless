@@ -55,13 +55,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
-              "callType": "at_end",
+              "callType": "END",
               "value": 2
             }
           ],
@@ -119,7 +119,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 2,
@@ -155,7 +155,7 @@
             {
               "type": "TAKE_UNIT_TYPE_TO_ALLY_UNIT",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card",
               "unitType": "FERAL"
             }
@@ -189,13 +189,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 5
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
-              "callType": "at_end",
+              "callType": "END",
               "value": 4
             }
           ],
@@ -263,7 +263,7 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
               "name": "Pyromaz"
@@ -298,7 +298,7 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
@@ -334,7 +334,7 @@
             {
               "type": "PRIORITY_ATTACK",
               "activityType": "passive",
-              "callType": "at_start"
+              "callType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -371,7 +371,7 @@
             {
               "type": "STUN",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
               "value": 1
             }
@@ -437,14 +437,14 @@
             {
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 1,
               "turns": 1
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -477,7 +477,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
@@ -513,7 +513,7 @@
             {
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 2,
               "effectType": "STUN_OR_DAMAGE_FREEZES"
@@ -548,14 +548,14 @@
             {
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2,
               "turns": 1
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -588,7 +588,7 @@
             {
               "type": "FREEZE_UNITS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 1
             }
@@ -622,7 +622,7 @@
             {
               "type": "DELAYED_GAIN_ATTACK",
               "activityType": "passive",
-              "callType": "turn_start",
+              "callType": "TURN",
               "value": 6,
               "delay": 1
             }
@@ -658,7 +658,7 @@
             {
               "type": "DESTROY_FROZEN_UNIT",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
               "unitStatus": "FROZEN"
             }
@@ -692,7 +692,7 @@
             {
               "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_all_cards|player_all_cards"
             }
           ],
@@ -725,7 +725,7 @@
             {
               "type": "DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "affectObjectType": "none",
               "value": 2,
@@ -802,7 +802,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 1,
@@ -888,7 +888,7 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -946,7 +946,7 @@
             {
               "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "passive",
-              "callType": "at_start"
+              "callType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1036,7 +1036,7 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -1069,7 +1069,7 @@
             {
               "type": "DESTROY_UNIT_BY_TYPE",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
               "affectObjectType": "none",
               "cardType": "HEAVY"
@@ -1104,7 +1104,7 @@
             {
               "type": "TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2,
               "health": 10
             }
@@ -1138,7 +1138,7 @@
             {
               "type": "DELAYED_LOSE_HEAVY_GAIN_ATTACK",
               "activityType": "passive",
-              "callType": "turn_start",
+              "callType": "TURN",
               "value": 4,
               "delay": 2
             }
@@ -1172,7 +1172,7 @@
             {
               "type": "SWING",
               "activityType": "passive",
-              "callType": "at_attack",
+              "callType": "ATTACK",
               "value": 4
             }
           ],
@@ -1205,7 +1205,7 @@
             {
               "type": "ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "setType": "EARTH",
               "health": 0,
               "damage": 1
@@ -1270,7 +1270,7 @@
             {
               "type": "LOWER_COST_OF_CARD_IN_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card"
             }
           ],
@@ -1303,7 +1303,7 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "setType": "none"
             }
           ],
@@ -1336,7 +1336,7 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -1369,7 +1369,7 @@
             {
               "type": "CARD_RETURN",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card"
             }
           ],
@@ -1402,13 +1402,13 @@
             {
               "type": "SWING",
               "activityType": "passive",
-              "callType": "at_attack",
+              "callType": "ATTACK",
               "value": 1
             },
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 1
             }
@@ -1467,13 +1467,13 @@
             {
               "type": "SHILED",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "none"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -1507,7 +1507,7 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT"
             }
           ],
@@ -1574,7 +1574,7 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "value": 3,
               "effectType": "MASSIVE_LIGHTNING"
@@ -1650,7 +1650,7 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "setType": "life"
             }
           ],
@@ -1683,13 +1683,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 3
             },
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 1,
               "name": "Zombie 1/1"
@@ -1724,7 +1724,7 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 2,
               "effectType": "TARGET_LIFE"
@@ -1759,7 +1759,7 @@
             {
               "type": "STUN",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
               "value": 1
             }
@@ -1830,7 +1830,7 @@
             {
               "type": "GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS",
               "activityType": "passive",
-              "callType": "at_attack",
+              "callType": "ATTACK",
               "value": 1
             }
           ],
@@ -1863,7 +1863,7 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "player",
               "count": 1,
               "name": "Zombie Feral"
@@ -1898,13 +1898,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 6
             },
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
               "name": "Zombie 2/2"
@@ -1939,7 +1939,7 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "TURN_START",
+              "callType": "TURN",
               "targetType": "player",
               "count": 2,
               "name": "Zombie 1/1"
@@ -1974,7 +1974,7 @@
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "value": -1
             }
           ],
@@ -2007,7 +2007,7 @@
             {
               "type": "REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
               "setType": "LIFE"
             }
@@ -2108,7 +2108,7 @@
             {
               "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
               "value": 1
             }
@@ -2142,13 +2142,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player",
               "value": 2
             }
@@ -2182,7 +2182,7 @@
             {
               "type": "CHANGE_STAT",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "none",
               "statType": "damage",
               "value": -1
@@ -2217,7 +2217,7 @@
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "PLAYER_CARD",
               "value": 1
             }
@@ -2251,13 +2251,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 7
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player",
               "value": 4
             }
@@ -2324,7 +2324,7 @@
             {
               "type": "LOSE_GOO",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "value": 1
             }
           ],
@@ -2357,7 +2357,7 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_death",
+              "callType": "DEATH",
               "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
               "affectObjectType": "none",
               "value": 3,
@@ -2393,13 +2393,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 4
             },
             {
               "type": "USE_ALL_GOO_TO_INCREASE_STATS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2
             }
           ],
@@ -2437,7 +2437,7 @@
             {
               "type": "UNIT_WEAPON",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "value": 4,
               "damage": 4
@@ -2472,7 +2472,7 @@
             {
               "type": "ADD_GOO_VIAL",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "none",
               "value": 1
             }
@@ -2506,7 +2506,7 @@
             {
               "type": "heal",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
               "effectType": "HEAL"
@@ -2541,7 +2541,7 @@
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
               "effectType": "TARGET_ADJUSTMENTS_BOMB"
@@ -2576,7 +2576,7 @@
             {
               "type": "ADD_GOO_VIAL",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "none",
               "value": 2
             }
@@ -2611,7 +2611,7 @@
             {
               "type": "CHANGE_STAT_UNTILL_END_OF_TURN",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_all_cards",
               "damage": -3
             }
@@ -2747,13 +2747,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 3
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": -1
             }
           ],
@@ -2787,13 +2787,13 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 6
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": -2
             }
           ],

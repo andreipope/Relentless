@@ -112,6 +112,9 @@ namespace LoomNetwork.CZB
         public Enumerators.AttackInfoType attackInfoType = Enumerators.AttackInfoType.ANY;
 
 
+        public Enumerators.CardType InitialUnitType { get { return _initialUnitType; } }
+         
+
         public int MaxCurrentDamage { get { return initialDamage + BuffedDamage; } }
         public int BuffedDamage { get; set; }
 
@@ -427,10 +430,10 @@ namespace LoomNetwork.CZB
                 case Enumerators.BuffType.SHIELD:
                     HasBuffShield = true;
                     break;
-                case Enumerators.BuffType.REANIMATE_UNIT:
+                case Enumerators.BuffType.REANIMATE:
                     _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this, Card.libraryCard, ownerPlayer);
                     break;
-                case Enumerators.BuffType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
+                case Enumerators.BuffType.DESTROY:
                     _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK, this, Card.libraryCard, ownerPlayer);
                     break;
                 default: break;

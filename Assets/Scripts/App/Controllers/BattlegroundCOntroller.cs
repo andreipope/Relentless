@@ -555,17 +555,39 @@ namespace LoomNetwork.CZB
         }
 
         // rewrite
-        public void CreateCardPreview(WorkingCard card, Vector3 pos, bool highlight = true)
+        public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
             isPreviewActive = true;
-            currentPreviewedCardId = card.instanceId;
-            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
+
+            if(target is BoardCard)
+            {
+                currentPreviewedCardId = (target as BoardCard).WorkingCard.instanceId;
+
+            }
+            else if(target is BoardUnit)
+            {
+                currentPreviewedCardId = (target as BoardUnit).Card.instanceId;
+            }
+
+       
+            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
         }
 
         // rewrite
-        public IEnumerator CreateCardPreviewAsync(WorkingCard card, Vector3 pos, bool highlight)
+        public IEnumerator CreateCardPreviewAsync(object target, Vector3 pos, bool highlight)
         {
             yield return new WaitForSeconds(0.3f);
+
+            WorkingCard card = null;
+
+            if (target is BoardCard)
+            {
+                card = (target as BoardCard).WorkingCard;
+            }
+            else if (target is BoardUnit)
+            {
+                card = (target as BoardUnit).Card;
+            }
 
             string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
@@ -586,6 +608,9 @@ namespace LoomNetwork.CZB
                 highlight = boardCard.CanBePlayed(card.owner) && boardCard.CanBeBuyed(card.owner);
             boardCard.SetHighlightingEnabled(highlight);
             boardCard.isPreview = true;
+
+            if (target is BoardUnit)
+                boardCard.DrawBuffsOnUnit(target as BoardUnit);
 
             var newPos = pos;
             newPos.y += 2.0f;

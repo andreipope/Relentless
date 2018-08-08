@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_START)
+            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");

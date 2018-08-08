@@ -21,6 +21,8 @@ namespace LoomNetwork.CZB.Common
         internal const string LOCAL_OPPONENT_DECKS_DATA_FILE_PATH = "opponent_decks_data.json";
         internal const string LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH = "action_library_data.json";
         internal const string LOCAL_CREDITS_DATA_FILE_PATH = "credits_data.json";
+        internal const string LOCAL_BUFFS_TOOLTIP_DATA_FILE_PATH = "buffs_tooltip_data.json";
+        
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
@@ -83,6 +85,7 @@ namespace LoomNetwork.CZB.Common
         internal const string CARD_SOUND_ATTACK = "A";
         internal const string CARD_SOUND_DEATH = "D";
 
+
         internal static UnityEngine.Vector3 VFX_OFFSET = UnityEngine.Vector3.zero;
 
         // SOUNDS VOLUME'S
@@ -95,13 +98,15 @@ namespace LoomNetwork.CZB.Common
         internal static float CARDS_MOVE_SOUND_VOLUME = 0.025f;
         internal static float BACKGROUND_SOUND_VOLUME = 0.05f;
         internal static float SFX_SOUND_VOLUME = 0.15f;
-
+        internal static float OVERLORD_ABILITY_SOUND_VOLUME = 0.1f;
+        internal static float SPELL_ABILITY_SOUND_VOLUME = 0.1f;
+        internal static float BATTLEGROUND_EFFECTS_SOUND_VOLUME = 0.25f;
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
         internal const float POPUP_APPEAR_ON_CLICK_DELAY = 1f;
 
-        internal const bool DEV_MODE = true;  
+        internal const bool DEV_MODE = false;  
     }
 }

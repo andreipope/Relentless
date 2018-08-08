@@ -34,7 +34,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnDieEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
+            if (abilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
             Action();

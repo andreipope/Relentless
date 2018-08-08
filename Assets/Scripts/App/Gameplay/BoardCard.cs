@@ -49,6 +49,11 @@ namespace LoomNetwork.CZB
 
         protected List<ElementSlotOfCards> _elementSlotsOfCards;
         protected Transform _parentOfEditingGroupUI;
+
+        protected List<BuffOnCardInfoObject> _buffOnCardInfoObjects;
+
+        protected Transform _parentOfBuffOnCardInfoObjects;
+
         public int cardsAmountDeckEditing = 0;
 
         public bool cardShouldBeDistributed = false;
@@ -103,6 +108,8 @@ namespace LoomNetwork.CZB
             distibuteCardObject = transform.Find("DistributeCardObject").gameObject;
 
             _parentOfEditingGroupUI = transform.Find("DeckEditingGroupUI");
+
+            _parentOfBuffOnCardInfoObjects = transform.Find("Group_AbilitiesInfo");
 
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
@@ -381,6 +388,95 @@ namespace LoomNetwork.CZB
             distibuteCardObject.SetActive(cardShouldBeDistributed);
         }
 
+
+        public void DrawBuffsOnUnit(BoardUnit unit)
+        {
+            _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
+
+            float offset = 0f;
+            float spacing = -6f;
+
+            List<BuffInfo> buffs = new List<BuffInfo>();
+
+            foreach (var abil in unit.Card.libraryCard.abilities)
+            {
+                var buffInfo = _dataManager.GetBuffInfoByType(abil.callType);
+                if (buffInfo != null)
+                    buffs.Add(buffInfo);
+            }
+
+            foreach (var buffOnUnit in unit.BuffsOnUnit)
+            {
+                var buffInfo = _dataManager.GetBuffInfoByType(buffOnUnit.ToString());
+                if (buffInfo != null)
+                    buffs.Add(buffInfo);
+            }
+
+            if (unit.InitialUnitType != Enumerators.CardType.WALKER && unit.InitialUnitType != Enumerators.CardType.NONE)
+            {
+                var buffInfo = _dataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
+                if (buffInfo != null)
+                    buffs.Add(buffInfo);
+            }
+
+            BuffOnCardInfoObject buff = null;
+            for (int i = 0; i < buffs.Count; i++)
+            {
+                buff = new BuffOnCardInfoObject(buffs[i].name, buffs[i].tooltip, _parentOfBuffOnCardInfoObjects, offset + spacing * i);
+
+                _buffOnCardInfoObjects.Add(buff);
+            }
+        }
+
+        public void ClearBuffsOnUnit()
+        {
+            if (_buffOnCardInfoObjects != null)
+            {
+                foreach (var item in _buffOnCardInfoObjects)
+                    item.Dispose();
+                _buffOnCardInfoObjects.Clear();
+                _buffOnCardInfoObjects = null;
+            }
+        }
+
+
+        public class BuffOnCardInfoObject
+        {
+            private ILoadObjectsManager _loadObjectsManager;
+
+            private GameObject _selfObject;
+
+            private SpriteRenderer _buffIconPicture;
+
+            private TextMeshPro _callTypeText,
+                                _descriptionText;
+
+            public Transform transform { get { return _selfObject.transform; } }
+
+            public BuffOnCardInfoObject(string name, string tooltip, Transform parent, float offsetY)
+            {
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/Items/Item_BuffIOnCardnfo"), parent, false);
+
+                transform.localPosition = new Vector3(0, offsetY, 0f);
+
+                _callTypeText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
+                _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
+
+                _buffIconPicture = _selfObject.transform.Find("Image_BuffIcon").GetComponent<SpriteRenderer>();
+
+                _callTypeText.text = name.ToUpper();
+                _descriptionText.text = tooltip;
+
+                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + name.Trim().ToLower() + "_large");
+            }
+
+            public void Dispose()
+            {
+                MonoBehaviour.Destroy(_selfObject);
+            }
+        }
 
         public class ElementSlotOfCards
         {
