@@ -15,6 +15,7 @@ namespace LoomNetwork.CZB
     public class LoadingPage : IUIElement
     {
 		private IUIManager _uiManager;
+	    private IDataManager _dataManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
 
@@ -38,9 +39,11 @@ namespace LoomNetwork.CZB
                             _loginButton;
 
         private int a = 0;
-        public void Init()
+
+	    public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
 
@@ -81,7 +84,7 @@ namespace LoomNetwork.CZB
         }
 
 
-        public void Update()
+        public async void Update()
         {
             if (_selfPage.activeInHierarchy && GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT)
             {
@@ -109,7 +112,17 @@ namespace LoomNetwork.CZB
 
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
-							_uiManager.DrawPopup<LoginPopup> ();
+
+							if (LoomManager.Instance.LoadUserDataModel() && LoomManager.Instance.UserDataModel.IsValid)
+							{
+								await LoomManager.Instance.CreateContract();
+								await _dataManager.StartLoadCache();
+								
+								GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+							} else
+							{
+								_uiManager.DrawPopup<LoginPopup>();
+							}
 						}
                     }
                 }

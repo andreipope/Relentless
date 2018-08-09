@@ -241,6 +241,7 @@ namespace LoomNetwork.CZB
         private async void ReconnectButtonOnClickHandler() {
             try
             {
+                // FIXME: add waiting popup
                 await LoomManager.Instance.CreateContract();
                 await _dataManager.StartLoadCache();
             } catch (Exception e)

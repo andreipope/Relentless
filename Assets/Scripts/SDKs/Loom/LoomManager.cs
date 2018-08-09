@@ -3,14 +3,14 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Newtonsoft.Json;
 using UnityEngine;
 using Random = System.Random;
 
 public partial class LoomManager
 {
-    private static readonly string PrivateKeyFileName = Application.persistentDataPath+"/PrivateKey.key";
-    private static readonly string UserNameFileName = Application.persistentDataPath+"/UserName.txt";
-    
+    private static readonly string UserDataFileName = Application.persistentDataPath+"/UserData.json";
+
     private static LoomManager _instance;
     private LoomManager()
     {
@@ -29,7 +29,9 @@ public partial class LoomManager
 
     public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
     public event ContractCreatedEventHandler ContractCreated;
-    
+
+    public LoomUserDataModel UserDataModel { get; set; }
+
     public string WriteHost
     {
         get { return _writerHost; }
@@ -60,10 +62,10 @@ public partial class LoomManager
         }
     }
     
-    public async Task CreateContract(Action result = null)
+    public async Task CreateContract() 
     {
-        var privateKey = GetPrivateKeyFromFile();
-        var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+        LoadUserDataModel();
+        var publicKey = CryptoUtils.PublicKeyFromPrivateKey(UserDataModel.PrivateKey);
         var callerAddr = Address.FromPublicKey(publicKey);
 
         var writer = RpcClientFactory.Configure()
@@ -83,52 +85,32 @@ public partial class LoomManager
         
         client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]{
             new NonceTxMiddleware(publicKey, client),
-            new SignedTxMiddleware(privateKey)
+            new SignedTxMiddleware(UserDataModel.PrivateKey)
         });
 
         var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
         Contract oldContract = Contract;
         Contract = new Contract(client, contractAddr, callerAddr);
         ContractCreated?.Invoke(oldContract, Contract);
-        
-        
-        result?.Invoke();
     }
 
-    public async Task SetUser()
-    {
-        if (!File.Exists(UserNameFileName))
-        {
-            CreateGuestUser();
-            await SignUp(UserId, var => {});  
-        }
-        else
-            UserId = File.ReadAllText(UserNameFileName);
-        
-        CustomDebug.Log("User = " + UserId);
+    public bool LoadUserDataModel(bool force = false) {
+        if (UserDataModel != null && !force)
+            return true;
+
+        if (!File.Exists(UserDataFileName))
+            return false;
+
+        UserDataModel = JsonConvert.DeserializeObject<LoomUserDataModel>(File.ReadAllText(UserDataFileName));
+        return true;
     }
 
-    private void CreateGuestUser()
-    {
-        var rand = new Random();
-        var user = "LoomUser_" + rand.Next(1, 1000000);
-        
-        UserId = user;
-        File.WriteAllText(UserNameFileName, UserId);
-    }
-    
+    public bool SetUserDataModel(LoomUserDataModel userDataModel) {
+        if (userDataModel == null)
+            throw new ArgumentNullException(nameof(userDataModel));
 
-    public static byte[] GetPrivateKeyFromFile()
-    {
-        byte[] privateKey;
-        if (File.Exists(PrivateKeyFileName))
-            privateKey = File.ReadAllBytes(PrivateKeyFileName);
-        else
-        {
-            privateKey = CryptoUtils.GeneratePrivateKey();
-            File.WriteAllBytes(PrivateKeyFileName, privateKey);
-        }
-
-        return privateKey;
+        File.WriteAllText(UserDataFileName, JsonConvert.SerializeObject(userDataModel));
+        UserDataModel = userDataModel;
+        return true;
     }
 }

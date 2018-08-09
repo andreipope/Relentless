@@ -11,7 +11,7 @@ public class LoomDeckTest
     [SetUp]
     public async void InitLoom()
     {
-        await LoomManager.Instance.CreateContract(() => { });
+        await LoomManager.Instance.CreateContract();
         LoomManager.UserId = "LoomTest";
         await LoomManager.Instance.SignUp(LoomManager.UserId, result => { });
     }

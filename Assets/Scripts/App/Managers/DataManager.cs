@@ -17,7 +17,7 @@ using Card = LoomNetwork.CZB.Data.Card;
 
 namespace LoomNetwork.CZB
 {
-    public class DataManager : IService, IDataManager
+    public partial class DataManager : IService, IDataManager
     {
         private IAppStateManager _appStateManager;
         private ILocalizationManager _localizationManager;
@@ -87,10 +87,6 @@ namespace LoomNetwork.CZB
 
         public async Task StartLoadCache()
         {
-            // TODO : Remove creating guest user from here
-            await LoomManager.Instance.SetUser();
-
-
             Debug.Log("=== Start loading server ==== ");
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
@@ -109,36 +105,6 @@ namespace LoomNetwork.CZB
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
             OnLoadCacheCompletedEvent?.Invoke();
         }
-
-        private async Task GetCollectionData()
-        {
-            try
-            {
-                GetCollectionResponse getCollectionResponse = await LoomManager.Instance.GetCardCollection(LoomManager.UserId);
-                CustomDebug.Log(getCollectionResponse.ToString());
-
-                CachedCollectionData = getCollectionResponse.FromProtobuf();
-            }
-            catch (Exception ex)
-            {
-                CustomDebug.LogError("===== Card Collection Not Loaded ===== " + ex);
-            }
-        }
-
-        private async Task GetCardLibraryData()
-        {
-            try
-            {
-                ListCardLibraryResponse listCardLibraryResponse = await LoomManager.Instance.GetCardLibrary();
-                CustomDebug.Log(listCardLibraryResponse.ToString());
-                CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
-            }
-            catch (Exception ex)
-            {
-                CustomDebug.LogError("===== Card Library Not Loaded ===== " + ex);
-            }
-        }
-
 
         public void Update()
         {
@@ -223,12 +189,6 @@ namespace LoomNetwork.CZB
             }
             
             return Task.CompletedTask;
-        }
-
-
-        public Sprite GetSpriteFromTexture(Texture2D texture)
-        {
-            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one / 2f);
         }
 
         private async void LoadCachedData(Enumerators.CacheDataType type)

@@ -10,9 +10,6 @@ public partial class LoomManager
     
     public async Task SignUp(string userId, Action<string> errorResult)
     {
-        if (Contract == null)
-            await CreateContract();
-        
         var req = new UpsertAccountRequest {
             UserId = userId
         };

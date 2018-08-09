@@ -7,9 +7,6 @@ public partial class LoomManager
     
 	public async Task<GetCollectionResponse> GetCardCollection(string userId)
 	{
-		if (Contract == null)
-			await CreateContract();
-
 		var request = new GetCollectionRequest
 		{
 			UserId = userId
