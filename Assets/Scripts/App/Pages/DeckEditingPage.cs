@@ -237,22 +237,7 @@ namespace LoomNetwork.CZB
                 cardData = new CollectionCardData();
                 cardData.amount = card.amount;
                 cardData.cardName = card.cardName;
-
-                for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
-                {
-                    if (_currentDeckId != -1 && _currentDeckId == i)
-                        continue;
-                    
-                    Deck deck = _dataManager.CachedDecksData.decks[i];
-                    foreach (DeckCardData deckCardData in deck.cards)
-                    {
-                        if (deckCardData.cardName == card.cardName)
-                        {
-                            cardData.amount -= deckCardData.amount;
-                        }
-                    }
-                }
-
+                
                 _collectionData.cards.Add(cardData);
             }
         }
