@@ -174,22 +174,21 @@ namespace LoomNetwork.CZB
 		        OpenAlertDialog("Please enter your password.");
 		        return;
 	        }*/
-	        
-			await LoomManager.Instance.SignUp(usernameText, result => {
-				if(!string.IsNullOrEmpty(result))
-					OpenAlertDialog("Not Able to Create Account..");
-				else
-				{
-					CustomDebug.Log(" ====== Account Created Successfully ==== ");
-					LoomManager.UserId = usernameText;
-					//OpenAlertDialog("Account Created Successfully");
-					// TODO : Removed code loading data manager
-					var dataManager = GameClient.Get<IDataManager>();
-					dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
-					dataManager.StartLoadCache();
-				}
-					
-			});
+
+	        try
+	        {
+				await LoomManager.Instance.SignUp(usernameText);
+		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
+		        LoomManager.UserId = usernameText;
+		        //OpenAlertDialog("Account Created Successfully");
+		        // TODO : Removed code loading data manager
+		        var dataManager = GameClient.Get<IDataManager>();
+		        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+		        dataManager.StartLoadCache();
+	        } catch (Exception e)
+	        {
+		        OpenAlertDialog("Not Able to Create Account..");
+	        }
         }
 
 	    private void OnLoadCacheComplete()

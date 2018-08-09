@@ -95,6 +95,7 @@ namespace LoomNetwork.CZB
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
 				    await LoomManager.Instance.CreateContract();
+				    await LoomManager.Instance.SignUp(userDataModel.UserName);
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;

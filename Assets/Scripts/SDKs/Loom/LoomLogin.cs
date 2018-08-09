@@ -8,21 +8,12 @@ public partial class LoomManager
 {
     private const string CreateAccountMethod = "CreateAccount";
     
-    public async Task SignUp(string userId, Action<string> errorResult)
+    public async Task SignUp(string userId)
     {
         var req = new UpsertAccountRequest {
             UserId = userId
         };
 
-        try
-        {
-            await Contract.CallAsync(CreateAccountMethod, req);
-            errorResult?.Invoke(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            //Debug.Log("Exception = " + ex);
-            errorResult?.Invoke(ex.ToString());
-        }
+        await Contract.CallAsync(CreateAccountMethod, req);
     }
 }

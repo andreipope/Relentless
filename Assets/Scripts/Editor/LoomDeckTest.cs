@@ -13,7 +13,7 @@ public class LoomDeckTest
     {
         await LoomManager.Instance.CreateContract();
         LoomManager.UserId = "LoomTest";
-        await LoomManager.Instance.SignUp(LoomManager.UserId, result => { });
+        await LoomManager.Instance.SignUp(LoomManager.UserId);
     }
     
     [Test]
@@ -52,7 +52,7 @@ public class LoomDeckTest
     public async void GetDeck_User_Have_No_Deck()
     {
         var user = "LoomTest_NoDecks";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
         
         ListDecksResponse listDecksResponse = null;
         Assert.IsNull(listDecksResponse);
@@ -70,7 +70,7 @@ public class LoomDeckTest
     public async void AddDeck()
     {
         var user = "LoomTest_AddDeck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
 
         var deck = new Deck
         {
@@ -107,7 +107,7 @@ public class LoomDeckTest
     public async void AddDeck_Wrong_Deck_Request()
     {
         var user = "LoomTest_AddDeck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
 
         var deck = new Deck
         {
@@ -126,7 +126,7 @@ public class LoomDeckTest
     public async void EditDeck()
     {
         var user = "LoomTest_EditDeck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
 
         var deck = new Deck
         {
@@ -161,7 +161,7 @@ public class LoomDeckTest
     public async void EditDeck_Wrong_Deck_Request()
     {
         var user = "LoomTest_EditDeck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
 
         var deck = new Deck
         {
@@ -181,7 +181,7 @@ public class LoomDeckTest
     public async void DeleteDeck()
     {
         var user = "LoomTest_DeleteDeck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
 
         var response = string.Empty;
         await LoomManager.Instance.DeleteDeck(user, "Default", result => { response = result; });
@@ -202,7 +202,7 @@ public class LoomDeckTest
     public async void DeleteDeck_Wrong_Deck_Request()
     {
         var user = "LoomTest_DeleteDeck_wrong_Deck";
-        await LoomManager.Instance.SignUp(user, result => { });
+        await LoomManager.Instance.SignUp(user);
         
         var response = string.Empty;
         await LoomManager.Instance.DeleteDeck(user, "Default_123", result => { response = result; });
