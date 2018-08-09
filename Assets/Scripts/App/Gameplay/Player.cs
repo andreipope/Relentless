@@ -60,7 +60,8 @@ namespace LoomNetwork.CZB
         private OnBehaviourHandler _avatarOnBehaviourHandler;
 
         private GameObject _avatarObject,
-                           _avatarDeathObject,
+                           _overlordRegularObject,
+                           _overlordDeathObject,
                            _avatarHeroHighlight,
                            _avatarSelectedHighlight;
 
@@ -206,12 +207,13 @@ namespace LoomNetwork.CZB
             _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
-            _avatarDeathObject = playerObject.transform.Find("HeroDeath").gameObject;
+            _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
+            _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
-            _deathAnimamtor = playerObject.transform.Find("HeroDeath").GetComponent<Animator>();
+            _deathAnimamtor = _overlordDeathObject.GetComponent<Animator>();
             _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject; 
@@ -422,6 +424,9 @@ namespace LoomNetwork.CZB
         public void PlayerDie()
         {
             _gooBarFadeTool.FadeIn();
+
+            _overlordRegularObject.SetActive(false);
+            _overlordDeathObject.SetActive(true);
 
             _avatarAnimator.enabled = true;
             _deathAnimamtor.enabled = true;

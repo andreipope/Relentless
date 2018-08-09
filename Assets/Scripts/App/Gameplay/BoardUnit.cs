@@ -565,10 +565,10 @@ namespace LoomNetwork.CZB
             _shieldSprite.SetActive(true);
         }
 
-        public void ArrivalAnimationEventHandler(string param)
+        public void ArrivalAnimationEventHandler(/*string param*/)
         {
-            if (param.Equals("ArrivalAnimationDone"))
-            {
+           // if (param.Equals("ArrivalAnimationDone"))
+           // {
                 unitContentObject.SetActive(true);
 
                 if (!_ignoreArrivalEndEvents)
@@ -617,13 +617,13 @@ namespace LoomNetwork.CZB
                     _readyForBuffs = true;
                     _ranksController.UpdateRanksByElements(ownerPlayer.BoardCards, Card.libraryCard);
                 }
-            }
-            else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
+           // }
+           /* else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
             {
                 InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;
-            }
+            }*/
 
             _initialScale = _selfObject.transform.localScale;
 
@@ -742,7 +742,12 @@ namespace LoomNetwork.CZB
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                     }, null, .55f, false);
-                    
+
+                    _timerManager.AddTimer((x) =>
+                    {
+                        ArrivalAnimationEventHandler();
+                    }, null, ownerPlayer.IsLocalPlayer ? 2.9f : 1.7f, false);
+
                     break;
                 case Enumerators.CardType.HEAVY:
                     _timerManager.AddTimer((x) =>
@@ -750,6 +755,10 @@ namespace LoomNetwork.CZB
                         _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                     }, null, 1f, false);
 
+                    _timerManager.AddTimer((x) =>
+                    {
+                        ArrivalAnimationEventHandler();
+                    }, null, ownerPlayer.IsLocalPlayer ? 2.7f : 1.7f, false);
                     hasHeavy = true;
                     break;
                 case Enumerators.CardType.WALKER:
@@ -758,6 +767,10 @@ namespace LoomNetwork.CZB
                     { 
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
                     }, null, .6f, false);
+                    _timerManager.AddTimer((x) =>
+                    {
+                        ArrivalAnimationEventHandler();
+                    }, null, ownerPlayer.IsLocalPlayer ? 1.3f : 0.3f, false);
 
                     break;
             }
@@ -772,6 +785,8 @@ namespace LoomNetwork.CZB
 
             //unitAnimator.StopPlayback();
             //unitAnimator.Play(0);
+            
+            
         }
 
         private void CheckOnDie()
@@ -787,7 +802,7 @@ namespace LoomNetwork.CZB
         {
             Debug.Log("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
             var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
-            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Model/SpriteContainer");
+            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
         }
 

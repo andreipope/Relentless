@@ -227,6 +227,8 @@ namespace LoomNetwork.CZB
                 _gameplayManager.CurrentPlayer.Goo = 7;
             }
 
+
+
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
 
@@ -237,7 +239,6 @@ namespace LoomNetwork.CZB
                 //_gameplayManager.CurrentPlayer.Goo = 8;
             }
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
-
 
             playerBoardObject = GameObject.Find("PlayerBoard");
             opponentBoardObject = GameObject.Find("OpponentBoard");
@@ -439,7 +440,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfPlayer(onComplete);
-                }, null, 1f, false);
+                }, null, .3f, false);
                 return;
             }
 
@@ -500,7 +501,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-                }, null, 1f, false);
+                }, null, .3f, false);
 
                 return;
             }

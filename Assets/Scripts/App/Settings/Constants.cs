@@ -107,6 +107,6 @@ namespace LoomNetwork.CZB.Common
 
         internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE = true;  
     }
 }

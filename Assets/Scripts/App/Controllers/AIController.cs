@@ -222,6 +222,7 @@ namespace LoomNetwork.CZB
                         LetsThink();
                         LetsThink();
                         LetsThink();
+                        LetsThink();
                     }
 
                     //  if (Constants.DEV_MODE)
