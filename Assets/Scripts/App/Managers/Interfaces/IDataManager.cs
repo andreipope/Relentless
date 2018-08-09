@@ -27,7 +27,5 @@ namespace LoomNetwork.CZB
         Task StartLoadCache();
         Task SaveAllCache();
         Task SaveCache(Enumerators.CacheDataType type);
-
-        Sprite GetSpriteFromTexture(Texture2D texture);
     }
 }
