@@ -57,6 +57,9 @@ namespace LoomNetwork.CZB
 
         public override void OnCardSelected(BoardUnit unit)
         {
+            if (unit.CurrentHP <= 0)
+                return;
+
             if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && unit.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
                 (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && unit.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
@@ -98,6 +101,9 @@ namespace LoomNetwork.CZB
 
         public override void OnPlayerSelected(Player player)
         {
+            if (player.HP <= 0)
+                return;
+
             if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(Constants.TAG_PLAYER_OWNED)) ||
                 (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))

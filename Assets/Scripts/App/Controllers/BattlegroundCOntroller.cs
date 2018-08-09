@@ -5,12 +5,14 @@
 
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
 {
@@ -225,6 +227,8 @@ namespace LoomNetwork.CZB
                 _gameplayManager.CurrentPlayer.Goo = 7;
             }
 
+
+
             if (Constants.DEV_MODE)
                 _gameplayManager.OpponentPlayer.HP = 99;
 
@@ -235,7 +239,6 @@ namespace LoomNetwork.CZB
                 //_gameplayManager.CurrentPlayer.Goo = 8;
             }
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
-
 
             playerBoardObject = GameObject.Find("PlayerBoard");
             opponentBoardObject = GameObject.Find("OpponentBoard");
@@ -437,7 +440,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfPlayer(onComplete);
-                }, null, 1f, false);
+                }, null, .3f, false);
                 return;
             }
 
@@ -454,7 +457,7 @@ namespace LoomNetwork.CZB
             var cardWidth = 0.0f;
             foreach (var card in playerBoardCards)
             {
-                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -498,7 +501,7 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-                }, null, 1f, false);
+                }, null, .3f, false);
 
                 return;
             }
@@ -518,7 +521,7 @@ namespace LoomNetwork.CZB
 
             foreach (var card in opponentBoardCards)
             {
-                cardWidth = card.transform.GetComponent<SpriteRenderer>().bounds.size.x;
+                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -555,17 +558,39 @@ namespace LoomNetwork.CZB
         }
 
         // rewrite
-        public void CreateCardPreview(WorkingCard card, Vector3 pos, bool highlight = true)
+        public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
             isPreviewActive = true;
-            currentPreviewedCardId = card.instanceId;
-            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(card, pos, highlight));
+
+            if(target is BoardCard)
+            {
+                currentPreviewedCardId = (target as BoardCard).WorkingCard.instanceId;
+
+            }
+            else if(target is BoardUnit)
+            {
+                currentPreviewedCardId = (target as BoardUnit).Card.instanceId;
+            }
+
+       
+            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
         }
 
         // rewrite
-        public IEnumerator CreateCardPreviewAsync(WorkingCard card, Vector3 pos, bool highlight)
+        public IEnumerator CreateCardPreviewAsync(object target, Vector3 pos, bool highlight)
         {
             yield return new WaitForSeconds(0.3f);
+
+            WorkingCard card = null;
+
+            if (target is BoardCard)
+            {
+                card = (target as BoardCard).WorkingCard;
+            }
+            else if (target is BoardUnit)
+            {
+                card = (target as BoardUnit).Card;
+            }
 
             string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
 
@@ -587,6 +612,13 @@ namespace LoomNetwork.CZB
             boardCard.SetHighlightingEnabled(highlight);
             boardCard.isPreview = true;
 
+            InternalTools.SetLayerRecursively(boardCard.gameObject, 11);
+            
+            if (target is BoardUnit)
+                boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
+            else if(target is BoardCard)
+                boardCard.DrawTooltipInfoOfCard(target as BoardCard);
+
             var newPos = pos;
             newPos.y += 2.0f;
             currentBoardCard.transform.position = newPos;
@@ -600,6 +632,8 @@ namespace LoomNetwork.CZB
         // rewrite
         public void DestroyCardPreview()
         {
+            GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
+
             MainApp.Instance.StartCoroutine(DestroyCardPreviewAsync());
             if (createPreviewCoroutine != null)
             {

@@ -23,7 +23,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "life",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -44,7 +45,7 @@
           "kind": "CREATURE",
           "name": "Quazi",
           "cost": 1,
-          "description": "<b>Feral</b>, <b>Overflow</b> 2, <b>End:</b> deal 2 damage to this and adjecent zombies",
+          "description": "<b>Feral</b>, <b>Overflow</b> 2, <b>End:</b> 2 damage to this and adjecent zombies",
           "flavorText": "Has a great fascination with church bells...",
           "picture": "embryo",
           "damage": 0,
@@ -55,14 +56,16 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 2
+              "callType": "ENTRY",
+              "value": 2,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
-              "callType": "at_end",
-              "value": 2
+              "callType": "END",
+              "value": 2,
+              "buffType": "END"
             }
           ],
           "cardViewInfo": {
@@ -119,11 +122,12 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "TARGET_FIRE"
+              "effectType": "TARGET_FIRE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -144,7 +148,7 @@
           "kind": "CREATURE",
           "name": "Werezomb",
           "cost": 3,
-          "description": "<b>Entry</b>: A friendly zombie gets Feral",
+          "description": "<b>Entry</b>: Ally zombie gets <b>Feral</b>",
           "flavorText": "Stop, stop, stop, shh-shh, you'll cause a howel",
           "picture": "Werezomb",
           "damage": 1,
@@ -155,9 +159,10 @@
             {
               "type": "TAKE_UNIT_TYPE_TO_ALLY_UNIT",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card",
-              "unitType": "FERAL"
+              "unitType": "FERAL",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -178,9 +183,9 @@
           "kind": "CREATURE",
           "name": "Modo",
           "cost": 3,
-          "description": "<b>Feral</b>, <b>Overflow</b> 5, <b>End:</b> deal 4 damage to this and adjacent zombies",
+          "description": "<b>Feral</b>, <b>Overflow</b> 5, <b>End:</b> 4 damage to this and adjacent zombies",
           "flavorText": "JuuuZZZt WaNt a LiTtlE hUgGG...",
-          "picture": "embryo",
+          "picture": "modo",
           "damage": 2,
           "health": 2,
           "type": "FERAL",
@@ -189,14 +194,17 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 5
+              "callType": "ENTRY",
+              "value": 5,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
-              "callType": "at_end",
-              "value": 4
+              "callType": "END",
+              "value": 4,
+              "buffType": "END"
+
             }
           ],
           "cardViewInfo": {
@@ -231,7 +239,8 @@
               "callType": "PERMANENT",
               "targetType": "player_card",
               "value": 2,
-              "attackInfo": "ANY"
+              "attackInfo": "ANY",
+              "buffType": "FLASH"
             }
           ],
           "cardViewInfo": {
@@ -263,10 +272,11 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
-              "name": "Pyromaz"
+              "name": "Pyromaz",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -298,11 +308,12 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "MASSIVE_FIRE"
+              "effectType": "MASSIVE_FIRE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -334,7 +345,8 @@
             {
               "type": "PRIORITY_ATTACK",
               "activityType": "passive",
-              "callType": "at_start"
+              "callType": "ENTRY",
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -371,9 +383,10 @@
             {
               "type": "STUN",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -394,7 +407,7 @@
           "kind": "CREATURE",
           "name": "Znowman",
           "cost": 4,
-          "description": "<b>Heavy</b>, enemies that attack this become <b>Frozen</b>",
+          "description": "<b>Heavy</b>, Enemies that attack this become Frozen",
           "flavorText": "Maybe the snow does have some magical power?! But not yellow snow...",
           "picture": "Znowman",
           "damage": 0,
@@ -405,7 +418,8 @@
             {
               "type": "ENEMY_THAT_ATTACKS_BECOME_FROZEN",
               "activityType": "passive",
-              "callType": "AT_DEFENCE"
+              "callType": "AT_DEFENCE",
+              "buffType": "FREEZE"
             }
           ],
           "cardViewInfo": {
@@ -428,7 +442,7 @@
           "cost": 2,
           "description": "<b>Entry: Freeze</b> a random ally, add <b>Tainted Goo</b> to your Hand",
           "flavorText": "He always loved to tell a goo story",
-          "picture": "embryo",
+          "picture": "Ozmoziz",
           "damage": 1,
           "health": 2,
           "type": "WALKER",
@@ -437,15 +451,17 @@
             {
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 1,
-              "turns": 1
+              "turns": 1,
+              "buffType": "ENTRY"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Tainted Goo"
+              "callType": "ENTRY",
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -477,11 +493,12 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
-              "effectType": "TARGET_WATER"
+              "effectType": "TARGET_WATER",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -513,10 +530,11 @@
             {
               "type": "STUN_OR_DAMAGE_ADJUSTMENTS",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 2,
-              "effectType": "STUN_OR_DAMAGE_FREEZES"
+              "effectType": "STUN_OR_DAMAGE_FREEZES",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -548,15 +566,17 @@
             {
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2,
-              "turns": 1
+              "turns": 1,
+              "buffType": "ENTRY"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Corrupted Goo"
+              "callType": "ENTRY",
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -588,9 +608,10 @@
             {
               "type": "FREEZE_UNITS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -622,9 +643,10 @@
             {
               "type": "DELAYED_GAIN_ATTACK",
               "activityType": "passive",
-              "callType": "turn_start",
+              "callType": "TURN",
               "value": 6,
-              "delay": 1
+              "delay": 1,
+              "buffType": "DELAYED"
             }
           ],
           "cardViewInfo": {
@@ -658,9 +680,10 @@
             {
               "type": "DESTROY_FROZEN_UNIT",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
-              "unitStatus": "FROZEN"
+              "unitStatus": "FROZEN",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -692,8 +715,9 @@
             {
               "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
               "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "opponent_all_cards|player_all_cards"
+              "callType": "ENTRY",
+              "targetType": "opponent_all_cards|player_all_cards",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -725,11 +749,12 @@
             {
               "type": "DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "MASSIVE_WATER_WAVE"
+              "effectType": "MASSIVE_WATER_WAVE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -770,7 +795,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "water",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -797,16 +823,17 @@
           "damage": 1,
           "health": 2,
           "type": "WALKER",
-          "rank": "COMMANDER",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 1,
-              "effectType": "TARGET_ROCK"
+              "effectType": "TARGET_ROCK",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -837,7 +864,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.6,
-              "y": 0.,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -879,7 +906,7 @@
           "cost": 1,
           "description": "<b>Heavy, Entry</b>: Add a Tainted Goo to your Hand",
           "flavorText": "Hard to save every drop with all the spillage",
-          "picture": "embryo",
+          "picture": "pit",
           "damage": 0,
           "health": 2,
           "type": "HEAVY",
@@ -888,8 +915,9 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Tainted Goo"
+              "callType": "ENTRY",
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -935,7 +963,7 @@
           "kind": "CREATURE",
           "name": "Walley",
           "cost": 4,
-          "description": "<b>Attack:</b> Adjacent zombies get Heavy",
+          "description": "<b>Entry:</b> Adjacent zombies get <b>Heavy</b>",
           "flavorText": "Eeeeeeva",
           "picture": "Walley",
           "damage": 2,
@@ -946,7 +974,8 @@
             {
               "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "passive",
-              "callType": "at_start"
+              "callType": "ENTRY",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1004,7 +1033,8 @@
               "type": "ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK",
               "activityType": "passive",
               "callType": "permanent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1036,8 +1066,9 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Corrupted Goo"
+              "callType": "ENTRY",
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1069,10 +1100,11 @@
             {
               "type": "DESTROY_UNIT_BY_TYPE",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
               "affectObjectType": "none",
-              "cardType": "HEAVY"
+              "cardType": "HEAVY",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1093,7 +1125,7 @@
           "kind": "CREATURE",
           "name": "IgneouZ",
           "cost": 4,
-          "description": "<b>Entry:</b> If your Overlord has 10 Def or less, this gets +2 Def",
+          "description": "<b>Heavy, Entry:</b> If your Overlord has 10 Def or less, this gets +2 Def",
           "flavorText": "Mmmm, nothing like the smell of fresh cinder and ash in the morning",
           "picture": "IgneouZ",
           "damage": 3,
@@ -1104,9 +1136,10 @@
             {
               "type": "TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "value": 2,
-              "health": 10
+              "health": 10,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1127,7 +1160,7 @@
           "kind": "CREATURE",
           "name": "Pyrite",
           "cost": 5,
-          "description": "<b>Heavy, Delayed</b> 2: This loses <b>Heavy</b> but gains +4 Atk",
+          "description": "<b>Heavy</b>, <b>Delayed</b> 2: This loses <b>Heavy</b> but gains +4 Atk",
           "flavorText": "Angry enough to go though a WALL!",
           "picture": "Pyrite",
           "damage": 0,
@@ -1138,9 +1171,10 @@
             {
               "type": "DELAYED_LOSE_HEAVY_GAIN_ATTACK",
               "activityType": "passive",
-              "callType": "turn_start",
+              "callType": "TURN",
               "value": 4,
-              "delay": 2
+              "delay": 2,
+              "buffType": "TURN"
             }
           ],
           "cardViewInfo": {
@@ -1172,8 +1206,9 @@
             {
               "type": "SWING",
               "activityType": "passive",
-              "callType": "at_attack",
-              "value": 4
+              "callType": "ATTACK",
+              "value": 4,
+              "buffType": "SWING"
             }
           ],
           "cardViewInfo": {
@@ -1205,10 +1240,11 @@
             {
               "type": "ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "setType": "EARTH",
               "health": 0,
-              "damage": 1
+              "damage": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1270,8 +1306,9 @@
             {
               "type": "LOWER_COST_OF_CARD_IN_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "player_card"
+              "callType": "ENTRY",
+              "targetType": "player_card",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1303,8 +1340,9 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
-              "setType": "none"
+              "callType": "ENTRY",
+              "setType": "none",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1336,8 +1374,9 @@
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Tainted Goo"
+              "callType": "ENTRY",
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1369,8 +1408,9 @@
             {
               "type": "CARD_RETURN",
               "activityType": "active",
-              "callType": "at_start",
-              "targetType": "player_card|opponent_card"
+              "callType": "ENTRY",
+              "targetType": "player_card|opponent_card",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1402,15 +1442,17 @@
             {
               "type": "SWING",
               "activityType": "passive",
-              "callType": "at_attack",
-              "value": 1
+              "callType": "ATTACK",
+              "value": 1,
+              "buffType": "SWING"
             },
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1458,7 +1500,7 @@
           "cost": 4,
           "description": "<b>Guard, Entry:</b> Add a <b>Corrupted Goo</b> to your Hand",
           "flavorText": "No, no, no no, not a hamster, not a hamster ball....",
-          "picture": "embryo",
+          "picture": "gaz",
           "damage": 2,
           "health": 2,
           "type": "WALKER",
@@ -1467,14 +1509,16 @@
             {
               "type": "SHILED",
               "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "none"
+              "callType": "ENTRY",
+              "targetType": "none",
+              "buffType": "SHILED"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
-              "callType": "at_start",
-              "name": "Corrupted Goo"
+              "callType": "ENTRY",
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1507,8 +1551,9 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
-              "targetType": "OPPONENT"
+              "callType": "ENTRY",
+              "targetType": "OPPONENT",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1529,7 +1574,7 @@
           "kind": "CREATURE",
           "name": "MonZoon",
           "cost": 9,
-          "description": "Costs 1 less for each Air zombie in your hand",
+          "description": "Costs 1 less for each other Air zombie in your hand",
           "flavorText": "Shock therapy does work wonders",
           "picture": "MonZoon",
           "damage": 6,
@@ -1543,6 +1588,7 @@
               "callType": "IN_HAND",
               "targetType": "player",
               "setType": "air",
+              "buffType": "PERMANENT"
             }
           ],
           "cardViewInfo": {
@@ -1574,10 +1620,11 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "value": 3,
-              "effectType": "MASSIVE_LIGHTNING"
+              "effectType": "MASSIVE_LIGHTNING",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1618,7 +1665,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "life",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1650,8 +1698,9 @@
             {
               "type": "DRAW_CARD",
               "activityType": "passive",
-              "callType": "at_start",
-              "setType": "life"
+              "callType": "ENTRY",
+              "setType": "life",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1671,10 +1720,10 @@
           "id": 24,
           "kind": "CREATURE",
           "name": "Zap",
-          "cost": 2,
+          "cost": 1,
           "description": "<b>Overflow 3</b>, <b>Entry:</b> Summon a 1/1 enemy zombie minion",
           "flavorText": "Can't get enough of that goo, ever",
-          "picture": "embryo",
+          "picture": "zap",
           "damage": 1,
           "health": 1,
           "type": "WALKER",
@@ -1683,16 +1732,18 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 3
+              "callType": "ENTRY",
+              "value": 3,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 1,
-              "name": "Zombie 1/1"
+              "name": "Zombie 1/1",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1724,10 +1775,11 @@
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 2,
-              "effectType": "TARGET_LIFE"
+              "effectType": "TARGET_LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1759,9 +1811,10 @@
             {
               "type": "STUN",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1798,7 +1851,8 @@
               "value": 1,
               "statType": "DAMAGE",
               "setType": "LIFE",
-              "effectType": "TARGET_LIFE"
+              "effectType": "TARGET_LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1819,7 +1873,7 @@
           "kind": "CREATURE",
           "name": "Sapper",
           "cost": 5,
-          "description": "<b>Attack:</b> Gain 1 life for each damage this deals.",
+          "description": "<b>Attack:</b> Restore 1 Def for each damage this deals.",
           "flavorText": "Hungry, always so very hungry",
           "picture": "Sapper",
           "damage": 1,
@@ -1830,8 +1884,9 @@
             {
               "type": "GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS",
               "activityType": "passive",
-              "callType": "at_attack",
-              "value": 1
+              "callType": "ATTACK",
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1863,10 +1918,11 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "player",
               "count": 1,
-              "name": "Zombie Feral"
+              "name": "Zombie Feral",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1898,16 +1954,18 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 6
+              "callType": "ENTRY",
+              "value": 6,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
-              "name": "Zombie 2/2"
+              "name": "Zombie 2/2",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1939,10 +1997,11 @@
             {
               "type": "SUMMON",
               "activityType": "passive",
-              "callType": "TURN_START",
+              "callType": "TURN",
               "targetType": "player",
               "count": 2,
-              "name": "Zombie 1/1"
+              "name": "Zombie 1/1",
+              "buffType": "TURN"
             }
           ],
           "cardViewInfo": {
@@ -1974,8 +2033,9 @@
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
-              "callType": "AT_START",
-              "value": -1
+              "callType": "ENTRY",
+              "value": -1,
+              "buffType": "DEVOUR"
             }
           ],
           "cardViewInfo": {
@@ -2007,9 +2067,10 @@
             {
               "type": "REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
-              "setType": "LIFE"
+              "setType": "LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2050,7 +2111,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "earth",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -2078,7 +2140,8 @@
           "health": 2,
           "type": "FERAL",
           "rank": "MINION",
-          "abilities": [],
+          "abilities": [
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.4,
@@ -2108,9 +2171,10 @@
             {
               "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2131,7 +2195,7 @@
           "kind": "CREATURE",
           "name": "Zeptic",
           "cost": 1,
-          "description": "<b>Overflow</b> 2, deal 2 damage to your Overlord",
+          "description": "<b>Overflow</b> 2, Deal 2 damage to your Overlord",
           "flavorText": "After four steps he gave up on the straight light and started puking",
           "picture": "Zeptic",
           "damage": 1,
@@ -2142,15 +2206,17 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 2
+              "callType": "ENTRY",
+              "value": 2,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player",
-              "value": 2
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2182,10 +2248,11 @@
             {
               "type": "CHANGE_STAT",
               "activityType": "passive",
-              "callType": "AT_ATTACK",
+              "callType": "ATTACK",
               "targetType": "none",
               "statType": "damage",
-              "value": -1
+              "value": -1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -2206,7 +2273,7 @@
           "kind": "CREATURE",
           "name": "Zeeter",
           "cost": 5,
-          "description": "<b>Entry: Devour</b> an ally zombie, gain its Atk and Def",
+          "description": "<b>Entry</b>: Devour an ally zombie, get its Atk and Def",
           "flavorText": "Nam, naam nam nam namm nam...",
           "picture": "Zeeter",
           "damage": 1,
@@ -2217,9 +2284,10 @@
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
-              "callType": "AT_START",
+              "callType": "ENTRY",
               "targetType": "PLAYER_CARD",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2240,7 +2308,7 @@
           "kind": "CREATURE",
           "name": "Hazzard",
           "cost": 5,
-          "description": "<b>Overflow</b> 7, deal 4 damage to your Overlord",
+          "description": "<b>Overflow</b> 7, Deal 4 damage to your Overlord",
           "flavorText": "Almost reached the Goo-Anonymous meeting - almost...",
           "picture": "Hazzard",
           "damage": 4,
@@ -2251,15 +2319,17 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 7
+              "callType": "ENTRY",
+              "value": 7,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player",
-              "value": 4
+              "value": 4,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2292,7 +2362,8 @@
               "type": "RAGE",
               "activityType": "passive",
               "callType": "GOT_DAMAGE",
-              "value": 2
+              "value": 2,
+              "buffType": "RAGE"
             }
           ],
           "cardViewInfo": {
@@ -2324,8 +2395,9 @@
             {
               "type": "LOSE_GOO",
               "activityType": "passive",
-              "callType": "AT_START",
-              "value": 1
+              "callType": "ENTRY",
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2357,11 +2429,12 @@
             {
               "type": "MASSIVE_DAMAGE",
               "activityType": "PASSIVE",
-              "callType": "at_death",
+              "callType": "DEATH",
               "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
               "affectObjectType": "none",
               "value": 3,
-              "effectType": "MASSIVE_TOXIC_ALL"
+              "effectType": "MASSIVE_TOXIC_ALL",
+              "buffType": "DEATH"
             }
           ],
           "cardViewInfo": {
@@ -2382,7 +2455,7 @@
           "kind": "CREATURE",
           "name": "GooZilla",
           "cost": 8,
-          "description": "<b>Entry</b>: Return 4 goo, and use all your goo for 2X Attack / Defense",
+          "description": "<b>Entry</b>: Return 4 goo, and use all your goo for 2X Atk/Def",
           "flavorText": "More, more, MORE GOO! Bring me ALL the GOO",
           "picture": "GooZilla",
           "damage": 1,
@@ -2393,14 +2466,16 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 4
+              "callType": "ENTRY",
+              "value": 4,
+              "buffType": "ENTRY"
             },
             {
               "type": "USE_ALL_GOO_TO_INCREASE_STATS",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 2
+              "callType": "ENTRY",
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2437,10 +2512,11 @@
             {
               "type": "UNIT_WEAPON",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "value": 4,
-              "damage": 4
+              "damage": 4,
+              "buffType": "END"
             }
           ],
           "cardViewInfo": {
@@ -2461,7 +2537,7 @@
           "kind": "SPELL",
           "name": "Goo Beaker",
           "cost": 2,
-          "description": "Gain 1 empty Goo vials",
+          "description": "Get 1 empty goo vial",
           "flavorText": "So much goo, so little space",
           "picture": "goobeaker",
           "damage": 0,
@@ -2472,9 +2548,10 @@
             {
               "type": "ADD_GOO_VIAL",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "none",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2506,10 +2583,11 @@
             {
               "type": "heal",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
-              "effectType": "HEAL"
+              "effectType": "HEAL",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2541,10 +2619,11 @@
             {
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
-              "effectType": "TARGET_ADJUSTMENTS_BOMB"
+              "effectType": "TARGET_ADJUSTMENTS_BOMB",
+              "buffType": "SWING"
             }
           ],
           "cardViewInfo": {
@@ -2565,7 +2644,7 @@
           "kind": "SPELL",
           "name": "Goo Bottle",
           "cost": 4,
-          "description": "Gain 2 empty Goo vials",
+          "description": "Get 2 empty goo vials",
           "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
           "picture": "goobottles",
           "damage": 0,
@@ -2576,9 +2655,10 @@
             {
               "type": "ADD_GOO_VIAL",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "none",
-              "value": 2
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2611,9 +2691,10 @@
             {
               "type": "CHANGE_STAT_UNTILL_END_OF_TURN",
               "activityType": "passive",
-              "callType": "at_start",
+              "callType": "ENTRY",
               "targetType": "opponent_all_cards",
-              "damage": -3
+              "damage": -3,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2747,14 +2828,16 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 3
+              "callType": "ENTRY",
+              "value": 3,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": -1
+              "callType": "ENTRY",
+              "value": -1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2787,14 +2870,16 @@
             {
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": 6
+              "callType": "ENTRY",
+              "value": 6,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
-              "callType": "at_start",
-              "value": -2
+              "callType": "ENTRY",
+              "value": -2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2809,7 +2894,7 @@
               "z": 0.55
             }
           }
-        },
+        }
       ]
     }
   ]

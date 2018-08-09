@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB
         {
             base.OnEndTurnEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.TURN_END)
+            if (abilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
             CountDelay();
@@ -56,7 +56,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.TURN_START)
+            if (abilityCallType != Enumerators.AbilityCallType.TURN)
                 return;
 
             CountDelay();

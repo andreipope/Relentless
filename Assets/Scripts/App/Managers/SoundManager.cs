@@ -106,6 +106,12 @@ namespace LoomNetwork.CZB
             return clip != null ? clip.length : 0f;
         }
 
+        public float GetSoundLength(Enumerators.SoundType soundType)
+        {
+            var soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+
+            return soundTypeList.audioTypeClips.Count > 0 ? soundTypeList.audioTypeClips[0].length : 0f;
+        }
 
         public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
@@ -398,7 +404,9 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.SoundType.TUTORIAL:
                 case Enumerators.SoundType.CARDS:
-                    pathToSoundsLibrary = "Sounds/" + soundType.ToString();
+                case Enumerators.SoundType.OVERLORD_ABILITIES:
+                case Enumerators.SoundType.SPELLS:
+                    pathToSoundsLibrary = "Sounds/" + soundType.ToString().Replace("_", string.Empty);
                     list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
                     break;
                 default:

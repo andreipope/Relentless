@@ -143,7 +143,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK || !isAttacker)
+            if (abilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
             Action(info);
         }
@@ -151,7 +151,7 @@ namespace LoomNetwork.CZB
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
             Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE ? abilityUnitOwner.transform.position : selectedPlayer.Transform.position;
-            if (abilityCallType != Enumerators.AbilityCallType.AT_ATTACK)
+            if (abilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 //CreateVFX(cardCaller.transform.position);
                 var particleMain = MonoBehaviour.Instantiate(_vfxObject);
@@ -166,6 +166,8 @@ namespace LoomNetwork.CZB
                         var particle  = MonoBehaviour.Instantiate(prefab);
                         particle.transform.position = Utilites.CastVFXPosition(targetPosition + Vector3.forward);
                         _particlesController.RegisterParticleSystem(particle, true);
+
+                        _soundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb", Constants.SPELL_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
                     }
                     else if(abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR) //one particle
                     {

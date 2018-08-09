@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_START)
+            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.TURN_START || !_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+            if (abilityCallType != Enumerators.AbilityCallType.TURN || !_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
                 return;
 
             Action();
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
             boardUnit.transform.parent = _playerBoard.transform;
             boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnit.ownerPlayer = owner;
-            boardUnit.SetObjectInfo(card, cardSetName);
+            boardUnit.SetObjectInfo(card);
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
                 boardUnit.IsPlayable = true;

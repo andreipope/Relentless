@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
             if (attackingUnit != null && attackedUnit != null)
             {
                 int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit, attackedUnit);
-                int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit);
+                int additionalDamageAttacked = 0;// _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit);
 
                 //Removed for now
                 //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
@@ -222,8 +222,12 @@ new object[]
             {
                 //if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.HP += skill.value;
-                if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
-                    healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
+
+                if (skill.overlordSkill != Enumerators.OverlordSkill.HARDEN)
+                {
+                    if (healingPlayer.HP > Constants.DEFAULT_PLAYER_HP)
+                        healingPlayer.HP = Constants.DEFAULT_PLAYER_HP;
+                }
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL,

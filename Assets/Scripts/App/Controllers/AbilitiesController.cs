@@ -7,6 +7,7 @@ using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -73,6 +74,11 @@ namespace LoomNetwork.CZB
                 if (item != null && item.ability != null)
                     item.ability.Dispose();
             }
+        }
+
+        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnit unit)
+        {
+           return _activeAbilities.FindAll(x => x.ability.targetUnit == unit).Select(y => y.ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner, WorkingCard workingCard)
@@ -298,7 +304,7 @@ namespace LoomNetwork.CZB
 
         public bool IsAbilityCallsAtStart(AbilityData ability)
         {
-            if (ability.abilityCallType == Enumerators.AbilityCallType.AT_START)
+            if (ability.abilityCallType == Enumerators.AbilityCallType.ENTRY)
                 return true;
             return false;
         }
@@ -654,13 +660,15 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.AbilityType.REANIMATE_UNIT:
                     abilityData = new AbilityData();
+                    abilityData.buffType = "REANIMATE";
                     abilityData.type = "REANIMATE_UNIT";
                     abilityData.activityType = "PASSIVE";
                     abilityData.callType = "AT_DEATH";
                     abilityData.ParseData();
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
-                    abilityData = new AbilityData();
+                    abilityData = new AbilityData();         
+                    abilityData.buffType = "DESTROY";
                     abilityData.type = "DESTROY_TARGET_UNIT_AFTER_ATTACK";
                     abilityData.activityType = "PASSIVE";
                     abilityData.callType = "AT_ATTACK";

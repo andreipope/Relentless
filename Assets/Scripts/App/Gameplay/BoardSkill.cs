@@ -5,6 +5,8 @@
 using UnityEngine;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using TMPro;
+using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
 {
@@ -31,6 +33,11 @@ namespace LoomNetwork.CZB
         private bool _usedInThisTurn = false;
 
         private OnBehaviourHandler _behaviourHandler;
+
+        private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
+
+        private PointerEventSolver _pointerEventSolver;
+
 
         public BoardArrow abilitiesTargetingArrow;
         public BattleBoardArrow fightTargetingArrow;
@@ -79,11 +86,34 @@ namespace LoomNetwork.CZB
             _behaviourHandler = this.selfObject.GetComponent<OnBehaviourHandler>();
 
             //_behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
-         //   _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
+            //   _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
+
+            if (owner.IsLocalPlayer)
+            {
+                _pointerEventSolver = new PointerEventSolver();
+                _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
+                _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;
+                _pointerEventSolver.OnEndEvent += PointerEventSolver_OnEndEventHandler;
+            }
 
             _cooldownText.text = _cooldown.ToString();
 
             fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+        }
+
+        private void PointerEventSolver_OnDragStartedEventHandler()
+        {
+            StartDoSkill();
+        }
+
+        private void PointerEventSolver_OnClickEventHandler()
+        {
+            DrawAbilityTooltip();
+        }
+
+        private void PointerEventSolver_OnEndEventHandler()
+        {
+            EndDoSkill();
         }
 
         private void OnStartTurnEventHandler()
@@ -221,7 +251,7 @@ namespace LoomNetwork.CZB
 
         public void EndDoSkill()
         {
-            if (!IsSkillCanUsed())
+            if (!IsSkillCanUsed() || !IsUsing)
                 return;
 
             DoOnUpSkillAction();
@@ -276,6 +306,90 @@ namespace LoomNetwork.CZB
                 return false;
 
             return true;
+        }
+
+
+        public void Update()
+        {
+            if (owner.IsLocalPlayer)
+            {
+                _pointerEventSolver.Update();
+
+                if(Input.GetMouseButtonDown(0))
+                {
+                    if (_currentOverlordAbilityInfoObject != null)
+                    {
+                         GameClient.Get<ICameraManager>().FadeOut(level: 1);
+
+                        _currentOverlordAbilityInfoObject.Dispose();
+                        _currentOverlordAbilityInfoObject = null;
+                    }
+                }
+            }
+        }
+
+        public void OnMouseDownEventHandler()
+        {
+            _pointerEventSolver.PushPointer();
+        }
+
+        public void OnMouseUpEventHandler()
+        {
+            _pointerEventSolver.PopPointer(); 
+        }
+
+        private void DrawAbilityTooltip()
+        {
+            if (_currentOverlordAbilityInfoObject != null)
+                return;
+
+            GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
+
+            Vector3 position = Vector3.zero;
+
+            if (IsPrimary) position = new Vector3(4f, 0.5f, 0);
+            else position = new Vector3(-4f, 0.5f, 0);
+
+            _currentOverlordAbilityInfoObject = new OverlordAbilityInfoObject(skill, selfObject.transform, position);
+        }
+
+
+        public class OverlordAbilityInfoObject
+        {
+            private ILoadObjectsManager _loadObjectsManager;
+
+            private GameObject _selfObject;
+
+            private SpriteRenderer _buffIconPicture;
+
+            private TextMeshPro _callTypeText,
+                                _descriptionText;
+
+            public Transform transform { get { return _selfObject.transform; } }
+
+            public OverlordAbilityInfoObject(HeroSkill skill, Transform parent, Vector3 position)
+            {
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
+
+                transform.localPosition = position;
+
+                _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
+                _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
+
+                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon").GetComponent<SpriteRenderer>();
+
+                _callTypeText.text = skill.title.ToUpper();
+                _descriptionText.text = "    " + skill.description;
+
+                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath);
+            }
+
+            public void Dispose()
+            {
+                MonoBehaviour.Destroy(_selfObject);
+            }
         }
     }
 }

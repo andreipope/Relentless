@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB
 
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
+            _skipButton.gameObject.SetActive(true);
 
             Hide();
         }
@@ -136,7 +136,7 @@ namespace LoomNetwork.CZB
                     obj.SetActive(false);
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
+          //  _skipButton.gameObject.SetActive(false);
         }
 
         public void ShowNextButton()
@@ -147,7 +147,7 @@ namespace LoomNetwork.CZB
         public void ShowQuestion()
         {
             _playButton.gameObject.SetActive(true);
-            _skipButton.gameObject.SetActive(true);
+          //  _skipButton.gameObject.SetActive(true);
         }
 
         public void Update()

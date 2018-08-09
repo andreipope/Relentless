@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                       // playerDeck.Add("Pyrite");
+                        // playerDeck.Add("Earthshaker");
                     }
                 }
 
@@ -222,6 +222,7 @@ namespace LoomNetwork.CZB
                         LetsThink();
                         LetsThink();
                         LetsThink();
+                        LetsThink();
                     }
 
                     //  if (Constants.DEV_MODE)
@@ -251,6 +252,8 @@ namespace LoomNetwork.CZB
         // ai step 2
         private void UseUnitsOnBoard()
         {
+          //  return;
+
             try
             {
                 var unitsOnBoard = new List<BoardUnit>();
@@ -343,6 +346,8 @@ namespace LoomNetwork.CZB
         // ai step 3
         private void UsePlayerSkills()
         {
+          //  return;
+
             try
             {
                 if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
@@ -417,8 +422,6 @@ namespace LoomNetwork.CZB
 
         private void PlayCardCompleteHandler(WorkingCard card, object target)
         {
-            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
-
             var workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
@@ -429,7 +432,7 @@ namespace LoomNetwork.CZB
                 boardCreature.transform.position = Vector3.zero;
                 boardUnitElement.ownerPlayer = card.owner;
 
-                boardUnitElement.SetObjectInfo(workingCard, cardSetName);
+                boardUnitElement.SetObjectInfo(workingCard);
                 _battlegroundController.opponentBoardCards.Add(boardUnitElement);
 
                 boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
@@ -525,8 +528,8 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
-                                if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL
-                                    || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.CurrentPlayer.BoardCards.Count > 0))
+                                if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL
+                                    || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.OpponentPlayer.BoardCards.Count > 0))
                                 {
                                     needsToSelectTarget = true;
                                     abilitiesWithTarget.Add(ability);
@@ -646,6 +649,11 @@ namespace LoomNetwork.CZB
                                 CheckAndAddTargets(ability, ref target);
                             }
                             break;
+                        case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
+                            {
+                                GetTargetByType(ability, ref target, false);
+                            }
+                            break;                            
                         default: break;
                     }
 
@@ -670,6 +678,32 @@ namespace LoomNetwork.CZB
             {
                 target = _gameplayManager.CurrentPlayer;
             }
+        }
+
+        private void GetTargetByType(AbilityData ability, ref object target, bool checkPlayerAlso)
+        {
+            if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+            {
+                var targets= GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+
+                if (targets.Count > 0)
+                    target = targets[UnityEngine.Random.Range(0, targets.Count)];
+
+                if (checkPlayerAlso && target == null && ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    target = _gameplayManager.CurrentPlayer;
+
+                    targets = GetHeavyUnitsOnBoard(_gameplayManager.OpponentPlayer);
+
+                    if (targets.Count > 0)
+                        target = targets[UnityEngine.Random.Range(0, targets.Count)];
+                }
+            }
+        }
+
+        private List<BoardUnit> GetHeavyUnitsOnBoard(Player player)
+        {
+            return player.BoardCards.FindAll(x => x.hasHeavy || x.HasBuffHeavy);
         }
 
         private bool AddRandomTargetUnit(bool opponent, ref object target, bool lowHP = false, bool addAttackIgnore = false)

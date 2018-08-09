@@ -41,6 +41,9 @@ namespace LoomNetwork.CZB
             if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(unit))
                 return;
 
+            if (unit.CurrentHP <= 0)
+                return;
+
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) ||
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && unit.transform.CompareTag("OpponentOwned")))
@@ -76,6 +79,9 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19 &&
                                                 _gameplayManager.TutorialStep != 28 &&
                                                 _gameplayManager.TutorialStep != 32))
+                return;
+
+            if (player.HP <= 0)
                 return;
 
             if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(player))

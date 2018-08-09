@@ -34,7 +34,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnDieEventHandler();
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
+            if (abilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
             Action();
@@ -49,10 +49,8 @@ namespace LoomNetwork.CZB
 
             var owner = abilityUnitOwner.ownerPlayer;
             var libraryCard = abilityUnitOwner.Card.libraryCard.Clone();
-
-            string cardSetName = _cardsController.GetSetOfCard(libraryCard);
             var card = new WorkingCard(libraryCard, owner);
-            var unit = CreateBoardUnit(card, cardSetName, owner);
+            var unit = CreateBoardUnit(card, owner);
             unit.IsReanimated = true;
 
             owner.AddCardToBoard(card);
@@ -76,7 +74,7 @@ namespace LoomNetwork.CZB
             }));
         }
 
-        private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
+        private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
         {
             var cardObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
 
@@ -87,7 +85,7 @@ namespace LoomNetwork.CZB
             boardUnit.transform.parent = _playerBoard.transform;
             boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnit.ownerPlayer = owner;
-            boardUnit.SetObjectInfo(card, cardSetName);
+            boardUnit.SetObjectInfo(card);
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
                 boardUnit.IsPlayable = true;
