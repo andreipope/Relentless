@@ -201,15 +201,7 @@ namespace LoomNetwork.CZB
         public void Show()
         {
             WarningPopup.OnHidePopupEvent += OnCloseAlertDialogEventHandler;
-            _collectionData.cards.Clear();
-            CollectionCardData cardData;
-            foreach (var card in _dataManager.CachedCollectionData.cards)
-            {
-                cardData = new CollectionCardData();
-                cardData.amount = card.amount;
-                cardData.cardName = card.cardName;
-                _collectionData.cards.Add(cardData);
-            }
+            FillCollectionData();
 
             _selfPage.SetActive(true);
             if (_currentDeckId == -1)
@@ -235,6 +227,34 @@ namespace LoomNetwork.CZB
             }
             LoadDeckInfo(_currentDeck);
             InitObjects();
+        }
+
+        private void FillCollectionData() {
+            _collectionData.cards.Clear();
+            CollectionCardData cardData;
+            foreach (var card in _dataManager.CachedCollectionData.cards)
+            {
+                cardData = new CollectionCardData();
+                cardData.amount = card.amount;
+                cardData.cardName = card.cardName;
+
+                for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
+                {
+                    if (_currentDeckId != -1 && _currentDeckId == i)
+                        continue;
+                    
+                    Deck deck = _dataManager.CachedDecksData.decks[i];
+                    foreach (DeckCardData deckCardData in deck.cards)
+                    {
+                        if (deckCardData.cardName == card.cardName)
+                        {
+                            cardData.amount -= deckCardData.amount;
+                        }
+                    }
+                }
+
+                _collectionData.cards.Add(cardData);
+            }
         }
 
         public void Hide()

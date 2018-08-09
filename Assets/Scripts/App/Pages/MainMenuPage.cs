@@ -176,7 +176,11 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            
+            if (LoomManager.Instance.Contract != null)
+            {
+                LoomManager.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                LoomManager.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
         }
 
 #region Buttons Handlers
