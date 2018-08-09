@@ -23,7 +23,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "life",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -125,7 +126,8 @@
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "TARGET_FIRE"
+              "effectType": "TARGET_FIRE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -159,7 +161,8 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card",
-              "unitType": "FERAL"
+              "unitType": "FERAL",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -192,13 +195,16 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 5
+              "value": 5,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
               "callType": "END",
-              "value": 4
+              "value": 4,
+              "buffType": "END"
+
             }
           ],
           "cardViewInfo": {
@@ -233,7 +239,8 @@
               "callType": "PERMANENT",
               "targetType": "player_card",
               "value": 2,
-              "attackInfo": "ANY"
+              "attackInfo": "ANY",
+              "buffType": "FLASH"
             }
           ],
           "cardViewInfo": {
@@ -268,7 +275,8 @@
               "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
-              "name": "Pyromaz"
+              "name": "Pyromaz",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -304,7 +312,8 @@
               "targetType": "OPPONENT_ALL_CARDS|opponent",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "MASSIVE_FIRE"
+              "effectType": "MASSIVE_FIRE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -336,7 +345,8 @@
             {
               "type": "PRIORITY_ATTACK",
               "activityType": "passive",
-              "callType": "ENTRY"
+              "callType": "ENTRY",
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -375,7 +385,8 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -407,7 +418,8 @@
             {
               "type": "ENEMY_THAT_ATTACKS_BECOME_FROZEN",
               "activityType": "passive",
-              "callType": "AT_DEFENCE"
+              "callType": "AT_DEFENCE",
+              "buffType": "FREEZE"
             }
           ],
           "cardViewInfo": {
@@ -441,13 +453,15 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "value": 1,
-              "turns": 1
+              "turns": 1,
+              "buffType": "ENTRY"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Tainted Goo"
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -483,7 +497,8 @@
               "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
-              "effectType": "TARGET_WATER"
+              "effectType": "TARGET_WATER",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -518,7 +533,8 @@
               "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 2,
-              "effectType": "STUN_OR_DAMAGE_FREEZES"
+              "effectType": "STUN_OR_DAMAGE_FREEZES",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -552,13 +568,15 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "value": 2,
-              "turns": 1
+              "turns": 1,
+              "buffType": "ENTRY"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Corrupted Goo"
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -592,7 +610,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_card",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -626,7 +645,8 @@
               "activityType": "passive",
               "callType": "TURN",
               "value": 6,
-              "delay": 1
+              "delay": 1,
+              "buffType": "DELAYED"
             }
           ],
           "cardViewInfo": {
@@ -662,7 +682,8 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
-              "unitStatus": "FROZEN"
+              "unitStatus": "FROZEN",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -695,7 +716,8 @@
               "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "opponent_all_cards|player_all_cards"
+              "targetType": "opponent_all_cards|player_all_cards",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -731,7 +753,8 @@
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "affectObjectType": "none",
               "value": 2,
-              "effectType": "MASSIVE_WATER_WAVE"
+              "effectType": "MASSIVE_WATER_WAVE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -772,7 +795,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "water",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -808,7 +832,8 @@
               "targetType": "player_card|opponent_card|player|opponent",
               "affectObjectType": "none",
               "value": 1,
-              "effectType": "TARGET_ROCK"
+              "effectType": "TARGET_ROCK",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -839,7 +864,7 @@
           "cardViewInfo": {
             "position": {
               "x": -0.6,
-              "y": 0.,
+              "y": 0,
               "z": 0
             },
             "scale": {
@@ -891,7 +916,8 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Tainted Goo"
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -948,7 +974,8 @@
             {
               "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "passive",
-              "callType": "ENTRY"
+              "callType": "ENTRY",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1006,7 +1033,8 @@
               "type": "ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK",
               "activityType": "passive",
               "callType": "permanent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1039,7 +1067,8 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Corrupted Goo"
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1074,7 +1103,8 @@
               "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
               "affectObjectType": "none",
-              "cardType": "HEAVY"
+              "cardType": "HEAVY",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1108,7 +1138,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "value": 2,
-              "health": 10
+              "health": 10,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1142,7 +1173,8 @@
               "activityType": "passive",
               "callType": "TURN",
               "value": 4,
-              "delay": 2
+              "delay": 2,
+              "buffType": "TURN"
             }
           ],
           "cardViewInfo": {
@@ -1175,7 +1207,8 @@
               "type": "SWING",
               "activityType": "passive",
               "callType": "ATTACK",
-              "value": 4
+              "value": 4,
+              "buffType": "SWING"
             }
           ],
           "cardViewInfo": {
@@ -1210,7 +1243,8 @@
               "callType": "ENTRY",
               "setType": "EARTH",
               "health": 0,
-              "damage": 1
+              "damage": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1273,7 +1307,8 @@
               "type": "LOWER_COST_OF_CARD_IN_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "player_card"
+              "targetType": "player_card",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1306,7 +1341,8 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "ENTRY",
-              "setType": "none"
+              "setType": "none",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1339,7 +1375,8 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Tainted Goo"
+              "name": "Tainted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1372,7 +1409,8 @@
               "type": "CARD_RETURN",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card"
+              "targetType": "player_card|opponent_card",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1405,14 +1443,16 @@
               "type": "SWING",
               "activityType": "passive",
               "callType": "ATTACK",
-              "value": 1
+              "value": 1,
+              "buffType": "SWING"
             },
             {
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1470,13 +1510,15 @@
               "type": "SHILED",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "none"
+              "targetType": "none",
+              "buffType": "SHILED"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "passive",
               "callType": "ENTRY",
-              "name": "Corrupted Goo"
+              "name": "Corrupted Goo",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1510,7 +1552,8 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "OPPONENT"
+              "targetType": "OPPONENT",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1545,6 +1588,7 @@
               "callType": "IN_HAND",
               "targetType": "player",
               "setType": "air",
+              "buffType": "PERMANENT"
             }
           ],
           "cardViewInfo": {
@@ -1579,7 +1623,8 @@
               "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
               "value": 3,
-              "effectType": "MASSIVE_LIGHTNING"
+              "effectType": "MASSIVE_LIGHTNING",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1620,7 +1665,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "life",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1653,7 +1699,8 @@
               "type": "DRAW_CARD",
               "activityType": "passive",
               "callType": "ENTRY",
-              "setType": "life"
+              "setType": "life",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1686,7 +1733,8 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 3
+              "value": 3,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "SUMMON",
@@ -1694,7 +1742,8 @@
               "callType": "ENTRY",
               "targetType": "opponent",
               "count": 1,
-              "name": "Zombie 1/1"
+              "name": "Zombie 1/1",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1729,7 +1778,8 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 2,
-              "effectType": "TARGET_LIFE"
+              "effectType": "TARGET_LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1763,7 +1813,8 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "targetType": "opponent_card|opponent",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1800,7 +1851,8 @@
               "value": 1,
               "statType": "DAMAGE",
               "setType": "LIFE",
-              "effectType": "TARGET_LIFE"
+              "effectType": "TARGET_LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1833,7 +1885,8 @@
               "type": "GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS",
               "activityType": "passive",
               "callType": "ATTACK",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -1868,7 +1921,8 @@
               "callType": "ENTRY",
               "targetType": "player",
               "count": 1,
-              "name": "Zombie Feral"
+              "name": "Zombie Feral",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1901,7 +1955,8 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 6
+              "value": 6,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "SUMMON",
@@ -1909,7 +1964,8 @@
               "callType": "ENTRY",
               "targetType": "opponent",
               "count": 2,
-              "name": "Zombie 2/2"
+              "name": "Zombie 2/2",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1944,7 +2000,8 @@
               "callType": "TURN",
               "targetType": "player",
               "count": 2,
-              "name": "Zombie 1/1"
+              "name": "Zombie 1/1",
+              "buffType": "TURN"
             }
           ],
           "cardViewInfo": {
@@ -1977,7 +2034,8 @@
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "ENTRY",
-              "value": -1
+              "value": -1,
+              "buffType": "DEVOUR"
             }
           ],
           "cardViewInfo": {
@@ -2011,7 +2069,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
-              "setType": "LIFE"
+              "setType": "LIFE",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2052,7 +2111,8 @@
               "targetType": "none",
               "statType": "damage",
               "setType": "earth",
-              "value": 1
+              "value": 1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -2080,7 +2140,8 @@
           "health": 2,
           "type": "FERAL",
           "rank": "MINION",
-          "abilities": [],
+          "abilities": [
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.4,
@@ -2112,7 +2173,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2145,14 +2207,16 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 2
+              "value": 2,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player",
-              "value": 2
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2187,7 +2251,8 @@
               "callType": "ATTACK",
               "targetType": "none",
               "statType": "damage",
-              "value": -1
+              "value": -1,
+              "buffType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -2221,7 +2286,8 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "PLAYER_CARD",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2254,14 +2320,16 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 7
+              "value": 7,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "ATTACK_OVERLORD",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player",
-              "value": 4
+              "value": 4,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2294,7 +2362,8 @@
               "type": "RAGE",
               "activityType": "passive",
               "callType": "GOT_DAMAGE",
-              "value": 2
+              "value": 2,
+              "buffType": "RAGE"
             }
           ],
           "cardViewInfo": {
@@ -2327,7 +2396,8 @@
               "type": "LOSE_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2363,7 +2433,8 @@
               "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
               "affectObjectType": "none",
               "value": 3,
-              "effectType": "MASSIVE_TOXIC_ALL"
+              "effectType": "MASSIVE_TOXIC_ALL",
+              "buffType": "DEATH"
             }
           ],
           "cardViewInfo": {
@@ -2396,13 +2467,15 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 4
+              "value": 4,
+              "buffType": "ENTRY"
             },
             {
               "type": "USE_ALL_GOO_TO_INCREASE_STATS",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 2
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2442,7 +2515,8 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "value": 4,
-              "damage": 4
+              "damage": 4,
+              "buffType": "END"
             }
           ],
           "cardViewInfo": {
@@ -2476,7 +2550,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "none",
-              "value": 1
+              "value": 1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2511,7 +2586,8 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
-              "effectType": "HEAL"
+              "effectType": "HEAL",
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2546,7 +2622,8 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 4,
-              "effectType": "TARGET_ADJUSTMENTS_BOMB"
+              "effectType": "TARGET_ADJUSTMENTS_BOMB",
+              "buffType": "SWING"
             }
           ],
           "cardViewInfo": {
@@ -2580,7 +2657,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "none",
-              "value": 2
+              "value": 2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2615,7 +2693,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_all_cards",
-              "damage": -3
+              "damage": -3,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2750,13 +2829,15 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 3
+              "value": 3,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": -1
+              "value": -1,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2790,13 +2871,15 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 6
+              "value": 6,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": -2
+              "value": -2,
+              "buffType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2811,7 +2894,7 @@
               "z": 0.55
             }
           }
-        },
+        }
       ]
     }
   ]

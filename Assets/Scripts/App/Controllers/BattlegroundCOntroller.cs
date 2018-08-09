@@ -614,7 +614,9 @@ namespace LoomNetwork.CZB
             InternalTools.SetLayerRecursively(boardCard.gameObject, 11);
             
             if (target is BoardUnit)
-                boardCard.DrawBuffsOnUnit(target as BoardUnit);
+                boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
+            else if(target is BoardCard)
+                boardCard.DrawTooltipInfoOfCard(target as BoardCard);
 
             var newPos = pos;
             newPos.y += 2.0f;
