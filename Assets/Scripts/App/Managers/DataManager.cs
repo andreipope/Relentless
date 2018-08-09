@@ -85,7 +85,7 @@ namespace LoomNetwork.CZB
             FillCacheDataPathes();
         }
 
-        public async void StartLoadCache()
+        public async Task StartLoadCache()
         {
             // TODO : Remove creating guest user from here
             await LoomManager.Instance.SetUser();
@@ -145,13 +145,13 @@ namespace LoomNetwork.CZB
 
         }
 
-        public void SaveAllCache()
+        public async Task SaveAllCache()
         {
 
             Debug.Log("== Saving all cache calledd === ");
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
-                SaveCache((Enumerators.CacheDataType)i);
+                await SaveCache((Enumerators.CacheDataType)i);
         }
 
         private void CheckVersion()
@@ -171,7 +171,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void SaveCache(Enumerators.CacheDataType type)
+        public Task SaveCache(Enumerators.CacheDataType type)
         {
             if (!File.Exists(_cacheDataPathes[type]))
                 File.Create(_cacheDataPathes[type]).Close();
@@ -221,6 +221,8 @@ namespace LoomNetwork.CZB
                     break;
                 default: break;
             }
+            
+            return Task.CompletedTask;
         }
 
 

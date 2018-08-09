@@ -10,7 +10,7 @@ public partial class LoomManager
     public async Task<ListHeroesResponse> GetHeroesList(string userId)
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
         
         var request = new ListHeroesRequest
         {

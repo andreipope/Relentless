@@ -17,7 +17,7 @@ public partial class LoomManager
     public async Task<ListDecksResponse> GetDecks(string userId)
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
         
         var request = new ListDecksRequest {
             UserId = userId
@@ -29,7 +29,7 @@ public partial class LoomManager
     public async Task DeleteDeck(string userId, string deckId, Action<string> errorResult)
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
         
         var request = new DeleteDeckRequest {
             UserId = userId,
@@ -51,7 +51,7 @@ public partial class LoomManager
     public async Task EditDeck(string userId, Deck deck, Action<string> errorResult)
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
         
         var cards = new RepeatedField<CardCollection>();
             
@@ -92,7 +92,7 @@ public partial class LoomManager
     public async Task AddDeck(string userId, Deck deck, Action<string> errorResult)
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
         
         var cards = new RepeatedField<CardCollection>();
             

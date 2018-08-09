@@ -2,7 +2,7 @@
 {
     public enum RpcConnectionState
     {
-        Undefined = 0,
+        Undefined,
         Connecting,
         Connected,
         Disconnecting,

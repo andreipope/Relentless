@@ -1,6 +1,7 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
+using System;
 using System.Threading.Tasks;
 using App.Utilites;
 using Loom.Client;
@@ -40,6 +41,7 @@ namespace LoomNetwork.CZB
 
         private bool _logoShowed;
         private TextMeshProUGUI _connectionStatusText;
+        private Button _buttonReconnect;
 
         public void Init()
         {
@@ -67,7 +69,8 @@ namespace LoomNetwork.CZB
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
             
-            _connectionStatusText = _selfPage.transform.Find("ConnectionStatusText").GetComponent<TextMeshProUGUI>();
+            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
+            _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
@@ -76,6 +79,7 @@ namespace LoomNetwork.CZB
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
+            _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
 
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
@@ -98,6 +102,8 @@ namespace LoomNetwork.CZB
                 LoomManager.Instance.IsConnected ? 
                     "<color=green>Online</color>" : 
                     "<color=red>Offline</color>";
+            
+            _buttonReconnect.gameObject.SetActive(!LoomManager.Instance.IsConnected);
         }
 
         public void Update()
@@ -165,6 +171,8 @@ namespace LoomNetwork.CZB
             }
             newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
             newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+
+            UpdateConnectionStateUI();
         }
 
         public void Hide()
@@ -229,6 +237,17 @@ namespace LoomNetwork.CZB
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
+        
+        private async void ReconnectButtonOnClickHandler() {
+            try
+            {
+                await LoomManager.Instance.CreateContract();
+                await _dataManager.StartLoadCache();
+            } catch (Exception e)
+            {
+                OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
+            }
+        }
 
         private void OnValueChangedEventMusic(bool value)
 		{
@@ -243,6 +262,7 @@ namespace LoomNetwork.CZB
           //  _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
             _soundManager.SetSoundMuted(!value);
         }
+
         #endregion
 
         private void OpenAlertDialog(string msg)

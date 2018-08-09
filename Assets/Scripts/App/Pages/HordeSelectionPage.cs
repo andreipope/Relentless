@@ -363,7 +363,7 @@ namespace LoomNetwork.CZB
 
 				_uiManager.GetPopup<QuestionPopup> ().ConfirmationEvent += ConfirmDeleteDeckEventHandler;
 
-				_uiManager.DrawPopup<QuestionPopup> ("Do you really wan't to delete " + deck.SelfDeck.name + "?");
+				_uiManager.DrawPopup<QuestionPopup> ("Do you really want to delete " + deck.SelfDeck.name + "?");
 			}
 		}
 
@@ -372,7 +372,7 @@ namespace LoomNetwork.CZB
 		    if (ShowConnectionLostPopupIfNeeded())
 		        return;
 
-			if (_selectedDeck != null) {
+			if (_selectedDeck != -1) {
 				_soundManager.PlaySound (Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
 				_uiManager.GetPage<DeckEditingPage> ().CurrentDeckId = _selectedDeck;

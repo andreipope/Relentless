@@ -9,7 +9,7 @@ public partial class LoomManager
     public async Task<ListCardLibraryResponse> GetCardLibrary()
     {
         if (Contract == null)
-            await Init();
+            await CreateContract();
 
         var request = new ListCardLibraryRequest();
         

@@ -19,11 +19,15 @@ namespace Loom.Client.Internal
         private readonly WebSocket webSocket;
         private readonly Uri url;
         private event EventHandler<JsonRpcEventData> eventReceived;
+        private bool anyConnectionStateChangesReceived;
 
         public override RpcConnectionState ConnectionState
         {
             get
             {
+                if (!anyConnectionStateChangesReceived)
+                    return RpcConnectionState.Disconnected;
+                
                 WebSocketState state = this.webSocket.ReadyState;
                 switch (state)
                 {
@@ -187,26 +191,26 @@ namespace Loom.Client.Internal
 
         private void WebSocketOnClose(object sender, CloseEventArgs e)
         {
+            anyConnectionStateChangesReceived = true;
             NotifyConnectionStateChanged();
         }
 
         private void WebSocketOnOpen(object sender, EventArgs e)
         {
+            anyConnectionStateChangesReceived = true;
             NotifyConnectionStateChanged();
         }
 
         private void WebSocketOnError(object sender, ErrorEventArgs e)
         {
+            anyConnectionStateChangesReceived = true;
             this.Logger.Log(LogTag, "Error: " + e.Message);
             NotifyConnectionStateChanged();
         }
 
-        private Task EnsureConnectionAsync()
+        public override Task ConnectAsync()
         {
-            if (this.webSocket.ReadyState == WebSocketState.Open)
-            {
-                return Task.CompletedTask;
-            }
+            AssertAlreadyConnected();
             var tcs = new TaskCompletionSource<object>();
             EventHandler openHandler = null;
             EventHandler<CloseEventArgs> closeHandler = null;
@@ -238,8 +242,8 @@ namespace Loom.Client.Internal
 
         private async Task SendAsync<T>(string method, T args, string msgId)
         {
+            AssertMustBeConnected();
             var tcs = new TaskCompletionSource<object>();
-            await EnsureConnectionAsync();
             var reqMsg = new JsonRpcRequest<T>(method, args, msgId);
             var reqMsgBody = JsonConvert.SerializeObject(reqMsg);
             this.Logger.Log(LogTag, "[Request Body] " + reqMsgBody);

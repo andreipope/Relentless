@@ -60,7 +60,7 @@ public partial class LoomManager
         }
     }
     
-    public async Task Init(Action result = null)
+    public async Task CreateContract(Action result = null)
     {
         var privateKey = GetPrivateKeyFromFile();
         var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);

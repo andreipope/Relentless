@@ -7,6 +7,7 @@ using UnityEngine;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Common;
 using System;
+using System.Threading.Tasks;
 
 namespace LoomNetwork.CZB
 {
@@ -23,9 +24,9 @@ namespace LoomNetwork.CZB
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
 
-        void StartLoadCache();
-        void SaveAllCache();
-        void SaveCache(Enumerators.CacheDataType type);
+        Task StartLoadCache();
+        Task SaveAllCache();
+        Task SaveCache(Enumerators.CacheDataType type);
 
         Sprite GetSpriteFromTexture(Texture2D texture);
     }

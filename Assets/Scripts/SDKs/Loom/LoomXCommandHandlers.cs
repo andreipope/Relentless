@@ -28,7 +28,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithWriteLink(string link)
 	{
 		LoomManager.Instance.WriteHost = link;
-		await LoomManager.Instance.Init(()=> { CustomDebug.Log("LoomX Initialized..");});
+		await LoomManager.Instance.CreateContract(()=> { CustomDebug.Log("LoomX Initialized..");});
 	}
 	
 	
@@ -36,7 +36,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithReaderLink(string link)
 	{
 		LoomManager.Instance.ReaderHost = link;
-		await LoomManager.Instance.Init(()=> { CustomDebug.Log("LoomX Initialized..");});
+		await LoomManager.Instance.CreateContract(()=> { CustomDebug.Log("LoomX Initialized..");});
 	}
 	
 	
@@ -45,7 +45,7 @@ public static class LoomXCommandHandlers
 	{
 		LoomManager.Instance.WriteHost = writer;
 		LoomManager.Instance.ReaderHost = reader;
-		await LoomManager.Instance.Init(() =>
+		await LoomManager.Instance.CreateContract(() =>
 		{
 			CustomDebug.Log("LoomX Initialized..");
 		});
