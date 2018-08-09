@@ -5,15 +5,18 @@ using System;
 using System.Threading.Tasks;
 using LoomNetwork.CZB.Data;
 using Loom.Newtonsoft.Json;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public partial class DataManager
     {
-        public async void StartLoadBackend()
+        public async void StartLoadBackend(Action result)
         {
             await GetDeckData();
             await GetHeroesData();
+
+            result?.Invoke();
         }
         
         private async Task GetDeckData()

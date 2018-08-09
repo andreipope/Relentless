@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         CreditsData CachedCreditsData { get; set; }
 
         void StartLoadCache();
+        void StartLoadBackend(Action result);
         void SaveAllCache();
         void SaveCache(Enumerators.CacheDataType type);
 

@@ -23,6 +23,7 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
+	    private IDataManager _dataManager;
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
@@ -37,6 +38,7 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+	        _dataManager = GameClient.Get<IDataManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -57,10 +59,15 @@ namespace LoomNetwork.CZB
 		{
 		}
 
-		public void PressedLoginHandler () {
+		public async void PressedLoginHandler () 
+		{
+			Debug.Log(" == Pressed Login handler called == " + _state);
 			GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 			if (_state == "login") {
 				//Here we will being the login procedure
+				await LoomManager.Instance.SetUser();
+				_dataManager.StartLoadBackend(SuccessfulLogin);
+				
 				_buttonText.text = "CANCEL";
 				_text.text = "Waiting...";
 				_state = "waiting";
@@ -73,7 +80,9 @@ namespace LoomNetwork.CZB
 			}
 		}
 
-		private void SuccessfulLogin () {
+		private void SuccessfulLogin () 
+		{
+			
 			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 			Hide ();
 		}
@@ -106,13 +115,13 @@ namespace LoomNetwork.CZB
         public void Update()
         {
 			//this is just for testing purposes of the popup, remove and let the login process handle hiding
-			if (_state == "waiting") {
+			/*if (_state == "waiting") {
 				_time += Time.deltaTime;
 				if (_time > 3) {
 					_state = "done";
 					SuccessfulLogin ();
 				}
-			}
+			}*/
         }
 
     }
