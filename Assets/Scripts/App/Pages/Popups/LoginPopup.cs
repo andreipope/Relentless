@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private GameObject _selfPage;
+	    private IDataManager _dataManager;
 
         private ButtonShiftingContent _loginButton;
 		private ButtonShiftingContent _betaButton;
@@ -38,6 +39,7 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+	        _dataManager = GameClient.Get<IDataManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -50,6 +52,7 @@ namespace LoomNetwork.CZB
 
 			_waitingButton = _selfPage.transform.Find("Waiting_Group/Button_Waiting").GetComponent<ButtonShiftingContent>();
 			_waitingButton.onClick.AddListener(PressedWaitingHandler);
+	        _waitingButton.gameObject.SetActive(false);
 
 			_betaInput = _selfPage.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
 
@@ -61,7 +64,9 @@ namespace LoomNetwork.CZB
 		{
 		}
 
-		public void PressedLoginHandler () {
+	    private async void PressedLoginHandler () 
+	    {
+		    Debug.Log("state = " + _state);
 			GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 			if (_state == "login") {
 				//Here we will begin the login procedure
@@ -69,10 +74,13 @@ namespace LoomNetwork.CZB
 				_loginButton.transform.parent.gameObject.SetActive (false);
 				_state = "waiting_from_login";
 				//popup can only be Hide() once login is successful, and we go to the main menu page
+				
+				await LoomManager.Instance.SetUser();
+				_dataManager.StartLoadBackend(SuccessfulLogin);
 			}
 		}
 
-		public void PressedWaitingHandler () {
+	    private void PressedWaitingHandler () {
 			if (_state == "waiting_from_login") {
 				//Interrupt the login process
 				_waitingButton.transform.parent.gameObject.SetActive(false);
@@ -86,7 +94,7 @@ namespace LoomNetwork.CZB
 			}
 		}
 
-		public void PressedBetaHandler () {
+	    private void PressedBetaHandler () {
 			if (_state == "beta") {
 				if (_betaInput.text.Length > 0) { //check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
 					//Here we will begin the beta key procedure
@@ -135,14 +143,21 @@ namespace LoomNetwork.CZB
         public void Update()
         {
 			//this is just for testing purposes of the popup, remove and let the login process handle hiding
-			if (_state == "waiting_from_beta" || _state == "waiting_from_login") {
+			if (_state == "waiting_from_beta" )/*|| _state == "waiting_from_login" */ 
+			{
 				_time += Time.deltaTime;
-				if (_time > 3) {
-					_state = "done";
-					SuccessfulLogin ();
+				if (_time > 2) {
+					_state = "login";
+					_waitingButton.transform.parent.gameObject.SetActive(false);
+					_loginButton.transform.parent.gameObject.SetActive (true);
+					//SuccessfulLogin ();
 				}
 			}
         }
 
     }
 }
+
+
+
+
