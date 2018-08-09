@@ -13,6 +13,7 @@ namespace LoomNetwork.CZB.Data
 {
     public class AbilityData
     {
+        public string buffType;
         public string type;
         public string activityType;
         public string callType;

@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB
         protected IGameplayManager _gameplayManager;
         protected IDataManager _dataManager;
         protected ITimerManager _timerManager;
+        protected ISoundManager _soundManager;
 
         protected AbilityBoardArrow _targettingArrow;
         protected GameObject _vfxObject;
@@ -79,12 +80,21 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public AbilityData AbilityData
+        {
+            get
+            {
+                return abilityData;
+            }
+        }
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
@@ -334,7 +344,7 @@ namespace LoomNetwork.CZB
         protected void SpellOnUsedEventHandler()
         {
             boardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
-            _abilitiesController.DeactivateAbility(activityId);
+           // _abilitiesController.DeactivateAbility(activityId);
         }
 
         protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)

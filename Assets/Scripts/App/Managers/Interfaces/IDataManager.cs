@@ -27,5 +27,8 @@ namespace LoomNetwork.CZB
         Task StartLoadCache();
         Task SaveAllCache();
         Task SaveCache(Enumerators.CacheDataType type);
+
+        TooltipContentData.BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.RankInfo GetRankInfoByType(string type);
     }
 }

@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
         public override void Activate()
         {
             base.Activate();
-            if (abilityCallType != Enumerators.AbilityCallType.AT_START)
+            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
 				return;
             Action();
             //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
         protected override void UnitOnDieEventHandler()
         {
             base.UnitOnDieEventHandler();
-			if (abilityCallType != Enumerators.AbilityCallType.AT_DEATH)
+			if (abilityCallType != Enumerators.AbilityCallType.DEATH)
 				return;
             Debug.Log("CreatureOnDieEventHandler");
             Action();

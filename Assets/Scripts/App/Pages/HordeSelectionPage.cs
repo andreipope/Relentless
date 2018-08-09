@@ -106,7 +106,7 @@ namespace LoomNetwork.CZB
 
             _newHordeDeckButton.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
 
-            _battleButton.interactable = false;
+            _battleButton.interactable = true;
 
             Hide();
         }
@@ -212,10 +212,10 @@ namespace LoomNetwork.CZB
             _hordeSelection.transform.SetParent(deck.selectionContainer, false);
             _hordeSelection.gameObject.SetActive(true);
 
-            if (deck.SelfDeck.GetNumCards() < Constants.MAX_DECK_SIZE && !Constants.DEV_MODE)
-                _battleButton.interactable = false;
-            else
-                _battleButton.interactable = true;
+            //if (deck.SelfDeck.GetNumCards() < Constants.MAX_DECK_SIZE && !Constants.DEV_MODE)
+            //    _battleButton.interactable = false;
+            //else
+            //    _battleButton.interactable = true;
 
             _selectedDeck = deck.DeckId;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeck;
@@ -285,6 +285,12 @@ namespace LoomNetwork.CZB
         private void BattleButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            if(_hordeDecks.Count == 0 || _selectedDeck == -1 || _selectedDeck >= _hordeDecks.Count || _hordeDecks[_selectedDeck].SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE && !Constants.DEV_MODE)
+            {
+                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MIN_DECK_SIZE + " cards.");
+                return;
+            }
 
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeck;
 

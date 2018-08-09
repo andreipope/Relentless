@@ -38,6 +38,8 @@
             TUTORIAL,
             CARDS,
             END_TURN,
+            OVERLORD_ABILITIES,
+            SPELLS,
 
             WALKER_ARRIVAL,
             FERAL_ARRIVAL,
@@ -67,8 +69,14 @@
             LOST_POPUP,
             WON_POPUP,
             WON_REWARD_POPUP,
-            YOURTURN_POPUP
+            YOURTURN_POPUP,
 
+            SHUTTERS_CLOSING,
+            SHUTTERS_OPEN,
+
+            GOO_OVERFLOW_FADE_IN,
+            GOO_OVERFLOW_FADE_LOOP,
+            GOO_OVERFLOW_FADE_OUT
         }
 
         public enum CardSoundType
@@ -112,7 +120,8 @@
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             OPPONENT_ACTIONS_LIBRARY_DATA,
-            CREDITS_DATA
+            CREDITS_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
         public enum NotificationButtonState
@@ -254,15 +263,15 @@
 
         public enum AbilityCallType
         {
-            TURN_START,
-            AT_START,
-            AT_END,
+            TURN,
+            ENTRY,
+            END,
+            ATTACK,
+            DEATH,
+
             PERMANENT,
-            AT_ATTACK,
-            AT_DEATH,
             GOT_DAMAGE,
             AT_DEFENCE,
-            TURN_END,
 
             IN_HAND
         }
@@ -444,8 +453,8 @@
             FREEZE,
             DAMAGE,
             HEAL_ALLY,
-            DESTROY_TARGET_UNIT_AFTER_ATTACK,
-            REANIMATE_UNIT
+            DESTROY,
+            REANIMATE
         }
 
         public enum BuffActivityType
@@ -523,6 +532,14 @@
             SHATTER,
             BLIZZARD
        
+        }
+
+        public enum TooltipObjectType
+        {
+            RANK,
+            ABILITY,
+            UNIT_TYPE,
+            BUFF
         }
     }
 }

@@ -46,11 +46,6 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-        }
-
         protected override void OnEndTurnEventHandler()
         {
             base.OnEndTurnEventHandler();
@@ -73,8 +68,14 @@ namespace LoomNetwork.CZB
 
         private void ActionEnd()
         {
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner, damage);
-            CreateVFX(targetUnit.transform.position, true, 5f);
+            if (targetUnit != null)
+            {
+                _battleController.AttackUnitByAbility(targetUnit, abilityData, targetUnit, damage);
+
+                CreateVFX(targetUnit.transform.position, true, 5f);
+            }
+
+            _abilitiesController.DeactivateAbility(activityId);
         }
     }
 }

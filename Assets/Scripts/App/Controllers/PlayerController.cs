@@ -4,6 +4,7 @@
 
 
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -99,7 +100,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           //   playerDeck.Add("Zludge");
+                          //   playerDeck.Add("Quazi");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -147,6 +148,8 @@ namespace LoomNetwork.CZB
             //_heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }
 
+
+        // OPTIMIZE THIS CODE(shit) --- comment by AS
         private void HandleInput()
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -282,7 +285,7 @@ namespace LoomNetwork.CZB
             {
                 _delayTimerOfClick += Time.deltaTime;
 
-                if (_delayTimerOfClick > Constants.POPUP_APPEAR_ON_CLICK_DELAY)
+                if (_delayTimerOfClick > Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
                 {
 
                     _delayTimerOfClick = 0f;
@@ -291,7 +294,7 @@ namespace LoomNetwork.CZB
                     // _selectedBoardUnit = null;
                 }
                 else
-                if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.POPUP_APPEAR_ON_CLICK_DELAY)
+                if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
                 {
                     if (_isPreviewHandCard)
                     {
@@ -300,7 +303,7 @@ namespace LoomNetwork.CZB
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
 
-                            HandCardPreview(new object[] { _topmostBoardCard.WorkingCard });
+                            HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }
                     else
@@ -309,7 +312,8 @@ namespace LoomNetwork.CZB
                         {
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
-                            HandCardPreview(new object[] { _selectedBoardUnit.Card });
+
+                            HandCardPreview(new object[] { _selectedBoardUnit });
                         }
                     }
 
@@ -338,8 +342,7 @@ namespace LoomNetwork.CZB
 
         public void HandCardPreview(object[] param)
         {
-            WorkingCard card = param[0] as WorkingCard;
-            _battlegroundController.CreateCardPreview(card, new Vector3(-6f, -2.5f, 0.1f), false);
+            _battlegroundController.CreateCardPreview(param[0], new Vector3(-6f, -2.5f, 0.1f), false);
         }
 
         private void StopHandTimer()

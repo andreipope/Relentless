@@ -15,6 +15,7 @@ namespace LoomNetwork.CZB
         bool MusicMuted { get; set; }
 
         float GetSoundLength(Enumerators.SoundType soundType, string namePattern);
+        float GetSoundLength(Enumerators.SoundType soundType);
 
         void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
         void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool isInQueue = false);

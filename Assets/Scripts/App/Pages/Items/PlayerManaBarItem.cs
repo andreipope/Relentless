@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using DG.Tweening;
+using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
 {
@@ -49,6 +50,8 @@ namespace LoomNetwork.CZB
                     _gooBottles.Add(new GooBottleItem(bottle));
             }
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
+
+            GameClient.Get<IGameplayManager>().OnGameEndedEvent += OnGameEndedEventHandler;
         }
 
         public void SetGoo(int gooValue)
@@ -130,8 +133,16 @@ namespace LoomNetwork.CZB
                 _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false); ;
             }
             _selfObject.SetActive(false);
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME);
+
+            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN));
         }
 
+        private void PlayOverflowLoopDelay(object[] param)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME, true);
+        }
 
         private void DestroyOverflow()
         {
@@ -140,6 +151,27 @@ namespace LoomNetwork.CZB
             _overflowBottleContainer = null;
             _overflowGooAmountText = null;
             _selfObject.SetActive(true);
+
+            StopOverfowSounds();
+
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME);
+        }
+
+
+        private void StopOverfowSounds()
+        {
+            GameClient.Get<ITimerManager>().StopTimer(PlayOverflowLoopDelay);
+
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT);
+        }
+
+        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        {
+            StopOverfowSounds();
+
+            GameClient.Get<IGameplayManager>().OnGameEndedEvent -= OnGameEndedEventHandler;
         }
 
         public struct GooBottleItem

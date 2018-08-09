@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                       // playerDeck.Add("Zeuz");
+                        // playerDeck.Add("Earthshaker");
                     }
                 }
 
@@ -219,6 +219,7 @@ namespace LoomNetwork.CZB
                     if (CardCanBePlayable(unit))
                     {
                         ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
+                        LetsThink();
                         LetsThink();
                         LetsThink();
                         LetsThink();
@@ -527,8 +528,8 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             {
-                                if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL
-                                    || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.CurrentPlayer.BoardCards.Count > 0))
+                                if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 || (Enumerators.CardKind)libraryCard.cardKind == Enumerators.CardKind.SPELL
+                                    || (ability.abilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.OpponentPlayer.BoardCards.Count > 0))
                                 {
                                     needsToSelectTarget = true;
                                     abilitiesWithTarget.Add(ability);
@@ -648,6 +649,11 @@ namespace LoomNetwork.CZB
                                 CheckAndAddTargets(ability, ref target);
                             }
                             break;
+                        case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
+                            {
+                                GetTargetByType(ability, ref target, false);
+                            }
+                            break;                            
                         default: break;
                     }
 
@@ -672,6 +678,32 @@ namespace LoomNetwork.CZB
             {
                 target = _gameplayManager.CurrentPlayer;
             }
+        }
+
+        private void GetTargetByType(AbilityData ability, ref object target, bool checkPlayerAlso)
+        {
+            if (ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+            {
+                var targets= GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+
+                if (targets.Count > 0)
+                    target = targets[UnityEngine.Random.Range(0, targets.Count)];
+
+                if (checkPlayerAlso && target == null && ability.abilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    target = _gameplayManager.CurrentPlayer;
+
+                    targets = GetHeavyUnitsOnBoard(_gameplayManager.OpponentPlayer);
+
+                    if (targets.Count > 0)
+                        target = targets[UnityEngine.Random.Range(0, targets.Count)];
+                }
+            }
+        }
+
+        private List<BoardUnit> GetHeavyUnitsOnBoard(Player player)
+        {
+            return player.BoardCards.FindAll(x => x.hasHeavy || x.HasBuffHeavy);
         }
 
         private bool AddRandomTargetUnit(bool opponent, ref object target, bool lowHP = false, bool addAttackIgnore = false)
