@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
             if (attackingUnit != null && attackedUnit != null)
             {
                 int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit, attackedUnit);
-                int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit);
+                int additionalDamageAttacked = 0;// _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit);
 
                 //Removed for now
                 //additionalDamageAttacker += GetStrongersAndWeakersModifier(attackingUnit.Card.libraryCard.cardSetType, attackedUnit.Card.libraryCard.cardSetType);
