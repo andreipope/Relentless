@@ -3,7 +3,7 @@
     {
       "name": "Feral",
       "tooltip": "Can attack when this enters the battleground",
-      "type" :  "FERAL"
+      "type": "FERAL"
     },
     {
       "name": "Heavy",
@@ -94,6 +94,98 @@
       "name": "Reanimate",
       "tooltip": "Resummon this zombie when it is Destroyed",
       "type": "REANIMATE"
+    }
+  ],
+  "ranks": [
+    {
+      "name": "Commander",
+      "type": "COMMANDER",
+      "info": [
+        {
+          "tooltip": "Commander",
+          "element": "AIR"
+        },
+        {
+          "tooltip": "Commander",
+          "element": "EARTH"
+        },
+        {
+          "tooltip": "Commander",
+          "element": "TOXIC"
+        },
+        {
+          "tooltip": "Commander",
+          "element": "LIFE"
+        },
+        {
+          "tooltip": "Commander",
+          "element": "FIRE"
+        },
+        {
+          "tooltip": "Commander",
+          "element": "WATER"
+        }
+      ]
+    },
+    {
+      "name": "Officer",
+      "type": "OFFICER",
+      "info": [
+        {
+          "tooltip": "Officer",
+          "element": "AIR"
+        },
+        {
+          "tooltip": "Officer",
+          "element": "EARTH"
+        },
+        {
+          "tooltip": "Officer",
+          "element": "TOXIC"
+        },
+        {
+          "tooltip": "Officer",
+          "element": "LIFE"
+        },
+        {
+          "tooltip": "Officer",
+          "element": "FIRE"
+        },
+        {
+          "tooltip": "Officer",
+          "element": "WATER"
+        }
+      ]
+    },
+    {
+      "name": "General",
+      "type": "GENERAL",
+      "info": [
+        {
+          "tooltip": "General",
+          "element": "AIR"
+        },
+        {
+          "tooltip": "General",
+          "element": "EARTH"
+        },
+        {
+          "tooltip": "General",
+          "element": "TOXIC"
+        },
+        {
+          "tooltip": "General",
+          "element": "LIFE"
+        },
+        {
+          "tooltip": "General",
+          "element": "FIRE"
+        },
+        {
+          "tooltip": "General",
+          "element": "WATER"
+        }
+      ]
     }
   ]
 }

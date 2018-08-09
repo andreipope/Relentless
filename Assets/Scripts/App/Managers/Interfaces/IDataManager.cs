@@ -29,6 +29,7 @@ namespace LoomNetwork.CZB
 
         Sprite GetSpriteFromTexture(Texture2D texture);
 
-        BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.RankInfo GetRankInfoByType(string type);
     }
 }

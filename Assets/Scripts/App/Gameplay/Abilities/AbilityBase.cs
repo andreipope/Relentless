@@ -80,6 +80,14 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public AbilityData AbilityData
+        {
+            get
+            {
+                return abilityData;
+            }
+        }
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -336,7 +344,7 @@ namespace LoomNetwork.CZB
         protected void SpellOnUsedEventHandler()
         {
             boardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
-            _abilitiesController.DeactivateAbility(activityId);
+           // _abilitiesController.DeactivateAbility(activityId);
         }
 
         protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)

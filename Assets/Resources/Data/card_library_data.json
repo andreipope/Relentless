@@ -56,13 +56,15 @@
               "type": "OVERFLOW_GOO",
               "activityType": "passive",
               "callType": "ENTRY",
-              "value": 2
+              "value": 2,
+              "buffType": "OVERFLOW"
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "passive",
               "callType": "END",
-              "value": 2
+              "value": 2,
+              "buffType": "END"
             }
           ],
           "cardViewInfo": {
@@ -797,7 +799,7 @@
           "damage": 1,
           "health": 2,
           "type": "WALKER",
-          "rank": "COMMANDER",
+          "rank": "MINION",
           "abilities": [
             {
               "type": "DAMAGE_TARGET",

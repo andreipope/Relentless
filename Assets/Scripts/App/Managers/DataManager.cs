@@ -32,7 +32,7 @@ namespace LoomNetwork.CZB
         public CollectionData CachedCollectionData { get; set; }
         public DecksData CachedDecksData { get; set; }
         public OpponentDecksData CachedOpponentDecksData { get; set; }
-        public BuffsTooltipData CachedBuffsTooltipData { get; set; }
+        public TooltipContentData CachedBuffsTooltipData { get; set; }
 
         public ActionData CachedActionsLibraryData { get; set;}
 
@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
             CachedOpponentDecksData = new OpponentDecksData();
             CachedActionsLibraryData = new ActionData();
             CachedCreditsData = new CreditsData();
-            CachedBuffsTooltipData = new BuffsTooltipData();
+            CachedBuffsTooltipData = new TooltipContentData();
         }
 
         public void Dispose()
@@ -252,7 +252,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     {
                         if (File.Exists(_cacheDataPathes[type]))
-                            CachedBuffsTooltipData = DeserializeObjectFromPath<BuffsTooltipData>(_cacheDataPathes[type]);
+                            CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
                     }
                     break;
                 default: break;
@@ -270,7 +270,7 @@ namespace LoomNetwork.CZB
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);
-                CachedBuffsTooltipData = JsonConvert.DeserializeObject<BuffsTooltipData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
+                CachedBuffsTooltipData = JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
 
                 var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
                 if (collectionLibrary == null)
@@ -358,9 +358,20 @@ namespace LoomNetwork.CZB
             return maxCopies;
         }
 
-        public BuffInfo GetBuffInfoByType(string type)
+        public TooltipContentData.BuffInfo GetBuffInfoByType(string type)
         {
+            if (string.IsNullOrEmpty(type))
+                return null;
+
             return CachedBuffsTooltipData.buffs.Find(x => x.type.ToLower().Equals(type.ToLower()));
+        }
+
+        public TooltipContentData.RankInfo GetRankInfoByType(string type)
+        {
+            if (string.IsNullOrEmpty(type))
+                return null;
+
+            return CachedBuffsTooltipData.ranks.Find(x => x.type.ToLower().Equals(type.ToLower()));
         }
     }
 }

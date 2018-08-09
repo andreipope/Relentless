@@ -533,5 +533,13 @@
             BLIZZARD
        
         }
+
+        public enum TooltipObjectType
+        {
+            RANK,
+            ABILITY,
+            UNIT_TYPE,
+            BUFF
+        }
     }
 }

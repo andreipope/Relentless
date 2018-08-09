@@ -7,6 +7,7 @@ using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -73,6 +74,11 @@ namespace LoomNetwork.CZB
                 if (item != null && item.ability != null)
                     item.ability.Dispose();
             }
+        }
+
+        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnit unit)
+        {
+           return _activeAbilities.FindAll(x => x.ability.targetUnit == unit).Select(y => y.ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(AbilityData ability, Enumerators.CardKind kind, object boardObject, Player caller, Data.Card cardOwner, WorkingCard workingCard)

@@ -65,11 +65,13 @@ namespace LoomNetwork.CZB.Helpers
         {
             if(!parentIgnored)
                 parent.layer = layer;
-            bool ignored;
+            bool ignored = false;
             for (int i = 0; i < parent.transform.childCount; i++)
             {
-                ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
-                if ((ignoreNames == null || !ignored) && !parentIgnored)
+                if(ignoreNames != null)
+                    ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
+
+                if (!ignored && !parentIgnored || ignoreNames == null)
                     parent.transform.GetChild(i).gameObject.layer = layer;
 
                 if (parent.transform.GetChild(i).childCount > 0)

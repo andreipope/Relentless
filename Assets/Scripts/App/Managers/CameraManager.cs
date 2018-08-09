@@ -87,6 +87,9 @@ namespace LoomNetwork.CZB.Gameplay
 
         public void FadeOut(Action callback = null, int level = 0, bool immediately = false)
         {
+            if (!_fadeImageGroups[level].gameObject.activeInHierarchy)
+                return;
+
             if(immediately)
             {
                 _fadeImageGroups[level].alpha = 0;

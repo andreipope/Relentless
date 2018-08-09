@@ -29,6 +29,8 @@ namespace LoomNetwork.CZB
         public BoardSkill opponentPrimarySkill,
                           opponentSecondarySkill;
 
+        private bool _skillsInitialized = false;
+
         public void Dispose()
         {
         }
@@ -46,10 +48,19 @@ namespace LoomNetwork.CZB
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
+
+            _gameplayManager.OnGameEndedEvent += _gameplayManager_OnGameEndedEvent;
         }
 
         public void Update()
         {
+            if(_skillsInitialized)
+            {
+                _playerPrimarySkill.Update();
+                _playerSecondarySkill.Update();
+                opponentPrimarySkill.Update();
+                opponentSecondarySkill.Update();
+            }
         }
 
         public void InitializeSkills()
@@ -75,6 +86,8 @@ namespace LoomNetwork.CZB
 
             if (primary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count && secondary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count)
                 SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.skills[primary], _gameplayManager.OpponentPlayer.SelfHero.skills[secondary]);
+
+            _skillsInitialized = true;
         }
 
         public void DisableSkillsContent(Player player)
@@ -106,28 +119,33 @@ namespace LoomNetwork.CZB
         }
 
 
+        private void _gameplayManager_OnGameEndedEvent(Enumerators.EndGameType obj)
+        {
+            _skillsInitialized = false;
+        }
+
         private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
             if(_playerPrimarySkill != null)
-            _playerPrimarySkill.StartDoSkill();
+            _playerPrimarySkill.OnMouseDownEventHandler();
         }
 
         private void PrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
             if (_playerPrimarySkill != null)
-                _playerPrimarySkill.EndDoSkill();
+                _playerPrimarySkill.OnMouseUpEventHandler();
         }
 
         private void SecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
             if (_playerSecondarySkill != null)
-                _playerSecondarySkill.StartDoSkill();
+                _playerSecondarySkill.OnMouseDownEventHandler();
         }
 
         private void SecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
             if (_playerSecondarySkill != null)
-                _playerSecondarySkill.EndDoSkill();
+                _playerSecondarySkill.OnMouseUpEventHandler();
         }
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)

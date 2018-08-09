@@ -1034,7 +1034,9 @@ namespace LoomNetwork.CZB
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                         IsAttacking = false;
-                       // completeCallback?.Invoke();
+                        // completeCallback?.Invoke();
+
+                        SetHighlightingEnabled(true);
                     });
 
                     _timerManager.AddTimer((x) =>
@@ -1073,6 +1075,8 @@ namespace LoomNetwork.CZB
                         //sortingGroup.sortingOrder = 0;
                         fightTargetingArrow = null;
                         IsAttacking = false;
+
+                        SetHighlightingEnabled(true);
                     });
 
                     _timerManager.AddTimer((x) =>

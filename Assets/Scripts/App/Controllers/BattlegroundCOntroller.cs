@@ -5,12 +5,14 @@
 
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
 {
@@ -454,7 +456,7 @@ namespace LoomNetwork.CZB
             var cardWidth = 0.0f;
             foreach (var card in playerBoardCards)
             {
-                cardWidth = 3;
+                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -518,7 +520,7 @@ namespace LoomNetwork.CZB
 
             foreach (var card in opponentBoardCards)
             {
-                cardWidth = 5;
+                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -609,6 +611,8 @@ namespace LoomNetwork.CZB
             boardCard.SetHighlightingEnabled(highlight);
             boardCard.isPreview = true;
 
+            InternalTools.SetLayerRecursively(boardCard.gameObject, 11);
+            
             if (target is BoardUnit)
                 boardCard.DrawBuffsOnUnit(target as BoardUnit);
 
@@ -625,6 +629,8 @@ namespace LoomNetwork.CZB
         // rewrite
         public void DestroyCardPreview()
         {
+            GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
+
             MainApp.Instance.StartCoroutine(DestroyCardPreviewAsync());
             if (createPreviewCoroutine != null)
             {
