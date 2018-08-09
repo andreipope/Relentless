@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4972221055872664}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpriteContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4108542957055122}
   - component: {fileID: 331863062702124910}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 4798343267790416}
   - component: {fileID: 198509168317125218}
   - component: {fileID: 199345124900475820}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 4554430358485912}
   - component: {fileID: 198135557213139444}
   - component: {fileID: 199479421341570140}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4776411105740328}
   - component: {fileID: 95865093709845792}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Walker_Arrival
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 4988659307276242}
   - component: {fileID: 33660316825391866}
   - component: {fileID: 23004638174967664}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
