@@ -17,8 +17,6 @@ public partial class LoomManager
         LoomXCommandHandlers.Initialize();
     }
 
-    public static string UserId = "Loom";
-
     #if UNITY_EDITOR
     private string _writerHost= "ws://127.0.0.1:46657/websocket";
     private string _readerHost = "ws://127.0.0.1:9999/queryws";

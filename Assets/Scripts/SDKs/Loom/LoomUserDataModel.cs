@@ -1,6 +1,6 @@
 ﻿public class LoomUserDataModel
 {
-    public string UserName;
+    public string UserId;
     public byte[] PrivateKey;
     public bool IsValid;
 }

@@ -179,7 +179,7 @@ namespace LoomNetwork.CZB
 	        {
 				await LoomManager.Instance.SignUp(usernameText);
 		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
-		        LoomManager.UserId = usernameText;
+		        LoomManager.Instance.UserDataModel.UserId = usernameText;
 		        //OpenAlertDialog("Account Created Successfully");
 		        // TODO : Removed code loading data manager
 		        var dataManager = GameClient.Get<IDataManager>();
@@ -217,7 +217,7 @@ namespace LoomNetwork.CZB
                 return;
             }*/
 	        
-	        LoomManager.UserId = usernameText;
+	        LoomManager.Instance.UserDataModel.UserId = usernameText;
 	        var dataManager = GameClient.Get<IDataManager>();
 	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
 	        dataManager.StartLoadCache();

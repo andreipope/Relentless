@@ -835,7 +835,7 @@ namespace LoomNetwork.CZB
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
                 
-                await LoomManager.Instance.AddDeck(LoomManager.UserId, _currentDeck, result => 
+                await LoomManager.Instance.AddDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck, result => 
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
@@ -850,7 +850,7 @@ namespace LoomNetwork.CZB
             {
                 _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
                 
-                await LoomManager.Instance.EditDeck(LoomManager.UserId, _currentDeck, result => 
+                await LoomManager.Instance.EditDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck, result => 
                 {
                     if (!string.IsNullOrEmpty(result))
                     {

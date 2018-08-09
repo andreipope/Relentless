@@ -12,8 +12,8 @@ public class LoomDeckTest
     public async void InitLoom()
     {
         await LoomManager.Instance.CreateContract();
-        LoomManager.UserId = "LoomTest";
-        await LoomManager.Instance.SignUp(LoomManager.UserId);
+        LoomManager.Instance.UserDataModel.UserId = "LoomTest";
+        await LoomManager.Instance.SignUp(LoomManager.Instance.UserDataModel.UserId);
     }
     
     [Test]
@@ -21,7 +21,7 @@ public class LoomDeckTest
     {
         ListDecksResponse listDecksResponse = null;
         Assert.IsNull(listDecksResponse);
-        listDecksResponse  = await LoomManager.Instance.GetDecks(LoomManager.UserId);
+        listDecksResponse  = await LoomManager.Instance.GetDecks(LoomManager.Instance.UserDataModel.UserId);
         Assert.IsNotNull(listDecksResponse);
         
         var decksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());

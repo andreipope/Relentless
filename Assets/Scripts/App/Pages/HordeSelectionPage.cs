@@ -183,7 +183,7 @@ namespace LoomNetwork.CZB
             
             LoadDeckObjects();
             
-            await LoomManager.Instance.DeleteDeck(LoomManager.UserId, deckName, result => 
+            await LoomManager.Instance.DeleteDeck(LoomManager.Instance.UserDataModel.UserId, deckName, result => 
             {
                 if (!string.IsNullOrEmpty(result))
                 {

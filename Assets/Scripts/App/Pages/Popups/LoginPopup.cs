@@ -77,25 +77,26 @@ namespace LoomNetwork.CZB
 		    if (isBetaKeyValid) { //check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
 			    SetUIState(LoginState.BetaKeyValidateAndLogin);
 
+			    // Simulate backend request
 			    await Task.Delay(TimeSpan.FromSeconds(2));
 
 			    byte[] privateKey;
 			    byte[] publicKey;
-			    string userName;
-			    GenerateKeysAndUserFromBetaKey(_betaKeyInputField.text, out privateKey, out publicKey, out userName);
+			    string userId;
+			    GenerateKeysAndUserFromBetaKey(_betaKeyInputField.text, out privateKey, out publicKey, out userId);
 
 			    try
 			    {
 				    LoomUserDataModel userDataModel = new LoomUserDataModel
 				    {
 					    PrivateKey = privateKey,
-					    UserName = userName,
+					    UserId = userId,
 					    IsValid = false
 				    };
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
 				    await LoomManager.Instance.CreateContract();
-				    await LoomManager.Instance.SignUp(userDataModel.UserName);
+				    await LoomManager.Instance.SignUp(userDataModel.UserId);
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
@@ -163,22 +164,22 @@ namespace LoomNetwork.CZB
 				    throw new ArgumentOutOfRangeException();
 		    }
 	    }
+	    
+	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId) {
+		    betaKey = betaKey.ToLowerInvariant();
+		    userId = "ZombieSlayer_" + new System.Random().Next(1000000, 1000000 * 10);
+
+		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
+		    Array.Resize(ref betaKeySeed, 32);
+		    privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
+		    publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+	    }
 
 	    private enum LoginState
 	    {
 		    BetaKeyRequest,
 		    BetaKeyValidationFailed,
 		    BetaKeyValidateAndLogin
-	    }
-
-	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userName) {
-		    betaKey = betaKey.ToLowerInvariant();
-		    userName = "ZombieSlayer_" + new System.Random().Next(1000000, 1000000 * 10);
-
-		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
-		    Array.Resize(ref betaKeySeed, 32);
-		    privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
-		    publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
 	    }
     }
 }

@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
         {
             try
             {
-                var getCollectionResponse = await LoomManager.Instance.GetCardCollection(LoomManager.UserId);
+                var getCollectionResponse = await LoomManager.Instance.GetCardCollection(LoomManager.Instance.UserDataModel.UserId);
                 CustomDebug.Log(getCollectionResponse.ToString());
 
                 CachedCollectionData = getCollectionResponse.FromProtobuf();

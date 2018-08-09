@@ -205,7 +205,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            var heroesList = await LoomManager.Instance.GetHeroesList(LoomManager.UserId);
+                            var heroesList = await LoomManager.Instance.GetHeroesList(LoomManager.Instance.UserDataModel.UserId);
                             CustomDebug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
@@ -233,7 +233,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            ListDecksResponse listDecksResponse = await LoomManager.Instance.GetDecks(LoomManager.UserId);
+                            ListDecksResponse listDecksResponse = await LoomManager.Instance.GetDecks(LoomManager.Instance.UserDataModel.UserId);
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());
