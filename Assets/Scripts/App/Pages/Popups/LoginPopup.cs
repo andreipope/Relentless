@@ -6,6 +6,9 @@
 using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Numerics;
 using System.Threading.Tasks;
 using Loom.Client;
 using UnityEngine;
@@ -96,15 +99,24 @@ namespace LoomNetwork.CZB
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
 				    await LoomManager.Instance.CreateContract();
-				    await LoomManager.Instance.SignUp(userDataModel.UserId);
+				    try
+				    {
+					    await LoomManager.Instance.SignUp(userDataModel.UserId);
+				    } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
+				    {
+					    // Ignore
+				    }
+				    
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 				    
 				    SuccessfulLogin();
-			    } catch
+			    }
+			    catch (Exception e)
 			    {
+				    Debug.LogException(e);
 				    SetUIState(LoginState.BetaKeyValidationFailed);
 			    }
 		    } else {
@@ -167,10 +179,11 @@ namespace LoomNetwork.CZB
 	    
 	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId) {
 		    betaKey = betaKey.ToLowerInvariant();
-		    userId = "ZombieSlayer_" + new System.Random().Next(1000000, 1000000 * 10);
-
 		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
 		    Array.Resize(ref betaKeySeed, 32);
+
+		    BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
+		    userId = "ZombieSlayer_" + userIdNumber;
 		    privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
 		    publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
 	    }
