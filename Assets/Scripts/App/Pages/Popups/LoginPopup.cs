@@ -73,7 +73,7 @@ namespace LoomNetwork.CZB
 		    {
 			    isBetaKeyValid = false;
 		    }
-		    
+
 		    if (isBetaKeyValid) { //check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
 			    SetUIState(LoginState.BetaKeyValidateAndLogin);
 
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
 				    await LoomManager.Instance.CreateContract();
-				    await LoomManager.Instance.SignUp(userDataModel.UserId);
+					await LoomManager.Instance.SignUp(userDataModel.UserId);
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
@@ -105,7 +105,24 @@ namespace LoomNetwork.CZB
 				    SuccessfulLogin();
 			    } catch
 			    {
-				    SetUIState(LoginState.BetaKeyValidationFailed);
+					try {
+						LoomUserDataModel userDataModel = new LoomUserDataModel
+						{
+							PrivateKey = privateKey,
+							UserId = userId,
+							IsValid = false
+						};
+						LoomManager.Instance.SetUserDataModel(userDataModel);
+						await LoomManager.Instance.CreateContract();
+						await _dataManager.StartLoadCache();
+
+						userDataModel.IsValid = true;
+						LoomManager.Instance.SetUserDataModel(userDataModel);
+
+						SuccessfulLogin();
+					} catch {
+						SetUIState (LoginState.BetaKeyValidationFailed);
+					}
 			    }
 		    } else {
 			    _uiManager.DrawPopup<WarningPopup> ("Input a valid Beta Key");
@@ -167,11 +184,13 @@ namespace LoomNetwork.CZB
 	    
 	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId) {
 		    betaKey = betaKey.ToLowerInvariant();
-		    userId = "ZombieSlayer_" + new System.Random().Next(1000000, 1000000 * 10);
 
 		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
 		    Array.Resize(ref betaKeySeed, 32);
+			UnityEngine.Random.seed = (int)betaKeySeed;
+			userId = "ZombieSlayer_" + UnityEngine.Random.Range (0f, 1000000f);//+ new System.Random().Next(1000000, 1000000 * 10);
 		    privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
+  
 		    publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
 	    }
 

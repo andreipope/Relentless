@@ -113,6 +113,7 @@ namespace LoomNetwork.CZB
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 
+
 							if (LoomManager.Instance.LoadUserDataModel() && LoomManager.Instance.UserDataModel.IsValid)
 							{
 								await LoomManager.Instance.CreateContract();

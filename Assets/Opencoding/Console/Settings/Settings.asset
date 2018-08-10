@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DontDestroyOnLoad: 1
   AutoSetVersion: 1
-  GameVersion: 1.0
+  GameVersion: 0.0.2
   EnableIfDefined: 
   DisableIfDefined: FINAL_BUILD
   OnlyInDevBuilds: 0

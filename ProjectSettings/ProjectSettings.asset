@@ -656,9 +656,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 3
-  cloudProjectId: c0542fb2-6fec-4df8-879c-149e3d7e1a5b
-  projectName: New Unity Project 1
-  organizationId: galiastr
+  cloudProjectId: b6bfabc6-5c31-454e-828a-6eaed5f624eb
+  projectName: Crypto Zombies Battleground
+  organizationId: cristian-esposito
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
