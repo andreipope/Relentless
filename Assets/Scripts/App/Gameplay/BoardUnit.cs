@@ -61,9 +61,6 @@ namespace LoomNetwork.CZB
 
         private ParticleSystem _sleepingParticles;
 
-        private GameObject _feralFrame,
-                           _heavyFrame;
-
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private Enumerators.CardType _initialUnitType;
@@ -223,9 +220,6 @@ namespace LoomNetwork.CZB
 
             _glowSelectedObjectSprite = _selfObject.transform.Find("Other/GlowSelectedObject").gameObject;
 
-            _feralFrame = _selfObject.transform.Find("Other/object_feral_frame").gameObject;
-            _heavyFrame = _selfObject.transform.Find("Other/object_heavy_frame").gameObject;
-
             _attackText = _selfObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             _healthText = _selfObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
@@ -306,15 +300,14 @@ namespace LoomNetwork.CZB
 
         public void DebuffDamage(int value)
         {
-            Debug.Log(value);
-
             if (value == 0)
                 return;
             DamageDebuffUntillEndOfTurn = value;
-            if (CurrentDamage + DamageDebuffUntillEndOfTurn < 0)
-                DamageDebuffUntillEndOfTurn += CurrentDamage + DamageDebuffUntillEndOfTurn;
+            var buffresult = CurrentDamage + DamageDebuffUntillEndOfTurn;
+
+            if (buffresult < 0)
+                DamageDebuffUntillEndOfTurn -= buffresult;
             CurrentDamage += DamageDebuffUntillEndOfTurn;
-            Debug.Log(DamageDebuffUntillEndOfTurn);
         }
 
         public void DebuffHealth(int value)
@@ -800,9 +793,11 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            Debug.Log("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
             var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
-            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            var spriteContainerTransform = GameObject. Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            Vector3 scale = spriteContainerTransform.transform.localScale;
+            scale.x *= -1;
+            spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
         }
 

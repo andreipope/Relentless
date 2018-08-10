@@ -28,7 +28,7 @@ namespace LoomNetwork.CZB
         private Button _buttonPlay, _buttonDeck;
 
         private ButtonShiftingContent _buttonBuy, _buttonOpen,
-                       _buttonCredits, _buttonTutorial;
+                       _buttonCredits, _buttonTutorial, _buttonQuit;
 
         private MenuButtonToggle _buttonMusic,
                                  _buttonSFX;
@@ -56,6 +56,7 @@ namespace LoomNetwork.CZB
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
             _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonQuit = _selfPage.transform.Find("Button_Quit").GetComponent<ButtonShiftingContent>();
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
@@ -71,8 +72,9 @@ namespace LoomNetwork.CZB
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
+            _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-
+            
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
 
@@ -184,6 +186,11 @@ namespace LoomNetwork.CZB
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _stateManager.ChangeAppState(Common.Enumerators.AppState.CREDITS);
+        }
+
+        private void QuitButtonOnClickHandler()
+        {
+            Application.Quit();
         }
 
         private void OpenButtonHandler()

@@ -53,12 +53,13 @@ namespace LoomNetwork.CZB
             GameObject effect;
             GameObject vfxPrefab;
             target = Utilites.CastVFXPosition(target);
+            Vector3 offset = Vector3.forward * 1;
 
             if (type == Enumerators.CardType.FERAL)
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                 effect = GameObject.Instantiate(vfxPrefab);
-                effect.transform.position = target;
+                effect.transform.position = target - offset;
                 _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -68,7 +69,7 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target;
+                        effect.transform.position = target - offset;
                         effect.transform.localScale = new Vector3(-1, 1, 1);
                         _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -80,7 +81,7 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target - Vector3.right;
+                        effect.transform.position = target - Vector3.right - offset;
                         effect.transform.eulerAngles = Vector3.forward * 90;
 
                         _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -103,7 +104,7 @@ namespace LoomNetwork.CZB
                 }
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
                 effect = GameObject.Instantiate(vfxPrefab);
-                effect.transform.position = target;
+                effect.transform.position = target - offset;
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -116,7 +117,7 @@ namespace LoomNetwork.CZB
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                 effect = GameObject.Instantiate(vfxPrefab);
-                effect.transform.position = target;
+                effect.transform.position = target - offset;
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -125,7 +126,7 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer((a) =>
                     {
                         effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target;
+                        effect.transform.position = target - offset;
 
                         effect.transform.localScale = new Vector3(-1, 1, 1);
                         _particlesController.RegisterParticleSystem(effect, true, 5f);
