@@ -77,6 +77,12 @@ namespace LoomNetwork.CZB
             HandleInput();
         }
 
+        public void ResetAll()
+        {
+            StopHandTimer();
+            _timerManager.StopTimer(SetStatusZoomingFalse);
+        }
+
         public void InitializePlayer()
         {
             _gameplayManager.CurrentPlayer = new Player(GameObject.Find("Player"), false);
@@ -100,7 +106,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                          //   playerDeck.Add("Quazi");
+                           //   playerDeck.Add("Draft");
                         }
 
                         playerDeck.Add(card.cardName);

@@ -37,6 +37,11 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
         }
 
+        public void ResetAll()
+        {
+            Reset();
+        }
+
         public void Reset()
         {
             lock (_lock)
@@ -663,7 +668,7 @@ namespace LoomNetwork.CZB
                     abilityData.buffType = "REANIMATE";
                     abilityData.type = "REANIMATE_UNIT";
                     abilityData.activityType = "PASSIVE";
-                    abilityData.callType = "AT_DEATH";
+                    abilityData.callType = "DEATH";
                     abilityData.ParseData();
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
@@ -671,7 +676,7 @@ namespace LoomNetwork.CZB
                     abilityData.buffType = "DESTROY";
                     abilityData.type = "DESTROY_TARGET_UNIT_AFTER_ATTACK";
                     abilityData.activityType = "PASSIVE";
-                    abilityData.callType = "AT_ATTACK";
+                    abilityData.callType = "ATTACK";
                     abilityData.ParseData();
                     break;
                 default: break;

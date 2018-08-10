@@ -16,5 +16,7 @@ namespace LoomNetwork.CZB
         void Init();
         void Update();
         void Dispose();
+
+        void ResetAll();
     }
 }

@@ -42,6 +42,13 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+            StopAllActions();
+
+            _actionsReports.Clear();
+        }
+
         /// <summary>
         /// AddNewActionInToQueue
         /// </summary>

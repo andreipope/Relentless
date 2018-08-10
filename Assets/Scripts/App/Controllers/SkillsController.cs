@@ -63,6 +63,10 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void ResetAll()
+        {
+        }
+
         public void InitializeSkills()
         {
             var rootPage = _uiManager.GetPage<GameplayPage>();

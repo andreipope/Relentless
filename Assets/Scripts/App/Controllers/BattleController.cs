@@ -41,6 +41,9 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+        }
 
         private void FillStrongersAndWeakers()
         {

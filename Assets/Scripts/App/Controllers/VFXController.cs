@@ -44,6 +44,10 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+        }
+
         public void PlayAttackVFX(Enumerators.CardType type, Vector3 target, int damage)
         {
             GameObject effect;

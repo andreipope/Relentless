@@ -55,6 +55,8 @@ namespace LoomNetwork.CZB
             _uiManager.HideAllPages();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
 
+            _gameplayManager.ResetWholeGameplayScene();
+
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 

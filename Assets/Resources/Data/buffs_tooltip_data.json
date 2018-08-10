@@ -102,27 +102,27 @@
       "type": "COMMANDER",
       "info": [
         {
-          "tooltip": "horde will get +1 Def and Shield",
+          "tooltip": "Bestows +1 Def and Guard to 2 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "horde will get +1 Defense and Heavy",
+          "tooltip": "Bestows +1 Def and Heavy to 2 random lower ranked allies",
           "element": "EARTH"
         },
         {
-          "tooltip": "horde will get +2 Attack",
+          "tooltip": "Bestows +1 Atk and Destroy to 2 random lower ranked allies",
           "element": "TOXIC"
         },
         {
-          "tooltip": "horde will heal 2 random ally for 1",
+          "tooltip": "Bestows +1 Def and Reanimate to 2 random lower ranked allies",
           "element": "LIFE"
         },
         {
-          "tooltip": "horde will get +1 Attack and Rush",
+          "tooltip": "Bestows +1 Atk and Blitz to 2 random lower ranked allies",
           "element": "FIRE"
         },
         {
-          "tooltip": "horde will get \"Freeze a zombie and deal 1 damage to it\"",
+          "tooltip": "Bestows +1 Atk and Freeze to 2 random lower ranked allies",
           "element": "WATER"
         }
       ]
@@ -132,28 +132,28 @@
       "type": "OFFICER",
       "info": [
         {
-          "tooltip": "horde will get Shield",
+          "tooltip": "Bestows Guard to 1 random lower ranked ally",
           "element": "AIR"
         },
         {
-          "tooltip": "horde will get +1 Defense",
+          "tooltip": "Bestows Heavy to 1 random lower ranked ally",
           "element": "EARTH"
         },
         {
-          "tooltip": "horde will get +1 Attack",
+          "tooltip": "Bestows Destroy to 1 random lower ranked ally",
           "element": "TOXIC"
         },
         {
-          "tooltip": "horde will heal 1 random ally for 1",
+          "tooltip": "Bestows Reanimate to 1 random lower ranked ally",
           "element": "LIFE"
         },
         {
-          "tooltip": "horde will get Rush",         
+          "tooltip": "Bestows Blitz to 1 random lower ranked ally",         
 
           "element": "FIRE"
         },
         {
-          "tooltip": "horde will get \"Freeze a zombie\"",
+          "tooltip": "Bestows Freeze to 1 random lower ranked ally",
           "element": "WATER"
         }
       ]
@@ -163,27 +163,27 @@
       "type": "GENERAL",
       "info": [
         {
-          "tooltip": "horde will get +2 Def and Shield",
+          "tooltip": "Bestows +1 Def and Guard to 3 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "horde will get +2 Defense and Heavy",
+          "tooltip": "Bestows +1 Def and Heavy to 3 random lower ranked allies",
           "element": "EARTH"
         },
         {
-          "tooltip": "horde will get +3 Attack",
+          "tooltip": "Bestows +1 Atk and Destory to 3 random lower ranked allies",
           "element": "TOXIC"
         },
         {
-          "tooltip": "horde will heal 3 random allies for 1",
+          "tooltip": "Bestows +1 Def and Reanimate to 3 random lower ranked allies",
           "element": "LIFE"
         },
         {
-          "tooltip": "horde will get +2 Attack and Rush",
+          "tooltip": "Bestows +1 Atk and Blitz to 3 random lower ranked allies",
           "element": "FIRE"
         },
         {
-          "tooltip": "horde will get \"Freeze a zombie and deal 2 damge to it.\"",
+          "tooltip": "Bestows +1 Atk and Freeze to 3 random lower ranked allies",
           "element": "WATER"
         }
       ]

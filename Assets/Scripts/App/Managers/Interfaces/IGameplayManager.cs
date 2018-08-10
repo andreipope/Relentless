@@ -46,5 +46,7 @@ namespace LoomNetwork.CZB
         void StopGameplay();
 
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
+
+        void ResetWholeGameplayScene();
     }    
 }

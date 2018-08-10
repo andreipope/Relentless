@@ -27,6 +27,10 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+        }
+
         public void UpdateRanksByElements(List<BoardUnit> units, Data.Card card)
         {
             var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();

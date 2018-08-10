@@ -80,6 +80,12 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+            ThreadTool.Instance.AbortAllThreads(this);
+            ThreadTool.Instance.ClearMainthreadActions();
+        }
+
         public void InitializePlayer()
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
@@ -107,7 +113,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                        // playerDeck.Add("Earthshaker");
+                       //  playerDeck.Add("Draft");
                     }
                 }
 

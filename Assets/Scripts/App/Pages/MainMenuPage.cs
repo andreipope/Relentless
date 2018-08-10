@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonDeck.onClick.AddListener(OnClickPlay);
+            _buttonDeck.onClick.AddListener(DeckButtonOnClickHandler);
             _buttonArmy.onClickEvent.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
@@ -138,7 +138,14 @@ namespace LoomNetwork.CZB
             
         }
 
-#region Buttons Handlers
+        #region Buttons Handlers
+        private void DeckButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+        }
+
         private void OnClickPlay()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -152,7 +159,7 @@ namespace LoomNetwork.CZB
                 _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
-        private void  TutorialButtonOnClickHandler()
+        private void TutorialButtonOnClickHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
