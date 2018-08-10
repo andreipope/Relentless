@@ -76,9 +76,9 @@
       "type": "OVERFLOW"
     },
     {
-      "name": "Shield",
+      "name": "Guard",
       "tooltip": "Guard will absorb the next attack completely and be removed",
-      "type": "SHIELD"
+      "type": "GUARD"
     },
     {
       "name": "Devour",

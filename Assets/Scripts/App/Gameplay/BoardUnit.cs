@@ -377,7 +377,7 @@ namespace LoomNetwork.CZB
                         HasBuffRush = false;
                         // IsPlayable = _attacked;
                         break;
-                    case Enumerators.BuffType.SHIELD:
+                    case Enumerators.BuffType.GUARD:
                         HasBuffShield = false;
                         break;
                     default: break;
@@ -427,7 +427,7 @@ namespace LoomNetwork.CZB
                     // IsPlayable = !_attacked;
                     _sleepingParticles.gameObject.SetActive(false);
                     break;
-                case Enumerators.BuffType.SHIELD:
+                case Enumerators.BuffType.GUARD:
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
@@ -451,7 +451,7 @@ namespace LoomNetwork.CZB
         public void UseShieldFromBuff()
         {
             HasBuffShield = false;
-            _buffsOnUnit.Remove(Enumerators.BuffType.SHIELD);
+            _buffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             _shieldSprite.SetActive(HasBuffShield);
         }
 
@@ -560,7 +560,7 @@ namespace LoomNetwork.CZB
 
         public void BuffShield()
         {
-            BuffUnit(Enumerators.BuffType.SHIELD);
+            BuffUnit(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             _shieldSprite.SetActive(true);
         }

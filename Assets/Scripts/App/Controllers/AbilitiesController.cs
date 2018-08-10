@@ -200,7 +200,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
                     ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.SHILED:
+                case Enumerators.AbilityType.GUARD:
                     ability = new ShieldAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.DESTROY_FROZEN_UNIT:

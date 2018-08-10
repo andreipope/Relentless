@@ -1507,11 +1507,11 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "SHILED",
+              "type": "GUARD",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "none",
-              "buffType": "SHILED"
+              "buffType": "GUARD"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
