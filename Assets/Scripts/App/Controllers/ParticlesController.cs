@@ -32,6 +32,13 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+            foreach (var item in _particleSystemElements)
+                item.Dispose();
+            _particleSystemElements.Clear();
+        }
+
         public ulong RegisterParticleSystem(GameObject particle, bool autoDestroy = false, float duration = 3f)
         {
             ulong id = _freeId++;

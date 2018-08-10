@@ -40,20 +40,19 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void FinishMatch(Enumerators.AppState appStateAfterMatch, bool tutorialCancel = false)
+        public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
             if (_tutorialManager.IsTutorial)
             {
-                if (!tutorialCancel)
-                    _tutorialManager.StopTutorial();
-                else
-                    _tutorialManager.CancelTutorial();
+                _tutorialManager.StopTutorial();
             }
 
             _finishMatchAppState = appStateAfterMatch;
 
             _uiManager.HideAllPages();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
+
+            _gameplayManager.ResetWholeGameplayScene();
 
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }

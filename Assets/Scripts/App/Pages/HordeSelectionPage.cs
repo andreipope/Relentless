@@ -347,7 +347,7 @@ namespace LoomNetwork.CZB
 
 				_uiManager.GetPopup<QuestionPopup> ().ConfirmationEvent += ConfirmDeleteDeckEventHandler;
 
-				_uiManager.DrawPopup<QuestionPopup> ("Do you really wan't to delete " + deck.SelfDeck.name + "?");
+				_uiManager.DrawPopup<QuestionPopup> ("Do you really want to delete " + deck.SelfDeck.name + "?");
 			}
 		}
 

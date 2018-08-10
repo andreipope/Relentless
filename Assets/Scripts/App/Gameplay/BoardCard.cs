@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using LoomNetwork.CZB.Helpers;
 using LoomNetwork.CZB.Gameplay;
 
+
 namespace LoomNetwork.CZB
 {
     public class BoardCard
@@ -21,9 +22,11 @@ namespace LoomNetwork.CZB
         protected ISoundManager _soundManager;
         protected IDataManager _dataManager;
         protected IGameplayManager _gameplayManager;
+        protected ITimerManager _timerManager;
 
         protected CardsController _cardsController;
         protected AbilitiesController _abilitiesController;
+        protected BattlegroundController _battlegroundController;
 
         private GameObject _selfObject;
 
@@ -87,9 +90,12 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
 
             _selfObject = selfObject;
 
@@ -346,6 +352,27 @@ namespace LoomNetwork.CZB
             });
         }
 
+        public void DrawCardFromOpponentDeckToPlayer()
+        {
+            _selfObject.transform.localScale = Vector3.zero;
+
+            _selfObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
+
+            cardAnimator.enabled = true;
+            cardAnimator.StopPlayback();
+            cardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
+
+            _timerManager.AddTimer((x) =>
+            {
+                cardAnimator.enabled = false;
+
+                _battlegroundController.playerHandCards.Add(this);
+
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+
+            }, null, 2f);
+        }
+
         // editing deck page
         public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount)
         {
@@ -408,7 +435,7 @@ namespace LoomNetwork.CZB
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
             float offset = 0f;
-            float spacing = -6f;
+            float spacing = -6.75f;
 
             BuffOnCardInfoObject buff = null;
 
@@ -469,7 +496,10 @@ namespace LoomNetwork.CZB
                 if (i >= 3)
                     break;
 
-                buff = new BuffOnCardInfoObject(buffs[i].title, buffs[i].description, buffs[i].tooltipObjectType, _parentOfLeftBlockOfCardInfo, offset + spacing * i, buffs[i].value);
+                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
+                    continue;
+
+                buff = new BuffOnCardInfoObject(buffs[i], _parentOfLeftBlockOfCardInfo, offset + spacing * i);
 
                 _buffOnCardInfoObjects.Add(buff);
             }
@@ -513,7 +543,10 @@ namespace LoomNetwork.CZB
                 if (i >= 3)
                     break;
 
-                buff = new BuffOnCardInfoObject(buffs[i].title, buffs[i].description, buffs[i].tooltipObjectType, parent, offset + spacing * i, buffs[i].value);
+                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
+                    continue;
+
+                buff = new BuffOnCardInfoObject(buffs[i], parent, offset + spacing * i);
 
                 _buffOnCardInfoObjects.Add(buff);
             }
@@ -530,7 +563,7 @@ namespace LoomNetwork.CZB
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
             float offset = 0f;
-            float spacing = -6f;
+            float spacing = -6.75f;
 
             BuffOnCardInfoObject buff = null;
 
@@ -589,7 +622,10 @@ namespace LoomNetwork.CZB
                 if (i >= 3)
                     break;
 
-                buff = new BuffOnCardInfoObject(buffs[i].title, buffs[i].description, buffs[i].tooltipObjectType, _parentOfLeftBlockOfCardInfo, offset + spacing * i, buffs[i].value);
+                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
+                    continue;
+
+                buff = new BuffOnCardInfoObject(buffs[i], _parentOfLeftBlockOfCardInfo, offset + spacing * i);
 
                 _buffOnCardInfoObjects.Add(buff);
             }
@@ -629,15 +665,15 @@ namespace LoomNetwork.CZB
             private TextMeshPro _callTypeText,
                                 _descriptionText;
 
-            private Enumerators.TooltipObjectType _tooltipObjectType;
+            public BuffTooltipInfo buffTooltipInfo;
 
             public Transform transform { get { return _selfObject.transform; } }
 
-            public BuffOnCardInfoObject(string name, string tooltip, Enumerators.TooltipObjectType tooltipObjectType, Transform parent, float offsetY, int intParamValue = -1)
+            public BuffOnCardInfoObject(BuffTooltipInfo buffTooltipInfo, Transform parent, float offsetY)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                _tooltipObjectType = tooltipObjectType;
+                this.buffTooltipInfo = buffTooltipInfo;
 
                 _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffIOnCardnfo"), parent, false);
 
@@ -648,22 +684,24 @@ namespace LoomNetwork.CZB
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon").GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = "    " + ReplaceXByValue(name, intParamValue).ToUpper();
-                _descriptionText.text = tooltip;
+                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.title, buffTooltipInfo.value).ToUpper();
+                _descriptionText.text = buffTooltipInfo.description;
 
-                switch(_tooltipObjectType)
+                switch(buffTooltipInfo.tooltipObjectType)
                 {
                     case Enumerators.TooltipObjectType.RANK:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Icons/battleground_rank_icon_" + name.Trim().ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsRanks/battleground_rank_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.ABILITY:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + name.Trim().ToLower() + "_large");
-                        break;
                     case Enumerators.TooltipObjectType.BUFF:
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
+                        break;
                     case Enumerators.TooltipObjectType.UNIT_TYPE:
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsUnitTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
+                        break;
+                    default:
                         _buffIconPicture.sprite = null;
                         break;
-                    default: break;
                 }           
             }
 

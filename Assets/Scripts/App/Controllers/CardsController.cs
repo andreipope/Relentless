@@ -81,6 +81,10 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+        }
+
         public void Update()
         {
         }
@@ -244,9 +248,11 @@ namespace LoomNetwork.CZB
                 card = otherPlayer.CardsInDeck[0];
 
             otherPlayer.RemoveCardFromDeck(card);
-            // player.AddCardToHandFromOpponentDeck(otherPlayer, card);
-            player.AddCardToHand(card);
 
+            if (player.Equals(otherPlayer))
+                player.AddCardToHand(card);
+            else
+                player.AddCardToHandFromOpponentDeck(otherPlayer, card);
         }
 
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
@@ -315,13 +321,20 @@ namespace LoomNetwork.CZB
 
         public GameObject AddCardToOpponentHand(WorkingCard card, bool silent = false)
         {
-            var opponent = _gameplayManager.OpponentPlayer;
-            var go = MonoBehaviour.Instantiate(opponentCardPrefab);
-            go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
+            var go = CreateOpponentBoardCard();
 
             _battlegroundController.opponentHandCards.Add(go);
 
             _abilitiesController.CallAbilitiesInHand(null, card);
+
+            return go;
+        }
+
+        public GameObject CreateOpponentBoardCard()
+        {
+            var opponent = _gameplayManager.OpponentPlayer;
+            var go = MonoBehaviour.Instantiate(opponentCardPrefab);
+            go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
 
             return go;
         }
@@ -756,9 +769,12 @@ namespace LoomNetwork.CZB
 
         public BoardCard GetBoardCard(WorkingCard card)
         {
-            var boardCard = CreateBoardCard(card);
+            return CreateBoardCard(card);
+        }
 
-            return boardCard;
+        public GameObject GetOpponentBoardCard(WorkingCard card)
+        {
+            return CreateOpponentBoardCard();
         }
     }
 }

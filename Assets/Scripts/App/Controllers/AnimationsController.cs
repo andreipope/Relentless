@@ -14,15 +14,28 @@ namespace LoomNetwork.CZB
 {
     public class AnimationsController : IController
     {
+        private IGameplayManager _gameplayManager;
+        private ITimerManager _timerManager;
+
+        private BattlegroundController _battlegroundController;
+
         public void Dispose()
         {
         }
 
         public void Init()
         {
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         }
 
         public void Update()
+        {
+        }
+
+        public void ResetAll()
         {
         }
 
@@ -39,16 +52,18 @@ namespace LoomNetwork.CZB
 
             Vector3 partWay = Vector3.zero;
 
-            if (isCreatureAttacker)
-                partWay = Vector3.Lerp(originalPos, target.transform.position, 0.6f);
-            else
-                partWay = Vector3.Lerp(originalPos, target.transform.position, 0.7f);
 
-           // Debug.LogError(originalPos + " -> " + target.transform.position);
+
+            if (isCreatureAttacker)
+                partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.6f);
+            else
+                partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.7f);
+
+            // Debug.LogError(originalPos + " -> " + target.transform.position);
 
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(() =>
             {
-               // Debug.LogError(originalPos + " =? " + target.transform.position);
+                // Debug.LogError(originalPos + " =? " + target.transform.position);
 
                 DOTween.Sequence()
                     .Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f))
@@ -60,7 +75,7 @@ namespace LoomNetwork.CZB
 
                 source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(() =>
                 {
-                  //  Debug.LogError(originalPos + " <- " + target.transform.position);
+                    //  Debug.LogError(originalPos + " <- " + target.transform.position);
 
 
                     if (onCompleteCallback != null)
@@ -90,7 +105,28 @@ namespace LoomNetwork.CZB
 
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
         {
-             //   if(toHand)
+            boardCard.DrawCardFromOpponentDeckToPlayer();
+        }
+
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, GameObject boardCard)
+        {
+            var animator = boardCard.GetComponent<Animator>();
+
+            boardCard.transform.localScale = Vector3.zero;
+            boardCard.transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
+
+            animator.enabled = true;
+            animator.StopPlayback();
+            animator.Play("MoveCardFromPlayerDeckToOpponentHand");
+
+            _timerManager.AddTimer((x) =>
+            {
+                animator.enabled = false;
+
+                _battlegroundController.opponentHandCards.Add(boardCard);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
+            }, null, 1.1f);
         }
     }
 }
