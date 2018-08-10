@@ -42,6 +42,7 @@ namespace LoomNetwork.CZB
         private bool _logoShowed;
         private TextMeshProUGUI _connectionStatusText;
         private Button _buttonReconnect;
+		private Button _buttonLogout;
 
         public void Init()
         {
@@ -71,6 +72,7 @@ namespace LoomNetwork.CZB
             
             _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
             _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
+			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
@@ -80,6 +82,7 @@ namespace LoomNetwork.CZB
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
+			_buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);
 
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
@@ -104,6 +107,7 @@ namespace LoomNetwork.CZB
                     "<color=red>Offline</color>";
             
             _buttonReconnect.gameObject.SetActive(!LoomManager.Instance.IsConnected);
+			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
         }
 
         public void Update()
@@ -249,6 +253,12 @@ namespace LoomNetwork.CZB
                 OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
             }
         }
+
+		private void LogoutButtonOnClickHandler() {
+			_dataManager.DeleteData ();
+			LoomManager.Instance.UserDataModel = null;
+			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+		}
 
         private void OnValueChangedEventMusic(bool value)
 		{

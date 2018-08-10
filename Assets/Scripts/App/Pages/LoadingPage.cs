@@ -134,6 +134,10 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR, Constants.SFX_SOUND_VOLUME, false, false, true);
             _selfPage.SetActive(true);
+
+			if (_isLoaded) {
+				_pressAnyText.gameObject.SetActive (true);
+			}
         }
 
         public void Hide()

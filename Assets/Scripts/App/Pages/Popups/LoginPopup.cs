@@ -141,10 +141,9 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-	        _selfPage.SetActive(true);
 			_state = LoginState.BetaKeyRequest;
-
             SetUIState(LoginState.BetaKeyRequest);
+			_selfPage.SetActive(true);
         }
 
 		public void Show(object data)

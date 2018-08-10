@@ -82,6 +82,7 @@ namespace LoomNetwork.CZB
 
             dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
+			Debug.Log ("done checking version");
             CheckVersion();
             CheckFirstLaunch();
             FillCacheDataPathes();
@@ -132,12 +133,20 @@ namespace LoomNetwork.CZB
 
             if (!versionMatch)
             {
-                foreach (var file in files)
-                    if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains("ver"))
-                        file.Delete();
-                File.Create(dir + Constants.CURRENT_VERSION);
+				DeleteData();
             }
         }
+
+		public void DeleteData() {
+			var files = dir.GetFiles();
+
+			foreach (var file in files)
+				if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains("ver"))
+					file.Delete();
+			File.Create(dir + Constants.CURRENT_VERSION);
+
+			PlayerPrefs.DeleteAll ();
+		}
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {

@@ -30,5 +30,7 @@ namespace LoomNetwork.CZB
 
         TooltipContentData.BuffInfo GetBuffInfoByType(string type);
         TooltipContentData.RankInfo GetRankInfoByType(string type);
+
+		void DeleteData();
     }
 }
