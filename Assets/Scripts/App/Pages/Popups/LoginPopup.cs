@@ -99,9 +99,6 @@ namespace LoomNetwork.CZB
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
 				    await LoomManager.Instance.CreateContract();
-<<<<<<< HEAD
-					await LoomManager.Instance.SignUp(userDataModel.UserId);
-=======
 				    try
 				    {
 					    await LoomManager.Instance.SignUp(userDataModel.UserId);
@@ -109,8 +106,7 @@ namespace LoomNetwork.CZB
 				    {
 					    // Ignore
 				    }
-				    
->>>>>>> 9b0a95b59e2b306781839c9e3afe2304da1ad68d
+
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
@@ -120,29 +116,8 @@ namespace LoomNetwork.CZB
 			    }
 			    catch (Exception e)
 			    {
-<<<<<<< HEAD
-					try {
-						LoomUserDataModel userDataModel = new LoomUserDataModel
-						{
-							PrivateKey = privateKey,
-							UserId = userId,
-							IsValid = false
-						};
-						LoomManager.Instance.SetUserDataModel(userDataModel);
-						await LoomManager.Instance.CreateContract();
-						await _dataManager.StartLoadCache();
-
-						userDataModel.IsValid = true;
-						LoomManager.Instance.SetUserDataModel(userDataModel);
-
-						SuccessfulLogin();
-					} catch {
-						SetUIState (LoginState.BetaKeyValidationFailed);
-					}
-=======
 				    Debug.LogException(e);
 				    SetUIState(LoginState.BetaKeyValidationFailed);
->>>>>>> 9b0a95b59e2b306781839c9e3afe2304da1ad68d
 			    }
 		    } else {
 			    _uiManager.DrawPopup<WarningPopup> ("Input a valid Beta Key");
@@ -204,19 +179,13 @@ namespace LoomNetwork.CZB
 	    
 	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId) {
 		    betaKey = betaKey.ToLowerInvariant();
-<<<<<<< HEAD
 
-		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
-		    Array.Resize(ref betaKeySeed, 32);
-			UnityEngine.Random.seed = (int)betaKeySeed;
-			userId = "ZombieSlayer_" + UnityEngine.Random.Range (0f, 1000000f);//+ new System.Random().Next(1000000, 1000000 * 10);
-=======
 		    byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
 		    Array.Resize(ref betaKeySeed, 32);
 
 		    BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
 		    userId = "ZombieSlayer_" + userIdNumber;
->>>>>>> 9b0a95b59e2b306781839c9e3afe2304da1ad68d
+
 		    privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
   
 		    publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
