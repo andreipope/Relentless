@@ -86,8 +86,6 @@ namespace LoomNetwork.CZB
             _card = data as Card;
             _description.text = _card.flavorText;
 
-			Debug.Log (_card.flavorText);
-
             _amountAward.text = (5 * ((int)_card.cardRank + 1)).ToString();
 
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.name);

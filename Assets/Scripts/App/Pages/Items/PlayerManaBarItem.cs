@@ -16,7 +16,8 @@ namespace LoomNetwork.CZB
         private GameObject _selfObject,
                             _arrowObject,
             
-                            _overflowObject;
+                            _overflowObject,
+                            _gooMeterObject;
 
         private TextMeshPro _gooAmountText,
                             _overflowGooAmountText;
@@ -39,8 +40,9 @@ namespace LoomNetwork.CZB
             _overflowPrefabPath = "Prefabs/" + overflowPrefabName;
             _overflowPos = overflowPos;
             _selfObject = gameObject;
-            _gooAmountText = _selfObject.transform.Find("GooMeter/Text").GetComponent<TextMeshPro>();
-            _arrowObject = _selfObject.transform.Find("GooMeter/ArrowCenter").gameObject;
+            _gooMeterObject = _selfObject.transform.Find("GooMeter").gameObject;
+            _gooAmountText = _gooMeterObject.transform.Find("Text").GetComponent<TextMeshPro>();
+            _arrowObject = _gooMeterObject.transform.Find("ArrowCenter").gameObject;
             _gooBottles = new List<GooBottleItem>();
             GameObject bottle = null;
             for (int i = 0; i < _selfObject.transform.childCount; i++)
@@ -170,6 +172,7 @@ namespace LoomNetwork.CZB
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
         {
             StopOverfowSounds();
+            _gooMeterObject.SetActive(false);
 
             GameClient.Get<IGameplayManager>().OnGameEndedEvent -= OnGameEndedEventHandler;
         }

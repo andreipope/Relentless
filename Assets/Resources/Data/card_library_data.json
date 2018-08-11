@@ -8,7 +8,7 @@
           "kind": "CREATURE",
           "name": "Pyromaz",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Life zombies",
+          "description": "<b>Attack:</b> +1 damage to Toxic zombies",
           "flavorText": "Really into that old Prodigy song... Firestarter...",
           "picture": "Pyromaz",
           "damage": 1,
@@ -22,7 +22,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "toxic",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -372,7 +372,7 @@
           "kind": "CREATURE",
           "name": "Izze",
           "cost": 1,
-          "description": "<b>Attack: Freeze</b> target",
+          "description": "<b>Attack:</b> +1 damage to Fire zombies",
           "flavorText": "It would be a-lot Izzier if you just stay put!",
           "picture": "Izze",
           "damage": 1,
@@ -381,10 +381,12 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "STUN",
+              "type": "MODIFICATOR_STATS",
               "activityType": "passive",
-              "callType": "ATTACK",
-              "targetType": "opponent_card|opponent",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+              "setType": "fire",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -780,7 +782,7 @@
           "kind": "CREATURE",
           "name": "Rockky",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Water zombies",
+          "description": "<b>Attack:</b> +1 damage to Air zombies",
           "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
           "picture": "Rockky",
           "damage": 1,
@@ -794,7 +796,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "water",
+              "setType": "air",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -1269,14 +1271,26 @@
           "id": 17,
           "kind": "CREATURE",
           "name": "Whizpar",
-          "cost": 2,
-          "description": "<b>Feral</b>",
+          "cost": 1,
+          "description": "<b>Attack:</b> +1 damage to Water zombies",
           "flavorText": "The unfriendly ghost...",
           "picture": "Whizpar",
           "damage": 1,
           "health": 1,
-          "type": "FERAL",
+          "type": "WALKER",
           "rank": "MINION",
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STATS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+              "setType": "water",
+              "value": 1,
+              "buffType": "ATTACK"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.3,
@@ -1650,7 +1664,7 @@
           "kind": "CREATURE",
           "name": "Azuraz",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Life zombies",
+          "description": "<b>Attack:</b> +1 damage to Earth zombies",
           "flavorText": "Beeee yourself!",
           "picture": "Azuraz",
           "damage": 1,
@@ -1664,7 +1678,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "earth",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -2096,7 +2110,7 @@
           "kind": "CREATURE",
           "name": "Poizom",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Earth zombies",
+          "description": "<b>Attack:</b> +1 damage to Life zombies",
           "flavorText": "Just like any frat boy, after the Friday night bash - bloated, gassy, puking and generally unpleasant to be around...",
           "picture": "Poizom",
           "damage": 1,
@@ -2110,7 +2124,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "earth",
+              "setType": "life",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -2642,7 +2656,7 @@
         {
           "id": 36,
           "kind": "SPELL",
-          "name": "Goo Bottle",
+          "name": "Goo Bottles",
           "cost": 4,
           "description": "Get 2 empty goo vials",
           "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",

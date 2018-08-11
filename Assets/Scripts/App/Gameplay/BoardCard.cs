@@ -570,35 +570,37 @@ namespace LoomNetwork.CZB
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-
-            if (boardCard.WorkingCard.libraryCard.cardRank != Enumerators.CardRank.MINION)
+            if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                var rankInfo = _dataManager.GetRankInfoByType(boardCard.WorkingCard.libraryCard.cardRank.ToString());
-                if (rankInfo != null)
+                if (boardCard.WorkingCard.libraryCard.cardRank != Enumerators.CardRank.MINION)
                 {
-                    var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(boardCard.WorkingCard.libraryCard).ToLower()));
-
-                    buffs.Add(new BuffTooltipInfo()
+                    var rankInfo = _dataManager.GetRankInfoByType(boardCard.WorkingCard.libraryCard.cardRank.ToString());
+                    if (rankInfo != null)
                     {
-                        title = rankInfo.name,
-                        description = rankDescription.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.RANK,
-                        value = -1
-                    });
+                        var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(boardCard.WorkingCard.libraryCard).ToLower()));
+
+                        buffs.Add(new BuffTooltipInfo()
+                        {
+                            title = rankInfo.name,
+                            description = rankDescription.tooltip,
+                            tooltipObjectType = Enumerators.TooltipObjectType.RANK,
+                            value = -1
+                        });
+                    }
                 }
-            }
 
-            if (boardCard.WorkingCard.type != Enumerators.CardType.WALKER && boardCard.WorkingCard.type != Enumerators.CardType.NONE)
-            {
-                var buffInfo = _dataManager.GetBuffInfoByType(boardCard.WorkingCard.type.ToString());
-                if (buffInfo != null)
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = buffInfo.name,
-                        description = buffInfo.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
-                        value = -1
-                    });
+                if (boardCard.WorkingCard.type != Enumerators.CardType.WALKER && boardCard.WorkingCard.type != Enumerators.CardType.NONE)
+                {
+                    var buffInfo = _dataManager.GetBuffInfoByType(boardCard.WorkingCard.type.ToString());
+                    if (buffInfo != null)
+                        buffs.Add(new BuffTooltipInfo()
+                        {
+                            title = buffInfo.name,
+                            description = buffInfo.tooltip,
+                            tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
+                            value = -1
+                        });
+                }
             }
 
             if (boardCard.WorkingCard.libraryCard.abilities != null)
@@ -675,7 +677,7 @@ namespace LoomNetwork.CZB
 
                 this.buffTooltipInfo = buffTooltipInfo;
 
-                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffIOnCardnfo"), parent, false);
+                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
 
                 transform.localPosition = new Vector3(0, offsetY, 0f);
 
