@@ -230,6 +230,9 @@ namespace LoomNetwork.CZB
 
         public void CallOnEndTurnEvent()
         {
+			LoomManager.Instance.UpdateHistory ("Player ends his turn.");
+			LoomManager.Instance.UploadHistory (LoomManager.Instance.UserDataModel.UserId);
+
             OnEndTurnEvent?.Invoke();
             if (Goo > GooOnCurrentTurn)
                 Goo = GooOnCurrentTurn;
@@ -237,6 +240,9 @@ namespace LoomNetwork.CZB
 
         public void CallOnStartTurnEvent()
         {
+			LoomManager.Instance.ClearHistory ();
+			LoomManager.Instance.UpdateHistory ("Player begins his turn.");
+
             OnStartTurnEvent?.Invoke();
 
            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
