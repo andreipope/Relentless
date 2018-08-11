@@ -47,7 +47,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _fightTargetingArrowPrefab;
 
-        private GameObject _selfObject;
+        private GameObject _selfObject, _battleframeObject;
 
         private SpriteRenderer _pictureSprite;
         private SpriteRenderer _frozenSprite;
@@ -477,24 +477,14 @@ namespace LoomNetwork.CZB
             if (hasHeavy)
                 return;
 
-
-
-            if (!buff)
-            {
+            //if (!buff)
+            //{
                 hasHeavy = true;
                 hasFeral = false;
                 _initialUnitType = Enumerators.CardType.HEAVY;
-            }
-
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.HEAVY).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            //}
+           // Debug.Log();
+            ChangeTypeFrame(2.5f, 1.7f);
         }
 
         public void SetAsWalkerUnit(bool buff = false)
@@ -502,23 +492,15 @@ namespace LoomNetwork.CZB
             if (!hasHeavy && !hasFeral && !HasBuffHeavy)
                 return;
 
-            if (!buff)
-            {
+           // if (!buff)
+           // {
                 hasHeavy = false;
                 hasFeral = false;
                 HasBuffHeavy = false;
                 _initialUnitType = Enumerators.CardType.WALKER;
-            }
+           // }
 
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.WALKER).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            ChangeTypeFrame(1.3f, 0.3f);
         }
 
         public void SetAsFeralUnit(bool buff = false)
@@ -526,29 +508,39 @@ namespace LoomNetwork.CZB
             if (hasFeral)
                 return;
 
-            if (!buff)
-            {
+            //if (!buff)
+            //{
                 hasHeavy = false;
                 HasBuffHeavy = false;
                 hasFeral = true;
                 _initialUnitType = Enumerators.CardType.FERAL;
-            }
+            //}
 
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.FERAL).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            ChangeTypeFrame(2.7f, 1.7f);
 
             if (!AttackedThisTurn && !IsPlayable)
             {
                 IsPlayable = true;
                 SetHighlightingEnabled(true);
             }
+        }
+
+        private void ChangeTypeFrame(float playerTime, float opponentTime)
+        {
+            _ignoreArrivalEndEvents = true;
+            unitContentObject.SetActive(false);
+
+            _pictureSprite.transform.SetParent(_selfObject.transform, false);
+            _pictureSprite.gameObject.SetActive(false);
+            GameObject.Destroy(_battleframeObject);
+            PlayArrivalAnimation();
+            _pictureSprite.gameObject.SetActive(true);
+            _timerManager.AddTimer((x) =>
+            {
+                ArrivalAnimationEventHandler();
+            }, null, ownerPlayer.IsLocalPlayer ? playerTime : opponentTime, false);
+
+            _readyForBuffs = true;
         }
 
         public void BuffShield()
@@ -577,7 +569,7 @@ namespace LoomNetwork.CZB
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
                 if (!ownerPlayer.IsLocalPlayer)
-                    _shieldSprite.transform.position = new Vector3(_shieldSprite.transform.position.x, _shieldSprite.transform.position.y, -_shieldSprite.transform.position.z);
+                    _shieldSprite.transform.localPosition = new Vector3(_shieldSprite.transform.localPosition.x, _shieldSprite.transform.localPosition.y, -_shieldSprite.transform.localPosition.z);
 
                 if (!_ignoreArrivalEndEvents)
                 {
@@ -793,12 +785,14 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
-            var spriteContainerTransform = GameObject. Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + _initialUnitType.ToString() + "_Arrival");
+            _battleframeObject = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).gameObject;
+            var spriteContainerTransform = _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;
             scale.x *= -1;
             spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
+            _selfObject.transform.position += (Vector3.back * 5f);
         }
 
         public void OnStartTurn()

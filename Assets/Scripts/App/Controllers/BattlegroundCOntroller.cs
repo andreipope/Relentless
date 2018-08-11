@@ -515,17 +515,15 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-                }, null, .3f, false);
+                }, null, .1f, false);
 
                 return;
             }
-
 
             if (_gameplayManager.GameEnded)
                 return;
 
             var opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-
 
             _rearrangingTopBoard = true;
 

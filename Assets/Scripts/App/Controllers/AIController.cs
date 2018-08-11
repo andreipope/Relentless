@@ -228,7 +228,6 @@ namespace LoomNetwork.CZB
                         LetsThink();
                         LetsThink();
                         LetsThink();
-                        LetsThink();
                     }
 
                     //  if (Constants.DEV_MODE)
@@ -453,6 +452,9 @@ namespace LoomNetwork.CZB
                 }));
 
 
+                boardUnitElement.PlayArrivalAnimation();
+
+
                 _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(() =>
                 {
                     bool createTargetArrow = false;
@@ -471,9 +473,11 @@ namespace LoomNetwork.CZB
                     }
                 });
 
-                boardUnitElement.PlayArrivalAnimation();
+                
 
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                //Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
+
+                //_battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
