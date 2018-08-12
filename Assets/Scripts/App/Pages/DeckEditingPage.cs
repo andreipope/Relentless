@@ -822,6 +822,12 @@ namespace LoomNetwork.CZB
 
         public async void OnDoneButtonPressed()
         {
+            if (String.IsNullOrWhiteSpace(_currentDeck.name))
+            {
+                OpenAlertDialog("Saving Horde with an empty name is not allowed.");
+                return;
+            }
+            
             bool success = true;
             if (_currentDeckId == -1)
             {
