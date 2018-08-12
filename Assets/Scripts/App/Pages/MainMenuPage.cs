@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
         private Button _buttonPlay, _buttonDeck;
 
         private ButtonShiftingContent _buttonBuy, _buttonOpen,
-                       _buttonCredits, _buttonTutorial;
+                       _buttonCredits, _buttonTutorial, _buttonQuit;
 
         private MenuButtonToggle _buttonMusic,
                                  _buttonSFX;
@@ -61,6 +61,7 @@ namespace LoomNetwork.CZB
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
             _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonQuit = _selfPage.transform.Find("Button_Quit").GetComponent<ButtonShiftingContent>();
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
@@ -75,16 +76,15 @@ namespace LoomNetwork.CZB
 			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonDeck.onClick.AddListener(OnClickPlay);
+            _buttonDeck.onClick.AddListener(DeckButtonOnClickHandler);
             _buttonArmy.onClickEvent.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
+            _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
-			_buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);
-
-            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
+            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
             
             LoomManager.Instance.ContractCreated += LoomManagerOnContractCreated;
@@ -120,7 +120,7 @@ namespace LoomNetwork.CZB
             }
 
             /*  FOR TESTING
-            if(Input.GetKeyUp(KeyCode.Z))he
+            if(Input.GetKeyUp(KeyCode.Z))
             {
                 Debug.Log("BATTLEGROUND");
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
@@ -182,8 +182,6 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             _selfPage.SetActive(false);
-            //LoomManager.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-            //LoomManager.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
         }
 
         public void Dispose()
@@ -195,7 +193,14 @@ namespace LoomNetwork.CZB
             }
         }
 
-#region Buttons Handlers
+        #region Buttons Handlers
+        private void DeckButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+        }
+
         private void OnClickPlay()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -209,7 +214,7 @@ namespace LoomNetwork.CZB
                 _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
-        private void  TutorialButtonOnClickHandler()
+        private void TutorialButtonOnClickHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
@@ -236,6 +241,11 @@ namespace LoomNetwork.CZB
             _stateManager.ChangeAppState(Common.Enumerators.AppState.CREDITS);
         }
 
+        private void QuitButtonOnClickHandler()
+        {
+            Application.Quit();
+        }
+
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -246,7 +256,7 @@ namespace LoomNetwork.CZB
             try
             {
                 // FIXME: add waiting popup
-                await LoomManager.Instance.CreateContract();
+                await LoomManager.Instance.LoadUserDataModelAndCreateContract();
                 await _dataManager.StartLoadCache();
             } catch (Exception e)
             {

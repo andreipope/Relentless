@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Protobuf;
 using UnityEngine;
 using LoomNetwork.Internal;
 using LoomNetwork.CZB.Data;
@@ -17,7 +17,7 @@ using Card = LoomNetwork.CZB.Data.Card;
 
 namespace LoomNetwork.CZB
 {
-    public partial class DataManager : IService, IDataManager
+    public class DataManager : IService, IDataManager
     {
         private IAppStateManager _appStateManager;
         private ILocalizationManager _localizationManager;
@@ -82,7 +82,6 @@ namespace LoomNetwork.CZB
 
             dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
-			Debug.Log ("done checking version");
             CheckVersion();
             CheckFirstLaunch();
             FillCacheDataPathes();
@@ -215,6 +214,19 @@ namespace LoomNetwork.CZB
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                        
+                        /*try
+                        {
+                            var listCardLibraryResponse = await LoomManager.Instance.GetCardLibrary();
+                            CustomDebug.Log(listCardLibraryResponse.ToString());
+                            CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        }
+                        catch (Exception ex)
+                        {
+                            CustomDebug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
+                            if (File.Exists(_cacheDataPathes[type]))
+                                CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                        }*/
                     }
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
@@ -243,6 +255,18 @@ namespace LoomNetwork.CZB
                     {
                         if (File.Exists(_cacheDataPathes[type]))
                             CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                        
+                        /*try
+                        {
+                            var getCollectionResponse = await LoomManager.Instance.GetCardCollection(LoomManager.Instance.UserDataModel.UserId);
+                            CustomDebug.Log(getCollectionResponse.ToString());
+
+                            CachedCollectionData = getCollectionResponse.FromProtobuf();
+                        }
+                        catch (Exception ex)
+                        {
+                            CustomDebug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
+                        }*/
                     }
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:

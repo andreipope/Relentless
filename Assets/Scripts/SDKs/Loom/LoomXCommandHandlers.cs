@@ -3,8 +3,8 @@ using UnityEngine;
 
 public static class LoomXCommandHandlers
 {
-
-	public static void Initialize()
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+	private static void Initialize()
 	{
 		CommandHandlers.RegisterCommandHandlers(typeof(LoomXCommandHandlers));	
 	}
@@ -28,7 +28,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithWriteLink(string link)
 	{
 		LoomManager.Instance.WriteHost = link;
-		await LoomManager.Instance.CreateContract();
+		await LoomManager.Instance.CreateContract(LoomManager.Instance.UserDataModel.PrivateKey);
 		CustomDebug.Log("LoomX Initialized..");
 	}
 	
@@ -37,7 +37,7 @@ public static class LoomXCommandHandlers
 	private static async void InitContractWithReaderLink(string link)
 	{
 		LoomManager.Instance.ReaderHost = link;
-		await LoomManager.Instance.CreateContract();
+		await LoomManager.Instance.CreateContract(LoomManager.Instance.UserDataModel.PrivateKey);
 		CustomDebug.Log("LoomX Initialized..");
 	}
 	
@@ -47,7 +47,7 @@ public static class LoomXCommandHandlers
 	{
 		LoomManager.Instance.WriteHost = writer;
 		LoomManager.Instance.ReaderHost = reader;
-		await LoomManager.Instance.CreateContract();
+		await LoomManager.Instance.CreateContract(LoomManager.Instance.UserDataModel.PrivateKey);
 		CustomDebug.Log("LoomX Initialized..");
 	}
 }

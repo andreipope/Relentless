@@ -104,6 +104,10 @@ namespace LoomNetwork.CZB
             _actionsMainThread.Enqueue(action);
         }
 
+        public void ClearMainthreadActions()
+        {
+            _actionsMainThread.Clear();
+        }
 
         public class OneTimeCustomThread
         {

@@ -2,7 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Protobuf;
 
 public partial class LoomManager 
 {

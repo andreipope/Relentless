@@ -2,10 +2,10 @@
 using System;
 using System.Threading.Tasks;
 using Loom.Google.Protobuf.Collections;
-using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Protobuf;
 using UnityEngine;
 using Deck = LoomNetwork.CZB.Data.Deck;
-using ZbDeck = Loom.Unity3d.Zb.Deck;
+using ZbDeck = LoomNetwork.CZB.Protobuf.Deck;
 
 public partial class LoomManager
 {
@@ -23,29 +23,25 @@ public partial class LoomManager
         return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
     }
 
-    public async Task DeleteDeck(string userId, string deckId, Action<string> errorResult)
+    public async Task DeleteDeck(string userId, long deckId)
     {
         var request = new DeleteDeckRequest {
             UserId = userId,
-            DeckName = deckId
+            DeckId = deckId
         };
         
-        try
-        {
-            await Contract.CallAsync(DeleteDeckMethod, request);
-            errorResult?.Invoke(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            //Debug.Log("Exception = " + ex);
-            errorResult?.Invoke(ex.ToString());
-        }
+        await Contract.CallAsync(DeleteDeckMethod, request);
     }
 
-    public async Task EditDeck(string userId, Deck deck, Action<string> errorResult)
-    {
+    public async Task EditDeck(string userId, Deck deck) {
+        EditDeckRequest request = EditDeckRequest(userId, deck);
+
+        await Contract.CallAsync(EditDeckMethod, request);
+    }
+
+    private static EditDeckRequest EditDeckRequest(string userId, Deck deck) {
         var cards = new RepeatedField<CardCollection>();
-            
+
         for (var i = 0; i < deck.cards.Count; i++)
         {
             var cardInCollection = new CardCollection
@@ -56,31 +52,22 @@ public partial class LoomManager
             Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
             cards.Add(cardInCollection);
         }
-        
+
         var request = new EditDeckRequest
         {
             UserId = userId,
             Deck = new ZbDeck
             {
+                Id = deck.id,
                 Name = deck.name,
                 HeroId = deck.heroId,
-                Cards = {cards}
+                Cards = { cards }
             }
         };
-        
-        try
-        {
-            await Contract.CallAsync(EditDeckMethod, request);
-            errorResult?.Invoke(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            //Debug.Log("Exception = " + ex);
-            errorResult?.Invoke(ex.ToString());
-        }
+        return request;
     }
 
-    public async Task AddDeck(string userId, Deck deck, Action<string> errorResult)
+    public async Task<long> AddDeck(string userId, Deck deck)
     {
         var cards = new RepeatedField<CardCollection>();
             
@@ -106,18 +93,6 @@ public partial class LoomManager
             }
         };
 
-        try
-        {
-            await Contract.CallAsync(AddDeckMethod, request);
-            errorResult?.Invoke(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            //Debug.Log("Exception = " + ex);
-            errorResult?.Invoke(ex.ToString());
-        }
-        
+        return (await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request)).DeckId;
     }
-    
-    
 }

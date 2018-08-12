@@ -224,7 +224,7 @@
             FREEZE_UNITS,
             TAKE_DAMAGE_RANDOM_ENEMY,
             TAKE_CONTROL_ENEMY_UNIT,
-            SHILED,
+            GUARD,
             DESTROY_FROZEN_UNIT,
             USE_ALL_GOO_TO_INCREASE_STATS,
             FIRST_UNIT_IN_PLAY,
@@ -444,7 +444,7 @@
 
         public enum BuffType
         {
-            SHIELD,
+            GUARD,
             DEFENCE,
             HEAVY,
             WEAPON,

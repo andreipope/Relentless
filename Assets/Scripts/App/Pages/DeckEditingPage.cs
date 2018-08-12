@@ -12,7 +12,6 @@ using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
-using Loom.Newtonsoft.Json.Utilities;
 using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
@@ -212,18 +211,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _currentDeck = new Deck();
-                _currentDeck.name = _dataManager.CachedDecksData.decks[_currentDeckId].name;
-                _currentDeck.heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-                _currentDeck.cards = new List<DeckCardData>();
-                DeckCardData cardDat = null;
-                foreach (var item in _dataManager.CachedDecksData.decks[_currentDeckId].cards)
-                {
-                    cardDat = new DeckCardData();
-                    cardDat.cardName = item.cardName;
-                    cardDat.amount = item.amount;
-                    _currentDeck.cards.Add(cardDat);
-                }
+                _currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId].Clone();
             }
             LoadDeckInfo(_currentDeck);
             InitObjects();
@@ -830,72 +818,45 @@ namespace LoomNetwork.CZB
 
         public async void OnDoneButtonPressed()
         {
+            bool success = true;
             if (_currentDeckId == -1)
             {
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
-                
-                await LoomManager.Instance.AddDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck, result => 
+
+                try
                 {
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        CustomDebug.Log("Result === " + result);
-                        OpenAlertDialog("Not able to Add Deck..");
-                    }
-                    else
-                        CustomDebug.Log(" ====== Add Deck Successfully ==== ");
-			    });
+                    long newDeckId = 
+                        await LoomManager.Instance.AddDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck);
+                    _currentDeck.id = newDeckId;
+                    CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                } catch (Exception e)
+                {
+                    success = false;
+                    CustomDebug.Log("Result === " + e);
+                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                }
             }
             else
             {
                 _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
                 
-                await LoomManager.Instance.EditDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck, result => 
+                try
                 {
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        CustomDebug.Log("Result === " + result);
-                        OpenAlertDialog("Not able to Edit Deck..");
-                    }
-                    else
-                        CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
-					
-                });
+                    await LoomManager.Instance.EditDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck);
+                    CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
+                } catch (Exception e)
+                {
+                    success = false;
+                    CustomDebug.Log("Result === " + e);
+                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                }
             }
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-            
-            //Debug.Log("Deck saved called ======= " + _currentDeck.name + " , " + _currentDeck.heroId);
-            
-            
-        }
-
-        private void CorrectSetIndex(ref int id)
-        {
-            switch (id)
+            if (success)
             {
-                case 0:
-                    id =  3;
-                    break;
-                case 1:
-                    id = 4;
-                    break;
-                case 2:
-                    id = 1;
-                    break;
-                case 3:
-                    id = 5;
-                    break;
-                case 4:
-                    id = 0;
-                    break;
-                case 5:
-                    id = 2;
-                    break;
-                default:
-                    break;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
             }
         }
 

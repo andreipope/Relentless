@@ -34,6 +34,8 @@ namespace LoomNetwork.CZB
 
         private OnBehaviourHandler _behaviourHandler;
 
+        private Animator _shutterAnimator;
+
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
 
         private PointerEventSolver _pointerEventSolver;
@@ -79,6 +81,12 @@ namespace LoomNetwork.CZB
             _glowObjectSprite.gameObject.SetActive(false);
 
             _cooldownText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TMPro.TextMeshPro>();
+
+
+            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            _shutterAnimator = selfObject.transform.parent.transform.Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
+            _shutterAnimator.enabled = false;
+            _shutterAnimator.StopPlayback();
 
             owner.OnStartTurnEvent += OnStartTurnEventHandler;
             owner.OnEndTurnEvent += OnEndTurnEventHandler;
@@ -162,6 +170,10 @@ namespace LoomNetwork.CZB
         private void SetHighlightingEnabled(bool isActive)
         {
             _glowObjectSprite.gameObject.SetActive(isActive);
+
+            _shutterAnimator.enabled = isActive ? true : false;
+            _shutterAnimator.speed = isActive ? 1 : -1;
+            _shutterAnimator.StartPlayback();
         }
 
         public void CancelTargetingArrows()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
                     //_pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
 					float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
 					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
-                    if (Input.GetMouseButtonUp(0))
+                    if (Input.anyKey)
                     {
                         //_loginForm.SetActive(true);
 						if (_pressAnyText.gameObject.activeSelf) {
@@ -113,13 +113,21 @@ namespace LoomNetwork.CZB
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 
-
 							if (LoomManager.Instance.LoadUserDataModel() && LoomManager.Instance.UserDataModel.IsValid)
 							{
-								await LoomManager.Instance.CreateContract();
-								await _dataManager.StartLoadCache();
+								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 								
-								GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+								Func<Task> connectFunc = async () =>
+								{
+									await LoomManager.Instance.LoadUserDataModelAndCreateContract();
+									await _dataManager.StartLoadCache();
+									connectionPopup.Hide();
+									
+									GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+								};
+								_uiManager.DrawPopup<ConnectionPopup>();
+								connectionPopup.ConnectFunc = connectFunc;
+								await connectionPopup.ExecuteConnection();
 							} else
 							{
 								_uiManager.DrawPopup<LoginPopup>();

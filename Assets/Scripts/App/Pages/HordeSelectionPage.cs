@@ -176,25 +176,21 @@ namespace LoomNetwork.CZB
 
         private async void DeleteDeckEventHandler(HordeDeckObject deck)
         {
-            var deckName = _dataManager.CachedDecksData.decks[deck.DeckId].name;
             _dataManager.CachedDecksData.decks.RemoveAt(deck.DeckId);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
-            _dataManager.SaveAllCache();
+            await _dataManager.SaveAllCache();
             
             LoadDeckObjects();
-            
-            await LoomManager.Instance.DeleteDeck(LoomManager.Instance.UserDataModel.UserId, deckName, result => 
+
+            try
             {
-                if (!string.IsNullOrEmpty(result))
-                {
-                    CustomDebug.Log("Result === " + result);
-                    OpenAlertDialog("Not able to Delete Deck..");
-                }
-                else
-                    CustomDebug.Log(" ====== Delete Deck Successfully ==== ");
-					
-            });
-            
+                await LoomManager.Instance.DeleteDeck(LoomManager.Instance.UserDataModel.UserId, deck.DeckId);
+                CustomDebug.Log(" ====== Delete Deck Successfully ==== ");
+            } catch (Exception e)
+            {
+                CustomDebug.Log("Result === " + e);
+                OpenAlertDialog("Not able to Delete Deck: " + e.Message);
+            }
         }
 
         private void HordeDeckSelectedEventHandler(HordeDeckObject deck)

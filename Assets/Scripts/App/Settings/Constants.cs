@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.21.1online";
+        internal const string CURRENT_VERSION = "0.0.21.3";
 		internal const string CURRENT_VERSION_FULL = "Alpha " + CURRENT_VERSION;
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";

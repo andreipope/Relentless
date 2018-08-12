@@ -47,7 +47,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _fightTargetingArrowPrefab;
 
-        private GameObject _selfObject;
+        private GameObject _selfObject, _battleframeObject;
 
         private SpriteRenderer _pictureSprite;
         private SpriteRenderer _frozenSprite;
@@ -60,9 +60,6 @@ namespace LoomNetwork.CZB
         private TextMeshPro _healthText;
 
         private ParticleSystem _sleepingParticles;
-
-        private GameObject _feralFrame,
-                           _heavyFrame;
 
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
@@ -223,9 +220,6 @@ namespace LoomNetwork.CZB
 
             _glowSelectedObjectSprite = _selfObject.transform.Find("Other/GlowSelectedObject").gameObject;
 
-            _feralFrame = _selfObject.transform.Find("Other/object_feral_frame").gameObject;
-            _heavyFrame = _selfObject.transform.Find("Other/object_heavy_frame").gameObject;
-
             _attackText = _selfObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             _healthText = _selfObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
@@ -306,15 +300,14 @@ namespace LoomNetwork.CZB
 
         public void DebuffDamage(int value)
         {
-            Debug.Log(value);
-
             if (value == 0)
                 return;
             DamageDebuffUntillEndOfTurn = value;
-            if (CurrentDamage + DamageDebuffUntillEndOfTurn < 0)
-                DamageDebuffUntillEndOfTurn += CurrentDamage + DamageDebuffUntillEndOfTurn;
+            var buffresult = CurrentDamage + DamageDebuffUntillEndOfTurn;
+
+            if (buffresult < 0)
+                DamageDebuffUntillEndOfTurn -= buffresult;
             CurrentDamage += DamageDebuffUntillEndOfTurn;
-            Debug.Log(DamageDebuffUntillEndOfTurn);
         }
 
         public void DebuffHealth(int value)
@@ -377,7 +370,7 @@ namespace LoomNetwork.CZB
                         HasBuffRush = false;
                         // IsPlayable = _attacked;
                         break;
-                    case Enumerators.BuffType.SHIELD:
+                    case Enumerators.BuffType.GUARD:
                         HasBuffShield = false;
                         break;
                     default: break;
@@ -427,7 +420,7 @@ namespace LoomNetwork.CZB
                     // IsPlayable = !_attacked;
                     _sleepingParticles.gameObject.SetActive(false);
                     break;
-                case Enumerators.BuffType.SHIELD:
+                case Enumerators.BuffType.GUARD:
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
@@ -451,7 +444,7 @@ namespace LoomNetwork.CZB
         public void UseShieldFromBuff()
         {
             HasBuffShield = false;
-            _buffsOnUnit.Remove(Enumerators.BuffType.SHIELD);
+            _buffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             _shieldSprite.SetActive(HasBuffShield);
         }
 
@@ -484,24 +477,14 @@ namespace LoomNetwork.CZB
             if (hasHeavy)
                 return;
 
-
-
-            if (!buff)
-            {
+            //if (!buff)
+            //{
                 hasHeavy = true;
                 hasFeral = false;
                 _initialUnitType = Enumerators.CardType.HEAVY;
-            }
-
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.HEAVY).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            //}
+           // Debug.Log();
+            ChangeTypeFrame(2.5f, 1.7f);
         }
 
         public void SetAsWalkerUnit(bool buff = false)
@@ -509,23 +492,15 @@ namespace LoomNetwork.CZB
             if (!hasHeavy && !hasFeral && !HasBuffHeavy)
                 return;
 
-            if (!buff)
-            {
+           // if (!buff)
+           // {
                 hasHeavy = false;
                 hasFeral = false;
                 HasBuffHeavy = false;
                 _initialUnitType = Enumerators.CardType.WALKER;
-            }
+           // }
 
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.WALKER).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            ChangeTypeFrame(1.3f, 0.3f);
         }
 
         public void SetAsFeralUnit(bool buff = false)
@@ -533,23 +508,15 @@ namespace LoomNetwork.CZB
             if (hasFeral)
                 return;
 
-            if (!buff)
-            {
+            //if (!buff)
+            //{
                 hasHeavy = false;
                 HasBuffHeavy = false;
                 hasFeral = true;
                 _initialUnitType = Enumerators.CardType.FERAL;
-            }
+            //}
 
-            _ignoreArrivalEndEvents = true;
-
-            unitContentObject.SetActive(false);
-            unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Enumerators.CardType.FERAL).animator;
-            unitAnimator.StopPlayback();
-            unitAnimator.Play(0);
-            unitAnimator.SetTrigger("Active");
-
-            _readyForBuffs = true;
+            ChangeTypeFrame(2.7f, 1.7f);
 
             if (!AttackedThisTurn && !IsPlayable)
             {
@@ -558,9 +525,27 @@ namespace LoomNetwork.CZB
             }
         }
 
+        private void ChangeTypeFrame(float playerTime, float opponentTime)
+        {
+            _ignoreArrivalEndEvents = true;
+            unitContentObject.SetActive(false);
+
+            _pictureSprite.transform.SetParent(_selfObject.transform, false);
+            _pictureSprite.gameObject.SetActive(false);
+            GameObject.Destroy(_battleframeObject);
+            PlayArrivalAnimation();
+            _pictureSprite.gameObject.SetActive(true);
+            _timerManager.AddTimer((x) =>
+            {
+                ArrivalAnimationEventHandler();
+            }, null, ownerPlayer.IsLocalPlayer ? playerTime : opponentTime, false);
+
+            _readyForBuffs = true;
+        }
+
         public void BuffShield()
         {
-            BuffUnit(Enumerators.BuffType.SHIELD);
+            BuffUnit(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             _shieldSprite.SetActive(true);
         }
@@ -584,7 +569,7 @@ namespace LoomNetwork.CZB
 
                 InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
                 if (!ownerPlayer.IsLocalPlayer)
-                    _shieldSprite.transform.position = new Vector3(_shieldSprite.transform.position.x, _shieldSprite.transform.position.y, -_shieldSprite.transform.position.z);
+                    _shieldSprite.transform.localPosition = new Vector3(_shieldSprite.transform.localPosition.x, _shieldSprite.transform.localPosition.y, -_shieldSprite.transform.localPosition.z);
 
                 if (!_ignoreArrivalEndEvents)
                 {
@@ -800,10 +785,14 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            Debug.Log("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
-            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + (Card.type).ToString() + "_Arrival");
-            var spriteContainerTransform = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + _initialUnitType.ToString() + "_Arrival");
+            _battleframeObject = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).gameObject;
+            var spriteContainerTransform = _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            Vector3 scale = spriteContainerTransform.transform.localScale;
+            scale.x *= -1;
+            spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
+            _selfObject.transform.position += (Vector3.back * 5f);
         }
 
         public void OnStartTurn()

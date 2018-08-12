@@ -117,6 +117,20 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void ResetAll()
+        {
+            if (createPreviewCoroutine != null)
+                MainApp.Instance.StopCoroutine(createPreviewCoroutine);
+
+            createPreviewCoroutine = null;
+
+            if (currentBoardCard != null && currentBoardCard)
+                MonoBehaviour.Destroy(currentBoardCard);
+            currentBoardCard = null;
+
+            ClearBattleground();
+        }
+
         private void LoadGameConfiguration()
         {
            // TurnDuration = Constants.DEFAULT_TURN_DURATION;
@@ -501,17 +515,15 @@ namespace LoomNetwork.CZB
                 _timerManager.AddTimer((x) =>
                 {
                     UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-                }, null, .3f, false);
+                }, null, .1f, false);
 
                 return;
             }
-
 
             if (_gameplayManager.GameEnded)
                 return;
 
             var opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-
 
             _rearrangingTopBoard = true;
 

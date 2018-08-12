@@ -20,7 +20,9 @@ namespace LoomNetwork.CZB
         {
         }
 
-
+        public void ResetAll()
+        {
+        }
 
     }
 }
