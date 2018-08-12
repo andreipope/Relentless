@@ -246,7 +246,7 @@ namespace LoomNetwork.CZB
             try
             {
                 // FIXME: add waiting popup
-                await LoomManager.Instance.CreateContract();
+                await LoomManager.Instance.LoadUserDataModelAndCreateContract();
                 await _dataManager.StartLoadCache();
             } catch (Exception e)
             {

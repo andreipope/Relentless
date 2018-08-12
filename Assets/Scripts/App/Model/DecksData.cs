@@ -5,6 +5,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Loom.Newtonsoft.Json;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
@@ -21,6 +23,7 @@ namespace LoomNetwork.CZB.Data
 
     public class Deck
     {
+        public long id;
         public int heroId;
         public string name;
         public List<DeckCardData> cards;
@@ -73,6 +76,15 @@ namespace LoomNetwork.CZB.Data
                 amount += card.amount;
             return amount;
         }
+
+        public Deck Clone() {
+            Deck deck = new Deck();
+            deck.id = id;
+            deck.heroId = heroId;
+            deck.name = name;
+            deck.cards = deck.cards.Select(c => c.Clone()).ToList();
+            return deck;
+        }
     }
 
     public class DeckCardData
@@ -82,6 +94,13 @@ namespace LoomNetwork.CZB.Data
 
         public DeckCardData()
         {
+        }
+
+        public DeckCardData Clone() {
+            DeckCardData deckCardData = new DeckCardData();
+            deckCardData.cardName = cardName;
+            deckCardData.amount = amount;
+            return deckCardData;
         }
     }
 }

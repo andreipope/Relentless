@@ -9,13 +9,9 @@ using Random = System.Random;
 
 public partial class LoomManager
 {
-    private static readonly string UserDataFileName = Application.persistentDataPath+"/UserData.json";
+    private const string UserDataFileName = "UserData.json";
 
     private static LoomManager _instance;
-    private LoomManager()
-    {
-        LoomXCommandHandlers.Initialize();
-    }
 
     #if UNITY_EDITOR
     private string _writerHost= "ws://127.0.0.1:46657/websocket";
@@ -29,6 +25,8 @@ public partial class LoomManager
     public event ContractCreatedEventHandler ContractCreated;
 
     public LoomUserDataModel UserDataModel { get; set; }
+
+    protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, UserDataFileName);
 
     public string WriteHost
     {
@@ -59,11 +57,17 @@ public partial class LoomManager
             return _instance;
         }
     }
-    
-    public async Task CreateContract() 
+
+    public async Task LoadUserDataModelAndCreateContract()
     {
         LoadUserDataModel();
-        var publicKey = CryptoUtils.PublicKeyFromPrivateKey(UserDataModel.PrivateKey);
+        Debug.Log("User Id: " + UserDataModel.UserId);
+        await CreateContract(UserDataModel.PrivateKey);
+    }
+    
+    public async Task CreateContract(byte[] privateKey) 
+    {
+        var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         var callerAddr = Address.FromPublicKey(publicKey);
 
         var writer = RpcClientFactory.Configure()
@@ -83,7 +87,7 @@ public partial class LoomManager
         
         client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]{
             new NonceTxMiddleware(publicKey, client),
-            new SignedTxMiddleware(UserDataModel.PrivateKey)
+            new SignedTxMiddleware(privateKey)
         });
 
         var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
@@ -96,10 +100,10 @@ public partial class LoomManager
         if (UserDataModel != null && !force)
             return true;
 
-        if (!File.Exists(UserDataFileName))
+        if (!File.Exists(UserDataFilePath))
             return false;
 
-        UserDataModel = JsonConvert.DeserializeObject<LoomUserDataModel>(File.ReadAllText(UserDataFileName));
+        UserDataModel = JsonConvert.DeserializeObject<LoomUserDataModel>(File.ReadAllText(UserDataFilePath));
         return true;
     }
 
@@ -107,7 +111,7 @@ public partial class LoomManager
         if (userDataModel == null)
             throw new ArgumentNullException(nameof(userDataModel));
 
-        File.WriteAllText(UserDataFileName, JsonConvert.SerializeObject(userDataModel));
+        File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
         UserDataModel = userDataModel;
         return true;
     }

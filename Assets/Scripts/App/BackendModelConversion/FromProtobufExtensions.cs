@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Loom.Unity3d.Zb;
+using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.CZB.Helpers;
 
 namespace LoomNetwork.CZB.Data
@@ -27,11 +27,11 @@ namespace LoomNetwork.CZB.Data
             };
         }
 
-        public static FloatVector3 FromProtobuf(this Loom.Unity3d.Zb.Coordinates coordinates) {
+        public static FloatVector3 FromProtobuf(this LoomNetwork.CZB.Protobuf.Coordinates coordinates) {
             return new FloatVector3(coordinates.X, coordinates.Y, coordinates.Z);
         }
 
-        public static AbilityData FromProtobuf(this Loom.Unity3d.Zb.Ability ability) {
+        public static AbilityData FromProtobuf(this LoomNetwork.CZB.Protobuf.Ability ability) {
             return new AbilityData
             {
             type = ability.Type,
@@ -55,7 +55,7 @@ namespace LoomNetwork.CZB.Data
             };
         }
 
-        public static CardViewInfo FromProtobuf(this Loom.Unity3d.Zb.CardViewInfo cardViewInfo) {
+        public static CardViewInfo FromProtobuf(this LoomNetwork.CZB.Protobuf.CardViewInfo cardViewInfo) {
             if (cardViewInfo == null)
                 return null;
             
@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB.Data
             };
         }
 
-        public static Card FromProtobuf(this Loom.Unity3d.Zb.Card card) {
+        public static Card FromProtobuf(this LoomNetwork.CZB.Protobuf.Card card) {
             return new Card
             {
                 id = (int) card.Id,
@@ -97,7 +97,7 @@ namespace LoomNetwork.CZB.Data
             };
         }
 
-        public static CardSet FromProtobuf(this Loom.Unity3d.Zb.CardSet cardSet) {
+        public static CardSet FromProtobuf(this LoomNetwork.CZB.Protobuf.CardSet cardSet) {
             return new CardSet
             {
                 name = !String.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",

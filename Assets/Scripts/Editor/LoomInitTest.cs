@@ -1,61 +1,82 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine.TestTools;
 
-public class LoomUnitTest 
+public class LoomUnitTest
 {
-    [Test]
-    public async void TestLoomInit()
+    [SetUp]
+    public void Init()
     {
-        Assert.IsNull(LoomManager.Instance.Contract);
-        await LoomManager.Instance.CreateContract();
-        Assert.IsNotNull(LoomManager.Instance.Contract);
+        LoomTestContext.TestSetUp();
+    }
+    
+    [TearDown]
+    public void TearDown()
+    {    
+        LoomTestContext.TestTearDown();
+    }
+    
+    [UnityTest]
+    public IEnumerator TestLoomInit()
+    {
+        return LoomTestContext.AsyncTest(async () =>
+        {
+            Assert.IsNull(LoomTestContext.LoomManager.Contract);
+            await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+            Assert.IsNotNull(LoomTestContext.LoomManager.Contract);
+        });
     }
 
-    
-    [Test]
-    public async void TestLoomInit_Empty_Writer_Link()
+    [UnityTest]
+    public IEnumerator TestLoomInit_Empty_Writer_Link()
     {
-        LoomManager.Instance.WriteHost = string.Empty;
-        await LoomManager.Instance.CreateContract();
-        
-        Assert.IsNotNull(LoomManager.Instance.Contract);
-        
+        return LoomTestContext.AsyncTest(async () =>
+        {
+            LoomTestContext.LoomManager.WriteHost = string.Empty;
+            await LoomTestContext.AssertThrowsAsync(async () =>
+            {
+                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+            });
+        });
     }
-    
-    [Test]
-    public async void TestLoomInit_Wrong_Writer_Link()
+
+    [UnityTest]
+    public IEnumerator TestLoomInit_Wrong_Writer_Link()
     {
-        LoomManager.Instance.WriteHost = "https://www.google.com";
-        await LoomManager.Instance.CreateContract();
-        
-        Assert.IsNotNull(LoomManager.Instance.Contract);
+        return LoomTestContext.AsyncTest(async () =>
+        {
+            LoomTestContext.LoomManager.WriteHost = "https://www.google.com";
+            await LoomTestContext.AssertThrowsAsync(async () =>
+            {
+                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+            });
+        });
     }
-    
-    [Test]
-    public async void TestLoomInit_Empty_Reader_Link()
+
+    [UnityTest]
+    public IEnumerator TestLoomInit_Empty_Reader_Link()
     {
-        LoomManager.Instance.ReaderHost = string.Empty;
-        await LoomManager.Instance.CreateContract();
-        
-        Assert.IsNotNull(LoomManager.Instance.Contract);
-        
+        return LoomTestContext.AsyncTest(async () =>
+        {
+            LoomTestContext.LoomManager.ReaderHost = string.Empty;
+            await LoomTestContext.AssertThrowsAsync(async () =>
+            {
+                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+            });
+        });
     }
-    
-    [Test]
-    public async void TestLoomInit_Wrong_Reader_Link()
+
+    [UnityTest]
+    public IEnumerator TestLoomInit_Wrong_Reader_Link()
     {
-        LoomManager.Instance.ReaderHost = "https://www.google.com";
-        await LoomManager.Instance.CreateContract();
-        
-        Assert.IsNotNull(LoomManager.Instance.Contract);
+        return LoomTestContext.AsyncTest(async () =>
+        {
+            LoomTestContext.LoomManager.ReaderHost = "https://www.google.com";
+            await LoomTestContext.AssertThrowsAsync(async () =>
+            {
+                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+            });
+        });
     }
 }
-
-
-
-
-
-/*
-var ex = Assert.Throws<NullReferenceException>(async () => await LoomManager.Instance.Init(() => { }));
-Debug.Log(ex.Message);
-Assert.IsNull(ex);
-*/

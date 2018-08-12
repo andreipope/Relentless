@@ -91,8 +91,9 @@ namespace LoomNetwork.CZB
                 _originalShiftedChildPosition;
         }
 
-		void OnValidate() {
-            //OnValidate();
+#if UNITY_EDITOR
+        protected override void OnValidate() {
+            base.OnValidate();
             if (ShiftedChild == null)
                 return;
 
@@ -101,5 +102,6 @@ namespace LoomNetwork.CZB
                 ShiftedChild = null;
             }
         }
+#endif
     }
 }              

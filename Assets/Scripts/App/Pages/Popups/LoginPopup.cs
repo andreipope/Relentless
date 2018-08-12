@@ -90,15 +90,13 @@ namespace LoomNetwork.CZB
 
 			    try
 			    {
-				    LoomUserDataModel userDataModel = new LoomUserDataModel
+				    LoomUserDataModel userDataModel = new LoomUserDataModel(userId, privateKey)
 				    {
-					    PrivateKey = privateKey,
-					    UserId = userId,
 					    IsValid = false
 				    };
 				    LoomManager.Instance.SetUserDataModel(userDataModel);
 
-				    await LoomManager.Instance.CreateContract();
+				    await LoomManager.Instance.LoadUserDataModelAndCreateContract();
 				    try
 				    {
 					    await LoomManager.Instance.SignUp(userDataModel.UserId);
@@ -116,7 +114,7 @@ namespace LoomNetwork.CZB
 			    }
 			    catch (Exception e)
 			    {
-				    Debug.LogException(e);
+				    Debug.LogWarning(e);
 				    SetUIState(LoginState.BetaKeyValidationFailed);
 			    }
 		    } else {

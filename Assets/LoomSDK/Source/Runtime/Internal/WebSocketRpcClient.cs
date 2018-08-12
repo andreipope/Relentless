@@ -25,6 +25,10 @@ namespace Loom.Client.Internal
         {
             get
             {
+                // HACK: WebSocket default ReadyState value is Connecting,
+                // which makes it impossible to distinguish the real Connecting state
+                // and state when no connection-related actions have been done.
+                // Just return Disconnected until we know anything better for sure.
                 if (!anyConnectionStateChangesReceived)
                     return RpcConnectionState.Disconnected;
                 
