@@ -196,5 +196,12 @@ namespace LoomNetwork.CZB
 
             OnGameInitializedEvent?.Invoke();
         }
+
+
+        public void ResetWholeGameplayScene()
+        {
+            foreach (var controller in _controllers)
+                controller.ResetAll();
+        }
     }
 }

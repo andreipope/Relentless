@@ -303,9 +303,14 @@ namespace LoomNetwork.CZB
 
         public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)
         {
+            card.owner = this;
+
             CardsInHand.Add(card);
 
-            _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+            if(IsLocalPlayer)
+                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+            else
+                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this, _cardsController.GetOpponentBoardCard(card));
 
             HandChangedEvent?.Invoke(CardsInHand.Count);
         }

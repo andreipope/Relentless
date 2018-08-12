@@ -80,6 +80,12 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+            ThreadTool.Instance.AbortAllThreads(this);
+            ThreadTool.Instance.ClearMainthreadActions();
+        }
+
         public void InitializePlayer()
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
@@ -107,7 +113,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                        // playerDeck.Add("Earthshaker");
+                       //  playerDeck.Add("Draft");
                     }
                 }
 
@@ -219,7 +225,6 @@ namespace LoomNetwork.CZB
                     if (CardCanBePlayable(unit))
                     {
                         ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
-                        LetsThink();
                         LetsThink();
                         LetsThink();
                         LetsThink();
@@ -447,6 +452,9 @@ namespace LoomNetwork.CZB
                 }));
 
 
+                boardUnitElement.PlayArrivalAnimation();
+
+
                 _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(() =>
                 {
                     bool createTargetArrow = false;
@@ -465,9 +473,11 @@ namespace LoomNetwork.CZB
                     }
                 });
 
-                boardUnitElement.PlayArrivalAnimation();
+                
 
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                //Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
+
+                //_battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {

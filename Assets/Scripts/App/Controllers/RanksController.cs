@@ -27,6 +27,10 @@ namespace LoomNetwork.CZB
         {
         }
 
+        public void ResetAll()
+        {
+        }
+
         public void UpdateRanksByElements(List<BoardUnit> units, Data.Card card)
         {
             var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
@@ -70,15 +74,15 @@ namespace LoomNetwork.CZB
             switch (rank)
             {
                 case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.GUARD);
                     break;
                 case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.GUARD);
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.SHIELD);
+                    buffs.Add(Enumerators.BuffType.GUARD);
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;

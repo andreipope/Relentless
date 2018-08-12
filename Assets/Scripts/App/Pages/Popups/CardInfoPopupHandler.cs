@@ -39,11 +39,11 @@ namespace LoomNetwork.CZB
         }
 
         public void Show() {
-            throw new NotImplementedException();
+           
         }
 
         public void Hide() {
-            throw new NotImplementedException();
+
         }
 
         public void Update() {
@@ -102,6 +102,10 @@ namespace LoomNetwork.CZB
 
             SetIsStateChanging(true);
             _selectedCollectionCard = card;
+
+            if (_previewCard != null && _previewCard.gameObject != null)
+                MonoBehaviour.DestroyImmediate(_previewCard.gameObject);
+
             _previewCard = new BoardCard(MonoBehaviour.Instantiate(card.gameObject));
             _previewCard.gameObject.name = "CardPreview";
             _previewCard.gameObject.transform.position = card.gameObject.transform.position;
@@ -128,8 +132,8 @@ namespace LoomNetwork.CZB
             });
 
 
-            _uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
             _uiManager.GetPopup<CardInfoPopup>().cardTransform = _previewCard.transform;
+            _uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
         }
 
         private void SetIsStateChanging(bool isStartedStateChange) {

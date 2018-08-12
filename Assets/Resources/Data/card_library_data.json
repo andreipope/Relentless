@@ -8,7 +8,7 @@
           "kind": "CREATURE",
           "name": "Pyromaz",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Life zombies",
+          "description": "<b>Attack:</b> +1 damage to Toxic zombies",
           "flavorText": "Really into that old Prodigy song... Firestarter...",
           "picture": "Pyromaz",
           "damage": 1,
@@ -22,7 +22,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "toxic",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -47,7 +47,7 @@
           "cost": 1,
           "description": "<b>Feral</b>, <b>Overflow</b> 2, <b>End:</b> 2 damage to this and adjecent zombies",
           "flavorText": "Has a great fascination with church bells...",
-          "picture": "embryo",
+          "picture": "Quazi",
           "damage": 0,
           "health": 1,
           "type": "FERAL",
@@ -372,7 +372,7 @@
           "kind": "CREATURE",
           "name": "Izze",
           "cost": 1,
-          "description": "<b>Attack: Freeze</b> target",
+          "description": "<b>Attack:</b> +1 damage to Fire zombies",
           "flavorText": "It would be a-lot Izzier if you just stay put!",
           "picture": "Izze",
           "damage": 1,
@@ -381,10 +381,12 @@
           "rank": "MINION",
           "abilities": [
             {
-              "type": "STUN",
+              "type": "MODIFICATOR_STATS",
               "activityType": "passive",
-              "callType": "ATTACK",
-              "targetType": "opponent_card|opponent",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+              "setType": "fire",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -557,7 +559,7 @@
           "cost": 4,
           "description": "<b>Entry: Freeze</b> 2 random allies, add <b>Corrupted Goo</b> to your Hand",
           "flavorText": "Not in the mood for dancing...",
-          "picture": "embryo",
+          "picture": "geyzer",
           "damage": 2,
           "health": 3,
           "type": "WALKER",
@@ -780,7 +782,7 @@
           "kind": "CREATURE",
           "name": "Rockky",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Water zombies",
+          "description": "<b>Attack:</b> +1 damage to Air zombies",
           "flavorText": "Addriaaannn!!! Addriaaaaaannnnn!!!",
           "picture": "Rockky",
           "damage": 1,
@@ -794,7 +796,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "water",
+              "setType": "air",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -1057,7 +1059,7 @@
           "cost": 3,
           "description": "<b>Heavy, Entry</b>: Add a Corrupted Goo to your Hand",
           "flavorText": "Try to veer from his major crater issues... it may goo deeeeep",
-          "picture": "embryo",
+          "picture": "Crater",
           "damage": 1,
           "health": 4,
           "type": "HEAVY",
@@ -1269,14 +1271,26 @@
           "id": 17,
           "kind": "CREATURE",
           "name": "Whizpar",
-          "cost": 2,
-          "description": "<b>Feral</b>",
+          "cost": 1,
+          "description": "<b>Attack:</b> +1 damage to Water zombies",
           "flavorText": "The unfriendly ghost...",
           "picture": "Whizpar",
           "damage": 1,
           "health": 1,
-          "type": "FERAL",
+          "type": "WALKER",
           "rank": "MINION",
+		  "abilities": [
+            {
+              "type": "MODIFICATOR_STATS",
+              "activityType": "passive",
+              "callType": "permanent",
+              "targetType": "none",
+              "statType": "damage",
+              "setType": "water",
+              "value": 1,
+              "buffType": "ATTACK"
+            }
+          ],
           "cardViewInfo": {
             "position": {
               "x": -0.3,
@@ -1365,7 +1379,7 @@
           "cost": 2,
           "description": "<b>Entry:</b> Add a <b>Tainted Goo</b> to your Hand",
           "flavorText": "RAZENGAAAAAAAA!!!",
-          "picture": "embryo",
+          "picture": "Fumez",
           "damage": 1,
           "health": 1,
           "type": "WALKER",
@@ -1507,11 +1521,11 @@
           "rank": "OFFICER",
           "abilities": [
             {
-              "type": "SHILED",
+              "type": "GUARD",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "none",
-              "buffType": "SHILED"
+              "buffType": "GUARD"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -1650,7 +1664,7 @@
           "kind": "CREATURE",
           "name": "Azuraz",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Life zombies",
+          "description": "<b>Attack:</b> +1 damage to Earth zombies",
           "flavorText": "Beeee yourself!",
           "picture": "Azuraz",
           "damage": 1,
@@ -1664,7 +1678,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "life",
+              "setType": "earth",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -1909,7 +1923,7 @@
           "cost": 3,
           "description": "<b>Entry:</b> Summon a 1/1 <b>Feral</b> zombie minion",
           "flavorText": "They are usually such lovely beasts...",
-          "picture": "embryo",
+          "picture": "Keeper",
           "damage": 1,
           "health": 3,
           "type": "WALKER",
@@ -1945,7 +1959,7 @@
           "cost": 4,
           "description": "<b>Overflow</b> 6, <b>Entry:</b> Summon two 2/2 enemy zombie minions",
           "flavorText": "And so he walked the desert for 40 years, only to find he's been walking in circles....",
-          "picture": "embryo",
+          "picture": "Cactuz",
           "damage": 2,
           "health": 3,
           "type": "WALKER",
@@ -2096,7 +2110,7 @@
           "kind": "CREATURE",
           "name": "Poizom",
           "cost": 1,
-          "description": "<b>Attack:</b> +1 damage to Earth zombies",
+          "description": "<b>Attack:</b> +1 damage to Life zombies",
           "flavorText": "Just like any frat boy, after the Friday night bash - bloated, gassy, puking and generally unpleasant to be around...",
           "picture": "Poizom",
           "damage": 1,
@@ -2110,7 +2124,7 @@
               "callType": "permanent",
               "targetType": "none",
               "statType": "damage",
-              "setType": "earth",
+              "setType": "life",
               "value": 1,
               "buffType": "ATTACK"
             }
@@ -2642,7 +2656,7 @@
         {
           "id": 36,
           "kind": "SPELL",
-          "name": "Goo Bottle",
+          "name": "Goo Bottles",
           "cost": 4,
           "description": "Get 2 empty goo vials",
           "flavorText": "Adding more goo to an already overly-goo-ed party is just too goo-d!",
