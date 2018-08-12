@@ -231,9 +231,6 @@ namespace LoomNetwork.CZB
 
         public void CallOnEndTurnEvent()
         {
-			BackendFacade.Instance.UpdateHistory ("Player ends his turn.");
-			BackendFacade.Instance.UploadHistory (BackendFacade.Instance.UserDataModel.UserId);
-
             OnEndTurnEvent?.Invoke();
             if (Goo > GooOnCurrentTurn)
                 Goo = GooOnCurrentTurn;
@@ -241,9 +238,6 @@ namespace LoomNetwork.CZB
 
         public void CallOnStartTurnEvent()
         {
-			BackendFacade.Instance.ClearHistory ();
-			BackendFacade.Instance.UpdateHistory ("Player begins his turn.");
-
             OnStartTurnEvent?.Invoke();
 
            if (_gameplayManager.CurrentTurnPlayer.Equals(this))

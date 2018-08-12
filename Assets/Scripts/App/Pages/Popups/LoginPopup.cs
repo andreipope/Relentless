@@ -31,6 +31,7 @@ namespace LoomNetwork.CZB
         private IUIManager _uiManager;
         private GameObject _selfPage;
 	    private IDataManager _dataManager;
+	    private BackendFacade _backendFacade;
 
 		private ButtonShiftingContent _betaButton;
 	    private Transform _betaGroup;
@@ -45,6 +46,7 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 	        _dataManager = GameClient.Get<IDataManager>();
+	        _backendFacade = GameClient.Get<BackendFacade>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -95,12 +97,12 @@ namespace LoomNetwork.CZB
 				    {
 					    IsValid = false
 				    };
-				    BackendFacade.Instance.SetUserDataModel(userDataModel);
+				    _backendFacade.SetUserDataModel(userDataModel);
 
-				    await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
+				    await _backendFacade.LoadUserDataModelAndCreateContract();
 				    try
 				    {
-					    await BackendFacade.Instance.SignUp(userDataModel.UserId);
+					    await _backendFacade.SignUp(userDataModel.UserId);
 				    } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
 				    {
 					    // Ignore
@@ -109,7 +111,7 @@ namespace LoomNetwork.CZB
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
-				    BackendFacade.Instance.SetUserDataModel(userDataModel);
+				    _backendFacade.SetUserDataModel(userDataModel);
 				    
 				    SuccessfulLogin();
 			    }

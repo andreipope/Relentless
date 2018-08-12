@@ -23,6 +23,7 @@ namespace LoomNetwork.CZB
 		private ISoundManager _soundManager;
         private IPlayerManager _playerManager;
 		private IDataManager _dataManager;
+        private BackendFacade _backendFacade;
 
         private GameObject _selfPage;
 
@@ -54,6 +55,7 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
+            _backendFacade = GameClient.Get<BackendFacade>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -88,7 +90,7 @@ namespace LoomNetwork.CZB
             _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
             
-            BackendFacade.Instance.ContractCreated += LoomManagerOnContractCreated;
+            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
             
             Hide();
             
@@ -103,11 +105,11 @@ namespace LoomNetwork.CZB
                 return;
 
             _connectionStatusText.text = 
-                BackendFacade.Instance.IsConnected ? 
+                _backendFacade.IsConnected ? 
                     "<color=green>Online</color>" : 
                     "<color=red>Offline</color>";
             
-            _buttonReconnect.gameObject.SetActive(!BackendFacade.Instance.IsConnected);
+            _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
 			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
         }
 
@@ -187,10 +189,10 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            if (BackendFacade.Instance.Contract != null)
+            if (_backendFacade.Contract != null)
             {
-                BackendFacade.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                BackendFacade.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
             }
         }
 
@@ -257,7 +259,7 @@ namespace LoomNetwork.CZB
             try
             {
                 // FIXME: add waiting popup
-                await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
+                await _backendFacade.LoadUserDataModelAndCreateContract();
                 await _dataManager.StartLoadCache();
             } catch (Exception e)
             {
@@ -267,7 +269,7 @@ namespace LoomNetwork.CZB
 
 		private void LogoutButtonOnClickHandler() {
 			_dataManager.DeleteData ();
-			BackendFacade.Instance.UserDataModel = null;
+			_backendFacade.UserDataModel = null;
 			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 		}
 

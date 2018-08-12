@@ -19,6 +19,7 @@ namespace LoomNetwork.CZB
 	    private IDataManager _dataManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+	    private BackendFacade _backendFacade;
 
         private GameObject _selfPage, _loginForm;
 
@@ -47,6 +48,7 @@ namespace LoomNetwork.CZB
 			_dataManager = GameClient.Get<IDataManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+	        _backendFacade = GameClient.Get<BackendFacade>();
 
 			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -114,13 +116,13 @@ namespace LoomNetwork.CZB
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 
-							if (BackendFacade.Instance.LoadUserDataModel() && BackendFacade.Instance.UserDataModel.IsValid)
+							if (_backendFacade.LoadUserDataModel() && _backendFacade.UserDataModel.IsValid)
 							{
 								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 								
 								Func<Task> connectFunc = async () =>
 								{
-									await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
+									await _backendFacade.LoadUserDataModelAndCreateContract();
 									await _dataManager.StartLoadCache();
 									connectionPopup.Hide();
 									
@@ -191,9 +193,9 @@ namespace LoomNetwork.CZB
 
 	        try
 	        {
-				await BackendFacade.Instance.SignUp(usernameText);
+				await _backendFacade.SignUp(usernameText);
 		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
-		        BackendFacade.Instance.UserDataModel.UserId = usernameText;
+		        _backendFacade.UserDataModel.UserId = usernameText;
 		        //OpenAlertDialog("Account Created Successfully");
 		        // TODO : Removed code loading data manager
 		        var dataManager = GameClient.Get<IDataManager>();
@@ -231,7 +233,7 @@ namespace LoomNetwork.CZB
                 return;
             }*/
 	        
-	        BackendFacade.Instance.UserDataModel.UserId = usernameText;
+	        _backendFacade.UserDataModel.UserId = usernameText;
 	        var dataManager = GameClient.Get<IDataManager>();
 	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
 	        dataManager.StartLoadCache();

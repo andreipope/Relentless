@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
         private IAppStateManager _appStateManager;
         private ILocalizationManager _localizationManager;
         private ILoadObjectsManager _loadObjectsManager;
-
+        private BackendFacade _backendFacade;
 
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
@@ -80,6 +80,7 @@ namespace LoomNetwork.CZB
             _appStateManager = GameClient.Get<IAppStateManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
 
             dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -234,7 +235,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            var heroesList = await BackendFacade.Instance.GetHeroesList(BackendFacade.Instance.UserDataModel.UserId);
+                            var heroesList = await _backendFacade.GetHeroesList(_backendFacade.UserDataModel.UserId);
                             CustomDebug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
@@ -274,7 +275,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            ListDecksResponse listDecksResponse = await BackendFacade.Instance.GetDecks(BackendFacade.Instance.UserDataModel.UserId);
+                            ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendFacade.UserDataModel.UserId);
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());

@@ -6,46 +6,49 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public static class LoomXCommandHandlers
     {
+        private static BackendFacade _backendFacade;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(LoomXCommandHandlers));
+            _backendFacade = new BackendFacade();
         }
 
         [CommandHandler(Description = "Get Contract Write Host Link")]
         private static void GetContractWriteLink()
         {
-            CustomDebug.Log("Link =  '" + BackendFacade.Instance.WriterHost);
+            CustomDebug.Log("Link =  '" + _backendFacade.WriterHost);
         }
 
         [CommandHandler(Description = "Get Contract Reader Host Link")]
         private static void GetContractReaderLink()
         {
-            CustomDebug.Log("Link =  '" + BackendFacade.Instance.ReaderHost);
+            CustomDebug.Log("Link =  '" + _backendFacade.ReaderHost);
         }
 
         [CommandHandler(Description = "Init Contract with Write Host Link")]
         private static async void InitContractWithWriteLink(string link)
         {
-            BackendFacade.Instance.WriterHost = link;
-            await BackendFacade.Instance.CreateContract(BackendFacade.Instance.UserDataModel.PrivateKey);
+            _backendFacade.WriterHost = link;
+            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
 
         [CommandHandler(Description = "Init Contract with Write Host Link")]
         private static async void InitContractWithReaderLink(string link)
         {
-            BackendFacade.Instance.ReaderHost = link;
-            await BackendFacade.Instance.CreateContract(BackendFacade.Instance.UserDataModel.PrivateKey);
+            _backendFacade.ReaderHost = link;
+            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
 
         [CommandHandler(Description = "Init Contract with Write and Reader Host Link")]
         private static async void InitContract(string writer, string reader)
         {
-            BackendFacade.Instance.WriterHost = writer;
-            BackendFacade.Instance.ReaderHost = reader;
-            await BackendFacade.Instance.CreateContract(BackendFacade.Instance.UserDataModel.PrivateKey);
+            _backendFacade.WriterHost = writer;
+            _backendFacade.ReaderHost = reader;
+            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
     }

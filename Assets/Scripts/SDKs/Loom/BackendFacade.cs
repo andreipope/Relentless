@@ -13,10 +13,9 @@ using ProtobufDeck = LoomNetwork.CZB.Protobuf.Deck;
 
 namespace LoomNetwork.CZB.BackendCommunication
 {
-    public partial class BackendFacade
+    public class BackendFacade : IService
     {
         private const string UserDataFileName = "UserData.json";
-        private static BackendFacade _instance;
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
@@ -40,8 +39,6 @@ namespace LoomNetwork.CZB.BackendCommunication
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
         protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, UserDataFileName);
-
-        public static BackendFacade Instance => _instance ?? (_instance = new BackendFacade());
 
         public async Task LoadUserDataModelAndCreateContract()
         {
@@ -254,33 +251,39 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         #region Turn Logs
 
-        private const string UploadHistoryMethod = "UploadHistory"; //just a random method for now
+        private const string UploadActionLogMethod = "UploadHistory"; //just a random method for now
 
-        private List<string> HistoryData;
-
-        public void ClearHistory()
+        public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
         {
-            if (HistoryData == null)
-                HistoryData = new List<string> ();
-
-            HistoryData.Clear ();
-        }
-
-        public void UpdateHistory(string data)
-        {
-            HistoryData.Add (data);
-        }
-
-        public async Task UploadHistory(string userId)
-        {
-            var req = new UpsertAccountRequest {
+            string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
+            Dictionary<string, object> actionLogModelJsonDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
+            actionLogModelJson = JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)]);
+            Debug.Log("Logging action: \n" + actionLogModelJson);
+            await Task.Delay(1000);
+            /*var req = new UpsertAccountRequest {
                 UserId = userId,
                 //we'll also put all our collected strings in the HistoryData List
-            };
+            };*/
 
             //await Contract.CallAsync(CreateAccountMethod, req);
         }
 
         #endregion
+
+        public void Init()
+        {
+            
+        }
+
+        public void Update()
+        {
+            
+        }
+
+        public void Dispose()
+        {
+            
+        }
     }
+
 }

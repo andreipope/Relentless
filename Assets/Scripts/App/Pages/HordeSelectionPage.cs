@@ -27,6 +27,7 @@ namespace LoomNetwork.CZB
         private ISoundManager _soundManager;
         private IAppStateManager _appStateManager;
         private IMatchManager _matchManager;
+        private BackendFacade _backendFacade;
 
         private GameObject _selfPage;
 
@@ -66,6 +67,7 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
@@ -185,7 +187,7 @@ namespace LoomNetwork.CZB
 
             try
             {
-                await BackendFacade.Instance.DeleteDeck(BackendFacade.Instance.UserDataModel.UserId, deck.DeckId);
+                await _backendFacade.DeleteDeck(_backendFacade.UserDataModel.UserId, deck.DeckId);
                 CustomDebug.Log(" ====== Delete Deck Successfully ==== ");
             } catch (Exception e)
             {
@@ -434,7 +436,7 @@ namespace LoomNetwork.CZB
         }
 
         private bool ShowConnectionLostPopupIfNeeded() {
-            if (BackendFacade.Instance.IsConnected)
+            if (_backendFacade.IsConnected)
                 return false;
             
             _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");

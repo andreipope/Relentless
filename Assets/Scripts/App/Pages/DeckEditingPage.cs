@@ -23,6 +23,8 @@ namespace LoomNetwork.CZB
         private ILoadObjectsManager _loadObjectsManager;
         private ILocalizationManager _localizationManager;
         private IDataManager _dataManager;
+        private BackendFacade _backendFacade;
+
 
         private GameObject _selfPage;
 
@@ -103,6 +105,7 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -828,7 +831,7 @@ namespace LoomNetwork.CZB
                 try
                 {
                     long newDeckId = 
-                        await BackendFacade.Instance.AddDeck(BackendFacade.Instance.UserDataModel.UserId, _currentDeck);
+                        await _backendFacade.AddDeck(_backendFacade.UserDataModel.UserId, _currentDeck);
                     _currentDeck.id = newDeckId;
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
@@ -844,7 +847,7 @@ namespace LoomNetwork.CZB
                 
                 try
                 {
-                    await BackendFacade.Instance.EditDeck(BackendFacade.Instance.UserDataModel.UserId, _currentDeck);
+                    await _backendFacade.EditDeck(_backendFacade.UserDataModel.UserId, _currentDeck);
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
