@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -113,13 +114,13 @@ namespace LoomNetwork.CZB
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 
-							if (LoomManager.Instance.LoadUserDataModel() && LoomManager.Instance.UserDataModel.IsValid)
+							if (BackendFacade.Instance.LoadUserDataModel() && BackendFacade.Instance.UserDataModel.IsValid)
 							{
 								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 								
 								Func<Task> connectFunc = async () =>
 								{
-									await LoomManager.Instance.LoadUserDataModelAndCreateContract();
+									await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
 									await _dataManager.StartLoadCache();
 									connectionPopup.Hide();
 									
@@ -190,9 +191,9 @@ namespace LoomNetwork.CZB
 
 	        try
 	        {
-				await LoomManager.Instance.SignUp(usernameText);
+				await BackendFacade.Instance.SignUp(usernameText);
 		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
-		        LoomManager.Instance.UserDataModel.UserId = usernameText;
+		        BackendFacade.Instance.UserDataModel.UserId = usernameText;
 		        //OpenAlertDialog("Account Created Successfully");
 		        // TODO : Removed code loading data manager
 		        var dataManager = GameClient.Get<IDataManager>();
@@ -230,7 +231,7 @@ namespace LoomNetwork.CZB
                 return;
             }*/
 	        
-	        LoomManager.Instance.UserDataModel.UserId = usernameText;
+	        BackendFacade.Instance.UserDataModel.UserId = usernameText;
 	        var dataManager = GameClient.Get<IDataManager>();
 	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
 	        dataManager.StartLoadCache();

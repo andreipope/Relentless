@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using App.Utilites;
 using Loom.Client;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
@@ -87,7 +88,7 @@ namespace LoomNetwork.CZB
             _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
             
-            LoomManager.Instance.ContractCreated += LoomManagerOnContractCreated;
+            BackendFacade.Instance.ContractCreated += LoomManagerOnContractCreated;
             
             Hide();
             
@@ -102,11 +103,11 @@ namespace LoomNetwork.CZB
                 return;
 
             _connectionStatusText.text = 
-                LoomManager.Instance.IsConnected ? 
+                BackendFacade.Instance.IsConnected ? 
                     "<color=green>Online</color>" : 
                     "<color=red>Offline</color>";
             
-            _buttonReconnect.gameObject.SetActive(!LoomManager.Instance.IsConnected);
+            _buttonReconnect.gameObject.SetActive(!BackendFacade.Instance.IsConnected);
 			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
         }
 
@@ -186,10 +187,10 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            if (LoomManager.Instance.Contract != null)
+            if (BackendFacade.Instance.Contract != null)
             {
-                LoomManager.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                LoomManager.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                BackendFacade.Instance.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                BackendFacade.Instance.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
             }
         }
 
@@ -256,7 +257,7 @@ namespace LoomNetwork.CZB
             try
             {
                 // FIXME: add waiting popup
-                await LoomManager.Instance.LoadUserDataModelAndCreateContract();
+                await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
                 await _dataManager.StartLoadCache();
             } catch (Exception e)
             {
@@ -266,7 +267,7 @@ namespace LoomNetwork.CZB
 
 		private void LogoutButtonOnClickHandler() {
 			_dataManager.DeleteData ();
-			LoomManager.Instance.UserDataModel = null;
+			BackendFacade.Instance.UserDataModel = null;
 			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 		}
 

@@ -9,6 +9,7 @@ using UnityEngine.Rendering;
 using System.Linq;
 using System.Collections.Generic;
 using DG.Tweening;
+using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
@@ -827,7 +828,7 @@ namespace LoomNetwork.CZB
                 try
                 {
                     long newDeckId = 
-                        await LoomManager.Instance.AddDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck);
+                        await BackendFacade.Instance.AddDeck(BackendFacade.Instance.UserDataModel.UserId, _currentDeck);
                     _currentDeck.id = newDeckId;
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
@@ -843,7 +844,7 @@ namespace LoomNetwork.CZB
                 
                 try
                 {
-                    await LoomManager.Instance.EditDeck(LoomManager.Instance.UserDataModel.UserId, _currentDeck);
+                    await BackendFacade.Instance.EditDeck(BackendFacade.Instance.UserDataModel.UserId, _currentDeck);
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {

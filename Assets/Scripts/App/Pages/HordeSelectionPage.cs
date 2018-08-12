@@ -11,6 +11,7 @@ using TMPro;
 using System;
 using System.Linq;
 using DG.Tweening;
+using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Data;
 using Deck = LoomNetwork.CZB.Data.Deck;
 using Hero = LoomNetwork.CZB.Data.Hero;
@@ -184,7 +185,7 @@ namespace LoomNetwork.CZB
 
             try
             {
-                await LoomManager.Instance.DeleteDeck(LoomManager.Instance.UserDataModel.UserId, deck.DeckId);
+                await BackendFacade.Instance.DeleteDeck(BackendFacade.Instance.UserDataModel.UserId, deck.DeckId);
                 CustomDebug.Log(" ====== Delete Deck Successfully ==== ");
             } catch (Exception e)
             {
@@ -433,7 +434,7 @@ namespace LoomNetwork.CZB
         }
 
         private bool ShowConnectionLostPopupIfNeeded() {
-            if (LoomManager.Instance.IsConnected)
+            if (BackendFacade.Instance.IsConnected)
                 return false;
             
             _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");

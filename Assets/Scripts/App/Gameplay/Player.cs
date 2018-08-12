@@ -9,6 +9,7 @@ using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -230,8 +231,8 @@ namespace LoomNetwork.CZB
 
         public void CallOnEndTurnEvent()
         {
-			LoomManager.Instance.UpdateHistory ("Player ends his turn.");
-			LoomManager.Instance.UploadHistory (LoomManager.Instance.UserDataModel.UserId);
+			BackendFacade.Instance.UpdateHistory ("Player ends his turn.");
+			BackendFacade.Instance.UploadHistory (BackendFacade.Instance.UserDataModel.UserId);
 
             OnEndTurnEvent?.Invoke();
             if (Goo > GooOnCurrentTurn)
@@ -240,8 +241,8 @@ namespace LoomNetwork.CZB
 
         public void CallOnStartTurnEvent()
         {
-			LoomManager.Instance.ClearHistory ();
-			LoomManager.Instance.UpdateHistory ("Player begins his turn.");
+			BackendFacade.Instance.ClearHistory ();
+			BackendFacade.Instance.UpdateHistory ("Player begins his turn.");
 
             OnStartTurnEvent?.Invoke();
 

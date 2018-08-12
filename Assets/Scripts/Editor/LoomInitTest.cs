@@ -22,9 +22,9 @@ public class LoomUnitTest
     {
         return LoomTestContext.AsyncTest(async () =>
         {
-            Assert.IsNull(LoomTestContext.LoomManager.Contract);
-            await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
-            Assert.IsNotNull(LoomTestContext.LoomManager.Contract);
+            Assert.IsNull(LoomTestContext.BackendFacade.Contract);
+            await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendFacade.UserDataModel.PrivateKey);
+            Assert.IsNotNull(LoomTestContext.BackendFacade.Contract);
         });
     }
 
@@ -33,10 +33,10 @@ public class LoomUnitTest
     {
         return LoomTestContext.AsyncTest(async () =>
         {
-            LoomTestContext.LoomManager.WriteHost = string.Empty;
+            LoomTestContext.BackendFacade.WriterHost = string.Empty;
             await LoomTestContext.AssertThrowsAsync(async () =>
             {
-                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendFacade.UserDataModel.PrivateKey);
             });
         });
     }
@@ -46,10 +46,10 @@ public class LoomUnitTest
     {
         return LoomTestContext.AsyncTest(async () =>
         {
-            LoomTestContext.LoomManager.WriteHost = "https://www.google.com";
+            LoomTestContext.BackendFacade.WriterHost = "https://www.google.com";
             await LoomTestContext.AssertThrowsAsync(async () =>
             {
-                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendFacade.UserDataModel.PrivateKey);
             });
         });
     }
@@ -59,10 +59,10 @@ public class LoomUnitTest
     {
         return LoomTestContext.AsyncTest(async () =>
         {
-            LoomTestContext.LoomManager.ReaderHost = string.Empty;
+            LoomTestContext.BackendFacade.ReaderHost = string.Empty;
             await LoomTestContext.AssertThrowsAsync(async () =>
             {
-                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendFacade.UserDataModel.PrivateKey);
             });
         });
     }
@@ -72,10 +72,10 @@ public class LoomUnitTest
     {
         return LoomTestContext.AsyncTest(async () =>
         {
-            LoomTestContext.LoomManager.ReaderHost = "https://www.google.com";
+            LoomTestContext.BackendFacade.ReaderHost = "https://www.google.com";
             await LoomTestContext.AssertThrowsAsync(async () =>
             {
-                await LoomTestContext.LoomManager.CreateContract(LoomTestContext.LoomManager.UserDataModel.PrivateKey);
+                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendFacade.UserDataModel.PrivateKey);
             });
         });
     }

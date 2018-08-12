@@ -3,22 +3,23 @@ using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Loom.Client;
+using LoomNetwork.CZB.BackendCommunication;
 using NUnit.Framework;
 
 public static class LoomTestContext
 {
-    public static LoomManager LoomManager;
+    public static BackendFacade BackendFacade;
 
     public static void TestSetUp(string userId = "Loom")
     {
-        LoomManager = new LoomManager();
-        LoomManager.UserDataModel = new LoomUserDataModel(userId, CryptoUtils.GeneratePrivateKey());
+        BackendFacade = new BackendFacade();
+        BackendFacade.UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
     }
-    
+
     public static void TestTearDown()
     {
-        LoomManager?.Contract?.Client?.Dispose();
-        LoomManager = null;
+        BackendFacade?.Contract?.Client?.Dispose();
+        BackendFacade = null;
     }
 
     public static IEnumerator AsyncTest(Func<Task> action)
@@ -40,7 +41,7 @@ public static class LoomTestContext
         {
             return;
         }
-            
+
         throw new AssertionException("Expected an exception");
     }
 
@@ -67,10 +68,10 @@ public static class LoomTestContext
 
     private static async Task EnsureContract()
     {
-        if (LoomManager.Contract != null && LoomManager.IsConnected)
+        if (BackendFacade.Contract != null && BackendFacade.IsConnected)
             return;
 
-        await LoomManager.CreateContract(LoomManager.UserDataModel.PrivateKey);
+        await BackendFacade.CreateContract(BackendFacade.UserDataModel.PrivateKey);
         /*LoomTestContext.LoomManager.UserDataModel = new LoomUserDataModel("LoomTest" + Random.value, CryptoUtils.GeneratePrivateKey());
         try
         {

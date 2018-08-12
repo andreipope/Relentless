@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Protobuf;
 using UnityEngine;
 using LoomNetwork.Internal;
@@ -233,7 +234,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            var heroesList = await LoomManager.Instance.GetHeroesList(LoomManager.Instance.UserDataModel.UserId);
+                            var heroesList = await BackendFacade.Instance.GetHeroesList(BackendFacade.Instance.UserDataModel.UserId);
                             CustomDebug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
@@ -273,7 +274,7 @@ namespace LoomNetwork.CZB
                     {
                         try
                         {
-                            ListDecksResponse listDecksResponse = await LoomManager.Instance.GetDecks(LoomManager.Instance.UserDataModel.UserId);
+                            ListDecksResponse listDecksResponse = await BackendFacade.Instance.GetDecks(BackendFacade.Instance.UserDataModel.UserId);
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());

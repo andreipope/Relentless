@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.Threading.Tasks;
 using Loom.Client;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -90,16 +91,16 @@ namespace LoomNetwork.CZB
 
 			    try
 			    {
-				    LoomUserDataModel userDataModel = new LoomUserDataModel(userId, privateKey)
+				    UserDataModel userDataModel = new UserDataModel(userId, privateKey)
 				    {
 					    IsValid = false
 				    };
-				    LoomManager.Instance.SetUserDataModel(userDataModel);
+				    BackendFacade.Instance.SetUserDataModel(userDataModel);
 
-				    await LoomManager.Instance.LoadUserDataModelAndCreateContract();
+				    await BackendFacade.Instance.LoadUserDataModelAndCreateContract();
 				    try
 				    {
-					    await LoomManager.Instance.SignUp(userDataModel.UserId);
+					    await BackendFacade.Instance.SignUp(userDataModel.UserId);
 				    } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
 				    {
 					    // Ignore
@@ -108,7 +109,7 @@ namespace LoomNetwork.CZB
 				    await _dataManager.StartLoadCache();
 
 				    userDataModel.IsValid = true;
-				    LoomManager.Instance.SetUserDataModel(userDataModel);
+				    BackendFacade.Instance.SetUserDataModel(userDataModel);
 				    
 				    SuccessfulLogin();
 			    }
