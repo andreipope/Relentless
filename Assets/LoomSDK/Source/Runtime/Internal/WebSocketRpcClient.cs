@@ -91,6 +91,38 @@ namespace Loom.Client.Internal
 
             this.disposed = true;
         }
+        
+        public override Task ConnectAsync()
+        {
+            AssertNotAlreadyConnectedOrConnecting();
+            var tcs = new TaskCompletionSource<object>();
+            EventHandler openHandler = null;
+            EventHandler<CloseEventArgs> closeHandler = null;
+            openHandler = (sender, e) =>
+            {
+                this.webSocket.OnOpen -= openHandler;
+                this.webSocket.OnClose -= closeHandler;
+                tcs.TrySetResult(null);
+                this.Logger.Log(LogTag, "Connected to " + this.url.AbsoluteUri);
+            };
+            closeHandler = (sender, e) =>
+            {
+                tcs.SetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}"));
+            };
+            this.webSocket.OnOpen += openHandler;
+            this.webSocket.OnClose += closeHandler;
+            try
+            {
+                this.webSocket.ConnectAsync();
+            }
+            catch (Exception)
+            {
+                this.webSocket.OnOpen -= openHandler;
+                this.webSocket.OnClose -= closeHandler;
+                throw;
+            }
+            return tcs.Task;
+        }
 
         public override Task DisconnectAsync()
         {
@@ -212,41 +244,9 @@ namespace Loom.Client.Internal
             NotifyConnectionStateChanged();
         }
 
-        public override Task ConnectAsync()
-        {
-            AssertAlreadyConnected();
-            var tcs = new TaskCompletionSource<object>();
-            EventHandler openHandler = null;
-            EventHandler<CloseEventArgs> closeHandler = null;
-            openHandler = (sender, e) =>
-            {
-                this.webSocket.OnOpen -= openHandler;
-                this.webSocket.OnClose -= closeHandler;
-                tcs.TrySetResult(null);
-                this.Logger.Log(LogTag, "Connected to " + this.url.AbsoluteUri);
-            };
-            closeHandler = (sender, e) =>
-            {
-                tcs.SetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}"));
-            };
-            this.webSocket.OnOpen += openHandler;
-            this.webSocket.OnClose += closeHandler;
-            try
-            {
-                this.webSocket.ConnectAsync();
-            }
-            catch (Exception)
-            {
-                this.webSocket.OnOpen -= openHandler;
-                this.webSocket.OnClose -= closeHandler;
-                throw;
-            }
-            return tcs.Task;
-        }
-
         private async Task SendAsync<T>(string method, T args, string msgId)
         {
-            AssertMustBeConnected();
+            AssertIsConnected();
             var tcs = new TaskCompletionSource<object>();
             var reqMsg = new JsonRpcRequest<T>(method, args, msgId);
             var reqMsgBody = JsonConvert.SerializeObject(reqMsg);

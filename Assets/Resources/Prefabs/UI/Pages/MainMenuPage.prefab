@@ -857,7 +857,7 @@ GameObject:
   - component: {fileID: 224757630953378680}
   - component: {fileID: 222467536637388480}
   m_Layer: 5
-  m_Name: MainMenuPage_nEW
+  m_Name: MainMenuPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

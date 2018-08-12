@@ -58,7 +58,7 @@ namespace Loom.Client.Internal
             ConnectionStateChanged?.Invoke(this, state);
         }
 
-        protected void AssertMustBeConnected() {
+        protected void AssertIsConnected() {
             RpcConnectionState connectionState = this.ConnectionState;
             if (connectionState == RpcConnectionState.Connected)
                 return;
@@ -68,7 +68,7 @@ namespace Loom.Client.Internal
                 $"current state is {connectionState}");
         }
         
-        protected void AssertAlreadyConnected() {
+        protected void AssertNotAlreadyConnectedOrConnecting() {
             RpcConnectionState connectionState = this.ConnectionState;
             
             if (connectionState == RpcConnectionState.Connecting)

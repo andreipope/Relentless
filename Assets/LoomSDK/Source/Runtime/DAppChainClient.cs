@@ -247,7 +247,7 @@ namespace Loom.Client
                     (
                         e.ContractAddress,
                         e.CallerAddress,
-                        e.BlockHeight,
+                        UInt64.Parse(e.BlockHeight), 
                         e.Data,
                         e.Topics
                     ));
@@ -281,6 +281,7 @@ namespace Loom.Client
         }
 
         private async Task EnsureConnected(IRpcClient rpcClient) {
+            // TODO: handle edge-case when ConnectionState == RpcConnectionState.Connecting
             if (rpcClient.ConnectionState != RpcConnectionState.Connected)
             {
                 await rpcClient.ConnectAsync();
