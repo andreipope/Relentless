@@ -191,7 +191,6 @@ namespace LoomNetwork.CZB
                 CustomDebug.Log("Result === " + e);
                 OpenAlertDialog("Not able to Delete Deck: " + e.Message);
             }
-            
         }
 
         private void HordeDeckSelectedEventHandler(HordeDeckObject deck)

@@ -818,6 +818,7 @@ namespace LoomNetwork.CZB
 
         public async void OnDoneButtonPressed()
         {
+            bool success = true;
             if (_currentDeckId == -1)
             {
                 _currentDeck.heroId = _currentHeroId;
@@ -831,6 +832,7 @@ namespace LoomNetwork.CZB
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
                 {
+                    success = false;
                     CustomDebug.Log("Result === " + e);
                     OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                 }
@@ -845,18 +847,17 @@ namespace LoomNetwork.CZB
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
+                    success = false;
                     CustomDebug.Log("Result === " + e);
                     OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
                 }
             }
 
-            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-            
-            //Debug.Log("Deck saved called ======= " + _currentDeck.name + " , " + _currentDeck.heroId);
-            
-            
+            if (success)
+            {
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
+            }
         }
 
         public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta) {
