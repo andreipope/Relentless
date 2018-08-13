@@ -155,10 +155,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -315,10 +315,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -551,10 +551,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -644,10 +644,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -909,10 +909,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1149,10 +1149,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1266,7 +1266,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Alpha 0.0.21.3
+  m_Text: Alpha 0.0.21.4 Online
 --- !u!222 &1759763181
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1512,10 +1512,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.14828363
-    width: 1
-    height: 0.70343274
+    x: 0.00024986267
+    y: 0
+    width: 0.9995003
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
