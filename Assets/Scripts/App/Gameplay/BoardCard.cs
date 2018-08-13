@@ -558,6 +558,10 @@ namespace LoomNetwork.CZB
 
         public void DrawTooltipInfoOfCard(BoardCard boardCard)
         {
+            if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                return;
+
+
             GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
 
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -570,37 +574,34 @@ namespace LoomNetwork.CZB
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            if (boardCard.WorkingCard.libraryCard.cardRank != Enumerators.CardRank.MINION)
             {
-                if (boardCard.WorkingCard.libraryCard.cardRank != Enumerators.CardRank.MINION)
+                var rankInfo = _dataManager.GetRankInfoByType(boardCard.WorkingCard.libraryCard.cardRank.ToString());
+                if (rankInfo != null)
                 {
-                    var rankInfo = _dataManager.GetRankInfoByType(boardCard.WorkingCard.libraryCard.cardRank.ToString());
-                    if (rankInfo != null)
+                    var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(boardCard.WorkingCard.libraryCard).ToLower()));
+
+                    buffs.Add(new BuffTooltipInfo()
                     {
-                        var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(boardCard.WorkingCard.libraryCard).ToLower()));
-
-                        buffs.Add(new BuffTooltipInfo()
-                        {
-                            title = rankInfo.name,
-                            description = rankDescription.tooltip,
-                            tooltipObjectType = Enumerators.TooltipObjectType.RANK,
-                            value = -1
-                        });
-                    }
+                        title = rankInfo.name,
+                        description = rankDescription.tooltip,
+                        tooltipObjectType = Enumerators.TooltipObjectType.RANK,
+                        value = -1
+                    });
                 }
+            }
 
-                if (boardCard.WorkingCard.type != Enumerators.CardType.WALKER && boardCard.WorkingCard.type != Enumerators.CardType.NONE)
-                {
-                    var buffInfo = _dataManager.GetBuffInfoByType(boardCard.WorkingCard.type.ToString());
-                    if (buffInfo != null)
-                        buffs.Add(new BuffTooltipInfo()
-                        {
-                            title = buffInfo.name,
-                            description = buffInfo.tooltip,
-                            tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
-                            value = -1
-                        });
-                }
+            if (boardCard.WorkingCard.type != Enumerators.CardType.WALKER && boardCard.WorkingCard.type != Enumerators.CardType.NONE)
+            {
+                var buffInfo = _dataManager.GetBuffInfoByType(boardCard.WorkingCard.type.ToString());
+                if (buffInfo != null)
+                    buffs.Add(new BuffTooltipInfo()
+                    {
+                        title = buffInfo.name,
+                        description = buffInfo.tooltip,
+                        tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
+                        value = -1
+                    });
             }
 
             if (boardCard.WorkingCard.libraryCard.abilities != null)

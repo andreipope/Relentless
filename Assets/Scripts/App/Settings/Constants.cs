@@ -11,8 +11,10 @@ namespace LoomNetwork.CZB.Common
     {
         public const string SPACE = " ";
 
-        internal const string CURRENT_VERSION = "0.0.21.3";
 		internal const string CURRENT_VERSION_FULL = "Alpha " + CURRENT_VERSION;
+        internal const string VERSION_REVISION = "Alpha";
+        internal const string CURRENT_VERSION = "0.0.21.4 Online";
+        internal const string VERSION_FILE_RESOLUTION = ".ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
 		internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
@@ -27,7 +29,7 @@ namespace LoomNetwork.CZB.Common
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
-        internal static bool DATA_ENCRYPTION_ENABLED = false;
+        internal static bool DATA_ENCRYPTION_ENABLED = true;
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
