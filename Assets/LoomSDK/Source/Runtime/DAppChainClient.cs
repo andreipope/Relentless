@@ -108,9 +108,10 @@ namespace Loom.Client
         public async Task<ulong> GetNonceAsync(string key)
         {
             await EnsureConnected();
-            return await this.readClient.SendAsync<ulong, NonceParams>(
+            string nonce = await this.readClient.SendAsync<string, NonceParams>(
                 "nonce", new NonceParams { Key = key }
             );
+            return UInt64.Parse(nonce); 
         }
 
         /// <summary>

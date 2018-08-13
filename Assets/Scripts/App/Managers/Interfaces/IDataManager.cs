@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
         
-        GlobalConfig GlobalConfig { get; set; }
+        LatestVersions LatestVersions { get; set; }
         BetaConfig BetaConfig { get; set; }
 
         Task StartLoadCache();
