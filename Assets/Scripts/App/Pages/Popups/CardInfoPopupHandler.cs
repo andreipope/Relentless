@@ -74,9 +74,6 @@ namespace LoomNetwork.CZB
         {
             SetIsStateChanging(true);
 
-            var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.name).amount;
-            _selectedCollectionCard.UpdateAmount(amount);
-
             Closing?.Invoke();
 
             Sequence sequence = DOTween.Sequence();
