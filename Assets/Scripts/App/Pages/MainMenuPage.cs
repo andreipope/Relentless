@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Gameplay;
 using TMPro;
+using System;
 
 namespace LoomNetwork.CZB
 {
@@ -190,7 +191,12 @@ namespace LoomNetwork.CZB
 
         private void QuitButtonOnClickHandler()
         {
-            Application.Quit();
+            Action callback = () =>
+            {
+                Application.Quit();
+            };
+
+            _uiManager.DrawPopup<ConfirmationPopup>(callback);
         }
 
         private void OpenButtonHandler()

@@ -4,6 +4,8 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -39,11 +41,6 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                TakeTypeToUnit(targetUnit);
-            }
         }
 
         private void TakeTypeToUnit(BoardUnit unit)
@@ -60,6 +57,19 @@ namespace LoomNetwork.CZB
                     unit.SetAsFeralUnit();
                     break;
             }
+        }
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+
+            //Debug.Log();
+            List<BoardUnit> allies = new List<BoardUnit>();
+            allies.AddRange(playerCallerOfAbility.BoardCards);
+            allies.Remove(abilityUnitOwner);
+
+            int random = Random.Range(0, playerCallerOfAbility.BoardCards.Count);
+            TakeTypeToUnit(playerCallerOfAbility.BoardCards[random]);
         }
     }
 }
