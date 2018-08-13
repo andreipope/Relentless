@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 66149998}
   - component: {fileID: 66149999}
+  - component: {fileID: 66150000}
   m_Layer: 0
   m_Name: CameraObject_3
   m_TagString: MainCamera
@@ -155,9 +156,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -178,6 +179,18 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &66150000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 66149997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &346073623
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +252,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 346073623}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -252,6 +265,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  referenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &346073627
 Canvas:
   m_ObjectHideFlags: 0
@@ -281,6 +295,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647401282}
   - component: {fileID: 647401281}
+  - component: {fileID: 647401283}
   m_Layer: 0
   m_Name: CameraUI_2
   m_TagString: Untagged
@@ -301,9 +316,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -337,6 +352,18 @@ Transform:
   m_Father: {fileID: 1265724705}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &647401283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 647401280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &687476403
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,7 +425,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 687476403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -411,6 +438,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  referenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &687476407
 Canvas:
   m_ObjectHideFlags: 0
@@ -502,6 +530,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1022427339}
   - component: {fileID: 1022427338}
+  - component: {fileID: 1022427341}
   - component: {fileID: 1022427340}
   m_Layer: 0
   m_Name: CameraUI_1
@@ -523,9 +552,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -574,6 +603,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32
   m_MaxRayIntersections: 0
+--- !u!114 &1022427341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1022427337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &1027686444
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,6 +624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1027686446}
   - component: {fileID: 1027686445}
+  - component: {fileID: 1027686447}
   m_Layer: 0
   m_Name: CameraObject_1
   m_TagString: MainCamera
@@ -603,9 +645,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -639,6 +681,18 @@ Transform:
   m_Father: {fileID: 1265724705}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1027686447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1027686444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &1126897066
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,9 +828,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1265724705}
+  - component: {fileID: 1265724706}
   m_Layer: 0
   m_Name: Cameras
-  m_TagString: Untagged
+  m_TagString: Cameras
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -801,6 +856,17 @@ Transform:
   m_Father: {fileID: 1216548032}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1265724706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1265724704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caf675d480866df4ea55c47a41cc8b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1357690066
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,6 +876,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1357690067}
   - component: {fileID: 1357690068}
+  - component: {fileID: 1357690069}
   m_Layer: 0
   m_Name: CameraObject_2
   m_TagString: MainCamera
@@ -843,9 +910,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -866,6 +933,18 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1357690069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1357690066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &1423204460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,7 +1086,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1437790369}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -1020,6 +1099,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  referenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &1437790373
 Canvas:
   m_ObjectHideFlags: 0
@@ -1049,6 +1129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1601436138}
   - component: {fileID: 1601436137}
+  - component: {fileID: 1601436139}
   m_Layer: 0
   m_Name: CameraVFX
   m_TagString: Untagged
@@ -1069,9 +1150,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1105,6 +1186,18 @@ Transform:
   m_Father: {fileID: 1265724705}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1601436139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1601436136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
 --- !u!1 &1759763178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1189,7 +1282,6 @@ GameObject:
   - component: {fileID: 2037977786}
   - component: {fileID: 2037977789}
   - component: {fileID: 2037977788}
-  - component: {fileID: 2037977787}
   m_Layer: 12
   m_Name: CanvasOverScreen
   m_TagString: Untagged
@@ -1216,22 +1308,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &2037977787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2037977785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &2037977788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1240,7 +1316,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2037977785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -1253,6 +1329,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  referenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &2037977789
 Canvas:
   m_ObjectHideFlags: 0
@@ -1261,7 +1338,7 @@ Canvas:
   m_GameObject: {fileID: 2037977785}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 2146064447}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
@@ -1390,6 +1467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2146064446}
   - component: {fileID: 2146064447}
+  - component: {fileID: 2146064448}
   m_Layer: 0
   m_Name: CameraUI_3
   m_TagString: Untagged
@@ -1423,9 +1501,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.14828363
     width: 1
-    height: 1
+    height: 0.70343274
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1446,3 +1524,15 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &2146064448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2146064445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetAspectRatio: 1.7777778
