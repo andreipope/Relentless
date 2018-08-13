@@ -8,6 +8,7 @@ using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Common;
 using System;
 using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
 
 namespace LoomNetwork.CZB
 {
@@ -23,6 +24,9 @@ namespace LoomNetwork.CZB
         OpponentDecksData CachedOpponentDecksData { get; set; }
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
+        
+        GlobalConfig GlobalConfig { get; set; }
+        BetaConfig BetaConfig { get; set; }
 
         Task StartLoadCache();
         Task SaveAllCache();

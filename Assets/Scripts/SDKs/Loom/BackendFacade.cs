@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
 using Loom.Newtonsoft.Json;
+using Loom.Newtonsoft.Json.Serialization;
 using LoomNetwork.CZB.Protobuf;
+using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using Random = System.Random;
 using Deck = LoomNetwork.CZB.Data.Deck;
@@ -16,6 +18,7 @@ namespace LoomNetwork.CZB.BackendCommunication
     public class BackendFacade : IService
     {
         private const string UserDataFileName = "UserData.json";
+        public const string AuthBackendHost = "http://stage.loom.games";
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
@@ -184,7 +187,12 @@ namespace LoomNetwork.CZB.BackendCommunication
                 }
             };
 
-            return (await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request)).DeckId;
+            // HACK
+            CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
+            if (createDeckResponse == null)
+                return 0;
+            
+            return createDeckResponse.DeckId;
         }
 
         private static EditDeckRequest EditDeckRequest(string userId, Deck deck)
@@ -268,6 +276,47 @@ namespace LoomNetwork.CZB.BackendCommunication
             };*/
 
             //await Contract.CallAsync(CreateAccountMethod, req);
+        }
+
+        #endregion
+
+        #region Auth
+
+        private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+        private const string AuthBetaConfigEndPoint = "/user/beta/config";
+        private const string AuthGlobalConfigEndPoint = "/config";
+
+        public async Task<bool> CheckIfBetaKeyValid(string betaKey)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            BetaKeyValidationResponse betaKeyValidationResponse = httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
+            return betaKeyValidationResponse.IsValid;
+        }
+        
+        public async Task<BetaConfig> GetBetaConfig(string betaKey)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            BetaConfig betaConfig = httpResponseMessage.DeserializeAsJson<BetaConfig>();
+            return betaConfig;
+        }
+        
+        public async Task<GlobalConfig> GetGlobalConfig()
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = AuthBackendHost + AuthGlobalConfigEndPoint;
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            GlobalConfig globalConfig = httpResponseMessage.DeserializeAsJson<GlobalConfig>();
+            return globalConfig;
+        }
+
+        private struct BetaKeyValidationResponse
+        {
+            [JsonProperty(PropertyName = "is_valid")]
+            public bool IsValid;
         }
 
         #endregion

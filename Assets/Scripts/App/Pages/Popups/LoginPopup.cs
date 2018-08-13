@@ -70,11 +70,12 @@ namespace LoomNetwork.CZB
 
 	    private async void PressedBetaHandler () {
 		    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-		    
-		    bool isBetaKeyValid = _betaKeyInputField.text.Length == 12;
+
+		    string betaKey = _betaKeyInputField.text.Trim();
+		    bool isBetaKeyValid = betaKey.Length == 12;
 		    try
 		    {
-			    isBetaKeyValid &= CryptoUtils.HexStringToBytes(_betaKeyInputField.text).Length == 6;
+			    isBetaKeyValid &= CryptoUtils.HexStringToBytes(betaKey).Length == 6;
 		    } catch (Exception)
 		    {
 			    isBetaKeyValid = false;
@@ -83,23 +84,24 @@ namespace LoomNetwork.CZB
 		    if (isBetaKeyValid) { //check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
 			    SetUIState(LoginState.BetaKeyValidateAndLogin);
 
-			    // Simulate backend request
-			    await Task.Delay(TimeSpan.FromSeconds(2));
-
 			    byte[] privateKey;
 			    byte[] publicKey;
 			    string userId;
-			    GenerateKeysAndUserFromBetaKey(_betaKeyInputField.text, out privateKey, out publicKey, out userId);
+			    GenerateKeysAndUserFromBetaKey(betaKey, out privateKey, out publicKey, out userId);
 
 			    try
 			    {
-				    UserDataModel userDataModel = new UserDataModel(userId, privateKey)
+				    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
 				    {
 					    IsValid = false
 				    };
 				    _backendFacade.SetUserDataModel(userDataModel);
 
 				    await _backendFacade.LoadUserDataModelAndCreateContract();
+				    isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
+				    if (!isBetaKeyValid)
+					    throw new Exception("Beta key not registered");
+				    
 				    try
 				    {
 					    await _backendFacade.SignUp(userDataModel.UserId);

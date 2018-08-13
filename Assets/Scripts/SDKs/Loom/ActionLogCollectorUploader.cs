@@ -9,12 +9,15 @@ namespace LoomNetwork.CZB.BackendCommunication
     public class ActionLogCollectorUploader : IService
     {
         private IGameplayManager _gameplayManager;
+        private IDataManager _dataManager;
         private PlayerEventListener _playerEventListener;
         private PlayerEventListener _opponentEventListener;
 
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            
             _gameplayManager.OnGameInitializedEvent += GameplayManagerOnGameInitializedEvent;
             _gameplayManager.OnGameEndedEvent += GameplayManagerOnGameEndedEvent;
         }
@@ -51,13 +54,18 @@ namespace LoomNetwork.CZB.BackendCommunication
             public bool IsOpponent { get; }
             
             private readonly BackendFacade _backendFacade;
+            private IDataManager _dataManager;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _dataManager = GameClient.Get<IDataManager>();
                 
                 Player = player;
                 IsOpponent = isOpponent;
+
+                if (!_dataManager.BetaConfig.SaveTurnData)
+                    return;
                 
                 Player.OnEndTurnEvent += OnEndTurnEventHandler;
                 Player.OnStartTurnEvent += OnStartTurnEventHandler;

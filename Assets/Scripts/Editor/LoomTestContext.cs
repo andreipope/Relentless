@@ -13,7 +13,7 @@ public static class LoomTestContext
     public static void TestSetUp(string userId = "Loom")
     {
         BackendFacade = new BackendFacade();
-        BackendFacade.UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
+        BackendFacade.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
 
     public static void TestTearDown()

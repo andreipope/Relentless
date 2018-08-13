@@ -40,6 +40,9 @@ namespace LoomNetwork.CZB
         public ActionData CachedActionsLibraryData { get; set;}
 
         public CreditsData CachedCreditsData { get; set; }
+        
+        public GlobalConfig GlobalConfig { get; set; }
+        public BetaConfig BetaConfig { get; set; }
 
         private int _currentDeckIndex;
         private int _currentAIDeckIndex;
@@ -92,6 +95,10 @@ namespace LoomNetwork.CZB
         public async Task StartLoadCache()
         {
             Debug.Log("=== Start loading server ==== ");
+            
+            GlobalConfig = await _backendFacade.GetGlobalConfig();
+            BetaConfig = await _backendFacade.GetBetaConfig(_backendFacade.UserDataModel.BetaKey);
+            
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
                 await LoadCachedData((Enumerators.CacheDataType)i);
