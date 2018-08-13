@@ -98,6 +98,8 @@ namespace LoomNetwork.CZB
 
             CachedCardsLibraryData.FillAllCards();
 
+            // FIXME: remove next line after fetching collection from backend is implemented
+            FillFullCollection();
             CachedOpponentDecksData.ParseData();
             CachedActionsLibraryData.ParseData();
 
@@ -219,7 +221,7 @@ namespace LoomNetwork.CZB
                         
                         /*try
                         {
-                            var listCardLibraryResponse = await LoomManager.Instance.GetCardLibrary();
+                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                             CustomDebug.Log(listCardLibraryResponse.ToString());
                             CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
                         }
@@ -233,6 +235,9 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
                     {
+                        //if (File.Exists(_cacheDataPathes[type]))
+                        //    CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
+                        
                         try
                         {
                             var heroesList = await _backendFacade.GetHeroesList(_backendFacade.UserDataModel.UserId);
@@ -260,7 +265,7 @@ namespace LoomNetwork.CZB
                         
                         /*try
                         {
-                            var getCollectionResponse = await LoomManager.Instance.GetCardCollection(LoomManager.Instance.UserDataModel.UserId);
+                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendFacade.UserDataModel.UserId);
                             CustomDebug.Log(getCollectionResponse.ToString());
 
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
@@ -268,11 +273,16 @@ namespace LoomNetwork.CZB
                         catch (Exception ex)
                         {
                             CustomDebug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
+                            if (File.Exists(_cacheDataPathes[type]))
+                                CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                         }*/
                     }
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
                     {
+                        //if (File.Exists(_cacheDataPathes[type]))
+                        //    CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+
                         try
                         {
                             ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendFacade.UserDataModel.UserId);
@@ -325,19 +335,19 @@ namespace LoomNetwork.CZB
             if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH)))
             {
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
-                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
+                //CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
                 //CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
+                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);
                 CachedBuffsTooltipData = JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
 
-                var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
+                /*var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
                 if (collectionLibrary == null)
                     FillFullCollection();
                 else
-                    CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(collectionLibrary.text);
+                    CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(collectionLibrary.text);*/
             }
         }
 
