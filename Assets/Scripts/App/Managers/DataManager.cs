@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
             Debug.Log("=== Start loading server ==== ");
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
-                LoadCachedData((Enumerators.CacheDataType)i);
+                await LoadCachedData((Enumerators.CacheDataType)i);
 
             CachedCardsLibraryData.FillAllCards();
 
@@ -208,7 +208,7 @@ namespace LoomNetwork.CZB
             return Task.CompletedTask;
         }
 
-        private async void LoadCachedData(Enumerators.CacheDataType type)
+        private async Task LoadCachedData(Enumerators.CacheDataType type)
         {
             switch (type)
             {
