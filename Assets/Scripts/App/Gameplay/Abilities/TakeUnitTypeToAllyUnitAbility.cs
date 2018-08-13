@@ -4,6 +4,9 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
 
 namespace LoomNetwork.CZB
 {
@@ -39,11 +42,6 @@ namespace LoomNetwork.CZB
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                TakeTypeToUnit(targetUnit);
-            }
         }
 
         private void TakeTypeToUnit(BoardUnit unit)
@@ -59,6 +57,20 @@ namespace LoomNetwork.CZB
                 case Enumerators.CardType.FERAL:
                     unit.SetAsFeralUnit();
                     break;
+            }
+        }
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            List<BoardUnit> allies = new List<BoardUnit>();
+
+            allies = playerCallerOfAbility.BoardCards.Where((unit) => unit != abilityUnitOwner && unit.IsFeralUnit() == false).ToList();
+
+            if (allies.Count > 0)
+            {
+                int random = Random.Range(0, allies.Count);
+                TakeTypeToUnit(allies[random]);
             }
         }
     }

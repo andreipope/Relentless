@@ -113,7 +113,7 @@ namespace LoomNetwork.CZB
                     for (var i = 0; i < card.amount; i++)
                     {
                         playerDeck.Add(card.cardName);
-                       //  playerDeck.Add("Draft");
+                       //  playerDeck.Add("Zeptic");
                     }
                 }
 
@@ -217,14 +217,14 @@ namespace LoomNetwork.CZB
         {
             try
             {
-                foreach (var unit in GetUnitCardsInHand())
+                foreach (var card in GetUnitCardsInHand())
                 {
                     if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
                         break;
 
-                    if (CardCanBePlayable(unit))
+                    if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                     {
-                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(unit); });
+                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(card); });
                         LetsThink();
                         LetsThink();
                         LetsThink();
@@ -234,11 +234,11 @@ namespace LoomNetwork.CZB
                     //     break;
                 }
 
-                foreach (var spell in GetSpellCardsInHand())
+                foreach (var card in GetSpellCardsInHand())
                 {
-                    if (CardCanBePlayable(spell))
+                    if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                     {
-                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(spell); });
+                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(card); });
                         LetsThink();
                         LetsThink();
                     }
@@ -395,6 +395,23 @@ namespace LoomNetwork.CZB
         private bool UnitCanBeUsable(BoardUnit unit)
         {
             return unit.UnitCanBeUsable();
+        }
+
+        private bool CheckSpecialCardRules(WorkingCard card)
+        {
+            if(card.libraryCard.abilities != null)
+            {
+                foreach(var ability in card.libraryCard.abilities)
+                {
+                    if(ability.type.Equals("ATTACK_OVERLORD"))
+                    {
+                        if (ability.value >= _gameplayManager.OpponentPlayer.HP)
+                            return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void PlayCardOnBoard(WorkingCard card)
@@ -895,6 +912,17 @@ namespace LoomNetwork.CZB
                         }
                     }
                     break;
+                case Enumerators.OverlordSkill.RABIES:
+                    {
+                        var unit = GetRandomUnit();
+
+                        if (unit != null)
+                        {
+                            target = unit;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                    }
+                    break;
                 case Enumerators.OverlordSkill.POISON_DART:
                 case Enumerators.OverlordSkill.TOXIC_POWER:
                 case Enumerators.OverlordSkill.ICE_BOLT:
@@ -913,8 +941,7 @@ namespace LoomNetwork.CZB
                         }
                     }
                     break;
-                case Enumerators.OverlordSkill.PUSH:
-                case Enumerators.OverlordSkill.RABIES:
+                case Enumerators.OverlordSkill.PUSH: 
                     {
                         var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 

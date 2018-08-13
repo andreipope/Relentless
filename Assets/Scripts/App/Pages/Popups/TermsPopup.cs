@@ -26,7 +26,8 @@ namespace LoomNetwork.CZB
 		private IDataManager _dataManager;
         private GameObject _selfPage;
 
-		private TextMeshProUGUI _text;
+		private TextMeshProUGUI _text,
+                                _titleText;
 		private ButtonShiftingContent _gotItButton;
 		private Toggle _toggle;
 
@@ -46,8 +47,11 @@ namespace LoomNetwork.CZB
 			_toggle.onValueChanged.AddListener(ToggleValueChanged);
 
             _text = _selfPage.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            _titleText = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
 
             _gotItButton.gameObject.SetActive(false);
+
+            _titleText.text = "UPDATE ver " + Constants.CURRENT_VERSION;
 
             Hide();
         }

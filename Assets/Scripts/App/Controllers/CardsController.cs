@@ -245,7 +245,12 @@ namespace LoomNetwork.CZB
         public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
         {
             if (card == null)
+            {
+                if (otherPlayer.CardsInDeck.Count == 0)
+                    return;
+
                 card = otherPlayer.CardsInDeck[0];
+            }
 
             otherPlayer.RemoveCardFromDeck(card);
 
@@ -480,7 +485,7 @@ namespace LoomNetwork.CZB
         {
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
-                if (!Constants.DEV_MODE)
+             //  if (!Constants.DEV_MODE)
                     player.Goo -= card.libraryCard.cost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>

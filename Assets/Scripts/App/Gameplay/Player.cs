@@ -40,6 +40,7 @@ namespace LoomNetwork.CZB
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
         private AnimationsController _animationsController;
+        private VFXController _vfxController;
 
         private int _goo;
         private int _gooOnCurrentTurn;
@@ -87,6 +88,8 @@ namespace LoomNetwork.CZB
         public int initialHP;
 
         public int currentGooModificator;
+
+        public int damageByNoMoreCardsInDeck = 0;
 
         public int GooOnCurrentTurn
         {
@@ -178,6 +181,7 @@ namespace LoomNetwork.CZB
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
+            _vfxController = _gameplayManager.GetController<VFXController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -226,6 +230,8 @@ namespace LoomNetwork.CZB
             _avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
 
             PlayerHPChangedEvent += PlayerHPChangedEventHandler;
+
+            damageByNoMoreCardsInDeck = 0;
         }
 
         public void CallOnEndTurnEvent()
@@ -260,6 +266,12 @@ namespace LoomNetwork.CZB
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
+                else
+                {
+                    damageByNoMoreCardsInDeck++;
+                    HP -= damageByNoMoreCardsInDeck;
+                    _vfxController.SpawnGotDamageEffect(this, -damageByNoMoreCardsInDeck);
                 }
 
             }

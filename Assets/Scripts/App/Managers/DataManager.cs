@@ -123,15 +123,15 @@ namespace LoomNetwork.CZB
             var files = dir.GetFiles();
             bool versionMatch = false;
             foreach (var file in files)
-                if (file.Name == Constants.CURRENT_VERSION)
+                if (file.Name == Constants.CURRENT_VERSION + Constants.VERSION_FILE_RESOLUTION)
                     versionMatch = true;
 
             if (!versionMatch)
             {
                 foreach (var file in files)
-                    if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains("ver"))
+                    if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VERSION_FILE_RESOLUTION))
                         file.Delete();
-                File.Create(dir + Constants.CURRENT_VERSION);
+                File.Create(dir + Constants.CURRENT_VERSION + Constants.VERSION_FILE_RESOLUTION);
             }
         }
 
