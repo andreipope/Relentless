@@ -256,8 +256,10 @@ namespace LoomNetwork.CZB.BackendCommunication
         public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
         {
             string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
-            Dictionary<string, object> actionLogModelJsonDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
-            actionLogModelJson = JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)]);
+            Dictionary<string, object> actionLogModelJsonDictionary = 
+                JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
+            actionLogModelJson = 
+                JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)], Formatting.Indented);
             Debug.Log("Logging action: \n" + actionLogModelJson);
             await Task.Delay(1000);
             /*var req = new UpsertAccountRequest {
