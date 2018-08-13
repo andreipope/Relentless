@@ -284,7 +284,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
         private const string AuthBetaConfigEndPoint = "/user/beta/config";
-        private const string AuthGlobalConfigEndPoint = "/config";
+		private const string AuthGlobalConfigEndPoint = "/latestVersions";
 
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
