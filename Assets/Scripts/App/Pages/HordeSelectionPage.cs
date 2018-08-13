@@ -199,30 +199,25 @@ namespace LoomNetwork.CZB
             _hordeSelection.transform.SetParent(deck.selectionContainer, false);
             _hordeSelection.gameObject.SetActive(true);
 
-
-            BattleButtonUpdate();
-
-           //if (deck.SelfDeck.GetNumCards() < Constants.MAX_DECK_SIZE && !Constants.DEV_MODE)
-           //    _battleButton.interactable = false;
-           //else
-           //    _battleButton.interactable = true;
-
-           _selectedDeck = deck.DeckId;
+            _selectedDeck = deck.DeckId;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeck;
             _dataManager.SaveAllCache();
             deck.selectionContainer.parent.SetAsLastSibling();
+
+            BattleButtonUpdate();
+
         }
 
         private void BattleButtonUpdate()
         {
             if (_hordeDecks.Count == 0 || _selectedDeck == -1 || _selectedDeck >= _hordeDecks.Count || _hordeDecks[_selectedDeck].SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE && !Constants.DEV_MODE)
             {
-                _battleButton.enabled = false;
+                _battleButton.interactable = false;
                 _battleButtonWarning.gameObject.SetActive(true);
             }
             else
             {
-                _battleButton.enabled = true;
+                _battleButton.interactable = true;
                 _battleButtonWarning.gameObject.SetActive(false);
             }
         }

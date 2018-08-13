@@ -84,25 +84,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.T))
-            {
-                GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
 
-                GameClient.Get<IGameplayManager>().IsTutorial = true;
-            }
-
-            /*  FOR TESTING
-            if(Input.GetKeyUp(KeyCode.Z))
-            {
-                Debug.Log("BATTLEGROUND");
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
-            }
-            if (Input.GetKeyUp(KeyCode.X))
-            {
-                Debug.Log("BACKGROUND");
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-            }
-            */
         }
 
         public void Show()
