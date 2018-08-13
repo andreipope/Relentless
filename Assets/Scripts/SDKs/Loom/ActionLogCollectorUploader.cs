@@ -195,7 +195,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                     card.libraryCard.name,
                     card.health,
                     card.damage,
-                    card.type
+                    type = card.type.ToString()
                 };
             }
         }
