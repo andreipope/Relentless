@@ -2565,7 +2565,8 @@
               "callType": "ENTRY",
               "targetType": "none",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "count": 1
             }
           ],
           "cardViewInfo": {
@@ -2598,7 +2599,7 @@
               "type": "heal",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "HEAL",
               "buffType": "ENTRY"
@@ -2672,7 +2673,8 @@
               "callType": "ENTRY",
               "targetType": "none",
               "value": 2,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "count": 2
             }
           ],
           "cardViewInfo": {
