@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB
 
         public CreditsData CachedCreditsData { get; set; }
         
-        public GlobalConfig GlobalConfig { get; set; }
+        public LatestVersions LatestVersions { get; set; }
         public BetaConfig BetaConfig { get; set; }
 
         private int _currentDeckIndex;
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
         {
             Debug.Log("=== Start loading server ==== ");
             
-            GlobalConfig = await _backendFacade.GetGlobalConfig();
+            LatestVersions = await _backendFacade.GetLatestVersions();
             BetaConfig = await _backendFacade.GetBetaConfig(_backendFacade.UserDataModel.BetaKey);
             
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;

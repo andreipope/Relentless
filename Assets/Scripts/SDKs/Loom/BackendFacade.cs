@@ -187,11 +187,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 }
             };
 
-            // HACK
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
-            if (createDeckResponse == null)
-                return 0;
-            
             return createDeckResponse.DeckId;
         }
 
@@ -264,9 +260,9 @@ namespace LoomNetwork.CZB.BackendCommunication
         public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
         {
             string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
-            Dictionary<string, object> actionLogModelJsonDictionary = 
+            Dictionary<string, object> actionLogModelJsonDictionary =
                 JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
-            actionLogModelJson = 
+            actionLogModelJson =
                 JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)], Formatting.Indented);
             Debug.Log("Logging action: \n" + actionLogModelJson);
             await Task.Delay(1000);
@@ -284,7 +280,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
         private const string AuthBetaConfigEndPoint = "/user/beta/config";
-        private const string AuthGlobalConfigEndPoint = "/config";
+        private const string AuthLatestVersionsEndPoint = "/latestVersions";
 
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
@@ -294,7 +290,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             BetaKeyValidationResponse betaKeyValidationResponse = httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
             return betaKeyValidationResponse.IsValid;
         }
-        
+
         public async Task<BetaConfig> GetBetaConfig(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -303,14 +299,14 @@ namespace LoomNetwork.CZB.BackendCommunication
             BetaConfig betaConfig = httpResponseMessage.DeserializeAsJson<BetaConfig>();
             return betaConfig;
         }
-        
-        public async Task<GlobalConfig> GetGlobalConfig()
+
+        public async Task<LatestVersions> GetLatestVersions()
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthGlobalConfigEndPoint;
+            webrequestCreationInfo.Url = AuthBackendHost + AuthLatestVersionsEndPoint;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            GlobalConfig globalConfig = httpResponseMessage.DeserializeAsJson<GlobalConfig>();
-            return globalConfig;
+            LatestVersions latestVersions = httpResponseMessage.DeserializeAsJson<LatestVersions>();
+            return latestVersions;
         }
 
         private struct BetaKeyValidationResponse
@@ -323,17 +319,17 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public void Init()
         {
-            
+
         }
 
         public void Update()
         {
-            
+
         }
 
         public void Dispose()
         {
-            
+
         }
     }
 
