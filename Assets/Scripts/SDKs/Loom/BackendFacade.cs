@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public event ContractCreatedEventHandler ContractCreated;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEV_BUILD
         public string WriterHost { get; set; } = "ws://127.0.0.1:46657/websocket";
         public string ReaderHost { get; set; } = "ws://127.0.0.1:9999/queryws";
 #else

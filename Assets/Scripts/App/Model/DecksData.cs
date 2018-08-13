@@ -78,11 +78,13 @@ namespace LoomNetwork.CZB.Data
         }
 
         public Deck Clone() {
-            Deck deck = new Deck();
-            deck.id = id;
-            deck.heroId = heroId;
-            deck.name = name;
-            deck.cards = deck.cards.Select(c => c.Clone()).ToList();
+            Deck deck = new Deck
+            {
+                id = id,
+                heroId = heroId,
+                name = name,
+                cards = cards.Select(c => c.Clone()).ToList()
+            };
             return deck;
         }
     }
@@ -97,9 +99,11 @@ namespace LoomNetwork.CZB.Data
         }
 
         public DeckCardData Clone() {
-            DeckCardData deckCardData = new DeckCardData();
-            deckCardData.cardName = cardName;
-            deckCardData.amount = amount;
+            DeckCardData deckCardData = new DeckCardData
+            {
+                cardName = cardName,
+                amount = amount
+            };
             return deckCardData;
         }
     }

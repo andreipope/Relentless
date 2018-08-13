@@ -8,14 +8,12 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class ActionLogCollectorUploader : IService
     {
-        private BackendFacade _backendFacade;
         private IGameplayManager _gameplayManager;
         private PlayerEventListener _playerEventListener;
         private PlayerEventListener _opponentEventListener;
 
         public void Init()
         {
-            _backendFacade = GameClient.Get<BackendFacade>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _gameplayManager.OnGameInitializedEvent += GameplayManagerOnGameInitializedEvent;
             _gameplayManager.OnGameEndedEvent += GameplayManagerOnGameEndedEvent;
@@ -52,7 +50,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             
             public bool IsOpponent { get; }
             
-            private BackendFacade _backendFacade;
+            private readonly BackendFacade _backendFacade;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
