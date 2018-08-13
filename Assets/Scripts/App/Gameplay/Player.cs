@@ -187,10 +187,19 @@ namespace LoomNetwork.CZB
 
             CardsPreparingToHand = new List<BoardCard>();
 
+			Deck _currentDeck = null;
+
+			if (_dataManager.CachedDecksData.decks.Count > 0) {
+				_currentDeck = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId];
+			} else {
+				_currentDeck = new Deck();
+				_currentDeck.heroId = 0;
+			}
+
             int heroId = 0;
 
             if (!isOpponent)
-                heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+				heroId = _currentDeck.heroId;
             else
                 heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
 
