@@ -215,7 +215,16 @@ namespace LoomNetwork.CZB
             int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
             int opponentdeckId = _gameplayManager.OpponentDeckId = UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count);
 
-            int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+			Deck _currentDeck = null;
+
+			if (!_gameplayManager.IsTutorial) {
+				_currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId];
+			} else {
+				_currentDeck = new Deck();
+				_currentDeck.heroId = 4;
+			}
+
+			int heroId = _currentDeck.heroId;
             int hopponentId = _dataManager.CachedOpponentDecksData.decks[opponentdeckId].heroId;
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
