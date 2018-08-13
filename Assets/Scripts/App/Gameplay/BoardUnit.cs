@@ -178,8 +178,9 @@ namespace LoomNetwork.CZB
         public int AdditionalAttack { get; set; }
         public int AdditionalDefense { get; set; }
 
-        public int DamageDebuffUntillEndOfTurn { get; private set; }
-        public int HPDebuffUntillEndOfTurn { get; private set; }
+        public int DamageDebuffUntillEndOfTurn { get; set; }
+        public int HPDebuffUntillEndOfTurn { get; set; }
+        
 
         public bool IsAttacking { get; private set; }
 
@@ -296,27 +297,6 @@ namespace LoomNetwork.CZB
 
             if (!returnToHand)
                 _battlegroundController.KillBoardCard(this);
-        }
-
-        public void DebuffDamage(int value)
-        {
-            if (value == 0)
-                return;
-            DamageDebuffUntillEndOfTurn = value;
-            var buffresult = CurrentDamage + DamageDebuffUntillEndOfTurn;
-
-            if (buffresult < 0)
-                DamageDebuffUntillEndOfTurn -= buffresult;
-            CurrentDamage += DamageDebuffUntillEndOfTurn;
-        }
-
-        public void DebuffHealth(int value)
-        {
-            if (value == 0)
-                return;
-
-            HPDebuffUntillEndOfTurn = value;
-            CurrentHP += HPDebuffUntillEndOfTurn;
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -826,17 +806,6 @@ namespace LoomNetwork.CZB
             HasBuffRush = false;
 
             CancelTargetingArrows();
-
-            if (DamageDebuffUntillEndOfTurn != 0)
-            {
-                CurrentDamage -= DamageDebuffUntillEndOfTurn;
-                DamageDebuffUntillEndOfTurn = 0;
-            }
-            if (HPDebuffUntillEndOfTurn != 0)
-            {
-                CurrentHP -= HPDebuffUntillEndOfTurn;
-                HPDebuffUntillEndOfTurn = 0;
-            }       
         }
 
 
@@ -1071,7 +1040,7 @@ namespace LoomNetwork.CZB
 
                         _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
-                        if(TakeFreezeToAttacked)
+                        if(TakeFreezeToAttacked && targetCard.CurrentHP > 0)
                             targetCard.Stun(Enumerators.StunType.FREEZE, 1);
                     }),
                     () =>
