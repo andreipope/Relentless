@@ -6,6 +6,7 @@ using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace LoomNetwork.CZB
 {
@@ -62,14 +63,15 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-
-            //Debug.Log();
             List<BoardUnit> allies = new List<BoardUnit>();
-            allies.AddRange(playerCallerOfAbility.BoardCards);
-            allies.Remove(abilityUnitOwner);
 
-            int random = Random.Range(0, playerCallerOfAbility.BoardCards.Count);
-            TakeTypeToUnit(playerCallerOfAbility.BoardCards[random]);
+            allies = playerCallerOfAbility.BoardCards.Where((unit) => unit != abilityUnitOwner && unit.IsFeralUnit() == false).ToList();
+
+            if (allies.Count > 0)
+            {
+                int random = Random.Range(0, allies.Count);
+                TakeTypeToUnit(allies[random]);
+            }
         }
     }
 }
