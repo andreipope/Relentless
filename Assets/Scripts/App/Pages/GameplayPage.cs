@@ -217,11 +217,11 @@ namespace LoomNetwork.CZB
 
 			Deck _currentDeck = null;
 
-			if (_dataManager.CachedDecksData.decks.Count > 0) {
+			if (!_gameplayManager.IsTutorial) {
 				_currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId];
 			} else {
 				_currentDeck = new Deck();
-				_currentDeck.heroId = 0;
+				_currentDeck.heroId = 4;
 			}
 
 			int heroId = _currentDeck.heroId;
