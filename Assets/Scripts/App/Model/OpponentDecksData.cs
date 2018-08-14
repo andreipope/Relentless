@@ -33,6 +33,7 @@ namespace LoomNetwork.CZB.Data
 
     public class OpponentDeck
     {
+        public int id;
         public int heroId;
         public string type;
         public string actions;

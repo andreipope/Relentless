@@ -30,89 +30,95 @@ namespace LoomNetwork.CZB.Protobuf {
             "ZGVlbWVkGAMgASgIEhYKDmlzX2tpY2tzdGFydGVyGAQgASgIEg0KBWltYWdl",
             "GAUgASgJEhoKEmVtYWlsX25vdGlmaWNhdGlvbhgGIAEoCBIRCgllbG9fc2Nv",
             "cmUYByABKAMSFAoMY3VycmVudF90aWVyGAggASgFEhwKFGdhbWVfbWVtYmVy",
-            "c2hpcF90aWVyGAkgASgFEg0KBW93bmVyGAogASgMIlEKBERlY2sSCgoCaWQY",
+            "c2hpcF90aWVyGAkgASgFEg0KBW93bmVyGAogASgMInYKBERlY2sSCgoCaWQY",
             "ASABKAMSDAoEbmFtZRgCIAEoCRIPCgdoZXJvX2lkGAMgASgDEh4KBWNhcmRz",
-            "GAQgAygLMg8uQ2FyZENvbGxlY3Rpb24iwgIKBENhcmQSCgoCaWQYASABKAMS",
-            "DAoEa2luZBgCIAEoCRIPCgdlbGVtZW50GAMgASgJEgwKBG5hbWUYBCABKAkS",
-            "EwoLZGVzY3JpcHRpb24YBSABKAkSEgoKZmxhdm9yVGV4dBgGIAEoCRIPCgdw",
-            "aWN0dXJlGAcgASgJEgwKBHJhbmsYCCABKAkSDAoEdHlwZRgJIAEoCRIOCgZy",
-            "YXJpdHkYCiABKAkSDgoGZGFtYWdlGAsgASgFEg4KBmhlYWx0aBgMIAEoBRIM",
-            "CgRjb3N0GA0gASgFEg8KB2FiaWxpdHkYDiABKAkSJQoOY2FyZF92aWV3X2lu",
-            "Zm8YDyABKAsyDS5DYXJkVmlld0luZm8SGAoHZWZmZWN0cxgQIAMoCzIHLkVm",
-            "ZmVjdBIbCglhYmlsaXRpZXMYESADKAsyCC5BYmlsaXR5IksKDENhcmRWaWV3",
-            "SW5mbxIeCghwb3NpdGlvbhgBIAEoCzIMLkNvb3JkaW5hdGVzEhsKBXNjYWxl",
-            "GAIgASgLMgwuQ29vcmRpbmF0ZXMiLgoLQ29vcmRpbmF0ZXMSCQoBeBgBIAEo",
-            "AhIJCgF5GAIgASgCEgkKAXoYAyABKAIiWgoGRWZmZWN0Eg8KB3RyaWdnZXIY",
-            "ASABKAkSDgoGZWZmZWN0GAIgASgJEhAKCGR1cmF0aW9uGAMgASgJEg4KBnRh",
-            "cmdldBgEIAEoCRINCgVsaW1pdBgFIAEoCSJlCgdBYmlsaXR5EgwKBHR5cGUY",
-            "ASABKAkSFQoNYWN0aXZpdHlfdHlwZRgCIAEoCRIRCgljYWxsX3R5cGUYAyAB",
-            "KAkSEwoLdGFyZ2V0X3R5cGUYBCABKAkSDQoFdmFsdWUYBSABKAUiIAoIQ2Fy",
-            "ZExpc3QSFAoFY2FyZHMYASADKAsyBS5DYXJkIjMKDkNhcmRDb2xsZWN0aW9u",
-            "EhEKCWNhcmRfbmFtZRgBIAEoCRIOCgZhbW91bnQYAiABKAMiLQoHQ2FyZFNl",
-            "dBIMCgRuYW1lGAEgASgJEhQKBWNhcmRzGAIgAygLMgUuQ2FyZCIlCgtDYXJk",
-            "TGlicmFyeRIWCgRzZXRzGAEgAygLMgguQ2FyZFNldCLkAQoESGVybxIPCgdo",
-            "ZXJvX2lkGAEgASgDEgwKBGljb24YAiABKAkSDAoEbmFtZRgDIAEoCRIZChFz",
-            "aG9ydF9kZXNjcmlwdGlvbhgEIAEoCRIYChBsb25nX2Rlc2NyaXB0aW9uGAUg",
-            "ASgJEg8KB2VsZW1lbnQYBiABKAkSEgoKZXhwZXJpZW5jZRgHIAEoAxINCgVs",
-            "ZXZlbBgIIAEoAxIWCgZza2lsbHMYCSADKAsyBi5Ta2lsbBIVCg1wcmltYXJ5",
-            "X3NraWxsGAogASgFEhcKD3NlY29uZGFyeV9za2lsbBgLIAEoBSIkChFMaXN0",
-            "SGVyb2VzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIisKEkxpc3RIZXJvZXNS",
-            "ZXNwb25zZRIVCgZoZXJvZXMYASADKAsyBS5IZXJvIlAKGEFkZEhlcm9FeHBl",
-            "cmllbmNlUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQYAiAB",
-            "KAMSEgoKZXhwZXJpZW5jZRgDIAEoAyJAChlBZGRIZXJvRXhwZXJpZW5jZVJl",
-            "c3BvbnNlEg8KB2hlcm9faWQYASABKAMSEgoKZXhwZXJpZW5jZRgCIAEoAyIy",
-            "Cg5HZXRIZXJvUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQY",
-            "AiABKAMiJgoPR2V0SGVyb1Jlc3BvbnNlEhMKBGhlcm8YASABKAsyBS5IZXJv",
-            "IjgKFEdldEhlcm9Ta2lsbHNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoH",
-            "aGVyb19pZBgCIAEoAyJAChVHZXRIZXJvU2tpbGxzUmVzcG9uc2USDwoHaGVy",
-            "b19pZBgBIAEoAxIWCgZza2lsbHMYAiADKAsyBi5Ta2lsbCL0AgoFU2tpbGwS",
-            "DQoFdGl0bGUYASABKAkSDQoFc2tpbGwYAiABKAkSEQoJaWNvbl9wYXRoGAMg",
-            "ASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEjEKEXNraWxsX3RhcmdldF90eXBl",
-            "GAUgAygOMhYuU2tpbGwuU2tpbGxUYXJnZXRUeXBlEg0KBXZhbHVlGAYgASgF",
-            "EhAKCGNvb2xkb3duGAcgASgFEhgKEGluaXRpYWxfY29vbGRvd24YCCABKAUS",
-            "DgoGYXR0YWNrGAkgASgFEg4KBmhlYWx0aBgKIAEoBSKWAQoPU2tpbGxUYXJn",
-            "ZXRUeXBlEggKBE5PTkUQABIKCgZQTEFZRVIQARIPCgtQTEFZRVJfQ0FSRBAC",
-            "EhQKEFBMQVlFUl9BTExfQ0FSRFMQAxIMCghPUFBPTkVOVBAEEhEKDU9QUE9O",
-            "RU5UX0NBUkQQBRIWChJPUFBPTkVOVF9BTExfQ0FSRFMQBhINCglBTExfQ0FS",
-            "RFMQByIhCghIZXJvTGlzdBIVCgZoZXJvZXMYASADKAsyBS5IZXJvIjQKEkNh",
-            "cmRDb2xsZWN0aW9uTGlzdBIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0",
-            "aW9uIiAKCERlY2tMaXN0EhQKBWRlY2tzGAEgAygLMgUuRGVjayKFAQoLSW5p",
-            "dFJlcXVlc3QSHAoNZGVmYXVsdF9kZWNrcxgBIAMoCzIFLkRlY2sSKwoSZGVm",
-            "YXVsdF9jb2xsZWN0aW9uGAIgAygLMg8uQ2FyZENvbGxlY3Rpb24SFAoFY2Fy",
-            "ZHMYAyADKAsyBS5DYXJkEhUKBmhlcm9lcxgEIAMoCzIFLkhlcm8i6QEKFFVw",
-            "c2VydEFjY291bnRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSHQoVcGhvbmVf",
-            "bnVtYmVyX3ZlcmlmaWVkGAIgASgIEhcKD3Jld2FyZF9yZWRlZW1lZBgDIAEo",
-            "CBIWCg5pc19raWNrc3RhcnRlchgEIAEoCBINCgVpbWFnZRgFIAEoCRIaChJl",
-            "bWFpbF9ub3RpZmljYXRpb24YBiABKAgSEQoJZWxvX3Njb3JlGAcgASgDEhQK",
-            "DGN1cnJlbnRfdGllchgIIAEoBRIcChRnYW1lX21lbWJlcnNoaXBfdGllchgJ",
-            "IAEoBSIkChFHZXRBY2NvdW50UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjIK",
-            "DkdldERlY2tSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgC",
-            "IAEoAyImCg9HZXREZWNrUmVzcG9uc2USEwoEZGVjaxgCIAEoCzIFLkRlY2si",
-            "OQoRQ3JlYXRlRGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgRkZWNr",
-            "GAIgASgLMgUuRGVjayIlChJDcmVhdGVEZWNrUmVzcG9uc2USDwoHZGVja19p",
-            "ZBgBIAEoAyI1ChFEZWxldGVEZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJ",
-            "Eg8KB2RlY2tfaWQYAiABKAMiNwoPRWRpdERlY2tSZXF1ZXN0Eg8KB3VzZXJf",
-            "aWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2siNgoNRGVja3NSZXNwb25z",
-            "ZRIPCgd1c2VyX2lkGAEgASgJEhQKBWRlY2tzGAIgAygLMgUuRGVjayIjChBM",
-            "aXN0RGVja3NSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiKQoRTGlzdERlY2tz",
-            "UmVzcG9uc2USFAoFZGVja3MYASADKAsyBS5EZWNrIhgKFkxpc3RDYXJkTGli",
-            "cmFyeVJlcXVlc3QiMQoXTGlzdENhcmRMaWJyYXJ5UmVzcG9uc2USFgoEc2V0",
-            "cxgBIAMoCzIILkNhcmRTZXQiGAoWTGlzdEhlcm9MaWJyYXJ5UmVxdWVzdCIw",
-            "ChdMaXN0SGVyb0xpYnJhcnlSZXNwb25zZRIVCgZoZXJvZXMYASADKAsyBS5I",
-            "ZXJvIicKFEdldENvbGxlY3Rpb25SZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAki",
-            "NwoVR2V0Q29sbGVjdGlvblJlc3BvbnNlEh4KBWNhcmRzGAEgAygLMg8uQ2Fy",
-            "ZENvbGxlY3Rpb25CG6oCGExvb21OZXR3b3JrLkNaQi5Qcm90b2J1ZmIGcHJv",
-            "dG8z"));
+            "GAQgAygLMg8uQ2FyZENvbGxlY3Rpb24SIwobbGFzdF9tb2RpZmljYXRpb25f",
+            "dGltZXN0YW1wGAUgASgDIs4CCgRDYXJkEgoKAmlkGAEgASgDEgwKBGtpbmQY",
+            "AiABKAkSCwoDc2V0GAMgASgJEgwKBG5hbWUYBCABKAkSEwoLZGVzY3JpcHRp",
+            "b24YBSABKAkSEwoLZmxhdm9yX3RleHQYBiABKAkSDwoHcGljdHVyZRgHIAEo",
+            "CRIMCgRyYW5rGAggASgJEgwKBHR5cGUYCSABKAkSDgoGcmFyaXR5GAogASgJ",
+            "Eg0KBWZyYW1lGAsgASgJEg4KBmRhbWFnZRgMIAEoBRIOCgZoZWFsdGgYDSAB",
+            "KAUSDAoEY29zdBgOIAEoBRIPCgdhYmlsaXR5GA8gASgJEiUKDmNhcmRfdmll",
+            "d19pbmZvGBAgASgLMg0uQ2FyZFZpZXdJbmZvEhgKB2VmZmVjdHMYESADKAsy",
+            "By5FZmZlY3QSGwoJYWJpbGl0aWVzGBIgAygLMgguQWJpbGl0eSJLCgxDYXJk",
+            "Vmlld0luZm8SHgoIcG9zaXRpb24YASABKAsyDC5Db29yZGluYXRlcxIbCgVz",
+            "Y2FsZRgCIAEoCzIMLkNvb3JkaW5hdGVzIi4KC0Nvb3JkaW5hdGVzEgkKAXgY",
+            "ASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgCIloKBkVmZmVjdBIPCgd0cmln",
+            "Z2VyGAEgASgJEg4KBmVmZmVjdBgCIAEoCRIQCghkdXJhdGlvbhgDIAEoCRIO",
+            "CgZ0YXJnZXQYBCABKAkSDQoFbGltaXQYBSABKAki3QIKB0FiaWxpdHkSDAoE",
+            "dHlwZRgBIAEoCRIVCg1hY3Rpdml0eV90eXBlGAIgASgJEhEKCWNhbGxfdHlw",
+            "ZRgDIAEoCRITCgt0YXJnZXRfdHlwZRgEIAEoCRIRCglzdGF0X3R5cGUYBSAB",
+            "KAkSEAoIc2V0X3R5cGUYBiABKAkSDQoFdmFsdWUYByABKAUSEQoJYnVmZl90",
+            "eXBlGAggASgJEhMKC2VmZmVjdF90eXBlGAkgASgJEhEKCXVuaXRfdHlwZRgK",
+            "IAEoCRINCgVjb3VudBgLIAEoBRIMCgRuYW1lGAwgASgJEg0KBXR1cm5zGA0g",
+            "ASgFEg0KBWRlbGF5GA4gASgFEhMKC3VuaXRfc3RhdHVzGA8gASgJEhEKCWNh",
+            "cmRfdHlwZRgQIAEoCRIOCgZoZWFsdGgYESABKAUSDgoGZGFtYWdlGBIgASgF",
+            "EhMKC2F0dGFja19pbmZvGBMgASgJIiAKCENhcmRMaXN0EhQKBWNhcmRzGAEg",
+            "AygLMgUuQ2FyZCIzCg5DYXJkQ29sbGVjdGlvbhIRCgljYXJkX25hbWUYASAB",
+            "KAkSDgoGYW1vdW50GAIgASgDIi0KB0NhcmRTZXQSDAoEbmFtZRgBIAEoCRIU",
+            "CgVjYXJkcxgCIAMoCzIFLkNhcmQiJQoLQ2FyZExpYnJhcnkSFgoEc2V0cxgB",
+            "IAMoCzIILkNhcmRTZXQi5AEKBEhlcm8SDwoHaGVyb19pZBgBIAEoAxIMCgRp",
+            "Y29uGAIgASgJEgwKBG5hbWUYAyABKAkSGQoRc2hvcnRfZGVzY3JpcHRpb24Y",
+            "BCABKAkSGAoQbG9uZ19kZXNjcmlwdGlvbhgFIAEoCRIPCgdlbGVtZW50GAYg",
+            "ASgJEhIKCmV4cGVyaWVuY2UYByABKAMSDQoFbGV2ZWwYCCABKAMSFgoGc2tp",
+            "bGxzGAkgAygLMgYuU2tpbGwSFQoNcHJpbWFyeV9za2lsbBgKIAEoBRIXCg9z",
+            "ZWNvbmRhcnlfc2tpbGwYCyABKAUiJAoRTGlzdEhlcm9lc1JlcXVlc3QSDwoH",
+            "dXNlcl9pZBgBIAEoCSIrChJMaXN0SGVyb2VzUmVzcG9uc2USFQoGaGVyb2Vz",
+            "GAEgAygLMgUuSGVybyJQChhBZGRIZXJvRXhwZXJpZW5jZVJlcXVlc3QSDwoH",
+            "dXNlcl9pZBgBIAEoCRIPCgdoZXJvX2lkGAIgASgDEhIKCmV4cGVyaWVuY2UY",
+            "AyABKAMiQAoZQWRkSGVyb0V4cGVyaWVuY2VSZXNwb25zZRIPCgdoZXJvX2lk",
+            "GAEgASgDEhIKCmV4cGVyaWVuY2UYAiABKAMiMgoOR2V0SGVyb1JlcXVlc3QS",
+            "DwoHdXNlcl9pZBgBIAEoCRIPCgdoZXJvX2lkGAIgASgDIiYKD0dldEhlcm9S",
+            "ZXNwb25zZRITCgRoZXJvGAEgASgLMgUuSGVybyI4ChRHZXRIZXJvU2tpbGxz",
+            "UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQYAiABKAMiQAoV",
+            "R2V0SGVyb1NraWxsc1Jlc3BvbnNlEg8KB2hlcm9faWQYASABKAMSFgoGc2tp",
+            "bGxzGAIgAygLMgYuU2tpbGwi9AIKBVNraWxsEg0KBXRpdGxlGAEgASgJEg0K",
+            "BXNraWxsGAIgASgJEhEKCWljb25fcGF0aBgDIAEoCRITCgtkZXNjcmlwdGlv",
+            "bhgEIAEoCRIxChFza2lsbF90YXJnZXRfdHlwZRgFIAMoDjIWLlNraWxsLlNr",
+            "aWxsVGFyZ2V0VHlwZRINCgV2YWx1ZRgGIAEoBRIQCghjb29sZG93bhgHIAEo",
+            "BRIYChBpbml0aWFsX2Nvb2xkb3duGAggASgFEg4KBmF0dGFjaxgJIAEoBRIO",
+            "CgZoZWFsdGgYCiABKAUilgEKD1NraWxsVGFyZ2V0VHlwZRIICgROT05FEAAS",
+            "CgoGUExBWUVSEAESDwoLUExBWUVSX0NBUkQQAhIUChBQTEFZRVJfQUxMX0NB",
+            "UkRTEAMSDAoIT1BQT05FTlQQBBIRCg1PUFBPTkVOVF9DQVJEEAUSFgoST1BQ",
+            "T05FTlRfQUxMX0NBUkRTEAYSDQoJQUxMX0NBUkRTEAciIQoISGVyb0xpc3QS",
+            "FQoGaGVyb2VzGAEgAygLMgUuSGVybyI0ChJDYXJkQ29sbGVjdGlvbkxpc3QS",
+            "HgoFY2FyZHMYASADKAsyDy5DYXJkQ29sbGVjdGlvbiIgCghEZWNrTGlzdBIU",
+            "CgVkZWNrcxgBIAMoCzIFLkRlY2sihQEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1",
+            "bHRfZGVja3MYASADKAsyBS5EZWNrEisKEmRlZmF1bHRfY29sbGVjdGlvbhgC",
+            "IAMoCzIPLkNhcmRDb2xsZWN0aW9uEhQKBWNhcmRzGAMgAygLMgUuQ2FyZBIV",
+            "CgZoZXJvZXMYBCADKAsyBS5IZXJvIukBChRVcHNlcnRBY2NvdW50UmVxdWVz",
+            "dBIPCgd1c2VyX2lkGAEgASgJEh0KFXBob25lX251bWJlcl92ZXJpZmllZBgC",
+            "IAEoCBIXCg9yZXdhcmRfcmVkZWVtZWQYAyABKAgSFgoOaXNfa2lja3N0YXJ0",
+            "ZXIYBCABKAgSDQoFaW1hZ2UYBSABKAkSGgoSZW1haWxfbm90aWZpY2F0aW9u",
+            "GAYgASgIEhEKCWVsb19zY29yZRgHIAEoAxIUCgxjdXJyZW50X3RpZXIYCCAB",
+            "KAUSHAoUZ2FtZV9tZW1iZXJzaGlwX3RpZXIYCSABKAUiJAoRR2V0QWNjb3Vu",
+            "dFJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSIyCg5HZXREZWNrUmVxdWVzdBIP",
+            "Cgd1c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiABKAMiJgoPR2V0RGVja1Jl",
+            "c3BvbnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIjkKEUNyZWF0ZURlY2tSZXF1",
+            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2siJQoS",
+            "Q3JlYXRlRGVja1Jlc3BvbnNlEg8KB2RlY2tfaWQYASABKAMiNQoRRGVsZXRl",
+            "RGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIPCgdkZWNrX2lkGAIgASgD",
+            "IjcKD0VkaXREZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sY",
+            "AiABKAsyBS5EZWNrIjYKDURlY2tzUmVzcG9uc2USDwoHdXNlcl9pZBgBIAEo",
+            "CRIUCgVkZWNrcxgCIAMoCzIFLkRlY2siIwoQTGlzdERlY2tzUmVxdWVzdBIP",
+            "Cgd1c2VyX2lkGAEgASgJIikKEUxpc3REZWNrc1Jlc3BvbnNlEhQKBWRlY2tz",
+            "GAEgAygLMgUuRGVjayIYChZMaXN0Q2FyZExpYnJhcnlSZXF1ZXN0IjEKF0xp",
+            "c3RDYXJkTGlicmFyeVJlc3BvbnNlEhYKBHNldHMYASADKAsyCC5DYXJkU2V0",
+            "IhgKFkxpc3RIZXJvTGlicmFyeVJlcXVlc3QiMAoXTGlzdEhlcm9MaWJyYXJ5",
+            "UmVzcG9uc2USFQoGaGVyb2VzGAEgAygLMgUuSGVybyInChRHZXRDb2xsZWN0",
+            "aW9uUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjcKFUdldENvbGxlY3Rpb25S",
+            "ZXNwb25zZRIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uQhuqAhhM",
+            "b29tTmV0d29yay5DWkIuUHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Account), global::LoomNetwork.CZB.Protobuf.Account.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Owner" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Deck), global::LoomNetwork.CZB.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Card), global::LoomNetwork.CZB.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Element", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Deck), global::LoomNetwork.CZB.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Card), global::LoomNetwork.CZB.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Set", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Frame", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardViewInfo), global::LoomNetwork.CZB.Protobuf.CardViewInfo.Parser, new[]{ "Position", "Scale" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Coordinates), global::LoomNetwork.CZB.Protobuf.Coordinates.Parser, new[]{ "X", "Y", "Z" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Effect), global::LoomNetwork.CZB.Protobuf.Effect.Parser, new[]{ "Trigger", "Effect_", "Duration", "Target", "Limit" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Ability), global::LoomNetwork.CZB.Protobuf.Ability.Parser, new[]{ "Type", "ActivityType", "CallType", "TargetType", "Value" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Ability), global::LoomNetwork.CZB.Protobuf.Ability.Parser, new[]{ "Type", "ActivityType", "CallType", "TargetType", "StatType", "SetType", "Value", "BuffType", "EffectType", "UnitType", "Count", "Name", "Turns", "Delay", "UnitStatus", "CardType", "Health", "Damage", "AttackInfo" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardList), global::LoomNetwork.CZB.Protobuf.CardList.Parser, new[]{ "Cards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardCollection), global::LoomNetwork.CZB.Protobuf.CardCollection.Parser, new[]{ "CardName", "Amount" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardSet), global::LoomNetwork.CZB.Protobuf.CardSet.Parser, new[]{ "Name", "Cards" }, null, null, null),
@@ -564,6 +570,7 @@ namespace LoomNetwork.CZB.Protobuf {
       name_ = other.name_;
       heroId_ = other.heroId_;
       cards_ = other.cards_.Clone();
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -615,6 +622,17 @@ namespace LoomNetwork.CZB.Protobuf {
       get { return cards_; }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 5;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Deck);
@@ -632,6 +650,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Name != other.Name) return false;
       if (HeroId != other.HeroId) return false;
       if(!cards_.Equals(other.cards_)) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -642,6 +661,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (HeroId != 0L) hash ^= HeroId.GetHashCode();
       hash ^= cards_.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -668,6 +688,10 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteInt64(HeroId);
       }
       cards_.WriteTo(output, _repeated_cards_codec);
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(40);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -686,6 +710,9 @@ namespace LoomNetwork.CZB.Protobuf {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(HeroId);
       }
       size += cards_.CalculateSize(_repeated_cards_codec);
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -707,6 +734,9 @@ namespace LoomNetwork.CZB.Protobuf {
         HeroId = other.HeroId;
       }
       cards_.Add(other.cards_);
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -732,6 +762,10 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 34: {
             cards_.AddEntriesFrom(input, _repeated_cards_codec);
+            break;
+          }
+          case 40: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -767,7 +801,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public Card(Card other) : this() {
       id_ = other.id_;
       kind_ = other.kind_;
-      element_ = other.element_;
+      set_ = other.set_;
       name_ = other.name_;
       description_ = other.description_;
       flavorText_ = other.flavorText_;
@@ -775,6 +809,7 @@ namespace LoomNetwork.CZB.Protobuf {
       rank_ = other.rank_;
       type_ = other.type_;
       rarity_ = other.rarity_;
+      frame_ = other.frame_;
       damage_ = other.damage_;
       health_ = other.health_;
       cost_ = other.cost_;
@@ -812,14 +847,14 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "element" field.</summary>
-    public const int ElementFieldNumber = 3;
-    private string element_ = "";
+    /// <summary>Field number for the "set" field.</summary>
+    public const int SetFieldNumber = 3;
+    private string set_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Element {
-      get { return element_; }
+    public string Set {
+      get { return set_; }
       set {
-        element_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        set_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -845,7 +880,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "flavorText" field.</summary>
+    /// <summary>Field number for the "flavor_text" field.</summary>
     public const int FlavorTextFieldNumber = 6;
     private string flavorText_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -900,8 +935,19 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "frame" field.</summary>
+    public const int FrameFieldNumber = 11;
+    private string frame_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Frame {
+      get { return frame_; }
+      set {
+        frame_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "damage" field.</summary>
-    public const int DamageFieldNumber = 11;
+    public const int DamageFieldNumber = 12;
     private int damage_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Damage {
@@ -912,7 +958,7 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "health" field.</summary>
-    public const int HealthFieldNumber = 12;
+    public const int HealthFieldNumber = 13;
     private int health_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Health {
@@ -923,7 +969,7 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "cost" field.</summary>
-    public const int CostFieldNumber = 13;
+    public const int CostFieldNumber = 14;
     private int cost_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Cost {
@@ -934,7 +980,7 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "ability" field.</summary>
-    public const int AbilityFieldNumber = 14;
+    public const int AbilityFieldNumber = 15;
     private string ability_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Ability {
@@ -945,7 +991,7 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "card_view_info" field.</summary>
-    public const int CardViewInfoFieldNumber = 15;
+    public const int CardViewInfoFieldNumber = 16;
     private global::LoomNetwork.CZB.Protobuf.CardViewInfo cardViewInfo_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::LoomNetwork.CZB.Protobuf.CardViewInfo CardViewInfo {
@@ -956,9 +1002,9 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "effects" field.</summary>
-    public const int EffectsFieldNumber = 16;
+    public const int EffectsFieldNumber = 17;
     private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Effect> _repeated_effects_codec
-        = pb::FieldCodec.ForMessage(130, global::LoomNetwork.CZB.Protobuf.Effect.Parser);
+        = pb::FieldCodec.ForMessage(138, global::LoomNetwork.CZB.Protobuf.Effect.Parser);
     private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect> effects_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect> Effects {
@@ -966,9 +1012,9 @@ namespace LoomNetwork.CZB.Protobuf {
     }
 
     /// <summary>Field number for the "abilities" field.</summary>
-    public const int AbilitiesFieldNumber = 17;
+    public const int AbilitiesFieldNumber = 18;
     private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Ability> _repeated_abilities_codec
-        = pb::FieldCodec.ForMessage(138, global::LoomNetwork.CZB.Protobuf.Ability.Parser);
+        = pb::FieldCodec.ForMessage(146, global::LoomNetwork.CZB.Protobuf.Ability.Parser);
     private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability> abilities_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability> Abilities {
@@ -990,7 +1036,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (Id != other.Id) return false;
       if (Kind != other.Kind) return false;
-      if (Element != other.Element) return false;
+      if (Set != other.Set) return false;
       if (Name != other.Name) return false;
       if (Description != other.Description) return false;
       if (FlavorText != other.FlavorText) return false;
@@ -998,6 +1044,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Rank != other.Rank) return false;
       if (Type != other.Type) return false;
       if (Rarity != other.Rarity) return false;
+      if (Frame != other.Frame) return false;
       if (Damage != other.Damage) return false;
       if (Health != other.Health) return false;
       if (Cost != other.Cost) return false;
@@ -1013,7 +1060,7 @@ namespace LoomNetwork.CZB.Protobuf {
       int hash = 1;
       if (Id != 0L) hash ^= Id.GetHashCode();
       if (Kind.Length != 0) hash ^= Kind.GetHashCode();
-      if (Element.Length != 0) hash ^= Element.GetHashCode();
+      if (Set.Length != 0) hash ^= Set.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (FlavorText.Length != 0) hash ^= FlavorText.GetHashCode();
@@ -1021,6 +1068,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Rank.Length != 0) hash ^= Rank.GetHashCode();
       if (Type.Length != 0) hash ^= Type.GetHashCode();
       if (Rarity.Length != 0) hash ^= Rarity.GetHashCode();
+      if (Frame.Length != 0) hash ^= Frame.GetHashCode();
       if (Damage != 0) hash ^= Damage.GetHashCode();
       if (Health != 0) hash ^= Health.GetHashCode();
       if (Cost != 0) hash ^= Cost.GetHashCode();
@@ -1049,9 +1097,9 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(18);
         output.WriteString(Kind);
       }
-      if (Element.Length != 0) {
+      if (Set.Length != 0) {
         output.WriteRawTag(26);
-        output.WriteString(Element);
+        output.WriteString(Set);
       }
       if (Name.Length != 0) {
         output.WriteRawTag(34);
@@ -1081,24 +1129,28 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(82);
         output.WriteString(Rarity);
       }
+      if (Frame.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Frame);
+      }
       if (Damage != 0) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(96);
         output.WriteInt32(Damage);
       }
       if (Health != 0) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(104);
         output.WriteInt32(Health);
       }
       if (Cost != 0) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(112);
         output.WriteInt32(Cost);
       }
       if (Ability.Length != 0) {
-        output.WriteRawTag(114);
+        output.WriteRawTag(122);
         output.WriteString(Ability);
       }
       if (cardViewInfo_ != null) {
-        output.WriteRawTag(122);
+        output.WriteRawTag(130, 1);
         output.WriteMessage(CardViewInfo);
       }
       effects_.WriteTo(output, _repeated_effects_codec);
@@ -1117,8 +1169,8 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Kind.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Kind);
       }
-      if (Element.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Element);
+      if (Set.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Set);
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
@@ -1141,6 +1193,9 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Rarity.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Rarity);
       }
+      if (Frame.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Frame);
+      }
       if (Damage != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Damage);
       }
@@ -1154,7 +1209,7 @@ namespace LoomNetwork.CZB.Protobuf {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Ability);
       }
       if (cardViewInfo_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardViewInfo);
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(CardViewInfo);
       }
       size += effects_.CalculateSize(_repeated_effects_codec);
       size += abilities_.CalculateSize(_repeated_abilities_codec);
@@ -1175,8 +1230,8 @@ namespace LoomNetwork.CZB.Protobuf {
       if (other.Kind.Length != 0) {
         Kind = other.Kind;
       }
-      if (other.Element.Length != 0) {
-        Element = other.Element;
+      if (other.Set.Length != 0) {
+        Set = other.Set;
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
@@ -1198,6 +1253,9 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.Rarity.Length != 0) {
         Rarity = other.Rarity;
+      }
+      if (other.Frame.Length != 0) {
+        Frame = other.Frame;
       }
       if (other.Damage != 0) {
         Damage = other.Damage;
@@ -1239,7 +1297,7 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           }
           case 26: {
-            Element = input.ReadString();
+            Set = input.ReadString();
             break;
           }
           case 34: {
@@ -1270,34 +1328,38 @@ namespace LoomNetwork.CZB.Protobuf {
             Rarity = input.ReadString();
             break;
           }
-          case 88: {
-            Damage = input.ReadInt32();
+          case 90: {
+            Frame = input.ReadString();
             break;
           }
           case 96: {
-            Health = input.ReadInt32();
+            Damage = input.ReadInt32();
             break;
           }
           case 104: {
+            Health = input.ReadInt32();
+            break;
+          }
+          case 112: {
             Cost = input.ReadInt32();
             break;
           }
-          case 114: {
+          case 122: {
             Ability = input.ReadString();
             break;
           }
-          case 122: {
+          case 130: {
             if (cardViewInfo_ == null) {
               cardViewInfo_ = new global::LoomNetwork.CZB.Protobuf.CardViewInfo();
             }
             input.ReadMessage(cardViewInfo_);
             break;
           }
-          case 130: {
+          case 138: {
             effects_.AddEntriesFrom(input, _repeated_effects_codec);
             break;
           }
-          case 138: {
+          case 146: {
             abilities_.AddEntriesFrom(input, _repeated_abilities_codec);
             break;
           }
@@ -1931,7 +1993,21 @@ namespace LoomNetwork.CZB.Protobuf {
       activityType_ = other.activityType_;
       callType_ = other.callType_;
       targetType_ = other.targetType_;
+      statType_ = other.statType_;
+      setType_ = other.setType_;
       value_ = other.value_;
+      buffType_ = other.buffType_;
+      effectType_ = other.effectType_;
+      unitType_ = other.unitType_;
+      count_ = other.count_;
+      name_ = other.name_;
+      turns_ = other.turns_;
+      delay_ = other.delay_;
+      unitStatus_ = other.unitStatus_;
+      cardType_ = other.cardType_;
+      health_ = other.health_;
+      damage_ = other.damage_;
+      attackInfo_ = other.attackInfo_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1984,14 +2060,168 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "stat_type" field.</summary>
+    public const int StatTypeFieldNumber = 5;
+    private string statType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string StatType {
+      get { return statType_; }
+      set {
+        statType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "set_type" field.</summary>
+    public const int SetTypeFieldNumber = 6;
+    private string setType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SetType {
+      get { return setType_; }
+      set {
+        setType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "value" field.</summary>
-    public const int ValueFieldNumber = 5;
+    public const int ValueFieldNumber = 7;
     private int value_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Value {
       get { return value_; }
       set {
         value_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "buff_type" field.</summary>
+    public const int BuffTypeFieldNumber = 8;
+    private string buffType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BuffType {
+      get { return buffType_; }
+      set {
+        buffType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "effect_type" field.</summary>
+    public const int EffectTypeFieldNumber = 9;
+    private string effectType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string EffectType {
+      get { return effectType_; }
+      set {
+        effectType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "unit_type" field.</summary>
+    public const int UnitTypeFieldNumber = 10;
+    private string unitType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UnitType {
+      get { return unitType_; }
+      set {
+        unitType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 11;
+    private int count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 12;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "turns" field.</summary>
+    public const int TurnsFieldNumber = 13;
+    private int turns_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Turns {
+      get { return turns_; }
+      set {
+        turns_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "delay" field.</summary>
+    public const int DelayFieldNumber = 14;
+    private int delay_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Delay {
+      get { return delay_; }
+      set {
+        delay_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "unit_status" field.</summary>
+    public const int UnitStatusFieldNumber = 15;
+    private string unitStatus_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UnitStatus {
+      get { return unitStatus_; }
+      set {
+        unitStatus_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "card_type" field.</summary>
+    public const int CardTypeFieldNumber = 16;
+    private string cardType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string CardType {
+      get { return cardType_; }
+      set {
+        cardType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "health" field.</summary>
+    public const int HealthFieldNumber = 17;
+    private int health_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Health {
+      get { return health_; }
+      set {
+        health_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "damage" field.</summary>
+    public const int DamageFieldNumber = 18;
+    private int damage_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Damage {
+      get { return damage_; }
+      set {
+        damage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attack_info" field.</summary>
+    public const int AttackInfoFieldNumber = 19;
+    private string attackInfo_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string AttackInfo {
+      get { return attackInfo_; }
+      set {
+        attackInfo_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -2012,7 +2242,21 @@ namespace LoomNetwork.CZB.Protobuf {
       if (ActivityType != other.ActivityType) return false;
       if (CallType != other.CallType) return false;
       if (TargetType != other.TargetType) return false;
+      if (StatType != other.StatType) return false;
+      if (SetType != other.SetType) return false;
       if (Value != other.Value) return false;
+      if (BuffType != other.BuffType) return false;
+      if (EffectType != other.EffectType) return false;
+      if (UnitType != other.UnitType) return false;
+      if (Count != other.Count) return false;
+      if (Name != other.Name) return false;
+      if (Turns != other.Turns) return false;
+      if (Delay != other.Delay) return false;
+      if (UnitStatus != other.UnitStatus) return false;
+      if (CardType != other.CardType) return false;
+      if (Health != other.Health) return false;
+      if (Damage != other.Damage) return false;
+      if (AttackInfo != other.AttackInfo) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2023,7 +2267,21 @@ namespace LoomNetwork.CZB.Protobuf {
       if (ActivityType.Length != 0) hash ^= ActivityType.GetHashCode();
       if (CallType.Length != 0) hash ^= CallType.GetHashCode();
       if (TargetType.Length != 0) hash ^= TargetType.GetHashCode();
+      if (StatType.Length != 0) hash ^= StatType.GetHashCode();
+      if (SetType.Length != 0) hash ^= SetType.GetHashCode();
       if (Value != 0) hash ^= Value.GetHashCode();
+      if (BuffType.Length != 0) hash ^= BuffType.GetHashCode();
+      if (EffectType.Length != 0) hash ^= EffectType.GetHashCode();
+      if (UnitType.Length != 0) hash ^= UnitType.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Turns != 0) hash ^= Turns.GetHashCode();
+      if (Delay != 0) hash ^= Delay.GetHashCode();
+      if (UnitStatus.Length != 0) hash ^= UnitStatus.GetHashCode();
+      if (CardType.Length != 0) hash ^= CardType.GetHashCode();
+      if (Health != 0) hash ^= Health.GetHashCode();
+      if (Damage != 0) hash ^= Damage.GetHashCode();
+      if (AttackInfo.Length != 0) hash ^= AttackInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2053,9 +2311,65 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(34);
         output.WriteString(TargetType);
       }
+      if (StatType.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(StatType);
+      }
+      if (SetType.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SetType);
+      }
       if (Value != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(56);
         output.WriteInt32(Value);
+      }
+      if (BuffType.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(BuffType);
+      }
+      if (EffectType.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(EffectType);
+      }
+      if (UnitType.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(UnitType);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(88);
+        output.WriteInt32(Count);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(98);
+        output.WriteString(Name);
+      }
+      if (Turns != 0) {
+        output.WriteRawTag(104);
+        output.WriteInt32(Turns);
+      }
+      if (Delay != 0) {
+        output.WriteRawTag(112);
+        output.WriteInt32(Delay);
+      }
+      if (UnitStatus.Length != 0) {
+        output.WriteRawTag(122);
+        output.WriteString(UnitStatus);
+      }
+      if (CardType.Length != 0) {
+        output.WriteRawTag(130, 1);
+        output.WriteString(CardType);
+      }
+      if (Health != 0) {
+        output.WriteRawTag(136, 1);
+        output.WriteInt32(Health);
+      }
+      if (Damage != 0) {
+        output.WriteRawTag(144, 1);
+        output.WriteInt32(Damage);
+      }
+      if (AttackInfo.Length != 0) {
+        output.WriteRawTag(154, 1);
+        output.WriteString(AttackInfo);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -2077,8 +2391,50 @@ namespace LoomNetwork.CZB.Protobuf {
       if (TargetType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetType);
       }
+      if (StatType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StatType);
+      }
+      if (SetType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SetType);
+      }
       if (Value != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Value);
+      }
+      if (BuffType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BuffType);
+      }
+      if (EffectType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EffectType);
+      }
+      if (UnitType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitType);
+      }
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Count);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Turns != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Turns);
+      }
+      if (Delay != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Delay);
+      }
+      if (UnitStatus.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitStatus);
+      }
+      if (CardType.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(CardType);
+      }
+      if (Health != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Health);
+      }
+      if (Damage != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Damage);
+      }
+      if (AttackInfo.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(AttackInfo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2103,8 +2459,50 @@ namespace LoomNetwork.CZB.Protobuf {
       if (other.TargetType.Length != 0) {
         TargetType = other.TargetType;
       }
+      if (other.StatType.Length != 0) {
+        StatType = other.StatType;
+      }
+      if (other.SetType.Length != 0) {
+        SetType = other.SetType;
+      }
       if (other.Value != 0) {
         Value = other.Value;
+      }
+      if (other.BuffType.Length != 0) {
+        BuffType = other.BuffType;
+      }
+      if (other.EffectType.Length != 0) {
+        EffectType = other.EffectType;
+      }
+      if (other.UnitType.Length != 0) {
+        UnitType = other.UnitType;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Turns != 0) {
+        Turns = other.Turns;
+      }
+      if (other.Delay != 0) {
+        Delay = other.Delay;
+      }
+      if (other.UnitStatus.Length != 0) {
+        UnitStatus = other.UnitStatus;
+      }
+      if (other.CardType.Length != 0) {
+        CardType = other.CardType;
+      }
+      if (other.Health != 0) {
+        Health = other.Health;
+      }
+      if (other.Damage != 0) {
+        Damage = other.Damage;
+      }
+      if (other.AttackInfo.Length != 0) {
+        AttackInfo = other.AttackInfo;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2133,8 +2531,64 @@ namespace LoomNetwork.CZB.Protobuf {
             TargetType = input.ReadString();
             break;
           }
-          case 40: {
+          case 42: {
+            StatType = input.ReadString();
+            break;
+          }
+          case 50: {
+            SetType = input.ReadString();
+            break;
+          }
+          case 56: {
             Value = input.ReadInt32();
+            break;
+          }
+          case 66: {
+            BuffType = input.ReadString();
+            break;
+          }
+          case 74: {
+            EffectType = input.ReadString();
+            break;
+          }
+          case 82: {
+            UnitType = input.ReadString();
+            break;
+          }
+          case 88: {
+            Count = input.ReadInt32();
+            break;
+          }
+          case 98: {
+            Name = input.ReadString();
+            break;
+          }
+          case 104: {
+            Turns = input.ReadInt32();
+            break;
+          }
+          case 112: {
+            Delay = input.ReadInt32();
+            break;
+          }
+          case 122: {
+            UnitStatus = input.ReadString();
+            break;
+          }
+          case 130: {
+            CardType = input.ReadString();
+            break;
+          }
+          case 136: {
+            Health = input.ReadInt32();
+            break;
+          }
+          case 144: {
+            Damage = input.ReadInt32();
+            break;
+          }
+          case 154: {
+            AttackInfo = input.ReadString();
             break;
           }
         }

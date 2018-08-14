@@ -36,6 +36,8 @@ namespace Loom.Client
         /// Middleware to apply when committing transactions.
         /// </summary>
         public TxMiddleware TxMiddleware { get; set; }
+        
+        public bool AutoReconnect { get; set; }
 
         /// <summary>
         /// Logger to be used for logging, defaults to <see cref="NullLogger"/>.
@@ -276,12 +278,17 @@ namespace Loom.Client
             }
         }
         
-        private async Task EnsureConnected() {
+        private async Task EnsureConnected()
+        {
             await EnsureConnected(this.readClient);
             await EnsureConnected(this.writeClient);
         }
 
-        private async Task EnsureConnected(IRpcClient rpcClient) {
+        private async Task EnsureConnected(IRpcClient rpcClient)
+        {
+            if (!AutoReconnect)
+                return;
+            
             // TODO: handle edge-case when ConnectionState == RpcConnectionState.Connecting
             if (rpcClient.ConnectionState != RpcConnectionState.Connected)
             {

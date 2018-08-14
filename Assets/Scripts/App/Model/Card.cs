@@ -45,26 +45,27 @@ namespace LoomNetwork.CZB.Data
 
         public Card Clone()
         {
-            Card card = new Card();
-
-            card.id = id;
-            card.kind = kind;
-            card.name = name;
-            card.cost = cost;
-            card.description = description;
-            card.flavorText = flavorText;
-            card.picture = picture;
-            card.damage = damage;
-            card.health = health;
-            card.rank = rank;
-            card.type = type;
-            card.cardSetType = cardSetType;
-            card.cardKind = cardKind;
-            card.cardRank = cardRank;
-            card.cardType = cardType;
-            card.abilities = abilities;
-            card.cardViewInfo = cardViewInfo;
-            card.frame = frame;
+            Card card = new Card
+            {
+                id = id,
+                kind = kind,
+                name = name,
+                cost = cost,
+                description = description,
+                flavorText = flavorText,
+                picture = picture,
+                damage = damage,
+                health = health,
+                rank = rank,
+                type = type,
+                cardSetType = cardSetType,
+                cardKind = cardKind,
+                cardRank = cardRank,
+                cardType = cardType,
+                abilities = abilities,
+                cardViewInfo = cardViewInfo,
+                frame = frame
+            };
 
             return card;
         }

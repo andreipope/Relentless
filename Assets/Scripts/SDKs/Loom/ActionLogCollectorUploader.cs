@@ -24,13 +24,16 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         private void GameplayManagerOnGameEndedEvent(Enumerators.EndGameType obj)
         {
-            _playerEventListener.OnGameEndedEventHandler(obj);
+            _playerEventListener?.OnGameEndedEventHandler(obj);
             _playerEventListener?.Dispose();
             _opponentEventListener?.Dispose();
         }
 
         private void GameplayManagerOnGameInitializedEvent()
         {
+            _playerEventListener?.Dispose();
+            _opponentEventListener?.Dispose();
+            
             _playerEventListener = new PlayerEventListener(_gameplayManager.CurrentPlayer, false);
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
             
@@ -83,6 +86,11 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             public void Dispose()
             {
+                UnsubscribeFromPlayerEvents();
+            }
+
+            private void UnsubscribeFromPlayerEvents()
+            {
                 Player.OnEndTurnEvent -= OnEndTurnEventHandler;
                 Player.OnStartTurnEvent -= OnStartTurnEventHandler;
                 Player.PlayerHPChangedEvent -= OnPlayerHPChangedEventHandler;
@@ -94,7 +102,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 Player.BoardChangedEvent -= OnBoardChangedEventHandler;
                 Player.CardPlayedEvent -= OnCardPlayedEventHandler;
             }
-            
+
             public async void OnGameEndedEventHandler(Enumerators.EndGameType obj)
             {
                 await UploadActionLogModel(

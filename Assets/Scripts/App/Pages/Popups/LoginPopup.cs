@@ -114,7 +114,7 @@ namespace LoomNetwork.CZB
 			    }
 			    catch (Exception e)
 			    {
-				    Debug.LogException(e);
+				    Debug.LogWarning(e);
 				    SetUIState(LoginState.BetaKeyValidationFailed);
 			    }
 		    } else {

@@ -29,7 +29,12 @@ namespace LoomNetwork.CZB.Common
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
-        internal static bool DATA_ENCRYPTION_ENABLED = true;
+        internal static bool DATA_ENCRYPTION_ENABLED =
+#if !UNITY_EDITOR
+            true;
+#else
+            false;
+#endif
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;

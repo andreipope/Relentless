@@ -195,7 +195,7 @@ namespace LoomNetwork.CZB
 			Deck _currentDeck = null;
 
 			if (!_gameplayManager.IsTutorial) {
-				_currentDeck = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId];
+				_currentDeck = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId);
 			} else {
 				_currentDeck = new Deck();
 				_currentDeck.heroId = 4;
@@ -204,9 +204,10 @@ namespace LoomNetwork.CZB
             int heroId = 0;
 
             if (!isOpponent)
-				heroId = _currentDeck.heroId;
+                heroId = _currentDeck.heroId;
             else
-                heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
+                heroId =
+                    _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
