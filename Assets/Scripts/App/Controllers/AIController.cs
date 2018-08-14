@@ -886,7 +886,7 @@ namespace LoomNetwork.CZB
 
             Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
 
-#region find target
+            #region find target
             switch (skill.skill.overlordSkill)
             {
                 case Enumerators.OverlordSkill.HARDEN:
@@ -898,17 +898,20 @@ namespace LoomNetwork.CZB
                     }
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
-                case Enumerators.OverlordSkill.MEND:              
+                case Enumerators.OverlordSkill.MEND:
                     {
                         target = _gameplayManager.OpponentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
-                        var units = GetUnitsWithLowHP();
-
-                        if (units.Count > 0)
+                        if (_gameplayManager.OpponentPlayer.HP > 13)
                         {
-                            target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            var units = GetUnitsWithLowHP();
+
+                            if (units.Count > 0)
+                            {
+                                target = units[0];
+                                selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            }
                         }
                     }
                     break;
@@ -927,7 +930,7 @@ namespace LoomNetwork.CZB
                 case Enumerators.OverlordSkill.TOXIC_POWER:
                 case Enumerators.OverlordSkill.ICE_BOLT:
                 case Enumerators.OverlordSkill.FREEZE:
-                case Enumerators.OverlordSkill.FIRE_BOLT:                    
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                     {
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.PLAYER;
@@ -941,7 +944,7 @@ namespace LoomNetwork.CZB
                         }
                     }
                     break;
-                case Enumerators.OverlordSkill.PUSH: 
+                case Enumerators.OverlordSkill.PUSH:
                     {
                         var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 
@@ -971,9 +974,10 @@ namespace LoomNetwork.CZB
                     break;
                 default: return;
             }
-#endregion
+            #endregion
 
-            skill.StartDoSkill();
+            //if (selectedObjectType != Enumerators.AffectObjectType.NONE)
+                skill.StartDoSkill();
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {

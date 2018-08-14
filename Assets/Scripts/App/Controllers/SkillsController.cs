@@ -78,6 +78,12 @@ namespace LoomNetwork.CZB
             rootPage.playerSecondarySkillHandler.OnMouseDownEvent += SecondarySkillHandlerOnMouseDownEventHandler;
             rootPage.playerSecondarySkillHandler.OnMouseUpEvent += SecondarySkillHandlerOnMouseUpEventHandler;
 
+            rootPage.opponentPrimarySkillHandler.OnMouseDownEvent += OpponentPrimarySkillHandlerOnMouseDownEventHandler;
+            rootPage.opponentPrimarySkillHandler.OnMouseUpEvent += OpponentPrimarySkillHandlerOnMouseUpEventHandler;
+
+            rootPage.opponentSecondarySkillHandler.OnMouseDownEvent += OpponentSecondarySkillHandlerOnMouseDownEventHandler;
+            rootPage.opponentSecondarySkillHandler.OnMouseUpEvent += OpponentSecondarySkillHandlerOnMouseUpEventHandler;
+
 
             int primary = _gameplayManager.CurrentPlayer.SelfHero.primarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.secondarySkill;
@@ -152,6 +158,30 @@ namespace LoomNetwork.CZB
                 _playerSecondarySkill.OnMouseUpEventHandler();
         }
 
+        private void OpponentPrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (opponentPrimarySkill != null)
+                opponentPrimarySkill.OnMouseDownEventHandler();
+        }
+
+        private void OpponentPrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (opponentPrimarySkill != null)
+                opponentPrimarySkill.OnMouseUpEventHandler();
+        }
+
+        private void OpponentSecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (opponentSecondarySkill != null)
+                opponentSecondarySkill.OnMouseDownEventHandler();
+        }
+
+        private void OpponentSecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (opponentSecondarySkill != null)
+                opponentSecondarySkill.OnMouseUpEventHandler();
+        }
+
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
             _playerPrimarySkill = new BoardSkill(rootPage.playerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary, 3, true);
@@ -160,8 +190,8 @@ namespace LoomNetwork.CZB
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler, _gameplayManager.OpponentPlayer, primary, 3, true);
-            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler, _gameplayManager.OpponentPlayer, secondary, 4, false);
+            opponentPrimarySkill = new BoardSkill(rootPage.opponentPrimarySkillHandler.gameObject, _gameplayManager.OpponentPlayer, primary, 3, true);
+            opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler.gameObject, _gameplayManager.OpponentPlayer, secondary, 4, false);
         }
 
         private void SkillParticleActionCompleted(object target)

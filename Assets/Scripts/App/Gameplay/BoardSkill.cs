@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
             //_behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
             //   _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
 
-            if (owner.IsLocalPlayer)
+          //  if (owner.IsLocalPlayer)
             {
                 _pointerEventSolver = new PointerEventSolver();
                 _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
@@ -111,7 +111,8 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnDragStartedEventHandler()
         {
-            StartDoSkill();
+            if (owner.IsLocalPlayer)
+                StartDoSkill();
         }
 
         private void PointerEventSolver_OnClickEventHandler()
@@ -121,7 +122,8 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnEndEventHandler()
         {
-            EndDoSkill();
+            if (owner.IsLocalPlayer)
+                EndDoSkill();
         }
 
         private void OnStartTurnEventHandler()
@@ -323,7 +325,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if (owner.IsLocalPlayer)
+            //if (owner.IsLocalPlayer)
             {
                 _pointerEventSolver.Update();
 
@@ -359,8 +361,16 @@ namespace LoomNetwork.CZB
 
             Vector3 position = Vector3.zero;
 
-            if (IsPrimary) position = new Vector3(4f, 0.5f, 0);
-            else position = new Vector3(-4f, 0.5f, 0);
+            if (owner.IsLocalPlayer)
+            {
+                if (IsPrimary) position = new Vector3(4f, 0.5f, 0);
+                else position = new Vector3(-4f, 0.5f, 0);
+            }
+            else
+            {
+                if (IsPrimary) position = new Vector3(4f, -1.15f, 0);
+                else position = new Vector3(-4f, -1.15f, 0);
+            }
 
             _currentOverlordAbilityInfoObject = new OverlordAbilityInfoObject(skill, selfObject.transform, position);
         }
@@ -395,7 +405,7 @@ namespace LoomNetwork.CZB
                 _callTypeText.text = skill.title.ToUpper();
                 _descriptionText.text = "    " + skill.description;
 
-                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath);
+                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath.Replace(" ", string.Empty));
             }
 
             public void Dispose()

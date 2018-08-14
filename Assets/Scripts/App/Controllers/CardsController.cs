@@ -233,7 +233,13 @@ namespace LoomNetwork.CZB
             if (card == null)
             {
                 if (player.CardsInDeck.Count == 0)
+                {
+                    player.damageByNoMoreCardsInDeck++;
+                    player.HP -= player.damageByNoMoreCardsInDeck;
+                    _vfxController.SpawnGotDamageEffect(this, -player.damageByNoMoreCardsInDeck);
+
                     return;
+                }
 
                 card = player.CardsInDeck[0];
             }
@@ -247,7 +253,13 @@ namespace LoomNetwork.CZB
             if (card == null)
             {
                 if (otherPlayer.CardsInDeck.Count == 0)
+                {
+                    otherPlayer.damageByNoMoreCardsInDeck++;
+                    otherPlayer.HP -= otherPlayer.damageByNoMoreCardsInDeck;
+                    _vfxController.SpawnGotDamageEffect(this, -otherPlayer.damageByNoMoreCardsInDeck);
+
                     return;
+                }
 
                 card = otherPlayer.CardsInDeck[0];
             }

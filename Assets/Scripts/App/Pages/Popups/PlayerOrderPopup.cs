@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using LoomNetwork.CZB.Data;
 using DG.Tweening;
+using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
 {
@@ -21,6 +22,7 @@ namespace LoomNetwork.CZB
         private IUIManager _uiManager;
         private IGameplayManager _gameplayManager;
         private ITimerManager _timerManager;
+        private ISoundManager _soundManager;
 
         private GameObject _selfPage;
 
@@ -52,6 +54,7 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -127,8 +130,8 @@ namespace LoomNetwork.CZB
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.text = player.name;
-            _opponentOverlordNameText.text = opponent.name;
+            _playerOverlordNameText.text = player.name.ToUpper();
+            _opponentOverlordNameText.text = opponent.name.ToUpper();
 
             _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.element.ToLower());
             _opponentOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + opponent.element.ToLower());
@@ -221,6 +224,9 @@ namespace LoomNetwork.CZB
             }
 
             sequence.Play();
+
+
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.SFX_SOUND_VOLUME, false, false, false);
         }
 
 

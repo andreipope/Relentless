@@ -12,8 +12,12 @@ namespace LoomNetwork.CZB
         {
             get
             {
-                if(_Instance == null)
-                    _Instance = new GameObject("ThreadTool").AddComponent<ThreadTool>();
+                if (_Instance == null)
+                {
+                    // optimize it to call in main thread if it not in main thread
+                    if (Thread.CurrentThread.ManagedThreadId == MainApp.MainThreadId)
+                        _Instance = new GameObject("ThreadTool").AddComponent<ThreadTool>(); 
+                }
 
                 return _Instance;
             }

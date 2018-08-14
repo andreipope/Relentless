@@ -109,6 +109,9 @@ namespace LoomNetwork.CZB.Common
 
         internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
 
+        internal const int TUTORIAL_PLAYER_HERO_ID = 4;
+
+
         internal const bool DEV_MODE = false;  
     }
 }
