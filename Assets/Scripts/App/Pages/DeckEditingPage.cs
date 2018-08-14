@@ -841,7 +841,7 @@ namespace LoomNetwork.CZB
             if (_dataManager.CachedDecksData.decks.Count > 0) {
                 _currentDeck.id = _dataManager.CachedDecksData.decks.Max (d => d.id) + 1;
             } else {
-                _currentDeck.id = 1;
+                _currentDeck.id = 0;
             }
 
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
