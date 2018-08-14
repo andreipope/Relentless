@@ -28,6 +28,7 @@ namespace LoomNetwork.CZB
         private IAppStateManager _appStateManager;
         private IMatchManager _matchManager;
         private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage;
 
@@ -68,6 +69,7 @@ namespace LoomNetwork.CZB
             _appStateManager = GameClient.Get<IAppStateManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
@@ -179,21 +181,27 @@ namespace LoomNetwork.CZB
 
         private async void DeleteDeckEventHandler(HordeDeckObject deck)
         {
-            try
-            {
-                await _backendFacade.DeleteDeck(_backendFacade.UserDataModel.UserId, deck.SelfDeck.id);
-                CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
-            } catch (Exception e)
-            {
-                CustomDebug.Log("Result === " + e);
-                OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
-                return;
-            }
-            
+            // HACK for offline mode in online mode, local data should only be saved after
+            // backend operation has succeeded
             _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             await _dataManager.SaveAllCache();
             
+            try
+            {
+                await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, deck.SelfDeck.id);
+                CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
+            } catch (Exception e)
+            {
+                // HACK for offline mode
+                if (false)
+                {
+                    CustomDebug.Log("Result === " + e);
+                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
+                    return;
+                }
+            }
+
             LoadDeckObjects();
         }
 
@@ -426,7 +434,10 @@ namespace LoomNetwork.CZB
                 _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - HORDE_ITEM_SPACE * _scrolledDeck, 420, 0);
         }
 
-        private bool ShowConnectionLostPopupIfNeeded() {
+        private bool ShowConnectionLostPopupIfNeeded()
+        {
+            // HACK for offline mode
+            return false;
             if (_backendFacade.IsConnected)
                 return false;
             

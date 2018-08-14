@@ -49,6 +49,7 @@ namespace LoomNetwork.CZB
             AddService<IUIManager>(new UIManager());
             AddService<BackendFacade>(new BackendFacade());
             AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
         }
 
         public static T Get<T>()

@@ -54,11 +54,13 @@ namespace LoomNetwork.CZB.BackendCommunication
             public bool IsOpponent { get; }
             
             private readonly BackendFacade _backendFacade;
+            private readonly BackendDataControlMediator _backendDataControlMediator;
             private IDataManager _dataManager;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _dataManager = GameClient.Get<IDataManager>();
                 
                 Player = player;
@@ -184,14 +186,17 @@ namespace LoomNetwork.CZB.BackendCommunication
             {
                 return 
                     new ActionLogModel()
-                        .Add("UserId", _backendFacade.UserDataModel.UserId)
+                        .Add("UserId", _backendDataControlMediator.UserDataModel.UserId)
                         .Add("CurrentTurnPlayer", IsOpponent ? "Opponent" : "Player")
                         .Add("Event", eventName);
             }
 
             private async Task UploadActionLogModel(ActionLogModel model)
             {
-                await _backendFacade.UploadActionLog(_backendFacade.UserDataModel.UserId, model);
+                if (!_backendFacade.IsConnected)
+                    return;
+                
+                await _backendFacade.UploadActionLog(_backendDataControlMediator.UserDataModel.UserId, model);
             }
 
             private object WorkingCardToSimpleRepresentation(WorkingCard card)

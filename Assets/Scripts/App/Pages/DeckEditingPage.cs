@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         private ILocalizationManager _localizationManager;
         private IDataManager _dataManager;
         private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
 
         private GameObject _selfPage;
@@ -106,6 +107,7 @@ namespace LoomNetwork.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -828,6 +830,9 @@ namespace LoomNetwork.CZB
                 return;
             }
             
+            // HACK for offline mode: in online mode, local data should only be saved after
+            // backend operation has succeeded
+            
             bool success = true;
             if (_currentDeckId == -1)
             {
@@ -837,14 +842,18 @@ namespace LoomNetwork.CZB
                 try
                 {
                     long newDeckId = 
-                        await _backendFacade.AddDeck(_backendFacade.UserDataModel.UserId, _currentDeck);
+                        await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     _currentDeck.id = newDeckId;
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
                 {
-                    success = false;
-                    CustomDebug.Log("Result === " + e);
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        CustomDebug.Log("Result === " + e);
+                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    }
                 }
             }
             else
@@ -853,13 +862,17 @@ namespace LoomNetwork.CZB
                 
                 try
                 {
-                    await _backendFacade.EditDeck(_backendFacade.UserDataModel.UserId, _currentDeck);
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
-                    success = false;
-                    CustomDebug.Log("Result === " + e);
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        CustomDebug.Log("Result === " + e);
+                        OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                    }
                 }
             }
 

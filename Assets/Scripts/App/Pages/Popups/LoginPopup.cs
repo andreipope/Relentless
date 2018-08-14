@@ -32,6 +32,7 @@ namespace LoomNetwork.CZB
         private GameObject _selfPage;
 	    private IDataManager _dataManager;
 	    private BackendFacade _backendFacade;
+	    private BackendDataControlMediator _backendDataControlMediator;
 
 		private ButtonShiftingContent _betaButton;
 	    private Transform _betaGroup;
@@ -47,6 +48,7 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
 	        _dataManager = GameClient.Get<IDataManager>();
 	        _backendFacade = GameClient.Get<BackendFacade>();
+	        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
@@ -91,35 +93,28 @@ namespace LoomNetwork.CZB
 
 			    try
 			    {
-				    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
-				    {
-					    IsValid = false
-				    };
-				    _backendFacade.SetUserDataModel(userDataModel);
-
-				    await _backendFacade.LoadUserDataModelAndCreateContract();
 				    isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
 				    if (!isBetaKeyValid)
 					    throw new Exception("Beta key not registered");
 				    
-				    try
+				    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
 				    {
-					    await _backendFacade.SignUp(userDataModel.UserId);
-				    } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
-				    {
-					    // Ignore
-				    }
+					    // HACK
+					    IsValid = true
+					    //IsValid = false
+				    };
+				    _backendDataControlMediator.SetUserDataModel(userDataModel);
+				    await _backendDataControlMediator.LoginAndLoadData();
 
-				    await _dataManager.StartLoadCache();
-
-				    userDataModel.IsValid = true;
-				    _backendFacade.SetUserDataModel(userDataModel);
+				    // HACK
+				    //userDataModel.IsValid = true;
+				    _backendDataControlMediator.SetUserDataModel(userDataModel);
 				    
 				    SuccessfulLogin();
 			    }
 			    catch (Exception e)
 			    {
-				    Debug.LogWarning(e);
+				    Debug.LogException(e);
 				    SetUIState(LoginState.BetaKeyValidationFailed);
 			    }
 		    } else {

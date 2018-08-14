@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         private IPlayerManager _playerManager;
 		private IDataManager _dataManager;
         private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage;
 
@@ -56,6 +57,7 @@ namespace LoomNetwork.CZB
             _playerManager = GameClient.Get<IPlayerManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -259,17 +261,17 @@ namespace LoomNetwork.CZB
             try
             {
                 // FIXME: add waiting popup
-                await _backendFacade.LoadUserDataModelAndCreateContract();
-                await _dataManager.StartLoadCache();
+                await _backendDataControlMediator.LoginAndLoadData();
             } catch (Exception e)
             {
+                Debug.LogException(e);
                 OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
             }
         }
 
 		private void LogoutButtonOnClickHandler() {
 			_dataManager.DeleteData ();
-			_backendFacade.UserDataModel = null;
+			_backendDataControlMediator.UserDataModel = null;
 			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 		}
 

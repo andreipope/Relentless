@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         private ILocalizationManager _localizationManager;
         private ILoadObjectsManager _loadObjectsManager;
         private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
@@ -84,6 +85,7 @@ namespace LoomNetwork.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -97,7 +99,7 @@ namespace LoomNetwork.CZB
             Debug.Log("=== Start loading server ==== ");
             
             LatestVersions = await _backendFacade.GetLatestVersions();
-            BetaConfig = await _backendFacade.GetBetaConfig(_backendFacade.UserDataModel.BetaKey);
+            BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
             
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
@@ -247,7 +249,7 @@ namespace LoomNetwork.CZB
                         
                         try
                         {
-                            var heroesList = await _backendFacade.GetHeroesList(_backendFacade.UserDataModel.UserId);
+                            var heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
                             CustomDebug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
@@ -290,9 +292,11 @@ namespace LoomNetwork.CZB
                         //if (File.Exists(_cacheDataPathes[type]))
                         //    CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
 
+                        // TODO: add code to sync local and remote decks
+                        
                         try
                         {
-                            ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendFacade.UserDataModel.UserId);
+                            ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());
@@ -342,9 +346,9 @@ namespace LoomNetwork.CZB
             if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH)))
             {
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
-                //CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
+                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
                 //CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
-                //CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
+                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
                 CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
                 CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
                 CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);

@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private const string UserDataFileName = "UserData.json";
+
         public const string AuthBackendHost = "http://stage.loom.games";
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
@@ -32,23 +32,12 @@ namespace LoomNetwork.CZB.BackendCommunication
         public string ReaderHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
 #endif
 
-        public UserDataModel UserDataModel { get; set; }
-
         public Contract Contract { get; private set; }
 
         public bool IsConnected =>
             Contract != null &&
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
-
-        protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, UserDataFileName);
-
-        public async Task LoadUserDataModelAndCreateContract()
-        {
-            LoadUserDataModel();
-            Debug.Log("User Id: " + UserDataModel.UserId);
-            await CreateContract(UserDataModel.PrivateKey);
-        }
 
         public async Task CreateContract(byte[] privateKey)
         {
@@ -78,28 +67,6 @@ namespace LoomNetwork.CZB.BackendCommunication
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
             ContractCreated?.Invoke(oldContract, Contract);
-        }
-
-        public bool LoadUserDataModel(bool force = false)
-        {
-            if (UserDataModel != null && !force)
-                return true;
-
-            if (!File.Exists(UserDataFilePath))
-                return false;
-
-            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
-            return true;
-        }
-
-        public bool SetUserDataModel(UserDataModel userDataModel)
-        {
-            if (userDataModel == null)
-                throw new ArgumentNullException(nameof(userDataModel));
-
-            File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
-            UserDataModel = userDataModel;
-            return true;
         }
 
         #region Card Collection

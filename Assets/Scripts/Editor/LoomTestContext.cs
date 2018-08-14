@@ -9,11 +9,12 @@ using NUnit.Framework;
 public static class LoomTestContext
 {
     public static BackendFacade BackendFacade;
+    public static BackendDataControlMediator BackendDataControlMediator;
 
     public static void TestSetUp(string userId = "Loom")
     {
         BackendFacade = new BackendFacade();
-        BackendFacade.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
+        BackendDataControlMediator.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
 
     public static void TestTearDown()
@@ -71,7 +72,7 @@ public static class LoomTestContext
         if (BackendFacade.Contract != null && BackendFacade.IsConnected)
             return;
 
-        await BackendFacade.CreateContract(BackendFacade.UserDataModel.PrivateKey);
+        await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
         /*LoomTestContext.LoomManager.UserDataModel = new LoomUserDataModel("LoomTest" + Random.value, CryptoUtils.GeneratePrivateKey());
         try
         {

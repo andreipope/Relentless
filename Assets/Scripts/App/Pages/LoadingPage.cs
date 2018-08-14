@@ -20,6 +20,7 @@ namespace LoomNetwork.CZB
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
 	    private BackendFacade _backendFacade;
+	    private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage, _loginForm;
 
@@ -49,6 +50,7 @@ namespace LoomNetwork.CZB
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
 	        _backendFacade = GameClient.Get<BackendFacade>();
+	        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
 			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -116,14 +118,20 @@ namespace LoomNetwork.CZB
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
 							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
 
-							if (_backendFacade.LoadUserDataModel() && _backendFacade.UserDataModel.IsValid)
+							if (_backendDataControlMediator.LoadUserDataModel() && _backendDataControlMediator.UserDataModel.IsValid)
 							{
 								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 								
 								Func<Task> connectFunc = async () =>
 								{
-									await _backendFacade.LoadUserDataModelAndCreateContract();
-									await _dataManager.StartLoadCache();
+									try
+									{
+										await _backendDataControlMediator.LoginAndLoadData();
+									} catch (Exception)
+									{
+										// HACK: ignore to allow offline mode
+									}
+									
 									connectionPopup.Hide();
 									
 									GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
@@ -195,7 +203,7 @@ namespace LoomNetwork.CZB
 	        {
 				await _backendFacade.SignUp(usernameText);
 		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
-		        _backendFacade.UserDataModel.UserId = usernameText;
+		        _backendDataControlMediator.UserDataModel.UserId = usernameText;
 		        //OpenAlertDialog("Account Created Successfully");
 		        // TODO : Removed code loading data manager
 		        var dataManager = GameClient.Get<IDataManager>();
@@ -233,7 +241,7 @@ namespace LoomNetwork.CZB
                 return;
             }*/
 	        
-	        _backendFacade.UserDataModel.UserId = usernameText;
+	        _backendDataControlMediator.UserDataModel.UserId = usernameText;
 	        var dataManager = GameClient.Get<IDataManager>();
 	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
 	        dataManager.StartLoadCache();

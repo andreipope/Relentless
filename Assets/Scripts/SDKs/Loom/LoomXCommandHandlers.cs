@@ -7,12 +7,14 @@ namespace LoomNetwork.CZB.BackendCommunication
     public static class LoomXCommandHandlers
     {
         private static BackendFacade _backendFacade;
+        private static BackendDataControlMediator _backendDataControlMediator;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
             CommandHandlers.RegisterCommandHandlers(typeof(LoomXCommandHandlers));
             _backendFacade = new BackendFacade();
+            _backendDataControlMediator = new BackendDataControlMediator();
         }
 
         [CommandHandler(Description = "Get Contract Write Host Link")]
@@ -31,7 +33,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         private static async void InitContractWithWriteLink(string link)
         {
             _backendFacade.WriterHost = link;
-            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
+            await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
 
@@ -39,7 +41,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         private static async void InitContractWithReaderLink(string link)
         {
             _backendFacade.ReaderHost = link;
-            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
+            await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
 
@@ -48,7 +50,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             _backendFacade.WriterHost = writer;
             _backendFacade.ReaderHost = reader;
-            await _backendFacade.CreateContract(_backendFacade.UserDataModel.PrivateKey);
+            await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
             CustomDebug.Log("LoomX Initialized..");
         }
     }
