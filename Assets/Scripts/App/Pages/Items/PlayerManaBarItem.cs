@@ -33,6 +33,8 @@ namespace LoomNetwork.CZB
 
         private string _overflowPrefabPath;
 
+        private bool _isInOverflow = false;
+
         public PlayerManaBarItem() { }
 
         public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos)
@@ -51,6 +53,9 @@ namespace LoomNetwork.CZB
                 if (bottle.name.Contains("BottleGoo"))
                     _gooBottles.Add(new GooBottleItem(bottle));
             }
+
+            _isInOverflow = false;
+
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
             GameClient.Get<IGameplayManager>().OnGameEndedEvent += OnGameEndedEventHandler;
@@ -88,11 +93,18 @@ namespace LoomNetwork.CZB
 
         private void UpdateGooOVerflow()
         {
-            if (_currentValue > _maxValue && _overflowObject == null)
+            if (_currentValue > _maxValue && !_isInOverflow)
+            {
                 CreateOverflow();
-            else if (_currentValue <= _maxValue && _overflowObject != null)
+
+                _isInOverflow = true;
+            }
+            else if (_currentValue <= _maxValue && _isInOverflow)
+            {
                 DestroyOverflow();
 
+                _isInOverflow = false;
+            }
             if (_overflowGooAmountText != null)
             {
                 _overflowGooAmountText.text = _currentValue.ToString() + "/" + _maxValue;
@@ -173,6 +185,8 @@ namespace LoomNetwork.CZB
         {
             StopOverfowSounds();
             _gooMeterObject.SetActive(false);
+
+            _isInOverflow = false;
 
             GameClient.Get<IGameplayManager>().OnGameEndedEvent -= OnGameEndedEventHandler;
         }

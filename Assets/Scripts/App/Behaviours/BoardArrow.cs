@@ -13,6 +13,7 @@ using LoomNetwork.CZB.Common;
 public class BoardArrow : MonoBehaviour
 {
     protected IGameplayManager _gameplayManager;
+    protected BoardArrowController _boardArrowController;
 
     public Action onTargetSelected;
 
@@ -25,7 +26,8 @@ public class BoardArrow : MonoBehaviour
 
     protected ParticleSystem _upBubbles;
 
-    private Vector3 _fromPosition;
+    private Vector3 _fromPosition,
+                    _targetPosition;
 
     private float _defaultArrowScale = 6.25f;
 
@@ -49,6 +51,7 @@ public class BoardArrow : MonoBehaviour
     protected void Init()
     {
         _gameplayManager = GameClient.Get<IGameplayManager>();
+        _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
         _selfObject = gameObject;
 
@@ -63,6 +66,9 @@ public class BoardArrow : MonoBehaviour
         if (_isInverse)
             _selfObject.transform.localScale = new Vector3(-1, 1, 1);
         //  _targetObjectsGroup.SetActive(false);
+
+        _boardArrowController.CurrentBoardArrow = this;
+        _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
     }
 
     protected virtual void Update()
@@ -73,6 +79,24 @@ public class BoardArrow : MonoBehaviour
             mousePosition.z = 0;
             UpdateLength(mousePosition, _isInverse);
         }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        _boardArrowController.CurrentBoardArrow = null;
+        _boardArrowController.SetStatusOfBoardArrowOnBoard(false);
+    }
+
+
+    public bool IsDragging()
+    {
+        if (startedDrag)
+        {
+            if (Vector3.Distance(_fromPosition, _targetPosition) > 1f)
+                return true;
+        }
+
+        return false;
     }
 
     public void SetInverse(bool isInverse = true)
@@ -105,6 +129,8 @@ public class BoardArrow : MonoBehaviour
         _targetColliderObject.transform.position = target;
         _targetObjectsGroup.transform.position = target;
 
+        _targetPosition = target;
+
         float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
         // float rootObjectsOffset = 21f;
 
@@ -114,7 +140,7 @@ public class BoardArrow : MonoBehaviour
             scaleX = -1f;
 
         _arrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
-      //  _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
+        //  _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
 
         var scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
 
@@ -141,6 +167,23 @@ public class BoardArrow : MonoBehaviour
 
     protected void CreateTarget(Vector3 target)
     {
-      //  _targetObjectsGroup.SetActive(true);
+        //  _targetObjectsGroup.SetActive(true);
+    }
+
+    public void Dispose()
+    {
+        if (selectedCard != null)
+        {
+            selectedCard.SetSelectedUnit(false);
+            selectedCard = null;
+        }
+
+        if (selectedPlayer != null)
+        {
+            selectedPlayer.SetGlowStatus(false);
+            selectedPlayer = null;
+        }
+
+        MonoBehaviour.Destroy(_selfObject);
     }
 }

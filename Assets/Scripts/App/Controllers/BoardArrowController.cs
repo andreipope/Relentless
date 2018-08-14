@@ -15,6 +15,10 @@ namespace LoomNetwork.CZB
 {
     public class BoardArrowController : IController
     {
+        public BoardArrow CurrentBoardArrow { get; set; }
+
+        public bool IsBoardArrowNowInTheBattle { get; set; }
+
         public void Dispose()
         {
         }
@@ -27,13 +31,39 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void BeginBoardArrow(Vector3 startPosition)
+        public void BeginArrow(Vector3 startPosition)
+        {
+
+        }
+
+        public void EndArrow()
         {
 
         }
 
         public void ResetAll()
         {
+        }
+
+
+        public void SetStatusOfBoardArrowOnBoard(bool status)
+        {
+            IsBoardArrowNowInTheBattle = status;
+        }
+
+        public void ResetCurrentBoardArrow()
+        {
+            if(CurrentBoardArrow != null)
+            {
+                CurrentBoardArrow.Dispose();
+                CurrentBoardArrow = null;
+            }
+        }
+
+
+        public void CreateArrowFromTo(Vector3 from , Vector3 to, object target = null)
+        {
+ 
         }
     }
 }
