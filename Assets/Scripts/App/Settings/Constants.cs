@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB.Common
 
 		internal const string CURRENT_VERSION_FULL = "Alpha " + CURRENT_VERSION;
         internal const string VERSION_REVISION = "Alpha";
-        internal const string CURRENT_VERSION = "0.0.21.4.1 Online";
+        internal const string CURRENT_VERSION = "0.0.21.4.2 Online";
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";

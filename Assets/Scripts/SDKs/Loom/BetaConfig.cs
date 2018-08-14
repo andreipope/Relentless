@@ -12,5 +12,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             
         [JsonProperty(PropertyName = "save_turn_data")]
         public bool SaveTurnData;
+
+		[JsonProperty(PropertyName = "latest_version")]
+		public string LatestVersion;
     }
 }

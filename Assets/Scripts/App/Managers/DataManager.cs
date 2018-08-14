@@ -98,7 +98,7 @@ namespace LoomNetwork.CZB
         {
             Debug.Log("=== Start loading server ==== ");
             
-            LatestVersions = await _backendFacade.GetLatestVersions();
+            //LatestVersions = await _backendFacade.GetLatestVersions();
             BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
             
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
