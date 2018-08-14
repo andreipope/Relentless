@@ -217,7 +217,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _currentDeck = _dataManager.CachedDecksData.decks[_currentDeckId].Clone();
+                _currentDeck = _dataManager.CachedDecksData.decks.First(d => d.id == _currentDeckId).Clone();
             }
             LoadDeckInfo(_currentDeck);
             InitObjects();
@@ -832,6 +832,8 @@ namespace LoomNetwork.CZB
             
             // HACK for offline mode: in online mode, local data should only be saved after
             // backend operation has succeeded
+            _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
+            _currentDeck.lastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
             
             bool success = true;
             if (_currentDeckId == -1)
@@ -859,8 +861,16 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
-                
+                for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
+                {
+                    if (_dataManager.CachedDecksData.decks[i].id == _currentDeckId)
+                    {
+                        _dataManager.CachedDecksData.decks[i] = _currentDeck;
+                        break;
+                    }
+                }
+
+
                 try
                 {
                     await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);

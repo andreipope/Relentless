@@ -34,24 +34,25 @@ namespace LoomNetwork.CZB.Data
         public static AbilityData FromProtobuf(this LoomNetwork.CZB.Protobuf.Ability ability) {
             return new AbilityData
             {
-            type = ability.Type,
-            activityType = ability.ActivityType,
-            callType = ability.CallType,
-            targetType = ability.TargetType,
-            //statType = ,
-            //setType = ,
-            //effectType = ,
-            //cardType = ,
-            //unitStatus = ,
-            //unitType = ,
-            value = ability.Value,
-            //damage = ,
-            //health = ,
-            //attackInfo = ,
-            //name = ,
-            //turns = ,
-            //count = ,
-            //delay = ,
+                buffType = ability.BuffType,
+                type = ability.Type,
+                activityType = ability.ActivityType,
+                callType = ability.CallType,
+                targetType = ability.TargetType,
+                statType = ability.StatType,
+                setType = ability.SetType,
+                effectType = ability.EffectType,
+                cardType = ability.CardType,
+                unitStatus = ability.UnitStatus,
+                unitType = ability.UnitType,
+                value = ability.Value,
+                damage = ability.Damage,
+                health = ability.Health,
+                attackInfo = ability.AttackInfo,
+                name = ability.Name,
+                turns = ability.Turns,
+                count = ability.Count,
+                delay = ability.Delay,
             };
         }
 
@@ -80,7 +81,7 @@ namespace LoomNetwork.CZB.Data
                 health = card.Health,
                 rank = card.Rank,
                 type = card.Type,
-                //frame = card.,
+                frame = card.Frame,
                 abilities =
                     card.Abilities
                     .Select(x => x.FromProtobuf()).ToList(),

@@ -1,5 +1,6 @@
 {
 	"decks": [{
+			"id" : 0,
 			"heroId": 1,
 			"type": "BLITZ_AI",
 			"actions": "TEST",
@@ -46,6 +47,7 @@
 			]
 		},
 		{
+			"id" : 1,
 			"heroId": 0,
 			"type": "DEFENSE_AI",
 			"actions": "TEST|TEST2",
@@ -100,6 +102,7 @@
 			}]
 		},
 		{
+			"id" : 2,
 			"heroId": 4,
 			"type": "MIXED_AI",
 			"actions": "TEST",
@@ -163,6 +166,7 @@
 			]
 		},
 		{
+			"id" : 3,
 			"heroId": 2,
 			"type": "MIXED_BLITZ_AI",
 			"actions": "TEST|TEST2",
@@ -223,6 +227,8 @@
 			}]
 		},
 		{
+
+			"id" : 4,
 			"heroId": 3,
 			"type": "TIME_BLITZ_AI",
 			"actions": "TEST",
@@ -306,6 +312,7 @@
       ]
 		},
 		{
+			"id" : 5,
 			"heroId": 5,
 			"type": "MIXED_DEFENSE_AI",
 			"actions": "TEST",

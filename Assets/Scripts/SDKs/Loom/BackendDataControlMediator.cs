@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Newtonsoft.Json;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.Internal;
 using UnityEngine;
 
 namespace LoomNetwork.CZB.BackendCommunication
@@ -26,7 +28,13 @@ namespace LoomNetwork.CZB.BackendCommunication
             if (!File.Exists(UserDataFilePath))
                 return false;
 
-            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(File.ReadAllText(UserDataFilePath));
+            string modelJson = File.ReadAllText(UserDataFilePath);
+            if (Constants.DATA_ENCRYPTION_ENABLED)
+            {
+                modelJson = Utilites.Decrypt(modelJson, Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
+            }
+            
+            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
             return true;
         }
 
@@ -35,7 +43,13 @@ namespace LoomNetwork.CZB.BackendCommunication
             if (userDataModel == null)
                 throw new ArgumentNullException(nameof(userDataModel));
 
-            File.WriteAllText(UserDataFilePath, JsonConvert.SerializeObject(userDataModel));
+            string modelJson = JsonConvert.SerializeObject(userDataModel);
+            if (Constants.DATA_ENCRYPTION_ENABLED)
+            {
+                modelJson = Utilites.Encrypt(modelJson, Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
+            }
+                
+            File.WriteAllText(UserDataFilePath, modelJson);
             UserDataModel = userDataModel;
             return true;
         }
@@ -48,8 +62,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             try
             {
                 await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-            } catch (Exception)
+            } catch (Exception e)
             {
+                Debug.LogException(e);
                 // HACK: ignore to allow offline mode
             }
             
@@ -59,8 +74,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
-            } catch (Exception)
+            } catch (Exception e)
             {
+                Debug.LogException(e);
                 // HACK: ignore to allow offline mode
             }
 

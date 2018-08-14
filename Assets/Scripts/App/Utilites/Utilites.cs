@@ -424,5 +424,14 @@ namespace LoomNetwork.Internal
             color.a = alpha;
             return color;
         }
+        
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long GetCurrentUnixTimestampMillis()
+        {
+            DateTime localDateTime = DateTime.Now;          
+            DateTime universalDateTime = localDateTime.ToUniversalTime();
+            return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
+        } 
     }
 }

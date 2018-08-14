@@ -155,11 +155,10 @@ namespace LoomNetwork.CZB
             HordeDeckObject hordeDeck = null;
             for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
             {
-                int index = i;
                 hordeDeck = new HordeDeckObject(_containerOfDecks,
                                                 _dataManager.CachedDecksData.decks[i],
                                                 _dataManager.CachedHeroesData.Heroes.Find(x => x.heroId == _dataManager.CachedDecksData.decks[i].heroId),
-                                                index);
+                                                i);
                 hordeDeck.HordeDeckSelectedEvent += HordeDeckSelectedEventHandler;
                 hordeDeck.DeleteDeckEvent += DeleteDeckEventHandler;
 
@@ -424,6 +423,9 @@ namespace LoomNetwork.CZB
 		{
 			_uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmDeleteDeckEventHandler;
 
+		    if (!status)
+		        return;
+		    
 		    HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
 		    if (deckToDelete != null)
 		    {

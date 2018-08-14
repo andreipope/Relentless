@@ -3,7 +3,7 @@
 
 
 
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
 using TMPro;

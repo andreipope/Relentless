@@ -7,6 +7,7 @@ using Loom.Google.Protobuf.Collections;
 using Loom.Newtonsoft.Json;
 using Loom.Newtonsoft.Json.Serialization;
 using LoomNetwork.CZB.Protobuf;
+using LoomNetwork.Internal;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using Random = System.Random;
@@ -41,20 +42,20 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task CreateContract(byte[] privateKey)
         {
-            var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
-            var callerAddr = Address.FromPublicKey(publicKey);
+            byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+            Address callerAddr = Address.FromPublicKey(publicKey);
 
-            var writer = RpcClientFactory.Configure()
+            IRpcClient writer = RpcClientFactory.Configure()
                 .WithLogger(Debug.unityLogger)
                 .WithWebSocket(WriterHost)
                 .Create();
 
-            var reader = RpcClientFactory.Configure()
+            IRpcClient reader = RpcClientFactory.Configure()
                 .WithLogger(Debug.unityLogger)
                 .WithWebSocket(ReaderHost)
                 .Create();
 
-            var client = new DAppChainClient(writer, reader)
+            DAppChainClient client = new DAppChainClient(writer, reader)
                 { Logger = Debug.unityLogger };
 
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
@@ -63,7 +64,9 @@ namespace LoomNetwork.CZB.BackendCommunication
                 new SignedTxMiddleware(privateKey)
             });
 
-            var contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
+            await client.ReadClient.ConnectAsync();
+            await client.WriteClient.ConnectAsync();
+            Address contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
             ContractCreated?.Invoke(oldContract, Contract);
@@ -75,7 +78,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<GetCollectionResponse> GetCardCollection(string userId)
         {
-            var request = new GetCollectionRequest
+            GetCollectionRequest request = new GetCollectionRequest
                 { UserId = userId };
 
             return await Contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
@@ -89,7 +92,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<ListCardLibraryResponse> GetCardLibrary()
         {
-            var request = new ListCardLibraryRequest();
+            ListCardLibraryRequest request = new ListCardLibraryRequest();
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
         }
@@ -105,14 +108,14 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<ListDecksResponse> GetDecks(string userId)
         {
-            var request = new ListDecksRequest { UserId = userId };
+            ListDecksRequest request = new ListDecksRequest { UserId = userId };
 
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)
         {
-            var request = new DeleteDeckRequest
+            DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
                 DeckId = deckId
@@ -130,11 +133,11 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<long> AddDeck(string userId, Deck deck)
         {
-            var cards = new RepeatedField<CardCollection>();
+            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
-            for (var i = 0; i < deck.cards.Count; i++)
+            for (int i = 0; i < deck.cards.Count; i++)
             {
-                var cardInCollection = new CardCollection
+                CardCollection cardInCollection = new CardCollection
                 {
                     CardName = deck.cards[i].cardName,
                     Amount = deck.cards[i].amount
@@ -143,14 +146,15 @@ namespace LoomNetwork.CZB.BackendCommunication
                 cards.Add(cardInCollection);
             }
 
-            var request = new CreateDeckRequest
+            CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
                 Deck = new ProtobufDeck
                 {
                     Name = deck.name,
                     HeroId = deck.heroId,
-                    Cards = { cards }
+                    Cards = { cards },
+                    LastModificationTimestamp = deck.lastModificationTimestamp
                 }
             };
 
@@ -160,11 +164,11 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         private static EditDeckRequest EditDeckRequest(string userId, Deck deck)
         {
-            var cards = new RepeatedField<CardCollection>();
+            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
-            for (var i = 0; i < deck.cards.Count; i++)
+            for (int i = 0; i < deck.cards.Count; i++)
             {
-                var cardInCollection = new CardCollection
+                CardCollection cardInCollection = new CardCollection
                 {
                     CardName = deck.cards[i].cardName,
                     Amount = deck.cards[i].amount
@@ -173,7 +177,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 cards.Add(cardInCollection);
             }
 
-            var request = new EditDeckRequest
+            EditDeckRequest request = new EditDeckRequest
             {
                 UserId = userId,
                 Deck = new ProtobufDeck
@@ -181,7 +185,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                     Id = deck.id,
                     Name = deck.name,
                     HeroId = deck.heroId,
-                    Cards = { cards }
+                    Cards = { cards },
+                    LastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis()
                 }
             };
             return request;
@@ -195,7 +200,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<ListHeroesResponse> GetHeroesList(string userId)
         {
-            var request = new ListHeroesRequest
+            ListHeroesRequest request = new ListHeroesRequest
             {
                 UserId = userId
             };
@@ -211,7 +216,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task SignUp(string userId)
         {
-            var req = new UpsertAccountRequest {
+            UpsertAccountRequest req = new UpsertAccountRequest {
                 UserId = userId
             };
 
@@ -247,7 +252,6 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
         private const string AuthBetaConfigEndPoint = "/user/beta/config";
-        private const string AuthLatestVersionsEndPoint = "/latestVersions";
 
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
@@ -265,15 +269,6 @@ namespace LoomNetwork.CZB.BackendCommunication
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             BetaConfig betaConfig = httpResponseMessage.DeserializeAsJson<BetaConfig>();
             return betaConfig;
-        }
-
-        public async Task<LatestVersions> GetLatestVersions()
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthLatestVersionsEndPoint;
-            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            LatestVersions latestVersions = httpResponseMessage.DeserializeAsJson<LatestVersions>();
-            return latestVersions;
         }
 
         private struct BetaKeyValidationResponse

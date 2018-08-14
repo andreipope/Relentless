@@ -8,6 +8,7 @@ using Loom.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Protobuf;
@@ -293,6 +294,14 @@ namespace LoomNetwork.CZB
                         //    CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
 
                         // TODO: add code to sync local and remote decks
+                        DecksData localDecksData = null, remoteDecksData = null;
+                        if (File.Exists(_cacheDataPathes[type]))
+                        {
+                            localDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                        } else
+                        {
+                            localDecksData = CachedDecksData;
+                        }
                         
                         try
                         {
@@ -300,7 +309,7 @@ namespace LoomNetwork.CZB
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());
-                                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
+                                remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
                             }
                             else
                                 CustomDebug.Log(" List Deck Response is Null == ");
@@ -309,7 +318,58 @@ namespace LoomNetwork.CZB
                         {
                             CustomDebug.LogError("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
                             if (File.Exists(_cacheDataPathes[type]))
-                                CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                                localDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                        }
+
+                        if (localDecksData != null && remoteDecksData != null)
+                        {
+                            long newestLocalDeckTimestamp = localDecksData.decks.Max(deck => deck.lastModificationTimestamp);
+                            long newestRemoteDeckTimestamp = remoteDecksData.decks.Max(deck => deck.lastModificationTimestamp);
+
+                            if (newestRemoteDeckTimestamp == newestLocalDeckTimestamp)
+                            {
+                                Debug.Log("Remote decks timestamp == local decks timestamp, no sync needed");
+                                CachedDecksData = remoteDecksData;
+                            } else if (newestRemoteDeckTimestamp > newestLocalDeckTimestamp)
+                            {
+                                Debug.Log("Remote decks data is newer than local, using remote data");
+                                CachedDecksData = remoteDecksData;
+                            } else
+                            {
+                                Debug.Log("Local decks data is newer than remote, synchronizing remote state with local");
+                                try
+                                {
+                                    // Remove all remote decks, fingers crossed
+                                    foreach (Data.Deck remoteDeck in remoteDecksData.decks)
+                                    {
+                                        await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, remoteDeck.id);
+                                    }
+                                    
+                                    // Upload local decks
+                                    foreach (Data.Deck localDeck in localDecksData.decks)
+                                    {
+                                        long createdDeckId = 
+                                            await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, localDeck);
+                                        localDeck.id = createdDeckId;
+                                    }
+
+                                    CachedDecksData = localDecksData;
+                                } catch (Exception e)
+                                {
+                                    CachedDecksData = localDecksData;
+                                    Debug.LogError("Catastrophy! Error while synchronizing decks, assuming local deck as a fallback");
+                                    Debug.LogException(e);
+                                    throw;
+                                }
+                            }
+                        } else if (remoteDecksData != null)
+                        {
+                            Debug.Log("Using remote decks data");
+                            CachedDecksData = remoteDecksData;
+                        } else if (localDecksData != null)
+                        {
+                            Debug.Log("Using local decks data");
+                            CachedDecksData = localDecksData;
                         }
                     }
                     break;
