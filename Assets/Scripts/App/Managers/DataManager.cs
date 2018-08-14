@@ -345,7 +345,12 @@ namespace LoomNetwork.CZB
                                 localDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
                         }
 
-                        if (localDecksData != null && remoteDecksData != null)
+
+                        // FIXME: remove when enabling deck sync
+                        CachedDecksData = remoteDecksData ?? localDecksData;
+
+                        // Uncomment to switch deck sync
+                        /*if (localDecksData != null && remoteDecksData != null)
                         {
                             if (remoteDecksDataTimestamp == localDecksDataTimestamp)
                             {
@@ -395,7 +400,7 @@ namespace LoomNetwork.CZB
                         {
                             Debug.Log("Using local decks data");
                             CachedDecksData = localDecksData;
-                        }
+                        }*/
                     }
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
