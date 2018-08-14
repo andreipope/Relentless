@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Gameplay;
 using TMPro;
+using System;
 
 namespace LoomNetwork.CZB
 {
@@ -65,8 +66,8 @@ namespace LoomNetwork.CZB
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
-            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<ButtonShiftingContent>();
-            _buttonQuit = _selfPage.transform.Find("Button_Quit").GetComponent<ButtonShiftingContent>();
+            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
@@ -81,7 +82,7 @@ namespace LoomNetwork.CZB
 			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonDeck.onClick.AddListener(DeckButtonOnClickHandler);
+            _buttonDeck.onClick.AddListener(OnClickPlay);
             _buttonArmy.onClickEvent.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
@@ -117,25 +118,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) && Input.GetKey(KeyCode.T))
-            {
-                GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
 
-                GameClient.Get<IGameplayManager>().IsTutorial = true;
-            }
-
-            /*  FOR TESTING
-            if(Input.GetKeyUp(KeyCode.Z))
-            {
-                Debug.Log("BATTLEGROUND");
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
-            }
-            if (Input.GetKeyUp(KeyCode.X))
-            {
-                Debug.Log("BACKGROUND");
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-            }
-            */
         }
 
         public void Show()
@@ -199,13 +182,6 @@ namespace LoomNetwork.CZB
         }
 
         #region Buttons Handlers
-        private void DeckButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-
-            _stateManager.ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-        }
-
         private void OnClickPlay()
         {
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -248,7 +224,12 @@ namespace LoomNetwork.CZB
 
         private void QuitButtonOnClickHandler()
         {
-            Application.Quit();
+            Action callback = () =>
+            {
+                Application.Quit();
+            };
+
+            _uiManager.DrawPopup<ConfirmationPopup>(callback);
         }
 
         private void OpenButtonHandler()

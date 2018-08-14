@@ -148,7 +148,7 @@
           "kind": "CREATURE",
           "name": "Werezomb",
           "cost": 3,
-          "description": "<b>Entry</b>: Ally zombie gets <b>Feral</b>",
+          "description": "<b>Entry</b>: random ally zombie gets <b>Feral</b>",
           "flavorText": "Stop, stop, stop, shh-shh, you'll cause a howel",
           "picture": "Werezomb",
           "damage": 1,
@@ -158,7 +158,7 @@
           "abilities": [
             {
               "type": "TAKE_UNIT_TYPE_TO_ALLY_UNIT",
-              "activityType": "active",
+              "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player_card",
               "unitType": "FERAL",
@@ -1734,7 +1734,7 @@
           "id": 24,
           "kind": "CREATURE",
           "name": "Zap",
-          "cost": 1,
+          "cost": 2,
           "description": "<b>Overflow 3</b>, <b>Entry:</b> Summon a 1/1 enemy zombie minion",
           "flavorText": "Can't get enough of that goo, ever",
           "picture": "zap",
@@ -1886,11 +1886,11 @@
           "id": 27,
           "kind": "CREATURE",
           "name": "Sapper",
-          "cost": 5,
+          "cost": 4,
           "description": "<b>Attack:</b> Restore 1 Def for each damage this deals.",
           "flavorText": "Hungry, always so very hungry",
           "picture": "Sapper",
-          "damage": 1,
+          "damage": 2,
           "health": 4,
           "type": "WALKER",
           "rank": "OFFICER",
@@ -1957,11 +1957,11 @@
           "kind": "CREATURE",
           "name": "Cactuz",
           "cost": 4,
-          "description": "<b>Overflow</b> 6, <b>Entry:</b> Summon two 2/2 enemy zombie minions",
+          "description": "<b>Overflow</b> 6, <b>Entry:</b> Summon a 2/2 enemy zombie",
           "flavorText": "And so he walked the desert for 40 years, only to find he's been walking in circles....",
           "picture": "Cactuz",
           "damage": 2,
-          "health": 3,
+          "health": 2,
           "type": "WALKER",
           "rank": "OFFICER",
           "abilities": [
@@ -1977,7 +1977,7 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent",
-              "count": 2,
+              "count": 1,
               "name": "Zombie 2/2",
               "buffType": "ENTRY"
             }
@@ -2000,7 +2000,7 @@
           "kind": "CREATURE",
           "name": "Shammann",
           "cost": 11,
-          "description": "<b>Turn:</b> Summon two 1/1 zombie minions",
+          "description": "<b>Turn:</b> Summon a 1/1 zombie",
           "flavorText": "Dancing around a fire alone is a hoot, but bringing all your dead friends to join is a party!",
           "picture": "Shammann",
           "damage": 5,
@@ -2013,7 +2013,7 @@
               "activityType": "passive",
               "callType": "TURN",
               "targetType": "player",
-              "count": 2,
+              "count": 1,
               "name": "Zombie 1/1",
               "buffType": "TURN"
             }
@@ -2174,7 +2174,7 @@
           "kind": "CREATURE",
           "name": "Zpitter",
           "cost": 3,
-          "description": "<b>Entry</b>: 1 damage random enemy",
+          "description": "<b>Entry</b>: 1 damage to a random enemy",
           "flavorText": "Lamma in my living room... bam ba balalam babam ba ba...",
           "picture": "Zpitter",
           "damage": 2,
@@ -2186,7 +2186,7 @@
               "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "OPPONENT_CARD",
+              "targetType": "OPPONENT_CARD|OPPONENT",
               "value": 1,
               "buffType": "ENTRY"
             }
@@ -2287,7 +2287,7 @@
           "kind": "CREATURE",
           "name": "Zeeter",
           "cost": 5,
-          "description": "<b>Entry</b>: Devour an ally zombie, get its Atk and Def",
+          "description": "<b>Entry: Devour Atk/Def</b> an ally zombie, get its Atk and Def",
           "flavorText": "Nam, naam nam nam namm nam...",
           "picture": "Zeeter",
           "damage": 1,
@@ -2565,7 +2565,8 @@
               "callType": "ENTRY",
               "targetType": "none",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "count": 1
             }
           ],
           "cardViewInfo": {
@@ -2598,7 +2599,7 @@
               "type": "heal",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "HEAL",
               "buffType": "ENTRY"
@@ -2622,7 +2623,7 @@
           "kind": "SPELL",
           "name": "Nail Bomb",
           "cost": 4,
-          "description": "4 damage to a zombie, <b>Swing</b> 4",
+          "description": "Deal 4 damage to zombie and adjecent zombies",
           "flavorText": "When you really want to nail it!",
           "picture": "NailBomb",
           "damage": 0,
@@ -2672,7 +2673,8 @@
               "callType": "ENTRY",
               "targetType": "none",
               "value": 2,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "count": 2
             }
           ],
           "cardViewInfo": {

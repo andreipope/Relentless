@@ -847,11 +847,12 @@ namespace LoomNetwork.CZB
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
                 {
+                    CustomDebug.Log("Result === " + e);
+
                     // HACK: for offline mode
                     if (false)
                     {
                         success = false;
-                        CustomDebug.Log("Result === " + e);
                         OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                     }
                 }
@@ -866,11 +867,12 @@ namespace LoomNetwork.CZB
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
+                    CustomDebug.Log("Result === " + e);                    
+
                     // HACK: for offline mode
                     if (false)
                     {
                         success = false;
-                        CustomDebug.Log("Result === " + e);
                         OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
                     }
                 }

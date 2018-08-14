@@ -4,6 +4,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -49,16 +50,52 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
+        protected override void OnEndTurnEventHandler()
+        {
+            base.OnEndTurnEventHandler();
+
+            var opponent = GetOpponentOverlord();
+
+            foreach (var unit in opponent.BoardCards)
+            {
+                if (unit.DamageDebuffUntillEndOfTurn != 0)
+                {
+                    unit.CurrentDamage += Mathf.Abs(unit.DamageDebuffUntillEndOfTurn);
+                    unit.DamageDebuffUntillEndOfTurn = 0;
+                }
+                if (unit.HPDebuffUntillEndOfTurn != 0)
+                {
+                    unit.CurrentHP += Mathf.Abs(unit.HPDebuffUntillEndOfTurn);
+                    unit.HPDebuffUntillEndOfTurn = 0;
+                }
+            }
+
+            _abilitiesController.DeactivateAbility(activityId);
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
 
             var opponent = GetOpponentOverlord();
-                UnityEngine.Debug.Log("__" + opponent.BoardCards.Count);
-            foreach(var item in opponent.BoardCards)
+
+            foreach(var unit in opponent.BoardCards)
             {
-                item.DebuffDamage(damage);
-                item.DebuffHealth(health);
+                if(damage != 0)
+                {
+                    unit.DamageDebuffUntillEndOfTurn += damage;
+                    var buffresult = unit.CurrentDamage + damage;
+
+                    if (buffresult < 0)
+                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
+                    unit.CurrentDamage += damage;
+                }
+
+                if (health != 0)
+                {
+                    unit.HPDebuffUntillEndOfTurn += health;
+                    unit.CurrentHP += health;
+                }
             }
         }
     }
