@@ -833,33 +833,44 @@ namespace LoomNetwork.CZB
             // HACK for offline mode: in online mode, local data should only be saved after
             // backend operation has succeeded
             _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
-            _currentDeck.lastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+
+            foreach (Deck deck in _dataManager.CachedDecksData.decks)
+            {
+                if (_currentDeckId != deck.id && 
+                    deck.name.Trim().Equals(_currentDeck.name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    OpenAlertDialog ("Not able to Edit Deck: \n Deck Name already exists.");
+                    return;
+                }
+            }
             
             bool success = true;
             if (_currentDeckId == -1)
             {
                 _currentDeck.heroId = _currentHeroId;
+                _dataManager.CachedDecksData.decks.Add(_currentDeck);
+
                 try
                 {
                     long newDeckId = 
-                        await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
+                        await _backendFacade.AddDeck(
+                            _backendDataControlMediator.UserDataModel.UserId, 
+                            _currentDeck, 
+                            _dataManager.CachedDecksLastModificationTimestamp
+                            );
                     _currentDeck.id = newDeckId;
-					_dataManager.CachedDecksData.decks.Add(_currentDeck);
                     CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
                 {
                     CustomDebug.Log("Result === " + e);
 
-					if (e.Message.Contains ("deck name already exists")) {
-						success = false;
-						OpenAlertDialog ("Not able to Edit Deck: \n Deck Name already exists.");
-					} else {
-						// HACK: for offline mode
-						if (false) {
-							success = false;
-							OpenAlertDialog ("Not able to Add Deck: \n" + e.Message);
-						}
-					}
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    }
                 }
             }
             else
@@ -875,23 +886,22 @@ namespace LoomNetwork.CZB
 
                 try
                 {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
-					_dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
+                    await _backendFacade.EditDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        _currentDeck,
+                        _dataManager.CachedDecksLastModificationTimestamp
+                        );
                     CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
                     CustomDebug.Log("Result === " + e);                    
 
-					if (e.Message.Contains ("deck name already exists")) {
-						success = false;
-						OpenAlertDialog ("Not able to Edit Deck: \n Deck Name already exists.");
-					} else {
-						// HACK: for offline mode
-						if (false) {
-							success = false;
-							OpenAlertDialog ("Not able to Edit Deck: \n" + e.Message);
-						}
-					}
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                    }
                 }
             }
 

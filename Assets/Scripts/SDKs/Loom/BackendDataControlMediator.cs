@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 await _backendFacade.CreateContract(UserDataModel.PrivateKey);
             } catch (Exception e)
             {
-                Debug.LogException(e);
+                Debug.LogWarning(e);
                 // HACK: ignore to allow offline mode
             }
             
@@ -76,7 +76,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 // Ignore
             } catch (Exception e)
             {
-                Debug.LogException(e);
+                Debug.LogWarning(e);
                 // HACK: ignore to allow offline mode
             }
 

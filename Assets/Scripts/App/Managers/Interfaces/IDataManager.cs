@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
         OpponentDecksData CachedOpponentDecksData { get; set; }
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
-        
+        long CachedDecksLastModificationTimestamp { get; set; }
         LatestVersions LatestVersions { get; set; }
         BetaConfig BetaConfig { get; set; }
 

@@ -27,7 +27,6 @@ namespace LoomNetwork.CZB.Data
         public int heroId;
         public string name;
         public List<DeckCardData> cards;
-        public long lastModificationTimestamp;
 
         public Deck()
         {
