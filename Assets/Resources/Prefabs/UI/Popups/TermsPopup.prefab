@@ -249,17 +249,16 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'For this testing phase of Zombie Battleground, we are making ALL CARDS
-    AVAILABLE TO ALL INTERESTED. This is to encourage open dialogue and collaboration
-    between you and ourselves. As a result, we hope to create the best possible player
-    experience for the game. Do understand that you will no longer have access to
-    all cards once the game officially launches. You will need to obtain cards through
-    the various card acquisition methods within the game.
-
-
-    That said, the Marketplace and the Kickstarter rewards will be made available
-    during the open beta so that you can dive in early if you wish. We will be announcing
-    the open beta release date soon, so stay tuned.'
+  m_text: "For this testing phase of Zombie Battleground,  ALL CARDS ARE AVAILABLE
+    TO ALL BACKERS. This way, players can build decks using all the cards released
+    so far, and help us identify card balance issues more quickly, with the goal of
+    creating the best possible player experience for the official beta release. \r\n\r\nOnce
+    the open beta officially launches, the game will be reset, and you will only have
+    access to the cards you have acquired (by pre-purchasing packs or trading on the
+    marketplace).\r\n\r\nAdditionally, as this is a very early alpha version of the
+    game, some bugs are expected, and only a limited number of cards have been finalized.
+    We appreciate your help reporting bugs and giving us your feedback, so each build
+    can be more amazing than the last!\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 82356db5a5e5f1d468125eb62285c598, type: 2}
   m_sharedMaterial: {fileID: 21431480145053772, guid: 82356db5a5e5f1d468125eb62285c598,
@@ -1169,8 +1168,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 124}
-  m_SizeDelta: {x: 600, y: 400}
+  m_AnchoredPosition: {x: 0, y: 70}
+  m_SizeDelta: {x: 615, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224451449190179020
 RectTransform:
@@ -1187,7 +1186,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -270, y: -400}
+  m_AnchoredPosition: {x: -270, y: -470}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224465208658038682
@@ -1206,7 +1205,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -390, y: -400}
+  m_AnchoredPosition: {x: -390, y: -470}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224556213446114376
@@ -1281,6 +1280,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 516}
+  m_AnchoredPosition: {x: 0, y: 515}
   m_SizeDelta: {x: 1200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}

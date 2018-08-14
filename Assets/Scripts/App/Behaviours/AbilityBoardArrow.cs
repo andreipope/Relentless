@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
                 (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && unit.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) ||
                 possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if ((targetUnitType == Enumerators.CardType.NONE) || unit.Card.type == targetUnitType)
+                if ((targetUnitType == Enumerators.CardType.NONE) || unit.InitialUnitType == targetUnitType)
                 {
                     if ((targetUnitStatusType == Enumerators.UnitStatusType.NONE) || unit.UnitStatus == targetUnitStatusType)
                     {

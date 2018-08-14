@@ -194,7 +194,12 @@ namespace LoomNetwork.CZB
             int heroId = 0;
 
             if (!isOpponent)
-                heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+            {
+                if (!_gameplayManager.IsTutorial)
+                    heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+                else
+                    heroId = Constants.TUTORIAL_PLAYER_HERO_ID;
+            }
             else
                 heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
 
@@ -266,12 +271,6 @@ namespace LoomNetwork.CZB
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
-                }
-                else
-                {
-                    damageByNoMoreCardsInDeck++;
-                    HP -= damageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(this, -damageByNoMoreCardsInDeck);
                 }
 
             }
@@ -427,6 +426,10 @@ namespace LoomNetwork.CZB
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+            }
+            if (_gameplayManager.CurrentTurnPlayer != this )
+            {
+                _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
         }
 

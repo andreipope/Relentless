@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
         private SkillsController _skillsController;
+        private BoardArrowController _boardArrowController;
 
         private bool _handCardPreviewTimerStarted;
 
@@ -53,6 +54,7 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             //_heroController = _gameplayManager.GetController<HeroController>();
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
@@ -106,7 +108,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           //   playerDeck.Add("Draft");
+                            //   playerDeck.Add("Maelstrom");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -162,7 +164,7 @@ namespace LoomNetwork.CZB
 
             if (Input.GetMouseButtonDown(0))
             {
-               // if (!IsCardSelected)
+                // if (!IsCardSelected)
                 {
                     var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                     var hitCards = new List<GameObject>();
@@ -298,6 +300,15 @@ namespace LoomNetwork.CZB
                     _startedOnClickDelay = false;
                     // _topmostBoardCard = null;
                     // _selectedBoardUnit = null;
+
+                    if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
+                    {
+                        StopHandTimer();
+                        _battlegroundController.DestroyCardPreview();
+
+                        if (_boardArrowController.IsBoardArrowNowInTheBattle &&  (_boardArrowController.CurrentBoardArrow != null && !_boardArrowController.CurrentBoardArrow.IsDragging()))
+                            HandCardPreview(new object[] { _selectedBoardUnit });
+                    }
                 }
                 else
                 if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
@@ -309,7 +320,9 @@ namespace LoomNetwork.CZB
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
 
-                            HandCardPreview(new object[] { _topmostBoardCard });
+
+                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                                HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }
                     else
@@ -319,7 +332,8 @@ namespace LoomNetwork.CZB
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
 
-                            HandCardPreview(new object[] { _selectedBoardUnit });
+                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                                HandCardPreview(new object[] { _selectedBoardUnit });
                         }
                     }
 
@@ -328,6 +342,11 @@ namespace LoomNetwork.CZB
                     // _topmostBoardCard = null;
                     // _selectedBoardUnit = null;
                 }
+            }
+
+            if(_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
+            {
+                _battlegroundController.DestroyCardPreview();
             }
         }
 

@@ -12,7 +12,7 @@ namespace LoomNetwork.CZB.Common
         public const string SPACE = " ";
 
         internal const string VERSION_REVISION = "Alpha";
-        internal const string CURRENT_VERSION = "0.0.21.4";
+        internal const string CURRENT_VERSION = "0.0.22.1";
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
@@ -108,6 +108,9 @@ namespace LoomNetwork.CZB.Common
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
         internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
+
+        internal const int TUTORIAL_PLAYER_HERO_ID = 4;
+
 
         internal const bool DEV_MODE = false;  
     }

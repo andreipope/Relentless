@@ -12,6 +12,8 @@ namespace LoomNetwork.CZB
 {
     public class MainApp : MonoBehaviour
     {
+        public static int MainThreadId;
+
         public delegate void MainAppDelegate(object param);
         public event MainAppDelegate OnLevelWasLoadedEvent;
 
@@ -35,6 +37,9 @@ namespace LoomNetwork.CZB
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+
+            MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
 
         private void Start()

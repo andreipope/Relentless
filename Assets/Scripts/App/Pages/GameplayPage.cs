@@ -68,8 +68,8 @@ namespace LoomNetwork.CZB
         public OnBehaviourHandler playerPrimarySkillHandler,
                                   playerSecondarySkillHandler;
 
-        public GameObject opponentPrimarySkillHandler,
-                          opponentSecondarySkillHandler;
+        public OnBehaviourHandler opponentPrimarySkillHandler,
+                                  opponentSecondarySkillHandler;
 
 
         public int CurrentDeckId
@@ -215,8 +215,13 @@ namespace LoomNetwork.CZB
             int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
             int opponentdeckId = _gameplayManager.OpponentDeckId = UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count);
 
-            int heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+            int heroId = Constants.TUTORIAL_PLAYER_HERO_ID; // TUTORIAL
+
+            if (!_gameplayManager.IsTutorial)
+                heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+
             int hopponentId = _dataManager.CachedOpponentDecksData.decks[opponentdeckId].heroId;
+
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[hopponentId];
@@ -247,8 +252,8 @@ namespace LoomNetwork.CZB
             playerPrimarySkillHandler = GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             playerSecondarySkillHandler = GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
-            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary");
-            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary");
+            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {
@@ -257,7 +262,7 @@ namespace LoomNetwork.CZB
             }
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
+                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler.gameObject, opponentSecondarySkillHandler.gameObject);
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 

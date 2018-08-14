@@ -168,6 +168,8 @@ namespace LoomNetwork.CZB
 
         private void StartInitializeGame()
         {
+            
+
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 
@@ -175,14 +177,15 @@ namespace LoomNetwork.CZB
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
                 GetController<AIController>().InitializePlayer();
 
+            GetController<SkillsController>().InitializeSkills();
+            GetController<BattlegroundController>().InitializeBattleground();
+
             if (!IsTutorial)
                 CurrentTurnPlayer = UnityEngine.Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
             else
                 CurrentTurnPlayer = CurrentPlayer;
 
-
-            GetController<SkillsController>().InitializeSkills();
-            GetController<BattlegroundController>().InitializeBattleground();
+            OpponentPlayer.SetFirstHand(IsTutorial);
 
             if (!IsTutorial)
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
