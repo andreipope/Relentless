@@ -427,6 +427,10 @@ namespace LoomNetwork.CZB
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
+            if (_gameplayManager.CurrentTurnPlayer != this )
+            {
+                _cardsController.AddCardToHand(this, CardsInDeck[0]);
+            }
         }
 
         public void DistributeCard()

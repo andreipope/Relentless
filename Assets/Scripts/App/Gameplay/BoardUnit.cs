@@ -396,7 +396,8 @@ namespace LoomNetwork.CZB
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.RUSH:
-                    HasBuffRush = true;
+                    if(numTurnsOnBoard == 0)
+                        HasBuffRush = true;
                     // IsPlayable = !_attacked;
                     _sleepingParticles.gameObject.SetActive(false);
                     break;
@@ -500,6 +501,7 @@ namespace LoomNetwork.CZB
 
             if (!AttackedThisTurn && !IsPlayable)
             {
+                StopSleepingParticles();
                 IsPlayable = true;
                 SetHighlightingEnabled(true);
             }

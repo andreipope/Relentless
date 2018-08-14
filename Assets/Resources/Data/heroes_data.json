@@ -17,8 +17,8 @@
 		  "description": "Add 2 Def to the Overlord.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 3,
+          "initialCooldown": 3,
           "value": 2
         },
         {
@@ -28,8 +28,8 @@
 		  "description": "Give a friendly zombie +1 Def.",
           "skillType": 4,
           "skillTargetType": [ 0 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 1
         }
       ],
@@ -53,8 +53,8 @@
 		  "description": "Deal 1 damage to target.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 3,
+          "initialCooldown": 3,
           "value": 1
         },
         {
@@ -64,8 +64,8 @@
 		  "description": "Give friendly zombie feral.",
           "skillType": 2,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 1
         }
       ],
@@ -89,8 +89,8 @@
 		  "description": "Freeze an enemy zombie.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 3,
+          "initialCooldown": 3,
           "value": 1
         },
         {
@@ -100,8 +100,8 @@
 		  "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
           "skillType": 0,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 2
         }
       ],
@@ -125,8 +125,8 @@
 		  "description": "Return a friendly zombie to your hand.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 6,
+          "initialCooldown": 5,
           "value": 0
         },
         {
@@ -136,8 +136,8 @@
 		  "description": "Draw a card.",
           "skillType": 5,
           "skillTargetType": [ 2, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 0
         }
       ],
@@ -161,8 +161,8 @@
 		  "description": "Deal 1 damage to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 3,
+          "initialCooldown": 3,
           "value": 1
         },
         {
@@ -172,8 +172,8 @@
 		  "description": "Deal 1 damage to a zombie and give it +1 Atk.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 1,
           "attack": 1
 
@@ -186,7 +186,7 @@
       "heroId": 5,
       "icon": "icon",
       "name": "Valash",
-      "shortDescription": "Natures Warden",
+      "shortDescription": "Nature's Warden",
       "longDescription": "",
       "element": "LIFE",
       "experience": 0,
@@ -199,8 +199,8 @@
 		  "description": "Restore 2 Def to a target.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 3,
+          "initialCooldown": 3,
           "value": 1
         },
         {
@@ -210,8 +210,8 @@
 		  "description": "Restore 4 Def to your Overlord.",
           "skillType": 1,
           "skillTargetType": [ 1, 2, 4, 5 ],
-          "cooldown": 2,
-          "initialCooldown": 2,
+          "cooldown": 4,
+          "initialCooldown": 4,
           "value": 1
         }
       ],

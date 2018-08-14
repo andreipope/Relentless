@@ -104,7 +104,7 @@ namespace LoomNetwork.CZB
                 }
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
                 effect = GameObject.Instantiate(vfxPrefab);
-                effect.transform.position = target - offset;
+                effect.transform.position = target;
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 

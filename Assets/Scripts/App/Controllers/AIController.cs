@@ -121,8 +121,6 @@ namespace LoomNetwork.CZB
         
             _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
 
-            _gameplayManager.OpponentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
-
             _battlegroundController.UpdatePositionOfCardsInOpponentHand();
 
             _gameplayManager.OpponentPlayer.OnStartTurnEvent += OnStartTurnEventHandler;

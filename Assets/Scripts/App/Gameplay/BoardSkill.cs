@@ -56,15 +56,15 @@ namespace LoomNetwork.CZB
 
         public bool IsPrimary { get; private set; }
 
-        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, int cooldown, bool isPrimary)
+        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             selfObject = obj;
             skill = skillInfo;
             owner = player;
             IsPrimary = isPrimary;
 
-            _initialCooldown = cooldown;
-            _cooldown = cooldown;
+            _initialCooldown = skillInfo.initialCooldown;
+            _cooldown = skillInfo.cooldown;
       
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
