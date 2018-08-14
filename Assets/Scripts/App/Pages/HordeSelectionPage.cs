@@ -13,6 +13,7 @@ using System.Linq;
 using DG.Tweening;
 using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
 using Deck = LoomNetwork.CZB.Data.Deck;
 using Hero = LoomNetwork.CZB.Data.Hero;
 
@@ -187,11 +188,16 @@ namespace LoomNetwork.CZB
             // backend operation has succeeded
             _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
+            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
             await _dataManager.SaveAllCache();
             
             try
             {
-                await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, deck.SelfDeck.id);
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId, 
+                    deck.SelfDeck.id,
+                    _dataManager.CachedDecksLastModificationTimestamp
+                    );
                 CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
             } catch (Exception e)
             {

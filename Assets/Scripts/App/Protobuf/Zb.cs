@@ -30,60 +30,60 @@ namespace LoomNetwork.CZB.Protobuf {
             "ZGVlbWVkGAMgASgIEhYKDmlzX2tpY2tzdGFydGVyGAQgASgIEg0KBWltYWdl",
             "GAUgASgJEhoKEmVtYWlsX25vdGlmaWNhdGlvbhgGIAEoCBIRCgllbG9fc2Nv",
             "cmUYByABKAMSFAoMY3VycmVudF90aWVyGAggASgFEhwKFGdhbWVfbWVtYmVy",
-            "c2hpcF90aWVyGAkgASgFEg0KBW93bmVyGAogASgMInYKBERlY2sSCgoCaWQY",
+            "c2hpcF90aWVyGAkgASgFEg0KBW93bmVyGAogASgMIlEKBERlY2sSCgoCaWQY",
             "ASABKAMSDAoEbmFtZRgCIAEoCRIPCgdoZXJvX2lkGAMgASgDEh4KBWNhcmRz",
-            "GAQgAygLMg8uQ2FyZENvbGxlY3Rpb24SIwobbGFzdF9tb2RpZmljYXRpb25f",
-            "dGltZXN0YW1wGAUgASgDIs4CCgRDYXJkEgoKAmlkGAEgASgDEgwKBGtpbmQY",
-            "AiABKAkSCwoDc2V0GAMgASgJEgwKBG5hbWUYBCABKAkSEwoLZGVzY3JpcHRp",
-            "b24YBSABKAkSEwoLZmxhdm9yX3RleHQYBiABKAkSDwoHcGljdHVyZRgHIAEo",
-            "CRIMCgRyYW5rGAggASgJEgwKBHR5cGUYCSABKAkSDgoGcmFyaXR5GAogASgJ",
-            "Eg0KBWZyYW1lGAsgASgJEg4KBmRhbWFnZRgMIAEoBRIOCgZoZWFsdGgYDSAB",
-            "KAUSDAoEY29zdBgOIAEoBRIPCgdhYmlsaXR5GA8gASgJEiUKDmNhcmRfdmll",
-            "d19pbmZvGBAgASgLMg0uQ2FyZFZpZXdJbmZvEhgKB2VmZmVjdHMYESADKAsy",
-            "By5FZmZlY3QSGwoJYWJpbGl0aWVzGBIgAygLMgguQWJpbGl0eSJLCgxDYXJk",
-            "Vmlld0luZm8SHgoIcG9zaXRpb24YASABKAsyDC5Db29yZGluYXRlcxIbCgVz",
-            "Y2FsZRgCIAEoCzIMLkNvb3JkaW5hdGVzIi4KC0Nvb3JkaW5hdGVzEgkKAXgY",
-            "ASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgCIloKBkVmZmVjdBIPCgd0cmln",
-            "Z2VyGAEgASgJEg4KBmVmZmVjdBgCIAEoCRIQCghkdXJhdGlvbhgDIAEoCRIO",
-            "CgZ0YXJnZXQYBCABKAkSDQoFbGltaXQYBSABKAki3QIKB0FiaWxpdHkSDAoE",
-            "dHlwZRgBIAEoCRIVCg1hY3Rpdml0eV90eXBlGAIgASgJEhEKCWNhbGxfdHlw",
-            "ZRgDIAEoCRITCgt0YXJnZXRfdHlwZRgEIAEoCRIRCglzdGF0X3R5cGUYBSAB",
-            "KAkSEAoIc2V0X3R5cGUYBiABKAkSDQoFdmFsdWUYByABKAUSEQoJYnVmZl90",
-            "eXBlGAggASgJEhMKC2VmZmVjdF90eXBlGAkgASgJEhEKCXVuaXRfdHlwZRgK",
-            "IAEoCRINCgVjb3VudBgLIAEoBRIMCgRuYW1lGAwgASgJEg0KBXR1cm5zGA0g",
-            "ASgFEg0KBWRlbGF5GA4gASgFEhMKC3VuaXRfc3RhdHVzGA8gASgJEhEKCWNh",
-            "cmRfdHlwZRgQIAEoCRIOCgZoZWFsdGgYESABKAUSDgoGZGFtYWdlGBIgASgF",
-            "EhMKC2F0dGFja19pbmZvGBMgASgJIiAKCENhcmRMaXN0EhQKBWNhcmRzGAEg",
-            "AygLMgUuQ2FyZCIzCg5DYXJkQ29sbGVjdGlvbhIRCgljYXJkX25hbWUYASAB",
-            "KAkSDgoGYW1vdW50GAIgASgDIi0KB0NhcmRTZXQSDAoEbmFtZRgBIAEoCRIU",
-            "CgVjYXJkcxgCIAMoCzIFLkNhcmQiJQoLQ2FyZExpYnJhcnkSFgoEc2V0cxgB",
-            "IAMoCzIILkNhcmRTZXQi5AEKBEhlcm8SDwoHaGVyb19pZBgBIAEoAxIMCgRp",
-            "Y29uGAIgASgJEgwKBG5hbWUYAyABKAkSGQoRc2hvcnRfZGVzY3JpcHRpb24Y",
-            "BCABKAkSGAoQbG9uZ19kZXNjcmlwdGlvbhgFIAEoCRIPCgdlbGVtZW50GAYg",
-            "ASgJEhIKCmV4cGVyaWVuY2UYByABKAMSDQoFbGV2ZWwYCCABKAMSFgoGc2tp",
-            "bGxzGAkgAygLMgYuU2tpbGwSFQoNcHJpbWFyeV9za2lsbBgKIAEoBRIXCg9z",
-            "ZWNvbmRhcnlfc2tpbGwYCyABKAUiJAoRTGlzdEhlcm9lc1JlcXVlc3QSDwoH",
-            "dXNlcl9pZBgBIAEoCSIrChJMaXN0SGVyb2VzUmVzcG9uc2USFQoGaGVyb2Vz",
-            "GAEgAygLMgUuSGVybyJQChhBZGRIZXJvRXhwZXJpZW5jZVJlcXVlc3QSDwoH",
-            "dXNlcl9pZBgBIAEoCRIPCgdoZXJvX2lkGAIgASgDEhIKCmV4cGVyaWVuY2UY",
-            "AyABKAMiQAoZQWRkSGVyb0V4cGVyaWVuY2VSZXNwb25zZRIPCgdoZXJvX2lk",
-            "GAEgASgDEhIKCmV4cGVyaWVuY2UYAiABKAMiMgoOR2V0SGVyb1JlcXVlc3QS",
-            "DwoHdXNlcl9pZBgBIAEoCRIPCgdoZXJvX2lkGAIgASgDIiYKD0dldEhlcm9S",
-            "ZXNwb25zZRITCgRoZXJvGAEgASgLMgUuSGVybyI4ChRHZXRIZXJvU2tpbGxz",
-            "UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQYAiABKAMiQAoV",
-            "R2V0SGVyb1NraWxsc1Jlc3BvbnNlEg8KB2hlcm9faWQYASABKAMSFgoGc2tp",
-            "bGxzGAIgAygLMgYuU2tpbGwi9AIKBVNraWxsEg0KBXRpdGxlGAEgASgJEg0K",
-            "BXNraWxsGAIgASgJEhEKCWljb25fcGF0aBgDIAEoCRITCgtkZXNjcmlwdGlv",
-            "bhgEIAEoCRIxChFza2lsbF90YXJnZXRfdHlwZRgFIAMoDjIWLlNraWxsLlNr",
-            "aWxsVGFyZ2V0VHlwZRINCgV2YWx1ZRgGIAEoBRIQCghjb29sZG93bhgHIAEo",
-            "BRIYChBpbml0aWFsX2Nvb2xkb3duGAggASgFEg4KBmF0dGFjaxgJIAEoBRIO",
-            "CgZoZWFsdGgYCiABKAUilgEKD1NraWxsVGFyZ2V0VHlwZRIICgROT05FEAAS",
-            "CgoGUExBWUVSEAESDwoLUExBWUVSX0NBUkQQAhIUChBQTEFZRVJfQUxMX0NB",
-            "UkRTEAMSDAoIT1BQT05FTlQQBBIRCg1PUFBPTkVOVF9DQVJEEAUSFgoST1BQ",
-            "T05FTlRfQUxMX0NBUkRTEAYSDQoJQUxMX0NBUkRTEAciIQoISGVyb0xpc3QS",
-            "FQoGaGVyb2VzGAEgAygLMgUuSGVybyI0ChJDYXJkQ29sbGVjdGlvbkxpc3QS",
-            "HgoFY2FyZHMYASADKAsyDy5DYXJkQ29sbGVjdGlvbiIgCghEZWNrTGlzdBIU",
-            "CgVkZWNrcxgBIAMoCzIFLkRlY2sihQEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1",
+            "GAQgAygLMg8uQ2FyZENvbGxlY3Rpb24izgIKBENhcmQSCgoCaWQYASABKAMS",
+            "DAoEa2luZBgCIAEoCRILCgNzZXQYAyABKAkSDAoEbmFtZRgEIAEoCRITCgtk",
+            "ZXNjcmlwdGlvbhgFIAEoCRITCgtmbGF2b3JfdGV4dBgGIAEoCRIPCgdwaWN0",
+            "dXJlGAcgASgJEgwKBHJhbmsYCCABKAkSDAoEdHlwZRgJIAEoCRIOCgZyYXJp",
+            "dHkYCiABKAkSDQoFZnJhbWUYCyABKAkSDgoGZGFtYWdlGAwgASgFEg4KBmhl",
+            "YWx0aBgNIAEoBRIMCgRjb3N0GA4gASgFEg8KB2FiaWxpdHkYDyABKAkSJQoO",
+            "Y2FyZF92aWV3X2luZm8YECABKAsyDS5DYXJkVmlld0luZm8SGAoHZWZmZWN0",
+            "cxgRIAMoCzIHLkVmZmVjdBIbCglhYmlsaXRpZXMYEiADKAsyCC5BYmlsaXR5",
+            "IksKDENhcmRWaWV3SW5mbxIeCghwb3NpdGlvbhgBIAEoCzIMLkNvb3JkaW5h",
+            "dGVzEhsKBXNjYWxlGAIgASgLMgwuQ29vcmRpbmF0ZXMiLgoLQ29vcmRpbmF0",
+            "ZXMSCQoBeBgBIAEoAhIJCgF5GAIgASgCEgkKAXoYAyABKAIiWgoGRWZmZWN0",
+            "Eg8KB3RyaWdnZXIYASABKAkSDgoGZWZmZWN0GAIgASgJEhAKCGR1cmF0aW9u",
+            "GAMgASgJEg4KBnRhcmdldBgEIAEoCRINCgVsaW1pdBgFIAEoCSLdAgoHQWJp",
+            "bGl0eRIMCgR0eXBlGAEgASgJEhUKDWFjdGl2aXR5X3R5cGUYAiABKAkSEQoJ",
+            "Y2FsbF90eXBlGAMgASgJEhMKC3RhcmdldF90eXBlGAQgASgJEhEKCXN0YXRf",
+            "dHlwZRgFIAEoCRIQCghzZXRfdHlwZRgGIAEoCRINCgV2YWx1ZRgHIAEoBRIR",
+            "CglidWZmX3R5cGUYCCABKAkSEwoLZWZmZWN0X3R5cGUYCSABKAkSEQoJdW5p",
+            "dF90eXBlGAogASgJEg0KBWNvdW50GAsgASgFEgwKBG5hbWUYDCABKAkSDQoF",
+            "dHVybnMYDSABKAUSDQoFZGVsYXkYDiABKAUSEwoLdW5pdF9zdGF0dXMYDyAB",
+            "KAkSEQoJY2FyZF90eXBlGBAgASgJEg4KBmhlYWx0aBgRIAEoBRIOCgZkYW1h",
+            "Z2UYEiABKAUSEwoLYXR0YWNrX2luZm8YEyABKAkiIAoIQ2FyZExpc3QSFAoF",
+            "Y2FyZHMYASADKAsyBS5DYXJkIjMKDkNhcmRDb2xsZWN0aW9uEhEKCWNhcmRf",
+            "bmFtZRgBIAEoCRIOCgZhbW91bnQYAiABKAMiLQoHQ2FyZFNldBIMCgRuYW1l",
+            "GAEgASgJEhQKBWNhcmRzGAIgAygLMgUuQ2FyZCIlCgtDYXJkTGlicmFyeRIW",
+            "CgRzZXRzGAEgAygLMgguQ2FyZFNldCLkAQoESGVybxIPCgdoZXJvX2lkGAEg",
+            "ASgDEgwKBGljb24YAiABKAkSDAoEbmFtZRgDIAEoCRIZChFzaG9ydF9kZXNj",
+            "cmlwdGlvbhgEIAEoCRIYChBsb25nX2Rlc2NyaXB0aW9uGAUgASgJEg8KB2Vs",
+            "ZW1lbnQYBiABKAkSEgoKZXhwZXJpZW5jZRgHIAEoAxINCgVsZXZlbBgIIAEo",
+            "AxIWCgZza2lsbHMYCSADKAsyBi5Ta2lsbBIVCg1wcmltYXJ5X3NraWxsGAog",
+            "ASgFEhcKD3NlY29uZGFyeV9za2lsbBgLIAEoBSIkChFMaXN0SGVyb2VzUmVx",
+            "dWVzdBIPCgd1c2VyX2lkGAEgASgJIisKEkxpc3RIZXJvZXNSZXNwb25zZRIV",
+            "CgZoZXJvZXMYASADKAsyBS5IZXJvIlAKGEFkZEhlcm9FeHBlcmllbmNlUmVx",
+            "dWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQYAiABKAMSEgoKZXhw",
+            "ZXJpZW5jZRgDIAEoAyJAChlBZGRIZXJvRXhwZXJpZW5jZVJlc3BvbnNlEg8K",
+            "B2hlcm9faWQYASABKAMSEgoKZXhwZXJpZW5jZRgCIAEoAyIyCg5HZXRIZXJv",
+            "UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2hlcm9faWQYAiABKAMiJgoP",
+            "R2V0SGVyb1Jlc3BvbnNlEhMKBGhlcm8YASABKAsyBS5IZXJvIjgKFEdldEhl",
+            "cm9Ta2lsbHNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHaGVyb19pZBgC",
+            "IAEoAyJAChVHZXRIZXJvU2tpbGxzUmVzcG9uc2USDwoHaGVyb19pZBgBIAEo",
+            "AxIWCgZza2lsbHMYAiADKAsyBi5Ta2lsbCL0AgoFU2tpbGwSDQoFdGl0bGUY",
+            "ASABKAkSDQoFc2tpbGwYAiABKAkSEQoJaWNvbl9wYXRoGAMgASgJEhMKC2Rl",
+            "c2NyaXB0aW9uGAQgASgJEjEKEXNraWxsX3RhcmdldF90eXBlGAUgAygOMhYu",
+            "U2tpbGwuU2tpbGxUYXJnZXRUeXBlEg0KBXZhbHVlGAYgASgFEhAKCGNvb2xk",
+            "b3duGAcgASgFEhgKEGluaXRpYWxfY29vbGRvd24YCCABKAUSDgoGYXR0YWNr",
+            "GAkgASgFEg4KBmhlYWx0aBgKIAEoBSKWAQoPU2tpbGxUYXJnZXRUeXBlEggK",
+            "BE5PTkUQABIKCgZQTEFZRVIQARIPCgtQTEFZRVJfQ0FSRBACEhQKEFBMQVlF",
+            "Ul9BTExfQ0FSRFMQAxIMCghPUFBPTkVOVBAEEhEKDU9QUE9ORU5UX0NBUkQQ",
+            "BRIWChJPUFBPTkVOVF9BTExfQ0FSRFMQBhINCglBTExfQ0FSRFMQByIhCghI",
+            "ZXJvTGlzdBIVCgZoZXJvZXMYASADKAsyBS5IZXJvIjQKEkNhcmRDb2xsZWN0",
+            "aW9uTGlzdBIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uIkUKCERl",
+            "Y2tMaXN0EhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21vZGlmaWNh",
+            "dGlvbl90aW1lc3RhbXAYAiABKAMihQEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1",
             "bHRfZGVja3MYASADKAsyBS5EZWNrEisKEmRlZmF1bHRfY29sbGVjdGlvbhgC",
             "IAMoCzIPLkNhcmRDb2xsZWN0aW9uEhQKBWNhcmRzGAMgAygLMgUuQ2FyZBIV",
             "CgZoZXJvZXMYBCADKAsyBS5IZXJvIukBChRVcHNlcnRBY2NvdW50UmVxdWVz",
@@ -94,26 +94,29 @@ namespace LoomNetwork.CZB.Protobuf {
             "KAUSHAoUZ2FtZV9tZW1iZXJzaGlwX3RpZXIYCSABKAUiJAoRR2V0QWNjb3Vu",
             "dFJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSIyCg5HZXREZWNrUmVxdWVzdBIP",
             "Cgd1c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiABKAMiJgoPR2V0RGVja1Jl",
-            "c3BvbnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIjkKEUNyZWF0ZURlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2siJQoS",
-            "Q3JlYXRlRGVja1Jlc3BvbnNlEg8KB2RlY2tfaWQYASABKAMiNQoRRGVsZXRl",
-            "RGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIPCgdkZWNrX2lkGAIgASgD",
-            "IjcKD0VkaXREZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sY",
-            "AiABKAsyBS5EZWNrIjYKDURlY2tzUmVzcG9uc2USDwoHdXNlcl9pZBgBIAEo",
-            "CRIUCgVkZWNrcxgCIAMoCzIFLkRlY2siIwoQTGlzdERlY2tzUmVxdWVzdBIP",
-            "Cgd1c2VyX2lkGAEgASgJIikKEUxpc3REZWNrc1Jlc3BvbnNlEhQKBWRlY2tz",
-            "GAEgAygLMgUuRGVjayIYChZMaXN0Q2FyZExpYnJhcnlSZXF1ZXN0IjEKF0xp",
-            "c3RDYXJkTGlicmFyeVJlc3BvbnNlEhYKBHNldHMYASADKAsyCC5DYXJkU2V0",
-            "IhgKFkxpc3RIZXJvTGlicmFyeVJlcXVlc3QiMAoXTGlzdEhlcm9MaWJyYXJ5",
-            "UmVzcG9uc2USFQoGaGVyb2VzGAEgAygLMgUuSGVybyInChRHZXRDb2xsZWN0",
-            "aW9uUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjcKFUdldENvbGxlY3Rpb25S",
-            "ZXNwb25zZRIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uQhuqAhhM",
-            "b29tTmV0d29yay5DWkIuUHJvdG9idWZiBnByb3RvMw=="));
+            "c3BvbnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIl4KEUNyZWF0ZURlY2tSZXF1",
+            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwob",
+            "bGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIiUKEkNyZWF0ZURl",
+            "Y2tSZXNwb25zZRIPCgdkZWNrX2lkGAEgASgDIloKEURlbGV0ZURlY2tSZXF1",
+            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgCIAEoAxIjChtsYXN0",
+            "X21vZGlmaWNhdGlvbl90aW1lc3RhbXAYAyABKAMiXAoPRWRpdERlY2tSZXF1",
+            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwob",
+            "bGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIjYKDURlY2tzUmVz",
+            "cG9uc2USDwoHdXNlcl9pZBgBIAEoCRIUCgVkZWNrcxgCIAMoCzIFLkRlY2si",
+            "IwoQTGlzdERlY2tzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIk4KEUxpc3RE",
+            "ZWNrc1Jlc3BvbnNlEhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21v",
+            "ZGlmaWNhdGlvbl90aW1lc3RhbXAYAyABKAMiGAoWTGlzdENhcmRMaWJyYXJ5",
+            "UmVxdWVzdCIxChdMaXN0Q2FyZExpYnJhcnlSZXNwb25zZRIWCgRzZXRzGAEg",
+            "AygLMgguQ2FyZFNldCIYChZMaXN0SGVyb0xpYnJhcnlSZXF1ZXN0IjAKF0xp",
+            "c3RIZXJvTGlicmFyeVJlc3BvbnNlEhUKBmhlcm9lcxgBIAMoCzIFLkhlcm8i",
+            "JwoUR2V0Q29sbGVjdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI3ChVH",
+            "ZXRDb2xsZWN0aW9uUmVzcG9uc2USHgoFY2FyZHMYASADKAsyDy5DYXJkQ29s",
+            "bGVjdGlvbkIbqgIYTG9vbU5ldHdvcmsuQ1pCLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Account), global::LoomNetwork.CZB.Protobuf.Account.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Owner" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Deck), global::LoomNetwork.CZB.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Deck), global::LoomNetwork.CZB.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Card), global::LoomNetwork.CZB.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Set", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Frame", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardViewInfo), global::LoomNetwork.CZB.Protobuf.CardViewInfo.Parser, new[]{ "Position", "Scale" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Coordinates), global::LoomNetwork.CZB.Protobuf.Coordinates.Parser, new[]{ "X", "Y", "Z" }, null, null, null),
@@ -135,19 +138,19 @@ namespace LoomNetwork.CZB.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Skill), global::LoomNetwork.CZB.Protobuf.Skill.Parser, new[]{ "Title", "Skill_", "IconPath", "Description", "SkillTargetType", "Value", "Cooldown", "InitialCooldown", "Attack", "Health" }, null, new[]{ typeof(global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.HeroList), global::LoomNetwork.CZB.Protobuf.HeroList.Parser, new[]{ "Heroes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardCollectionList), global::LoomNetwork.CZB.Protobuf.CardCollectionList.Parser, new[]{ "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeckList), global::LoomNetwork.CZB.Protobuf.DeckList.Parser, new[]{ "Decks" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeckList), global::LoomNetwork.CZB.Protobuf.DeckList.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.InitRequest), global::LoomNetwork.CZB.Protobuf.InitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.UpsertAccountRequest), global::LoomNetwork.CZB.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetAccountRequest), global::LoomNetwork.CZB.Protobuf.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetDeckRequest), global::LoomNetwork.CZB.Protobuf.GetDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetDeckResponse), global::LoomNetwork.CZB.Protobuf.GetDeckResponse.Parser, new[]{ "Deck" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CreateDeckRequest), global::LoomNetwork.CZB.Protobuf.CreateDeckRequest.Parser, new[]{ "UserId", "Deck" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CreateDeckRequest), global::LoomNetwork.CZB.Protobuf.CreateDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CreateDeckResponse), global::LoomNetwork.CZB.Protobuf.CreateDeckResponse.Parser, new[]{ "DeckId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest), global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.EditDeckRequest), global::LoomNetwork.CZB.Protobuf.EditDeckRequest.Parser, new[]{ "UserId", "Deck" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest), global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckId", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.EditDeckRequest), global::LoomNetwork.CZB.Protobuf.EditDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DecksResponse), global::LoomNetwork.CZB.Protobuf.DecksResponse.Parser, new[]{ "UserId", "Decks" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListDecksRequest), global::LoomNetwork.CZB.Protobuf.ListDecksRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListDecksResponse), global::LoomNetwork.CZB.Protobuf.ListDecksResponse.Parser, new[]{ "Decks" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListDecksResponse), global::LoomNetwork.CZB.Protobuf.ListDecksResponse.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListCardLibraryRequest), global::LoomNetwork.CZB.Protobuf.ListCardLibraryRequest.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListCardLibraryResponse), global::LoomNetwork.CZB.Protobuf.ListCardLibraryResponse.Parser, new[]{ "Sets" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListHeroLibraryRequest), global::LoomNetwork.CZB.Protobuf.ListHeroLibraryRequest.Parser, null, null, null, null),
@@ -570,7 +573,6 @@ namespace LoomNetwork.CZB.Protobuf {
       name_ = other.name_;
       heroId_ = other.heroId_;
       cards_ = other.cards_.Clone();
-      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -622,17 +624,6 @@ namespace LoomNetwork.CZB.Protobuf {
       get { return cards_; }
     }
 
-    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
-    public const int LastModificationTimestampFieldNumber = 5;
-    private long lastModificationTimestamp_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long LastModificationTimestamp {
-      get { return lastModificationTimestamp_; }
-      set {
-        lastModificationTimestamp_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Deck);
@@ -650,7 +641,6 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Name != other.Name) return false;
       if (HeroId != other.HeroId) return false;
       if(!cards_.Equals(other.cards_)) return false;
-      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -661,7 +651,6 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (HeroId != 0L) hash ^= HeroId.GetHashCode();
       hash ^= cards_.GetHashCode();
-      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -688,10 +677,6 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteInt64(HeroId);
       }
       cards_.WriteTo(output, _repeated_cards_codec);
-      if (LastModificationTimestamp != 0L) {
-        output.WriteRawTag(40);
-        output.WriteInt64(LastModificationTimestamp);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -710,9 +695,6 @@ namespace LoomNetwork.CZB.Protobuf {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(HeroId);
       }
       size += cards_.CalculateSize(_repeated_cards_codec);
-      if (LastModificationTimestamp != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
-      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -734,9 +716,6 @@ namespace LoomNetwork.CZB.Protobuf {
         HeroId = other.HeroId;
       }
       cards_.Add(other.cards_);
-      if (other.LastModificationTimestamp != 0L) {
-        LastModificationTimestamp = other.LastModificationTimestamp;
-      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -762,10 +741,6 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 34: {
             cards_.AddEntriesFrom(input, _repeated_cards_codec);
-            break;
-          }
-          case 40: {
-            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -5396,6 +5371,7 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public DeckList(DeckList other) : this() {
       decks_ = other.decks_.Clone();
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5414,6 +5390,17 @@ namespace LoomNetwork.CZB.Protobuf {
       get { return decks_; }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 2;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as DeckList);
@@ -5428,6 +5415,7 @@ namespace LoomNetwork.CZB.Protobuf {
         return true;
       }
       if(!decks_.Equals(other.decks_)) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5435,6 +5423,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= decks_.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5449,6 +5438,10 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
       decks_.WriteTo(output, _repeated_decks_codec);
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(16);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5458,6 +5451,9 @@ namespace LoomNetwork.CZB.Protobuf {
     public int CalculateSize() {
       int size = 0;
       size += decks_.CalculateSize(_repeated_decks_codec);
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -5470,6 +5466,9 @@ namespace LoomNetwork.CZB.Protobuf {
         return;
       }
       decks_.Add(other.decks_);
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -5483,6 +5482,10 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           case 10: {
             decks_.AddEntriesFrom(input, _repeated_decks_codec);
+            break;
+          }
+          case 16: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -6473,6 +6476,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public CreateDeckRequest(CreateDeckRequest other) : this() {
       userId_ = other.userId_;
       deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6503,6 +6507,17 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 3;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as CreateDeckRequest);
@@ -6518,6 +6533,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (UserId != other.UserId) return false;
       if (!object.Equals(Deck, other.Deck)) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6526,6 +6542,7 @@ namespace LoomNetwork.CZB.Protobuf {
       int hash = 1;
       if (UserId.Length != 0) hash ^= UserId.GetHashCode();
       if (deck_ != null) hash ^= Deck.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6547,6 +6564,10 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(18);
         output.WriteMessage(Deck);
       }
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6560,6 +6581,9 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (deck_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deck);
+      }
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6581,6 +6605,9 @@ namespace LoomNetwork.CZB.Protobuf {
         }
         Deck.MergeFrom(other.Deck);
       }
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -6601,6 +6628,10 @@ namespace LoomNetwork.CZB.Protobuf {
               deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
             }
             input.ReadMessage(deck_);
+            break;
+          }
+          case 24: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -6765,6 +6796,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public DeleteDeckRequest(DeleteDeckRequest other) : this() {
       userId_ = other.userId_;
       deckId_ = other.deckId_;
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6795,6 +6827,17 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 3;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as DeleteDeckRequest);
@@ -6810,6 +6853,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (UserId != other.UserId) return false;
       if (DeckId != other.DeckId) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6818,6 +6862,7 @@ namespace LoomNetwork.CZB.Protobuf {
       int hash = 1;
       if (UserId.Length != 0) hash ^= UserId.GetHashCode();
       if (DeckId != 0L) hash ^= DeckId.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6839,6 +6884,10 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(16);
         output.WriteInt64(DeckId);
       }
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6852,6 +6901,9 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (DeckId != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(DeckId);
+      }
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6870,6 +6922,9 @@ namespace LoomNetwork.CZB.Protobuf {
       if (other.DeckId != 0L) {
         DeckId = other.DeckId;
       }
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -6887,6 +6942,10 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 16: {
             DeckId = input.ReadInt64();
+            break;
+          }
+          case 24: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -6922,6 +6981,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public EditDeckRequest(EditDeckRequest other) : this() {
       userId_ = other.userId_;
       deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6952,6 +7012,17 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 3;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as EditDeckRequest);
@@ -6967,6 +7038,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (UserId != other.UserId) return false;
       if (!object.Equals(Deck, other.Deck)) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6975,6 +7047,7 @@ namespace LoomNetwork.CZB.Protobuf {
       int hash = 1;
       if (UserId.Length != 0) hash ^= UserId.GetHashCode();
       if (deck_ != null) hash ^= Deck.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6996,6 +7069,10 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(18);
         output.WriteMessage(Deck);
       }
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7009,6 +7086,9 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (deck_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deck);
+      }
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -7030,6 +7110,9 @@ namespace LoomNetwork.CZB.Protobuf {
         }
         Deck.MergeFrom(other.Deck);
       }
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -7050,6 +7133,10 @@ namespace LoomNetwork.CZB.Protobuf {
               deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
             }
             input.ReadMessage(deck_);
+            break;
+          }
+          case 24: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }
@@ -7362,6 +7449,7 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ListDecksResponse(ListDecksResponse other) : this() {
       decks_ = other.decks_.Clone();
+      lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7380,6 +7468,17 @@ namespace LoomNetwork.CZB.Protobuf {
       get { return decks_; }
     }
 
+    /// <summary>Field number for the "last_modification_timestamp" field.</summary>
+    public const int LastModificationTimestampFieldNumber = 3;
+    private long lastModificationTimestamp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long LastModificationTimestamp {
+      get { return lastModificationTimestamp_; }
+      set {
+        lastModificationTimestamp_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ListDecksResponse);
@@ -7394,6 +7493,7 @@ namespace LoomNetwork.CZB.Protobuf {
         return true;
       }
       if(!decks_.Equals(other.decks_)) return false;
+      if (LastModificationTimestamp != other.LastModificationTimestamp) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -7401,6 +7501,7 @@ namespace LoomNetwork.CZB.Protobuf {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= decks_.GetHashCode();
+      if (LastModificationTimestamp != 0L) hash ^= LastModificationTimestamp.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7415,6 +7516,10 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
       decks_.WriteTo(output, _repeated_decks_codec);
+      if (LastModificationTimestamp != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7424,6 +7529,9 @@ namespace LoomNetwork.CZB.Protobuf {
     public int CalculateSize() {
       int size = 0;
       size += decks_.CalculateSize(_repeated_decks_codec);
+      if (LastModificationTimestamp != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastModificationTimestamp);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -7436,6 +7544,9 @@ namespace LoomNetwork.CZB.Protobuf {
         return;
       }
       decks_.Add(other.decks_);
+      if (other.LastModificationTimestamp != 0L) {
+        LastModificationTimestamp = other.LastModificationTimestamp;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -7449,6 +7560,10 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           case 10: {
             decks_.AddEntriesFrom(input, _repeated_decks_codec);
+            break;
+          }
+          case 24: {
+            LastModificationTimestamp = input.ReadInt64();
             break;
           }
         }

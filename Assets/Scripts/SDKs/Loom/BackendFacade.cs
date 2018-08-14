@@ -113,25 +113,26 @@ namespace LoomNetwork.CZB.BackendCommunication
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
-        public async Task DeleteDeck(string userId, long deckId)
+        public async Task DeleteDeck(string userId, long deckId, long lastModificationTimestamp)
         {
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId
+                DeckId = deckId,
+                LastModificationTimestamp = lastModificationTimestamp
             };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
         }
 
-        public async Task EditDeck(string userId, Deck deck)
+        public async Task EditDeck(string userId, Deck deck, long lastModificationTimestamp)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck);
+            EditDeckRequest request = EditDeckRequest(userId, deck, lastModificationTimestamp);
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
-        public async Task<long> AddDeck(string userId, Deck deck)
+        public async Task<long> AddDeck(string userId, Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -153,16 +154,16 @@ namespace LoomNetwork.CZB.BackendCommunication
                 {
                     Name = deck.name,
                     HeroId = deck.heroId,
-                    Cards = { cards },
-                    LastModificationTimestamp = deck.lastModificationTimestamp
-                }
+                    Cards = { cards }
+                },
+                LastModificationTimestamp = lastModificationTimestamp
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 
-        private static EditDeckRequest EditDeckRequest(string userId, Deck deck)
+        private static EditDeckRequest EditDeckRequest(string userId, Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -185,9 +186,9 @@ namespace LoomNetwork.CZB.BackendCommunication
                     Id = deck.id,
                     Name = deck.name,
                     HeroId = deck.heroId,
-                    Cards = { cards },
-                    LastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis()
-                }
+                    Cards = { cards }
+                },
+                LastModificationTimestamp = lastModificationTimestamp
             };
             return request;
         }

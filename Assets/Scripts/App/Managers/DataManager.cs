@@ -50,6 +50,7 @@ namespace LoomNetwork.CZB
         private int _currentAIDeckIndex;
 
         private DirectoryInfo dir;
+        private DecksDataWithTimestamp _decksDataWithTimestamp = new DecksDataWithTimestamp();
 
         public int CurrentDeckInd
         {
@@ -60,6 +61,18 @@ namespace LoomNetwork.CZB
         public int CurrentAIDeckInd
         {
             get { return _currentAIDeckIndex; }
+        }
+
+        public long CachedDecksLastModificationTimestamp
+        {
+            get
+            {
+                return _decksDataWithTimestamp.LastModificationTimestamp;
+            }
+            set
+            {
+                _decksDataWithTimestamp.LastModificationTimestamp = value;
+            }
         }
 
         public DataManager()
@@ -191,7 +204,8 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
                     {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedDecksData));
+                        _decksDataWithTimestamp.DecksData = CachedDecksData;
+                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(_decksDataWithTimestamp));
                     }
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
@@ -295,9 +309,12 @@ namespace LoomNetwork.CZB
 
                         // TODO: add code to sync local and remote decks
                         DecksData localDecksData = null, remoteDecksData = null;
+                        long localDecksDataTimestamp = 0, remoteDecksDataTimestamp = 0;
                         if (File.Exists(_cacheDataPathes[type]))
                         {
-                            localDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                            DecksDataWithTimestamp localDecksDataWithTimestamp = DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPathes[type]);
+                            localDecksData = localDecksDataWithTimestamp.DecksData;
+                            localDecksDataTimestamp = localDecksDataWithTimestamp.LastModificationTimestamp;
                         } else
                         {
                             localDecksData = CachedDecksData;
@@ -309,7 +326,14 @@ namespace LoomNetwork.CZB
                             if (listDecksResponse != null)
                             {
                                 CustomDebug.Log(listDecksResponse.ToString());
-                                remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
+                                //remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.Decks.ToString());
+                                remoteDecksData = new DecksData
+                                {
+                                    decks = listDecksResponse.Decks
+                                        .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                                        .ToList()
+                                };
+                                remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
                             }
                             else
                                 CustomDebug.Log(" List Deck Response is Null == ");
@@ -323,14 +347,11 @@ namespace LoomNetwork.CZB
 
                         if (localDecksData != null && remoteDecksData != null)
                         {
-                            long newestLocalDeckTimestamp = localDecksData.decks.Max(deck => deck.lastModificationTimestamp);
-                            long newestRemoteDeckTimestamp = remoteDecksData.decks.Max(deck => deck.lastModificationTimestamp);
-
-                            if (newestRemoteDeckTimestamp == newestLocalDeckTimestamp)
+                            if (remoteDecksDataTimestamp == localDecksDataTimestamp)
                             {
                                 Debug.Log("Remote decks timestamp == local decks timestamp, no sync needed");
                                 CachedDecksData = remoteDecksData;
-                            } else if (newestRemoteDeckTimestamp > newestLocalDeckTimestamp)
+                            } else if (remoteDecksDataTimestamp > localDecksDataTimestamp)
                             {
                                 Debug.Log("Remote decks data is newer than local, using remote data");
                                 CachedDecksData = remoteDecksData;
@@ -342,14 +363,18 @@ namespace LoomNetwork.CZB
                                     // Remove all remote decks, fingers crossed
                                     foreach (Data.Deck remoteDeck in remoteDecksData.decks)
                                     {
-                                        await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, remoteDeck.id);
+                                        await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, remoteDeck.id, 0);
                                     }
                                     
                                     // Upload local decks
                                     foreach (Data.Deck localDeck in localDecksData.decks)
                                     {
                                         long createdDeckId = 
-                                            await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, localDeck);
+                                            await _backendFacade.AddDeck(
+                                                _backendDataControlMediator.UserDataModel.UserId, 
+                                                localDeck,
+                                                localDecksDataTimestamp
+                                                );
                                         localDeck.id = createdDeckId;
                                     }
 
@@ -515,5 +540,11 @@ namespace LoomNetwork.CZB
 
             return CachedBuffsTooltipData.ranks.Find(x => x.type.ToLower().Equals(type.ToLower()));
         }
+
+        private class DecksDataWithTimestamp
+        {
+            public long LastModificationTimestamp;
+            public DecksData DecksData;
+        } 
     }
 }
