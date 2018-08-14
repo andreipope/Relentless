@@ -844,7 +844,7 @@ namespace LoomNetwork.CZB
                 {
                     success = false;
                     CustomDebug.Log("Result === " + e);
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    //OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                 }
             }
             else
@@ -859,15 +859,15 @@ namespace LoomNetwork.CZB
                 {
                     success = false;
                     CustomDebug.Log("Result === " + e);
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                    //OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
                 }
             }
 
-            if (success)
-            {
+           // if (success)
+           // {
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-            }
+           // }
         }
 
         public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta) {
