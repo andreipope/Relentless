@@ -190,7 +190,7 @@ namespace LoomNetwork.CZB
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
             await _dataManager.SaveAllCache();
-            
+
             try
             {
                 await _backendFacade.DeleteDeck(
@@ -242,7 +242,6 @@ namespace LoomNetwork.CZB
         {
             if (_hordeDecks.Count == 0 || 
                 _selectedDeckId == -1 ||
-                _selectedDeckId >= _hordeDecks.Count || 
                 _hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE && 
                 !Constants.DEV_MODE)
             {
@@ -269,7 +268,7 @@ namespace LoomNetwork.CZB
                 HordeDeckSelectedEventHandler(deck);
             } else
             {
-                
+
             }
 
             if (_hordeDecks.Count > 0) {
@@ -296,7 +295,7 @@ namespace LoomNetwork.CZB
                 _scrolledDeck = 0;
             else
                 _scrolledDeck--;
- 
+
             _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - HORDE_ITEM_SPACE * _scrolledDeck, 420 , 0);
         }
 
@@ -328,7 +327,6 @@ namespace LoomNetwork.CZB
 
             if (_hordeDecks.Count == 0 || 
                 _selectedDeckId == -1 ||
-                _selectedDeckId >= _hordeDecks.Count ||
                 _hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE && !Constants.DEV_MODE)
             {
                 _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MIN_DECK_SIZE + " cards.");
@@ -336,9 +334,7 @@ namespace LoomNetwork.CZB
             }
 			/*
 <<<<<<< HEAD
-
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
-
             _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
 =======
 >>>>>>> origin/playtest
@@ -431,7 +427,7 @@ namespace LoomNetwork.CZB
 
 		    if (!status)
 		        return;
-		    
+
 		    HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
 		    if (deckToDelete != null)
 		    {
@@ -482,11 +478,11 @@ namespace LoomNetwork.CZB
             return false;
             if (_backendFacade.IsConnected)
                 return false;
-            
+
             _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");
             return true;
         }
-        
+
         public class HordeDeckObject
         {
             public event Action<HordeDeckObject> HordeDeckSelectedEvent;

@@ -834,6 +834,16 @@ namespace LoomNetwork.CZB
             // backend operation has succeeded
             _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+
+            foreach (Deck deck in _dataManager.CachedDecksData.decks)
+            {
+                if (_currentDeckId != deck.id && 
+                    deck.name.Trim().Equals(_currentDeck.name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    OpenAlertDialog ("Not able to Edit Deck: \n Deck Name already exists.");
+                    return;
+                }
+            }
             
             bool success = true;
             if (_currentDeckId == -1)
