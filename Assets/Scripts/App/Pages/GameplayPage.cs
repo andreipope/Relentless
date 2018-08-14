@@ -217,7 +217,7 @@ namespace LoomNetwork.CZB
                 _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
             int opponentdeckId = _gameplayManager.OpponentDeckId = randomDeck.id;
 
-			Deck _currentDeck = null;
+            Deck _currentDeck = null;
 
 			if (!_gameplayManager.IsTutorial)
 			{

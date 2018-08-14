@@ -234,10 +234,9 @@ namespace LoomNetwork.CZB
 
 		private void BattleButtonUpdate()
 		{
-			if (_hordeDecks.Count == 0 || 
+			if ((_hordeDecks.Count == 0 || 
 				_selectedDeckId == -1 ||
-				_selectedDeckId >= _hordeDecks.Count || 
-				_hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE && 
+                _hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE) && 
 				!Constants.DEV_MODE)
 			{
 				_battleButton.interactable = false;
