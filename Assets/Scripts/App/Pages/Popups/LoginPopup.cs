@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB
 			    {
 				    isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
 				    if (!isBetaKeyValid)
-					    throw new Exception("Beta key not registered");
+					    throw new Exception("Tester key not registered");
 				    
 				    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
 				    {
@@ -118,7 +118,7 @@ namespace LoomNetwork.CZB
 				    SetUIState(LoginState.BetaKeyValidationFailed);
 			    }
 		    } else {
-			    _uiManager.DrawPopup<WarningPopup> ("Input a valid Beta Key");
+			    _uiManager.DrawPopup<WarningPopup> ("Input a valid Tester Key");
 		    }
 		}
 
