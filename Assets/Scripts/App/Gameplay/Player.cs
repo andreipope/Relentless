@@ -192,22 +192,17 @@ namespace LoomNetwork.CZB
 
             CardsPreparingToHand = new List<BoardCard>();
 
-			Deck _currentDeck = null;
-
-			if (!_gameplayManager.IsTutorial) {
-				_currentDeck = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId);
-			} else {
-				_currentDeck = new Deck();
-				_currentDeck.heroId = 4;
-			}
-
             int heroId = 0;
 
             if (!isOpponent)
-                heroId = _currentDeck.heroId;
+            {
+                if (!_gameplayManager.IsTutorial)
+                    heroId = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId).heroId;
+                else
+                    heroId = Constants.TUTORIAL_PLAYER_HERO_ID;
+            }
             else
-                heroId =
-                    _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
+                heroId = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
@@ -277,12 +272,6 @@ namespace LoomNetwork.CZB
                 if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
                 {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
-                }
-                else
-                {
-                    damageByNoMoreCardsInDeck++;
-                    HP -= damageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(this, -damageByNoMoreCardsInDeck);
                 }
 
             }
@@ -438,6 +427,10 @@ namespace LoomNetwork.CZB
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+            }
+            if (_gameplayManager.CurrentTurnPlayer != this )
+            {
+                _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
         }
 

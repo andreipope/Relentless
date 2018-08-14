@@ -303,9 +303,14 @@ namespace LoomNetwork.CZB
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
+            if ((int)type == _currentSet)
+                return;
+
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+
             _currentSet = (int)type;
-            LoadCards(0, (int)type);
+            _currentElementPage = 0;
+            LoadCards(_currentElementPage, _currentSet);
         }
 
         private void BackButtonHandler()
@@ -832,7 +837,13 @@ namespace LoomNetwork.CZB
             
             // HACK for offline mode: in online mode, local data should only be saved after
             // backend operation has succeeded
-            _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
+            // Quick Fix for : if there are no decks, error
+            if (_dataManager.CachedDecksData.decks.Count > 0) {
+                _currentDeck.id = _dataManager.CachedDecksData.decks.Max (d => d.id) + 1;
+            } else {
+                _currentDeck.id = 1;
+            }
+
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
 
             foreach (Deck deck in _dataManager.CachedDecksData.decks)

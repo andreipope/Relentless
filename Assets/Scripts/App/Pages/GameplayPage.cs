@@ -68,8 +68,8 @@ namespace LoomNetwork.CZB
         public OnBehaviourHandler playerPrimarySkillHandler,
                                   playerSecondarySkillHandler;
 
-        public GameObject opponentPrimarySkillHandler,
-                          opponentSecondarySkillHandler;
+        public OnBehaviourHandler opponentPrimarySkillHandler,
+                                  opponentSecondarySkillHandler;
 
 
         public int CurrentDeckId
@@ -213,25 +213,19 @@ namespace LoomNetwork.CZB
             }
 
             int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
-            OpponentDeck randomDeck =
-                _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
-            int opponentdeckId = _gameplayManager.OpponentDeckId = randomDeck.id;
 
-            Deck _currentDeck = null;
+            int opponentDeckId = _gameplayManager.OpponentDeckId = UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count);
 
-			if (!_gameplayManager.IsTutorial)
-			{
-			    _currentDeck = _dataManager.CachedDecksData.decks.First(o => o.id == _currentDeckId);
-			} else {
-				_currentDeck = new Deck();
-				_currentDeck.heroId = 4;
-			}
+            int heroId = Constants.TUTORIAL_PLAYER_HERO_ID; // TUTORIAL
 
-			int heroId = _currentDeck.heroId;
-            int hopponentId = randomDeck.heroId;
+            if (!_gameplayManager.IsTutorial)
+                heroId = _dataManager.CachedDecksData.decks.First(o => o.id == _currentDeckId).heroId;
+
+            int opponentHeroId = _dataManager.CachedOpponentDecksData.decks[opponentDeckId].heroId;
+
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[hopponentId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
 
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
@@ -259,8 +253,8 @@ namespace LoomNetwork.CZB
             playerPrimarySkillHandler = GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             playerSecondarySkillHandler = GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
-            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary");
-            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary");
+            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {
@@ -269,7 +263,7 @@ namespace LoomNetwork.CZB
             }
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler, opponentSecondarySkillHandler);
+                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler.gameObject, opponentSecondarySkillHandler.gameObject);
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 

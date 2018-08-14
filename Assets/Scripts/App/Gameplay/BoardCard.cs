@@ -693,14 +693,14 @@ namespace LoomNetwork.CZB
                 switch(buffTooltipInfo.tooltipObjectType)
                 {
                     case Enumerators.TooltipObjectType.RANK:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsRanks/battleground_rank_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsRanks/battleground_rank_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.ABILITY:
                     case Enumerators.TooltipObjectType.BUFF:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.UNIT_TYPE:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsUnitTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Trim().ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsUnitTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     default:
                         _buffIconPicture.sprite = null;

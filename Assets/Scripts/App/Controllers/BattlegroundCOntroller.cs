@@ -644,6 +644,9 @@ namespace LoomNetwork.CZB
         // rewrite
         public void DestroyCardPreview()
         {
+            if (!isPreviewActive)
+                return;
+
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
 
             MainApp.Instance.StartCoroutine(DestroyCardPreviewAsync());

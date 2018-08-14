@@ -141,6 +141,7 @@ namespace LoomNetwork.CZB
         {
 			_state = LoginState.BetaKeyRequest;
             SetUIState(LoginState.BetaKeyRequest);
+            _betaKeyInputField.text = "";
 			_selfPage.SetActive(true);
         }
 
