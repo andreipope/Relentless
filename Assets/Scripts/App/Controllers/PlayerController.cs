@@ -321,7 +321,7 @@ namespace LoomNetwork.CZB
                             _battlegroundController.DestroyCardPreview();
 
 
-                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                            if (_boardArrowController.CurrentBoardArrow == null || (_boardArrowController.CurrentBoardArrow != null && !(_boardArrowController.CurrentBoardArrow is AbilityBoardArrow)))
                                 HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }

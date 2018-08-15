@@ -486,7 +486,7 @@ namespace LoomNetwork.CZB
                             title = buffInfo.name,
                             description = buffInfo.tooltip,
                             tooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                            value = abil.value
+                            value = GetValueOfAbilityByType(abil)
                         });
                 }
             }

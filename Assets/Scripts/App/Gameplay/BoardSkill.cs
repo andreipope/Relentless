@@ -110,13 +110,27 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnDragStartedEventHandler()
         {
-            if (owner.IsLocalPlayer)
-                StartDoSkill();
+            if (skill.skillTargetTypes.Count > 0)
+            {
+                if (owner.IsLocalPlayer)
+                    StartDoSkill();
+            }
+            else DrawAbilityTooltip();
         }
 
         private void PointerEventSolver_OnClickEventHandler()
         {
-            DrawAbilityTooltip();
+            if (skill.skillTargetTypes.Count > 0)
+                DrawAbilityTooltip();
+            else
+            {
+                if (!_usedInThisTurn)
+                {
+                    if (owner.IsLocalPlayer)
+                        StartDoSkill();
+                }
+                else DrawAbilityTooltip();
+            }
         }
 
         private void PointerEventSolver_OnEndEventHandler()

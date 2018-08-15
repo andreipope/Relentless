@@ -521,7 +521,7 @@
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 4,
-          "description": "<b>Entry: Freeze</b> zombie and adjecent zombies, 2 damage if Frozen",
+          "description": "<b>Entry: Freeze</b> zombie and adjacent zombies, 2 damage if Frozen",
           "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
           "picture": "Freezzee",
           "damage": 2,

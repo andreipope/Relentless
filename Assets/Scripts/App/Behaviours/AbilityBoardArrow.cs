@@ -43,8 +43,10 @@ namespace LoomNetwork.CZB
             Init();
         }
 
-        protected void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             _inputManager.UnregisterInputHandler(_onMouseDownInputIndex);
             _inputManager.UnregisterInputHandler(_onRightMouseDownInputIndex);
             _inputManager.UnregisterInputHandler(_onEscapeInputIndex);

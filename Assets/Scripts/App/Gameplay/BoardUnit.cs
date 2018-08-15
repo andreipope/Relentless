@@ -783,6 +783,15 @@ namespace LoomNetwork.CZB
             numTurnsOnBoard++;
             StopSleepingParticles();
 
+            if (_stunTurns > 0)
+                _stunTurns--;
+            if (_stunTurns == 0)
+            {
+                IsPlayable = true;
+                _frozenSprite.DOFade(0, 1);
+                UnitStatus = Enumerators.UnitStatusType.NONE;
+            }
+
             if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             {
                 if (CurrentDamage > 0)
@@ -796,15 +805,6 @@ namespace LoomNetwork.CZB
 
         public void OnEndTurn()
         {
-            if (_stunTurns > 0)
-                _stunTurns--;
-            if (_stunTurns == 0)
-            {
-                IsPlayable = true;
-                _frozenSprite.DOFade(0, 1);
-                UnitStatus = Enumerators.UnitStatusType.NONE;
-            }
-
             HasBuffRush = false;
 
             CancelTargetingArrows();
