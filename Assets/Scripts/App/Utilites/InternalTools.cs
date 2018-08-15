@@ -106,11 +106,9 @@ namespace LoomNetwork.CZB.Helpers
             }
         }
 
-        public static void GroupVerticalObjects(Transform root, float spacing)
+        public static void GroupVerticalObjects(Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
         {
             int count = root.childCount;
-            float centerOffset = -7f;
-            float height = 7.2f;
             float halfHeightOffset = (height + spacing);
 
             float startPos = centerOffset + ((count - 1) * halfHeightOffset / 2f);
