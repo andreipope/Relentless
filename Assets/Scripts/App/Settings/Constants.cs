@@ -9,12 +9,10 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-        public const string SPACE = " ";
-
-		internal const string CURRENT_VERSION_FULL = "Alpha " + CURRENT_VERSION;
-        internal const string VERSION_REVISION = "Alpha";
-
-        internal const string CURRENT_VERSION = "0.0.22.1 Online";
+	    internal const string CURRENT_VERSION = "0.0.22.1";
+	    internal const string CURRENT_VERSION_POSTFIX = "Online";
+	    internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
+	    internal const string CURRENT_VERSION_FULL = CURRENT_VERSION + "_" + CURRENT_VERSION_POSTFIX;
 
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 

@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class BackendDataControlMediator : IService
     {
-        private const string UserDataFileName = "UserData.json";
+        private const string UserDataFileName = "UserLoginData.json";
         
         private IDataManager _dataManager;
         private BackendFacade _backendFacade;
@@ -58,6 +58,12 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
+
+            await _dataManager.LoadRemoteConfig();
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !FORCE_LOCAL_ENDPOINT
+            if (_dataManager.BetaConfig.LatestVersion != Constants.CURRENT_VERSION_FULL) 
+                throw new GameVersionMismatchException(Constants.CURRENT_VERSION_FULL, _dataManager.BetaConfig.LatestVersion);
+#endif
 
             try
             {

@@ -38,6 +38,10 @@ namespace LoomNetwork.CZB
 	    private Transform _betaGroup;
 	    private Transform _waitingGroup;
 	    private Transform _betaErrorText;
+	    private Transform _versionMismatchGroup;
+	    private TextMeshProUGUI _versionMismatchText;
+	    private Button _versionMismatchExitButton;
+
 		private InputField _betaKeyInputField;
 
 		private LoginState _state;
@@ -61,10 +65,13 @@ namespace LoomNetwork.CZB
 			_betaButton.onClick.AddListener(PressedBetaHandler);
 
 	        _waitingGroup = _selfPage.transform.Find("Waiting_Group");
+	        _versionMismatchGroup = _selfPage.transform.Find("VersionMismatch_Group");
+	        _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
+	        _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
+	        _versionMismatchExitButton.onClick.AddListener(Application.Quit);
 
             Hide();
         }
-
 
 		public void Dispose()
 		{
@@ -96,7 +103,7 @@ namespace LoomNetwork.CZB
 				    isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
 				    if (!isBetaKeyValid)
 					    throw new Exception("Tester key not registered");
-				    
+
 				    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
 				    {
 					    // HACK
@@ -109,8 +116,12 @@ namespace LoomNetwork.CZB
 				    // HACK
 				    //userDataModel.IsValid = true;
 				    _backendDataControlMediator.SetUserDataModel(userDataModel);
-				    
+
 				    SuccessfulLogin();
+			    } catch (GameVersionMismatchException e)
+			    {
+				    SetUIState(LoginState.RemoteVersionMismatch);
+				    UpdateVersionMismatchText(e);
 			    }
 			    catch (Exception e)
 			    {
@@ -148,6 +159,12 @@ namespace LoomNetwork.CZB
 		public void Show(object data)
 		{
 			Show();
+			GameVersionMismatchException gameVersionMismatchException = data as GameVersionMismatchException;
+			if (gameVersionMismatchException != null)
+			{
+				SetUIState(LoginState.RemoteVersionMismatch);
+				UpdateVersionMismatchText(gameVersionMismatchException);
+			}
 		}
 
 	    public void Update() {
@@ -158,6 +175,7 @@ namespace LoomNetwork.CZB
 		    _waitingGroup.gameObject.SetActive(false);
 		    _betaGroup.gameObject.SetActive(false);
 		    _betaErrorText.gameObject.SetActive(false);
+		    _versionMismatchGroup.gameObject.SetActive(false);
 		    switch (_state)
 		    {
 			    case LoginState.BetaKeyRequest:
@@ -170,9 +188,18 @@ namespace LoomNetwork.CZB
 				    _betaGroup.gameObject.SetActive(true);
 				    _betaErrorText.gameObject.SetActive(true);
 				    break;
+			    case LoginState.RemoteVersionMismatch:
+				    _versionMismatchGroup.gameObject.SetActive(true);
+				    break;
 			    default:
 				    throw new ArgumentOutOfRangeException();
 		    }
+	    }
+
+	    private void UpdateVersionMismatchText(GameVersionMismatchException exception)
+	    {
+		    _versionMismatchText.text =
+			    $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
 	    }
 	    
 	    private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId) {
@@ -193,7 +220,8 @@ namespace LoomNetwork.CZB
 	    {
 		    BetaKeyRequest,
 		    BetaKeyValidationFailed,
-		    BetaKeyValidateAndLogin
+		    BetaKeyValidateAndLogin,
+		    RemoteVersionMismatch
 	    }
     }
 }

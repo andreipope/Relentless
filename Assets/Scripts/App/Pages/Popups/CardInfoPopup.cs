@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
 					(_uiManager.GetPopup<DesintigrateCardPopup> () as DesintigrateCardPopup).cardTransform = cardTransform;
 				}   
 			} else {
-				_uiManager.DrawPopup<WarningPopup> ($"Melting is Disabled\nfor version {Constants.CURRENT_VERSION_FULL}.\n Thanks for helping us make this game Awesome\n-Loom Team");
+				_uiManager.DrawPopup<WarningPopup> ($"Melting is Disabled\nfor version {Constants.CURRENT_VERSION}.\n Thanks for helping us make this game Awesome\n-Loom Team");
 			}
 		}
     }

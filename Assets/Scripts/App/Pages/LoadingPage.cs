@@ -124,17 +124,26 @@ namespace LoomNetwork.CZB
 								
 								Func<Task> connectFunc = async () =>
 								{
+									bool success = true;
 									try
 									{
 										await _backendDataControlMediator.LoginAndLoadData();
+									} catch (GameVersionMismatchException e)
+									{
+										success = false;
+										_uiManager.DrawPopup<LoginPopup>();
+										_uiManager.GetPopup<LoginPopup>().Show(e);
 									} catch (Exception)
 									{
 										// HACK: ignore to allow offline mode
 									}
 									
 									connectionPopup.Hide();
-									
-									GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+
+									if (success)
+									{
+										GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+									}
 								};
 								_uiManager.DrawPopup<ConnectionPopup>();
 								connectionPopup.ConnectFunc = connectFunc;

@@ -25,9 +25,9 @@ namespace LoomNetwork.CZB
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
         long CachedDecksLastModificationTimestamp { get; set; }
-        LatestVersions LatestVersions { get; set; }
         BetaConfig BetaConfig { get; set; }
 
+        Task LoadRemoteConfig();
         Task StartLoadCache();
         Task SaveAllCache();
         Task SaveCache(Enumerators.CacheDataType type);

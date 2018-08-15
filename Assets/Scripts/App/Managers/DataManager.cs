@@ -42,8 +42,7 @@ namespace LoomNetwork.CZB
         public ActionData CachedActionsLibraryData { get; set;}
 
         public CreditsData CachedCreditsData { get; set; }
-        
-        public LatestVersions LatestVersions { get; set; }
+
         public BetaConfig BetaConfig { get; set; }
 
         private int _currentDeckIndex;
@@ -108,12 +107,14 @@ namespace LoomNetwork.CZB
             FillCacheDataPathes();
         }
 
+        public async Task LoadRemoteConfig()
+        {
+            BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
+        }
+
         public async Task StartLoadCache()
         {
             Debug.Log("=== Start loading server ==== ");
-            
-            //LatestVersions = await _backendFacade.GetLatestVersions();
-            BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
             
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
@@ -154,7 +155,7 @@ namespace LoomNetwork.CZB
             var files = dir.GetFiles();
             bool versionMatch = false;
             foreach (var file in files)
-                if (file.Name == Constants.CURRENT_VERSION + Constants.VERSION_FILE_RESOLUTION)
+                if (file.Name == Constants.CURRENT_VERSION_FULL + Constants.VERSION_FILE_RESOLUTION)
                     versionMatch = true;
 
             if (!versionMatch)
@@ -169,7 +170,7 @@ namespace LoomNetwork.CZB
 			foreach (var file in files)
 				if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VERSION_FILE_RESOLUTION))
 					file.Delete();
-			File.Create(dir + Constants.CURRENT_VERSION + Constants.VERSION_FILE_RESOLUTION);
+			File.Create(dir + Constants.CURRENT_VERSION_FULL + Constants.VERSION_FILE_RESOLUTION);
 
 			PlayerPrefs.DeleteAll ();
 		}
