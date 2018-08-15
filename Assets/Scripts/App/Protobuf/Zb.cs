@@ -71,47 +71,47 @@ namespace LoomNetwork.CZB.Protobuf {
             "R2V0SGVyb1Jlc3BvbnNlEhMKBGhlcm8YASABKAsyBS5IZXJvIjgKFEdldEhl",
             "cm9Ta2lsbHNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHaGVyb19pZBgC",
             "IAEoAyJAChVHZXRIZXJvU2tpbGxzUmVzcG9uc2USDwoHaGVyb19pZBgBIAEo",
-            "AxIWCgZza2lsbHMYAiADKAsyBi5Ta2lsbCL0AgoFU2tpbGwSDQoFdGl0bGUY",
+            "AxIWCgZza2lsbHMYAiADKAsyBi5Ta2lsbCLYAgoFU2tpbGwSDQoFdGl0bGUY",
             "ASABKAkSDQoFc2tpbGwYAiABKAkSEQoJaWNvbl9wYXRoGAMgASgJEhMKC2Rl",
-            "c2NyaXB0aW9uGAQgASgJEjEKEXNraWxsX3RhcmdldF90eXBlGAUgAygOMhYu",
-            "U2tpbGwuU2tpbGxUYXJnZXRUeXBlEg0KBXZhbHVlGAYgASgFEhAKCGNvb2xk",
-            "b3duGAcgASgFEhgKEGluaXRpYWxfY29vbGRvd24YCCABKAUSDgoGYXR0YWNr",
-            "GAkgASgFEg4KBmhlYWx0aBgKIAEoBSKWAQoPU2tpbGxUYXJnZXRUeXBlEggK",
-            "BE5PTkUQABIKCgZQTEFZRVIQARIPCgtQTEFZRVJfQ0FSRBACEhQKEFBMQVlF",
-            "Ul9BTExfQ0FSRFMQAxIMCghPUFBPTkVOVBAEEhEKDU9QUE9ORU5UX0NBUkQQ",
-            "BRIWChJPUFBPTkVOVF9BTExfQ0FSRFMQBhINCglBTExfQ0FSRFMQByIhCghI",
-            "ZXJvTGlzdBIVCgZoZXJvZXMYASADKAsyBS5IZXJvIjQKEkNhcmRDb2xsZWN0",
-            "aW9uTGlzdBIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uIkUKCERl",
-            "Y2tMaXN0EhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21vZGlmaWNh",
-            "dGlvbl90aW1lc3RhbXAYAiABKAMihQEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1",
-            "bHRfZGVja3MYASADKAsyBS5EZWNrEisKEmRlZmF1bHRfY29sbGVjdGlvbhgC",
-            "IAMoCzIPLkNhcmRDb2xsZWN0aW9uEhQKBWNhcmRzGAMgAygLMgUuQ2FyZBIV",
-            "CgZoZXJvZXMYBCADKAsyBS5IZXJvIukBChRVcHNlcnRBY2NvdW50UmVxdWVz",
-            "dBIPCgd1c2VyX2lkGAEgASgJEh0KFXBob25lX251bWJlcl92ZXJpZmllZBgC",
-            "IAEoCBIXCg9yZXdhcmRfcmVkZWVtZWQYAyABKAgSFgoOaXNfa2lja3N0YXJ0",
-            "ZXIYBCABKAgSDQoFaW1hZ2UYBSABKAkSGgoSZW1haWxfbm90aWZpY2F0aW9u",
-            "GAYgASgIEhEKCWVsb19zY29yZRgHIAEoAxIUCgxjdXJyZW50X3RpZXIYCCAB",
-            "KAUSHAoUZ2FtZV9tZW1iZXJzaGlwX3RpZXIYCSABKAUiJAoRR2V0QWNjb3Vu",
-            "dFJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSIyCg5HZXREZWNrUmVxdWVzdBIP",
-            "Cgd1c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiABKAMiJgoPR2V0RGVja1Jl",
-            "c3BvbnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIl4KEUNyZWF0ZURlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwob",
-            "bGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIiUKEkNyZWF0ZURl",
-            "Y2tSZXNwb25zZRIPCgdkZWNrX2lkGAEgASgDIloKEURlbGV0ZURlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgCIAEoAxIjChtsYXN0",
-            "X21vZGlmaWNhdGlvbl90aW1lc3RhbXAYAyABKAMiXAoPRWRpdERlY2tSZXF1",
-            "ZXN0Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwob",
-            "bGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIjYKDURlY2tzUmVz",
-            "cG9uc2USDwoHdXNlcl9pZBgBIAEoCRIUCgVkZWNrcxgCIAMoCzIFLkRlY2si",
-            "IwoQTGlzdERlY2tzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIk4KEUxpc3RE",
-            "ZWNrc1Jlc3BvbnNlEhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21v",
-            "ZGlmaWNhdGlvbl90aW1lc3RhbXAYAyABKAMiGAoWTGlzdENhcmRMaWJyYXJ5",
-            "UmVxdWVzdCIxChdMaXN0Q2FyZExpYnJhcnlSZXNwb25zZRIWCgRzZXRzGAEg",
-            "AygLMgguQ2FyZFNldCIYChZMaXN0SGVyb0xpYnJhcnlSZXF1ZXN0IjAKF0xp",
-            "c3RIZXJvTGlicmFyeVJlc3BvbnNlEhUKBmhlcm9lcxgBIAMoCzIFLkhlcm8i",
-            "JwoUR2V0Q29sbGVjdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI3ChVH",
-            "ZXRDb2xsZWN0aW9uUmVzcG9uc2USHgoFY2FyZHMYASADKAsyDy5DYXJkQ29s",
-            "bGVjdGlvbkIbqgIYTG9vbU5ldHdvcmsuQ1pCLlByb3RvYnVmYgZwcm90bzM="));
+            "c2NyaXB0aW9uGAQgASgJEhUKDXNraWxsX3RhcmdldHMYBSABKAkSDQoFdmFs",
+            "dWUYBiABKAUSEAoIY29vbGRvd24YByABKAUSGAoQaW5pdGlhbF9jb29sZG93",
+            "bhgIIAEoBRIOCgZhdHRhY2sYCSABKAUSDgoGaGVhbHRoGAogASgFIpYBCg9T",
+            "a2lsbFRhcmdldFR5cGUSCAoETk9ORRAAEgoKBlBMQVlFUhABEg8KC1BMQVlF",
+            "Ul9DQVJEEAISFAoQUExBWUVSX0FMTF9DQVJEUxADEgwKCE9QUE9ORU5UEAQS",
+            "EQoNT1BQT05FTlRfQ0FSRBAFEhYKEk9QUE9ORU5UX0FMTF9DQVJEUxAGEg0K",
+            "CUFMTF9DQVJEUxAHIiEKCEhlcm9MaXN0EhUKBmhlcm9lcxgBIAMoCzIFLkhl",
+            "cm8iNAoSQ2FyZENvbGxlY3Rpb25MaXN0Eh4KBWNhcmRzGAEgAygLMg8uQ2Fy",
+            "ZENvbGxlY3Rpb24iRQoIRGVja0xpc3QSFAoFZGVja3MYASADKAsyBS5EZWNr",
+            "EiMKG2xhc3RfbW9kaWZpY2F0aW9uX3RpbWVzdGFtcBgCIAEoAyKFAQoLSW5p",
+            "dFJlcXVlc3QSHAoNZGVmYXVsdF9kZWNrcxgBIAMoCzIFLkRlY2sSKwoSZGVm",
+            "YXVsdF9jb2xsZWN0aW9uGAIgAygLMg8uQ2FyZENvbGxlY3Rpb24SFAoFY2Fy",
+            "ZHMYAyADKAsyBS5DYXJkEhUKBmhlcm9lcxgEIAMoCzIFLkhlcm8i6QEKFFVw",
+            "c2VydEFjY291bnRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSHQoVcGhvbmVf",
+            "bnVtYmVyX3ZlcmlmaWVkGAIgASgIEhcKD3Jld2FyZF9yZWRlZW1lZBgDIAEo",
+            "CBIWCg5pc19raWNrc3RhcnRlchgEIAEoCBINCgVpbWFnZRgFIAEoCRIaChJl",
+            "bWFpbF9ub3RpZmljYXRpb24YBiABKAgSEQoJZWxvX3Njb3JlGAcgASgDEhQK",
+            "DGN1cnJlbnRfdGllchgIIAEoBRIcChRnYW1lX21lbWJlcnNoaXBfdGllchgJ",
+            "IAEoBSIkChFHZXRBY2NvdW50UmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjIK",
+            "DkdldERlY2tSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgC",
+            "IAEoAyImCg9HZXREZWNrUmVzcG9uc2USEwoEZGVjaxgCIAEoCzIFLkRlY2si",
+            "XgoRQ3JlYXRlRGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgRkZWNr",
+            "GAIgASgLMgUuRGVjaxIjChtsYXN0X21vZGlmaWNhdGlvbl90aW1lc3RhbXAY",
+            "AyABKAMiJQoSQ3JlYXRlRGVja1Jlc3BvbnNlEg8KB2RlY2tfaWQYASABKAMi",
+            "WgoRRGVsZXRlRGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIPCgdkZWNr",
+            "X2lkGAIgASgDEiMKG2xhc3RfbW9kaWZpY2F0aW9uX3RpbWVzdGFtcBgDIAEo",
+            "AyJcCg9FZGl0RGVja1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgRkZWNr",
+            "GAIgASgLMgUuRGVjaxIjChtsYXN0X21vZGlmaWNhdGlvbl90aW1lc3RhbXAY",
+            "AyABKAMiNgoNRGVja3NSZXNwb25zZRIPCgd1c2VyX2lkGAEgASgJEhQKBWRl",
+            "Y2tzGAIgAygLMgUuRGVjayIjChBMaXN0RGVja3NSZXF1ZXN0Eg8KB3VzZXJf",
+            "aWQYASABKAkiTgoRTGlzdERlY2tzUmVzcG9uc2USFAoFZGVja3MYASADKAsy",
+            "BS5EZWNrEiMKG2xhc3RfbW9kaWZpY2F0aW9uX3RpbWVzdGFtcBgDIAEoAyIY",
+            "ChZMaXN0Q2FyZExpYnJhcnlSZXF1ZXN0IjEKF0xpc3RDYXJkTGlicmFyeVJl",
+            "c3BvbnNlEhYKBHNldHMYASADKAsyCC5DYXJkU2V0IhgKFkxpc3RIZXJvTGli",
+            "cmFyeVJlcXVlc3QiMAoXTGlzdEhlcm9MaWJyYXJ5UmVzcG9uc2USFQoGaGVy",
+            "b2VzGAEgAygLMgUuSGVybyInChRHZXRDb2xsZWN0aW9uUmVxdWVzdBIPCgd1",
+            "c2VyX2lkGAEgASgJIjcKFUdldENvbGxlY3Rpb25SZXNwb25zZRIeCgVjYXJk",
+            "cxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uQhuqAhhMb29tTmV0d29yay5DWkIu",
+            "UHJvdG9idWZiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroResponse), global::LoomNetwork.CZB.Protobuf.GetHeroResponse.Parser, new[]{ "Hero" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroSkillsRequest), global::LoomNetwork.CZB.Protobuf.GetHeroSkillsRequest.Parser, new[]{ "UserId", "HeroId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroSkillsResponse), global::LoomNetwork.CZB.Protobuf.GetHeroSkillsResponse.Parser, new[]{ "HeroId", "Skills" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Skill), global::LoomNetwork.CZB.Protobuf.Skill.Parser, new[]{ "Title", "Skill_", "IconPath", "Description", "SkillTargetType", "Value", "Cooldown", "InitialCooldown", "Attack", "Health" }, null, new[]{ typeof(global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Skill), global::LoomNetwork.CZB.Protobuf.Skill.Parser, new[]{ "Title", "Skill_", "IconPath", "Description", "SkillTargets", "Value", "Cooldown", "InitialCooldown", "Attack", "Health" }, null, new[]{ typeof(global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.HeroList), global::LoomNetwork.CZB.Protobuf.HeroList.Parser, new[]{ "Heroes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardCollectionList), global::LoomNetwork.CZB.Protobuf.CardCollectionList.Parser, new[]{ "Cards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeckList), global::LoomNetwork.CZB.Protobuf.DeckList.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
@@ -4740,7 +4740,7 @@ namespace LoomNetwork.CZB.Protobuf {
       skill_ = other.skill_;
       iconPath_ = other.iconPath_;
       description_ = other.description_;
-      skillTargetType_ = other.skillTargetType_.Clone();
+      skillTargets_ = other.skillTargets_;
       value_ = other.value_;
       cooldown_ = other.cooldown_;
       initialCooldown_ = other.initialCooldown_;
@@ -4798,14 +4798,15 @@ namespace LoomNetwork.CZB.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "skill_target_type" field.</summary>
-    public const int SkillTargetTypeFieldNumber = 5;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType> _repeated_skillTargetType_codec
-        = pb::FieldCodec.ForEnum(42, x => (int) x, x => (global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType) x);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType> skillTargetType_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType>();
+    /// <summary>Field number for the "skill_targets" field.</summary>
+    public const int SkillTargetsFieldNumber = 5;
+    private string skillTargets_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType> SkillTargetType {
-      get { return skillTargetType_; }
+    public string SkillTargets {
+      get { return skillTargets_; }
+      set {
+        skillTargets_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     /// <summary>Field number for the "value" field.</summary>
@@ -4880,7 +4881,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Skill_ != other.Skill_) return false;
       if (IconPath != other.IconPath) return false;
       if (Description != other.Description) return false;
-      if(!skillTargetType_.Equals(other.skillTargetType_)) return false;
+      if (SkillTargets != other.SkillTargets) return false;
       if (Value != other.Value) return false;
       if (Cooldown != other.Cooldown) return false;
       if (InitialCooldown != other.InitialCooldown) return false;
@@ -4896,7 +4897,7 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Skill_.Length != 0) hash ^= Skill_.GetHashCode();
       if (IconPath.Length != 0) hash ^= IconPath.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
-      hash ^= skillTargetType_.GetHashCode();
+      if (SkillTargets.Length != 0) hash ^= SkillTargets.GetHashCode();
       if (Value != 0) hash ^= Value.GetHashCode();
       if (Cooldown != 0) hash ^= Cooldown.GetHashCode();
       if (InitialCooldown != 0) hash ^= InitialCooldown.GetHashCode();
@@ -4931,7 +4932,10 @@ namespace LoomNetwork.CZB.Protobuf {
         output.WriteRawTag(34);
         output.WriteString(Description);
       }
-      skillTargetType_.WriteTo(output, _repeated_skillTargetType_codec);
+      if (SkillTargets.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SkillTargets);
+      }
       if (Value != 0) {
         output.WriteRawTag(48);
         output.WriteInt32(Value);
@@ -4972,7 +4976,9 @@ namespace LoomNetwork.CZB.Protobuf {
       if (Description.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
       }
-      size += skillTargetType_.CalculateSize(_repeated_skillTargetType_codec);
+      if (SkillTargets.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillTargets);
+      }
       if (Value != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Value);
       }
@@ -5011,7 +5017,9 @@ namespace LoomNetwork.CZB.Protobuf {
       if (other.Description.Length != 0) {
         Description = other.Description;
       }
-      skillTargetType_.Add(other.skillTargetType_);
+      if (other.SkillTargets.Length != 0) {
+        SkillTargets = other.SkillTargets;
+      }
       if (other.Value != 0) {
         Value = other.Value;
       }
@@ -5054,9 +5062,8 @@ namespace LoomNetwork.CZB.Protobuf {
             Description = input.ReadString();
             break;
           }
-          case 42:
-          case 40: {
-            skillTargetType_.AddEntriesFrom(input, _repeated_skillTargetType_codec);
+          case 42: {
+            SkillTargets = input.ReadString();
             break;
           }
           case 48: {
