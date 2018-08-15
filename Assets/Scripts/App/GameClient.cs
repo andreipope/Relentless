@@ -1,8 +1,7 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
@@ -48,6 +47,9 @@ namespace LoomNetwork.CZB
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
+            AddService<BackendFacade>(new BackendFacade());
+            AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
         }
 
         public static T Get<T>()

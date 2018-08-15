@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -883463186, guid: 3a092d701c8054009a5ccc1b8caf500b, type: 3}
+  m_Name: EmailTemplates
+  m_EditorClassIdentifier: 
+  _LogEmailHeaderTextAsset: {fileID: 4900000, guid: 4e492cd323e14450fbd956ab0bd4e918,
+    type: 3}
+  _LogEmailFooterTextAsset: {fileID: 4900000, guid: 1b04787d083164714bbd0f9efa4f3f8b,
+    type: 3}

@@ -213,18 +213,20 @@ namespace LoomNetwork.CZB
             }
 
             int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
-            int opponentdeckId = _gameplayManager.OpponentDeckId = UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count);
+
+            OpponentDeck randomOpponentDeck = 
+                _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
+            _gameplayManager.OpponentDeckId = randomOpponentDeck.id;
 
             int heroId = Constants.TUTORIAL_PLAYER_HERO_ID; // TUTORIAL
 
             if (!_gameplayManager.IsTutorial)
-                heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
+                heroId = _dataManager.CachedDecksData.decks.First(o => o.id == _currentDeckId).heroId;
 
-            int hopponentId = _dataManager.CachedOpponentDecksData.decks[opponentdeckId].heroId;
-
+            int opponentHeroId = randomOpponentDeck.heroId;
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[hopponentId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
 
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();

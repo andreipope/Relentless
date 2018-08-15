@@ -3,7 +3,7 @@
 
 
 
-﻿namespace LoomNetwork.CZB.Common
+ namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {

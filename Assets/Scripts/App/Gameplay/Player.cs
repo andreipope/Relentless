@@ -9,6 +9,7 @@ using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -196,12 +197,12 @@ namespace LoomNetwork.CZB
             if (!isOpponent)
             {
                 if (!_gameplayManager.IsTutorial)
-                    heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+                    heroId = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId).heroId;
                 else
                     heroId = Constants.TUTORIAL_PLAYER_HERO_ID;
             }
             else
-                heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
+                heroId = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 

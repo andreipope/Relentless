@@ -2,20 +2,25 @@
 // https://loomx.io/
 
 
-
+using System;
+using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
 
 namespace LoomNetwork.CZB
 {
     public class LoadingPage : IUIElement
     {
 		private IUIManager _uiManager;
+	    private IDataManager _dataManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+	    private BackendFacade _backendFacade;
+	    private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage, _loginForm;
 
@@ -37,11 +42,15 @@ namespace LoomNetwork.CZB
                             _loginButton;
 
         private int a = 0;
-        public void Init()
+
+	    public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
+	        _backendFacade = GameClient.Get<BackendFacade>();
+	        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
 			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -80,7 +89,7 @@ namespace LoomNetwork.CZB
         }
 
 
-        public void Update()
+        public async void Update()
         {
             if (_selfPage.activeInHierarchy && GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT)
             {
@@ -102,11 +111,48 @@ namespace LoomNetwork.CZB
 					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
                     if (Input.anyKey)
                     {
-                        _loginForm.SetActive(true);
-                        _pressAnyText.gameObject.SetActive(false);
+                        //_loginForm.SetActive(true);
+						if (_pressAnyText.gameObject.activeSelf) {
+							_pressAnyText.gameObject.SetActive (false);
 
-                        //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
-                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+
+							if (_backendDataControlMediator.LoadUserDataModel() && _backendDataControlMediator.UserDataModel.IsValid)
+							{
+								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+								
+								Func<Task> connectFunc = async () =>
+								{
+									bool success = true;
+									try
+									{
+										await _backendDataControlMediator.LoginAndLoadData();
+									} catch (GameVersionMismatchException e)
+									{
+										success = false;
+										_uiManager.DrawPopup<LoginPopup>();
+										_uiManager.GetPopup<LoginPopup>().Show(e);
+									} catch (Exception)
+									{
+										// HACK: ignore to allow offline mode
+									}
+									
+									connectionPopup.Hide();
+
+									if (success)
+									{
+										GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+									}
+								};
+								_uiManager.DrawPopup<ConnectionPopup>();
+								connectionPopup.ConnectFunc = connectFunc;
+								await connectionPopup.ExecuteConnection();
+							} else
+							{
+								_uiManager.DrawPopup<LoginPopup>();
+							}
+						}
                     }
                 }
             }
@@ -116,6 +162,10 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR, Constants.SFX_SOUND_VOLUME, false, false, true);
             _selfPage.SetActive(true);
+
+			if (_isLoaded) {
+				_pressAnyText.gameObject.SetActive (true);
+			}
         }
 
         public void Hide()
@@ -138,12 +188,46 @@ namespace LoomNetwork.CZB
 			//  _loginText.text = _localizationManager.GetUITranslation("KEY_START_SCREEN_LOGIN");
 		}
 
-        public void OnSignupButtonPressed()
+	    private async void OnSignupButtonPressed()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
-            OpenAlertDialog("Will be available on full version");
+            //OpenAlertDialog("Will be available on full version");
+	        
+	        var usernameText = _usernameInputField.text;
+	        var passwordText = _passwordInputField.text;
+	        if (string.IsNullOrEmpty(usernameText))
+	        {
+		        OpenAlertDialog("Please enter your username.");
+		        return;
+	        }
+
+	        /*if (string.IsNullOrEmpty(passwordText))
+	        {
+		        OpenAlertDialog("Please enter your password.");
+		        return;
+	        }*/
+
+	        try
+	        {
+				await _backendFacade.SignUp(usernameText);
+		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
+		        _backendDataControlMediator.UserDataModel.UserId = usernameText;
+		        //OpenAlertDialog("Account Created Successfully");
+		        // TODO : Removed code loading data manager
+		        var dataManager = GameClient.Get<IDataManager>();
+		        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+		        dataManager.StartLoadCache();
+	        } catch (Exception e)
+	        {
+		        OpenAlertDialog("Not Able to Create Account..");
+	        }
         }
+
+	    private void OnLoadCacheComplete()
+	    {
+		    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+	    }
 
         public void OnLoginButtonPressed()
         {
@@ -160,13 +244,18 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            if (string.IsNullOrEmpty(passwordText))
+            /*if (string.IsNullOrEmpty(passwordText))
             {
                 OpenAlertDialog("Please enter your password.");
                 return;
-            }
+            }*/
+	        
+	        _backendDataControlMediator.UserDataModel.UserId = usernameText;
+	        var dataManager = GameClient.Get<IDataManager>();
+	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+	        dataManager.StartLoadCache();
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
             /*ClientAPI.Login(usernameText, passwordText,
 				() =>
 				{

@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
             else
             {
                 var deckId = _gameplayManager.OpponentDeckId;
-                foreach (var card in _dataManager.CachedOpponentDecksData.decks[deckId].cards)
+                foreach (var card in _dataManager.CachedOpponentDecksData.decks.First(d => d.id == deckId).cards)
                 {
                     for (var i = 0; i < card.amount; i++)
                     {
@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
 
         private void SetAITypeByDeck()
         {
-            var deck = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId];
+            var deck = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId);
             _aiType = (Enumerators.AIType)System.Enum.Parse(typeof(Enumerators.AIType), deck.type);
         }
 
@@ -137,7 +137,7 @@ namespace LoomNetwork.CZB
         {
             _allActions = new List<ActionItem>();
 
-            var allActionsType = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].opponentActions;
+            var allActionsType = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).opponentActions;
             _allActions = _dataManager.CachedActionsLibraryData.GetActions(allActionsType.ToArray());
         }
 

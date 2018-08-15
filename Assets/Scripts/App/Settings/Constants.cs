@@ -9,10 +9,11 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-        public const string SPACE = " ";
+	    internal const string CURRENT_VERSION = "0.1.0.0";
+	    internal const string CURRENT_VERSION_POSTFIX = "";
+	    internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
+	    internal const string CURRENT_VERSION_FULL = CURRENT_VERSION + CURRENT_VERSION_POSTFIX;
 
-        internal const string VERSION_REVISION = "Alpha";
-        internal const string CURRENT_VERSION = "0.1.0.0";
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 
         internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
@@ -28,7 +29,12 @@ namespace LoomNetwork.CZB.Common
 
         internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
 
-        internal static bool DATA_ENCRYPTION_ENABLED = true;
+        internal static bool DATA_ENCRYPTION_ENABLED =
+#if !UNITY_EDITOR
+            true;
+#else
+            false;
+#endif
 
 		internal static uint HEROES_AMOUNT = 9;
 		internal static uint DECK_MAX_SIZE = 30;
@@ -45,7 +51,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
-    
+
         internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_GOO = 0;
         internal static int MAXIMUM_PLAYER_GOO = 10;
@@ -65,7 +71,7 @@ namespace LoomNetwork.CZB.Common
         internal const string LAYER_HAND_CARDS = "HandCards";
         internal const string LAYER_BOARD_CARDS = "BoardCards";
         internal const string LAYER_DEFAULT = "Default";
-        internal const string LAYER_FOREGROUND = "Foreground";        
+        internal const string LAYER_FOREGROUND = "Foreground";
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";

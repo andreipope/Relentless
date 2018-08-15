@@ -6,14 +6,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using DG.Tweening;
+using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
-using Newtonsoft.Json.Utilities;
 using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
@@ -24,6 +23,9 @@ namespace LoomNetwork.CZB
         private ILoadObjectsManager _loadObjectsManager;
         private ILocalizationManager _localizationManager;
         private IDataManager _dataManager;
+        private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
+
 
         private GameObject _selfPage;
 
@@ -104,6 +106,8 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -202,15 +206,7 @@ namespace LoomNetwork.CZB
         public void Show()
         {
             WarningPopup.OnHidePopupEvent += OnCloseAlertDialogEventHandler;
-            _collectionData.cards.Clear();
-            CollectionCardData cardData;
-            foreach (var card in _dataManager.CachedCollectionData.cards)
-            {
-                cardData = new CollectionCardData();
-                cardData.amount = card.amount;
-                cardData.cardName = card.cardName;
-                _collectionData.cards.Add(cardData);
-            }
+            FillCollectionData();
 
             _selfPage.SetActive(true);
             if (_currentDeckId == -1)
@@ -221,21 +217,23 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _currentDeck = new Deck();
-                _currentDeck.name = _dataManager.CachedDecksData.decks[_currentDeckId].name;
-                _currentDeck.heroId = _dataManager.CachedDecksData.decks[_currentDeckId].heroId;
-                _currentDeck.cards = new List<DeckCardData>();
-                DeckCardData cardDat = null;
-                foreach (var item in _dataManager.CachedDecksData.decks[_currentDeckId].cards)
-                {
-                    cardDat = new DeckCardData();
-                    cardDat.cardName = item.cardName;
-                    cardDat.amount = item.amount;
-                    _currentDeck.cards.Add(cardDat);
-                }
+                _currentDeck = _dataManager.CachedDecksData.decks.First(d => d.id == _currentDeckId).Clone();
             }
             LoadDeckInfo(_currentDeck);
             InitObjects();
+        }
+
+        private void FillCollectionData() {
+            _collectionData.cards.Clear();
+            CollectionCardData cardData;
+            foreach (var card in _dataManager.CachedCollectionData.cards)
+            {
+                cardData = new CollectionCardData();
+                cardData.amount = card.amount;
+                cardData.cardName = card.cardName;
+                
+                _collectionData.cards.Add(cardData);
+            }
         }
 
         public void Hide()
@@ -429,7 +427,8 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < _dataManager.CachedCardsLibraryData.sets.Count; i++)
             {
                 CardSet cardSet = _dataManager.CachedCardsLibraryData.sets[i];
-                cardIndex = cardSet.cards.IndexOf(c => c.id == card.id);
+                cardIndex = cardSet.cards.FindIndex(c => c.id == card.id);
+                
                 if (cardIndex != -1)
                 {
                     setIndex = i;
@@ -747,14 +746,14 @@ namespace LoomNetwork.CZB
             Vector3 sourceCardPosition,
             Card targetLibraryCard,
             bool targetCardWasAlreadyPresent,
-            IList<BoardCard> targetRowCards,
+            List<BoardCard> targetRowCards,
             Action<int> setPageIndexAction
         ) {
             BoardCard animatedCard = CreateCard(targetLibraryCard, sourceCardPosition, null);
             animatedCard.transform.Find("Amount").gameObject.SetActive(false);
             animatedCard.gameObject.GetComponent<SortingGroup>().sortingOrder++;
 
-            int foundItemIndex = targetRowCards.IndexOf(c => c.libraryCard.id == targetLibraryCard.id);
+            int foundItemIndex = targetRowCards.FindIndex(c => c.libraryCard.id == targetLibraryCard.id);
             setPageIndexAction(foundItemIndex / CARDS_PER_PAGE);
 
             BoardCard targetCard = targetRowCards.First(card => card.libraryCard.id == targetLibraryCard.id);
@@ -828,47 +827,99 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void OnDoneButtonPressed()
+        public async void OnDoneButtonPressed()
         {
+            if (String.IsNullOrWhiteSpace(_currentDeck.name))
+            {
+                OpenAlertDialog("Saving Horde with an empty name is not allowed.");
+                return;
+            }
+            
+            // HACK for offline mode: in online mode, local data should only be saved after
+            // backend operation has succeeded
+            // Quick Fix for : if there are no decks, error
+            if (_dataManager.CachedDecksData.decks.Count > 0) {
+                _currentDeck.id = _dataManager.CachedDecksData.decks.Max (d => d.id) + 1;
+            } else {
+                _currentDeck.id = 0;
+            }
+
+            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+
+            foreach (Deck deck in _dataManager.CachedDecksData.decks)
+            {
+                if (_currentDeckId != deck.id && 
+                    deck.name.Trim().Equals(_currentDeck.name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    OpenAlertDialog ("Not able to Edit Deck: \n Deck Name already exists.");
+                    return;
+                }
+            }
+            
+            bool success = true;
             if (_currentDeckId == -1)
             {
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
+
+                try
+                {
+                    long newDeckId = 
+                        await _backendFacade.AddDeck(
+                            _backendDataControlMediator.UserDataModel.UserId, 
+                            _currentDeck, 
+                            _dataManager.CachedDecksLastModificationTimestamp
+                            );
+                    _currentDeck.id = newDeckId;
+                    CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                } catch (Exception e)
+                {
+                    CustomDebug.Log("Result === " + e);
+
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    }
+                }
             }
             else
             {
-                _dataManager.CachedDecksData.decks[_currentDeckId] = _currentDeck;
+                for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
+                {
+                    if (_dataManager.CachedDecksData.decks[i].id == _currentDeckId)
+                    {
+                        _dataManager.CachedDecksData.decks[i] = _currentDeck;
+                        break;
+                    }
+                }
+
+                try
+                {
+                    await _backendFacade.EditDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        _currentDeck,
+                        _dataManager.CachedDecksLastModificationTimestamp
+                        );
+                    CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
+                } catch (Exception e)
+                {
+                    CustomDebug.Log("Result === " + e);                    
+
+                    // HACK: for offline mode
+                    if (false)
+                    {
+                        success = false;
+                        OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+                    }
+                }
             }
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-        }
-
-        private void CorrectSetIndex(ref int id)
-        {
-            switch (id)
+            if (success)
             {
-                case 0:
-                    id =  3;
-                    break;
-                case 1:
-                    id = 4;
-                    break;
-                case 2:
-                    id = 1;
-                    break;
-                case 3:
-                    id = 5;
-                    break;
-                case 4:
-                    id = 0;
-                    break;
-                case 5:
-                    id = 2;
-                    break;
-                default:
-                    break;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
             }
         }
 

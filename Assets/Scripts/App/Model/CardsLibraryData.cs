@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using System;
 using LoomNetwork.Internal;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace LoomNetwork.CZB.Data
                 if (_allCards == null)
                     FillAllCards();
                 return _allCards;
-            }
+        }
         }
 
         public CardsLibraryData()
@@ -67,37 +67,37 @@ namespace LoomNetwork.CZB.Data
                     {
                         if (removeCardsWithoutGraphics)
                         {
-                            // remove cards without iamges
+							// remove cards without iamges
                             if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<UnityEngine.Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}",
                                                       set.name.ToLower(),
                                                       card.rank.ToLower(),
                                                       card.picture.ToLower())) == null)
                             {
                                 cardsToRemoveFromSet.Add(card);
-                                continue;
-                            }
-                        }
+								continue;
+							}
+						}
 
                         card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
-                        if (card.kind != null)
+						if (card.kind != null)
                             card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
-                        if (card.rank != null)
+						if (card.rank != null)
                             card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
-                        if (card.type != null)
+						if (card.type != null)
                             card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
 
-                        foreach (var ability in card.abilities)
+						foreach (var ability in card.abilities)
                             ability.ParseData();
                         _allCards.Add(card);
 
-                        if (card.cardSetType != Enumerators.SetType.OTHERS)
-                            card.id = id;
+						if (card.cardSetType != Enumerators.SetType.OTHERS)
+							card.id = id;
 
-                        id++;
-                    }
-                }
-            }
+						id++;
+					}
+				}
+			}
 
 
             if (removeCardsWithoutGraphics)
@@ -125,7 +125,7 @@ namespace LoomNetwork.CZB.Data
 
             foreach (var set in sets)
                 set.cards = set.cards.OrderBy(x => (int)x.cardRank).ToList();
-        }
+    }
     }
 
     public class CardSet

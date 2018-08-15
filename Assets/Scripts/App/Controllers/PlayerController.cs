@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
             else
             {
                 var deckId = _gameplayManager.PlayerDeckId;
-                foreach (var card in _dataManager.CachedDecksData.decks[deckId].cards)
+                foreach (var card in _dataManager.CachedDecksData.decks.First(d => d.id == deckId).cards)
                 {
                     for (var i = 0; i < card.amount; i++)
                     {

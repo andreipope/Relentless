@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
         public event Action Opening;
         public event Action<BoardCard> PreviewCardInstantiated;
 
-        public BoardCard _previewCard;
+        private BoardCard _previewCard;
         private BoardCard _selectedCollectionCard;
 
         public bool IsStateChanging { get; private set; }
@@ -74,9 +74,6 @@ namespace LoomNetwork.CZB
         {
             SetIsStateChanging(true);
 
-            var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.name).amount;
-            _selectedCollectionCard.UpdateAmount(amount);
-
             Closing?.Invoke();
 
             Sequence sequence = DOTween.Sequence();
@@ -85,14 +82,19 @@ namespace LoomNetwork.CZB
             sequence.Join(_previewCard.transform.DORotateQuaternion(_selectedCollectionCard.transform.rotation, .3f));
             sequence.OnComplete(() =>
             {
-                MonoBehaviour.Destroy(_previewCard.gameObject);
-                _previewCard = null;
+                ClearPreviewCard();
                 SetIsStateChanging(false);
             });
         }
 
+        private void ClearPreviewCard() {
+            Object.Destroy(_previewCard?.gameObject);
+            _previewCard = null;
+        }
+
         public void SelectCard(BoardCard card)
         {
+            ClearPreviewCard();
             Opening?.Invoke();
 
             SetIsStateChanging(true);

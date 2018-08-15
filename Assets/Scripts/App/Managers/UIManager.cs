@@ -70,6 +70,8 @@ namespace LoomNetwork.CZB
             _uiPopups.Add(new LoadingGameplayPopup());
             _uiPopups.Add(new PlayerOrderPopup());
             _uiPopups.Add(new TermsPopup ());
+			_uiPopups.Add(new LoginPopup ());
+			_uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
 

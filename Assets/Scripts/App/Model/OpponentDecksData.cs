@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using Newtonsoft.Json;
+using Loom.Newtonsoft.Json;
 using LoomNetwork.Internal;
 
 namespace LoomNetwork.CZB.Data
@@ -33,6 +33,7 @@ namespace LoomNetwork.CZB.Data
 
     public class OpponentDeck
     {
+        public int id;
         public int heroId;
         public string type;
         public string actions;

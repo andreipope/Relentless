@@ -106,6 +106,7 @@ namespace LoomNetwork.CZB
 		{
 			FillInfo ((Hero) data);
 		    _abilities[0].IsSelected = true;
+            AbilityInstanceOnSelectionChanged (_abilities [0]);
             Show();
         }
 
