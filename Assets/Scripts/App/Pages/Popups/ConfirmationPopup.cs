@@ -1,11 +1,14 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ConfirmationPopup : IUIPopup
     {
@@ -20,8 +23,8 @@ namespace GrandDevs.CZB
 
         private TextMeshProUGUI _text;
 
-        private MenuButtonNoGlow _cancelButton,
-                       _confirmButton;
+        private ButtonShiftingContent _cancelButton,
+                                      _confirmButton;
 
         private Action _callback;
 
@@ -33,11 +36,11 @@ namespace GrandDevs.CZB
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _cancelButton = _selfPage.transform.Find("Button_No").GetComponent<MenuButtonNoGlow>();
-            _confirmButton = _selfPage.transform.Find("Button_Yes").GetComponent<MenuButtonNoGlow>();
+            _cancelButton = _selfPage.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
+            _confirmButton = _selfPage.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
 
-            _confirmButton.onClickEvent.AddListener(ConfirmButtonOnClickHandler);
-            _cancelButton.onClickEvent.AddListener(CancelButtonOnClickHandler);
+            _confirmButton.onClick.AddListener(ConfirmButtonOnClickHandler);
+            _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 

@@ -1,12 +1,19 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class MainApp : MonoBehaviour
     {
+        public static int MainThreadId;
+
         public delegate void MainAppDelegate(object param);
         public event MainAppDelegate OnLevelWasLoadedEvent;
 
@@ -30,6 +37,9 @@ namespace GrandDevs.CZB
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+
+            MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
 
         private void Start()
@@ -40,7 +50,7 @@ namespace GrandDevs.CZB
 
                 if (Constants.DEV_MODE)
                 {
-                    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+                    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
                     GameClient.Get<IDataManager>().StartLoadCache();
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
                 }

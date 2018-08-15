@@ -1,13 +1,21 @@
-﻿using System.Collections;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using Newtonsoft.Json;
 using UnityEngine;
-using GrandDevs.CZB.Helpers;
+using LoomNetwork.CZB.Helpers;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB.Data
+namespace LoomNetwork.CZB.Data
 {
-    public class Card {
+    public class Card
+    {
+        //[JsonIgnore]
         public int id;
         public Enumerators.SetType cardSetType;
         public string kind;
@@ -18,13 +26,14 @@ namespace GrandDevs.CZB.Data
         public string picture;
         public int damage;
         public int health;
-        public string rarity;
+        public string rank;
         public string type;
+        public string frame;
         public List<AbilityData> abilities = new List<AbilityData>();
         public CardViewInfo cardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
-        public Enumerators.CardRarity cardRarity;
+        public Enumerators.CardRank cardRank;
         [JsonIgnore]
         public Enumerators.CardType cardType;
         [JsonIgnore]
@@ -32,6 +41,32 @@ namespace GrandDevs.CZB.Data
 
         public Card()
         {
+        }
+
+        public Card Clone()
+        {
+            Card card = new Card();
+
+            card.id = id;
+            card.kind = kind;
+            card.name = name;
+            card.cost = cost;
+            card.description = description;
+            card.flavorText = flavorText;
+            card.picture = picture;
+            card.damage = damage;
+            card.health = health;
+            card.rank = rank;
+            card.type = type;
+            card.cardSetType = cardSetType;
+            card.cardKind = cardKind;
+            card.cardRank = cardRank;
+            card.cardType = cardType;
+            card.abilities = abilities;
+            card.cardViewInfo = cardViewInfo;
+            card.frame = frame;
+
+            return card;
         }
     }
 

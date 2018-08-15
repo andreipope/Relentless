@@ -1,26 +1,21 @@
-﻿using CCGKit;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface IPlayerManager
     {
-        event Action<int> OnPlayerGraveyardUpdatedEvent;
-        event Action<int> OnOpponentGraveyardUpdatedEvent;
-
-        Action OnLocalPlayerSetUp { get; set; }
-        Action<CCGKit.RuntimeCard> OnBoardCardKilled { get; set; }
         User LocalUser { get; set; }
-        List<BoardCreature> PlayerGraveyardCards { get; set; }
-        List<BoardCreature> OpponentGraveyardCards { get; set; }
-        PlayerInfo playerInfo { get; set; }
-        PlayerInfo opponentInfo { get; set; }
-
-
-        void UpdatePlayerGraveyard(int index);
-        void UpdateOpponentGraveyard(int index);
+        List<BoardUnit> PlayerGraveyardCards { get; set; }
+        List<BoardUnit> OpponentGraveyardCards { get; set; }
+        void ChangeGoo(int value);
+        int GetGoo();
     }
 }

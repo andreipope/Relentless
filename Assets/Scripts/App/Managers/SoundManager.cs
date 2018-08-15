@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using System;
 using System.Collections.Generic;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using System.Linq;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class SoundManager : ISoundManager, IService
     {
@@ -14,9 +19,13 @@ namespace GrandDevs.CZB
         private Transform _soundsRoot;
 
         private float _sfxVolume;
+        private float _musicVolume;
 
         private Queue<QueuedSoundElement> _queuedSoundElements;
         private QueuedSoundElement _currentActiveQueuedSoundElement;
+
+        public bool SfxMuted { get; set; }
+        public bool MusicMuted { get; set; }
 
         public void Dispose()
         {
@@ -25,7 +34,9 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
-            _sfxVolume = 1;
+            _sfxVolume = 1f;
+            _musicVolume = 1f;
+
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
             MonoBehaviour.DontDestroyOnLoad(_soundsRoot);
@@ -95,6 +106,12 @@ namespace GrandDevs.CZB
             return clip != null ? clip.length : 0f;
         }
 
+        public float GetSoundLength(Enumerators.SoundType soundType)
+        {
+            var soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+
+            return soundTypeList.audioTypeClips.Count > 0 ? soundTypeList.audioTypeClips[0].length : 0f;
+        }
 
         public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
@@ -209,7 +226,7 @@ namespace GrandDevs.CZB
             SoundContainer container = new SoundContainer();
             SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
 
-            switch(soundType)
+            switch (soundType)
             {
                 case Enumerators.SoundType.BACKGROUND:
                 case Enumerators.SoundType.BATTLEGROUND:
@@ -238,6 +255,11 @@ namespace GrandDevs.CZB
             else
                 soundParam.volume = volume;
 
+            if (SfxMuted && !soundParam.isBackground)
+                soundParam.isMute = true;
+            else if (MusicMuted && soundParam.isBackground)
+                soundParam.isMute = true;
+
             soundParam.startPosition = 0f;
 
             container.isInQueue = isInQueue;
@@ -251,19 +273,50 @@ namespace GrandDevs.CZB
             return container;
         }
 
-        public void SetMusicVolume(float value)
-        {
-            //GameClient.Get<IPlayerManager>().GetPlayerData.volumeMusic = value;
-            //GameClient.Get<IDataManager>().SavePlayerData();
 
+        public void SetMusicMuted(bool status)
+        {
             var containers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
 
             if (containers != null)
             {
                 foreach (var container in containers)
                 {
-                    container.soundParameters.volume = value;
-                    container.audioSource.volume = value;
+                    container.audioSource.mute = status;
+                }
+            }
+
+            MusicMuted = status;
+        }
+
+        public void SetSoundMuted(bool status)
+        {
+            var containers = _soundContainers.FindAll(x => !x.soundParameters.isBackground);
+
+            if (containers != null)
+            {
+                foreach (var container in containers)
+                {
+                    container.audioSource.mute = status;
+                }
+            }
+
+            SfxMuted = status;
+        }
+
+        public void SetMusicVolume(float value)
+        {
+            //GameClient.Get<IPlayerManager>().GetPlayerData.volumeMusic = value;
+            //GameClient.Get<IDataManager>().SavePlayerData();
+            _musicVolume = value;
+            var containers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+
+            if (containers != null)
+            {
+                foreach (var container in containers)
+                {
+                    container.soundParameters.volume = _musicVolume;
+                    container.audioSource.volume = _musicVolume;
                 }
             }
         }
@@ -279,8 +332,8 @@ namespace GrandDevs.CZB
             {
                 foreach (var container in containers)
                 {
-                    container.soundParameters.volume = value;
-                    container.audioSource.volume = value;
+                    container.soundParameters.volume = _sfxVolume;
+                    container.audioSource.volume = _sfxVolume;
                 }
             }
         }
@@ -351,7 +404,9 @@ namespace GrandDevs.CZB
             {
                 case Enumerators.SoundType.TUTORIAL:
                 case Enumerators.SoundType.CARDS:
-                    pathToSoundsLibrary = "Sounds/" + soundType.ToString();
+                case Enumerators.SoundType.OVERLORD_ABILITIES:
+                case Enumerators.SoundType.SPELLS:
+                    pathToSoundsLibrary = "Sounds/" + soundType.ToString().Replace("_", string.Empty);
                     list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
                     break;
                 default:

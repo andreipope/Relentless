@@ -1,4 +1,9 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -6,7 +11,7 @@ using UnityEditor;
 using UnityEngine;
 #endif
 
-namespace GrandDevs.CZB.Helpers
+namespace LoomNetwork.CZB.Helpers
 {
     public class CSVFileFixer
     {

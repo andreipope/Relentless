@@ -54,7 +54,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224744112109395134}
   - component: {fileID: 114341730544984828}
-  - component: {fileID: 114459523399801116}
   m_Layer: 5
   m_Name: CardListItem
   m_TagString: Untagged
@@ -351,21 +350,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &114459523399801116
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1318799174089884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3cc4aa2b0920f145ad741e105719b79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardNameText: {fileID: 114121758571978670}
-  cardCostText: {fileID: 0}
-  cardAmountText: {fileID: 114965090383203204}
-  count: 1
 --- !u!114 &114532946169472630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -432,7 +416,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114459523399801116}
+      - m_Target: {fileID: 0}
         m_MethodName: OnDeleteButtonPressed
         m_Mode: 1
         m_Arguments:

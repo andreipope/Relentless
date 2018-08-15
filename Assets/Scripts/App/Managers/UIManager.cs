@@ -1,10 +1,15 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class UIManager : IService, IUIManager
     {
@@ -40,7 +45,7 @@ namespace GrandDevs.CZB
 			_uiPages.Add(new LoadingPage());
 			_uiPages.Add(new MainMenuPage());
 			_uiPages.Add(new HeroSelectionPage());
-			_uiPages.Add(new DeckSelectionPage());
+			_uiPages.Add(new HordeSelectionPage());
             _uiPages.Add(new CollectionPage());
             _uiPages.Add(new DeckEditingPage());
             _uiPages.Add(new ShopPage());
@@ -62,6 +67,11 @@ namespace GrandDevs.CZB
             _uiPopups.Add(new YouWonPopup());
             _uiPopups.Add(new YourTurnPopup());
             _uiPopups.Add(new ConfirmationPopup());
+            _uiPopups.Add(new LoadingGameplayPopup());
+            _uiPopups.Add(new PlayerOrderPopup());
+            _uiPopups.Add(new TermsPopup ());
+            _uiPopups.Add(new OverlordAbilitySelectionPopup());
+            _uiPopups.Add(new OverlordAbilityTooltipPopup());
 
             foreach (var popup in _uiPopups)
                 popup.Init();
@@ -141,7 +151,7 @@ namespace GrandDevs.CZB
             }
         }
 
-        public IUIPopup GetPopup<T>() where T : IUIPopup
+        public T GetPopup<T>() where T : IUIPopup
         {
             IUIPopup popup = null;
             foreach (var _popup in _uiPopups)
@@ -153,10 +163,10 @@ namespace GrandDevs.CZB
                 }
             }
 
-            return popup;
+            return (T)popup;
         }
 
-        public IUIElement GetPage<T>() where T : IUIElement
+        public T GetPage<T>() where T : IUIElement
         {
             IUIElement page = null;
             foreach (var _page in _uiPages)
@@ -168,7 +178,7 @@ namespace GrandDevs.CZB
                 }
             }
 
-            return page;
+            return (T)page;
         }
     }
 }

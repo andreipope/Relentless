@@ -1,17 +1,26 @@
-﻿﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+﻿using LoomNetwork.CZB.Common;
 using System;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
+		private bool disableShop = true;
+		private bool disablePacks = true;
+
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private IPlayerManager _playerManager;
         private ILocalizationManager _localizationManager;
-        private INotificationManager _notificationsManager;
 		private IInputManager _inputManager;
         private IScenesManager _scenesManager;
 
@@ -45,7 +54,6 @@ namespace GrandDevs.CZB
             _dataManager = GameClient.Get<IDataManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _localizationManager = GameClient.Get<ILocalizationManager>();
-            _notificationsManager = GameClient.Get<INotificationManager>();
 			_inputManager = GameClient.Get<IInputManager>();
             _scenesManager = GameClient.Get<IScenesManager>();
         }
@@ -66,7 +74,7 @@ namespace GrandDevs.CZB
                     {
                         _uiManager.SetPage<LoadingPage>();
                         _dataManager.StartLoadCache();
-                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
+                        GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
                     }
                     break;
                 case Enumerators.AppState.LOGIN:
@@ -75,6 +83,7 @@ namespace GrandDevs.CZB
                     {
                         //GameObject.Find("MainApp/Camera").SetActive(true);
                         //GameObject.Find("MainApp/Camera2").SetActive(true);
+
                         _uiManager.SetPage<MainMenuPage>();
                     }
                     break;
@@ -85,7 +94,7 @@ namespace GrandDevs.CZB
 					break;
                 case Enumerators.AppState.DECK_SELECTION:
 					{
-						_uiManager.SetPage<DeckSelectionPage>();
+						_uiManager.SetPage<HordeSelectionPage>();
 					}
 					break;
                 case Enumerators.AppState.COLLECTION:
@@ -100,17 +109,27 @@ namespace GrandDevs.CZB
                     break;
                 case Enumerators.AppState.SHOP:
                     {
-                        _uiManager.SetPage<ShopPage>();
+						if (!disableShop) {
+							_uiManager.SetPage<ShopPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Shop is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     {
-                        _uiManager.SetPage<PackOpenerPage>();
+						if (!disablePacks) {
+							_uiManager.SetPage<PackOpenerPage> ();
+						} else {
+						_uiManager.DrawPopup<WarningPopup> ("The Pack Opener is Disabled\nfor version " + GameObject.Find("CanvasOverScreen/Version").GetComponent<Text>().text + "\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+							return;
+						}
                     }
                     break;
                 case Enumerators.AppState.GAMEPLAY:
                     {
-                        _uiManager.HideAllPages();
+                        _uiManager.SetPage<GameplayPage>();
 
                         //GameObject.Find("MainApp/Camera").SetActive(false);
                         //GameObject.Find("MainApp/Camera2").SetActive(false);
@@ -118,14 +137,8 @@ namespace GrandDevs.CZB
 
                         // GameNetworkManager.Instance.onlineScene = "GAMEPLAY";
 
-                        if (MonoBehaviour.FindObjectOfType<GameNetworkManager>() == null)
-                            MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/GameNetworkManager"));
+                        //MatchMaker.Instance.StartMatch();
 
-                        GameNetworkManager.Instance.StartMatchMaker();
-                        GameNetworkManager.Instance.isSinglePlayer = true;
-                        GameNetworkManager.Instance.StartHost();
-
-                        MatchMaker.Instance.StartMatch();
 
                         //GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BATTLEGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true);
                         //_scenesManager.ChangeScene(Enumerators.AppState.GAMEPLAY);

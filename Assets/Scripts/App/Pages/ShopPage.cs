@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using CCGKit;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using DG.Tweening;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ShopPage : IUIElement
     {
@@ -22,7 +26,7 @@ namespace GrandDevs.CZB
                         _buttonItem3,
                         _buttonItem4;
 
-        private MenuButtonNoGlow _buttonOpen,
+        private Button _buttonOpen,
                             _buttonCollection,
                             _buttonBack,
                             _buttonBuy;
@@ -71,20 +75,20 @@ namespace GrandDevs.CZB
             _costItem_3 = _buttonItem3.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
             _costItem_4 = _buttonItem4.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
 
-            _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<MenuButtonNoGlow>();
-            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+            _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<Button>();
+            _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<Button>();
+            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<Button>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
 
             _buttonItem1.onClick.AddListener(() => ChooseItemHandler(0));
             _buttonItem2.onClick.AddListener(() => ChooseItemHandler(1));
             _buttonItem3.onClick.AddListener(() => ChooseItemHandler(2));
             _buttonItem4.onClick.AddListener(() => ChooseItemHandler(3));
 
-            _buttonBack.onClickEvent.AddListener(BackButtonhandler);
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
-            _buttonCollection.onClickEvent.AddListener(CollectionButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonhandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonCollection.onClick.AddListener(CollectionButtonHandler);
 
             _itemYstartPos = _buttonItem1.gameObject.transform.position.y;
 

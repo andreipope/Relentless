@@ -1,11 +1,16 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class WarningPopup : IUIPopup
     {
@@ -22,7 +27,7 @@ namespace GrandDevs.CZB
 
 		private TextMeshProUGUI _text;
         //private MenuButton _button;
-        private MenuButtonNoGlow _gotItButton;
+        private ButtonShiftingContent _gotItButton;
 		//private TextMeshProUGUI _buttonText;
 
         public void Init()
@@ -31,13 +36,13 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             //_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
-            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<MenuButtonNoGlow>();
+            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
 
             //_button.onClickEvent.AddListener(Hide);
-            _gotItButton.onClickEvent.AddListener(CloseButtonHandler);
+            _gotItButton.onClick.AddListener(CloseButtonHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
 

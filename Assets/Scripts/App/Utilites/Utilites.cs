@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,9 +19,9 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GrandDevs.Internal
+namespace LoomNetwork.Internal
 {
-    public class Utilites
+    public static class Utilites
     {
         #region asset bundles and cache
 
@@ -356,7 +361,7 @@ namespace GrandDevs.Internal
 		#endregion cryptography
 
 
-		public static void SetLayerRecursively(GameObject obj, int layer)
+		public static void SetLayerRecursively(this GameObject obj, int layer)
 		{
 			obj.layer = layer;
 
@@ -388,6 +393,16 @@ namespace GrandDevs.Internal
                 input = input.First().ToString().ToUpper() + input.Substring(1);
             return input;
 
+        }
+
+        public static Vector3 CastVFXPosition(Vector3 position)
+        {
+            return new Vector3(position.x, position.z, position.y);
+        }
+
+        public static Color SetAlpha(this Color color, float alpha) {
+            color.a = alpha;
+            return color;
         }
     }
 }

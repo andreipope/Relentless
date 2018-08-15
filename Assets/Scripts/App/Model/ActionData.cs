@@ -1,5 +1,10 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.Internal;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.Internal;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,13 +20,14 @@ public class ActionData
 
     public void ParseData()
     {
-        foreach (var action in actions)
-        {
-            action.ParseData();
-        }
+		if (actions != null) {
+			foreach (var action in actions) {
+				action.ParseData ();
+			}
+		}
     }
 
-    public List<ActionItem> GetActions(Enumerators.ActionType[] types)
+    public List<ActionItem> GetActions(Enumerators.AIActionType[] types)
     {
         List<ActionItem> allActions = new List<ActionItem>();
         ActionItem act = null;
@@ -43,12 +49,12 @@ public class ActionItem
     public List<ActionState> states;
 
     [JsonIgnore]
-    public Enumerators.ActionType type;
+    public Enumerators.AIActionType type;
 
     public void ParseData()
     {
         if (actionType != null)
-            type = Utilites.CastStringTuEnum<Enumerators.ActionType>(actionType);
+            type = Utilites.CastStringTuEnum<Enumerators.AIActionType>(actionType);
         foreach (var state in states)
         {
             state.ParseData();

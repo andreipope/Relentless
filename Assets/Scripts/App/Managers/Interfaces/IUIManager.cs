@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface IUIManager
     {
@@ -15,8 +20,8 @@ namespace GrandDevs.CZB
         void SetPage<T>(bool hideAll = false) where T : IUIElement;
         void DrawPopup<T>(object message = null, bool setMainPriority = false) where T : IUIPopup;
         void HidePopup<T>() where T : IUIPopup;
-        IUIPopup GetPopup<T>() where T : IUIPopup;
-        IUIElement GetPage<T>() where T : IUIElement;
+        T GetPopup<T>() where T : IUIPopup;
+        T GetPage<T>() where T : IUIElement;
 
         void HideAllPages();
     }

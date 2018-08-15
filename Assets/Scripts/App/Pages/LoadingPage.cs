@@ -1,10 +1,15 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LoadingPage : IUIElement
     {
@@ -16,21 +21,19 @@ namespace GrandDevs.CZB
 
         private Transform _progressBar;
 
-        private Text _loadingText,
-                     _pressAnyText;
+        private TextMeshProUGUI _pressAnyText;
+        private TextMeshProUGUI _loadingText;
         private Image _loaderBar;
 
-        private float _fullFillWidth,
-                        _percentage = 0;
+        private float _percentage = 0;
 
 		private bool _isLoaded;
-		private Vector2 _fillSize;
         private Color _pressAnyTextColor;
 
         private TMP_InputField _usernameInputField,
                                 _passwordInputField;
 
-        private MenuButtonNoGlow _signUpButton,
+        private Button _signUpButton,
                             _loginButton;
 
         private int a = 0;
@@ -49,30 +52,26 @@ namespace GrandDevs.CZB
             _progressBar = _selfPage.transform.Find("ProgresBar");
 
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
-            _loadingText = _progressBar.Find("Text").GetComponent<Text>();
+            _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
 
-            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<Text>();
+            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<TextMeshProUGUI>();
 
             _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
 
             _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
             _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
 
-            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
-            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
+            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<Button>();
+            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<Button>();
 
-            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
-            _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
+            _signUpButton.onClick.AddListener(OnSignupButtonPressed);
+            _loginButton.onClick.AddListener(OnLoginButtonPressed);
 
-            _fillSize = _loaderBar.rectTransform.sizeDelta;
-			_fullFillWidth = _fillSize.x;
-            _fillSize.x = 0;
-
-            _loaderBar.rectTransform.sizeDelta = _fillSize;
+            _loaderBar.fillAmount = 0.03f;
 
             _pressAnyTextColor = _pressAnyText.color;
 
-			_loadingText.text = "Loading...";
+			_loadingText.text = "LOADING...";
 
             _pressAnyText.gameObject.SetActive(false);
             _loginForm.SetActive(false);
@@ -88,8 +87,7 @@ namespace GrandDevs.CZB
                 if (!_isLoaded)
                 {
                     _percentage += 1f;
-                    _fillSize.x = _fullFillWidth * _percentage / 100f;
-                    _loaderBar.rectTransform.sizeDelta = _fillSize;
+                    _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                     if (_percentage >= 100)
                     {
                         _isLoaded = true;
@@ -99,25 +97,17 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    _pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
-                    if (Input.GetMouseButtonUp(0))
+                    //_pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
+					float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
+					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
+                    if (Input.anyKey)
                     {
                         _loginForm.SetActive(true);
                         _pressAnyText.gameObject.SetActive(false);
 
-                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
-                        /*a++;
-                        if(a == 1)
-						MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/GameNetworkManager"));
-                        if(a==2)
-                        {
-							GameNetworkManager.Instance.isSinglePlayer = true;
-							GameNetworkManager.Instance.StartHost();
-						}
-*/
-
+                        //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
                     }
-                    //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
                 }
             }
         }

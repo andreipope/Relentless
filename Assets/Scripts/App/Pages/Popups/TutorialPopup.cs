@@ -1,11 +1,16 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class TutorialPopup : IUIPopup
     {
@@ -21,7 +26,7 @@ namespace GrandDevs.CZB
 
 		private TextMeshProUGUI _text;
 		private GameObject _yesnoObject;
-		private Button _nextButton, _playButton, _skipButton;
+		private ButtonShiftingContent _nextButton, _playButton, _skipButton;
         private GameObject _focusedObject;
 		private GameObject _bubbleObject;
 		private Image _janeImage;
@@ -44,15 +49,15 @@ namespace GrandDevs.CZB
 			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
             _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
 
-            _nextButton = _selfPage.transform.Find("NextButton").GetComponent<Button>();
-            _playButton = _selfPage.transform.Find("PlayButton").GetComponent<Button>();
-            _skipButton = _selfPage.transform.Find("SkipButton").GetComponent<Button>();
+            _nextButton = _selfPage.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
+            _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
+            _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
 
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
 
             _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
             _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _skipButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _skipButton.onClick.AddListener(_tutorialManager.SkipTutorial);
 
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
@@ -65,7 +70,7 @@ namespace GrandDevs.CZB
 
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
+            _skipButton.gameObject.SetActive(true);
 
             Hide();
         }
@@ -131,7 +136,7 @@ namespace GrandDevs.CZB
                     obj.SetActive(false);
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
+          //  _skipButton.gameObject.SetActive(false);
         }
 
         public void ShowNextButton()
@@ -142,7 +147,7 @@ namespace GrandDevs.CZB
         public void ShowQuestion()
         {
             _playButton.gameObject.SetActive(true);
-            _skipButton.gameObject.SetActive(true);
+          //  _skipButton.gameObject.SetActive(true);
         }
 
         public void Update()

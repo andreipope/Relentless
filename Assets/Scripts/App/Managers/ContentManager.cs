@@ -1,5 +1,10 @@
-﻿using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Helpers;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +12,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ContentManager : IService, IContentManager
     {

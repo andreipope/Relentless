@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4469313547920898}
   - component: {fileID: 198207353779240146}
   - component: {fileID: 199492565127019028}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: SpellTargetToxicAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4568406624309130}
   - component: {fileID: 198000749711531420}
   - component: {fileID: 199547666880622652}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Long
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4745245178539668}
   - component: {fileID: 198383417395516636}
   - component: {fileID: 199046672435037578}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Sparkles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4318805080123560}
   - component: {fileID: 108957705019916134}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Point light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

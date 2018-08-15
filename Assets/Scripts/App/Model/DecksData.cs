@@ -1,9 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Data;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB.Data
+
+
+using System.Collections;
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+
+namespace LoomNetwork.CZB.Data
 {
     public class DecksData {
         public List<Deck> decks;
@@ -24,12 +29,12 @@ namespace GrandDevs.CZB.Data
         {
         }
 
-        public void AddCard(int cardId)
+        public void AddCard(string cardId)
         {
             bool wasAdded = false;
             foreach (var card in cards)
             {
-                if (card.cardId == cardId)
+                if (card.cardName == cardId)
                 {
                     card.amount++;
                     wasAdded = true;
@@ -38,17 +43,17 @@ namespace GrandDevs.CZB.Data
             if (!wasAdded)
             {
                 DeckCardData cardData = new DeckCardData();
-                cardData.cardId = cardId;
+                cardData.cardName = cardId;
                 cardData.amount = 1;
                 cards.Add(cardData);
             }
         }
 
-        public void RemoveCard(int cardId)
+        public void RemoveCard(string cardId)
         {
             foreach (var card in cards)
             {
-                if (card.cardId == cardId)
+                if (card.cardName == cardId)
                 {
                     card.amount--;
                     if(card.amount < 1)
@@ -71,7 +76,7 @@ namespace GrandDevs.CZB.Data
 
     public class DeckCardData
     {
-        public int cardId;
+        public string cardName;
         public int amount;
 
         public DeckCardData()

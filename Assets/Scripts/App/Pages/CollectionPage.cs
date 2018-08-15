@@ -1,17 +1,22 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
 using System;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using System.Linq;
+using LoomNetwork.CZB.Common;
 using TMPro;
 using DG.Tweening;
-using GrandDevs.Internal;
+using LoomNetwork.Internal;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
-    public class CollectionPage : IUIElement
+	public class CollectionPage : IUIElement
     {
 		private IUIManager _uiManager;
 		private ILoadObjectsManager _loadObjectsManager;
@@ -20,11 +25,13 @@ namespace GrandDevs.CZB
 
         private GameObject _selfPage;
 
-        private MenuButtonNoGlow _buttonBuy,
-                                _buttonOpen,
-                                _buttonBack;
+        private ButtonShiftingContent _buttonBuy,
+                                _buttonOpen;
         private Button  _buttonArrowLeft,
-                        _buttonArrowRight;
+                        _buttonArrowRight,
+                        _buttonBack;
+
+		private TextMeshProUGUI _cardCounter;
 
 		public List<Transform> cardPositions;
 
@@ -35,18 +42,27 @@ namespace GrandDevs.CZB
 
         private TextMeshProUGUI gooValueText;
 
-        private Slider _cardSetsSlider;
+		private GameObject _cardSetsIcons;
 
-		private int numPages;
-		private int currentPage;
+        private int _numSets,
+                    _currentSet,
+                    _currentElementPage,
+                    _numElementPages;
 
-        private int numSets;
-        private int currentSet;
+        private Toggle _airToggle,
+                        _earthToggle,
+                        _fireToggle,
+                        _waterToggle,
+                        _toxicTogggle,
+                        _lifeToggle,
+                        _itemsToggle;
+        private ToggleGroup _toggleGroup;
 
-        private CardView _selectedCard;
-        private CardView _selectedCollectionCard;
 
-        private bool _isPopupChangedStart;
+
+        private CardInfoPopupHandler _cardInfoPopupHandler;
+
+        private List<BoardCard> _createdBoardCards;
 
         public void Init()
         {
@@ -55,30 +71,59 @@ namespace GrandDevs.CZB
 			_localizationManager = GameClient.Get<ILocalizationManager>();
 			_dataManager = GameClient.Get<IDataManager>();
 
+            _cardInfoPopupHandler = new CardInfoPopupHandler();
+            _cardInfoPopupHandler.Init();
+            _cardInfoPopupHandler.StateChanging += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
+            _cardInfoPopupHandler.StateChanged += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
+            _cardInfoPopupHandler.Closing += UpdateGooValue;
+
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
 			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
-			_buttonBuy = _selfPage.transform.Find("BuyButton").GetComponent<MenuButtonNoGlow>();
-			_buttonOpen = _selfPage.transform.Find("OpenButton").GetComponent<MenuButtonNoGlow>();
-			_buttonBack = _selfPage.transform.Find("Panel_Header/BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonArrowLeft = _selfPage.transform.Find("ArrowLeftButton").GetComponent<Button>();
-            _buttonArrowRight = _selfPage.transform.Find("ArrowRightButton").GetComponent<Button>();
+			_buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
+			_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<ButtonShiftingContent>();
+			_buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonArrowLeft = _selfPage.transform.Find("Button_ArrowLeft").GetComponent<Button>();
+            _buttonArrowRight = _selfPage.transform.Find("Button_ArrowRight").GetComponent<Button>();
 
-            _cardSetsSlider = _selfPage.transform.Find("Panel_Header/Elements").GetComponent<Slider>();
+            _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
+            _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
+            _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
+            _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
+            _toxicTogggle = _selfPage.transform.Find("ElementsToggles/Toxic").GetComponent<Toggle>();
+            _fireToggle = _selfPage.transform.Find("ElementsToggles/Fire").GetComponent<Toggle>();
+            _earthToggle = _selfPage.transform.Find("ElementsToggles/Earth").GetComponent<Toggle>();
+            _itemsToggle = _selfPage.transform.Find("ElementsToggles/Items").GetComponent<Toggle>();
 
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
-            _buttonBack.onClickEvent.AddListener(BackButtonHandler);
+            _cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
+
+			_cardSetsIcons = _selfPage.transform.Find ("ElementsToggles").gameObject;
+
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonHandler);
             _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
             _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
 
-            _cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
+            _airToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
+            _lifeToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
+            _waterToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER); });
+            _toxicTogggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC); });
+            _fireToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE); });
+            _earthToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH); });
+            _itemsToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM); });
 
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CreatureCard");
-			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/SpellCard");
+            //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
+
+            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
+
+
+
+            _createdBoardCards = new List<BoardCard>();
 
             Hide();
         }
@@ -87,23 +132,20 @@ namespace GrandDevs.CZB
         {
             if (_selfPage.activeInHierarchy)
             {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf && !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf)
+                _cardInfoPopupHandler.Update();
+                if (_cardInfoPopupHandler.IsInteractable)
                 {
-                    if (!_isPopupChangedStart && _selectedCard != null)
-                    {
-                        ClosePopupInfo();
-                    }
-                    if (!_isPopupChangedStart && Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButtonDown(0))
                     {
                         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                         var hit = Physics2D.Raycast(mousePos, Vector2.zero);
                         if (hit.collider != null)
                         {
-                            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
+                            for(int i =0;i < _createdBoardCards.Count; i++)
                             {
-                                if (hit.collider.gameObject == card.gameObject)
+                                if (hit.collider.gameObject == _createdBoardCards[i].gameObject)
                                 {
-                                    CardSelected(card);
+                                    _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
                                 }
                             }
                         }
@@ -115,7 +157,7 @@ namespace GrandDevs.CZB
         public void Show()
         {
             //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             _selfPage.SetActive(true);
             InitObjects();
@@ -125,115 +167,73 @@ namespace GrandDevs.CZB
         {
             _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
         }
 
         public void Dispose()
         {
             MonoBehaviour.Destroy(_cardPlaceholders);
-            foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-            {
-                MonoBehaviour.Destroy(card.gameObject);
-            }
+            ResetBoardCards();
+            _cardInfoPopupHandler.Dispose();
         }
+
+        private void ResetBoardCards()
+        {
+            foreach (var item in _createdBoardCards)
+                item.Dispose();
+            _createdBoardCards.Clear();
+        }
+
+		private void iconSetButtonClick (Button toggleObj) {
+			_currentSet = toggleObj.transform.GetSiblingIndex ();
+            _currentElementPage = 0;
+			LoadCards (_currentElementPage, _currentSet);
+		}
 
         private void InitObjects()
         {
 			_cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
 			cardPositions = new List<Transform>();
+
 			foreach (Transform placeholder in _cardPlaceholders.transform)
-			{
 				cardPositions.Add(placeholder);
-			}
             //pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
 
-            numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1; //1 - tutorial
-            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
+            _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
+            CalculateNumberOfPages();
 
-            _cardSetsSlider.value = 0;
+            //_cardSetsSlider.value = 0;
             LoadCards(0, 0);
+
+			_cardCounter.text = _dataManager.CachedCollectionData.cards.Count.ToString () + "/" + _dataManager.CachedCardsLibraryData.Cards.Count.ToString ();
         }
 
-        private void ClosePopupInfo()
-        {
-            ChangeStatePopup(true);
 
-			var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.id).amount;
-			_selectedCollectionCard.UpdateAmount(amount);
-
-            UpdateGooValue();
-
-			Sequence sequence = DOTween.Sequence();
-            sequence.Append(_selectedCard.transform.DOScale(_selectedCollectionCard.transform.localScale, .3f));
-			sequence.Join(_selectedCard.transform.DOMove(_selectedCollectionCard.transform.position, .3f));
-			sequence.Join(_selectedCard.transform.DORotate(_selectedCollectionCard.transform.eulerAngles, .3f));
-			sequence.OnComplete(() =>
-			{
-				MonoBehaviour.Destroy(_selectedCard.gameObject);
-				_selectedCard = null;
-                ChangeStatePopup(false);
-            });
-        }
 
         public void UpdateGooValue()
         {
-            gooValueText.text = GameClient.Get<IPlayerManager>().LocalUser.gooValue.ToString();
+            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
         }
 
-#region Buttons Handlers
+        #region Buttons Handlers
 
-        private void CardSelected(CardView card)
+        private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            ChangeStatePopup(true);
-            _selectedCollectionCard = card;
-            _selectedCard = MonoBehaviour.Instantiate(card.gameObject).GetComponent<CardView>();
-            _selectedCard.name = "CardPreview";
-            Utilites.SetLayerRecursively(_selectedCard.gameObject, 11);
-
-			Sequence mySequence = DOTween.Sequence();
-			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
-			mySequence.Append(_selectedCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
-
-			Sequence mySequence2 = DOTween.Sequence();
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, 1.2f, 5), .4f));
-			mySequence2.Append(_selectedCard.transform.DOMove(new Vector3(-4.3f, .8f, 5), .2f));
-
-			Sequence mySequence3 = DOTween.Sequence();
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.9f, .9f, .9f), .4f));
-			mySequence3.Append(_selectedCard.transform.DOScale(new Vector3(.72f, .72f, .72f), .2f));
-            mySequence3.OnComplete(() =>
-            {
-                ChangeStatePopup(false);
-            });
-
-
-			_uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
-            (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).cardTransform = _selectedCard.transform;
+            _currentSet = (int)type;
+            LoadCards(0, (int)type);
         }
 
         private void ChangeStatePopup(bool isStart)
         {
-            _isPopupChangedStart = isStart;
-            _cardSetsSlider.interactable = !isStart;
+            //_cardSetsSlider.interactable = !isStart;
             _buttonBuy.interactable = !isStart;
             _buttonOpen.interactable = !isStart;
             _buttonArrowLeft.interactable = !isStart;
             _buttonArrowRight.interactable = !isStart;
             _buttonBack.interactable = !isStart;
         }
-
-        private void CardSetsSliderOnValueChangedHandler(float value)
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            currentPage = 0;
-            currentSet = (int)value;
-            LoadCards(0, (int)value);
-        }
-
+ 
         private void BuyButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -263,57 +263,79 @@ namespace GrandDevs.CZB
 		}
 
 
-		#endregion
+        #endregion
 
-		public void MoveCardsPage(int direction)
-		{
+        public void MoveCardsPage(int direction)
+        {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            currentPage += direction;
 
-			if (currentPage < 0)
-			{
-                currentSet += direction;
+            _currentElementPage += direction;
 
-                if (currentSet < 0)
+            if (_currentElementPage < 0)
+            {
+                _currentSet += direction;
+
+                if (_currentSet < 0)
                 {
-                    currentSet = numSets - 1;
-                    currentPage = numPages - 1;
+                    _currentSet = _numSets - 1;
+                    CalculateNumberOfPages();
+                    _currentElementPage = _numElementPages - 1;
                 }
                 else
                 {
-                    currentPage = numPages - 1;
-                    currentPage = currentPage < 0 ? 0 : currentPage;
-                }                   
-            }
-            else if (currentPage >= numPages)
-			{
-                currentSet += direction;
+                    CalculateNumberOfPages();
 
-                if (currentSet >= numSets)
+                    _currentElementPage = _numElementPages - 1;
+
+                    _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
+                }
+            }
+            else if (_currentElementPage >= _numElementPages)
+            {
+                _currentSet += direction;
+
+                if (_currentSet >= _numSets)
                 {
-                    currentSet = 0;
-                    currentPage = 0;
+                    _currentSet = 0;
+                    _currentElementPage = 0;
                 }
                 else
                 {
-                    currentPage = 0;
+                    _currentElementPage = 0;
                 }
             }
 
-            numPages = Mathf.CeilToInt(_dataManager.CachedCardsLibraryData.sets[currentSet].cards.Count / (float)cardPositions.Count);
-            _cardSetsSlider.value = currentSet;
+            CalculateNumberOfPages();
+            LoadCards(_currentElementPage, _currentSet);
+        }
 
-			LoadCards(currentPage, currentSet);
+		private void highlightCorrectIcon () {
+			for (int i = 0; i < _cardSetsIcons.transform.childCount; i++) {
+				GameObject c = _cardSetsIcons.transform.GetChild (i).GetChild (0).gameObject;
+				if (i == _currentSet) {
+					c.SetActive (true);
+				} else {
+					c.SetActive (false);
+				}
+			}
 		}
 
-		public void OnNextPageButtonPressed()
+
+        private void CalculateNumberOfPages()
+        {
+            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[_currentSet].cards.Count / (float)cardPositions.Count);
+        }
+
+        public void OnNextPageButtonPressed()
 		{
-			
+
 		}
 
 		public void LoadCards(int page, int setIndex)
 		{
-            CorrectSetIndex(ref setIndex);
+            // CorrectSetIndex(ref setIndex);
+
+            _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
 
             var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
             var cards = set.cards;
@@ -322,37 +344,47 @@ namespace GrandDevs.CZB
 
 			var endIndex = Mathf.Min(startIndex + cardPositions.Count, cards.Count);
 
-			foreach (var card in MonoBehaviour.FindObjectsOfType<CardView>())
-			{
-				MonoBehaviour.Destroy(card.gameObject);
-			}
+            ResetBoardCards();
 
-			for (var i = startIndex; i < endIndex; i++)
+            for (var i = startIndex; i < endIndex; i++)
 			{
                 if (i >= cards.Count)
                     break;
 
 				var card = cards[i];
+                var cardData = _dataManager.CachedCollectionData.GetCardData(card.name);
+
+                // hack !!!! CHECK IT!!!
+                if (cardData == null)
+                    continue;
 
                 GameObject go = null;
-				if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
-				{
-					go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
-				}
-				else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
-				{
-					go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
-				}
-              
-                var cardView = go.GetComponent<CardView>();
-                var amount = _dataManager.CachedCollectionData.GetCardData(card.id).amount;
-                cardView.PopulateWithLibraryInfo(card, set.name, amount);
-				cardView.SetHighlightingEnabled(false);
-				cardView.transform.position = cardPositions[i % cardPositions.Count].position;
-                cardView.transform.localScale = Vector3.one * 0.32f;
-                cardView.GetComponent<SortingGroup>().sortingLayerName = "Default";
-				cardView.GetComponent<SortingGroup>().sortingOrder = 1;
-			}
+                BoardCard boardCard = null;
+                if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
+                {
+                    go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
+                    boardCard = new UnitBoardCard(go);
+                }
+                else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
+                {
+                    go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
+                    boardCard = new SpellBoardCard(go);
+                }
+
+
+
+                var amount = cardData.amount;
+                boardCard.Init(card, amount);
+				boardCard.SetHighlightingEnabled(false);
+				boardCard.transform.position = cardPositions[i % cardPositions.Count].position;
+                boardCard.transform.localScale = Vector3.one * 0.32f;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+
+                _createdBoardCards.Add(boardCard);
+            }
+
+			highlightCorrectIcon ();
 		}
 
 		private void OpenAlertDialog(string msg)
