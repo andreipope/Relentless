@@ -19,7 +19,13 @@ namespace LoomNetwork.CZB.BackendCommunication
     public class BackendFacade : IService
     {
 
-        public const string AuthBackendHost = "http://stage.loom.games";
+        public const string AuthBackendHost = 
+
+#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
+            "http://stage.loom.games";
+#else
+            "http://loom.games";
+#endif
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
@@ -40,8 +46,14 @@ namespace LoomNetwork.CZB.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
+        public BackendFacade()
+        {
+            Debug.Log($"Using auth backend {AuthBackendHost}");
+        }
+
         public async Task CreateContract(byte[] privateKey)
         {
+            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
