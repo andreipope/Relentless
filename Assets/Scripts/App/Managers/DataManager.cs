@@ -341,9 +341,7 @@ namespace LoomNetwork.CZB
                         }
                         catch (Exception ex)
                         {
-                            CustomDebug.LogError("===== Deck Data Not Loaded from Backed ===== " + ex + " == Load from Resources ==");
-                            if (File.Exists(_cacheDataPathes[type]))
-                                localDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
+                            CustomDebug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
                         }
 
                         if (localDecksData != null && remoteDecksData != null)
