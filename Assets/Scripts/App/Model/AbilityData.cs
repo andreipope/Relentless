@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using Loom.Newtonsoft.Json;
 using System;
+using LoomNetwork.Internal;
 
 namespace LoomNetwork.CZB.Data
 {
@@ -67,56 +68,41 @@ namespace LoomNetwork.CZB.Data
 
         public void ParseData()
         {
-            abilityType = CastStringTuEnum<Enumerators.AbilityType>(type);
-            abilityActivityType = CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
-            abilityCallType = CastStringTuEnum<Enumerators.AbilityCallType>(callType);
+            abilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(type);
+            abilityActivityType = Utilites.CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
+            abilityCallType = Utilites.CastStringTuEnum<Enumerators.AbilityCallType>(callType);
 
             if (!string.IsNullOrEmpty(targetType))
-                abilityTargetTypes = CastList<Enumerators.AbilityTargetType>(targetType);
+                abilityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(targetType);
             else abilityTargetTypes = new List<Enumerators.AbilityTargetType>();
 
             if (!string.IsNullOrEmpty(statType))
-                abilityStatType = CastStringTuEnum<Enumerators.StatType>(statType);
+                abilityStatType = Utilites.CastStringTuEnum<Enumerators.StatType>(statType);
             else abilityStatType = Enumerators.StatType.NONE;
 
             if (!string.IsNullOrEmpty(setType))
-                abilitySetType = CastStringTuEnum<Enumerators.SetType>(setType);
+                abilitySetType = Utilites.CastStringTuEnum<Enumerators.SetType>(setType);
             else abilitySetType = Enumerators.SetType.NONE;
 
             if (!string.IsNullOrEmpty(effectType))
-                abilityEffectType = CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
+                abilityEffectType = Utilites.CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
             else abilityEffectType = Enumerators.AbilityEffectType.NONE;
 
             if (!string.IsNullOrEmpty(attackInfo))
-                attackInfoType = CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
+                attackInfoType = Utilites.CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
             else attackInfoType = Enumerators.AttackInfoType.ANY;
 
             if (!string.IsNullOrEmpty(cardType))
-                targetCardType = CastStringTuEnum<Enumerators.CardType>(cardType);
+                targetCardType = Utilites.CastStringTuEnum<Enumerators.CardType>(cardType);
             else targetCardType = Enumerators.CardType.NONE;
 
             if (!string.IsNullOrEmpty(unitStatus))
-                targetUnitStatusType = CastStringTuEnum<Enumerators.UnitStatusType>(unitStatus);
+                targetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(unitStatus);
+            else
+                targetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
             if (!string.IsNullOrEmpty(unitType))
-                targetUnitType = CastStringTuEnum<Enumerators.CardType>(unitType);   
-        }
-
-        private T CastStringTuEnum<T>(string data)
-        {
-            //UnityEngine.Debug.Log(typeof(T) + " | " + data);
-            return (T)Enum.Parse(typeof(T), data.ToUpper());
-        }
-
-        private List<T> CastList<T>(string data, char separator = '|')
-        {
-            List<T> list = new List<T>();
-            string[] targets = data.Split(separator);
-            foreach(var target in targets)
-            {
-                list.Add(CastStringTuEnum<T>(target));
-            }
-            return list;
+                targetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(unitType);   
         }
     }
 }

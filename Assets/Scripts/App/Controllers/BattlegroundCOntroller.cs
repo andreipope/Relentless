@@ -249,9 +249,8 @@ namespace LoomNetwork.CZB
             if (Constants.DEV_MODE)
             {
                 _gameplayManager.CurrentPlayer.HP = 99;
-                //_gameplayManager.CurrentPlayer.GooOnCurrentTurn = 8;
-                //_gameplayManager.CurrentPlayer.Goo = 8;
             }
+
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
             playerBoardObject = GameObject.Find("PlayerBoard");

@@ -46,14 +46,12 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            int currentVials = Mathf.Clamp(playerCallerOfAbility.GooOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_GOO);
-
-            if (currentVials == Constants.MAXIMUM_PLAYER_GOO && (playerCallerOfAbility.Goo + cardOwnerOfAbility.cost) == Constants.MAXIMUM_PLAYER_GOO)
+            if (playerCallerOfAbility.GooOnCurrentTurn == Constants.MAXIMUM_PLAYER_GOO)
             {
                 for (int i = 0; i < count; i++)
                     _cardsController.AddCardToHand(playerCallerOfAbility);
             }
-            else if (currentVials == Constants.MAXIMUM_PLAYER_GOO - 1 && (playerCallerOfAbility.Goo + cardOwnerOfAbility.cost) == Constants.MAXIMUM_PLAYER_GOO - 1)
+            else if (playerCallerOfAbility.GooOnCurrentTurn == Constants.MAXIMUM_PLAYER_GOO - 1)
             {
                 for (int i = 0; i < count - 1; i++)
                     _cardsController.AddCardToHand(playerCallerOfAbility);

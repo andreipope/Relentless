@@ -10,6 +10,7 @@ using LoomNetwork.CZB.Data;
 using Loom.Newtonsoft.Json;
 using System;
 using LoomNetwork.Internal;
+using System.Linq;
 
 namespace LoomNetwork.CZB.Data
 {
@@ -22,10 +23,12 @@ namespace LoomNetwork.CZB.Data
         [JsonIgnore]
         public List<Card> Cards
         {
-            get {
+            get
+            {
                 if (_allCards == null)
                     FillAllCards();
-                return _allCards; }
+                return _allCards;
+        }
         }
 
         public CardsLibraryData()
@@ -56,32 +59,37 @@ namespace LoomNetwork.CZB.Data
 
             _allCards = new List<Card>();
             int id = 0;
-			if (sets != null) {
-				foreach (var set in sets) {
-					foreach (var card in set.cards) {
-						if (removeCardsWithoutGraphics) {
+            if (sets != null)
+            {
+                foreach (var set in sets)
+                {
+                    foreach (var card in set.cards)
+                    {
+                        if (removeCardsWithoutGraphics)
+                        {
 							// remove cards without iamges
-							if (GameClient.Get<ILoadObjectsManager> ().GetObjectByPath<UnityEngine.Sprite> (string.Format ("Images/Cards/Illustrations/{0}_{1}_{2}",
-								                      set.name.ToLower (),
-								                      card.rank.ToLower (),
-								                      card.picture.ToLower ())) == null) {
-								cardsToRemoveFromSet.Add (card);
+                            if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<UnityEngine.Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}",
+                                                      set.name.ToLower(),
+                                                      card.rank.ToLower(),
+                                                      card.picture.ToLower())) == null)
+                            {
+                                cardsToRemoveFromSet.Add(card);
 								continue;
 							}
 						}
 
-						card.cardSetType = (Enumerators.SetType)Enum.Parse (typeof(Enumerators.SetType), set.name.ToUpper ()); //todo improve this shit!
+                        card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
 
 						if (card.kind != null)
-								card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind> (card.kind);
+                            card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
 						if (card.rank != null)
-							card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank> (card.rank);
+                            card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
 						if (card.type != null)
-							card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType> (card.type);
+                            card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
 
 						foreach (var ability in card.abilities)
-							ability.ParseData ();
-						_allCards.Add (card);
+                            ability.ParseData();
+                        _allCards.Add(card);
 
 						if (card.cardSetType != Enumerators.SetType.OTHERS)
 							card.id = id;
@@ -105,7 +113,19 @@ namespace LoomNetwork.CZB.Data
                 }
                 cardsToRemoveFromSet.Clear();
             }
+
+
+            SortCardsByRank();
         }
+
+        public void SortCardsByRank()
+        {
+            if (_allCards != null)
+                _allCards = _allCards.OrderBy(x => (int)x.cardRank).ToList();
+
+            foreach (var set in sets)
+                set.cards = set.cards.OrderBy(x => (int)x.cardRank).ToList();
+    }
     }
 
     public class CardSet

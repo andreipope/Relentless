@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB
         protected TextMeshPro bodyText;
         protected TextMeshPro amountText;
 
-      //  protected GameObject previewCard;
+        //  protected GameObject previewCard;
 
         protected Animator cardAnimator;
 
@@ -212,9 +212,9 @@ namespace LoomNetwork.CZB
             manaCost = libraryCard.cost;
             costText.text = manaCost.ToString();
 
-            if(manaCost > initialCost)
+            if (manaCost > initialCost)
                 costText.color = Color.red;
-            else if(manaCost < initialCost)
+            else if (manaCost < initialCost)
                 costText.color = Color.green;
             else
                 costText.color = Color.white;
@@ -289,7 +289,7 @@ namespace LoomNetwork.CZB
                 case "DeckToHandEnd":
                     cardAnimator.enabled = false;
 
-                    if(!_cardsController.CardDistribution)
+                    if (!_cardsController.CardDistribution)
                         UpdatePositionOnHand();
                     break;
                 default:
@@ -504,6 +504,8 @@ namespace LoomNetwork.CZB
                 _buffOnCardInfoObjects.Add(buff);
             }
 
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
+
             var parent = buffs.Count > 0 ? _parentOfRightBlockOfCardInfo : _parentOfLeftBlockOfCardInfo;
 
             buffs.Clear();
@@ -552,6 +554,8 @@ namespace LoomNetwork.CZB
             }
 
             buffs.Clear();
+
+            InternalTools.GroupVerticalObjects(parent, 0f);
 
             #endregion
         }
@@ -615,7 +619,7 @@ namespace LoomNetwork.CZB
                             title = buffInfo.name,
                             description = buffInfo.tooltip,
                             tooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                            value = abil.value
+                            value = GetValueOfAbilityByType(abil)
                         });
                 }
             }
@@ -633,6 +637,8 @@ namespace LoomNetwork.CZB
                 _buffOnCardInfoObjects.Add(buff);
             }
             buffs.Clear();
+
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
         }
 
         public void ClearBuffsOnUnit()
@@ -643,6 +649,16 @@ namespace LoomNetwork.CZB
                     item.Dispose();
                 _buffOnCardInfoObjects.Clear();
                 _buffOnCardInfoObjects = null;
+            }
+        }
+
+        private int GetValueOfAbilityByType(AbilityData ability)
+        {
+            switch(ability.buffType)
+            {
+                case "DELAYED":
+                    return ability.delay;
+                default: return ability.value;
             }
         }
 
@@ -688,7 +704,7 @@ namespace LoomNetwork.CZB
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon").GetComponent<SpriteRenderer>();
 
                 _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.title, buffTooltipInfo.value).ToUpper();
-                _descriptionText.text = buffTooltipInfo.description;
+                _descriptionText.text = ReplaceXByValue(buffTooltipInfo.description, buffTooltipInfo.value);
 
                 switch(buffTooltipInfo.tooltipObjectType)
                 {
