@@ -65,7 +65,6 @@ namespace LoomNetwork.CZB
 
             _initialCooldown = skillInfo.initialCooldown;
             _cooldown = skillInfo.cooldown;
-      
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -294,7 +293,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
                 return true;
 
-            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn)
+            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
                 return false;
 
             return true;

@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB
 
         public override void OnCardSelected(BoardUnit unit)
         {
-            if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 19 || _gameplayManager.TutorialStep == 27))
+            if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 19 || _gameplayManager.TutorialStep == 27 || _gameplayManager.TutorialStep == 32))
                 return;
 
             if (ignoreBoardObjectsList != null && ignoreBoardObjectsList.Contains(unit))

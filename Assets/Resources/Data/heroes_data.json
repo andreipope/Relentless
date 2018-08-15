@@ -201,7 +201,7 @@
           "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
           "cooldown": 3,
           "initialCooldown": 3,
-          "value": 1
+          "value": 2
         },
         {
           "title": "Mend",
@@ -212,7 +212,7 @@
           "skillTargets": "",
           "cooldown": 4,
           "initialCooldown": 4,
-          "value": 1
+          "value": 4
         }
       ],
       "primarySkill": 0,
