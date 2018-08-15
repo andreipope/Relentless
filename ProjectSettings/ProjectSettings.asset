@@ -656,9 +656,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 3
-  cloudProjectId: b6bfabc6-5c31-454e-828a-6eaed5f624eb
-  projectName: Crypto Zombies Battleground
-  organizationId: cristian-esposito
+  cloudProjectId: 1195a8bf-0505-4624-828c-29578838a34e
+  projectName: Zombie Battleground
+  organizationId: diana_shapira
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
