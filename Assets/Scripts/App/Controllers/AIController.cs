@@ -204,7 +204,7 @@ namespace LoomNetwork.CZB
                             {
                                 if (_gameplayManager.OpponentPlayer.SelfHero.heroElement == Enumerators.SetType.FIRE)
                                 {
-                                    ThreadTool.Instance.StartOneTimeThread(PlayCardsFromHand, () =>
+                                    ThreadTool.Instance.StartOneTimeThread(UseUnitsOnBoard, () =>
                                     {
                                         _battlegroundController.StopTurn();
                                     }, this);

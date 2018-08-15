@@ -1094,7 +1094,9 @@ namespace LoomNetwork.CZB
                 Die(true);
 
                 if (_arrivalDone)
-                    MonoBehaviour.Destroy(gameObject);
+                {
+                    RemoveUnitFromBoard();
+                }
                 else
                 {
                     _timerManager.AddTimer(CheckIsCanDie, null, Time.deltaTime, true);
@@ -1122,12 +1124,17 @@ namespace LoomNetwork.CZB
             {
                 _timerManager.StopTimer(CheckIsCanDie);
 
-                ownerPlayer.BoardCards.Remove(this);
-                ownerPlayer.RemoveCardFromBoard(Card);
-                ownerPlayer.AddCardToGraveyard(Card);
-
-                MonoBehaviour.Destroy(gameObject);
+                RemoveUnitFromBoard();
             }
+        }
+
+        private void RemoveUnitFromBoard()
+        {
+            ownerPlayer.BoardCards.Remove(this);
+            ownerPlayer.RemoveCardFromBoard(Card);
+            ownerPlayer.AddCardToGraveyard(Card);
+
+            MonoBehaviour.Destroy(gameObject);
         }
     }
 
