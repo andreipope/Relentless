@@ -25,12 +25,9 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public event ContractCreatedEventHandler ContractCreated;
 
-#if UNITY_EDITOR || DEV_BUILD
-        //public string WriterHost { get; set; } = "ws://127.0.0.1:46657/websocket";
-        //public string ReaderHost { get; set; } = "ws://127.0.0.1:9999/queryws";
-
-        public string WriterHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
-        public string ReaderHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
+#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
+        public string WriterHost { get; set; } = "ws://127.0.0.1:46657/websocket";
+        public string ReaderHost { get; set; } = "ws://127.0.0.1:9999/queryws";
 #else
         public string WriterHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
         public string ReaderHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
