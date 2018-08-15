@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
         private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
         {
             var cardObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
-
+             
             GameObject _playerBoard = owner.IsLocalPlayer ? _battlegroundController.playerBoardObject : _battlegroundController.opponentBoardObject;
 
             var boardUnit = new BoardUnit(_playerBoard.transform);

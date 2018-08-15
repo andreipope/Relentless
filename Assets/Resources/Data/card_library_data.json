@@ -1176,7 +1176,7 @@
               "callType": "TURN",
               "value": 4,
               "delay": 2,
-              "buffType": "TURN"
+              "buffType": "DELAYED"
             }
           ],
           "cardViewInfo": {
@@ -1790,7 +1790,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 2,
               "effectType": "TARGET_LIFE",
               "buffType": "ENTRY"

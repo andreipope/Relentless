@@ -13,10 +13,10 @@
         {
           "title": "Harden",
           "skill": "HARDEN",
-		  "iconPath": "overlordability_earth",
-		  "description": "Add 2 Def to the Overlord.",
+          "iconPath": "overlordability_earth",
+          "description": "Add 2 Def to the Overlord.",
           "skillType": 4,
-          "skillTargetType": [ 0 ],
+          "skillTargets": "",
           "cooldown": 3,
           "initialCooldown": 3,
           "value": 2
@@ -24,10 +24,10 @@
         {
           "title": "Stoneskin",
           "skill": "STONE_SKIN",
-		  "iconPath": "overlordability_earth_stone_skin",
-		  "description": "Give a friendly zombie +1 Def.",
+          "iconPath": "overlordability_earth_stone_skin",
+          "description": "Give a friendly zombie +1 Def.",
           "skillType": 4,
-          "skillTargetType": [ 0 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1
@@ -49,10 +49,10 @@
         {
           "title": "Fire Bolt",
           "skill": "FIRE_BOLT",
-		  "iconPath": "overlordability_fire",
-		  "description": "Deal 1 damage to target.",
+          "iconPath": "overlordability_fire",
+          "description": "Deal 1 damage to target.",
           "skillType": 2,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
           "cooldown": 3,
           "initialCooldown": 3,
           "value": 1
@@ -60,10 +60,10 @@
         {
           "title": "Rabies",
           "skill": "RABIES",
-		  "iconPath": "overlordability_fire_rabies",
-		  "description": "Give friendly zombie feral.",
+          "iconPath": "overlordability_fire_rabies",
+          "description": "Give friendly zombie feral.",
           "skillType": 2,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "PLAYER_CARD",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1
@@ -85,10 +85,10 @@
         {
           "title": "Freeze",
           "skill": "FREEZE",
-		  "iconPath": "overlordability_water",
-		  "description": "Freeze an enemy zombie.",
+          "iconPath": "overlordability_water",
+          "description": "Freeze a zombie.",
           "skillType": 0,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 3,
           "initialCooldown": 3,
           "value": 1
@@ -96,10 +96,10 @@
         {
           "title": "Ice Bolt",
           "skill": "ICE_BOLT",
-		  "iconPath": "overlordability_water_ice_bolt",
-		  "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
+          "iconPath": "overlordability_water_ice_bolt",
+          "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
           "skillType": 0,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 2
@@ -121,10 +121,10 @@
         {
           "title": "Push",
           "skill": "PUSH",
-		  "iconPath": "overlordability_air_push",
-		  "description": "Return a friendly zombie to your hand.",
+          "iconPath": "overlordability_air_push",
+          "description": "Return a friendly zombie to your hand.",
           "skillType": 5,
-          "skillTargetType": [ 2, 5 ],
+          "skillTargets": "PLAYER_CARD",
           "cooldown": 6,
           "initialCooldown": 5,
           "value": 0
@@ -132,10 +132,10 @@
         {
           "title": "Draw",
           "skill": "DRAW",
-		  "iconPath": "overlordability_air_draw",
-		  "description": "Draw a card.",
+          "iconPath": "overlordability_air_draw",
+          "description": "Draw a card.",
           "skillType": 5,
-          "skillTargetType": [ 2, 5 ],
+          "skillTargets": "",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 0
@@ -157,10 +157,10 @@
         {
           "title": "Poison Dart",
           "skill": "POISON_DART",
-		  "iconPath": "overlordability_toxic",
-		  "description": "Deal 1 damage to a target.",
+          "iconPath": "overlordability_toxic",
+          "description": "Deal 1 damage to a target.",
           "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
           "cooldown": 3,
           "initialCooldown": 3,
           "value": 1
@@ -168,10 +168,10 @@
         {
           "title": "Toxic Power",
           "skill": "TOXIC_POWER",
-		  "iconPath": "overlordability_toxic_toxic_power",
-		  "description": "Deal 1 damage to a zombie and give it +1 Atk.",
+          "iconPath": "overlordability_toxic_toxic_power",
+          "description": "Deal 1 damage to a zombie and give it +1 Atk.",
           "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1,
@@ -195,10 +195,10 @@
         {
           "title": "Healing Touch",
           "skill": "HEALING_TOUCH",
-		  "iconPath": "overlordability_life",
-		  "description": "Restore 2 Def to a target.",
+          "iconPath": "overlordability_life",
+          "description": "Restore 2 Def to a target.",
           "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
           "cooldown": 3,
           "initialCooldown": 3,
           "value": 1
@@ -206,10 +206,10 @@
         {
           "title": "Mend",
           "skill": "MEND",
-		  "iconPath": "overlordability_life_mend",
-		  "description": "Restore 4 Def to your Overlord.",
+          "iconPath": "overlordability_life_mend",
+          "description": "Restore 4 Def to your Overlord.",
           "skillType": 1,
-          "skillTargetType": [ 1, 2, 4, 5 ],
+          "skillTargets": "",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1

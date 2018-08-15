@@ -48,8 +48,12 @@ namespace LoomNetwork.CZB
 
         private void OnDestroy()
         {
+            if (_threads == null)
+                return;
+
             foreach (var item in _threads)
                 item.Dispose();
+            _threads.Clear();
         }
 
 
