@@ -48,6 +48,9 @@ namespace LoomNetwork.CZB
         private Button _buttonReconnect;
 		private Button _buttonLogout;
 
+        private GameObject _markerOffline;
+        private GameObject _markerOnline;
+
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -80,6 +83,8 @@ namespace LoomNetwork.CZB
             _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
             _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
 			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
+            _markerOffline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Offline").gameObject;
+            _markerOnline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Online").gameObject;
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
@@ -113,7 +118,9 @@ namespace LoomNetwork.CZB
                     "<color=red>Offline</color>";
             
             _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
+            _markerOffline.gameObject.SetActive (_buttonReconnect.gameObject.activeSelf);
 			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
+            _markerOnline.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
         }
 
         public void Update()
