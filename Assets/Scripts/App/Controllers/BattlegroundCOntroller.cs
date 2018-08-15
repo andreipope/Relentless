@@ -251,8 +251,6 @@ namespace LoomNetwork.CZB
                 _gameplayManager.CurrentPlayer.HP = 99;
             }
 
-            _gameplayManager.OpponentPlayer.HP = 1;
-
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
             playerBoardObject = GameObject.Find("PlayerBoard");
