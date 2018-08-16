@@ -23,7 +23,9 @@ namespace LoomNetwork.CZB
                    health,
                    damage;
 
-        public int initialCost;
+        public int initialCost,
+                   realCost;
+
 
         public Enumerators.CardType type;
 
@@ -38,9 +40,10 @@ namespace LoomNetwork.CZB
 
             initialHealth = libraryCard.health;
             initialDamage = libraryCard.damage;
+            initialCost = libraryCard.cost;
             health = initialHealth;
             damage = initialDamage;
-            initialCost = libraryCard.cost;
+            realCost = initialCost;
 
             type = libraryCard.cardType;
 

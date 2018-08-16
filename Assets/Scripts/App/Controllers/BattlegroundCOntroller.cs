@@ -806,5 +806,21 @@ namespace LoomNetwork.CZB
         {
             // implement functionality of the take control
         }
+
+        public BoardUnit CreateBoardUnit(Player owner, WorkingCard card)
+        {
+            GameObject _playerBoard = owner.IsLocalPlayer ? playerBoardObject : opponentBoardObject;
+
+            var boardUnit = new BoardUnit(_playerBoard.transform);
+            boardUnit.transform.tag = owner.IsLocalPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
+            boardUnit.transform.SetParent(_playerBoard.transform);
+            boardUnit.transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
+            boardUnit.ownerPlayer = owner;
+            boardUnit.SetObjectInfo(card);
+
+            boardUnit.PlayArrivalAnimation();
+
+            return boardUnit;
+        }
     }
 }

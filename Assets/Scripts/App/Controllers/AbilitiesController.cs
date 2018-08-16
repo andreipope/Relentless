@@ -286,6 +286,9 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.COSTS_LESS_IF_CARD_TYPE_IN_HAND:
                     ability = new CostsLessIfCardTypeInHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS:
+                    ability = new ReturnUnitsOnBoardToOwnersHandsAbility(cardKind, abilityData);
                     break;    
                 default:
                     break;

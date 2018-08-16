@@ -144,7 +144,7 @@ namespace LoomNetwork.CZB
                     card.HandBoardCard.enabled = true;
                 }, null, 2f);
             }
-            
+
             if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
             {
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
@@ -158,28 +158,28 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck = _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
-                 /*
-                if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
-                {
-                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
-                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
-                }
-                else
-                {
-                    AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
-                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-                    AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-                }    
-                _timerManager.AddTimer((x) =>
-                {
-                    _battlegroundController.StartGameplayTurns();
-                }, null, 2f); */
+                /*
+               if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
+               {
+                   AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+                   AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+                   AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+               }
+               else
+               {
+                   AddCardToHand(_gameplayManager.OpponentPlayer, _gameplayManager.OpponentPlayer.CardsInDeck[0]);
+                   AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+                   AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
+               }    
+               _timerManager.AddTimer((x) =>
+               {
+                   _battlegroundController.StartGameplayTurns();
+               }, null, 2f); */
 
                 _battlegroundController.StartGameplayTurns();
             }
             else
-                _battlegroundController.StartGameplayTurns();    
+                _battlegroundController.StartGameplayTurns();
         }
 
         private void DirectlyEndCardDistribution(object[] param)
@@ -497,8 +497,8 @@ namespace LoomNetwork.CZB
         {
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
-             //  if (!Constants.DEV_MODE)
-                    player.Goo -= card.libraryCard.cost;
+                //  if (!Constants.DEV_MODE)
+                player.Goo -= card.manaCost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 // {
@@ -709,11 +709,11 @@ namespace LoomNetwork.CZB
             {
                 var boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
 
-                boardCard.SetCardCost(Mathf.Clamp(boardCard.manaCost - value, 0, boardCard.manaCost));
+                boardCard.ChangeCardCostOn(value, true);
             }
             else
             {
-                card.libraryCard.cost = Mathf.Clamp(card.libraryCard.cost - value, 0, card.libraryCard.cost);
+                card.realCost = Mathf.Clamp(card.libraryCard.cost - value, 0, card.libraryCard.cost);
             }
         }
 
@@ -724,11 +724,11 @@ namespace LoomNetwork.CZB
                 if (boardCard == null)
                     boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
 
-                boardCard.SetCardCost(Mathf.Clamp(value, 0, 99));
+                boardCard.SetCardCost(value);
             }
             else
             {
-                card.libraryCard.cost = Mathf.Clamp(value, 0, 99);
+                card.realCost = Mathf.Clamp(value, 0, 99);
             }
         }
 
@@ -754,7 +754,7 @@ namespace LoomNetwork.CZB
                 var boardCard = CreateBoardCard(workingCard);
 
                 boardCard.transform.position = Vector3.zero;
-                boardCard.transform.localScale = Vector3.zero; 
+                boardCard.transform.localScale = Vector3.zero;
 
                 boardCard.transform.DOScale(Vector3.one * .3f, animationDuration);
 
@@ -792,6 +792,37 @@ namespace LoomNetwork.CZB
         public GameObject GetOpponentBoardCard(WorkingCard card)
         {
             return CreateOpponentBoardCard();
+        }
+
+        public void ReturnCardToHand(Player player, BoardUnit unit)
+        {
+            Player unitOwner = unit.ownerPlayer;
+            WorkingCard returningCard = unit.Card;
+
+            returningCard.initialCost = returningCard.libraryCard.cost;
+            returningCard.realCost = returningCard.initialCost;
+
+            Vector3 unitPosition = unit.transform.position;
+
+            _timerManager.AddTimer((x) =>
+            {
+                // STEP 1 - REMOVE UNIT FROM BOARD
+                unitOwner.BoardCards.Remove(unit);
+
+                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
+                unit.Die(true);
+                MonoBehaviour.Destroy(unit.gameObject);
+
+                // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                unitOwner.RemoveCardFromBoard(returningCard);
+
+                // STEP 4 - RETURN CARD TO HAND
+                ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                // STEP 4 - REARRANGE HANDS
+                _gameplayManager.RearrangeHands();
+
+            }, null, 2f);
         }
     }
 }

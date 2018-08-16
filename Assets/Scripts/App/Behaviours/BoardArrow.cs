@@ -83,8 +83,11 @@ public class BoardArrow : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        _boardArrowController.CurrentBoardArrow = null;
-        _boardArrowController.SetStatusOfBoardArrowOnBoard(false);
+        GameClient.Get<ITimerManager>().AddTimer((x) =>
+        {
+            _boardArrowController.CurrentBoardArrow = null;
+            _boardArrowController.SetStatusOfBoardArrowOnBoard(false);
+        }, null, 0.25f);
     }
 
 
