@@ -95,16 +95,28 @@ namespace LoomNetwork.CZB.Helpers
         {
             int count = root.childCount;
 
-            float handWidth = spacing * count - 1;
+            float width = spacing * count - 1;
 
             var pivot = new Vector3(offset, 0, 0);
 
             for (var i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
-                pivot.x += handWidth / count;
+                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
+                pivot.x += width / count;
             }
         }
+
+        public static void GroupVerticalObjects(Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
+        {
+            int count = root.childCount;
+            float halfHeightOffset = (height + spacing);
+
+            float startPos = centerOffset + ((count - 1) * halfHeightOffset / 2f);
+
+            for (var i = 0; i < count; i++)
+                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, (startPos - (halfHeightOffset * i)), root.GetChild(i).localPosition.z);
+        }
+
 
         public static List<object> GetRandomElementsFromList(List<object> root, int count)
         {
@@ -126,5 +138,7 @@ namespace LoomNetwork.CZB.Helpers
 
             return list;
         }
+
+     
     }
 }

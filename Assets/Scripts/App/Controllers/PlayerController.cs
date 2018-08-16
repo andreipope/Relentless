@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                            //   playerDeck.Add("Maelstrom");
+                           //    playerDeck.Add("Zhatterer");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -301,14 +301,14 @@ namespace LoomNetwork.CZB
                     // _topmostBoardCard = null;
                     // _selectedBoardUnit = null;
 
-                    if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
-                    {
-                        StopHandTimer();
-                        _battlegroundController.DestroyCardPreview();
+                    //if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
+                    //{
+                    //    StopHandTimer();
+                    //    _battlegroundController.DestroyCardPreview();
 
-                        if (_boardArrowController.IsBoardArrowNowInTheBattle &&  (_boardArrowController.CurrentBoardArrow != null && !_boardArrowController.CurrentBoardArrow.IsDragging()))
-                            HandCardPreview(new object[] { _selectedBoardUnit });
-                    }
+                    //    if (_boardArrowController.IsBoardArrowNowInTheBattle &&  (_boardArrowController.CurrentBoardArrow != null && !_boardArrowController.CurrentBoardArrow.IsDragging()))
+                    //        HandCardPreview(new object[] { _selectedBoardUnit });
+                    //}
                 }
                 else
                 if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
@@ -321,7 +321,7 @@ namespace LoomNetwork.CZB
                             _battlegroundController.DestroyCardPreview();
 
 
-                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                            if (_boardArrowController.CurrentBoardArrow == null || (_boardArrowController.CurrentBoardArrow != null && !(_boardArrowController.CurrentBoardArrow is AbilityBoardArrow)))
                                 HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }
@@ -332,7 +332,7 @@ namespace LoomNetwork.CZB
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
 
-                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                            if (_boardArrowController.CurrentBoardArrow == null || (_boardArrowController.CurrentBoardArrow != null && !(_boardArrowController.CurrentBoardArrow is AbilityBoardArrow)))
                                 HandCardPreview(new object[] { _selectedBoardUnit });
                         }
                     }

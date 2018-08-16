@@ -24,6 +24,7 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
         }
 
         public override void Update()
@@ -43,12 +44,18 @@ namespace LoomNetwork.CZB
             if(_isAbilityResolved)
             {
                 Action();
+
+                if (targetUnit != null)
+                    targetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
             }
         }
 
         protected override void OnEndTurnEventHandler()
         {
             base.OnEndTurnEventHandler();
+
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+                return;
 
             ActionEnd();
         }
@@ -74,6 +81,12 @@ namespace LoomNetwork.CZB
 
                 CreateVFX(targetUnit.transform.position, true, 5f);
             }
+        }
+
+        private void TargetUnitOnDieEventHandler()
+        {
+            if (targetUnit != null)
+                targetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
 
             _abilitiesController.DeactivateAbility(activityId);
         }

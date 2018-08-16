@@ -384,7 +384,7 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < abilities.Count; i++)
             {
-                if (attacked.HasBuffHeavy || attacked.hasHeavy)
+                if (attacked.IsHeavyUnit())
                     value += abilities[i].value;
             }
 
@@ -409,7 +409,7 @@ namespace LoomNetwork.CZB
             return abils;
         }
 
-        public bool HasUnitTypeOnBoard(WorkingCard workingCard, AbilityData ability)
+        public bool HasSpecialUnitOnBoard(WorkingCard workingCard, AbilityData ability)
         {
             if (ability.abilityTargetTypes.Count == 0)
                 return false;
@@ -419,14 +419,47 @@ namespace LoomNetwork.CZB
 
             foreach (var target in ability.abilityTargetTypes)
             {
-                if(target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
-                    if (player.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                    var units = player.BoardCards.FindAll(x => x.InitialUnitType == ability.targetCardType && x.UnitStatus == ability.targetUnitStatusType);
+
+                    if (units.Count > 0)
                         return true;
                 }
                 else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
                 {
-                    if (opponent.BoardCards.FindAll(x => x.Card.type == ability.targetCardType).Count > 0)
+                    var units = opponent.BoardCards.FindAll(x => x.InitialUnitType == ability.targetCardType && x.UnitStatus == ability.targetUnitStatusType);
+
+                    if (units.Count > 0)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool HasSpecialUnitStatusOnBoard(WorkingCard workingCard, AbilityData ability)
+        {
+            if (ability.abilityTargetTypes.Count == 0)
+                return false;
+
+            var opponent = workingCard.owner.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            var player = workingCard.owner;
+
+            foreach (var target in ability.abilityTargetTypes)
+            {
+                if (target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    var units = player.BoardCards.FindAll(x => x.UnitStatus == ability.targetUnitStatusType);
+
+                    if (units.Count > 0)
+                        return true;
+                }
+                else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
+                {
+                    var units = opponent.BoardCards.FindAll(x => x.UnitStatus == ability.targetUnitStatusType);
+
+                    if (units.Count > 0)
                         return true;
                 }
             }
@@ -466,7 +499,7 @@ namespace LoomNetwork.CZB
                 workingCard.owner.AddCardToBoard(workingCard);
             }
 
-            if(kind == Enumerators.CardKind.SPELL)
+            if (kind == Enumerators.CardKind.SPELL)
             {
                 if (handCard != null && isPlayer)
                 {
@@ -478,19 +511,19 @@ namespace LoomNetwork.CZB
             {
                 var ability = libraryCard.abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
 
-                if (ability.targetCardType != Enumerators.CardType.NONE)
+                if ((ability.targetCardType != Enumerators.CardType.NONE && !HasSpecialUnitOnBoard(workingCard, ability)) ||
+                    (ability.targetUnitStatusType != Enumerators.UnitStatusType.NONE && !HasSpecialUnitStatusOnBoard(workingCard, ability)))
                 {
-                    if(!HasUnitTypeOnBoard(workingCard, ability))
-                    {
-                        CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                    CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
-                        onCompleteCallback?.Invoke();
+                    onCompleteCallback?.Invoke();
 
-                        ResolveAllAbilitiesOnUnit(boardObject);
+                    ResolveAllAbilitiesOnUnit(boardObject);
 
-                        return;
-                    }
+                    return;
                 }
+
+
 
                 if (CheckActivateAvailability(kind, ability, workingCard.owner))
                 {

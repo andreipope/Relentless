@@ -212,73 +212,73 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: {x: 0.25, y: -1.1, z: -3.72}
+        value: {x: -0.37, y: -1.1, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 1
-        value: {x: 0.25, y: -1.1, z: -3.72}
+        value: {x: -0.37, y: -1.1, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 1.4833333
-        value: {x: 0.25, y: -0.95561993, z: -3.72}
+        value: {x: -0.37, y: -0.95561993, z: -3.72}
         inSlope: {x: 0, y: 0.3709842, z: 0}
         outSlope: {x: 0, y: 0.3709842, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 1.7333333
-        value: {x: 0.25, y: -0.82794493, z: -3.72}
+        value: {x: -0.37, y: -0.82794493, z: -3.72}
         inSlope: {x: 0, y: 0.51480776, z: 0}
         outSlope: {x: 0, y: 0.51480776, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2
-        value: {x: 0.25, y: -0.68963593, z: -3.72}
+        value: {x: -0.37, y: -0.68963593, z: -3.72}
         inSlope: {x: 0, y: 0.5082617, z: 0}
         outSlope: {x: 0, y: 0.5082617, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.1166666
-        value: {x: 0.25, y: -0.63311136, z: -3.72}
+        value: {x: -0.37, y: -0.63311136, z: -3.72}
         inSlope: {x: 0, y: 0.20424841, z: 0}
         outSlope: {x: 0, y: 0.20424841, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.2166667
-        value: {x: 0.25, y: -0.6220479, z: -3.72}
+        value: {x: -0.37, y: -0.6220479, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.3333333
-        value: {x: 0.25, y: -0.64, z: -3.72}
+        value: {x: -0.37, y: -0.64, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.6
-        value: {x: 0.25, y: -0.5832119, z: -3.72}
+        value: {x: -0.37, y: -0.5832119, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.7
-        value: {x: 0.25, y: -0.59001964, z: -3.72}
+        value: {x: -0.37, y: -0.59001964, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 2.85
-        value: {x: 0.25, y: -0.59, z: -3.72}
+        value: {x: -0.37, y: -0.59, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 3.55
-        value: {x: 0.25, y: -0.59, z: -3.72}
+        value: {x: -0.37, y: -0.59, z: -3.72}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -7566,88 +7566,6 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: LiquidMaskFloor
-    classID: 4
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 1
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 1.4833333
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 1.7333333
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.1166666
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.2166667
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.3333333
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.6
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.7
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 2.85
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 3.55
-        value: 0.25
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_LocalPosition.x
     path: LiquidMaskFloor
     classID: 4
     script: {fileID: 0}
@@ -22147,6 +22065,22 @@ AnimationClip:
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
     path: RegularModel/Gauge
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -0.37
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: LiquidMaskFloor
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves:

@@ -783,6 +783,15 @@ namespace LoomNetwork.CZB
             numTurnsOnBoard++;
             StopSleepingParticles();
 
+            if (_stunTurns > 0)
+                _stunTurns--;
+            if (_stunTurns == 0)
+            {
+                IsPlayable = true;
+                _frozenSprite.DOFade(0, 1);
+                UnitStatus = Enumerators.UnitStatusType.NONE;
+            }
+
             if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
             {
                 if (CurrentDamage > 0)
@@ -796,15 +805,6 @@ namespace LoomNetwork.CZB
 
         public void OnEndTurn()
         {
-            if (_stunTurns > 0)
-                _stunTurns--;
-            if (_stunTurns == 0)
-            {
-                IsPlayable = true;
-                _frozenSprite.DOFade(0, 1);
-                UnitStatus = Enumerators.UnitStatusType.NONE;
-            }
-
             HasBuffRush = false;
 
             CancelTargetingArrows();
@@ -1094,7 +1094,9 @@ namespace LoomNetwork.CZB
                 Die(true);
 
                 if (_arrivalDone)
-                    MonoBehaviour.Destroy(gameObject);
+                {
+                    RemoveUnitFromBoard();
+                }
                 else
                 {
                     _timerManager.AddTimer(CheckIsCanDie, null, Time.deltaTime, true);
@@ -1122,12 +1124,17 @@ namespace LoomNetwork.CZB
             {
                 _timerManager.StopTimer(CheckIsCanDie);
 
-                ownerPlayer.BoardCards.Remove(this);
-                ownerPlayer.RemoveCardFromBoard(Card);
-                ownerPlayer.AddCardToGraveyard(Card);
-
-                MonoBehaviour.Destroy(gameObject);
+                RemoveUnitFromBoard();
             }
+        }
+
+        private void RemoveUnitFromBoard()
+        {
+            ownerPlayer.BoardCards.Remove(this);
+            ownerPlayer.RemoveCardFromBoard(Card);
+            ownerPlayer.AddCardToGraveyard(Card);
+
+            MonoBehaviour.Destroy(gameObject);
         }
     }
 

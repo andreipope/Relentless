@@ -4,6 +4,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
+using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
@@ -47,17 +48,20 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            foreach(var unit in _gameplayManager.CurrentPlayer.BoardCards)
+            List<BoardUnit> units = new List<BoardUnit>();
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+
+            foreach (var unit in units)
                 ReturnBoardUnitToDeck(unit);
 
 
-            foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
-                ReturnBoardUnitToDeck(unit);
+            units.Clear();
         }
 
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
-            if (abilityUnitOwner != null && unit.Equals(abilityUnitOwner))
+            if ((abilityUnitOwner != null && unit == abilityUnitOwner) || unit == null)
                 return;
 
             // implement animation
