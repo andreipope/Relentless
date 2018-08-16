@@ -154,8 +154,8 @@ namespace LoomNetwork.CZB
 
             isNewCard = true;
 
-            manaCost = libraryCard.cost;
-            initialCost = manaCost;
+            initialCost = WorkingCard.initialCost;
+            manaCost = initialCost;
 
             WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
 
@@ -188,8 +188,8 @@ namespace LoomNetwork.CZB
             amountText.text = amount.ToString();
             costText.text = libraryCard.cost.ToString();
 
-            manaCost = libraryCard.cost;
-            initialCost = manaCost;
+            initialCost = libraryCard.cost;
+            manaCost = initialCost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
 
@@ -206,12 +206,43 @@ namespace LoomNetwork.CZB
         }
 
 
-        public void SetCardCost(int cost)
+        public void SetCardCost(int value, bool changeRealCost = false)
         {
-            libraryCard.cost = cost;
-            manaCost = libraryCard.cost;
-            costText.text = manaCost.ToString();
+            if (changeRealCost)
+            {
+                WorkingCard.realCost = value;
+                manaCost = WorkingCard.realCost;
+                costText.text = manaCost.ToString();
+            }
+            else
+            {
+                manaCost = value;
+                costText.text = manaCost.ToString();
+            }
 
+
+            UpdateColorOfCost();
+        }
+
+        public void ChangeCardCostOn(int value, bool changeRealCost = false)
+        {
+            if (changeRealCost)
+            {
+                WorkingCard.realCost += value;
+                manaCost = WorkingCard.realCost;
+                costText.text = manaCost.ToString();
+            }
+            else
+            {
+                manaCost = WorkingCard.realCost + value;
+                costText.text = manaCost.ToString();
+            }
+
+            UpdateColorOfCost();
+        }
+
+        private void UpdateColorOfCost()
+        {
             if (manaCost > initialCost)
                 costText.color = Color.red;
             else if (manaCost < initialCost)

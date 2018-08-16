@@ -831,7 +831,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
               "effectType": "TARGET_ROCK",
@@ -1322,7 +1322,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player_card",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "value": -1
             }
           ],
           "cardViewInfo": {
@@ -1602,7 +1603,8 @@
               "callType": "IN_HAND",
               "targetType": "player",
               "setType": "air",
-              "buffType": "PERMANENT"
+              "buffType": "PERMANENT",
+              "value":  -1
             }
           ],
           "cardViewInfo": {

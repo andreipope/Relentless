@@ -456,6 +456,10 @@ namespace LoomNetwork.CZB
             BoardUnit targetUnit = (target as BoardUnit);
             Player unitOwner = targetUnit.ownerPlayer;
             WorkingCard returningCard = targetUnit.Card;
+
+            returningCard.initialCost = returningCard.libraryCard.cost;
+            returningCard.realCost = returningCard.initialCost;
+
             Vector3 unitPosition = targetUnit.transform.position;
 
             _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), targetUnit);

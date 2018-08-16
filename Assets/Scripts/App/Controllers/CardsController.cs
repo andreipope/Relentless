@@ -498,7 +498,7 @@ namespace LoomNetwork.CZB
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
                 //  if (!Constants.DEV_MODE)
-                player.Goo -= card.libraryCard.cost;
+                player.Goo -= card.manaCost;
 
                 //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
                 // {
@@ -709,11 +709,11 @@ namespace LoomNetwork.CZB
             {
                 var boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
 
-                boardCard.SetCardCost(Mathf.Clamp(boardCard.manaCost - value, 0, boardCard.manaCost));
+                boardCard.ChangeCardCostOn(value, true);
             }
             else
             {
-                card.libraryCard.cost = Mathf.Clamp(card.libraryCard.cost - value, 0, card.libraryCard.cost);
+                card.realCost = Mathf.Clamp(card.libraryCard.cost - value, 0, card.libraryCard.cost);
             }
         }
 
@@ -724,11 +724,11 @@ namespace LoomNetwork.CZB
                 if (boardCard == null)
                     boardCard = _battlegroundController.playerHandCards.Find(x => x.WorkingCard.Equals(card));
 
-                boardCard.SetCardCost(Mathf.Clamp(value, 0, 99));
+                boardCard.SetCardCost(value);
             }
             else
             {
-                card.libraryCard.cost = Mathf.Clamp(value, 0, 99);
+                card.realCost = Mathf.Clamp(value, 0, 99);
             }
         }
 
@@ -798,6 +798,10 @@ namespace LoomNetwork.CZB
         {
             Player unitOwner = unit.ownerPlayer;
             WorkingCard returningCard = unit.Card;
+
+            returningCard.initialCost = returningCard.libraryCard.cost;
+            returningCard.realCost = returningCard.initialCost;
+
             Vector3 unitPosition = unit.transform.position;
 
             _timerManager.AddTimer((x) =>
