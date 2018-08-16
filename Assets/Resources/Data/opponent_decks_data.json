@@ -4,47 +4,64 @@
 			"heroId": 1,
 			"type": "BLITZ_AI",
 			"actions": "TEST",
-			"cards": [{
-					"cardName": "Pyromaz",
-					"amount": 4
-				},
-				{
-					"cardName": "Modo",
-					"amount": 2
-				},
-				{
-					"cardName": "Cerberus",
-					"amount": 1
-				},
-				{
-					"cardName": "Jetter",
-					"amount": 2
-				},
-				{
-					"cardName": "Tiny",
-					"amount": 2
-				},
-				{
-					"cardName": "Quazi",
-					"amount": 4
-				},
-				{
-					"cardName": "Fire-Maw",
-					"amount": 1
-				},
-				{
-					"cardName": "Burrrnn",
-					"amount": 1
-				},
-				{
-					"cardName": "Rockky",
-					"amount": 1
-				},
-				{
-					"cardName": "Werezomb",
-					"amount": 1
-				}
-			]
+    "cards": [
+      {
+        "cardName": "Pyromaz",
+        "amount": 4
+      },
+      {
+        "cardName": "Modo",
+        "amount": 2
+      },
+      {
+        "cardName": "Cerberus",
+        "amount": 1
+      },
+      {
+        "cardName": "Jetter",
+        "amount": 2
+      },
+      {
+        "cardName": "Tiny",
+        "amount": 2
+      },
+      {
+        "cardName": "Quazi",
+        "amount": 4
+      },
+      {
+        "cardName": "Fire-Maw",
+        "amount": 1
+      },
+      {
+        "cardName": "Burrrnn",
+        "amount": 2
+      },
+      {
+        "cardName": "Rockky",
+        "amount": 4
+      },
+      {
+        "cardName": "Werezomb",
+        "amount": 2
+      },
+      {
+        "cardName": "Cynderman",
+        "amount": 2
+      },
+      {
+        "cardName": "Gargantua",
+        "amount": 1
+      },
+      {
+        "cardName": "Zhampion",
+        "amount": 2
+      },
+      {
+        "cardName": "Fresh Meat",
+        "amount": 1
+      }
+    ]
 		},
 		{
 			"id" : 1,

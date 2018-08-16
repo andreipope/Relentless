@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> _cardsInDestroy;
 
-      //  public int TurnDuration { get; private set; }
+        //  public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
         public bool cardsZoomed = false;
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
 
-         
+
         }
 
         public void Dispose()
@@ -133,10 +133,10 @@ namespace LoomNetwork.CZB
 
         private void LoadGameConfiguration()
         {
-           // TurnDuration = Constants.DEFAULT_TURN_DURATION;
+            // TurnDuration = Constants.DEFAULT_TURN_DURATION;
 
-          //  if (_gameplayManager.IsTutorial)
-           //     TurnDuration = 10000000;
+            //  if (_gameplayManager.IsTutorial)
+            //     TurnDuration = 10000000;
         }
 
         public void KillBoardCard(BoardUnit cardToDestroy)
@@ -174,7 +174,7 @@ namespace LoomNetwork.CZB
                     MonoBehaviour.Destroy(cardToDestroy.gameObject);
 
                     _timerManager.AddTimer((f) =>
-                    { 
+                    {
                         UpdatePositionOfBoardUnitsOfOpponent();
                         UpdatePositionOfBoardUnitsOfPlayer();
                     }, null, Time.deltaTime, false);
@@ -263,13 +263,13 @@ namespace LoomNetwork.CZB
         {
             StartTurn();
 
-        //    if (!_gameplayManager.IsTutorial)
-           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+            //    if (!_gameplayManager.IsTutorial)
+            //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-           // _timerManager.StopTimer(RunTurnAsync);
+            // _timerManager.StopTimer(RunTurnAsync);
 
             gameFinished = true;
             currentTurn = 0;
@@ -277,15 +277,15 @@ namespace LoomNetwork.CZB
             ClearBattleground();
         }
 
-       /* private void RunTurnAsync(object[] param)
-        {
-            EndTurn();
+        /* private void RunTurnAsync(object[] param)
+         {
+             EndTurn();
 
-            if (!gameFinished)
-                StartTurn();
-            else
-                _timerManager.StopTimer(RunTurnAsync);
-        } */
+             if (!gameFinished)
+                 StartTurn();
+             else
+                 _timerManager.StopTimer(RunTurnAsync);
+         } */
 
         public void StartTurn()
         {
@@ -308,7 +308,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
-               
+
                 List<BoardUnit> creatures = new List<BoardUnit>();
 
                 foreach (var card in playerBoardCards)
@@ -385,13 +385,13 @@ namespace LoomNetwork.CZB
 
         public void StopTurn()
         {
-         //   _timerManager.StopTimer(RunTurnAsync);
+            //   _timerManager.StopTimer(RunTurnAsync);
 
             EndTurn();
             StartTurn();
 
-          //  if (!_gameplayManager.IsTutorial)
-           //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
+            //  if (!_gameplayManager.IsTutorial)
+            //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -573,17 +573,17 @@ namespace LoomNetwork.CZB
         {
             isPreviewActive = true;
 
-            if(target is BoardCard)
+            if (target is BoardCard)
             {
                 currentPreviewedCardId = (target as BoardCard).WorkingCard.instanceId;
 
             }
-            else if(target is BoardUnit)
+            else if (target is BoardUnit)
             {
                 currentPreviewedCardId = (target as BoardUnit).Card.instanceId;
             }
 
-       
+
             createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
         }
 
@@ -624,10 +624,10 @@ namespace LoomNetwork.CZB
             boardCard.isPreview = true;
 
             InternalTools.SetLayerRecursively(boardCard.gameObject, 11);
-            
+
             if (target is BoardUnit)
                 boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
-            else if(target is BoardCard)
+            else if (target is BoardCard)
                 boardCard.DrawTooltipInfoOfCard(target as BoardCard);
 
             var newPos = pos;
@@ -798,12 +798,29 @@ namespace LoomNetwork.CZB
 
         public void DestroyBoardUnit(BoardUnit unit)
         {
-            unit.Die();
+            if (unit != null)
+                unit.Die();
         }
 
         public void TakeControlUnit(Player to, BoardUnit unit)
         {
             // implement functionality of the take control
+        }
+
+        public BoardUnit CreateBoardUnit(Player owner, WorkingCard card)
+        {
+            GameObject _playerBoard = owner.IsLocalPlayer ? playerBoardObject : opponentBoardObject;
+
+            var boardUnit = new BoardUnit(_playerBoard.transform);
+            boardUnit.transform.tag = owner.IsLocalPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
+            boardUnit.transform.SetParent(_playerBoard.transform);
+            boardUnit.transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
+            boardUnit.ownerPlayer = owner;
+            boardUnit.SetObjectInfo(card);
+
+            boardUnit.PlayArrivalAnimation();
+
+            return boardUnit;
         }
     }
 }

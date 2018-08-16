@@ -251,7 +251,7 @@ namespace LoomNetwork.CZB
         {
             OnStartTurnEvent?.Invoke();
 
-           if (_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooOnCurrentTurn++;
                 Goo = GooOnCurrentTurn + currentGooModificator;
@@ -269,11 +269,7 @@ namespace LoomNetwork.CZB
                     }
                 }
 
-                if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
-                {
-                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
-                }
-
+                _cardsController.AddCardToHand(this);
             }
         }
 
