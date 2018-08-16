@@ -412,7 +412,7 @@ namespace LoomNetwork.CZB
             {
                 foreach(var ability in card.libraryCard.abilities)
                 {
-                    if(ability.type.Equals("ATTACK_OVERLORD"))
+                    if(ability.abilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         if (ability.value >= _gameplayManager.OpponentPlayer.HP)
                             return false;

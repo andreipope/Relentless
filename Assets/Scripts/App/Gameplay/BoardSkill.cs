@@ -307,7 +307,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
                 return true;
 
-            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
+            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != owner || _usedInThisTurn || _tutorialManager.IsTutorial)
                 return false;
 
             return true;

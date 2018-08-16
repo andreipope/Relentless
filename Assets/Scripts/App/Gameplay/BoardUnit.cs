@@ -830,6 +830,8 @@ namespace LoomNetwork.CZB
 
             _frozenSprite.DOFade(1, 1);
 
+            SetHighlightingEnabled(false);
+
             UnitStatus = Enumerators.UnitStatusType.FROZEN;
             //sleepingParticles.Play();
         }

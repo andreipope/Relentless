@@ -253,6 +253,7 @@
             PRIORITY_ATTACK,
             DESTROY_TARGET_UNIT_AFTER_ATTACK,
             COSTS_LESS_IF_CARD_TYPE_IN_HAND,
+            RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS
         }
 
         public enum AbilityActivityType

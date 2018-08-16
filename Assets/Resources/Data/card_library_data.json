@@ -715,7 +715,7 @@
           "rank": "COMMANDER",
           "abilities": [
             {
-              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
+              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_all_cards|player_all_cards",

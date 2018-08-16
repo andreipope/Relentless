@@ -112,6 +112,6 @@ namespace LoomNetwork.CZB.Common
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE = true;  
     }
 }
