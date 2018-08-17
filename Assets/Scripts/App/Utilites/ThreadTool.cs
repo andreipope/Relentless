@@ -76,6 +76,9 @@ namespace LoomNetwork.CZB
 
         public void AbortThread(ulong id)
         {
+            if (_threads == null)
+                return;
+            
             var thread = _threads.Find(x => x.id == id);
             if (thread != null)
                 _threads.Remove(thread);
@@ -83,6 +86,9 @@ namespace LoomNetwork.CZB
 
         public void AbortAllThreads(object root = null)
         {
+            if (_threads == null)
+                return;
+            
             if (root == null)
             {
                 foreach (var thread in _threads)
