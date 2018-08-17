@@ -50,6 +50,8 @@ namespace LoomNetwork.CZB
             AddService<BackendFacade>(new BackendFacade());
             AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<GoogleAnalyticsManager>(new GoogleAnalyticsManager());
+            AddService<AnalyticsManager>(new AnalyticsManager());
         }
 
         public static T Get<T>()

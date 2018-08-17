@@ -58,6 +58,7 @@ namespace LoomNetwork.CZB
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+                GameClient.Get<AnalyticsManager>().LogScreen(SceneManager.GetActiveScene().name);
             }
         }
 
