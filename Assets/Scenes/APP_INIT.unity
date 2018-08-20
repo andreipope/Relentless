@@ -156,9 +156,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -229,6 +229,30 @@ Prefab:
     - target: {fileID: 400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: otherTrackingCode
+      value: UA-124278621-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: productName
+      value: Zombie Battleground v0.1.0.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: androidTrackingCode
+      value: UA-124278621-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: IOSTrackingCode
+      value: UA-124278621-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: bundleVersion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
+      propertyPath: bundleIdentifier
+      value: com.loomx.czb
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eb5b47b08880548c795ced5f38c9e001, type: 2}
@@ -358,9 +382,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -594,9 +618,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -687,9 +711,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -953,9 +977,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1258,9 +1282,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1621,9 +1645,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.03591159
     width: 1
-    height: 1
+    height: 0.9281768
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
