@@ -120,14 +120,30 @@ namespace LoomNetwork.CZB
             _collectionData = new CollectionData();
             _collectionData.cards = new List<CollectionCardData>();
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
             //_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersEditingDeck");
             _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
+
+            _createdArmyCards = new List<BoardCard>();
+            _createdHordeCards = new List<BoardCard>();
+        }
+
+
+        public void Update()
+        {
+            if (_selfPage != null && _selfPage.activeInHierarchy)
+            {
+                UpdateNumCardsText();
+
+                _cardInfoPopupHandler.Update();
+            }
+        }
+
+        public void Show()
+        {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
             _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
@@ -186,25 +202,6 @@ namespace LoomNetwork.CZB
 
             _deckNameInputField.onEndEdit.AddListener(OnDeckNameInputFieldEndedEdit);
 
-            _createdArmyCards = new List<BoardCard>();
-            _createdHordeCards = new List<BoardCard>();
-
-            Hide();
-        }
-
-
-        public void Update()
-        {
-            if (_selfPage.activeInHierarchy)
-            {
-                UpdateNumCardsText();
-
-                _cardInfoPopupHandler.Update();
-            }
-        }
-
-        public void Show()
-        {
             WarningPopup.OnHidePopupEvent += OnCloseAlertDialogEventHandler;
             FillCollectionData();
 
@@ -238,8 +235,14 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             Dispose();
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()

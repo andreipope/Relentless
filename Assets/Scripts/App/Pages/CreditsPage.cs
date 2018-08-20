@@ -44,23 +44,8 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
-            _panelCreditsList = _selfPage.transform.Find("Panel_CreditsList/Group");
-
             _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
             _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
-            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks").GetComponent<ButtonShiftingContent>();
-
-            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
-            _buttonThanks.onClick.AddListener(BackButtonOnClickHandler);
-
-            _dataManager.OnLoadCacheCompletedEvent += OnLoadCacheCompletedEventHandler;
-            Hide();
         }
 
         private void OnLoadCacheCompletedEventHandler()
@@ -78,15 +63,32 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
+            _panelCreditsList = _selfPage.transform.Find("Panel_CreditsList/Group");
+
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks").GetComponent<ButtonShiftingContent>();
+
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonThanks.onClick.AddListener(BackButtonOnClickHandler);
+
             _isActive = true;
             _creditsListScroll.verticalNormalizedPosition = 1;
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             _isActive = false;
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
