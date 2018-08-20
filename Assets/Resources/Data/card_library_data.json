@@ -2637,7 +2637,7 @@
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "TARGET_ADJUSTMENTS_BOMB",
               "buffType": "SWING"

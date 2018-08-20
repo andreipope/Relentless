@@ -497,15 +497,6 @@ namespace LoomNetwork.CZB
         {
             if (card.CanBePlayed(card.WorkingCard.owner))
             {
-                //  if (!Constants.DEV_MODE)
-                player.Goo -= card.manaCost;
-
-                //  _actionsQueueController.AddNewActionInToQueue((parameter, actionComplete) =>
-                // {
-                // _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
-
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
                 var libraryCard = card.WorkingCard.libraryCard;
 
                 card.transform.DORotate(Vector3.zero, .1f);
@@ -577,6 +568,10 @@ namespace LoomNetwork.CZB
                     {
                         _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
                     });
+
+                    //  if (!Constants.DEV_MODE)
+                    player.Goo -= card.manaCost;
+                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
                     //actionComplete?.Invoke();
 

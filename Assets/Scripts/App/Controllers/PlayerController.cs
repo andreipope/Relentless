@@ -108,8 +108,8 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                          //  playerDeck.Add("Wheezy");
-                          //  playerDeck.Add("MonZoon");
+                            //  playerDeck.Add("Whizpar");
+                            //  playerDeck.Add("Nail Bomb");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -321,7 +321,7 @@ namespace LoomNetwork.CZB
                             _battlegroundController.DestroyCardPreview();
 
 
-                            if (_boardArrowController.CurrentBoardArrow != null || _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
                             else HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }
@@ -333,7 +333,7 @@ namespace LoomNetwork.CZB
                             _battlegroundController.DestroyCardPreview();
 
 
-                            if (_boardArrowController.CurrentBoardArrow != null || _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
                             else HandCardPreview(new object[] { _selectedBoardUnit });
                         }
                     }
