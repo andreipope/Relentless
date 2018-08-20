@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            SaveAllCache();
+            //SaveAllCache();
         }
 
         public void Init()
