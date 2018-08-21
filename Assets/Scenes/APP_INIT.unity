@@ -141,7 +141,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &66149999
 Camera:
@@ -155,10 +155,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -315,10 +315,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -350,7 +350,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &647401283
 MonoBehaviour:
@@ -551,10 +551,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -586,7 +586,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1022427340
 MonoBehaviour:
@@ -644,10 +644,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -679,7 +679,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1027686447
 MonoBehaviour:
@@ -846,6 +846,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1543458684}
   - {fileID: 1027686446}
   - {fileID: 1022427339}
   - {fileID: 1601436138}
@@ -895,7 +896,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1357690068
 Camera:
@@ -909,10 +910,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1120,6 +1121,71 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!1 &1543458683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1543458684}
+  - component: {fileID: 1543458685}
+  m_Layer: 0
+  m_Name: Camera_Clear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1543458684
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1543458683}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1265724705}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1543458685
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1543458683}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: -100
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1601436136
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,10 +1215,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1184,7 +1250,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1601436139
 MonoBehaviour:
@@ -1498,7 +1564,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2146064447
 Camera:
@@ -1512,10 +1578,10 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00024986267
-    y: 0
-    width: 0.9995003
-    height: 1
+    x: 0
+    y: 0.10686383
+    width: 1
+    height: 0.78627235
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
