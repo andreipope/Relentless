@@ -225,6 +225,8 @@ namespace LoomNetwork.CZB
 
             int opponentHeroId = randomOpponentDeck.heroId;
 
+            Debug.Log (opponentHeroId);
+
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
 
