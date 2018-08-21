@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224193489362227938}
   - component: {fileID: 222449441498493232}
   - component: {fileID: 114710255204948324}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224451449190179020}
   - component: {fileID: 222179272152973712}
   - component: {fileID: 114451269735591426}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: ToggleLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 114087515016848516}
   - component: {fileID: 222215708309059664}
   - component: {fileID: 114274137650840714}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_GotIt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224556213446114376}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 224323283431028076}
   - component: {fileID: 222301290017664008}
   - component: {fileID: 114060776862307540}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 224250425879233716}
   - component: {fileID: 222619956994915032}
   - component: {fileID: 114774492607277690}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: TMP SubMeshUI [Bevan SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 224967914723757722}
   - component: {fileID: 222692505548369236}
   - component: {fileID: 114481640501147926}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 224265632458479620}
   - component: {fileID: 222517068286316242}
   - component: {fileID: 114506901285225236}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 224143603080964244}
   - component: {fileID: 222154238007813392}
   - component: {fileID: 114253838510454340}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224465208658038682}
   - component: {fileID: 114319947158387140}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 224568325972416808}
   - component: {fileID: 222560812561123960}
   - component: {fileID: 114650605421203198}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 224264692403636230}
   - component: {fileID: 222490521858353418}
   - component: {fileID: 114687340325829612}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TermsPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 224677463115988324}
   - component: {fileID: 222435091556221558}
   - component: {fileID: 114927294848010846}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}

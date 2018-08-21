@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224102006298516654}
   - component: {fileID: 222516307584592270}
   - component: {fileID: 114135048645637032}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_WinPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4965084687945856}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4453833372255106}
   - component: {fileID: 212841355072111580}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SelectHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 224204276424634430}
   - component: {fileID: 222645004318083234}
   - component: {fileID: 114854939481543526}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_WinPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224851225736004432}
   - component: {fileID: 222342484615884088}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: WinPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4024360344349272}
   - component: {fileID: 212427367293841022}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 224711156204401888}
   - component: {fileID: 222261793641469758}
   - component: {fileID: 114539986917358290}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224079947419055118}
   - component: {fileID: 222729623452556286}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: WinPackTutorial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,7 +150,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4062351474752374}
   - component: {fileID: 212540523249085252}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonShine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 224683180791314198}
   - component: {fileID: 223451230283503292}
   - component: {fileID: 114116289217219766}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224746380925607062}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Shifted
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 114684622403977020}
   - component: {fileID: 222725985311940254}
   - component: {fileID: 114974818127059540}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Continue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 224587587170450754}
   - component: {fileID: 222985921994528098}
   - component: {fileID: 114552808478483084}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,7 +233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4041059259996414}
   - component: {fileID: 95950802733461488}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4460132452454654}
   - component: {fileID: 212034287761448284}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonRays
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -264,7 +264,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4392265810964558}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4965027760979642}
   - component: {fileID: 212106943495464556}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouWonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 224488563111097500}
   - component: {fileID: 222304839694875474}
   - component: {fileID: 114437247867266006}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_WinPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -129,7 +129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &66149998
 Transform:
   m_ObjectHideFlags: 0
@@ -156,9 +156,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 346073627}
   - component: {fileID: 346073626}
   - component: {fileID: 346073625}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 1022427338}
+  m_Camera: {fileID: 1027686445}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
@@ -302,7 +302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!20 &647401281
 Camera:
   m_ObjectHideFlags: 0
@@ -316,9 +316,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 687476407}
   - component: {fileID: 687476406}
   - component: {fileID: 687476405}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Canvas2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +448,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 647401281}
+  m_Camera: {fileID: 1027686445}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
@@ -457,7 +457,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!1 &1014591044
 GameObject:
@@ -538,7 +538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!20 &1022427338
 Camera:
   m_ObjectHideFlags: 0
@@ -552,9 +552,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -626,7 +626,7 @@ GameObject:
   - component: {fileID: 1027686445}
   - component: {fileID: 1027686447}
   m_Layer: 0
-  m_Name: CameraObject_1
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -645,9 +645,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -704,7 +704,7 @@ GameObject:
   - component: {fileID: 1126897070}
   - component: {fileID: 1126897069}
   - component: {fileID: 1126897068}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Image_Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -884,7 +884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1357690067
 Transform:
   m_ObjectHideFlags: 0
@@ -911,9 +911,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -957,7 +957,7 @@ GameObject:
   - component: {fileID: 1423204464}
   - component: {fileID: 1423204463}
   - component: {fileID: 1423204462}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1037,7 +1037,7 @@ GameObject:
   - component: {fileID: 1437790373}
   - component: {fileID: 1437790372}
   - component: {fileID: 1437790371}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Canvas3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1110,7 +1110,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 2146064447}
+  m_Camera: {fileID: 1027686445}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
@@ -1119,7 +1119,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!1 &1543458683
 GameObject:
@@ -1202,7 +1202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!20 &1601436137
 Camera:
   m_ObjectHideFlags: 0
@@ -1216,9 +1216,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1426,7 +1426,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 50
   m_TargetDisplay: 0
 --- !u!1 &2071856736
 GameObject:
@@ -1439,7 +1439,7 @@ GameObject:
   - component: {fileID: 2071856740}
   - component: {fileID: 2071856739}
   - component: {fileID: 2071856738}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1552,7 +1552,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2146064446
 Transform:
   m_ObjectHideFlags: 0
@@ -1579,9 +1579,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.10686383
+    y: 0
     width: 1
-    height: 0.78627235
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

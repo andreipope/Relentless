@@ -9,6 +9,7 @@ using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityEngine.Rendering;
 
 namespace LoomNetwork.CZB
 {
@@ -110,7 +111,8 @@ namespace LoomNetwork.CZB
 
             PreviewCardInstantiated?.Invoke(_previewCard);
 
-            Utilites.SetLayerRecursively(_previewCard.gameObject, 11);
+            _previewCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 3;
+            //Utilites.SetLayerRecursively(_previewCard.gameObject, 11);
 
             Sequence mySequence = DOTween.Sequence();
             mySequence.Append(_previewCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
