@@ -112,8 +112,8 @@ namespace LoomNetwork.CZB
                 {
                     for (var i = 0; i < card.amount; i++)
                     {
-                        playerDeck.Add(card.cardName);
-                       //  playerDeck.Add("Zeptic");
+                          playerDeck.Add(card.cardName);
+                        //playerDeck.Add("Tainted Goo");
                     }
                 }
 
@@ -202,7 +202,17 @@ namespace LoomNetwork.CZB
                         {
                             ThreadTool.Instance.StartOneTimeThread(UsePlayerSkills, () =>
                             {
-                                _battlegroundController.StopTurn();
+                                if (_gameplayManager.OpponentPlayer.SelfHero.heroElement == Enumerators.SetType.FIRE)
+                                {
+                                    ThreadTool.Instance.StartOneTimeThread(UseUnitsOnBoard, () =>
+                                    {
+                                        _battlegroundController.StopTurn();
+                                    }, this);
+                                }
+                                else
+                                {
+                                    _battlegroundController.StopTurn();
+                                }
                             }, this);
                         }, this);
                     }
@@ -244,6 +254,7 @@ namespace LoomNetwork.CZB
                     // if (Constants.DEV_MODE)
                     //     break;
                 }
+
                 LetsThink();
                 LetsThink();
             }
@@ -401,7 +412,7 @@ namespace LoomNetwork.CZB
             {
                 foreach(var ability in card.libraryCard.abilities)
                 {
-                    if(ability.type.Equals("ATTACK_OVERLORD"))
+                    if(ability.abilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         if (ability.value >= _gameplayManager.OpponentPlayer.HP)
                             return false;
@@ -414,7 +425,16 @@ namespace LoomNetwork.CZB
 
         private void PlayCardOnBoard(WorkingCard card)
         {
-            var target = GetAbilityTarget(card);
+            bool needTargetForAbility = false;
+
+            if (card.libraryCard.abilities != null && card.libraryCard.abilities.Count > 0)
+                needTargetForAbility = card.libraryCard.abilities.FindAll(x => x.abilityTargetTypes.Count > 0).Count > 0;
+
+            object target = null;
+
+            if (needTargetForAbility)
+                target = GetAbilityTarget(card);
+
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_UNITS)
             {
                 //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
@@ -430,8 +450,11 @@ namespace LoomNetwork.CZB
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                if (target != null)
+                if ((target != null && needTargetForAbility) || !needTargetForAbility)
                 {
+                    _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
+                    _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+
                     _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
                     _cardsController.DrawCardInfo(card);
                 }

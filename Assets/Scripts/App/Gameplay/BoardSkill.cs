@@ -110,13 +110,27 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnDragStartedEventHandler()
         {
-            if (owner.IsLocalPlayer)
-                StartDoSkill();
+            if (skill.skillTargetTypes.Count > 0)
+            {
+                if (owner.IsLocalPlayer)
+                    StartDoSkill();
+            }
+            else DrawAbilityTooltip();
         }
 
         private void PointerEventSolver_OnClickEventHandler()
         {
-            DrawAbilityTooltip();
+            if (skill.skillTargetTypes.Count > 0)
+                DrawAbilityTooltip();
+            else
+            {
+                if (!_usedInThisTurn)
+                {
+                    if (owner.IsLocalPlayer)
+                        StartDoSkill();
+                }
+                else DrawAbilityTooltip();
+            }
         }
 
         private void PointerEventSolver_OnEndEventHandler()
@@ -293,7 +307,7 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
                 return true;
 
-            if (!IsSkillReady || !_gameplayManager.CurrentTurnPlayer.Equals(owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
+            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != owner || _usedInThisTurn || _tutorialManager.IsTutorial)
                 return false;
 
             return true;

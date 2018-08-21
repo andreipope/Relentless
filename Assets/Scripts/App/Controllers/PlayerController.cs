@@ -108,7 +108,8 @@ namespace LoomNetwork.CZB
                     {
                         if (Constants.DEV_MODE)
                         {
-                           //    playerDeck.Add("Zhatterer");
+                            //  playerDeck.Add("Whizpar");
+                            //  playerDeck.Add("Nail Bomb");
                         }
 
                         playerDeck.Add(card.cardName);
@@ -310,8 +311,7 @@ namespace LoomNetwork.CZB
                     //        HandCardPreview(new object[] { _selectedBoardUnit });
                     //}
                 }
-                else
-                if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
+                else if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
                 {
                     if (_isPreviewHandCard)
                     {
@@ -321,8 +321,8 @@ namespace LoomNetwork.CZB
                             _battlegroundController.DestroyCardPreview();
 
 
-                            if (!_boardArrowController.IsBoardArrowNowInTheBattle)
-                                HandCardPreview(new object[] { _topmostBoardCard });
+                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                            else HandCardPreview(new object[] { _topmostBoardCard });
                         }
                     }
                     else
@@ -332,8 +332,9 @@ namespace LoomNetwork.CZB
                             StopHandTimer();
                             _battlegroundController.DestroyCardPreview();
 
-                            if (_boardArrowController.CurrentBoardArrow == null || (_boardArrowController.CurrentBoardArrow != null && !(_boardArrowController.CurrentBoardArrow is AbilityBoardArrow)))
-                                HandCardPreview(new object[] { _selectedBoardUnit });
+
+                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                            else HandCardPreview(new object[] { _selectedBoardUnit });
                         }
                     }
 

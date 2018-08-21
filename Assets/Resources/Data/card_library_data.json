@@ -521,7 +521,7 @@
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 4,
-          "description": "<b>Entry: Freeze</b> zombie and adjecent zombies, 2 damage if Frozen",
+          "description": "<b>Entry: Freeze</b> zombie and adjacent zombies, 2 damage if Frozen",
           "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
           "picture": "Freezzee",
           "damage": 2,
@@ -715,7 +715,7 @@
           "rank": "COMMANDER",
           "abilities": [
             {
-              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
+              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_all_cards|player_all_cards",
@@ -831,7 +831,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "affectObjectType": "none",
               "value": 1,
               "effectType": "TARGET_ROCK",
@@ -1322,7 +1322,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player_card",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "value": -1
             }
           ],
           "cardViewInfo": {
@@ -1602,7 +1603,8 @@
               "callType": "IN_HAND",
               "targetType": "player",
               "setType": "air",
-              "buffType": "PERMANENT"
+              "buffType": "PERMANENT",
+              "value":  -1
             }
           ],
           "cardViewInfo": {
@@ -2635,7 +2637,7 @@
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "TARGET_ADJUSTMENTS_BOMB",
               "buffType": "SWING"

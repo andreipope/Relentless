@@ -15,6 +15,8 @@ namespace LoomNetwork.CZB
     public class AbilitiesController : IController
     {
         private IGameplayManager _gameplayManager;
+        private ITutorialManager _tutorialManager;
+
         private CardsController _cardsController;
         private PlayerController _playerController;
         private BattlegroundController _battlegroundController;
@@ -31,6 +33,9 @@ namespace LoomNetwork.CZB
 
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+
+
             _cardsController = _gameplayManager.GetController<CardsController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -286,6 +291,9 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AbilityType.COSTS_LESS_IF_CARD_TYPE_IN_HAND:
                     ability = new CostsLessIfCardTypeInHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS:
+                    ability = new ReturnUnitsOnBoardToOwnersHandsAbility(cardKind, abilityData);
                     break;    
                 default:
                     break;
@@ -365,19 +373,24 @@ namespace LoomNetwork.CZB
             return available;
         }
 
-        public int GetStatModificatorByAbility(BoardUnit attacker, BoardUnit attacked)
+        public int GetStatModificatorByAbility(BoardUnit attacker, BoardUnit attacked, bool isAttackking)
         {
             int value = 0;
 
             var attackedCard = attacked.Card.libraryCard;
             var attackerCard = attacker.Card.libraryCard;
 
-            var abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
+            List<AbilityData> abilities = null;
 
-            for (int i = 0; i < abilities.Count; i++)
+            if (isAttackking)
             {
-                if (attackedCard.cardSetType == abilities[i].abilitySetType)
-                    value += abilities[i].value;
+                abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
+
+                for (int i = 0; i < abilities.Count; i++)
+                {
+                    if (attackedCard.cardSetType == abilities[i].abilitySetType)
+                        value += abilities[i].value;
+                }
             }
 
             abilities = attackerCard.abilities.FindAll(x => x.abilityType == Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK);
@@ -535,6 +548,9 @@ namespace LoomNetwork.CZB
                         {
                             if (kind == Enumerators.CardKind.SPELL && isPlayer)
                             {
+                                card.WorkingCard.owner.Goo -= card.manaCost;
+                                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
                                 handCard.gameObject.SetActive(true);
                                 card.removeCardParticle.Play(); // move it when card should call hide action
 
@@ -641,6 +657,9 @@ namespace LoomNetwork.CZB
             {
                 if (kind == Enumerators.CardKind.SPELL)
                 {
+                    card.WorkingCard.owner.Goo -= card.manaCost;
+                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+
                     card.gameObject.SetActive(true);
                     card.removeCardParticle.Play(); // move it when card should call hide action
 
