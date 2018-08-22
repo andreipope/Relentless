@@ -789,7 +789,7 @@ namespace LoomNetwork.CZB.Protobuf {
       health_ = other.health_;
       cost_ = other.cost_;
       ability_ = other.ability_;
-      cardViewInfo_ = other.cardViewInfo_ != null ? other.cardViewInfo_.Clone() : null;
+      CardViewInfo = other.cardViewInfo_ != null ? other.CardViewInfo.Clone() : null;
       effects_ = other.effects_.Clone();
       abilities_ = other.abilities_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1369,8 +1369,8 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CardViewInfo(CardViewInfo other) : this() {
-      position_ = other.position_ != null ? other.position_.Clone() : null;
-      scale_ = other.scale_ != null ? other.scale_.Clone() : null;
+      Position = other.position_ != null ? other.Position.Clone() : null;
+      Scale = other.scale_ != null ? other.Scale.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4295,7 +4295,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetHeroResponse(GetHeroResponse other) : this() {
-      hero_ = other.hero_ != null ? other.hero_.Clone() : null;
+      Hero = other.hero_ != null ? other.Hero.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6346,7 +6346,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetDeckResponse(GetDeckResponse other) : this() {
-      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      Deck = other.deck_ != null ? other.Deck.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6482,7 +6482,7 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CreateDeckRequest(CreateDeckRequest other) : this() {
       userId_ = other.userId_;
-      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      Deck = other.deck_ != null ? other.Deck.Clone() : null;
       lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -6987,7 +6987,7 @@ namespace LoomNetwork.CZB.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public EditDeckRequest(EditDeckRequest other) : this() {
       userId_ = other.userId_;
-      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      Deck = other.deck_ != null ? other.Deck.Clone() : null;
       lastModificationTimestamp_ = other.lastModificationTimestamp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
