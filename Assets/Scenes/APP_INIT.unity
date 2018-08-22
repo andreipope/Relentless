@@ -283,8 +283,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingLayerID: 540465013
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!1 &647401280
 GameObject:
@@ -456,8 +456,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
-  m_SortingOrder: 3
+  m_SortingLayerID: 540465013
+  m_SortingOrder: 20
   m_TargetDisplay: 0
 --- !u!1 &1014591044
 GameObject:
@@ -625,6 +625,7 @@ GameObject:
   - component: {fileID: 1027686446}
   - component: {fileID: 1027686445}
   - component: {fileID: 1027686447}
+  - component: {fileID: 1027686448}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -693,6 +694,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetAspectRatio: 1.7777778
+--- !u!114 &1027686448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1027686444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1690312454, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_MaxRayIntersections: 0
 --- !u!1 &1126897066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,8 +1134,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
-  m_SortingOrder: 5
+  m_SortingLayerID: 540465013
+  m_SortingOrder: 30
   m_TargetDisplay: 0
 --- !u!1 &1543458683
 GameObject:
