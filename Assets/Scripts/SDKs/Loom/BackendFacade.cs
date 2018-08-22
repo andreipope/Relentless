@@ -69,12 +69,14 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             DAppChainClient client = new DAppChainClient(writer, reader)
                 { Logger = Debug.unityLogger };
-
+            
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
                 new NonceTxMiddleware(publicKey, client),
                 new SignedTxMiddleware(privateKey)
             });
+
+            client.AutoReconnect = false;
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
