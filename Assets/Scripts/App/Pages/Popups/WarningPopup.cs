@@ -34,19 +34,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-            //_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
-            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
-
-            //_button.onClickEvent.AddListener(Hide);
-            _gotItButton.onClick.AddListener(CloseButtonHandler);
-
-            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
 
@@ -63,7 +50,13 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -72,14 +65,23 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            //_button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
+            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
+
+            //_button.onClickEvent.AddListener(Hide);
+            _gotItButton.onClick.AddListener(CloseButtonHandler);
+
+            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
         }
 
         public void Show(object data)
         {
-            _text.text = (string)data;
-
             Show();
+
+            _text.text = (string)data;
         }
 
         public void Update()

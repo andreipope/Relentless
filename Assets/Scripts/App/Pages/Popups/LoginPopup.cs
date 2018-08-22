@@ -53,24 +53,6 @@ namespace LoomNetwork.CZB
 	        _dataManager = GameClient.Get<IDataManager>();
 	        _backendFacade = GameClient.Get<BackendFacade>();
 	        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
-
-	        _betaGroup = _selfPage.transform.Find("Beta_Group");
-			_betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
-	        _betaKeyInputField = _selfPage.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
-	        _betaErrorText = _betaGroup.Find("Text_Error");
-	        
-			_betaButton.onClick.AddListener(PressedBetaHandler);
-
-	        _waitingGroup = _selfPage.transform.Find("Waiting_Group");
-	        _versionMismatchGroup = _selfPage.transform.Find("VersionMismatch_Group");
-	        _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
-	        _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
-	        _versionMismatchExitButton.onClick.AddListener(Application.Quit);
-
-            Hide();
         }
 
 		public void Dispose()
@@ -141,7 +123,13 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -150,6 +138,22 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _betaGroup = _selfPage.transform.Find("Beta_Group");
+            _betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
+            _betaKeyInputField = _selfPage.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
+            _betaErrorText = _betaGroup.Find("Text_Error");
+
+            _betaButton.onClick.AddListener(PressedBetaHandler);
+
+            _waitingGroup = _selfPage.transform.Find("Waiting_Group");
+            _versionMismatchGroup = _selfPage.transform.Find("VersionMismatch_Group");
+            _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
+            _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
+            _versionMismatchExitButton.onClick.AddListener(Application.Quit);
+
 			_state = LoginState.BetaKeyRequest;
             SetUIState(LoginState.BetaKeyRequest);
             _betaKeyInputField.text = "";
@@ -159,6 +163,7 @@ namespace LoomNetwork.CZB
 		public void Show(object data)
 		{
 			Show();
+
 			GameVersionMismatchException gameVersionMismatchException = data as GameVersionMismatchException;
 			if (gameVersionMismatchException != null)
 			{

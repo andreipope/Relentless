@@ -32,7 +32,31 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+        }
 
+
+        public void Dispose()
+        {
+        }
+
+        public void Hide()
+        {
+            //Time.timeScale = 1;
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+        }
+
+        public void SetMainPriority()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -43,37 +67,15 @@ namespace LoomNetwork.CZB
             _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-
-            Hide();
-        }
-
-
-        public void Dispose()
-        {
-        }
-
-        public void Hide()
-        {
-            _selfPage.SetActive(false);
-            //Time.timeScale = 1;
-        }
-
-        public void SetMainPriority()
-        {
-        }
-
-        public void Show()
-        {
-            _selfPage.SetActive(true);
             //Time.timeScale = 0;
         }
 
         public void Show(object data)
         {
+            Show();
+
             //_text.text = (string)data;
             _callback = (Action)data;
-
-            Show();
         }
 
         public void Update()
