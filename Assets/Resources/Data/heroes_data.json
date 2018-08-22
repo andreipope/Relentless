@@ -2,81 +2,221 @@
   "heroes": [
     {
       "heroId": 0,
-      "icon": "asdasd",
-      "name": "Golem Hero",
-      "element": 2,
-      "skill": {
-        "title": "Deffence",
-        "skillType": 4,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 2
-      }
+      "icon": "icon",
+      "name": "Brakuus",
+      "shortDescription": "The Guardian",
+      "longDescription": "",
+      "element": "EARTH",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Harden",
+          "skill": "HARDEN",
+          "iconPath": "overlordability_earth",
+          "description": "Add 2 Def to the Overlord.",
+          "skillType": 4,
+          "skillTargets": "",
+          "cooldown": 3,
+          "initialCooldown": 3,
+          "value": 2
+        },
+        {
+          "title": "Stoneskin",
+          "skill": "STONE_SKIN",
+          "iconPath": "overlordability_earth_stone_skin",
+          "description": "Give a friendly zombie +1 Def.",
+          "skillType": 4,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 1
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 1,
-      "icon": "asdasd",
-      "name": "Pyro Hero",
-      "element": 0,
-      "skill": {
-        "title": "Fireball",
-        "skillType": 2,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+      "icon": "icon",
+      "name": "Razu",
+      "shortDescription": "The Fire Daemon",
+      "longDescription": "",
+      "element": "FIRE",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Fire Bolt",
+          "skill": "FIRE_BOLT",
+          "iconPath": "overlordability_fire",
+          "description": "Deal 1 damage to target.",
+          "skillType": 2,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
+          "cooldown": 3,
+          "initialCooldown": 3,
+          "value": 1
+        },
+        {
+          "title": "Rabies",
+          "skill": "RABIES",
+          "iconPath": "overlordability_fire_rabies",
+          "description": "Give friendly zombie feral.",
+          "skillType": 2,
+          "skillTargets": "PLAYER_CARD",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 1
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 2,
-      "icon": "asdasd",
-      "name": "Water Hero",
-      "element": 1,
-      "skill": {
-        "title": "Freeze target for 1 turn",
-        "skillType": 0,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+      "icon": "icon",
+      "name": "Vash'Kala",
+      "shortDescription": "The Ancient One",
+      "longDescription": "",
+      "element": "WATER",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Freeze",
+          "skill": "FREEZE",
+          "iconPath": "overlordability_water",
+          "description": "Freeze a zombie.",
+          "skillType": 0,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
+          "cooldown": 3,
+          "initialCooldown": 3,
+          "value": 1
+        },
+        {
+          "title": "Ice Bolt",
+          "skill": "ICE_BOLT",
+          "iconPath": "overlordability_water_ice_bolt",
+          "description": "Deal 2 damage to a target zombie. If it survives, Freeze it.",
+          "skillType": 0,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 2
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 3,
-      "icon": "asdasd",
-      "name": "Air Hero",
-      "element": 3,
-      "skill": {
-        "title": "Return Zombie",
-        "skillType": 5,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 0
-      }
+      "icon": "icon",
+      "name": "Kalile",
+      "shortDescription": "Tempest of Storms",
+      "longDescription": "",
+      "element": "AIR",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Push",
+          "skill": "PUSH",
+          "iconPath": "overlordability_air_push",
+          "description": "Return a friendly zombie to your hand.",
+          "skillType": 5,
+          "skillTargets": "PLAYER_CARD",
+          "cooldown": 6,
+          "initialCooldown": 5,
+          "value": 0
+        },
+        {
+          "title": "Draw",
+          "skill": "DRAW",
+          "iconPath": "overlordability_air_draw",
+          "description": "Draw a card.",
+          "skillType": 5,
+          "skillTargets": "",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 0
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 4,
-      "icon": "asdasd",
-      "name": "Toxic Hero",
-      "element": 5,
-      "skill": {
-        "title": "Toxic Damage",
-        "skillType": 1,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 1
-      }
+      "icon": "icon",
+      "name": "Mhalik",
+      "shortDescription": "Lord of Pestilence",
+      "longDescription": "",
+      "element": "TOXIC",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Poison Dart",
+          "skill": "POISON_DART",
+          "iconPath": "overlordability_toxic",
+          "description": "Deal 1 damage to a target.",
+          "skillType": 1,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
+          "cooldown": 3,
+          "initialCooldown": 3,
+          "value": 1
+        },
+        {
+          "title": "Toxic Power",
+          "skill": "TOXIC_POWER",
+          "iconPath": "overlordability_toxic_toxic_power",
+          "description": "Deal 1 damage to a zombie and give it +1 Atk.",
+          "skillType": 1,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 1,
+          "attack": 1
+
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     },
     {
       "heroId": 5,
-      "icon": "asdasd",
-      "name": "Life Hero",
-      "element": 4,
-      "skill": {
-        "title": "Healing",
-        "skillType": 3,
-        "skillTargetType": 0,
-        "cost": 2,
-        "value": 2
-      }
+      "icon": "icon",
+      "name": "Valash",
+      "shortDescription": "Nature's Warden",
+      "longDescription": "",
+      "element": "LIFE",
+      "experience": 0,
+      "level": 0,
+      "skills": [
+        {
+          "title": "Healing Touch",
+          "skill": "HEALING_TOUCH",
+          "iconPath": "overlordability_life",
+          "description": "Restore 2 Def to a target.",
+          "skillType": 1,
+          "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
+          "cooldown": 3,
+          "initialCooldown": 3,
+          "value": 2
+        },
+        {
+          "title": "Mend",
+          "skill": "MEND",
+          "iconPath": "overlordability_life_mend",
+          "description": "Restore 4 Def to your Overlord.",
+          "skillType": 1,
+          "skillTargets": "",
+          "cooldown": 4,
+          "initialCooldown": 4,
+          "value": 4
+        }
+      ],
+      "primarySkill": 0,
+      "secondarySkill": 1
     }
   ]
 }

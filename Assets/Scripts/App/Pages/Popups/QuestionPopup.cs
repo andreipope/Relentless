@@ -1,15 +1,20 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class QuestionPopup : IUIPopup
     {
-        public event Action ConfirmationEvent;
+        public event Action<bool> ConfirmationEvent;
 
 		public GameObject Self
         {
@@ -23,7 +28,7 @@ namespace GrandDevs.CZB
 		private TextMeshProUGUI _text;
         //private MenuButton _button1,
         //                    _button2;
-        private MenuButtonNoGlow //_closeButton,
+        private ButtonShiftingContent //_closeButton,
                                  _buttonYes,
                                  _buttonNo;
 		private TextMeshProUGUI _buttonText;
@@ -32,22 +37,6 @@ namespace GrandDevs.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/QuestionPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
-
-            _buttonYes = _selfPage.transform.Find("Button_Yes").GetComponent<MenuButtonNoGlow>();
-            _buttonNo = _selfPage.transform.Find("Button_No").GetComponent<MenuButtonNoGlow>();
-			//_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
-
-			//_closeButton.onClickEvent.AddListener(Hide);
-            _buttonYes.onClickEvent.AddListener(ConfirmationButtonHandler);
-            _buttonNo.onClickEvent.AddListener(Hide);
-
-
-			_text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
 
@@ -57,7 +46,12 @@ namespace GrandDevs.CZB
 
 		public void Hide()
 		{
-			  _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -66,14 +60,26 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/QuestionPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _buttonYes = _selfPage.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
+            _buttonNo = _selfPage.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
+            //_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
+
+            //_closeButton.onClickEvent.AddListener(Hide);
+            _buttonYes.onClick.AddListener(ConfirmationButtonHandler);
+            _buttonNo.onClick.AddListener(NoButtonOnClickHandler);
+
+
+            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
         }
 
         public void Show(object data)
         {
-            _text.text = (string)data;
-
             Show();
+
+            _text.text = (string)data;
         }
 
         public void Update()
@@ -84,9 +90,16 @@ namespace GrandDevs.CZB
         private void ConfirmationButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (ConfirmationEvent != null)
-				ConfirmationEvent();
+
+            ConfirmationEvent?.Invoke(true);
+
             Hide();
+        }
+
+        private void NoButtonOnClickHandler()
+        {
+            ConfirmationEvent?.Invoke(false);
+            _uiManager.HidePopup<QuestionPopup>();
         }
 
     }

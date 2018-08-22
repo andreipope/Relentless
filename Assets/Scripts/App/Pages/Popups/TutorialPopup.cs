@@ -1,11 +1,16 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class TutorialPopup : IUIPopup
     {
@@ -21,7 +26,7 @@ namespace GrandDevs.CZB
 
 		private TextMeshProUGUI _text;
 		private GameObject _yesnoObject;
-		private Button _nextButton, _playButton, _skipButton;
+		private ButtonShiftingContent _nextButton, _playButton, _skipButton;
         private GameObject _focusedObject;
 		private GameObject _bubbleObject;
 		private Image _janeImage;
@@ -35,39 +40,9 @@ namespace GrandDevs.CZB
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
-            //_selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
-
-            _bubbleObject = _selfPage.transform.Find("Description").gameObject;
-
-			_text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
-            _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
-
-            _nextButton = _selfPage.transform.Find("NextButton").GetComponent<Button>();
-            _playButton = _selfPage.transform.Find("PlayButton").GetComponent<Button>();
-            _skipButton = _selfPage.transform.Find("SkipButton").GetComponent<Button>();
-
-            _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
-
-            _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _skipButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
 			_focusObjects = new List<GameObject>();
-
-            foreach (Transform obj in _selfPage.transform.Find("FocusObjects").transform)
-            {
-                _focusObjects.Add(obj.gameObject);
-            }
-
-            _nextButton.gameObject.SetActive(false);
-            _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
-
-            Hide();
         }
 
 
@@ -77,7 +52,12 @@ namespace GrandDevs.CZB
 
 		public void Hide()
 		{
-			  _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -86,11 +66,44 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            if (_selfPage != null)
+                Hide ();
+           
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
+            //_selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _bubbleObject = _selfPage.transform.Find("Description").gameObject;
+
+            _text = _selfPage.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
+            _focusedObject = _selfPage.transform.Find("TutorialFocusObject").gameObject;
+
+            _nextButton = _selfPage.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
+            _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
+            _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
+
+            _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
+
+            _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
+            _skipButton.onClick.AddListener(_tutorialManager.SkipTutorial);
+
+            _focusObjects.Clear ();
+
+            foreach (Transform obj in _selfPage.transform.Find("FocusObjects").transform)
+            {
+                _focusObjects.Add(obj.gameObject);
+            }
+
+            _nextButton.gameObject.SetActive(false);
+            _playButton.gameObject.SetActive(false);
+            _skipButton.gameObject.SetActive(true);
         }
 
         public void Show(object data)
         {
+            Show();
+
             if(_tutorialManager.CurrentStep == 22)
             {
                 _bubbleObject.SetActive(false);
@@ -98,7 +111,6 @@ namespace GrandDevs.CZB
                 GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f, false);
             }
             _text.text = (string)data;
-            Show();
         }
 
         public void UpdatePose(Enumerators.TutorialJanePoses pose)
@@ -131,7 +143,7 @@ namespace GrandDevs.CZB
                     obj.SetActive(false);
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-            _skipButton.gameObject.SetActive(false);
+          //  _skipButton.gameObject.SetActive(false);
         }
 
         public void ShowNextButton()
@@ -142,7 +154,7 @@ namespace GrandDevs.CZB
         public void ShowQuestion()
         {
             _playButton.gameObject.SetActive(true);
-            _skipButton.gameObject.SetActive(true);
+          //  _skipButton.gameObject.SetActive(true);
         }
 
         public void Update()

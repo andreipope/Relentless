@@ -119,7 +119,7 @@ MonoBehaviour:
   m_fontStyle: 1
   m_textAlignment: 514
   m_isAlignmentEnumConverted: 1
-  m_characterSpacing: -3.9
+  m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 0
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_enableKerning: 1
@@ -155,7 +155,7 @@ MonoBehaviour:
     spaceCount: 0
     wordCount: 1
     linkCount: 0
-    lineCount: 1
+    lineCount: 10
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 1

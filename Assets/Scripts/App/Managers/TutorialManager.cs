@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using System;
 using System.Collections.Generic;
-using GrandDevs.CZB.Gameplay;
-using GrandDevs.CZB.Common;
-using CCGKit;
+using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Common;
 using UnityEngine.Networking;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class TutorialManager : IService, ITutorialManager
     {
@@ -23,7 +27,7 @@ namespace GrandDevs.CZB
         private bool _tutorialStarted,
                      _isBubbleShow;
 
-        private TutorialTargetingArrow _targettingArrow;
+        private TutorialBoardArrow _targettingArrow;
 
         private GameObject _targettingArrowPrefab;
 
@@ -74,7 +78,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 						            _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5.9f, -7.1f, 0), new Vector3(1.5f, -3.2f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)));
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -84,7 +88,7 @@ namespace GrandDevs.CZB
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 0.5f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
                                     _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -96,7 +100,7 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));//card vs player
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0)));//card vs player
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
@@ -104,7 +108,7 @@ namespace GrandDevs.CZB
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -0.3f, 0), new Vector3(0, 0.5f, 0)));
+                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
@@ -112,11 +116,17 @@ namespace GrandDevs.CZB
 			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
 									_contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5.9f, -7.1f, 0), new Vector3(1.5f, -3.2f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 3.4f, 0)));
+                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0.5f, 3.2f, 0)));
+                                 _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
+                                 _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
+                                 _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
+                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
                                     _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
@@ -126,35 +136,41 @@ namespace GrandDevs.CZB
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.KISS,
 									_contentManager.TutorialInfo[i].Description, false));
 
-            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/TutorialTargetingArrow");
+            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
         public void StartTutorial()
         {
-            _isBubbleShow = true;
-            _uiManager.DrawPopup<TutorialPopup>();
-            _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
-            UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL,0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _currentStep = 0;
+                _isBubbleShow = true;
+                _uiManager.DrawPopup<TutorialPopup>();
+                _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
+                UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
+
+            }, null, 4f, false);
+
             _tutorialStarted = true;
 
-            GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
-            GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+
+            // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+            //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
         }
 
         public void StopTutorial()
         {
-            _uiManager.HidePopup<TutorialPopup>();
-            _tutorialStarted = false;
-            GameManager.Instance.tutorial = false;
+            CancelTutorial();
+            GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
+            GameClient.Get<IDataManager>().SaveAllCache();
         }
 
         public void CancelTutorial()
         {
             _uiManager.HidePopup<TutorialPopup>();
             _tutorialStarted = false;
-            _currentStep = 0;
         }
 
         public void Update()
@@ -182,11 +198,14 @@ namespace GrandDevs.CZB
                 _currentStep == 24 ||
 				_currentStep == 25 ||
 				_currentStep == 26 ||
+                _currentStep == 29 ||
                 _currentStep == 30 ||
                 _currentStep == 31 ||
-                _currentStep == 32 ||
                 _currentStep == 33 ||
-                _currentStep == 34
+                _currentStep == 34 ||
+                _currentStep == 35 ||
+                _currentStep == 36 ||
+                _currentStep == 37
                 )
                 NextStep();
             if (_currentStep == 11 && paused)
@@ -200,15 +219,16 @@ namespace GrandDevs.CZB
 
             if (_currentStep >= _steps.Count - 1)
             {
-                GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
-                GameClient.Get<ITutorialManager>().StopTutorial();
-				return;
+                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
+                //GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
+                //GameClient.Get<ITutorialManager>().StopTutorial();
+                return;
             }
             if (_currentStep == 11)
-                GameClient.Get<ITimerManager>().AddTimer((x) => { DemoAIPlayer.Instance.StopTurn(); }, null, 5f, false);
+                GameClient.Get<ITimerManager>().AddTimer((x) => { GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn(); }, null, 5f, false);
 
-            if (_currentStep != 29)
-                NextStepCommonEndActions();
+            if (_currentStep != 32)
+                NextStepCommonEndActions();       
             else
                 GameClient.Get<ITimerManager>().AddTimer((x) => { NextStepCommonEndActions(); }, time:2f);
         }
@@ -217,7 +237,7 @@ namespace GrandDevs.CZB
         {
             _steps[_currentStep].finished = true;
             _currentStep++;
-            GameManager.Instance.tutorialStep = _currentStep;
+            GameClient.Get<IGameplayManager>().TutorialStep = _currentStep;
             UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (_currentStep == 22)
@@ -252,6 +272,12 @@ namespace GrandDevs.CZB
             }
         }
 
+        public void SkipTutorial()
+        {
+            GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+        }
+
         public void ReportAction(Enumerators.TutorialReportAction action)
         {
             if(_tutorialStarted)
@@ -274,7 +300,7 @@ namespace GrandDevs.CZB
                         NextStep();
                         break;
                 case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 29)
+                    if (_currentStep == 32)
                         NextStep();
                         break;
                     default:
@@ -297,7 +323,7 @@ namespace GrandDevs.CZB
 
         private void CreateSelectTarget()
         {
-            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).GetComponent<TutorialTargetingArrow>();
+            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
             _targettingArrow.Begin(_steps[_currentStep].tutorialTargetingArrowInfo.startPosition);
             _targettingArrow.UpdateTargetPosition(_steps[_currentStep].tutorialTargetingArrowInfo.targetPosition);
         }

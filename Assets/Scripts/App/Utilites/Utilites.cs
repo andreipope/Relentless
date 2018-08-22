@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,9 +19,9 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GrandDevs.Internal
+namespace LoomNetwork.Internal
 {
-    public class Utilites
+    public static class Utilites
     {
         #region asset bundles and cache
 
@@ -356,7 +361,7 @@ namespace GrandDevs.Internal
 		#endregion cryptography
 
 
-		public static void SetLayerRecursively(GameObject obj, int layer)
+		public static void SetLayerRecursively(this GameObject obj, int layer)
 		{
 			obj.layer = layer;
 
@@ -389,5 +394,44 @@ namespace GrandDevs.Internal
             return input;
 
         }
+
+        public static string GetStringFromByteArray(byte[] byteArr)
+        {
+            return Convert.ToBase64String(byteArr);
+        }
+
+        public static byte[] GetByteArrFromString(string str)
+        {
+            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
+        }
+        
+        public static T CreateFromJSON<T>(string jsonString)
+        {
+            return JsonUtility.FromJson<T>(jsonString);
+        }
+
+        public static string SaveToString(object obj)
+        {
+            return JsonUtility.ToJson(obj);
+        }
+
+        public static Vector3 CastVFXPosition(Vector3 position)
+        {
+            return new Vector3(position.x, position.z, position.y);
+        }
+
+        public static Color SetAlpha(this Color color, float alpha) {
+            color.a = alpha;
+            return color;
+        }
+        
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long GetCurrentUnixTimestampMillis()
+        {
+            DateTime localDateTime = DateTime.Now;          
+            DateTime universalDateTime = localDateTime.ToUniversalTime();
+            return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
+        } 
     }
 }

@@ -1,11 +1,14 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ConfirmationPopup : IUIPopup
     {
@@ -20,8 +23,8 @@ namespace GrandDevs.CZB
 
         private TextMeshProUGUI _text;
 
-        private MenuButtonNoGlow _cancelButton,
-                       _confirmButton;
+        private ButtonShiftingContent _cancelButton,
+                                      _confirmButton;
 
         private Action _callback;
 
@@ -29,19 +32,6 @@ namespace GrandDevs.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-            _cancelButton = _selfPage.transform.Find("Button_No").GetComponent<MenuButtonNoGlow>();
-            _confirmButton = _selfPage.transform.Find("Button_Yes").GetComponent<MenuButtonNoGlow>();
-
-            _confirmButton.onClickEvent.AddListener(ConfirmButtonOnClickHandler);
-            _cancelButton.onClickEvent.AddListener(CancelButtonOnClickHandler);
-
-            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
 
@@ -51,8 +41,14 @@ namespace GrandDevs.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             //Time.timeScale = 1;
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void SetMainPriority()
@@ -61,16 +57,25 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _cancelButton = _selfPage.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
+            _confirmButton = _selfPage.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
+
+            _confirmButton.onClick.AddListener(ConfirmButtonOnClickHandler);
+            _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
+
+            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
             //Time.timeScale = 0;
         }
 
         public void Show(object data)
         {
+            Show();
+
             //_text.text = (string)data;
             _callback = (Action)data;
-
-            Show();
         }
 
         public void Update()

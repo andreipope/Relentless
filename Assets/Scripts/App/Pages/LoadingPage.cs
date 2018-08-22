@@ -1,95 +1,73 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+using System;
+using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Protobuf;
+using LoomNetwork.CZB.Common;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class LoadingPage : IUIElement
     {
 		private IUIManager _uiManager;
+	    private IDataManager _dataManager;
 		private ILoadObjectsManager _loadObjectsManager;
 		private ILocalizationManager _localizationManager;
+	    private BackendFacade _backendFacade;
+	    private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage, _loginForm;
 
         private Transform _progressBar;
 
-        private Text _loadingText,
-                     _pressAnyText;
+        private TextMeshProUGUI _pressAnyText;
+        private TextMeshProUGUI _loadingText;
         private Image _loaderBar;
 
-        private float _fullFillWidth,
-                        _percentage = 0;
+        private float _percentage = 0;
 
 		private bool _isLoaded;
-		private Vector2 _fillSize;
         private Color _pressAnyTextColor;
 
         private TMP_InputField _usernameInputField,
                                 _passwordInputField;
 
-        private MenuButtonNoGlow _signUpButton,
+        private Button _signUpButton,
                             _loginButton;
 
         private int a = 0;
-        public void Init()
+
+	    public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
+			_dataManager = GameClient.Get<IDataManager>();
 			_loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 			_localizationManager = GameClient.Get<ILocalizationManager>();
-
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+	        _backendFacade = GameClient.Get<BackendFacade>();
+	        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
 			_localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
 			UpdateLocalization();
-
-            _progressBar = _selfPage.transform.Find("ProgresBar");
-
-            _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
-            _loadingText = _progressBar.Find("Text").GetComponent<Text>();
-
-            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<Text>();
-
-            _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
-
-            _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
-            _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
-
-            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<MenuButtonNoGlow>();
-            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<MenuButtonNoGlow>();
-
-            _signUpButton.onClickEvent.AddListener(OnSignupButtonPressed);
-            _loginButton.onClickEvent.AddListener(OnLoginButtonPressed);
-
-            _fillSize = _loaderBar.rectTransform.sizeDelta;
-			_fullFillWidth = _fillSize.x;
-            _fillSize.x = 0;
-
-            _loaderBar.rectTransform.sizeDelta = _fillSize;
-
-            _pressAnyTextColor = _pressAnyText.color;
-
-			_loadingText.text = "Loading...";
-
-            _pressAnyText.gameObject.SetActive(false);
-            _loginForm.SetActive(false);
-
-            Hide();
         }
 
 
-        public void Update()
+        public async void Update()
         {
+            if (_selfPage == null)
+                return;
+            
             if (_selfPage.activeInHierarchy && GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT)
             {
                 if (!_isLoaded)
                 {
                     _percentage += 1f;
-                    _fillSize.x = _fullFillWidth * _percentage / 100f;
-                    _loaderBar.rectTransform.sizeDelta = _fillSize;
+                    _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                     if (_percentage >= 100)
                     {
                         _isLoaded = true;
@@ -99,25 +77,54 @@ namespace GrandDevs.CZB
                 }
                 else
                 {
-                    _pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
-                    if (Input.GetMouseButtonUp(0))
+                    //_pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
+					float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
+					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
+                    if (Input.anyKey)
                     {
-                        _loginForm.SetActive(true);
-                        _pressAnyText.gameObject.SetActive(false);
+                        //_loginForm.SetActive(true);
+						if (_pressAnyText.gameObject.activeSelf) {
+							_pressAnyText.gameObject.SetActive (false);
 
-                        GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
-                        /*a++;
-                        if(a == 1)
-						MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/GameNetworkManager"));
-                        if(a==2)
-                        {
-							GameNetworkManager.Instance.isSinglePlayer = true;
-							GameNetworkManager.Instance.StartHost();
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
+							//GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+
+							if (_backendDataControlMediator.LoadUserDataModel() && _backendDataControlMediator.UserDataModel.IsValid)
+							{
+								ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+								
+								Func<Task> connectFunc = async () =>
+								{
+									bool success = true;
+									try
+									{
+										await _backendDataControlMediator.LoginAndLoadData();
+									} catch (GameVersionMismatchException e)
+									{
+										success = false;
+										_uiManager.DrawPopup<LoginPopup>();
+										_uiManager.GetPopup<LoginPopup>().Show(e);
+									} catch (Exception)
+									{
+										// HACK: ignore to allow offline mode
+									}
+									
+									connectionPopup.Hide();
+
+									if (success)
+									{
+										GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+									}
+								};
+								_uiManager.DrawPopup<ConnectionPopup>();
+								connectionPopup.ConnectFunc = connectFunc;
+								await connectionPopup.ExecuteConnection();
+							} else
+							{
+								_uiManager.DrawPopup<LoginPopup>();
+							}
 						}
-*/
-
                     }
-                    //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.LOGIN);
                 }
             }
         }
@@ -125,12 +132,50 @@ namespace GrandDevs.CZB
         public void Show()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _selfPage.SetActive(true);
+
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _progressBar = _selfPage.transform.Find("ProgresBar");
+
+            _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
+            _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
+
+            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<TextMeshProUGUI>();
+
+            _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
+
+            _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
+            _passwordInputField = _loginForm.transform.Find("PasswordInputField").GetComponent<TMP_InputField>();
+
+            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<Button>();
+            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<Button>();
+
+            _signUpButton.onClick.AddListener(OnSignupButtonPressed);
+            _loginButton.onClick.AddListener(OnLoginButtonPressed);
+
+            _loaderBar.fillAmount = 0.03f;
+
+            _pressAnyTextColor = _pressAnyText.color;
+
+            _loadingText.text = "LOADING...";
+
+            _pressAnyText.gameObject.SetActive(false);
+            _loginForm.SetActive(false);
+
+			if (_isLoaded) {
+				_pressAnyText.gameObject.SetActive (true);
+			}
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
@@ -148,12 +193,46 @@ namespace GrandDevs.CZB
 			//  _loginText.text = _localizationManager.GetUITranslation("KEY_START_SCREEN_LOGIN");
 		}
 
-        public void OnSignupButtonPressed()
+	    private async void OnSignupButtonPressed()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             //parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
-            OpenAlertDialog("Will be available on full version");
+            //OpenAlertDialog("Will be available on full version");
+	        
+	        var usernameText = _usernameInputField.text;
+	        var passwordText = _passwordInputField.text;
+	        if (string.IsNullOrEmpty(usernameText))
+	        {
+		        OpenAlertDialog("Please enter your username.");
+		        return;
+	        }
+
+	        /*if (string.IsNullOrEmpty(passwordText))
+	        {
+		        OpenAlertDialog("Please enter your password.");
+		        return;
+	        }*/
+
+	        try
+	        {
+				await _backendFacade.SignUp(usernameText);
+		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
+		        _backendDataControlMediator.UserDataModel.UserId = usernameText;
+		        //OpenAlertDialog("Account Created Successfully");
+		        // TODO : Removed code loading data manager
+		        var dataManager = GameClient.Get<IDataManager>();
+		        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+		        dataManager.StartLoadCache();
+	        } catch (Exception e)
+	        {
+		        OpenAlertDialog("Not Able to Create Account..");
+	        }
         }
+
+	    private void OnLoadCacheComplete()
+	    {
+		    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+	    }
 
         public void OnLoginButtonPressed()
         {
@@ -170,13 +249,18 @@ namespace GrandDevs.CZB
                 return;
             }
 
-            if (string.IsNullOrEmpty(passwordText))
+            /*if (string.IsNullOrEmpty(passwordText))
             {
                 OpenAlertDialog("Please enter your password.");
                 return;
-            }
+            }*/
+	        
+	        _backendDataControlMediator.UserDataModel.UserId = usernameText;
+	        var dataManager = GameClient.Get<IDataManager>();
+	        dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
+	        dataManager.StartLoadCache();
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            //GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
             /*ClientAPI.Login(usernameText, passwordText,
 				() =>
 				{
