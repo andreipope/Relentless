@@ -52,7 +52,14 @@ namespace LoomNetwork.CZB
             _dataManager = GameClient.Get<IDataManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+        }
 
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"), _uiManager.Canvas.transform, false);
 
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
@@ -68,25 +75,21 @@ namespace LoomNetwork.CZB
             _overlordsContainer = _selfPage.transform.Find("Panel_OverlordContent/Group").GetComponent<HorizontalLayoutGroup>();
             _rightContentObject = _selfPage.transform.Find("Panel_OverlordContent/Panel_OverlordInfo").gameObject;
 
-            Hide();
-        }
-
-        public void Update()
-        {
-        }
-
-        public void Show()
-        {
             FillOverlordObjects();
             SetSelectedHeroIndexAndUpdateScrollPosition(0, false, force: true);
-            _selfPage.SetActive(true);
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-            SetSelectedHeroIndexAndUpdateScrollPosition(0, false);
-            ResetOverlordObjects();
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+
+            /*SetSelectedHeroIndexAndUpdateScrollPosition(0, false);
+            ResetOverlordObjects();*/
         }
 
         private bool SetSelectedHeroIndexAndUpdateScrollPosition(

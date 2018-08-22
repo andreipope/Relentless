@@ -34,15 +34,6 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _dataManager = GameClient.Get<IDataManager> ();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityTooltipPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-            _abilityIconImage = _selfPage.transform.Find("AbilityIcon/Image").GetComponent<Image>();
-            _abilityNameText = _selfPage.transform.Find("AbilityName").GetComponent<TextMeshProUGUI>();
-            _abilityDescriptionText = _selfPage.transform.Find("AbilityDescription").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
         public void Show() {
@@ -50,8 +41,14 @@ namespace LoomNetwork.CZB
         }
 
         public void Show(object data) {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityTooltipPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _abilityIconImage = _selfPage.transform.Find("AbilityIcon/Image").GetComponent<Image>();
+            _abilityNameText = _selfPage.transform.Find("AbilityName").GetComponent<TextMeshProUGUI>();
+            _abilityDescriptionText = _selfPage.transform.Find("AbilityDescription").GetComponent<TextMeshProUGUI>();
+
             HeroSkill skill = (HeroSkill) data;
-            _selfPage.SetActive(true);
 
             _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath);
             _abilityNameText.text = skill.title;
@@ -59,7 +56,12 @@ namespace LoomNetwork.CZB
         }
 
         public void Hide() {
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Update() {

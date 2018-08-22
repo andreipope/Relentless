@@ -55,7 +55,41 @@ namespace LoomNetwork.CZB
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+        }
 
+
+        public void Dispose()
+        {
+        }
+
+        public void Hide()
+        {
+            _selfAnimator.StopPlayback();
+
+            _playerCardBackObject.SetActive(true);
+            _playerCardFrontObject.SetActive(false);
+            _playerFirstTurnObject.SetActive(false);
+            _playerSecondTurnObject.SetActive(false);
+
+            _opponentCardBackObject.SetActive(true);
+            _opponentCardFrontObject.SetActive(false);
+            _opponentFirstTurnObject.SetActive(false);
+            _opponentSecondTurnObject.SetActive(false);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+        }
+
+        public void SetMainPriority()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
 
@@ -79,48 +113,17 @@ namespace LoomNetwork.CZB
             _playerCardBackObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_BackCard").gameObject;
             _playerCardFrontObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
 
-            Hide();
-        }
-
-
-        public void Dispose()
-        {
-        }
-
-        public void Hide()
-        {
-            _selfAnimator.StopPlayback();
-
-            _playerCardBackObject.SetActive(true);
-            _playerCardFrontObject.SetActive(false);
-            _playerFirstTurnObject.SetActive(false);
-            _playerSecondTurnObject.SetActive(false);
-
-            _opponentCardBackObject.SetActive(true);
-            _opponentCardFrontObject.SetActive(false);
-            _opponentFirstTurnObject.SetActive(false);
-            _opponentSecondTurnObject.SetActive(false);
-
-            _selfPage.SetActive(false);
-        }
-
-        public void SetMainPriority()
-        {
-        }
-
-        public void Show()
-        {
             _selfPage.SetActive(true);
             _selfAnimator.Play(0);
         }
 
         public void Show(object data)
         {
+            Show();
+
             object[] param = (object[])data;
 
             ApplyInfoAboutHeroes((Hero)param[0], (Hero)param[1]);
-
-            Show();
         }
 
         public void Update()

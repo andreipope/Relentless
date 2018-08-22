@@ -44,7 +44,32 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+        }
 
+
+        public void Dispose()
+        {
+        }
+
+        public void Hide()
+        {
+            OnHidePopupEvent?.Invoke();
+			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+		}
+
+        public void SetMainPriority()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -58,27 +83,6 @@ namespace LoomNetwork.CZB
 
             _message.text = "Rewards have been disabled for ver " + Constants.CURRENT_VERSION;
 
-            Hide();
-        }
-
-
-        public void Dispose()
-        {
-        }
-
-        public void Hide()
-        {
-            OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
-			GameClient.Get<ICameraManager>().FadeOut(null, 1);
-		}
-
-        public void SetMainPriority()
-        {
-        }
-
-        public void Show()
-        {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);

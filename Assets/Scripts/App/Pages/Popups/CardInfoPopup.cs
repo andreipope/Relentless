@@ -42,23 +42,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
-
-			_buttonMelt = _selfPage.transform.Find("MeltArea/Button_Melt").GetComponent<ButtonShiftingContent>();
-			_backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-
-
-			_buttonMelt.onClick.AddListener(DesintegrateButtonHandler);
-			_backButton.onClick.AddListener(Hide);
-			_selfPage.GetComponent<Button>().onClick.AddListener(ClosePopup);
-
-
-			_description = _selfPage.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
-			_amountAward = _selfPage.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
 
@@ -68,7 +51,12 @@ namespace LoomNetwork.CZB
 
 		public void Hide()
 		{
-			_selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -77,12 +65,28 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _buttonMelt = _selfPage.transform.Find("MeltArea/Button_Melt").GetComponent<ButtonShiftingContent>();
+            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+
+
+            _buttonMelt.onClick.AddListener(DesintegrateButtonHandler);
+            _backButton.onClick.AddListener(Hide);
+            _selfPage.GetComponent<Button>().onClick.AddListener(ClosePopup);
+
+
+            _description = _selfPage.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
+            _amountAward = _selfPage.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
+
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _selfPage.SetActive(true);
         }
 
         public void Show(object data)
         {
+            Show();
+
             _card = data as Card;
             _description.text = _card.flavorText;
 
@@ -90,7 +94,6 @@ namespace LoomNetwork.CZB
 
             _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.name);
             UpdateCardAmount();
-            Show();
         }
 
         public void Update()
