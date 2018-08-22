@@ -1,12 +1,21 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public interface ISoundManager
     {
+        bool SfxMuted { get; set; }
+        bool MusicMuted { get; set; }
+
         float GetSoundLength(Enumerators.SoundType soundType, string namePattern);
+        float GetSoundLength(Enumerators.SoundType soundType);
 
         void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
         void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, bool dropOldBackgroundMusic = true, bool isInQueue = false);
@@ -22,5 +31,8 @@ namespace GrandDevs.CZB
         void TurnOffSound();
         void StopPlaying(Enumerators.SoundType soundType, int id = 0);
         void StopPlaying(List<AudioClip> clips, int id = 0);
+
+        void SetSoundMuted(bool status);
+        void SetMusicMuted(bool status);
     }
 }

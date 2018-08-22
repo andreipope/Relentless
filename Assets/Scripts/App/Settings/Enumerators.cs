@@ -1,4 +1,9 @@
-﻿﻿namespace GrandDevs.CZB.Common
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+ namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {
@@ -33,6 +38,8 @@
             TUTORIAL,
             CARDS,
             END_TURN,
+            OVERLORD_ABILITIES,
+            SPELLS,
 
             WALKER_ARRIVAL,
             FERAL_ARRIVAL,
@@ -62,8 +69,14 @@
             LOST_POPUP,
             WON_POPUP,
             WON_REWARD_POPUP,
-            YOURTURN_POPUP
+            YOURTURN_POPUP,
 
+            SHUTTERS_CLOSING,
+            SHUTTERS_OPEN,
+
+            GOO_OVERFLOW_FADE_IN,
+            GOO_OVERFLOW_FADE_LOOP,
+            GOO_OVERFLOW_FADE_OUT
         }
 
         public enum CardSoundType
@@ -107,7 +120,8 @@
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             OPPONENT_ACTIONS_LIBRARY_DATA,
-            CREDITS_DATA
+            CREDITS_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
         public enum NotificationButtonState
@@ -159,15 +173,17 @@
         {
             WALKER,
             FERAL,
-            HEAVY
+            HEAVY,
+
+            NONE
         }
 
-        public enum CardRarity
+        public enum CardRank
         {
-            COMMON,
-            RARE,
-            LEGENDARY,
-            EPIC
+            MINION,
+            OFFICER,
+            COMMANDER,
+            GENERAL,
         }
 
         public enum GameEndCondition
@@ -177,8 +193,6 @@
             TURN,
         }
 
-        // abilities
-        // TODO should be changed I guess
         public enum AbilityType
         {
             HEAL,
@@ -188,6 +202,7 @@
 			STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
+            ADD_GOO_CARRIER,
             DOT,
             SUMMON,
             SPELL_ATTACK,
@@ -196,6 +211,49 @@
 			DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
+            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ATTACK_NUMBER_OF_TIMES_PER_TURN,
+            DRAW_CARD,
+            DEVOUR_ZOMBIES_AND_COMBINE_STATS,
+            DESTROY_UNIT_BY_TYPE,
+            LOWER_COST_OF_CARD_IN_HAND,
+            OVERFLOW_GOO,
+            LOSE_GOO,
+            DISABLE_NEXT_TURN_GOO,
+            RAGE,
+            FREEZE_UNITS,
+            TAKE_DAMAGE_RANDOM_ENEMY,
+            TAKE_CONTROL_ENEMY_UNIT,
+            GUARD,
+            DESTROY_FROZEN_UNIT,
+            USE_ALL_GOO_TO_INCREASE_STATS,
+            FIRST_UNIT_IN_PLAY,
+            ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS,
+            DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM,
+            RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS,
+            TAKE_UNIT_TYPE_TO_ADJACENT_ALLY_UNITS,
+            ENEMY_THAT_ATTACKS_BECOME_FROZEN,
+            TAKE_UNIT_TYPE_TO_ALLY_UNIT,
+            REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
+            CHANGE_STAT_UNTILL_END_OF_TURN,
+            ATTACK_OVERLORD,
+            ADJACENT_UNITS_GET_HEAVY,
+            FREEZE_NUMBER_OF_RANDOM_ALLY,
+            ADD_CARD_BY_NAME_TO_HAND,
+            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS,
+            SWING,
+            TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN,
+            GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS,
+            ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK,
+            UNIT_WEAPON,
+            TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
+            DELAYED_LOSE_HEAVY_GAIN_ATTACK,
+            DELAYED_GAIN_ATTACK,
+            REANIMATE_UNIT,
+            PRIORITY_ATTACK,
+            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            COSTS_LESS_IF_CARD_TYPE_IN_HAND,
+            RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS
         }
 
         public enum AbilityActivityType
@@ -206,18 +264,25 @@
 
         public enum AbilityCallType
         {
-            TURN_START,
-            AT_START,
-            AT_END,
+            TURN,
+            ENTRY,
+            END,
+            ATTACK,
+            DEATH,
+
             PERMANENT,
-            AT_ATTACK,
-            AT_DEATH,
+            GOT_DAMAGE,
+            AT_DEFENCE,
+
+            IN_HAND
         }
 
         public enum StatType
         {
             HEALTH,
-            DAMAGE
+            DAMAGE,
+
+            NONE
         }
 
         public enum AbilityTargetType
@@ -275,6 +340,7 @@
             TARGET_FIRE,
             TARGET_LIFE,
             TARGET_TOXIC,
+            TARGET_WATER,
             TARGET_ADJUSTMENTS_BOMB,
             STUN_FREEZES,
             STUN_OR_DAMAGE_FREEZES,
@@ -288,11 +354,38 @@
             TUTORIAL
         }
 
-        public enum ActionType
+        public enum AIActionType
         {
             TEST,
             TEST2
         }
+
+        public enum ActionType
+        {
+            ATTACK_PLAYER_BY_CREATURE,
+            ATTACK_CREATURE_BY_CREATURE,
+            ATTACK_CREATURE_BY_SKILL,
+            ATTACK_PLAYER_BY_SKILL,
+            HEAL_PLAYER_BY_SKILL,
+            HEAL_CREATURE_BY_SKILL,
+            ATTACK_CREATURE_BY_ABILITY,
+            ATTACK_PLAYER_BY_ABILITY,
+            HEAL_PLAYER_BY_ABILITY,
+            HEAL_CREATURE_BY_ABILITY,
+            PLAY_UNIT_CARD,
+            PLAY_SPELL_CARD,
+            STUN_CREATURE_BY_ABILITY,
+            STUN_UNIT_BY_SKILL,
+            SUMMON_UNIT_CARD,
+            RETURN_TO_HAND_CARD_ABILITY,
+            RETURN_TO_HAND_CARD_SKILL,
+
+            DRAW_CARD_SKILL,
+            STUN_PLAYER_BY_SKILL,
+
+            REANIMATE_UNIT_BY_ABILITY
+        }
+
 
         public enum EffectActivateType
         {
@@ -318,7 +411,7 @@
 			KISS,
 		}
 
-        public enum CardZoneType
+        public enum CardZoneOnBoardType
         {
             DECK,
             GRAVEYARD
@@ -327,6 +420,127 @@
         public enum CardPackType
         {
             DEFAULT
+        }
+
+        public enum EndGameType
+        {
+            WIN,
+            LOSE,
+            CANCEL
+        }
+
+        public enum MatchType
+        {
+            LOCAL,
+
+            PVP,
+            PVE
+        }
+
+        public enum SkillType
+        {
+            PRIMARY,
+            SECONDARY
+        }
+
+        public enum BuffType
+        {
+            GUARD,
+            DEFENCE,
+            HEAVY,
+            WEAPON,
+            RUSH,
+            ATTACK,
+            FREEZE,
+            DAMAGE,
+            HEAL_ALLY,
+            DESTROY,
+            REANIMATE
+        }
+
+        public enum BuffActivityType
+        {
+            ONE_TIME,
+            PERMANENT,
+            TILL_FIRST_DEFENSE_FROM_ATTACK,
+            TURN_BASED,
+        }
+
+        public enum AttackInfoType
+        {
+            ANY,
+            ONLY_DIFFERENT
+        }
+
+        public enum UnitStatusType
+        {
+            NONE,
+
+            FROZEN,
+        }
+
+        public enum StunType
+        {
+            NONE,
+
+            FREEZE,
+            DISABLE,
+        }
+
+        public enum OverlordSkill
+        {
+            NONE,
+
+            // AIR
+            PUSH,
+            DRAW,
+            WIND_SHIELD,
+            WIND_WALL,
+            RETREAT,
+
+            // EARTH
+            HARDEN,
+            STONE_SKIN,
+            FORTIFY,
+            PHALANX,
+            FORTRESS,
+
+            // FIRE
+            FIRE_BOLT,
+            RABIES,
+            FIREBALL,
+            MASS_RABIES,
+            METEOR_SHOWER,
+
+            // LIFE
+            HEALING_TOUCH,
+            MEND,
+            RESSURECT,
+            ENHANCE,
+            REANIMATE,
+
+            // TOXIC
+            POISON_DART,
+            TOXIC_POWER,
+            BREAKOUT,
+            INFECT,
+            EPIDEMIC,
+
+            // WATER
+            FREEZE,
+            ICE_BOLT,
+            ICE_WALL,
+            SHATTER,
+            BLIZZARD
+       
+        }
+
+        public enum TooltipObjectType
+        {
+            RANK,
+            ABILITY,
+            UNIT_TYPE,
+            BUFF
         }
     }
 }

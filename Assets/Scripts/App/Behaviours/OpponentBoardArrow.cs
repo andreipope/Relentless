@@ -1,0 +1,61 @@
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
+
+namespace LoomNetwork.CZB
+{
+    public class OpponentBoardArrow : BattleBoardArrow
+    {
+        private Vector3 _targetPosition = Vector3.zero;
+        private object _target;
+
+        private void Awake()
+        {
+            Init();
+            SetInverse();
+        }
+
+
+        protected override void Update()
+        {
+            UpdateLength(_targetPosition, false);
+        }
+
+        public void SetTarget(object target)
+        {
+            _target = target;
+
+            if (_target is Player)
+            {
+                _targetPosition = (_target as Player).AvatarObject.transform.position;
+                (_target as Player).SetGlowStatus(true);
+            }
+            else if (_target is BoardUnit)
+            {
+                _targetPosition = (_target as BoardUnit).transform.position;
+                (_target as BoardUnit).SetSelectedUnit(true);
+            }
+
+            _targetPosition.z = 0;
+
+            UpdateLength(_targetPosition, false);
+            CreateTarget(_targetPosition);
+        }
+
+        public void Dispose()
+        {
+            if (_target != null)
+            {
+                if (_target is Player)
+                    (_target as Player).SetGlowStatus(false);
+                else if (_target is BoardUnit)
+                    (_target as BoardUnit).SetSelectedUnit(false);
+
+                _target = null;
+            }
+        }
+    }
+}

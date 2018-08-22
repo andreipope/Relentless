@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+using System;
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using CCGKit;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using TMPro;
 using System.Collections.Generic;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class CreditsPage : IUIElement
     {
@@ -20,6 +23,7 @@ namespace GrandDevs.CZB
         private GameObject _selfPage;
 
         private Button _buttonBack;
+        private ButtonShiftingContent _buttonThanks;
 
         private GameObject _creditListItemPrefab,
                            _creditSubsectionListItemPrefab;
@@ -40,23 +44,8 @@ namespace GrandDevs.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
-            _panelCreditsList = _selfPage.transform.Find("Panel_CreditsList/Group");
-
             _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
             _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
-            _creditsListScroll.enabled = false;
-            _buttonBack = _selfPage.transform.Find("BackButtonFrame/BackButton").GetComponent<Button>();
-
-            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
-
-            _dataManager.OnLoadCacheCompletedEvent += OnLoadCacheCompletedEventHandler;
-
-            Hide();
         }
 
         private void OnLoadCacheCompletedEventHandler()
@@ -68,21 +57,38 @@ namespace GrandDevs.CZB
         {
             if(_isActive)
             {
-                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 100;
+                _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 70;
             }
         }
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
+            _panelCreditsList = _selfPage.transform.Find("Panel_CreditsList/Group");
+
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks").GetComponent<ButtonShiftingContent>();
+
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonThanks.onClick.AddListener(BackButtonOnClickHandler);
+
             _isActive = true;
             _creditsListScroll.verticalNormalizedPosition = 1;
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             _isActive = false;
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
@@ -93,18 +99,18 @@ namespace GrandDevs.CZB
         private void FillCredits()
         {
             CreditView credit = null;
-            CrediSubSectiontView section = null;
+            CreditSubSectionView section = null;
             for (int i = 0; i < _dataManager.CachedCreditsData.creditsInfo.Count; i++)
             {
                 if (i > 0)
-                    section = new CrediSubSectiontView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
+                    section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
                 for (int j = 0; j < _dataManager.CachedCreditsData.creditsInfo[i].credits.Count; j++)
                 {
                     credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].FullName, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].Post);
                     _credits.Add(credit);
                 }
-                    
             }
+            _buttonThanks.transform.parent.SetAsLastSibling();
         }
 
         private void OpenAlertDialog(string msg)
@@ -133,18 +139,22 @@ namespace GrandDevs.CZB
             fullNameText = selfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
             postText = selfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
             fullNameText.text = name;
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                fullNameText.gameObject.SetActive(false);
+            }
             postText.text = post;
         }
     }
 
-    public class CrediSubSectiontView
+    public class CreditSubSectionView
     {
         public GameObject selfObject;
         public TextMeshProUGUI sectionText;
 
-        public CrediSubSectiontView() { }
+        public CreditSubSectionView() { }
 
-        public CrediSubSectiontView(GameObject prefab, Transform parent, string section)
+        public CreditSubSectionView(GameObject prefab, Transform parent, string section)
         {
             selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
             sectionText = selfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();

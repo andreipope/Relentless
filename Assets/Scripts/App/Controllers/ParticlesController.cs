@@ -1,9 +1,14 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ParticlesController : IController
     {
@@ -11,7 +16,7 @@ namespace GrandDevs.CZB
         private ulong _freeId = 0;
         private List<ParticleSystemElement> _particleSystemElements;
 
-        public ParticlesController()
+        public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
 
@@ -25,6 +30,13 @@ namespace GrandDevs.CZB
 
         public void Update()
         {
+        }
+
+        public void ResetAll()
+        {
+            foreach (var item in _particleSystemElements)
+                item.Dispose();
+            _particleSystemElements.Clear();
         }
 
         public ulong RegisterParticleSystem(GameObject particle, bool autoDestroy = false, float duration = 3f)

@@ -1,20 +1,49 @@
-﻿using CCGKit;
-using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+using LoomNetwork.CZB.BackendCommunication;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class GameplayManager : IService, IGameplayManager
     {
+        public event Action OnGameStartedEvent;
+        public event Action OnGameInitializedEvent;
+        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
+        public event Action OnTurnStartedEvent;
+        public event Action OnTurnEndedEvent;
+
+        private IDataManager _dataManager;
+        private IMatchManager _matchManager;
+        private ISoundManager _soundManager;
+        private IUIManager _uiManager;
+        private ITimerManager _timerManager;
+        private ITutorialManager _tutorialManager;
+
         private List<IController> _controllers;
 
-        public int PlayerHeroId { get; set; }
-        public int OpponentHeroId { get; set; }
+        public int PlayerDeckId { get; set; }
+        public int OpponentDeckId { get; set; }
 
+        public bool GameStarted { get; set; }
+        public bool GameEnded { get; set; }
+        public bool IsTutorial { get; set; }
+
+        public int TurnDuration { get; set; }
+        public int CurrentTurn { get; set; }
+
+        public int TutorialStep { get; set; }
+
+        public Player CurrentTurnPlayer { get; set; }
+        public Player CurrentPlayer { get; set; }
+        public Player OpponentPlayer { get; set; }
+        
+        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
         public void Dispose()
         {
@@ -24,11 +53,18 @@ namespace GrandDevs.CZB
 
         public void Init()
         {
+            _dataManager = GameClient.Get<IDataManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+
             InitControllers();
 
-            if(!GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            if (!_dataManager.CachedUserLocalData.tutorial)
             {
-                Constants.ZOMBIES_SOUND_VOLUME *= 3;
+                Constants.ZOMBIES_SOUND_VOLUME = 0.25f;
                 Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
             }
         }
@@ -47,25 +83,131 @@ namespace GrandDevs.CZB
         private void InitControllers()
         {
             _controllers = new List<IController>();
+            _controllers.Add(new VFXController());
+            _controllers.Add(new ParticlesController());
             _controllers.Add(new AbilitiesController());
-            _controllers.Add(new ParticlesController());            
-        }
+            _controllers.Add(new ActionsQueueController());
+            _controllers.Add(new PlayerController());
+            _controllers.Add(new AIController());
+            _controllers.Add(new CardsController());
+            _controllers.Add(new BattlegroundController());
+            _controllers.Add(new AnimationsController());
+            _controllers.Add(new BattleController());
+            _controllers.Add(new BoardArrowController());
+            _controllers.Add(new SkillsController());
+            _controllers.Add(new RanksController());
 
-        public string GetCardSet(Data.Card card)
-        {
-            foreach (var cardSet in GameClient.Get<IDataManager>().CachedCardsLibraryData.sets)
-            {
-                if (cardSet.cards.IndexOf(card) > -1)
-                    return cardSet.name;
-            }
-
-            return string.Empty;
+            foreach (var controller in _controllers)
+                controller.Init();
         }
 
         public void RearrangeHands()
         {
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeBottomBoard();
-            (NetworkingUtils.GetHumanLocalPlayer() as DemoHumanPlayer).RearrangeTopBoard();
+            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
+            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
+            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
+        }
+
+        public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
+        {
+            if (GameEnded)
+                return;
+
+            GameEnded = true;
+
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
+
+            if (endGameType != Enumerators.EndGameType.CANCEL)
+            {
+                _timerManager.AddTimer((x) =>
+                {
+                    if (endGameType == Enumerators.EndGameType.WIN)
+                        _uiManager.DrawPopup<YouWonPopup>();
+                    else if (endGameType == Enumerators.EndGameType.LOSE)
+                        _uiManager.DrawPopup<YouLosePopup>();
+                }, null, timer);
+            }
+
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+
+            StopGameplay();
+
+
+            CurrentTurnPlayer = null;
+            CurrentPlayer = null;
+            OpponentPlayer = null;
+
+            OnGameEndedEvent?.Invoke(endGameType);
+        }
+
+        public void StartGameplay()
+        {
+            _uiManager.DrawPopup<PreparingForBattlePopup>();
+
+            _timerManager.AddTimer((x) =>
+            {
+                _uiManager.HidePopup<PreparingForBattlePopup>();
+
+                GameStarted = true;
+                GameEnded = false;
+
+                OnGameStartedEvent?.Invoke();
+
+                StartInitializeGame();
+            }, null, 2f);
+        }
+
+        public void StopGameplay()
+        {
+            GameStarted = false;
+            GameEnded = true;
+        }
+
+        public bool IsLocalPlayerTurn()
+        {
+            return CurrentTurnPlayer.Equals(CurrentPlayer);
+        }
+
+        private void StartInitializeGame()
+        {
+            
+
+            //initialize players
+            GetController<PlayerController>().InitializePlayer();
+
+
+            if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+                GetController<AIController>().InitializePlayer();
+
+            GetController<SkillsController>().InitializeSkills();
+            GetController<BattlegroundController>().InitializeBattleground();
+
+            if (!IsTutorial)
+                CurrentTurnPlayer = UnityEngine.Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+            else
+                CurrentTurnPlayer = CurrentPlayer;
+
+            OpponentPlayer.SetFirstHand(IsTutorial);
+
+            if (!IsTutorial)
+                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
+            else
+            {
+                GetController<PlayerController>().SetHand();
+                GetController<CardsController>().StartCardDistribution();
+            }
+
+            GameEnded = false;
+
+            OnGameInitializedEvent?.Invoke();
+        }
+
+
+        public void ResetWholeGameplayScene()
+        {
+            foreach (var controller in _controllers)
+                controller.ResetAll();
         }
     }
 }

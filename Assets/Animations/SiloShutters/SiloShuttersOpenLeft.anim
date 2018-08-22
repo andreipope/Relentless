@@ -1,0 +1,2045 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: SiloShuttersOpenLeft
+  serializedVersion: 6
+  m_Legacy: 0
+  m_Compressed: 0
+  m_UseHighQualityCurve: 1
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_EulerCurves: []
+  m_PositionCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.9320153, y: 1.959203, z: 0.14169134}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.9320153, y: 1.959203, z: 0.14169134}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.9154041, y: 1.9565452, z: 0.11813936}
+        inSlope: {x: 0.19933535, y: -0.031893257, z: -0.28262398}
+        outSlope: {x: 0.19933535, y: -0.031893257, z: -0.28262398}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.8987927, y: 1.9538875, z: 0.09458735}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.9320153, y: 1.959203, z: 0.14169134}
+        inSlope: {x: -0.8778796, y: 0.13976258, z: 1.2450635}
+        outSlope: {x: -0.8778796, y: 0.13976258, z: 1.2450635}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -2.0304747, y: 1.9748518, z: 0.28134686}
+        inSlope: {x: -1.793004, y: 0.28483933, z: 2.5432868}
+        outSlope: {x: -1.793004, y: 0.28483933, z: 2.5432868}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -2.141199, y: 1.9924343, z: 0.43840814}
+        inSlope: {x: -0.8939672, y: 0.14192322, z: 1.2680995}
+        outSlope: {x: -0.8939672, y: 0.14192322, z: 1.2680995}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -2.2241676, y: 2.005602, z: 0.5561018}
+        inSlope: {x: -0.4644027, y: 0.0736971, z: 0.6587756}
+        outSlope: {x: -0.4644027, y: 0.0736971, z: 0.6587756}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -2.296, y: 2.017, z: 0.658}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -2.2914999, y: 2.0165, z: 0.6515}
+        inSlope: {x: 0.031764932, y: -0.0035291563, z: -0.0458824}
+        outSlope: {x: 0.031764932, y: -0.0035291563, z: -0.0458824}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -2.287, y: 2.016, z: 0.645}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -2.287, y: 2.016, z: 0.645}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter3_left
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.832671, y: 1.9589505, z: 0.1550582}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.832671, y: 1.9589505, z: 0.1550582}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.8488464, y: 1.9563745, z: 0.17789657}
+        inSlope: {x: -0.1941054, y: -0.030911924, z: 0.27406046}
+        outSlope: {x: -0.1941054, y: -0.030911924, z: 0.27406046}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.865022, y: 1.9537985, z: 0.20073494}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.832671, y: 1.9589505, z: 0.1550582}
+        inSlope: {x: 0.8599696, y: 0.13551158, z: -1.2142942}
+        outSlope: {x: 0.8599696, y: 0.13551158, z: -1.2142942}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -1.7360265, y: 1.9741253, z: 0.018590838}
+        inSlope: {x: 1.7609483, y: 0.2762195, z: -2.4865735}
+        outSlope: {x: 1.7609483, y: 0.2762195, z: -2.4865735}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -1.6272271, y: 1.9911761, z: -0.13504204}
+        inSlope: {x: 0.87867504, y: 0.13763444, z: -1.2407587}
+        outSlope: {x: 0.87867504, y: 0.13763444, z: -1.2407587}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -1.5456469, y: 2.003946, z: -0.25024024}
+        inSlope: {x: 0.45668116, y: 0.07147194, z: -0.6448739}
+        outSlope: {x: 0.45668116, y: 0.07147194, z: -0.6448739}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -1.475, y: 2.015, z: -0.35}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -1.4810001, y: 2.0145, z: -0.34149998}
+        inSlope: {x: -0.04235282, y: -0.0035299978, z: 0.05999997}
+        outSlope: {x: -0.04235282, y: -0.0035299978, z: 0.05999997}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -1.487, y: 2.014, z: -0.333}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -1.487, y: 2.014, z: -0.333}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter6_left
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.9124019, y: 1.9590768, z: 0.18692693}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.9124019, y: 1.9590768, z: 0.18692693}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.9242597, y: 1.9564599, z: 0.16113985}
+        inSlope: {x: -0.1422937, y: -0.031403307, z: -0.30944523}
+        outSlope: {x: -0.1422937, y: -0.031403307, z: -0.30944523}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.9361175, y: 1.9538429, z: 0.13535273}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.9124019, y: 1.9590768, z: 0.18692693}
+        inSlope: {x: 0.6323251, y: 0.13922137, z: 1.3739341}
+        outSlope: {x: 0.6323251, y: 0.13922137, z: 1.3739341}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -1.8412688, y: 1.9747261, z: 0.34144282}
+        inSlope: {x: 1.2964745, y: 0.2851612, z: 2.8159845}
+        outSlope: {x: 1.2964745, y: 0.2851612, z: 2.8159845}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -1.7611465, y: 1.9923456, z: 0.51545846}
+        inSlope: {x: 0.64716715, y: 0.1423012, z: 1.4055103}
+        outSlope: {x: 0.64716715, y: 0.1423012, z: 1.4055103}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -1.7010492, y: 2.005558, z: 0.6459701}
+        inSlope: {x: 0.33643952, y: 0.07396317, z: 0.7306247}
+        outSlope: {x: 0.33643952, y: 0.07396317, z: 0.7306247}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -1.649, y: 2.017, z: 0.759}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -1.654, y: 2.016, z: 0.7485}
+        inSlope: {x: -0.03529409, y: -0.0070583127, z: -0.07411775}
+        outSlope: {x: -0.03529409, y: -0.0070583127, z: -0.07411775}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -1.659, y: 2.015, z: 0.738}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -1.659, y: 2.015, z: 0.738}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter2_left
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.88, y: 2.005, z: 0.211}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.88, y: 2.005, z: 0.211}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.895228, y: 2.003704, z: 0.209704}
+        inSlope: {x: -0.18273641, y: -0.015552522, z: -0.015551985}
+        outSlope: {x: -0.18273641, y: -0.015552522, z: -0.015551985}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.9104561, y: 2.002408, z: 0.208408}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.88, y: 2.005, z: 0.211}
+        inSlope: {x: 0.81216186, y: 0.06912232, z: 0.06911994}
+        outSlope: {x: 0.81216186, y: 0.06912232, z: 0.06911994}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -1.7184145, y: 2.0199494, z: 0.22571202}
+        inSlope: {x: 3.034596, y: 0.28161454, z: 0.27698582}
+        outSlope: {x: 3.034596, y: 0.28161454, z: 0.27698582}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -1.5259638, y: 2.0378551, z: 0.24331501}
+        inSlope: {x: 1.5770463, y: 0.14693551, z: 0.14441349}
+        outSlope: {x: 1.5770463, y: 0.14693551, z: 0.14441349}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -1.3767211, y: 2.0517855, z: 0.2570016}
+        inSlope: {x: 0.83989125, y: 0.07843424, z: 0.077054955}
+        outSlope: {x: 0.83989125, y: 0.07843424, z: 0.077054955}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -1.246, y: 2.064, z: 0.269}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -1.2505001, y: 2.0635, z: 0.2685}
+        inSlope: {x: -0.03176451, y: -0.0035291563, z: -0.0035293668}
+        outSlope: {x: -0.03176451, y: -0.0035291563, z: -0.0035293668}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -1.255, y: 2.063, z: 0.268}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -1.255, y: 2.063, z: 0.268}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter1_left
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.8496375, y: 1.9586982, z: 0.110957906}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.8496375, y: 1.9586982, z: 0.110957906}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.8382027, y: 1.9562039, z: 0.13566335}
+        inSlope: {x: 0.13721754, y: -0.029931309, z: 0.2964654}
+        outSlope: {x: 0.13721754, y: -0.029931309, z: 0.2964654}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.8267679, y: 1.9537096, z: 0.1603688}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.8496375, y: 1.9586982, z: 0.110957906}
+        inSlope: {x: -0.6087495, y: 0.13302806, z: -1.316115}
+        outSlope: {x: -0.6087495, y: 0.13302806, z: -1.316115}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -1.9180803, y: 1.9738736, z: -0.03704843}
+        inSlope: {x: -1.2472465, y: 0.27685913, z: -2.6973143}
+        outSlope: {x: -1.2472465, y: 0.27685913, z: -2.6973143}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -1.9951496, y: 1.9909984, z: -0.20372878}
+        inSlope: {x: -0.62245834, y: 0.13838986, z: -1.3462546}
+        outSlope: {x: -0.62245834, y: 0.13838986, z: -1.3462546}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -2.0529463, y: 2.003858, z: -0.32873696}
+        inSlope: {x: -0.32355097, y: 0.07200516, z: -0.6998137}
+        outSlope: {x: -0.32355097, y: 0.07200516, z: -0.6998137}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -2.103, y: 2.015, z: -0.437}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -2.1004999, y: 2.014, z: -0.431}
+        inSlope: {x: 0.017646624, y: -0.007059154, z: 0.042352926}
+        outSlope: {x: 0.017646624, y: -0.007059154, z: 0.042352926}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -2.098, y: 2.013, z: -0.425}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -2.098, y: 2.013, z: -0.425}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter5_left
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: {x: -1.8989323, y: 1.9589505, z: 0.1011179}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.4
+        value: {x: -1.8989323, y: 1.9589505, z: 0.1011179}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.46666667
+        value: {x: -1.8712269, y: 1.9563745, z: 0.10365031}
+        inSlope: {x: 0.3324652, y: -0.030911924, z: 0.030388938}
+        outSlope: {x: 0.3324652, y: -0.030911924, z: 0.030388938}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.56666666
+        value: {x: -1.8435215, y: 1.9537985, z: 0.106182724}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.68333334
+        value: {x: -1.8989323, y: 1.9589505, z: 0.1011179}
+        inSlope: {x: -1.4705017, y: 0.13709468, z: -0.13482802}
+        outSlope: {x: -1.4705017, y: 0.13709468, z: -0.13482802}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.71666664
+        value: {x: -2.0640967, y: 1.9743627, z: 0.085958526}
+        inSlope: {x: -3.0089672, y: 0.28085026, z: -0.27625403}
+        outSlope: {x: -3.0089672, y: 0.28085026, z: -0.27625403}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.8
+        value: {x: -2.2499785, y: 1.9917164, z: 0.06888826}
+        inSlope: {x: -1.5010817, y: 0.14015654, z: -0.13787042}
+        outSlope: {x: -1.5010817, y: 0.14015654, z: -0.13787042}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.93333334
+        value: {x: -2.389331, y: 2.00473, z: 0.056086596}
+        inSlope: {x: -0.7800644, y: 0.07285095, z: -0.07166479}
+        outSlope: {x: -0.7800644, y: 0.07285095, z: -0.07166479}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.1333333
+        value: {x: -2.51, y: 2.016, z: 0.045}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.2166667
+        value: {x: -2.5005, y: 2.0149999, z: 0.046}
+        inSlope: {x: 0.06705902, y: -0.007059154, z: 0.0070588123}
+        outSlope: {x: 0.06705902, y: -0.007059154, z: 0.0070588123}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1.4166666
+        value: {x: -2.491, y: 2.014, z: 0.047}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: {x: -2.491, y: 2.014, z: 0.047}
+        inSlope: {x: 0, y: 0, z: 0}
+        outSlope: {x: 0, y: 0, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    path: Overlord_regular_LOD0_shutter4_left
+  m_ScaleCurves: []
+  m_FloatCurves: []
+  m_PPtrCurves: []
+  m_SampleRate: 60
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_ClipBindingConstant:
+    genericBindings:
+    - serializedVersion: 2
+      path: 3226940510
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 2426054125
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 185329659
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 2376045909
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 370071363
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    - serializedVersion: 2
+      path: 3713139942
+      attribute: 1
+      script: {fileID: 0}
+      typeID: 4
+      customType: 0
+      isPPtrCurve: 0
+    pptrCurveMapping: []
+  m_AnimationClipSettings:
+    serializedVersion: 2
+    m_AdditiveReferencePoseClip: {fileID: 0}
+    m_AdditiveReferencePoseTime: 0
+    m_StartTime: 0
+    m_StopTime: 4
+    m_OrientationOffsetY: 0
+    m_Level: 0
+    m_CycleOffset: 0
+    m_HasAdditiveReferencePose: 0
+    m_LoopTime: 0
+    m_LoopBlend: 0
+    m_LoopBlendOrientation: 0
+    m_LoopBlendPositionY: 0
+    m_LoopBlendPositionXZ: 0
+    m_KeepOriginalOrientation: 0
+    m_KeepOriginalPositionY: 1
+    m_KeepOriginalPositionXZ: 0
+    m_HeightFromFeet: 0
+    m_Mirror: 0
+  m_EditorCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.9320153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.9320153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.9154041
+        inSlope: 0.19933535
+        outSlope: 0.19933535
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.8987927
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.9320153
+        inSlope: -0.8778796
+        outSlope: -0.8778796
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -2.0304747
+        inSlope: -1.793004
+        outSlope: -1.793004
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -2.141199
+        inSlope: -0.8939672
+        outSlope: -0.8939672
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -2.2241676
+        inSlope: -0.4644027
+        outSlope: -0.4644027
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -2.296
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -2.2914999
+        inSlope: 0.031764932
+        outSlope: 0.031764932
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -2.287
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -2.287
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter3_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1.959203
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 1.959203
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 1.9565452
+        inSlope: -0.031893257
+        outSlope: -0.031893257
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 1.9538875
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 1.959203
+        inSlope: 0.13976258
+        outSlope: 0.13976258
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 1.9748518
+        inSlope: 0.28483933
+        outSlope: 0.28483933
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 1.9924343
+        inSlope: 0.14192322
+        outSlope: 0.14192322
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.005602
+        inSlope: 0.0736971
+        outSlope: 0.0736971
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.017
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.0165
+        inSlope: -0.0035291563
+        outSlope: -0.0035291563
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.016
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.016
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter3_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.14169134
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.14169134
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.11813936
+        inSlope: -0.28262398
+        outSlope: -0.28262398
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.09458735
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.14169134
+        inSlope: 1.2450635
+        outSlope: 1.2450635
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 0.28134686
+        inSlope: 2.5432868
+        outSlope: 2.5432868
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 0.43840814
+        inSlope: 1.2680995
+        outSlope: 1.2680995
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 0.5561018
+        inSlope: 0.6587756
+        outSlope: 0.6587756
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 0.658
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 0.6515
+        inSlope: -0.0458824
+        outSlope: -0.0458824
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 0.645
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 0.645
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter3_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.832671
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.832671
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.8488464
+        inSlope: -0.1941054
+        outSlope: -0.1941054
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.865022
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.832671
+        inSlope: 0.8599696
+        outSlope: 0.8599696
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -1.7360265
+        inSlope: 1.7609483
+        outSlope: 1.7609483
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -1.6272271
+        inSlope: 0.87867504
+        outSlope: 0.87867504
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -1.5456469
+        inSlope: 0.45668116
+        outSlope: 0.45668116
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -1.475
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -1.4810001
+        inSlope: -0.04235282
+        outSlope: -0.04235282
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -1.487
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -1.487
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter6_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1.9589505
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 1.9589505
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 1.9563745
+        inSlope: -0.030911924
+        outSlope: -0.030911924
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 1.9537985
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 1.9589505
+        inSlope: 0.13551158
+        outSlope: 0.13551158
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 1.9741253
+        inSlope: 0.2762195
+        outSlope: 0.2762195
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 1.9911761
+        inSlope: 0.13763444
+        outSlope: 0.13763444
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.003946
+        inSlope: 0.07147194
+        outSlope: 0.07147194
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.015
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.0145
+        inSlope: -0.0035299978
+        outSlope: -0.0035299978
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.014
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.014
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter6_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.1550582
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.1550582
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.17789657
+        inSlope: 0.27406046
+        outSlope: 0.27406046
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.20073494
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.1550582
+        inSlope: -1.2142942
+        outSlope: -1.2142942
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 0.018590838
+        inSlope: -2.4865735
+        outSlope: -2.4865735
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -0.13504204
+        inSlope: -1.2407587
+        outSlope: -1.2407587
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -0.25024024
+        inSlope: -0.6448739
+        outSlope: -0.6448739
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -0.35
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -0.34149998
+        inSlope: 0.05999997
+        outSlope: 0.05999997
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -0.333
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -0.333
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter6_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.9124019
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.9124019
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.9242597
+        inSlope: -0.1422937
+        outSlope: -0.1422937
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.9361175
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.9124019
+        inSlope: 0.6323251
+        outSlope: 0.6323251
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -1.8412688
+        inSlope: 1.2964745
+        outSlope: 1.2964745
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -1.7611465
+        inSlope: 0.64716715
+        outSlope: 0.64716715
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -1.7010492
+        inSlope: 0.33643952
+        outSlope: 0.33643952
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -1.649
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -1.654
+        inSlope: -0.03529409
+        outSlope: -0.03529409
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -1.659
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -1.659
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter2_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1.9590768
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 1.9590768
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 1.9564599
+        inSlope: -0.031403307
+        outSlope: -0.031403307
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 1.9538429
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 1.9590768
+        inSlope: 0.13922137
+        outSlope: 0.13922137
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 1.9747261
+        inSlope: 0.2851612
+        outSlope: 0.2851612
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 1.9923456
+        inSlope: 0.1423012
+        outSlope: 0.1423012
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.005558
+        inSlope: 0.07396317
+        outSlope: 0.07396317
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.017
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.016
+        inSlope: -0.0070583127
+        outSlope: -0.0070583127
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.015
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.015
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter2_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.18692693
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.18692693
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.16113985
+        inSlope: -0.30944523
+        outSlope: -0.30944523
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.13535273
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.18692693
+        inSlope: 1.3739341
+        outSlope: 1.3739341
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 0.34144282
+        inSlope: 2.8159845
+        outSlope: 2.8159845
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 0.51545846
+        inSlope: 1.4055103
+        outSlope: 1.4055103
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 0.6459701
+        inSlope: 0.7306247
+        outSlope: 0.7306247
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 0.759
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 0.7485
+        inSlope: -0.07411775
+        outSlope: -0.07411775
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 0.738
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 0.738
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter2_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.88
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.88
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.895228
+        inSlope: -0.18273641
+        outSlope: -0.18273641
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.9104561
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.88
+        inSlope: 0.81216186
+        outSlope: 0.81216186
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -1.7184145
+        inSlope: 3.034596
+        outSlope: 3.034596
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -1.5259638
+        inSlope: 1.5770463
+        outSlope: 1.5770463
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -1.3767211
+        inSlope: 0.83989125
+        outSlope: 0.83989125
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -1.246
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -1.2505001
+        inSlope: -0.03176451
+        outSlope: -0.03176451
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -1.255
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -1.255
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter1_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 2.005
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 2.005
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 2.003704
+        inSlope: -0.015552522
+        outSlope: -0.015552522
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 2.002408
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 2.005
+        inSlope: 0.06912232
+        outSlope: 0.06912232
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 2.0199494
+        inSlope: 0.28161454
+        outSlope: 0.28161454
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 2.0378551
+        inSlope: 0.14693551
+        outSlope: 0.14693551
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.0517855
+        inSlope: 0.07843424
+        outSlope: 0.07843424
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.064
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.0635
+        inSlope: -0.0035291563
+        outSlope: -0.0035291563
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.063
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.063
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter1_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.211
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.211
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.209704
+        inSlope: -0.015551985
+        outSlope: -0.015551985
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.208408
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.211
+        inSlope: 0.06911994
+        outSlope: 0.06911994
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 0.22571202
+        inSlope: 0.27698582
+        outSlope: 0.27698582
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 0.24331501
+        inSlope: 0.14441349
+        outSlope: 0.14441349
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 0.2570016
+        inSlope: 0.077054955
+        outSlope: 0.077054955
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 0.269
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 0.2685
+        inSlope: -0.0035293668
+        outSlope: -0.0035293668
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 0.268
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 0.268
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter1_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.8496375
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.8496375
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.8382027
+        inSlope: 0.13721754
+        outSlope: 0.13721754
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.8267679
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.8496375
+        inSlope: -0.6087495
+        outSlope: -0.6087495
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -1.9180803
+        inSlope: -1.2472465
+        outSlope: -1.2472465
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -1.9951496
+        inSlope: -0.62245834
+        outSlope: -0.62245834
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -2.0529463
+        inSlope: -0.32355097
+        outSlope: -0.32355097
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -2.103
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -2.1004999
+        inSlope: 0.017646624
+        outSlope: 0.017646624
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -2.098
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -2.098
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter5_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1.9586982
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 1.9586982
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 1.9562039
+        inSlope: -0.029931309
+        outSlope: -0.029931309
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 1.9537096
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 1.9586982
+        inSlope: 0.13302806
+        outSlope: 0.13302806
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 1.9738736
+        inSlope: 0.27685913
+        outSlope: 0.27685913
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 1.9909984
+        inSlope: 0.13838986
+        outSlope: 0.13838986
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.003858
+        inSlope: 0.07200516
+        outSlope: 0.07200516
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.015
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.014
+        inSlope: -0.007059154
+        outSlope: -0.007059154
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.013
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.013
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter5_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.110957906
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.110957906
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.13566335
+        inSlope: 0.2964654
+        outSlope: 0.2964654
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.1603688
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.110957906
+        inSlope: -1.316115
+        outSlope: -1.316115
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -0.03704843
+        inSlope: -2.6973143
+        outSlope: -2.6973143
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -0.20372878
+        inSlope: -1.3462546
+        outSlope: -1.3462546
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -0.32873696
+        inSlope: -0.6998137
+        outSlope: -0.6998137
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -0.437
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -0.431
+        inSlope: 0.042352926
+        outSlope: 0.042352926
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -0.425
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -0.425
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter5_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -1.8989323
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: -1.8989323
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: -1.8712269
+        inSlope: 0.3324652
+        outSlope: 0.3324652
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: -1.8435215
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: -1.8989323
+        inSlope: -1.4705017
+        outSlope: -1.4705017
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: -2.0640967
+        inSlope: -3.0089672
+        outSlope: -3.0089672
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: -2.2499785
+        inSlope: -1.5010817
+        outSlope: -1.5010817
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: -2.389331
+        inSlope: -0.7800644
+        outSlope: -0.7800644
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: -2.51
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: -2.5005
+        inSlope: 0.06705902
+        outSlope: 0.06705902
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: -2.491
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: -2.491
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.x
+    path: Overlord_regular_LOD0_shutter4_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1.9589505
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 1.9589505
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 1.9563745
+        inSlope: -0.030911924
+        outSlope: -0.030911924
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 1.9537985
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 1.9589505
+        inSlope: 0.13709468
+        outSlope: 0.13709468
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 1.9743627
+        inSlope: 0.28085026
+        outSlope: 0.28085026
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 1.9917164
+        inSlope: 0.14015654
+        outSlope: 0.14015654
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 2.00473
+        inSlope: 0.07285095
+        outSlope: 0.07285095
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 2.016
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 2.0149999
+        inSlope: -0.007059154
+        outSlope: -0.007059154
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 2.014
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 2.014
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.y
+    path: Overlord_regular_LOD0_shutter4_left
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.1011179
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.4
+        value: 0.1011179
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.46666667
+        value: 0.10365031
+        inSlope: 0.030388938
+        outSlope: 0.030388938
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.56666666
+        value: 0.106182724
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.68333334
+        value: 0.1011179
+        inSlope: -0.13482802
+        outSlope: -0.13482802
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.71666664
+        value: 0.085958526
+        inSlope: -0.27625403
+        outSlope: -0.27625403
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.8
+        value: 0.06888826
+        inSlope: -0.13787042
+        outSlope: -0.13787042
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.93333334
+        value: 0.056086596
+        inSlope: -0.07166479
+        outSlope: -0.07166479
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.1333333
+        value: 0.045
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.2166667
+        value: 0.046
+        inSlope: 0.0070588123
+        outSlope: 0.0070588123
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 1.4166666
+        value: 0.047
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 4
+        value: 0.047
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_LocalPosition.z
+    path: Overlord_regular_LOD0_shutter4_left
+    classID: 4
+    script: {fileID: 0}
+  m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 0
+  m_HasMotionFloatCurves: 0
+  m_GenerateMotionCurves: 0
+  m_Events: []
