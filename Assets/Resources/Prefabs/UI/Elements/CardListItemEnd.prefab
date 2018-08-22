@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224702096905013854}
   - component: {fileID: 222207641773448916}
   - component: {fileID: 114842065020243482}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224797978882690382}
   - component: {fileID: 114135338467280098}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardListItemEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}

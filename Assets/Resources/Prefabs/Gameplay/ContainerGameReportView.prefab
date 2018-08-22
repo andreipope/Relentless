@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4195635117569046}
   - component: {fileID: 212705621909605098}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: PictureHeal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4166694120261420}
   - component: {fileID: 212617988686846462}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: PictureAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4177375754613924}
   - component: {fileID: 212542635622695822}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BackgroundGameReport
   m_TagString: Untagged
   m_Icon: {fileID: 0}

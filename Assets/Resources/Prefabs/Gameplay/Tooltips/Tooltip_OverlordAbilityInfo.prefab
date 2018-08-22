@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4723075952354650}
   - component: {fileID: 212234415449265442}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_IconBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4648315261848210}
   - component: {fileID: 212121820228189944}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 23255542177866738}
   - component: {fileID: 33320666409724960}
   - component: {fileID: 114458601292827714}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TMP SubMesh [FiraSans-Regular SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4820512696638560}
   - component: {fileID: 212687277749870314}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 33219242820939382}
   - component: {fileID: 222264781667271526}
   - component: {fileID: 114366535440513576}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 33196285906281802}
   - component: {fileID: 222803336119647240}
   - component: {fileID: 114930666336816874}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4001210192753504}
   - component: {fileID: 212957867461486794}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Tooltip_OverlordAbilityInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}

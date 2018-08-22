@@ -356,7 +356,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4932149408166646}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpriteContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

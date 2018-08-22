@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224293129326078268}
   - component: {fileID: 222235527409330826}
   - component: {fileID: 114852910681818096}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DeckItemCreate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224421007290517950}
   - component: {fileID: 222716639200267726}
   - component: {fileID: 114864713465129582}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
