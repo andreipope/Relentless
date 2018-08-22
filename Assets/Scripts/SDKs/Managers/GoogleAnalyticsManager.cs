@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GoogleAnalyticsManager : IAnalytics, IService
 {
-    private GoogleAnalyticsV3 _googleAnalytics;
+    private GoogleAnalyticsV4 _googleAnalytics;
     private const string OtherTrackingCode = "UA-124069166-1";
     /*private const string ProductName = "Zombie Battleground";
     private const string BundleIdentifier = "com.loomx.czb";
@@ -37,7 +37,7 @@ public class GoogleAnalyticsManager : IAnalytics, IService
 
     public void Init()
     {
-        _googleAnalytics = GameObject.FindObjectOfType<GoogleAnalyticsV3>();
+        _googleAnalytics = GameObject.FindObjectOfType<GoogleAnalyticsV4>();
         /*var googleAnalyticsObj = new GameObject("GAv3");
         _googleAnalytics = googleAnalyticsObj.AddComponent<GoogleAnalyticsV3>();
         _googleAnalytics.otherTrackingCode = OtherTrackingCode;
