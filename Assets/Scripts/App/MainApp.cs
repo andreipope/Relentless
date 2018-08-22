@@ -58,6 +58,18 @@ namespace LoomNetwork.CZB
                     GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+                
+                var deviceType = "Editor";
+                #if UNITY_ANDROID
+                deviceType = "Android";
+                #elif UNITY_IOS
+                deviceType = "iOS";
+                #elif UNITY_STANDALONE_OSX
+                deviceType = "MacOS";
+                #elif UNITY_STANDALONE_WIN
+                deviceType = "Window";
+                #endif
+                GameClient.Get<AnalyticsManager>().LogScreen(SceneManager.GetActiveScene().name + "-" + deviceType);
             }
         }
 
