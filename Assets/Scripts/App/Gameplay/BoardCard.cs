@@ -210,6 +210,7 @@ namespace LoomNetwork.CZB
         {
             if (changeRealCost)
             {
+                WorkingCard.libraryCard.cost = value;
                 WorkingCard.realCost = value;
                 manaCost = WorkingCard.realCost;
                 costText.text = manaCost.ToString();
@@ -228,6 +229,7 @@ namespace LoomNetwork.CZB
         {
             if (changeRealCost)
             {
+                WorkingCard.libraryCard.cost += value;
                 WorkingCard.realCost += value;
                 manaCost = WorkingCard.realCost;
                 costText.text = manaCost.ToString();
