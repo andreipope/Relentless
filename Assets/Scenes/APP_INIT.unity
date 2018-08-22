@@ -156,9 +156,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -316,9 +316,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -459,6 +459,48 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!1001 &915356691
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: e84b65f6b68cbca4a9a9c63e390ea836, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1014591044
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,9 +594,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -645,9 +687,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -911,9 +953,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1258,9 +1300,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1621,9 +1663,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.19949779
+    y: 0.049563974
     width: 1
-    height: 0.6010044
+    height: 0.90087205
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

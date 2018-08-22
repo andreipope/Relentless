@@ -1165,7 +1165,7 @@ namespace CodeStage.AdvancedFPSCounter
 				gesturePoints.Clear();
 				gestureCount++;
 
-				if (gestureCount >= 2)
+				if (gestureCount >= 4)
 				{
 					gestureCount = 0;
 					result = true;
