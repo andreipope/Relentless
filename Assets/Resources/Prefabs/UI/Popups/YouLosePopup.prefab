@@ -500,6 +500,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4904158208413960}
+  - component: {fileID: 210910179922028552}
   m_Layer: 0
   m_Name: YouLosePopup
   m_TagString: Untagged
@@ -67244,6 +67245,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210910179922028552
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1931702925111118}
+  m_Enabled: 1
+  m_SortingLayerID: 540465013
+  m_SortingLayer: 7
+  m_SortingOrder: 30
 --- !u!212 &212143363510096874
 SpriteRenderer:
   m_ObjectHideFlags: 1

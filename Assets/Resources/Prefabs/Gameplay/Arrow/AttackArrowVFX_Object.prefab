@@ -136,6 +136,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4357522178338090}
+  - component: {fileID: 210480304935745024}
   m_Layer: 0
   m_Name: AttackArrowVFX_Object
   m_TagString: Untagged
@@ -42469,6 +42470,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210480304935745024
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1188416742911516}
+  m_Enabled: 1
+  m_SortingLayerID: 540465013
+  m_SortingLayer: 7
+  m_SortingOrder: 25
 --- !u!212 &212076426721075566
 SpriteRenderer:
   m_ObjectHideFlags: 1

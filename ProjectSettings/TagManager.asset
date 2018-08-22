@@ -17,7 +17,7 @@ TagManager:
   - 
   - 
   - VFX
-  - 
+  - Battleground
   - 
   - 
   - 
@@ -64,4 +64,7 @@ TagManager:
     locked: 0
   - name: GameUI
     uniqueID: 540465013
+    locked: 0
+  - name: TEST
+    uniqueID: 2163736433
     locked: 0
