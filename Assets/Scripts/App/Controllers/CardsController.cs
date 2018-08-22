@@ -248,6 +248,9 @@ namespace LoomNetwork.CZB
                 card = player.CardsInDeck[0];
             }
 
+            if (CheckIsMoreThanMaxCards(card, player))
+                return;
+
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
         }
@@ -269,6 +272,9 @@ namespace LoomNetwork.CZB
             }
 
             otherPlayer.RemoveCardFromDeck(card);
+
+            if (CheckIsMoreThanMaxCards(card, player))
+                return;
 
             if (player.Equals(otherPlayer))
                 player.AddCardToHand(card);
@@ -689,17 +695,26 @@ namespace LoomNetwork.CZB
 
         public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
-            if (player.CardsInHand.Count >= Constants.MAX_CARDS_IN_HAND)
-            {
-                // IMPROVE ANIMATION
+            if (CheckIsMoreThanMaxCards(workingCard, player))
                 return;
-            }
 
             var cardObject = player.AddCardToHand(workingCard, true);
             cardObject.transform.position = cardPosition;
 
             if (player.IsLocalPlayer)
                 cardObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
+        }
+
+        private bool CheckIsMoreThanMaxCards(WorkingCard workingCard, Player player)
+        {
+            if (player.CardsInHand.Count >= Constants.MAX_CARDS_IN_HAND)
+            {
+                // IMPROVE ANIMATION
+
+                return true;
+            }
+
+            return false;
         }
 
         public void LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
@@ -753,6 +768,10 @@ namespace LoomNetwork.CZB
 
             var card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
             var workingCard = new WorkingCard(card, player);
+
+
+            if (CheckIsMoreThanMaxCards(workingCard, player))
+                return;
 
             if (player.IsLocalPlayer)
             {
