@@ -395,7 +395,8 @@ namespace LoomNetwork.CZB
                 {
                     if(ability.abilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
-                        if (ability.value >= _gameplayManager.OpponentPlayer.HP)
+                        // smart enough HP to use goo carriers
+                        if (ability.value * 2 >= _gameplayManager.OpponentPlayer.HP)
                             return false;
                     }
                 }

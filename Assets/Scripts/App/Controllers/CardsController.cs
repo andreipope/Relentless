@@ -153,6 +153,10 @@ namespace LoomNetwork.CZB
 
             CardDistribution = false;
 
+
+            var player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            AddCardToHand(player);
+
             _gameplayManager.CurrentPlayer.ThrowOnHandChanged();
 
             if (!_gameplayManager.IsTutorial)
@@ -685,6 +689,12 @@ namespace LoomNetwork.CZB
 
         public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
+            if (player.CardsInHand.Count >= Constants.MAX_CARDS_IN_HAND)
+            {
+                // IMPROVE ANIMATION
+                return;
+            }
+
             var cardObject = player.AddCardToHand(workingCard, true);
             cardObject.transform.position = cardPosition;
 

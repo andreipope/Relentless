@@ -53,6 +53,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
+        internal static int MAX_CARDS_IN_HAND = 10;
 
         internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_GOO = 0;
@@ -120,6 +121,6 @@ namespace LoomNetwork.CZB.Common
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE =  false;  
     }
 }
