@@ -242,11 +242,11 @@ namespace LoomNetwork.CZB
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                     {
                         //if (File.Exists(_cacheDataPathes[type]))
-                          //  CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                        //  CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                         
                         try
                         {
-                            var listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                             Debug.Log(listCardLibraryResponse.ToString());
                             CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
                         }
@@ -265,7 +265,7 @@ namespace LoomNetwork.CZB
                         
                         try
                         {
-                            var heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                            ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
                             Debug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
@@ -286,11 +286,11 @@ namespace LoomNetwork.CZB
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     {
                         //if (File.Exists(_cacheDataPathes[type]))
-                          //  CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                        //  CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                         
                         try
                         {
-                            var getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                             Debug.Log(getCollectionResponse.ToString());
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
