@@ -60,9 +60,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             Debug.Log("User Id: " + UserDataModel.UserId);
 
             await _dataManager.LoadRemoteConfig();
-#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !FORCE_LOCAL_ENDPOINT
-            if (_dataManager.BetaConfig.LatestVersion != Constants.CURRENT_VERSION_SERVER_CHECK) 
-            throw new GameVersionMismatchException(Constants.CURRENT_VERSION_SERVER_CHECK, _dataManager.BetaConfig.LatestVersion);
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !FORCE_LOCAL_ENDPOINT || true
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
+                throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
 #endif
 
             try
