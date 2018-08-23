@@ -1,0 +1,6 @@
+<dependencies>
+  <packages>
+    <package>com.google.android.gms:play-services-analytics:LATEST</package>
+  </packages>
+  <files />
+</dependencies>
