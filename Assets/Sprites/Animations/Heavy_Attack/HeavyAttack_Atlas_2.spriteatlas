@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: HeavyAttack_Atlas_2
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 1024
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 6f3ed398322b14925a4fa9af9832a32b, type: 3}
+    - {fileID: 2800000, guid: 7f46f5822c9e744d3b234ad8699f7003, type: 3}
+    - {fileID: 2800000, guid: a36595bd702db4fc49f37a6227c1e402, type: 3}
+    - {fileID: 2800000, guid: dc3d562116f5f4cf4bab8049fc78930b, type: 3}
+    - {fileID: 2800000, guid: 427f093d59aa64672adbe238366c2d44, type: 3}
+    - {fileID: 2800000, guid: af5ed2b586fd94b1495944a0f67baf7c, type: 3}
+    - {fileID: 2800000, guid: f5ccb1790c8f94828b2804befacc2e91, type: 3}
+    - {fileID: 2800000, guid: 371d2187e99f94670a73703bbda4918e, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: a36595bd702db4fc49f37a6227c1e402, type: 3}
+  - {fileID: 21300000, guid: 7f46f5822c9e744d3b234ad8699f7003, type: 3}
+  - {fileID: 21300000, guid: 6f3ed398322b14925a4fa9af9832a32b, type: 3}
+  - {fileID: 21300000, guid: dc3d562116f5f4cf4bab8049fc78930b, type: 3}
+  - {fileID: 21300000, guid: 427f093d59aa64672adbe238366c2d44, type: 3}
+  - {fileID: 21300000, guid: f5ccb1790c8f94828b2804befacc2e91, type: 3}
+  - {fileID: 21300000, guid: af5ed2b586fd94b1495944a0f67baf7c, type: 3}
+  - {fileID: 21300000, guid: 371d2187e99f94670a73703bbda4918e, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - smash_attack_030
+  - smash_attack_029
+  - smash_attack_028
+  - smash_attack_031
+  - smash_attack_032
+  - smash_attack_034
+  - smash_attack_033
+  - smash_attack_035
+  m_Tag: HeavyAttack_Atlas_2
+  m_IsVariant: 0

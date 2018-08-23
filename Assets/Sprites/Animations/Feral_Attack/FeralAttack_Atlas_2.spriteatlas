@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: FeralAttack_Atlas_2
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 3868135beb72a4a6e83dfeae62e4022a, type: 3}
+    - {fileID: 2800000, guid: 6e0e5863218214a4c89688b55a47d1a9, type: 3}
+    - {fileID: 2800000, guid: 423017b93050943e9b0bc9377acbfcdc, type: 3}
+    - {fileID: 2800000, guid: f5d4bdfe14c5947908528ecbffe8caca, type: 3}
+    - {fileID: 2800000, guid: cdeb2dd87b96a4ecf9fc4d6487cbe39a, type: 3}
+    - {fileID: 2800000, guid: 4bba41b84e9c8440ebe6cb9d0fd3bb56, type: 3}
+    - {fileID: 2800000, guid: b08a70d385c424bdeb3db373f4ba4cbc, type: 3}
+    - {fileID: 2800000, guid: e97844121704645768dab2114f015262, type: 3}
+    - {fileID: 2800000, guid: f521e96bd8af148bb86ede8ce0b8b93c, type: 3}
+    - {fileID: 2800000, guid: 129b56c09bed445fc8f6c2a10e13b81c, type: 3}
+    - {fileID: 2800000, guid: 225a62575a33143618fbfe4fd23c3d1e, type: 3}
+    - {fileID: 2800000, guid: 484466aa8364a4ab8a751c053afbbc45, type: 3}
+    - {fileID: 2800000, guid: 72136713009dc447e9adb71d9e89a473, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: cdeb2dd87b96a4ecf9fc4d6487cbe39a, type: 3}
+  - {fileID: 21300000, guid: e97844121704645768dab2114f015262, type: 3}
+  - {fileID: 21300000, guid: 6e0e5863218214a4c89688b55a47d1a9, type: 3}
+  - {fileID: 21300000, guid: 4bba41b84e9c8440ebe6cb9d0fd3bb56, type: 3}
+  - {fileID: 21300000, guid: 3868135beb72a4a6e83dfeae62e4022a, type: 3}
+  - {fileID: 21300000, guid: b08a70d385c424bdeb3db373f4ba4cbc, type: 3}
+  - {fileID: 21300000, guid: 129b56c09bed445fc8f6c2a10e13b81c, type: 3}
+  - {fileID: 21300000, guid: f521e96bd8af148bb86ede8ce0b8b93c, type: 3}
+  - {fileID: 21300000, guid: 423017b93050943e9b0bc9377acbfcdc, type: 3}
+  - {fileID: 21300000, guid: f5d4bdfe14c5947908528ecbffe8caca, type: 3}
+  - {fileID: 21300000, guid: 72136713009dc447e9adb71d9e89a473, type: 3}
+  - {fileID: 21300000, guid: 225a62575a33143618fbfe4fd23c3d1e, type: 3}
+  - {fileID: 21300000, guid: 484466aa8364a4ab8a751c053afbbc45, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Bite_Attack_031
+  - Bite_Attack_034
+  - Bite_Attack_028
+  - Bite_Attack_032
+  - Bite_Attack_027
+  - Bite_Attack_033
+  - Bite_Attack_036
+  - Bite_Attack_035
+  - Bite_Attack_029
+  - Bite_Attack_030
+  - Bite_Attack_039
+  - Bite_Attack_037
+  - Bite_Attack_038
+  m_Tag: FeralAttack_Atlas_2
+  m_IsVariant: 0
