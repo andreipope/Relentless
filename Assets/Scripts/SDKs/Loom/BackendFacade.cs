@@ -7,6 +7,7 @@ using Loom.Google.Protobuf.Collections;
 using Loom.Newtonsoft.Json;
 using Loom.Newtonsoft.Json.Converters;
 using Loom.Newtonsoft.Json.Serialization;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.Internal;
 using Plugins.AsyncAwaitUtil.Source;
@@ -283,7 +284,11 @@ namespace LoomNetwork.CZB.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(httpResponseMessage.ReadToEnd(), new VersionConverter());
+            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
+                httpResponseMessage.ReadToEnd(), 
+                // FIXME: backend should return valid version numbers at all times
+                new VersionConverterWithFallback(Version.Parse(Constants.CURRENT_VERSION_BASE))
+                );
             return betaConfig;
         }
 
