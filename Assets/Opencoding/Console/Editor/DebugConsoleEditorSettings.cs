@@ -14,7 +14,7 @@ namespace Opencoding.Console.Editor
 
 		static DebugConsoleEditorSettings()
 		{
-			AutomaticallyLoadConsoleInEditor = EditorPrefs.GetBool("TouchConsolePro/AutomaticallyLoadConsoleInEditor", true);	
+			AutomaticallyLoadConsoleInEditor = EditorPrefs.GetBool("TouchConsolePro/AutomaticallyLoadConsoleInEditor", false);	
 		}
 
 		[PreferenceItem("TouchConsole Pro")]
