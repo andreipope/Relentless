@@ -76,47 +76,7 @@ namespace LoomNetwork.CZB
             _cardInfoPopupHandler.StateChanging += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
             _cardInfoPopupHandler.StateChanged += () => ChangeStatePopup(_cardInfoPopupHandler.IsStateChanging);
             _cardInfoPopupHandler.Closing += UpdateGooValue;
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
-
-			_buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
-			_buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<ButtonShiftingContent>();
-			_buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            _buttonArrowLeft = _selfPage.transform.Find("Button_ArrowLeft").GetComponent<Button>();
-            _buttonArrowRight = _selfPage.transform.Find("Button_ArrowRight").GetComponent<Button>();
-
-            _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
-            _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
-            _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
-            _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
-            _toxicTogggle = _selfPage.transform.Find("ElementsToggles/Toxic").GetComponent<Toggle>();
-            _fireToggle = _selfPage.transform.Find("ElementsToggles/Fire").GetComponent<Toggle>();
-            _earthToggle = _selfPage.transform.Find("ElementsToggles/Earth").GetComponent<Toggle>();
-            _itemsToggle = _selfPage.transform.Find("ElementsToggles/Items").GetComponent<Toggle>();
-
-            _cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
-
-			_cardSetsIcons = _selfPage.transform.Find ("ElementsToggles").gameObject;
-
-            _buttonBuy.onClick.AddListener(BuyButtonHandler);
-            _buttonOpen.onClick.AddListener(OpenButtonHandler);
-            _buttonBack.onClick.AddListener(BackButtonHandler);
-            _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
-            _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
-
-            _airToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
-            _lifeToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
-            _waterToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER); });
-            _toxicTogggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC); });
-            _fireToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE); });
-            _earthToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH); });
-            _itemsToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM); });
-
-            //_cardSetsSlider.onValueChanged.AddListener(CardSetsSliderOnValueChangedHandler);
-
+           
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
 			_cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 			_cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
@@ -124,13 +84,11 @@ namespace LoomNetwork.CZB
 
 
             _createdBoardCards = new List<BoardCard>();
-
-            Hide();
         }
 
         public void Update()
         {
-            if (_selfPage.activeInHierarchy)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
                 _cardInfoPopupHandler.Update();
                 if (_cardInfoPopupHandler.IsInteractable)
@@ -156,6 +114,44 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
+
+            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<ButtonShiftingContent>();
+            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<ButtonShiftingContent>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonArrowLeft = _selfPage.transform.Find("Button_ArrowLeft").GetComponent<Button>();
+            _buttonArrowRight = _selfPage.transform.Find("Button_ArrowRight").GetComponent<Button>();
+
+            _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
+            _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
+            _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
+            _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
+            _toxicTogggle = _selfPage.transform.Find("ElementsToggles/Toxic").GetComponent<Toggle>();
+            _fireToggle = _selfPage.transform.Find("ElementsToggles/Fire").GetComponent<Toggle>();
+            _earthToggle = _selfPage.transform.Find("ElementsToggles/Earth").GetComponent<Toggle>();
+            _itemsToggle = _selfPage.transform.Find("ElementsToggles/Items").GetComponent<Toggle>();
+
+            _cardCounter = _selfPage.transform.Find ("CardsCounter").GetChild (0).GetComponent<TextMeshProUGUI> ();
+
+            _cardSetsIcons = _selfPage.transform.Find ("ElementsToggles").gameObject;
+
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonHandler);
+            _buttonArrowLeft.onClick.AddListener(ArrowLeftButtonHandler);
+            _buttonArrowRight.onClick.AddListener(ArrowRightButtonHandler);
+
+            _airToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR); });
+            _lifeToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE); });
+            _waterToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER); });
+            _toxicTogggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC); });
+            _fireToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE); });
+            _earthToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH); });
+            _itemsToggle.onValueChanged.AddListener((state) => { if (state) ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM); });
+
             //_uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
             gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
@@ -165,9 +161,15 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             MonoBehaviour.Destroy(_cardPlaceholders);
             ResetBoardCards();
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()

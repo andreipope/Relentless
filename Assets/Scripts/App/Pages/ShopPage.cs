@@ -56,14 +56,23 @@ namespace LoomNetwork.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
+            _selectedColor = Color.white;
+            _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
+            
+            Hide();
+        }
+
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-			_description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
-			_wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
-            _selectedColor = Color.white;
-            _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
-
+            _description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
+            _wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
 
             _buttonItem1 = _selfPage.transform.Find("Item1").GetComponent<Button>();
             _buttonItem2 = _selfPage.transform.Find("Item2").GetComponent<Button>();
@@ -93,14 +102,14 @@ namespace LoomNetwork.CZB
             _itemYstartPos = _buttonItem1.gameObject.transform.position.y;
 
             _packsObjects = new GameObject[] { _buttonItem1.gameObject,
-                                        _buttonItem2.gameObject,
-                                        _buttonItem3.gameObject,
-                                        _buttonItem4.gameObject};
+                _buttonItem2.gameObject,
+                _buttonItem3.gameObject,
+                _buttonItem4.gameObject};
 
             _imageObjects = new Image[] { _buttonItem1.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem2.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem3.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem4.transform.Find("Image").GetComponent<Image>()
+                _buttonItem2.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem3.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem4.transform.Find("Image").GetComponent<Image>()
             };
 
             foreach(Image img in _imageObjects)
@@ -108,15 +117,7 @@ namespace LoomNetwork.CZB
                 img.color = _deselectedColor;
             }
 
-            Hide();
-        }
 
-        public void Update()
-        {
-        }
-
-        public void Show()
-        {
             _playerManager.LocalUser.wallet = 1000;
             _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
             if (_currentPackId > -1)
@@ -139,7 +140,12 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()

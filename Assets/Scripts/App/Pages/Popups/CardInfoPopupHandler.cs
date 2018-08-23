@@ -50,9 +50,9 @@ namespace LoomNetwork.CZB
 
         public void Update() {
             IsInteractable = false;
-            if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<WarningPopup>().Self.activeSelf)
+            if (_uiManager.GetPopup<CardInfoPopup>().Self == null &&
+                _uiManager.GetPopup<DesintigrateCardPopup>().Self == null &&
+                _uiManager.GetPopup<WarningPopup>().Self == null)
             {
                 if (!IsStateChanging && _previewCard != null)
                 {

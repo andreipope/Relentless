@@ -73,7 +73,14 @@ namespace LoomNetwork.CZB
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+        }
 
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
             _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
@@ -118,29 +125,25 @@ namespace LoomNetwork.CZB
 
             _battleButton.interactable = true;
 
-            Hide();
-        }
-
-        public void Update()
-        {
-        }
-
-        public void Show()
-        {
             //todod improve I guess
             _selectedDeckId = _dataManager.CachedUserLocalData.lastSelectedDeckId;
             _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
-            _selfPage.SetActive(true);
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-            ResetHordeDecks();
+            if (_selfPage == null)
+                return;
 
-            _scrolledDeck = -1;
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+
+            /*ResetHordeDecks();
+
+            _scrolledDeck = -1;*/
         }
 
         public void Dispose()
@@ -199,13 +202,13 @@ namespace LoomNetwork.CZB
                     deck.SelfDeck.id,
                     _dataManager.CachedDecksLastModificationTimestamp
                     );
-                CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
+                Debug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
             } catch (Exception e)
             {
                 // HACK for offline mode
                 if (false)
                 {
-                    CustomDebug.Log("Result === " + e);
+                    Debug.Log("Result === " + e);
                     OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
                     return;
                 }

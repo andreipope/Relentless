@@ -62,46 +62,8 @@ namespace LoomNetwork.CZB
 			_dataManager = GameClient.Get<IDataManager> ();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
-            _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
-            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
-            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits").GetComponent<ButtonShiftingContent>();
-            _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
-            _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
-            _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
-            _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
-            _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
-            _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
-            _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
-
-            _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
-            
-            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
-            _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
-			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
-            _markerOffline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Offline").gameObject;
-            _markerOnline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Online").gameObject;
-
-            _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonDeck.onClick.AddListener(OnClickPlay);
-            _buttonArmy.onClickEvent.AddListener(OnClickCollection);
-            _buttonBuy.onClick.AddListener(BuyButtonHandler);
-            _buttonOpen.onClick.AddListener(OpenButtonHandler);
-            _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
-            _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
-            _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-            _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
-            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
-            _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
             
             _backendFacade.ContractCreated += LoomManagerOnContractCreated;
-            
-            Hide();
-            
         }
 
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state) {
@@ -109,9 +71,6 @@ namespace LoomNetwork.CZB
         }
 
         private void UpdateConnectionStateUI() {
-            if (!_selfPage.activeSelf)
-                return;
-
             _connectionStatusText.text = 
                 _backendFacade.IsConnected ? 
                     "<color=green>Online</color>" : 
@@ -130,7 +89,42 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
+            _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
+            _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
+            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
+            _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
+            _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
+            _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
+            _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
+            _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
+            _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
+
+            _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
+
+            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
+            _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
+            _buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
+            _markerOffline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Offline").gameObject;
+            _markerOnline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Online").gameObject;
+
+            _buttonPlay.onClick.AddListener(OnClickPlay);
+            _buttonDeck.onClick.AddListener(OnClickPlay);
+            _buttonArmy.onClickEvent.AddListener(OnClickCollection);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
+            _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
+            _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
+            _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
+            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            
+            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
+            _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
+
             _buttonArmy.interactable = true;
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
@@ -176,16 +170,23 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-        }
-
-        public void Dispose()
-        {
             if (_backendFacade.Contract != null)
             {
                 _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
                 _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
             }
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+        }
+
+        public void Dispose()
+        {
+            
         }
 
         #region Buttons Handlers

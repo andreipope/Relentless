@@ -36,24 +36,6 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TermsPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
-            _gotItButton.onClick.AddListener(CloseButtonHandler);
-
-			_toggle = _selfPage.transform.Find ("Toggle").GetComponent<Toggle> ();
-			_toggle.onValueChanged.AddListener(ToggleValueChanged);
-
-            _text = _selfPage.transform.Find("Message").GetComponent<TextMeshProUGUI>();
-            _titleText = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
-
-            _gotItButton.gameObject.SetActive(false);
-
-            _titleText.text = "UPDATE ver. " + Constants.CURRENT_VERSION;
-
-            Hide();
         }
 
 		void ToggleValueChanged(bool change)
@@ -81,7 +63,13 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -90,14 +78,28 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TermsPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _gotItButton = _selfPage.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
+            _gotItButton.onClick.AddListener(CloseButtonHandler);
+
+            _toggle = _selfPage.transform.Find ("Toggle").GetComponent<Toggle> ();
+            _toggle.onValueChanged.AddListener(ToggleValueChanged);
+
+            _text = _selfPage.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+            _titleText = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+
+            _gotItButton.gameObject.SetActive(false);
+
+            _titleText.text = "UPDATE ver. " + BuildMetaInfo.Instance.DisplayVersionName;
         }
 
         public void Show(object data)
         {
-            _text.text = (string)data;
-
             Show();
+
+            _text.text = (string)data;
         }
 
         public void Update()

@@ -172,6 +172,7 @@ namespace LoomNetwork.CZB
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
+            distibuteCardObject.SetActive(false);
         }
 
         private void PlayerGooChangedEventHandler(int obj)
@@ -203,6 +204,8 @@ namespace LoomNetwork.CZB
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
+
+            distibuteCardObject.SetActive(false);
         }
 
 
@@ -210,6 +213,7 @@ namespace LoomNetwork.CZB
         {
             if (changeRealCost)
             {
+                WorkingCard.libraryCard.cost = value;
                 WorkingCard.realCost = value;
                 manaCost = WorkingCard.realCost;
                 costText.text = manaCost.ToString();
@@ -228,6 +232,7 @@ namespace LoomNetwork.CZB
         {
             if (changeRealCost)
             {
+                WorkingCard.libraryCard.cost += value;
                 WorkingCard.realCost += value;
                 manaCost = WorkingCard.realCost;
                 costText.text = manaCost.ToString();

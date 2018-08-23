@@ -1,4 +1,5 @@
-﻿using LoomNetwork.CZB.BackendCommunication;
+﻿#if !UNITY_IOS
+
 using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
@@ -20,13 +21,13 @@ namespace LoomNetwork.CZB.BackendCommunication
         [CommandHandler(Description = "Get Contract Write Host Link")]
         private static void GetContractWriteLink()
         {
-            CustomDebug.Log("Link =  '" + _backendFacade.WriterHost);
+            Debug.Log("Link =  '" + _backendFacade.WriterHost);
         }
 
         [CommandHandler(Description = "Get Contract Reader Host Link")]
         private static void GetContractReaderLink()
         {
-            CustomDebug.Log("Link =  '" + _backendFacade.ReaderHost);
+            Debug.Log("Link =  '" + _backendFacade.ReaderHost);
         }
 
         [CommandHandler(Description = "Init Contract with Write Host Link")]
@@ -34,7 +35,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             _backendFacade.WriterHost = link;
             await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
-            CustomDebug.Log("LoomX Initialized..");
+            Debug.Log("LoomX Initialized..");
         }
 
         [CommandHandler(Description = "Init Contract with Write Host Link")]
@@ -42,7 +43,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             _backendFacade.ReaderHost = link;
             await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
-            CustomDebug.Log("LoomX Initialized..");
+            Debug.Log("LoomX Initialized..");
         }
 
         [CommandHandler(Description = "Init Contract with Write and Reader Host Link")]
@@ -51,7 +52,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             _backendFacade.WriterHost = writer;
             _backendFacade.ReaderHost = reader;
             await _backendFacade.CreateContract(_backendDataControlMediator.UserDataModel.PrivateKey);
-            CustomDebug.Log("LoomX Initialized..");
+            Debug.Log("LoomX Initialized..");
         }
     }
 }
+
+#endif
