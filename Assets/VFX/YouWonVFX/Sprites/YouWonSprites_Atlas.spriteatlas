@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: YouWonSprites_Atlas
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 4096
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 5bde1e24877f54a8290b6ce8c1163b50, type: 3}
+    - {fileID: 2800000, guid: 47c35a58aac204061a0d044d6cd402e7, type: 3}
+    - {fileID: 2800000, guid: e891aa5b7881f42498d3b64f70a9233b, type: 3}
+    - {fileID: 2800000, guid: 18324c198b9ea4bbc89cd2ac2c5ce337, type: 3}
+    - {fileID: 2800000, guid: 19c92a4fefbe143e580f98eaeb70d3b4, type: 3}
+    - {fileID: 2800000, guid: 29e21d75b230542018ee72e2a82dcab5, type: 3}
+    - {fileID: 2800000, guid: 4f7891682f4be47278320cd68c799848, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 29e21d75b230542018ee72e2a82dcab5, type: 3}
+  - {fileID: 21300000, guid: 19c92a4fefbe143e580f98eaeb70d3b4, type: 3}
+  - {fileID: 21300000, guid: 18324c198b9ea4bbc89cd2ac2c5ce337, type: 3}
+  - {fileID: 21300000, guid: 47c35a58aac204061a0d044d6cd402e7, type: 3}
+  - {fileID: 21300000, guid: 5bde1e24877f54a8290b6ce8c1163b50, type: 3}
+  - {fileID: 21300000, guid: 4f7891682f4be47278320cd68c799848, type: 3}
+  - {fileID: 21300000, guid: e891aa5b7881f42498d3b64f70a9233b, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - YouWonShine
+  - YouWonRays
+  - YouWonPanel
+  - HeroExample
+  - Glow
+  - YouWonText
+  - LevelUpText
+  m_Tag: YouWonSprites_Atlas
+  m_IsVariant: 0
