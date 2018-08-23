@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: OverlordSelectionUI_Atlas
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 4096
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 8c9851657056de640b39a4383ef4a14b, type: 3}
+    - {fileID: 2800000, guid: 58c5bce336f37914f8cdd522953efa0a, type: 3}
+    - {fileID: 2800000, guid: 496567d92d5060348961247ab373e275, type: 3}
+    - {fileID: 2800000, guid: 65641df492a488a4e81b457d912d1d8b, type: 3}
+    - {fileID: 2800000, guid: d59881392d1dec04ca8f9912fda27696, type: 3}
+    - {fileID: 2800000, guid: e01f9e3181432f34c92980dd49afd9d3, type: 3}
+    - {fileID: 2800000, guid: 76fc14580dab4c74d94216e6bf05da03, type: 3}
+    - {fileID: 2800000, guid: 9705e053da2dc9946acb462f4a1e57ad, type: 3}
+    - {fileID: 2800000, guid: 5592e5932b6ee7e4db37b9d33d587f34, type: 3}
+    - {fileID: 2800000, guid: 049da3fd94c0ec9418eb4831226b6820, type: 3}
+    - {fileID: 2800000, guid: 7a11dda009388bf428bf726cb41c8c0c, type: 3}
+    - {fileID: 2800000, guid: abe1248918fa15a439d507534b706245, type: 3}
+    - {fileID: 2800000, guid: a29c1c4c950b63f47970963d0600fe02, type: 3}
+    - {fileID: 2800000, guid: 345296266c051854691a674348eb5a57, type: 3}
+    - {fileID: 2800000, guid: 26d8c4b5a1cf4ae4d854891e762c051b, type: 3}
+    - {fileID: 2800000, guid: f409d3c5141114b46af092187b604d17, type: 3}
+    - {fileID: 2800000, guid: 3c7da4073ffe4e94a8508e376a34c611, type: 3}
+    - {fileID: 2800000, guid: 69933e9a5955de548857b0660ce5730c, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 58c5bce336f37914f8cdd522953efa0a, type: 3}
+  - {fileID: 21300000, guid: 26d8c4b5a1cf4ae4d854891e762c051b, type: 3}
+  - {fileID: 21300000, guid: f409d3c5141114b46af092187b604d17, type: 3}
+  - {fileID: 21300000, guid: 345296266c051854691a674348eb5a57, type: 3}
+  - {fileID: 21300000, guid: 3c7da4073ffe4e94a8508e376a34c611, type: 3}
+  - {fileID: 21300000, guid: abe1248918fa15a439d507534b706245, type: 3}
+  - {fileID: 21300000, guid: 69933e9a5955de548857b0660ce5730c, type: 3}
+  - {fileID: 21300000, guid: 8c9851657056de640b39a4383ef4a14b, type: 3}
+  - {fileID: 21300000, guid: 496567d92d5060348961247ab373e275, type: 3}
+  - {fileID: 21300000, guid: 65641df492a488a4e81b457d912d1d8b, type: 3}
+  - {fileID: 21300000, guid: a29c1c4c950b63f47970963d0600fe02, type: 3}
+  - {fileID: 21300000, guid: 7a11dda009388bf428bf726cb41c8c0c, type: 3}
+  - {fileID: 21300000, guid: e01f9e3181432f34c92980dd49afd9d3, type: 3}
+  - {fileID: 21300000, guid: 9705e053da2dc9946acb462f4a1e57ad, type: 3}
+  - {fileID: 21300000, guid: 5592e5932b6ee7e4db37b9d33d587f34, type: 3}
+  - {fileID: 21300000, guid: 76fc14580dab4c74d94216e6bf05da03, type: 3}
+  - {fileID: 21300000, guid: d59881392d1dec04ca8f9912fda27696, type: 3}
+  - {fileID: 21300000, guid: 049da3fd94c0ec9418eb4831226b6820, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - fxplaceholder_portraitglow
+  - portrait_air_hero
+  - portrait_earth_hero
+  - portrait_toxic_hero
+  - portrait_fire_hero
+  - portrait_water_hero
+  - portrait_life_hero
+  - fxplaceholder_portrait_innerglow
+  - header_long
+  - header_med
+  - overlordselect_mask_mid
+  - icon_element_water
+  - icon_element_earth
+  - icon_element_life
+  - icon_element_tool
+  - icon_element_fire
+  - icon_element_air
+  - icon_element_toxic
+  m_Tag: OverlordSelectionUI_Atlas
+  m_IsVariant: 0
