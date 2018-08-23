@@ -216,7 +216,7 @@ namespace LoomNetwork.CZB
 	        try
 	        {
 				await _backendFacade.SignUp(usernameText);
-		        CustomDebug.Log(" ====== Account Created Successfully ==== ");
+		        Debug.Log(" ====== Account Created Successfully ==== ");
 		        _backendDataControlMediator.UserDataModel.UserId = usernameText;
 		        //OpenAlertDialog("Account Created Successfully");
 		        // TODO : Removed code loading data manager

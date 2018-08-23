@@ -128,6 +128,8 @@ namespace LoomNetwork.CZB
                 return;
 
             _selfPage.SetActive (false);
+            _reportGameActionsPanel.Dispose();
+            _reportGameActionsPanel = null;
             GameObject.Destroy (_selfPage);
             _selfPage = null;
         }
@@ -223,8 +225,6 @@ namespace LoomNetwork.CZB
                 heroId = _dataManager.CachedDecksData.decks.First(o => o.id == _currentDeckId).heroId;
 
             int opponentHeroId = randomOpponentDeck.heroId;
-
-            Debug.Log (opponentHeroId);
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];

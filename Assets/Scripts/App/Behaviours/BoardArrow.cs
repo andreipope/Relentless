@@ -95,7 +95,7 @@ public class BoardArrow : MonoBehaviour
     {
         if (startedDrag)
         {
-            if (Vector3.Distance(_fromPosition, _targetPosition) > 1f)
+            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.POINTER_MIN_DRAG_DELTA)
                 return true;
         }
 

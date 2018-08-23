@@ -874,10 +874,10 @@ namespace LoomNetwork.CZB
                             _dataManager.CachedDecksLastModificationTimestamp
                             );
                     _currentDeck.id = newDeckId;
-                    CustomDebug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                    Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 } catch (Exception e)
                 {
-                    CustomDebug.Log("Result === " + e);
+                    Debug.Log("Result === " + e);
 
                     // HACK: for offline mode
                     if (false)
@@ -905,10 +905,10 @@ namespace LoomNetwork.CZB
                         _currentDeck,
                         _dataManager.CachedDecksLastModificationTimestamp
                         );
-                    CustomDebug.Log(" ====== Edit Deck Successfully ==== ");
+                    Debug.Log(" ====== Edit Deck Successfully ==== ");
                 } catch (Exception e)
                 {
-                    CustomDebug.Log("Result === " + e);                    
+                    Debug.Log("Result === " + e);                    
 
                     // HACK: for offline mode
                     if (false)

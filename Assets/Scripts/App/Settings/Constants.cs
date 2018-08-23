@@ -9,12 +9,8 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-	    internal const string CURRENT_VERSION = "0.1.0.1";
-	    internal const string CURRENT_VERSION_POSTFIX = "";
+	    internal const string CURRENT_VERSION_BASE = "0.1.0";
 	    internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
-	    internal const string CURRENT_VERSION_FULL = CURRENT_VERSION + CURRENT_VERSION_POSTFIX;
-        internal const string VERSION_REVISION = "Alpha";
-        internal const string CURRENT_VERSION_SERVER_CHECK = "0.1.0.0";
 
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 
@@ -53,6 +49,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
+        internal static int MAX_CARDS_IN_HAND = 10;
 
         internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_GOO = 0;
@@ -115,11 +112,13 @@ namespace LoomNetwork.CZB.Common
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
-        internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
+        internal const float POINTER_ON_CLICK_DELAY = 1.5f;
+        internal const float POINTER_MIN_DRAG_DELTA = 5f;
+        internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE =  false;  
     }
 }

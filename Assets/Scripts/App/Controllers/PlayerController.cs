@@ -36,6 +36,8 @@ namespace LoomNetwork.CZB
         private BoardCard _topmostBoardCard;
         private BoardUnit _selectedBoardUnit;
 
+        private PointerEventSolver _pointerEventSolver;
+
         //  private HeroController _heroController;
 
         public bool IsPlayerStunned { get; set; }
@@ -59,6 +61,11 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+
+            _pointerEventSolver = new PointerEventSolver();
+            _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
+            _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;
+            _pointerEventSolver.OnEndEvent += PointerEventSolver_OnEndEventHandler;
         }
 
         public void Dispose()
@@ -75,6 +82,9 @@ namespace LoomNetwork.CZB
                                                 _tutorialManager.CurrentStep != 19 &&
                                                 _tutorialManager.CurrentStep != 27))
                 return;
+
+
+            _pointerEventSolver.Update();
 
             HandleInput();
         }
@@ -202,6 +212,9 @@ namespace LoomNetwork.CZB
                             var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
                             if (topmostBoardCard != null && !topmostBoardCard.isPreview)
                             {
+                                var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                                _pointerEventSolver.PushPointer(delta);
+
                                 _startedOnClickDelay = true;
                                 _isPreviewHandCard = true;
                                 _topmostBoardCard = topmostBoardCard;
@@ -218,7 +231,10 @@ namespace LoomNetwork.CZB
                             var selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                             if (selectedBoardUnit != null && (!_battlegroundController.isPreviewActive || selectedBoardUnit.Card.instanceId != _battlegroundController.currentPreviewedCardId))
                             {
-                                _startedOnClickDelay = true;
+                                var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                                _pointerEventSolver.PushPointer(delta);
+
+                                 _startedOnClickDelay = true;
                                 _isPreviewHandCard = false;
                                 _selectedBoardUnit = selectedBoardUnit;
                             }
@@ -229,8 +245,8 @@ namespace LoomNetwork.CZB
                         StopHandTimer();
                         _battlegroundController.DestroyCardPreview();
 
-                        _delayTimerOfClick = 0f;
-                        _startedOnClickDelay = false;
+                        // _delayTimerOfClick = 0f;
+                        // _startedOnClickDelay = false;
                         _topmostBoardCard = null;
                         _selectedBoardUnit = null;
                     }
@@ -294,7 +310,7 @@ namespace LoomNetwork.CZB
             {
                 _delayTimerOfClick += Time.deltaTime;
 
-                if (_delayTimerOfClick > Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
+                /*if (_delayTimerOfClick > Constants.POINTER_ON_CLICK_DELAY)
                 {
 
                     _delayTimerOfClick = 0f;
@@ -311,43 +327,69 @@ namespace LoomNetwork.CZB
                     //        HandCardPreview(new object[] { _selectedBoardUnit });
                     //}
                 }
-                else if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
+                else if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.POINTER_ON_CLICK_DELAY)
                 {
-                    if (_isPreviewHandCard)
-                    {
-                        if (_topmostBoardCard != null && _battlegroundController.cardsZoomed && !_cardsZooming)
-                        {
-                            StopHandTimer();
-                            _battlegroundController.DestroyCardPreview();
-
-
-                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
-                            else HandCardPreview(new object[] { _topmostBoardCard });
-                        }
-                    }
-                    else
-                    {
-                        if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
-                        {
-                            StopHandTimer();
-                            _battlegroundController.DestroyCardPreview();
-
-
-                            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
-                            else HandCardPreview(new object[] { _selectedBoardUnit });
-                        }
-                    }
+                    
 
                     _delayTimerOfClick = 0f;
                     _startedOnClickDelay = false;
                     // _topmostBoardCard = null;
                     // _selectedBoardUnit = null;
-                }
-            }
+                } */
+            } 
 
-            if(_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
+            if(Input.GetMouseButtonUp(0))
+                _pointerEventSolver.PopPointer();
+
+
+            if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
             {
                 _battlegroundController.DestroyCardPreview();
+            }
+        }
+
+        private void PointerEventSolver_OnDragStartedEventHandler()
+        {
+            //Debug.Log("PointerEventSolver_OnDragStartedEventHandler");
+
+            if(_startedOnClickDelay && _delayTimerOfClick < 0.5f)
+            CheckCardPreviewShow();
+        }
+
+        private void PointerEventSolver_OnClickEventHandler()
+        {
+            CheckCardPreviewShow();
+        }
+
+        private void PointerEventSolver_OnEndEventHandler()
+        {
+            _delayTimerOfClick = 0f;
+            _startedOnClickDelay = false;
+        }
+
+        private void CheckCardPreviewShow()
+        {
+            if (_isPreviewHandCard)
+            {
+                if (_topmostBoardCard != null && _battlegroundController.cardsZoomed && !_cardsZooming)
+                {
+                    StopHandTimer();
+                    _battlegroundController.DestroyCardPreview();
+
+                    if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                    else HandCardPreview(new object[] { _topmostBoardCard });
+                }
+            }
+            else
+            {
+                if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
+                {
+                    StopHandTimer();
+                    _battlegroundController.DestroyCardPreview();
+
+                    if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
+                    else HandCardPreview(new object[] { _selectedBoardUnit });
+                }
             }
         }
 
