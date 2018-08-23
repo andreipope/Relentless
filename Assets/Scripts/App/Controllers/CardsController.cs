@@ -153,10 +153,6 @@ namespace LoomNetwork.CZB
 
             CardDistribution = false;
 
-
-            var player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-            AddCardToHand(player);
-
             _gameplayManager.CurrentPlayer.ThrowOnHandChanged();
 
             if (!_gameplayManager.IsTutorial)
@@ -240,7 +236,7 @@ namespace LoomNetwork.CZB
                 {
                     player.damageByNoMoreCardsInDeck++;
                     player.HP -= player.damageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(this, -player.damageByNoMoreCardsInDeck);
+                    _vfxController.SpawnGotDamageEffect(player, -player.damageByNoMoreCardsInDeck);
 
                     return;
                 }
@@ -263,7 +259,7 @@ namespace LoomNetwork.CZB
                 {
                     otherPlayer.damageByNoMoreCardsInDeck++;
                     otherPlayer.HP -= otherPlayer.damageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(this, -otherPlayer.damageByNoMoreCardsInDeck);
+                    _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.damageByNoMoreCardsInDeck);
 
                     return;
                 }

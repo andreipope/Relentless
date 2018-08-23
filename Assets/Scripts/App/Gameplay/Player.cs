@@ -447,9 +447,17 @@ namespace LoomNetwork.CZB
         public void DistributeCard()
         {
             if (IsLocalPlayer)
-                _cardsController.AddCardToDistributionState(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());// CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
             else
                 _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+        }
+
+        private WorkingCard GetCardThatNotInDistribution()
+        {
+            var usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
+            var cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+
+            return cards[0];
         }
 
         public void PlayerDie()

@@ -116,7 +116,9 @@ namespace LoomNetwork.CZB.Common
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
-        internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
+        internal const float POINTER_ON_CLICK_DELAY = 1.5f;
+        internal const float POINTER_MIN_DRAG_DELTA = 5f;
+        internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
