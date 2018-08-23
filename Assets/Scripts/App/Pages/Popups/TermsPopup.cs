@@ -92,7 +92,7 @@ namespace LoomNetwork.CZB
 
             _gotItButton.gameObject.SetActive(false);
 
-            _titleText.text = "UPDATE ver. " + Constants.CURRENT_VERSION;
+            _titleText.text = "UPDATE ver. " + BuildMetaInfo.Instance.DisplayVersionName;
         }
 
         public void Show(object data)

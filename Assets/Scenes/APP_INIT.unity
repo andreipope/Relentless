@@ -156,9 +156,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -316,9 +316,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -594,9 +594,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -687,9 +687,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -953,9 +953,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1300,9 +1300,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: -41.8
   far clip plane: 1000
   field of view: 60
@@ -1382,7 +1382,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 500, y: 80}
+  m_SizeDelta: {x: 1360.3, y: 80}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1759763180
 MonoBehaviour:
@@ -1663,9 +1663,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049563974
+    y: 0.04946503
     width: 1
-    height: 0.90087205
+    height: 0.90106994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

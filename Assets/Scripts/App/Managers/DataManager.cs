@@ -155,7 +155,7 @@ namespace LoomNetwork.CZB
             var files = dir.GetFiles();
             bool versionMatch = false;
             foreach (var file in files)
-                if (file.Name == Constants.CURRENT_VERSION_FULL + Constants.VERSION_FILE_RESOLUTION)
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION)
                     versionMatch = true;
 
             if (!versionMatch)
@@ -170,7 +170,7 @@ namespace LoomNetwork.CZB
 			foreach (var file in files)
 				if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VERSION_FILE_RESOLUTION))
 					file.Delete();
-			File.Create(dir + Constants.CURRENT_VERSION_FULL + Constants.VERSION_FILE_RESOLUTION);
+			File.Create(dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION);
 
 			PlayerPrefs.DeleteAll ();
 		}

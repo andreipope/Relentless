@@ -1,4 +1,5 @@
-﻿using Loom.Newtonsoft.Json;
+﻿using System;
+using Loom.Newtonsoft.Json;
 
 namespace LoomNetwork.CZB.BackendCommunication
 {
@@ -14,6 +15,6 @@ namespace LoomNetwork.CZB.BackendCommunication
         public bool SaveTurnData;
 
         [JsonProperty(PropertyName = "latest_version")]
-        public string LatestVersion;
+        public Version LatestVersion;
     }
 }
