@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224946593569297856}
   - component: {fileID: 222120273138934920}
   - component: {fileID: 114284540300346840}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224743972982017632}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: LoadingGameplayPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 224154567806810044}
   - component: {fileID: 222061259235854894}
   - component: {fileID: 114378115647036954}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224225617432868112}
   - component: {fileID: 222494783511473040}
   - component: {fileID: 114306266172602244}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ProgresBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 224006812708804788}
   - component: {fileID: 222879270546513364}
   - component: {fileID: 114393638656490292}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

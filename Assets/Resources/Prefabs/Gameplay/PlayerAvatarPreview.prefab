@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4442634359087710}
   - component: {fileID: 212105335219678286}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Hero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4846658467929536}
   - component: {fileID: 210151970326937574}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: PlayerAvatarPreview
   m_TagString: PlayerOwned
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4997079051499016}
   - component: {fileID: 212384668508925900}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: HeroHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 23874896524705608}
   - component: {fileID: 222982455711273696}
   - component: {fileID: 114433967929719730}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: AttackText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4051703597975204}
   - component: {fileID: 212005879149507072}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: AttackingHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 23169227023864638}
   - component: {fileID: 222322572523873464}
   - component: {fileID: 114442448268703818}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: DefenceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4897985414628196}
   - component: {fileID: 212125989966675556}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Weapon_Attack
   m_TagString: PlayerOwned
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4304980544934252}
   - component: {fileID: 212649431563626372}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: LivesCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 23607452091710876}
   - component: {fileID: 222106641407993684}
   - component: {fileID: 114755471416734740}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

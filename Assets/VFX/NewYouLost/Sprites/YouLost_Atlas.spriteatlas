@@ -11,7 +11,7 @@ SpriteAtlas:
       serializedVersion: 2
       anisoLevel: 1
       compressionQuality: 50
-      maxTextureSize: 2048
+      maxTextureSize: 4096
       textureCompression: 2
       filterMode: 1
       generateMipMaps: 0
@@ -40,16 +40,16 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: d7adaf36e35825540b9fe37ae367ef5f, type: 3}
   - {fileID: 21300000, guid: 38fbde85dd2b6614780c40b4ed30110c, type: 3}
-  - {fileID: 21300000, guid: f4b90c0d94b27f54a8aa53c576a141bb, type: 3}
   - {fileID: 21300000, guid: 33323777a1c2127428ff6542c39bea6a, type: 3}
-  - {fileID: 21300000, guid: 27fbae1e8a115ad4aafc172aef419ad9, type: 3}
+  - {fileID: 21300000, guid: f4b90c0d94b27f54a8aa53c576a141bb, type: 3}
   - {fileID: 21300000, guid: 8ebe72ca5b6c2d84894b7cf89b5df191, type: 3}
+  - {fileID: 21300000, guid: 27fbae1e8a115ad4aafc172aef419ad9, type: 3}
   m_PackedSpriteNamesToIndex:
   - CZB_2D_New_You_Lost
   - CZB_2D_New_You_Lost_googlow
-  - CZB_2D_New_You_Lost_txt
   - CZB_2D_New_You_Lost_goo
-  - CZB_2D_New_You_Lost_LvlupBar
+  - CZB_2D_New_You_Lost_txt
   - CZB_2D_New_You_Lost_goo_Bot
+  - CZB_2D_New_You_Lost_LvlupBar
   m_Tag: YouLost_Atlas
   m_IsVariant: 0

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224969771194013810}
   - component: {fileID: 222976899177400176}
   - component: {fileID: 114933184274721518}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_OverlordPictureGray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224003891489122436}
   - component: {fileID: 222747692643514034}
   - component: {fileID: 114696492696868486}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Item_OverlordSelectionOverlord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224308082666538206}
   - component: {fileID: 222325966504052334}
   - component: {fileID: 114197126481199576}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_OverlordPicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224142087257772814}
   - component: {fileID: 222413298001212004}
   - component: {fileID: 114544005422065784}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224116838856047330}
   - component: {fileID: 222680690740048078}
   - component: {fileID: 114723263759680002}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

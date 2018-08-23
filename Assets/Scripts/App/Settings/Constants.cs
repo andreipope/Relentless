@@ -71,6 +71,7 @@ namespace LoomNetwork.CZB.Common
         internal const string LAYER_BOARD_CARDS = "BoardCards";
         internal const string LAYER_DEFAULT = "Default";
         internal const string LAYER_FOREGROUND = "Foreground";
+        internal const string LAYER_GAME_UI = "GameUI";
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";

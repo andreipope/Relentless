@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224011668037576672}
   - component: {fileID: 222943994233056564}
   - component: {fileID: 114303035816151736}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224263866249190658}
   - component: {fileID: 222532856776491730}
   - component: {fileID: 114815166427381456}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Text_Waiting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224668445523429408}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Connecting_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224136784444620390}
   - component: {fileID: 222829487935863210}
   - component: {fileID: 114920751301357226}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 114334607403230944}
   - component: {fileID: 222643959834788354}
   - component: {fileID: 114036141729014646}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Reconnect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224788118026914002}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Failed_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 224817646642223320}
   - component: {fileID: 222217035562355428}
   - component: {fileID: 114471944448059354}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Text_Login
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224277583661865338}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 224830630923950518}
   - component: {fileID: 222379461883640928}
   - component: {fileID: 114980181337459012}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 224306459203424664}
   - component: {fileID: 222460936391880766}
   - component: {fileID: 114286858419145656}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: ConnectionPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}

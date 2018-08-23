@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224786262883543696}
   - component: {fileID: 222306637826929338}
   - component: {fileID: 114047208446474718}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_SecondTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224392295509161230}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Item_PlayerOverlordTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 224988473145935432}
   - component: {fileID: 222653087755481466}
   - component: {fileID: 114604640782094072}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_PlayerOverlord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224213282715479590}
   - component: {fileID: 222820616247831202}
   - component: {fileID: 114969095395184174}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_FirstTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 224817192568150722}
   - component: {fileID: 222711455373793544}
   - component: {fileID: 114283351302789544}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_OpponentOverlord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 224525316710141528}
   - component: {fileID: 222379681073239490}
   - component: {fileID: 114680671883646092}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_BackCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 224509855516160366}
   - component: {fileID: 222084202128704174}
   - component: {fileID: 114221129277568976}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text_OpponentOverlordName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 224362486750607422}
   - component: {fileID: 222792149479157876}
   - component: {fileID: 114151074961903128}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_CircleCenterGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 224860426261069454}
   - component: {fileID: 222514165866395970}
   - component: {fileID: 114248349186796828}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 225236277720707138}
   - component: {fileID: 222215183018120868}
   - component: {fileID: 114776564660945988}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PlayerOrderPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 224840950293132134}
   - component: {fileID: 222331903331132040}
   - component: {fileID: 114458499481305010}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_V
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 224533592600501720}
   - component: {fileID: 222699360192511616}
   - component: {fileID: 114922842435688080}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 224510232443342674}
   - component: {fileID: 222213756246752916}
   - component: {fileID: 114551885585391186}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Object_LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224917175912039722}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Item_OpponentOverlordTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 224967341644860106}
   - component: {fileID: 222325593944604478}
   - component: {fileID: 114182070431874414}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_FirstTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 224255581973986142}
   - component: {fileID: 222489812667894510}
   - component: {fileID: 114054264860904934}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text_PlayerOverlordName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 224504899504613180}
   - component: {fileID: 222443887308018744}
   - component: {fileID: 114347584837926666}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_BackCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 224065194169717878}
   - component: {fileID: 222914639316369302}
   - component: {fileID: 114064024882127854}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Object_RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 224496376112630020}
   - component: {fileID: 222220756085400924}
   - component: {fileID: 114950589559511406}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -342,7 +342,7 @@ GameObject:
   - component: {fileID: 224955977941967356}
   - component: {fileID: 222015484639450538}
   - component: {fileID: 114485030185528722}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_SecondTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 224300218504788856}
   - component: {fileID: 222742407426418986}
   - component: {fileID: 114575836953555208}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_FrontCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 224553952842231552}
   - component: {fileID: 222156142841128976}
   - component: {fileID: 114141199286085052}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_FrontCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 224182822486013846}
   - component: {fileID: 222305501820319986}
   - component: {fileID: 114555118605664328}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image_Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   - component: {fileID: 224106139073697180}
   - component: {fileID: 222220591003099296}
   - component: {fileID: 114032522528623766}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222887087097295394}
   - component: {fileID: 114816574838449312}
   - component: {fileID: 114778367576888910}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 224827412576868162}
   - component: {fileID: 222753290799900984}
   - component: {fileID: 114958904886796916}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224796167822722620}
   - component: {fileID: 114324887732098212}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: OverlordAbilityPopupAbilityItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224613693039263642}
   - component: {fileID: 222087975107573652}
   - component: {fileID: 114204659932246682}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: AbilityIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

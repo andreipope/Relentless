@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224302589968061608}
   - component: {fileID: 222041603240029868}
   - component: {fileID: 114652665360358088}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardsAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224957060876966422}
   - component: {fileID: 222096787070072218}
   - component: {fileID: 114201353915217888}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224137942363612666}
   - component: {fileID: 222127356342369634}
   - component: {fileID: 114616184042516978}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224278246528725428}
   - component: {fileID: 222268552654481212}
   - component: {fileID: 114776500236989350}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 222037573737704630}
   - component: {fileID: 114228988484215644}
   - component: {fileID: 114301066096014442}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: EditButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 224333096726283432}
   - component: {fileID: 222796658696340734}
   - component: {fileID: 114885784702317212}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HeroImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 224656236510026918}
   - component: {fileID: 222099156520344940}
   - component: {fileID: 114283229270105352}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HeroSkillIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 222109968783534934}
   - component: {fileID: 114346425339976010}
   - component: {fileID: 114471782276423768}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DeleteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 222212236586520072}
   - component: {fileID: 114581420905384402}
   - component: {fileID: 114637500192705898}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DeckItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 224726629966601160}
   - component: {fileID: 222940151123284404}
   - component: {fileID: 114254695922279544}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 222658788348220154}
   - component: {fileID: 114782906571354188}
   - component: {fileID: 114854141089457800}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardsAmountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

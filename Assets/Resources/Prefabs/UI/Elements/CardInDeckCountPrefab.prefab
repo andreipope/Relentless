@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224648861755440872}
   - component: {fileID: 222364057896571214}
   - component: {fileID: 114918975811431532}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Active
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224526796738056272}
   - component: {fileID: 222274206424327076}
   - component: {fileID: 114692358309896468}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardInDeckCountPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}

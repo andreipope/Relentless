@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222959441657612640}
   - component: {fileID: 114432674536961302}
   - component: {fileID: 114889049519926048}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HeroItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 224104201017730000}
   - component: {fileID: 222710792066363870}
   - component: {fileID: 114184634808209170}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 224112042031637594}
   - component: {fileID: 222148497574584724}
   - component: {fileID: 114541575872456340}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: LockedIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 224905585127410472}
   - component: {fileID: 222558163530363988}
   - component: {fileID: 114808433245365272}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HeroIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 224323338283928154}
   - component: {fileID: 222310473231728272}
   - component: {fileID: 114191955414037200}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: SelectedIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224511711890186720}
   - component: {fileID: 222164947440009162}
   - component: {fileID: 114286472952633508}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_HordeType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224053218436338128}
   - component: {fileID: 222154362115490750}
   - component: {fileID: 114372060913325576}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_NewHorde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224314873038756818}
   - component: {fileID: 222823534616211320}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Item_HordeSelectionNewHorde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 224221211977676350}
   - component: {fileID: 222754160090322516}
   - component: {fileID: 114206653560254738}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Plus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 222789461095190410}
   - component: {fileID: 114135865761304334}
   - component: {fileID: 114968866800181292}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BaackgroundGeneral
   m_TagString: Untagged
   m_Icon: {fileID: 0}

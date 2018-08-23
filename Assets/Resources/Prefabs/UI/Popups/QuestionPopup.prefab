@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114180114413041008}
   - component: {fileID: 222721289055187222}
   - component: {fileID: 114946953000146184}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Yes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 224485489713062884}
   - component: {fileID: 222001821214513960}
   - component: {fileID: 114347930589479202}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: QuestionPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 224273398680128116}
   - component: {fileID: 222512788743681218}
   - component: {fileID: 114852786097228058}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 114303814488842532}
   - component: {fileID: 222993259288602758}
   - component: {fileID: 114712815188415724}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_No
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 224411535188324250}
   - component: {fileID: 222600934689365266}
   - component: {fileID: 114857405525252548}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 224203935340169770}
   - component: {fileID: 222092624279807918}
   - component: {fileID: 114356485515620630}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 224224088827438400}
   - component: {fileID: 222279319075806286}
   - component: {fileID: 114601986096500802}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224621126113424960}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224440938724220506}
   - component: {fileID: 222060465201356956}
   - component: {fileID: 114538091885149330}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Text_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}

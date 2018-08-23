@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222005822951295694}
   - component: {fileID: 114945786031979328}
   - component: {fileID: 114306739944200962}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 224898882755905486}
   - component: {fileID: 222688096900178938}
   - component: {fileID: 114172973285645020}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 224369156825652714}
   - component: {fileID: 222131984197380734}
   - component: {fileID: 114362795134503568}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Glow_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 222694545670804912}
   - component: {fileID: 114496330035341202}
   - component: {fileID: 114036365698848138}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BaackgroundGeneral
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 222071409747023560}
   - component: {fileID: 114375551988619200}
   - component: {fileID: 114649315124765398}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Edit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 224355920922855086}
   - component: {fileID: 222804325051748324}
   - component: {fileID: 114639636429997356}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_LeftMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 224670864696097942}
   - component: {fileID: 222470744175716120}
   - component: {fileID: 114509314694742730}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224724106162879958}
   - component: {fileID: 222898798722005976}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HordeSelectionPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 224984032534262630}
   - component: {fileID: 222681769048103804}
   - component: {fileID: 114010978141787888}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BackgroundContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 224950025963374498}
   - component: {fileID: 222102928190938072}
   - component: {fileID: 114006168922233964}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BattleBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 224116600921427922}
   - component: {fileID: 222236058871828010}
   - component: {fileID: 114116039804459154}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Glow_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224523767084074018}
   - component: {fileID: 222882248321978494}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Item_HordeSelectionNewHorde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 224148599428294374}
   - component: {fileID: 222408133852095170}
   - component: {fileID: 114694026559943996}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_FirstSkil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 224287813478000874}
   - component: {fileID: 222238186979659010}
   - component: {fileID: 114459076294053778}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Battle_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 222677066556032082}
   - component: {fileID: 114367402589462072}
   - component: {fileID: 114042915338672878}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Battle_Warning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 224076012246948720}
   - component: {fileID: 222038474006948988}
   - component: {fileID: 114313048546610712}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224486298181469780}
   - component: {fileID: 222889260363414508}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_SelectedHordeObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 224319770649108590}
   - component: {fileID: 222984016540561278}
   - component: {fileID: 114279407091823630}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_ChooseHorde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,7 +328,7 @@ GameObject:
   - component: {fileID: 224998124353748242}
   - component: {fileID: 222899793009392756}
   - component: {fileID: 114040167032718332}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224907410408055208}
   - component: {fileID: 222394689389591646}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -361,7 +361,7 @@ GameObject:
   - component: {fileID: 224756023452820002}
   - component: {fileID: 222387881752448702}
   - component: {fileID: 114763041243460126}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Battleframe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 222872087029848420}
   - component: {fileID: 114681633828263334}
   - component: {fileID: 114338309859778476}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_DecksContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   - component: {fileID: 222621710394877498}
   - component: {fileID: 114130707293849600}
   - component: {fileID: 114152058958920466}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Delete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 114622416112603276}
   - component: {fileID: 222775924243187114}
   - component: {fileID: 114870266639351604}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Army
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 224368044438643112}
   - component: {fileID: 222281410562165894}
   - component: {fileID: 114145663882621522}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_SecondSkil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -451,7 +451,7 @@ GameObject:
   - component: {fileID: 114319233346978596}
   - component: {fileID: 114143086244677628}
   - component: {fileID: 114274276189929572}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Skill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -469,7 +469,7 @@ GameObject:
   - component: {fileID: 222771443647662004}
   - component: {fileID: 114562375059866510}
   - component: {fileID: 114625612298118666}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_LeftArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,7 +486,7 @@ GameObject:
   - component: {fileID: 224364385932833032}
   - component: {fileID: 222031807234697618}
   - component: {fileID: 114980722248315782}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_SelectedBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -503,7 +503,7 @@ GameObject:
   - component: {fileID: 224407830103143740}
   - component: {fileID: 222276074346645042}
   - component: {fileID: 114423544552014168}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_NewHorde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -520,7 +520,7 @@ GameObject:
   - component: {fileID: 224469611191169734}
   - component: {fileID: 222935895058061136}
   - component: {fileID: 114732382257964956}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Battle_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 224031279104950746}
   - component: {fileID: 222901587141441600}
   - component: {fileID: 114843991269804044}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Plus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -554,7 +554,7 @@ GameObject:
   - component: {fileID: 224106737255483284}
   - component: {fileID: 222345569876160828}
   - component: {fileID: 114017465264463938}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_RightMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -572,7 +572,7 @@ GameObject:
   - component: {fileID: 222138467111613228}
   - component: {fileID: 114948084719987406}
   - component: {fileID: 114264200046242714}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Battle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -589,7 +589,7 @@ GameObject:
   - component: {fileID: 224165553239611520}
   - component: {fileID: 222939326464682140}
   - component: {fileID: 114949965796393144}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 222466623101676692}
   - component: {fileID: 114498550887330798}
   - component: {fileID: 114044623662946902}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_RightArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -626,7 +626,7 @@ GameObject:
   - component: {fileID: 114385861434147054}
   - component: {fileID: 114323736346619284}
   - component: {fileID: 114570546321336104}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Skill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4004389105321012}
   - component: {fileID: 212340243466112242}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_BuffIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4674524360085790}
   - component: {fileID: 212905686801623504}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4213233716730964}
   - component: {fileID: 212822932495334512}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Tooltip_BuffOnCardInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 33445018760395726}
   - component: {fileID: 222439263563408752}
   - component: {fileID: 114578488074923782}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_CallType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4726238171825636}
   - component: {fileID: 212157335791813920}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_IconBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 33537927033392444}
   - component: {fileID: 222138474347578312}
   - component: {fileID: 114946544828427880}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}

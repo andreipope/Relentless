@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4509685524831532}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UpperFang001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4962392703690518}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 4544147782415768}
   - component: {fileID: 198438560837449878}
   - component: {fileID: 199256186477169254}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Saliviate_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4708216156204430}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LowerFang003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4545936809729170}
   - component: {fileID: 111842404658122496}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Main_Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4996149235886220}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LowerFang002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4839892573029386}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UpperFang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4739106035504798}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BackBone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4384066056650720}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LowerFang001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 4712467263486524}
   - component: {fileID: 198464467323053328}
   - component: {fileID: 199828673613133538}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Saliviate_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4916342353673712}
   - component: {fileID: 331373007465855584}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpriteMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 4189307422715280}
   - component: {fileID: 198831229412031380}
   - component: {fileID: 199979743576324586}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Goo_Flash_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4644074157099746}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UpperFang002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 4871933977646708}
   - component: {fileID: 198676007923244276}
   - component: {fileID: 199155171433809416}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splatter_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 4634747576938870}
   - component: {fileID: 198898269591244122}
   - component: {fileID: 199258607464968690}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AfterGoo_L2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 4006987521380906}
   - component: {fileID: 198350231651428224}
   - component: {fileID: 199660065624720010}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AfterGoo_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 4460666077198960}
   - component: {fileID: 198323543989078172}
   - component: {fileID: 199094689730963588}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Drips_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 4694351069482192}
   - component: {fileID: 198719580260139128}
   - component: {fileID: 199306896408787058}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AfterGoo_R2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 4535258716303002}
   - component: {fileID: 198592455915126380}
   - component: {fileID: 199442739257274638}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Splatter_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +326,7 @@ GameObject:
   - component: {fileID: 4626102728423086}
   - component: {fileID: 198623481683245394}
   - component: {fileID: 199949141447397432}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AfterGoo_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4306818220242306}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UpperFangAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4913965379317626}
   - component: {fileID: 137663570301218312}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: feral_zombie_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -389,7 +389,7 @@ GameObject:
   - component: {fileID: 4466629323912402}
   - component: {fileID: 198533748552866442}
   - component: {fileID: 199537802594514508}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Goo_Flash_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4380822681889200}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FangMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -421,7 +421,7 @@ GameObject:
   - component: {fileID: 4165942420278646}
   - component: {fileID: 198171066941712282}
   - component: {fileID: 199958025728251176}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DRips_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,7 +436,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4579149014212376}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LowerFang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -451,7 +451,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4711765528694740}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: VFX_All
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -468,7 +468,7 @@ GameObject:
   - component: {fileID: 4753986852476464}
   - component: {fileID: 198364498288174092}
   - component: {fileID: 199639022038041744}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fang_vfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,7 +485,7 @@ GameObject:
   - component: {fileID: 4594986897103566}
   - component: {fileID: 95375109906029180}
   - component: {fileID: 212338325413926192}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Feral_Arrival
   m_TagString: Untagged
   m_Icon: {fileID: 0}

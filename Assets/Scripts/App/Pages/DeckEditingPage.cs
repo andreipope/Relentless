@@ -510,10 +510,9 @@ namespace LoomNetwork.CZB
             boardCard.SetHighlightingEnabled(false);
             boardCard.transform.position = worldPos;
             boardCard.transform.localScale = Vector3.one * 0.3f;
-            boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
-            boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+            boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI;
+            boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 11;
 
-            boardCard.gameObject.SetLayerRecursively(LayerMask.NameToLayer("UI"));
             boardCard.transform.SetParent(_uiManager.Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.gameObject.AddComponent<RectTransform>();
 
@@ -566,8 +565,6 @@ namespace LoomNetwork.CZB
                     deckBuilderCard.isHordeItem = true;
 
                     _createdHordeCards.Add(boardCard);
-
-                  //  _currentDeck.AddCard(libraryCard.id);
 
                     boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(libraryCard), card.amount);
 
