@@ -1,4 +1,5 @@
-﻿using LoomNetwork.CZB.BackendCommunication;
+﻿#if !UNITY_IOS
+
 using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
@@ -55,3 +56,5 @@ namespace LoomNetwork.CZB.BackendCommunication
         }
     }
 }
+
+#endif
