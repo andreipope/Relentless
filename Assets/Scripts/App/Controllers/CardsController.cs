@@ -135,6 +135,9 @@ namespace LoomNetwork.CZB
 
             foreach (var card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
+                var sortingGroup = card.gameObject.GetComponent<SortingGroup>();
+                sortingGroup.sortingLayerName = "Foreground";
+                sortingGroup.sortingOrder = 1;
                 _gameplayManager.CurrentPlayer.RemoveCardFromDeck(card.WorkingCard);
                 _gameplayManager.CurrentPlayer.CardsInHand.Add(card.WorkingCard);
                 _battlegroundController.playerHandCards.Add(card);
@@ -190,6 +193,9 @@ namespace LoomNetwork.CZB
         public void AddCardToDistributionState(Player player, WorkingCard card)
         {
             var boardCard = CreateBoardCard(card);
+            var sortingGroup = boardCard.gameObject.GetComponent<SortingGroup>();
+            sortingGroup.sortingLayerName = "GameUI";
+            sortingGroup.sortingOrder = 11;
             player.CardsPreparingToHand.Add(boardCard);
             boardCard.HandBoardCard.enabled = false;
             boardCard.MoveCardFromDeckToCenter();
