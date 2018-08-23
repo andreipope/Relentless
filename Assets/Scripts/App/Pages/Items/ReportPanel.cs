@@ -70,6 +70,11 @@ namespace LoomNetwork.CZB
             }
         }
 
+        public void Dispose()
+        {
+            _actionsQueueController.GotNewActionReportEvent -= GotNewActionReportEventHandler;
+        }
+
         public void Clear()
         {
             foreach (var item in _allReports)
