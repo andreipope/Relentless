@@ -243,21 +243,21 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                     {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                        //if (File.Exists(_cacheDataPathes[type]))
+                        //  CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                         
-                        /*try
+                        try
                         {
                             ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                            CustomDebug.Log(listCardLibraryResponse.ToString());
+                            Debug.Log(listCardLibraryResponse.ToString());
                             CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
                         }
                         catch (Exception ex)
                         {
-                            CustomDebug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
+                            Debug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
                             if (File.Exists(_cacheDataPathes[type]))
                                 CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
-                        }*/
+                        }
                     }
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
@@ -267,13 +267,13 @@ namespace LoomNetwork.CZB
                         
                         try
                         {
-                            var heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                            CustomDebug.Log(heroesList.ToString());
+                            ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                            Debug.Log(heroesList.ToString());
                             CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
                         }
                         catch (Exception ex)
                         {
-                            CustomDebug.LogError("===== Heroes List not Loaded, loading from cache ===== " + ex);
+                            Debug.LogError("===== Heroes List not Loaded, loading from cache ===== " + ex);
                             if (File.Exists(_cacheDataPathes[type]))
                                 CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
                         }
@@ -287,22 +287,21 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                        //if (File.Exists(_cacheDataPathes[type]))
+                        //  CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
                         
-                        /*try
+                        try
                         {
-                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendFacade.UserDataModel.UserId);
-                            CustomDebug.Log(getCollectionResponse.ToString());
-
+                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                            Debug.Log(getCollectionResponse.ToString());
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
                         catch (Exception ex)
                         {
-                            CustomDebug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
+                            Debug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
                             if (File.Exists(_cacheDataPathes[type]))
                                 CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
-                        }*/
+                        }
                     }
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
@@ -328,7 +327,7 @@ namespace LoomNetwork.CZB
                             ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
                             if (listDecksResponse != null)
                             {
-                                CustomDebug.Log(listDecksResponse.ToString());
+                                Debug.Log(listDecksResponse.ToString());
                                 //remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.Decks.ToString());
                                 remoteDecksData = new DecksData
                                 {
@@ -339,11 +338,11 @@ namespace LoomNetwork.CZB
                                 remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
                             }
                             else
-                                CustomDebug.Log(" List Deck Response is Null == ");
+                                Debug.Log(" List Deck Response is Null == ");
                         }
                         catch (Exception ex)
                         {
-                            CustomDebug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
+                            Debug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
                         }
 
                         if (localDecksData != null && remoteDecksData != null)

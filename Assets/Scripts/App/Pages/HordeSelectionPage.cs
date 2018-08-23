@@ -202,13 +202,13 @@ namespace LoomNetwork.CZB
                     deck.SelfDeck.id,
                     _dataManager.CachedDecksLastModificationTimestamp
                     );
-                CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
+                Debug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
             } catch (Exception e)
             {
                 // HACK for offline mode
                 if (false)
                 {
-                    CustomDebug.Log("Result === " + e);
+                    Debug.Log("Result === " + e);
                     OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
                     return;
                 }
