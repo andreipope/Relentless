@@ -110,6 +110,8 @@ namespace LoomNetwork.CZB
         public async Task LoadRemoteConfig()
         {
             BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
+            if (BetaConfig == null)
+                throw new Exception("BetaConfig == null");
         }
 
         public async Task StartLoadCache()
