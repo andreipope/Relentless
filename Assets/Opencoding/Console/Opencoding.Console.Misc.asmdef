@@ -1,0 +1,8 @@
+{
+    "name": "Opencoding.Console.Misc",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "iOS"
+    ]
+}

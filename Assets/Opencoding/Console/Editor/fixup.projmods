@@ -1,0 +1,20 @@
+{
+  "group": "Opencoding",
+  "patches": [],
+  "librarysearchpaths": [],
+  "libs": [],
+  "frameworks": [
+    "MessageUI.framework:weak"
+  ],
+  "headerpaths": [
+    "Opencoding"
+  ],
+  "files": [
+    "Plugins/iOS/Opencoding/ConsoleUtilities.h",
+    "Plugins/iOS/Opencoding/ConsoleUtilitiesBinding.m",
+    "Plugins/iOS/Opencoding/ConsoleUtilities.mm",
+  ],
+  "folders": [],	
+  "excludes": ["^.*\\.meta$"],
+  "buildSettings": {}
+}

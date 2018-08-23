@@ -1,11 +1,17 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
-    public class HeavyArrivalAnimation {
+    public class HeavyArrivalAnimation
+    {
 
         public Action<HeavyArrivalAnimation> OnAnimationCompleted;
 
@@ -34,7 +40,7 @@ namespace GrandDevs.CZB
 
             //Debug.Log("HeavyArrivalAnimation clip length: "+_animationLength);
 
-            GameClient.Get<ITimerManager>().AddTimer((x) => 
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
             {
                 if (OnAnimationCompleted != null) OnAnimationCompleted(this);
                 Dispose();
@@ -43,7 +49,7 @@ namespace GrandDevs.CZB
                     if (call.Value != null) call.Value(call.Key);
                 }
                 _onCompleteActions.Clear();
-            }, time:_animationLength);
+            }, time: _animationLength);
         }
 
         public void AddOnCompleteCallback(Action<object[]> call, object[] param = null)

@@ -1,9 +1,16 @@
-﻿using UnityEngine;
-using GrandDevs.CZB.Data;
-using GrandDevs.CZB.Common;
-using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+
+
+using UnityEngine;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Common;
+using System;
+using System.Threading.Tasks;
+using LoomNetwork.CZB.BackendCommunication;
+
+namespace LoomNetwork.CZB
 {
     public interface IDataManager
     {
@@ -17,11 +24,17 @@ namespace GrandDevs.CZB
         OpponentDecksData CachedOpponentDecksData { get; set; }
         ActionData CachedActionsLibraryData { get; set; }
         CreditsData CachedCreditsData { get; set; }
+        long CachedDecksLastModificationTimestamp { get; set; }
+        BetaConfig BetaConfig { get; set; }
 
-        void StartLoadCache();
-        void SaveAllCache();
-        void SaveCache(Enumerators.CacheDataType type);
+        Task LoadRemoteConfig();
+        Task StartLoadCache();
+        Task SaveAllCache();
+        Task SaveCache(Enumerators.CacheDataType type);
 
-        Sprite GetSpriteFromTexture(Texture2D texture);
+        TooltipContentData.BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.RankInfo GetRankInfoByType(string type);
+
+		void DeleteData();
     }
 }

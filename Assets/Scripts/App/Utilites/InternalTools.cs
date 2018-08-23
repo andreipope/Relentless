@@ -1,12 +1,18 @@
-﻿using System;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using System;
 using System.Collections;
 using System.Reflection;
-using GrandDevs.CZB.Common;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace GrandDevs.CZB.Helpers
+namespace LoomNetwork.CZB.Helpers
 {
     public class InternalTools
     {
@@ -55,17 +61,84 @@ namespace GrandDevs.CZB.Helpers
             return data.Replace(LINE_BREAK, "\n");
         }
 
-        public static void SetLayerRecursively(GameObject parent, int layer)
+        public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
         {
-            parent.layer = layer;
-
+            if(!parentIgnored)
+                parent.layer = layer;
+            bool ignored = false;
             for (int i = 0; i < parent.transform.childCount; i++)
             {
-                parent.transform.GetChild(i).gameObject.layer = layer;
+                if(ignoreNames != null)
+                    ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
+
+                if (!ignored && !parentIgnored || ignoreNames == null)
+                    parent.transform.GetChild(i).gameObject.layer = layer;
 
                 if (parent.transform.GetChild(i).childCount > 0)
-                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer);
+                    SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames, ignored);
             }
         }
+
+        public static void ShakeList<T>(ref List<T> list)
+        {
+            var rnd = new System.Random();
+            list = list.OrderBy(item => rnd.Next()).ToList();
+        }
+
+        public static List<T> ShakeList<T>(List<T> list)
+        {
+            var rnd = new System.Random();
+            return list.OrderBy(item => rnd.Next()).ToList();
+        }
+
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
+        {
+            int count = root.childCount;
+
+            float width = spacing * count - 1;
+
+            var pivot = new Vector3(offset, 0, 0);
+
+            for (var i = 0; i < count; i++)
+            {
+                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
+                pivot.x += width / count;
+            }
+        }
+
+        public static void GroupVerticalObjects(Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
+        {
+            int count = root.childCount;
+            float halfHeightOffset = (height + spacing);
+
+            float startPos = centerOffset + ((count - 1) * halfHeightOffset / 2f);
+
+            for (var i = 0; i < count; i++)
+                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, (startPos - (halfHeightOffset * i)), root.GetChild(i).localPosition.z);
+        }
+
+
+        public static List<object> GetRandomElementsFromList(List<object> root, int count)
+        {
+            List<object> list = new List<object>();
+
+            if (root.Count < count)
+                list.AddRange(root);
+            else
+            {
+                object element = null;
+                for (int i = 0; i < count; i++)
+                {
+                    element = ShakeList(root).First(x => !list.Contains(x));
+
+                    if (element != null && element != default(List<object>))
+                        list.Add(element);
+                }
+            }
+
+            return list;
+        }
+
+     
     }
 }

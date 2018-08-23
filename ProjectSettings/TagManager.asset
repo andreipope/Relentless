@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerOwned
   - OpponentOwned
+  - Cameras
   layers:
   - Default
   - TransparentFX
@@ -15,10 +16,10 @@ TagManager:
   - UI
   - 
   - 
-  - Object2
-  - UI2
   - VFX
-  - Object3
+  - OBJ2
+  - UI2
+  - OBJ3
   - UI3
   - 
   - 
@@ -28,8 +29,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - MeshMask
+  - VFXbehindMeshMask
   - 
   - 
   - 

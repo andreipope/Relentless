@@ -1,16 +1,21 @@
-﻿using GrandDevs.CZB.Common;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using CCGKit;
 using UnityEngine.Networking;
-using GrandDevs.CZB.Data;
-using GrandDevs.Internal;
-using GrandDevs.CZB.Gameplay;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.Internal;
+using LoomNetwork.CZB.Gameplay;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class YouWonPopup : IUIPopup
     {
@@ -27,29 +32,18 @@ namespace GrandDevs.CZB
                             _winTutorialPackObject,
                             _winPackObject;
 
-        private MenuButtonNoGlow _buttonOk;
+        private Button _buttonOk;
+        private TextMeshProUGUI _message;
 
-        private Image _selectHeroImage;
+        private SpriteRenderer _selectHeroSpriteRenderer;
 
 
-        private TextMeshProUGUI _nameHeroText;
+        //private TextMeshProUGUI _nameHeroText;
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-            _selectHeroImage = _selfPage.transform.Find("Panel_Objects/Image_SelectHero").GetComponent<Image>();
-            _winTutorialPackObject = _selfPage.transform.Find("Panel_Objects/WinPackTutorial").gameObject;
-            _winPackObject = _selfPage.transform.Find("Panel_Objects/WinPack").gameObject;
-            _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
-            _buttonOk = _selfPage.transform.Find("Panel_Objects/Button_Ok").GetComponent<MenuButtonNoGlow>();
-            _buttonOk.onClickEvent.AddListener(OnClickOkButtonEventHandler);
-
-            Hide();
         }
 
 
@@ -60,8 +54,14 @@ namespace GrandDevs.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
 			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -70,19 +70,33 @@ namespace GrandDevs.CZB
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _selectHeroSpriteRenderer = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero").GetComponent<SpriteRenderer>();
+            _message = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
+            //_winTutorialPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPackTutorial").gameObject;
+            //_winPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPack").gameObject;
+            //_nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
+            _buttonOk = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
+
+            _message.text = "Rewards have been disabled for ver " + Constants.CURRENT_VERSION;
+
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
             _selfPage.SetActive(true);
 
-            int heroId = GameClient.Get<IGameplayManager>().PlayerHeroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.heroes[heroId];
+            int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
+            int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
+            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
-            _selectHeroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/SelectHero/selecthero_" + heroName.ToLower());
+            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
-            _nameHeroText.text = heroName + " Hero";
+            //_nameHeroText.text = heroName + " Hero";
 
-            _winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
-			_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
+            //_winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
+			//_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
 		}
 
         public void Show(object data)
@@ -98,20 +112,10 @@ namespace GrandDevs.CZB
         private void OnClickOkButtonEventHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (NetworkingUtils.GetLocalPlayer().isServer)
-            {
-                NetworkManager.singleton.StopHost();
-            }
-            else
-            {
-                NetworkManager.singleton.StopClient();
-            }
 
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-                GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(GrandDevs.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            Hide();          
+            _uiManager.HidePopup<YouWonPopup>();
         }
 
     }

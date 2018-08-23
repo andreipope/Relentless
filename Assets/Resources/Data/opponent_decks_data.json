@@ -1,410 +1,400 @@
 {
-  "decks": [
-    {
-      "heroId": 1,
-      "type": "BLITZ_AI",
-      "actions": "TEST",
+	"decks": [{
+			"id" : 0,
+			"heroId": 1,
+			"type": "BLITZ_AI",
+			"actions": "TEST",
+    "cards": [
+      {
+        "cardName": "Pyromaz",
+        "amount": 4
+      },
+      {
+        "cardName": "Modo",
+        "amount": 2
+      },
+      {
+        "cardName": "Cerberus",
+        "amount": 1
+      },
+      {
+        "cardName": "Jetter",
+        "amount": 2
+      },
+      {
+        "cardName": "Tiny",
+        "amount": 2
+      },
+      {
+        "cardName": "Quazi",
+        "amount": 4
+      },
+      {
+        "cardName": "Fire-Maw",
+        "amount": 1
+      },
+      {
+        "cardName": "Burrrnn",
+        "amount": 2
+      },
+      {
+        "cardName": "Rockky",
+        "amount": 4
+      },
+      {
+        "cardName": "Werezomb",
+        "amount": 2
+      },
+      {
+        "cardName": "Cynderman",
+        "amount": 2
+      },
+      {
+        "cardName": "Gargantua",
+        "amount": 1
+      },
+      {
+        "cardName": "Zhampion",
+        "amount": 2
+      },
+      {
+        "cardName": "Fresh Meat",
+        "amount": 1
+      }
+    ]
+		},
+		{
+			"id" : 1,
+			"heroId": 0,
+			"type": "DEFENSE_AI",
+			"actions": "TEST|TEST2",
+			"cards": [{
+				"cardName": "Tiny",
+				"amount": 2
+			}, {
+				"cardName": "Crater",
+				"amount": 1
+			}, {
+				"cardName": "Walley",
+				"amount": 1
+			}, {
+				"cardName": "Spiker",
+				"amount": 2
+			}, {
+				"cardName": "Earthshaker",
+				"amount": 2
+			}, {
+				"cardName": "IgneouZ",
+				"amount": 2
+			}, {
+				"cardName": "Zeuz",
+				"amount": 1
+			}, {
+				"cardName": "Poizom",
+				"amount": 4
+			}, {
+				"cardName": "Werezomb",
+				"amount": 1
+			}, {
+				"cardName": "Gargantua",
+				"amount": 1
+			}, {
+				"cardName": "Izze",
+				"amount": 2
+			}, {
+				"cardName": "Znowman",
+				"amount": 2
+			}, {
+				"cardName": "Rockky",
+				"amount": 2
+			}, {
+				"cardName": "Cherno-bill",
+				"amount": 1
+			}, {
+				"cardName": "Ghoul",
+				"amount": 2
+			}, {
+				"cardName": "Pyromaz",
+				"amount": 4
+			}]
+		},
+		{
+			"id" : 2,
+			"heroId": 4,
+			"type": "MIXED_AI",
+			"actions": "TEST",
+			"cards": [{
+					"cardName": "Poizom",
+					"amount": 4
+				},
+				{
+					"cardName": "Zpitter",
+					"amount": 4
+				},
+				{
+					"cardName": "Zeptic",
+					"amount": 4
+				},
+				{
+					"cardName": "Ghoul",
+					"amount": 2
+				},
+				{
+					"cardName": "Hazzard",
+					"amount": 2
+				},
+				{
+					"cardName": "Zludge",
+					"amount": 2
+				},
+				{
+					"cardName": "Ectoplasm",
+					"amount": 2
+				},
+				{
+					"cardName": "Cherno-bill",
+					"amount": 1
+				},
+				{
+					"cardName": "GooZilla",
+					"amount": 1
+				},
+				{
+					"cardName": "Slab",
+					"amount": 1
+				},
+				{
+					"cardName": "Pit",
+					"amount": 4
+				},
+				{
+					"cardName": "Ozmoziz",
+					"amount": 1
+				},
+				{
+					"cardName": "Izze",
+					"amount": 1
+
+				},
+				{
+					"cardName": "Geyzer",
+					"amount": 1
+				}
+			]
+		},
+		{
+			"id" : 3,
+			"heroId": 2,
+			"type": "MIXED_BLITZ_AI",
+			"actions": "TEST|TEST2",
+			"cards": [{
+				"cardName": "Izze",
+				"amount": 2
+			}, {
+				"cardName": "Znowman",
+				"amount": 2
+			}, {
+				"cardName": "Ozmoziz",
+				"amount": 2
+			}, {
+				"cardName": "Jetter",
+				"amount": 2
+			}, {
+				"cardName": "Geyzer",
+				"amount": 2
+			}, {
+				"cardName": "Rockky",
+				"amount": 2
+			}, {
+				"cardName": "Azuraz",
+				"amount": 1
+			}, {
+				"cardName": "Bloomer",
+				"amount": 2
+			}, {
+				"cardName": "Zap",
+				"amount": 2
+			}, {
+				"cardName": "Shroom",
+				"amount": 2
+			}, {
+				"cardName": "Sapper",
+				"amount": 1
+			}, {
+				"cardName": "Keeper",
+				"amount": 1
+			}, {
+				"cardName": "Puffer",
+				"amount": 2
+			}, {
+				"cardName": "Hazzard",
+				"amount": 2
+			}, {
+				"cardName": "Ghoul",
+				"amount": 1
+			}, {
+				"cardName": "Goo Beaker",
+				"amount": 2
+			}, {
+				"cardName": "Burrrnn",
+				"amount": 2
+			}, {
+				"cardName": "Werezomb",
+				"amount": 1
+			}]
+		},
+		{
+
+			"id" : 4,
+			"heroId": 3,
+			"type": "TIME_BLITZ_AI",
+			"actions": "TEST",
       "cards": [
         {
-          "cardId": 1,
+          "cardName": "Whizpar",
           "amount": 2
         },
         {
-          "cardId": 12,
-          "amount": 4
-        },
-        {
-          "cardId": 22,
+          "cardName": "Pushhh",
           "amount": 2
         },
         {
-          "cardId": 25,
+          "cardName": "Fumez",
+          "amount": 1
+        },
+        {
+          "cardName": "Soothsayer",
+          "amount": 1
+        },
+        {
+          "cardName": "Ztormmcaller",
+          "amount": 2
+        },
+        {
+          "cardName": "Gaz",
+          "amount": 2
+        },
+        {
+          "cardName": "Draft",
+          "amount": 1
+        },
+        {
+          "cardName": "MonZoon",
+          "amount": 2
+        },
+        {
+          "cardName": "Zeuz",
+          "amount": 2
+        },
+        {
+          "cardName": "Corrupted Goo",
+          "amount": 1
+        },
+        {
+          "cardName": "Tainted Goo",
+          "amount": 1
+        },
+        {
+          "cardName": "Znowman",
+          "amount": 2
+        },
+        {
+          "cardName": "Burrrnn",
+          "amount": 2
+        },
+        {
+          "cardName": "Modo",
+          "amount": 2
+        },
+        {
+          "cardName": "Fire-Maw",
+          "amount": 1
+        },
+        {
+          "cardName": "Zhampion",
+          "amount": 2
+        },
+        {
+          "cardName": "Zpitter",
           "amount": 3
         },
         {
-          "cardId": 26,
+          "cardName": "Poizom",
           "amount": 1
         },
         {
-          "cardId": 5,
-          "amount": 2
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 24,
-          "amount": 2
-        },
-        {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 16,
-          "amount": 4
-        },
-        {
-          "cardId": 9,
+          "cardName": "Wheezy",
           "amount": 2
         }
       ]
-    },
-    {
-      "heroId": 0,
-      "type": "DEFENSE_AI",
-      "actions": "TEST|TEST2",
-      "cards": [
+		},
+		{
+			"id" : 5,
+			"heroId": 5,
+			"type": "MIXED_DEFENSE_AI",
+			"actions": "TEST",
+      "cards": [  
         {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 19,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 9,
-          "amount": 2
-        },
-        {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 8,
+          "cardName": "Azuraz",
           "amount": 4
         },
         {
-          "cardId":11,
-          "amount": 1
-        },
-        {
-          "cardId": 21,
-          "amount": 2
-        },
-        {
-          "cardId": 23,
-          "amount": 1
-        },
-        {
-          "cardId":25,
+          "cardName": "Bloomer",
           "amount": 4
         },
         {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 4,
+          "cardName": "Zap",
           "amount": 4
         },
         {
-          "cardId": 2,
-          "amount": 2
-        }
-      ]
-    },
-    {
-      "heroId": 4,
-      "type": "MIXED_AI",
-      "actions": "TEST",
-      "cards": [
-        {
-          "cardId": 20,
-          "amount": 4
-        },
-        {
-          "cardId": 22,
+          "cardName": "Shroom",
           "amount": 2
         },
         {
-          "cardId": 21,
+          "cardName": "Vindrom",
           "amount": 2
         },
         {
-          "cardId": 23,
+          "cardName": "Z-Virus",
           "amount": 1
         },
         {
-          "cardId": 24,
-          "amount": 3
+          "cardName": "Yggdrazil",
+          "amount": 1
         },
         {
-          "cardId": 25,
-          "amount": 4
-        },
-        {
-          "cardId": 26,
+          "cardName": "Izze",
           "amount": 2
         },
         {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 14,
+          "cardName": "Geyzer",
           "amount": 2
         },
         {
-          "cardId": 11,
+          "cardName": "Jetter",
           "amount": 1
         },
         {
-          "cardId": 10,
+          "cardName": "Pyromaz",
           "amount": 1
         },
         {
-          "cardId": 6,
+          "cardName": "Quazi",
           "amount": 1
         },
         {
-          "cardId": 3,
+          "cardName": "Burrrnn",
           "amount": 1
         },
         {
-          "cardId": 9,
-          "amount": 2
+          "cardName": "Modo",
+          "amount": 1
         },
         {
-          "cardId": 12,
+          "cardName": "Pit",
           "amount": 3
         }
       ]
-    },
-    {
-      "heroId": 2,
-      "type": "MIXED_BLITZ_AI",
-      "actions": "TEST|TEST2",
-      "cards": [
-        {
-          "cardId": 4,
-          "amount": 4
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 14,
-          "amount": 2
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 24,
-          "amount": 3
-        },
-        {
-          "cardId": 25,
-          "amount": 2
-        },
-        {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 13,
-          "amount": 2
-        },
-        {
-          "cardId": 5,
-          "amount": 2
-        },
-        {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 17,
-          "amount": 2
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 10,
-          "amount": 2
-        },
-        {
-          "cardId": 9,
-          "amount": 1
-        }
-      ]
-    },
-    {
-      "heroId": 3,
-      "type": "TIME_BLITZ_AI",
-      "actions": "TEST",
-      "cards": [
-        {
-          "cardId": 12,
-          "amount": 4
-        },
-        {
-          "cardId": 13,
-          "amount": 2
-        },
-        {
-          "cardId": 14,
-          "amount": 2
-        },
-        {
-          "cardId": 15,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 19,
-          "amount": 1
-        },
-        {
-          "cardId": 23,
-          "amount": 1
-        },
-        {
-          "cardId": 24,
-          "amount": 3
-        },
-        {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 9,
-          "amount": 2
-        },
-        {
-          "cardId": 1,
-          "amount": 2
-        },
-        {
-          "cardId": 4,
-          "amount": 2
-        },
-        {
-          "cardId": 22,
-          "amount": 2
-        },
-        {
-          "cardId": 2,
-          "amount": 2
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        }
-      ]
-    },
-    {
-      "heroId": 5,
-      "type": "MIXED_DEFENSE_AI",
-      "actions": "TEST",
-      "cards": [
-        {
-          "cardId": 26,
-          "amount": 2
-        },
-        {
-          "cardId": 19,
-          "amount": 1
-        },
-        {
-          "cardId": 18,
-          "amount": 2
-        },
-        {
-          "cardId": 9,
-          "amount": 2
-        },
-        {
-          "cardId": 7,
-          "amount": 1
-        },
-        {
-          "cardId": 3,
-          "amount": 1
-        },
-        {
-          "cardId": 8,
-          "amount": 4
-        },
-        {
-          "cardId": 11,
-          "amount": 1
-        },
-        {
-          "cardId": 21,
-          "amount": 2
-        },
-        {
-          "cardId": 23,
-          "amount": 1
-        },
-        {
-          "cardId": 25,
-          "amount": 4
-        },
-        {
-          "cardId": 10,
-          "amount": 1
-        },
-        {
-          "cardId": 6,
-          "amount": 2
-        },
-        {
-          "cardId": 4,
-          "amount": 4
-        },
-        {
-          "cardId": 2,
-          "amount": 2
-        }
-      ]
-    }
-  ]
+		}
+	]
 }

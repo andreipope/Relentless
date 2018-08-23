@@ -1,6 +1,10 @@
-﻿using GrandDevs.CZB.Gameplay;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
 
-namespace GrandDevs.CZB
+using LoomNetwork.CZB.BackendCommunication;
+using LoomNetwork.CZB.Gameplay;
+
+namespace LoomNetwork.CZB
 {
     public class GameClient : ServiceLocatorBase
     {
@@ -34,16 +38,20 @@ namespace GrandDevs.CZB
             AddService<IDataManager>(new DataManager());
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
-            AddService<IUIManager>(new UIManager());
             AddService<ICameraManager>(new CameraManager()); 
             AddService<IPlayerManager>(new PlayerManager());
             AddService<ISoundManager>(new SoundManager());
-            AddService<INotificationManager>(new NotificationManager());         
-            AddService<IScreenOrientationManager>(new ScreenOrientationManager());
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
             AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
+            AddService<IMatchManager>(new MatchManager());
+            AddService<IUIManager>(new UIManager());
+            AddService<BackendFacade>(new BackendFacade());
+            AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<GoogleAnalyticsManager>(new GoogleAnalyticsManager());
+            AddService<AnalyticsManager>(new AnalyticsManager());
         }
 
         public static T Get<T>()

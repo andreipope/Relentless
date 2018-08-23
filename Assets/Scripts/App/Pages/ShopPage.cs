@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+// Copyright (c) 2018 - Loom Network. All rights reserved.
+// https://loomx.io/
+
+
+
+using UnityEngine;
 using UnityEngine.UI;
-using GrandDevs.CZB.Common;
-using GrandDevs.CZB.Gameplay;
-using CCGKit;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
 using DG.Tweening;
 using TMPro;
 
-namespace GrandDevs.CZB
+namespace LoomNetwork.CZB
 {
     public class ShopPage : IUIElement
     {
@@ -22,7 +26,7 @@ namespace GrandDevs.CZB
                         _buttonItem3,
                         _buttonItem4;
 
-        private MenuButtonNoGlow _buttonOpen,
+        private Button _buttonOpen,
                             _buttonCollection,
                             _buttonBack,
                             _buttonBuy;
@@ -52,14 +56,23 @@ namespace GrandDevs.CZB
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
+            _selectedColor = Color.white;
+            _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
+            
+            Hide();
+        }
+
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-			_description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
-			_wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
-            _selectedColor = Color.white;
-            _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
-
+            _description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
+            _wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
 
             _buttonItem1 = _selfPage.transform.Find("Item1").GetComponent<Button>();
             _buttonItem2 = _selfPage.transform.Find("Item2").GetComponent<Button>();
@@ -71,32 +84,32 @@ namespace GrandDevs.CZB
             _costItem_3 = _buttonItem3.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
             _costItem_4 = _buttonItem4.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
 
-            _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<MenuButtonNoGlow>();
-            _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<MenuButtonNoGlow>();
-            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<MenuButtonNoGlow>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<MenuButtonNoGlow>();
+            _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<Button>();
+            _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<Button>();
+            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<Button>();
+            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
 
             _buttonItem1.onClick.AddListener(() => ChooseItemHandler(0));
             _buttonItem2.onClick.AddListener(() => ChooseItemHandler(1));
             _buttonItem3.onClick.AddListener(() => ChooseItemHandler(2));
             _buttonItem4.onClick.AddListener(() => ChooseItemHandler(3));
 
-            _buttonBack.onClickEvent.AddListener(BackButtonhandler);
-            _buttonBuy.onClickEvent.AddListener(BuyButtonHandler);
-            _buttonOpen.onClickEvent.AddListener(OpenButtonHandler);
-            _buttonCollection.onClickEvent.AddListener(CollectionButtonHandler);
+            _buttonBack.onClick.AddListener(BackButtonhandler);
+            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonCollection.onClick.AddListener(CollectionButtonHandler);
 
             _itemYstartPos = _buttonItem1.gameObject.transform.position.y;
 
             _packsObjects = new GameObject[] { _buttonItem1.gameObject,
-                                        _buttonItem2.gameObject,
-                                        _buttonItem3.gameObject,
-                                        _buttonItem4.gameObject};
+                _buttonItem2.gameObject,
+                _buttonItem3.gameObject,
+                _buttonItem4.gameObject};
 
             _imageObjects = new Image[] { _buttonItem1.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem2.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem3.transform.Find("Image").GetComponent<Image>(),
-                                        _buttonItem4.transform.Find("Image").GetComponent<Image>()
+                _buttonItem2.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem3.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem4.transform.Find("Image").GetComponent<Image>()
             };
 
             foreach(Image img in _imageObjects)
@@ -104,15 +117,7 @@ namespace GrandDevs.CZB
                 img.color = _deselectedColor;
             }
 
-            Hide();
-        }
 
-        public void Update()
-        {
-        }
-
-        public void Show()
-        {
             _playerManager.LocalUser.wallet = 1000;
             _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
             if (_currentPackId > -1)
@@ -135,7 +140,12 @@ namespace GrandDevs.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()

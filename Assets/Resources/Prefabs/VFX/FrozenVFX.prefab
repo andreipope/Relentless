@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4966687647029784}
   - component: {fileID: 198267017194993846}
   - component: {fileID: 199202605671463516}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: FireSpikes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4606515087618540}
   - component: {fileID: 198424906931711780}
   - component: {fileID: 199504218430527120}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4966835939238296}
   - component: {fileID: 198836471055071934}
   - component: {fileID: 199433760667260418}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: CloudBurst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4777394728955834}
   - component: {fileID: 198670333651477094}
   - component: {fileID: 199008615851755556}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 198664174564329966}
   - component: {fileID: 199662576939106544}
   - component: {fileID: 82653795136045662}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: FrozenVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
