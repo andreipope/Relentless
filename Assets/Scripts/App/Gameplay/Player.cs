@@ -9,6 +9,7 @@ using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -196,12 +197,12 @@ namespace LoomNetwork.CZB
             if (!isOpponent)
             {
                 if (!_gameplayManager.IsTutorial)
-                    heroId = _dataManager.CachedDecksData.decks[_gameplayManager.PlayerDeckId].heroId;
+                    heroId = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId).heroId;
                 else
                     heroId = Constants.TUTORIAL_PLAYER_HERO_ID;
             }
             else
-                heroId = _dataManager.CachedOpponentDecksData.decks[_gameplayManager.OpponentDeckId].heroId;
+                heroId = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
 
             _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
@@ -423,18 +424,40 @@ namespace LoomNetwork.CZB
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
-            if (_gameplayManager.CurrentTurnPlayer != this )
-            {
-                _cardsController.AddCardToHand(this, CardsInDeck[0]);
-            }
+
+            //if (_gameplayManager.CurrentTurnPlayer != this)
+            //{
+            //    var usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
+            //    WorkingCard firstUnusedCard = null;
+
+            //    foreach (var card in CardsInDeck)
+            //    {
+            //        if (CardsPreparingToHand.Find(x => x.WorkingCard == card) != null)
+            //            continue;
+
+            //        firstUnusedCard = card;
+            //        break;
+            //    }
+
+            //    if (firstUnusedCard != null)
+            //        _cardsController.AddCardToHand(this, firstUnusedCard);
+            //}
         }
 
         public void DistributeCard()
         {
             if (IsLocalPlayer)
-                _cardsController.AddCardToDistributionState(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());// CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
             else
                 _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+        }
+
+        private WorkingCard GetCardThatNotInDistribution()
+        {
+            var usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
+            var cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+
+            return cards[0];
         }
 
         public void PlayerDie()

@@ -14,24 +14,34 @@ namespace LoomNetwork.CZB
         public event Action OnDragStartedEvent;
         public event Action OnEndEvent;
 
-        private float _pressTimer = 0f;
-        private float _minDragDelta = 3f;
+        private float _pressTimer;
+        private float _dragDelta;
 
-        private bool _isResolved = false;
+        private bool _isResolved;
 
         private Vector3 _initialPointerPosition;
 
         public bool IsPushed { get; private set; }
 
-        public void PushPointer()
+
+        public PointerEventSolver()
+        {
+            _dragDelta = Constants.POINTER_MIN_DRAG_DELTA;
+        }
+
+        public void PushPointer(float delta = -1)
         {
             if (IsPushed)
                 return;
 
             IsPushed = true;
+            _isResolved = false;
 
             _initialPointerPosition = Input.mousePosition;
             _pressTimer = 0f;
+
+            if (delta >= 0)
+                _dragDelta = delta;
         }
 
         public void Update()
@@ -39,7 +49,7 @@ namespace LoomNetwork.CZB
             if (!IsPushed || _isResolved)
                 return;
 
-            if ((_initialPointerPosition - Input.mousePosition).magnitude > _minDragDelta)
+            if (Mathf.Abs((_initialPointerPosition - Input.mousePosition).magnitude) > _dragDelta)
             {
                 _isResolved = true;
                 OnDragStartedEvent?.Invoke();
@@ -48,7 +58,7 @@ namespace LoomNetwork.CZB
             {
                 _pressTimer += Time.unscaledDeltaTime;
 
-                if (_pressTimer >= Constants.TOOLTIP_APPEAR_ON_CLICK_DELAY)
+                if (_pressTimer >= Constants.POINTER_ON_CLICK_DELAY)
                 {
                     _isResolved = true;
                     OnDragStartedEvent?.Invoke();

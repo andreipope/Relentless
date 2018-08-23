@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4699730248360428}
   - component: {fileID: 212396652748599054}
   - component: {fileID: 95114181112901330}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Item_GotDamageEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 33246912500872108}
   - component: {fileID: 222063584935373474}
   - component: {fileID: 114935628566161944}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}

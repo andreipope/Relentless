@@ -263,6 +263,13 @@ namespace LoomNetwork.CZB
         {
             StartTurn();
 
+            // get special cards to hand
+            var player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+
+            //    var firstUnusedCard = player.CardsInDeck.Find(x => !player.CardsInHand.Contains(x) && player.CardsPreparingToHand.Find(y => y.WorkingCard != x) != null);
+
+            _cardsController.AddCardToHand(player);//, firstUnusedCard);
+
             //    if (!_gameplayManager.IsTutorial)
             //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }

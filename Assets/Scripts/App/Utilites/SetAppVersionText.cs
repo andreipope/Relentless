@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB
     {
         private void Start()
         {
-            GetComponent<Text>().text = Constants.VERSION_REVISION + Constants.SPACE + Constants.CURRENT_VERSION;
+            GetComponent<Text>().text = Constants.CURRENT_VERSION_DEVELOPMENT_STAGE + " " + BuildMetaInfo.Instance.FullVersionName;
         }
     }
 }

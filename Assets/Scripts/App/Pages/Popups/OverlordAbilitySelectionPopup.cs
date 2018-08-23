@@ -45,30 +45,8 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
-
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-			_continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
-			_continueButton.onClick.AddListener(CloseButtonHandler);
-
-			_title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
-			_skillName = _selfPage.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
-			_skillDescription = _selfPage.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
-
-			_abilitiesGroup = _selfPage.transform.Find ("Abilities").gameObject;
-
-			_heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
-
+           
             _abilities = new List<AbilityInstance>();
-            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
-            {
-                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
-                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
-                _abilities.Add(abilityInstance);
-            }
-
-            Hide();
         }
 
 		public void Dispose()
@@ -90,7 +68,13 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -99,14 +83,37 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
+            _continueButton.onClick.AddListener(CloseButtonHandler);
+
+            _title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+            _skillName = _selfPage.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
+            _skillDescription = _selfPage.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
+
+            _abilitiesGroup = _selfPage.transform.Find ("Abilities").gameObject;
+
+            _heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
+
+            _abilities.Clear ();
+
+            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+            {
+                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
+                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
+                _abilities.Add(abilityInstance);
+            }
         }
 
         public void Show(object data)
 		{
+            Show();
+
 			FillInfo ((Hero) data);
 		    _abilities[0].IsSelected = true;
-            Show();
+            AbilityInstanceOnSelectionChanged (_abilities [0]);
         }
 
         public void Update()

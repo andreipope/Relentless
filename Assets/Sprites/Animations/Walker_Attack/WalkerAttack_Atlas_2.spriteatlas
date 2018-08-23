@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: WalkerAttack_Atlas_2
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 1024
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 9430e50ed96e34f48aea998a86bb66d3, type: 3}
+    - {fileID: 2800000, guid: adc217f09711444adb31ab70ca583538, type: 3}
+    - {fileID: 2800000, guid: beb57e710c78d4184b016837436fb63e, type: 3}
+    - {fileID: 2800000, guid: e71f3970ecfb34844b9dbba4c40817c2, type: 3}
+    - {fileID: 2800000, guid: 5b876079c2c72415ea72564c0a0823c4, type: 3}
+    - {fileID: 2800000, guid: 0407b46ca3c474de8a77afaedfe4a584, type: 3}
+    - {fileID: 2800000, guid: eac23977f58ea4d338dbbda96167b25f, type: 3}
+    - {fileID: 2800000, guid: 1bb9bf2466fde458bb8f8cd30dd97371, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 9430e50ed96e34f48aea998a86bb66d3, type: 3}
+  - {fileID: 21300000, guid: 0407b46ca3c474de8a77afaedfe4a584, type: 3}
+  - {fileID: 21300000, guid: e71f3970ecfb34844b9dbba4c40817c2, type: 3}
+  - {fileID: 21300000, guid: beb57e710c78d4184b016837436fb63e, type: 3}
+  - {fileID: 21300000, guid: adc217f09711444adb31ab70ca583538, type: 3}
+  - {fileID: 21300000, guid: 5b876079c2c72415ea72564c0a0823c4, type: 3}
+  - {fileID: 21300000, guid: eac23977f58ea4d338dbbda96167b25f, type: 3}
+  - {fileID: 21300000, guid: 1bb9bf2466fde458bb8f8cd30dd97371, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Claws_attack_028
+  - Claws_attack_033
+  - Claws_attack_031
+  - Claws_attack_030
+  - Claws_attack_029
+  - Claws_attack_032
+  - Claws_attack_034
+  - Claws_attack_035
+  m_Tag: WalkerAttack_Atlas_2
+  m_IsVariant: 0

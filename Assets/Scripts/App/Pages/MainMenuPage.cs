@@ -1,8 +1,11 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
+using System.Threading.Tasks;
+using App.Utilites;
+using Loom.Client;
+using LoomNetwork.CZB.BackendCommunication;
 using UnityEngine;
 using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
@@ -21,6 +24,8 @@ namespace LoomNetwork.CZB
 		private ISoundManager _soundManager;
         private IPlayerManager _playerManager;
 		private IDataManager _dataManager;
+        private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage;
 
@@ -39,6 +44,12 @@ namespace LoomNetwork.CZB
         private Animator _logoAnimator;
 
         private bool _logoShowed;
+        private TextMeshProUGUI _connectionStatusText;
+        private Button _buttonReconnect;
+		private Button _buttonLogout;
+
+        private GameObject _markerOffline;
+        private GameObject _markerOnline;
 
         public void Init()
         {
@@ -49,9 +60,37 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            
+            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
+        }
 
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state) {
+            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
+        }
+
+        private void UpdateConnectionStateUI() {
+            _connectionStatusText.text = 
+                _backendFacade.IsConnected ? 
+                    "<color=green>Online</color>" : 
+                    "<color=red>Offline</color>";
+            
+            _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
+            _markerOffline.gameObject.SetActive (_buttonReconnect.gameObject.activeSelf);
+			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
+            _markerOnline.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
+        }
+
+        public void Update()
+        {
+
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
@@ -67,6 +106,12 @@ namespace LoomNetwork.CZB
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
+            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
+            _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
+            _buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
+            _markerOffline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Offline").gameObject;
+            _markerOnline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Online").gameObject;
+
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
             _buttonArmy.onClickEvent.AddListener(OnClickCollection);
@@ -75,21 +120,11 @@ namespace LoomNetwork.CZB
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-            
+            _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
+            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            
             _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
 
-            Hide();
-        }
-
-        public void Update()
-        {
-
-        }
-
-        public void Show()
-        {
-            _selfPage.SetActive(true);
             _buttonArmy.interactable = true;
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
@@ -111,11 +146,42 @@ namespace LoomNetwork.CZB
                 GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
                 _logoShowed = true;
             } */
+            
+
+            /*if (LoomManager.Instance.Contract != null)
+            {
+                LoomManagerOnContractCreated(null, LoomManager.Instance.Contract);
+            }*/
+
+            UpdateConnectionStateUI();
+        }
+
+        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract) {
+            if (oldContract != null)
+            {
+                oldContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                oldContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
+            newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+
+            UpdateConnectionStateUI();
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
+            if (_backendFacade.Contract != null)
+            {
+                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
@@ -179,6 +245,24 @@ namespace LoomNetwork.CZB
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 			_stateManager.ChangeAppState (Common.Enumerators.AppState.PACK_OPENER);
         }
+        
+        private async void ReconnectButtonOnClickHandler() {
+            try
+            {
+                // FIXME: add waiting popup
+                await _backendDataControlMediator.LoginAndLoadData();
+            } catch (Exception e)
+            {
+                Debug.LogException(e);
+                OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
+            }
+        }
+
+		private void LogoutButtonOnClickHandler() {
+			_dataManager.DeleteData ();
+			_backendDataControlMediator.UserDataModel = null;
+			GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+		}
 
         private void OnValueChangedEventMusic(bool value)
 		{
@@ -193,6 +277,7 @@ namespace LoomNetwork.CZB
           //  _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
             _soundManager.SetSoundMuted(!value);
         }
+
         #endregion
 
         private void OpenAlertDialog(string msg)

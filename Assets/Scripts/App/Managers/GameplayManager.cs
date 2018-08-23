@@ -6,6 +6,7 @@
 using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.BackendCommunication;
 
 namespace LoomNetwork.CZB
 {
@@ -41,6 +42,8 @@ namespace LoomNetwork.CZB
         public Player CurrentTurnPlayer { get; set; }
         public Player CurrentPlayer { get; set; }
         public Player OpponentPlayer { get; set; }
+        
+        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
         public void Dispose()
         {

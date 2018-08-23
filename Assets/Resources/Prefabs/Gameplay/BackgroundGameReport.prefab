@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4361294115647414}
   - component: {fileID: 212867942639305844}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: BackgroundGameReport
   m_TagString: Untagged
   m_Icon: {fileID: 0}

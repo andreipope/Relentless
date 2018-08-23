@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224619887157340748}
   - component: {fileID: 114047123006852418}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CreditSubSectionListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 224293346106112196}
   - component: {fileID: 222345509681088858}
   - component: {fileID: 114507145943627260}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Section
   m_TagString: Untagged
   m_Icon: {fileID: 0}

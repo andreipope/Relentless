@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224173380297706960}
   - component: {fileID: 114557763910797494}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 222915633383545274}
   - component: {fileID: 114707831674065372}
   - component: {fileID: 114354515252235574}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224174969577383386}
   - component: {fileID: 114439371082422530}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ButtonSpace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 224830460047514270}
   - component: {fileID: 222445421119182522}
   - component: {fileID: 114224653740923682}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Logo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 224051404179009710}
   - component: {fileID: 222765461911133938}
   - component: {fileID: 114572126954009698}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 114425879817811000}
   - component: {fileID: 114892716497286386}
   - component: {fileID: 114363533098650968}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_CreditsList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 114662656619415868}
   - component: {fileID: 222985645939257546}
   - component: {fileID: 114252980491014112}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Thanks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224585853243244386}
   - component: {fileID: 222373333939752330}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CreditsPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 224591269563239200}
   - component: {fileID: 222017182046963266}
   - component: {fileID: 114409624158632320}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 224467354358208076}
   - component: {fileID: 222355318975395130}
   - component: {fileID: 114270546885408326}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}

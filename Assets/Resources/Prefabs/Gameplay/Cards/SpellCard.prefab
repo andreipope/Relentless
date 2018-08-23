@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4837267190334362}
   - component: {fileID: 212150238127330274}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: AmountIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4925263296415844}
   - component: {fileID: 198599798702128224}
   - component: {fileID: 199030559923171650}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: VolumetricGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 23079922080295750}
   - component: {fileID: 222262047764041820}
   - component: {fileID: 114412546884497980}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BodyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4817120623561836}
   - component: {fileID: 331981870924412776}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PictureMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 23502285292650542}
   - component: {fileID: 222374510723485582}
   - component: {fileID: 114009642054096816}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4548236336704502}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Group_LeftBlockInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4441499189064270}
   - component: {fileID: 198696729220402810}
   - component: {fileID: 199646959145499146}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4933123331753282}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Amount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 95611186504327666}
   - component: {fileID: 114132321288559840}
   - component: {fileID: 114944745964307730}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpellCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4269106716331254}
   - component: {fileID: 212387946876314644}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 4679575028214484}
   - component: {fileID: 198912626323187138}
   - component: {fileID: 199185456020267860}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RemoveCardParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4073944837426532}
   - component: {fileID: 212167112694304000}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4680872118165756}
   - component: {fileID: 212747869085063958}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4199285308948080}
   - component: {fileID: 212558735512000614}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: DistributeCardObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4686869791698124}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: DeckEditingGroupUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 23596066862695252}
   - component: {fileID: 222601786663182388}
   - component: {fileID: 114192745367216632}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: TitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4413874551901986}
   - component: {fileID: 212035117045667140}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,7 +306,7 @@ GameObject:
   - component: {fileID: 4757342120203576}
   - component: {fileID: 198718882204177844}
   - component: {fileID: 199419440179918230}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Rings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4134381495819756}
   - component: {fileID: 212219104441213554}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 23321607826078996}
   - component: {fileID: 222787567411647280}
   - component: {fileID: 114255577140211606}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: GooText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 4911959722691030}
   - component: {fileID: 198492826531460996}
   - component: {fileID: 199624101524645792}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18382,7 +18382,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: -1748281577
   m_SortingLayer: 6
-  m_SortingOrder: 10
+  m_SortingOrder: 1
 --- !u!212 &212035117045667140
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -18461,12 +18461,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 745ac398284d401469ed0692870821d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: aa41724a2712d40c398fb4cd04f77fa0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.77, y: 0.71}
+  m_Size: {x: 0.92, y: 0.86}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -18601,7 +18601,7 @@ SpriteRenderer:
   m_Size: {x: 3.5, y: 4.38}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212558735512000614
 SpriteRenderer:

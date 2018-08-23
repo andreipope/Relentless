@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224559262685789978}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ActionReportPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 114698527653423744}
   - component: {fileID: 222550755039985724}
   - component: {fileID: 114940204653982902}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 114037262235716306}
   - component: {fileID: 222631063607197692}
   - component: {fileID: 114775426268212658}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Keep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 114893412317007280}
   - component: {fileID: 114907167085665592}
   - component: {fileID: 114421730650669318}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardGraveyard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 222547093713664722}
   - component: {fileID: 114301003894581392}
   - component: {fileID: 114565113075398722}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224485622737546812}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: GameplayPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 224057503215930484}
   - component: {fileID: 222967027135557374}
   - component: {fileID: 114987427033895726}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 114241068648330234}
   - component: {fileID: 114215968785115842}
   - component: {fileID: 114280647607065678}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardGraveyard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

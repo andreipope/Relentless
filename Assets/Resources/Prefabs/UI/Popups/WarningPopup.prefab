@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224556213446114376}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 224323283431028076}
   - component: {fileID: 222301290017664008}
   - component: {fileID: 114060776862307540}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Text_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 224797332284437430}
   - component: {fileID: 222484794848411982}
   - component: {fileID: 114170989087766672}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 224265632458479620}
   - component: {fileID: 222517068286316242}
   - component: {fileID: 114506901285225236}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 224143603080964244}
   - component: {fileID: 222154238007813392}
   - component: {fileID: 114253838510454340}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 114118212664599312}
   - component: {fileID: 222611353052372362}
   - component: {fileID: 114623331000065676}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_GotIt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 224264692403636230}
   - component: {fileID: 222490521858353418}
   - component: {fileID: 114687340325829612}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: WarningPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}

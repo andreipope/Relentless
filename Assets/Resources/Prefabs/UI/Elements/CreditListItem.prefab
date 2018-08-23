@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224071986806966940}
   - component: {fileID: 222042556334097816}
   - component: {fileID: 114863489193758648}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224713749085566912}
   - component: {fileID: 222572912504374168}
   - component: {fileID: 114461915368960552}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Post
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224713896186365414}
   - component: {fileID: 114669194444455808}
   - component: {fileID: 114669698261689698}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CreditListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

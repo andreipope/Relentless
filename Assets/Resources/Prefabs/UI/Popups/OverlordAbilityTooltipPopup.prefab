@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224841718397902868}
   - component: {fileID: 222194335703210318}
   - component: {fileID: 114065545339881296}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: AbilityDescription
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224159184528778388}
   - component: {fileID: 222840451432766698}
   - component: {fileID: 114970735520962638}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: TMP SubMeshUI [Timeline SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224673576993973894}
   - component: {fileID: 222785570103297444}
   - component: {fileID: 114609285323994092}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Blocker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224373221261439274}
   - component: {fileID: 222783227118629846}
   - component: {fileID: 114088152775101714}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PanelHeaderBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224459318826296992}
   - component: {fileID: 222395485001829890}
   - component: {fileID: 114110708642416660}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: AbilityName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 224021901819983926}
   - component: {fileID: 222956219898340966}
   - component: {fileID: 114210756647896342}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 224859162947462882}
   - component: {fileID: 222877191237214868}
   - component: {fileID: 114715564756029146}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: TMP SubMeshUI [Timeline SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 224232561536879012}
   - component: {fileID: 222190636293525438}
   - component: {fileID: 114526105607055170}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: AbilityIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224133887441517084}
   - component: {fileID: 222482712566365718}
   - component: {fileID: 114051542807335386}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: OverlordAbilityTooltipPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 224642502692451248}
   - component: {fileID: 222642289087440340}
   - component: {fileID: 114886618106395672}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

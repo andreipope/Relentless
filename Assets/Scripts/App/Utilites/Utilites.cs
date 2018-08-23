@@ -395,6 +395,26 @@ namespace LoomNetwork.Internal
 
         }
 
+        public static string GetStringFromByteArray(byte[] byteArr)
+        {
+            return Convert.ToBase64String(byteArr);
+        }
+
+        public static byte[] GetByteArrFromString(string str)
+        {
+            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
+        }
+        
+        public static T CreateFromJSON<T>(string jsonString)
+        {
+            return JsonUtility.FromJson<T>(jsonString);
+        }
+
+        public static string SaveToString(object obj)
+        {
+            return JsonUtility.ToJson(obj);
+        }
+
         public static Vector3 CastVFXPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
@@ -404,5 +424,14 @@ namespace LoomNetwork.Internal
             color.a = alpha;
             return color;
         }
+        
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long GetCurrentUnixTimestampMillis()
+        {
+            DateTime localDateTime = DateTime.Now;          
+            DateTime universalDateTime = localDateTime.ToUniversalTime();
+            return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
+        } 
     }
 }

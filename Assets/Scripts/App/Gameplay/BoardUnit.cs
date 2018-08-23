@@ -549,9 +549,9 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
+            //InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
             if (!ownerPlayer.IsLocalPlayer)
-                _shieldSprite.transform.localPosition = new Vector3(_shieldSprite.transform.localPosition.x, _shieldSprite.transform.localPosition.y, -_shieldSprite.transform.localPosition.z);
+                _shieldSprite.transform.localPosition = new Vector3(_shieldSprite.transform.localPosition.x, _shieldSprite.transform.localPosition.y, 4f);
 
             if (!_ignoreArrivalEndEvents)
             {

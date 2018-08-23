@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222720095676425724}
   - component: {fileID: 114489114730895824}
   - component: {fileID: 114747566708141246}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Select
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 224649637829332714}
   - component: {fileID: 222746011977874458}
   - component: {fileID: 114961911813272046}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_DeckFillInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 224422013613467246}
   - component: {fileID: 222779215477102424}
   - component: {fileID: 114666668753493270}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224256002826305712}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: SelectionContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 224927846238914408}
   - component: {fileID: 222061202009673318}
   - component: {fileID: 114114680692989286}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_CardsCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 224912550711611636}
   - component: {fileID: 222007367178200678}
   - component: {fileID: 114629486408784162}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224960217840275700}
   - component: {fileID: 222136046073716206}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Item_HordeSelectionObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 224400352178872500}
   - component: {fileID: 222238024623085260}
   - component: {fileID: 114606705710093094}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BaackgroundGeneral
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 224059532927874816}
   - component: {fileID: 222176875752784730}
   - component: {fileID: 114391684935942908}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_HordePicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 224673814424988172}
   - component: {fileID: 222873770666273334}
   - component: {fileID: 114074818902698950}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TMP SubMeshUI [FiraSans-ExtraBold SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 224318966955996154}
   - component: {fileID: 222049507663188024}
   - component: {fileID: 114508188065119964}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 224991260280204276}
   - component: {fileID: 222971894353632570}
   - component: {fileID: 114313769570233744}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 224019693323999732}
   - component: {fileID: 222726025233761078}
   - component: {fileID: 114781541354862994}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_HordeBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 224042086222848860}
   - component: {fileID: 222993218295700224}
   - component: {fileID: 114330630028604428}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TMP SubMeshUI [FiraSans-ExtraBold SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 224847151510833598}
   - component: {fileID: 222292839321871898}
   - component: {fileID: 114218787849546196}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_HordeType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -702,7 +702,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
@@ -1040,8 +1040,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.12, y: -3.92}
-  m_SizeDelta: {x: 494.52, y: 97.59}
+  m_AnchoredPosition: {x: 0, y: -3.92}
+  m_SizeDelta: {x: 459.76, y: 97.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224649637829332714
 RectTransform:

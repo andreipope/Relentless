@@ -51,13 +51,13 @@ namespace LoomNetwork.CZB
             {
                 switch (affectObjectType)
                 {
-                    case Enumerators.AffectObjectType.PLAYER:
+              /*      case Enumerators.AffectObjectType.PLAYER:
                         //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
                         //else
                         //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
                         CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
-                        break;
+                        break; */
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(targetUnit);
                         CreateAndMoveParticle(() =>
@@ -74,23 +74,22 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-            var opponent = GetOpponentOverlord();
 
-            var creature = info as BoardUnit;
+            var unit = info as BoardUnit;
+
+            var playerOwner = unit.ownerPlayer;
 
             BoardUnit leftAdjustment = null,
                     rightAdjastment = null;
 
             int targetIndex = -1;
             List<BoardUnit> list = null;
-            Debug.Log(opponent.BoardCards.Count);
-            Debug.Log(opponent.CardsOnBoard.Count);
-            for (int i = 0; i < opponent.BoardCards.Count; i++)
+            for (int i = 0; i < playerOwner.BoardCards.Count; i++)
             {
-                if (opponent.BoardCards[i] == creature)
+                if (playerOwner.BoardCards[i] == unit)
                 {
                     targetIndex = i;
-                    list = opponent.BoardCards;
+                    list = playerOwner.BoardCards;
                     break;
                 }
             }

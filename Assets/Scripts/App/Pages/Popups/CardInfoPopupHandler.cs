@@ -9,6 +9,8 @@ using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityEngine.Rendering;
+using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
 {
@@ -25,7 +27,7 @@ namespace LoomNetwork.CZB
         public event Action Opening;
         public event Action<BoardCard> PreviewCardInstantiated;
 
-        public BoardCard _previewCard;
+        private BoardCard _previewCard;
         private BoardCard _selectedCollectionCard;
 
         public bool IsStateChanging { get; private set; }
@@ -48,9 +50,9 @@ namespace LoomNetwork.CZB
 
         public void Update() {
             IsInteractable = false;
-            if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<WarningPopup>().Self.activeSelf)
+            if (_uiManager.GetPopup<CardInfoPopup>().Self == null &&
+                _uiManager.GetPopup<DesintigrateCardPopup>().Self == null &&
+                _uiManager.GetPopup<WarningPopup>().Self == null)
             {
                 if (!IsStateChanging && _previewCard != null)
                 {
@@ -74,9 +76,6 @@ namespace LoomNetwork.CZB
         {
             SetIsStateChanging(true);
 
-            var amount = _dataManager.CachedCollectionData.GetCardData(_selectedCollectionCard.libraryCard.name).amount;
-            _selectedCollectionCard.UpdateAmount(amount);
-
             Closing?.Invoke();
 
             Sequence sequence = DOTween.Sequence();
@@ -85,14 +84,19 @@ namespace LoomNetwork.CZB
             sequence.Join(_previewCard.transform.DORotateQuaternion(_selectedCollectionCard.transform.rotation, .3f));
             sequence.OnComplete(() =>
             {
-                MonoBehaviour.Destroy(_previewCard.gameObject);
-                _previewCard = null;
+                ClearPreviewCard();
                 SetIsStateChanging(false);
             });
         }
 
+        private void ClearPreviewCard() {
+            Object.Destroy(_previewCard?.gameObject);
+            _previewCard = null;
+        }
+
         public void SelectCard(BoardCard card)
         {
+            ClearPreviewCard();
             Opening?.Invoke();
 
             SetIsStateChanging(true);
@@ -106,10 +110,11 @@ namespace LoomNetwork.CZB
             _previewCard.gameObject.transform.position = card.gameObject.transform.position;
             _previewCard.gameObject.transform.localScale = card.gameObject.transform.lossyScale;
 
+            _previewCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI;
+            _previewCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 21;
+
             PreviewCardInstantiated?.Invoke(_previewCard);
-
-            Utilites.SetLayerRecursively(_previewCard.gameObject, 11);
-
+            
             Sequence mySequence = DOTween.Sequence();
             mySequence.Append(_previewCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
             mySequence.Append(_previewCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
