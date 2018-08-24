@@ -76,7 +76,6 @@ namespace LoomNetwork.CZB
             EditorUtility.SetDirty(buildMetaInfo);
         }
 
-#if !UNITY_EDITOR
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
@@ -86,7 +85,6 @@ namespace LoomNetwork.CZB
             buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
             EditorUtility.SetDirty(buildMetaInfo);
         }
-#endif
         
         private static void ExecuteCommand(
             string fileName,

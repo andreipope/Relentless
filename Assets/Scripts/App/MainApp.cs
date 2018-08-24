@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB
                 #elif UNITY_STANDALONE_WIN
                 deviceType = "Window";
                 #endif
-                GameClient.Get<AnalyticsManager>().LogScreen(SceneManager.GetActiveScene().name + "-" + deviceType);
+                GameClient.Get<IAnalyticsManager>().StartSession();
             }
         }
 
