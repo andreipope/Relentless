@@ -11,50 +11,33 @@ namespace LoomNetwork.CZB
         public const string ResourcesPath = "BuildMetaInfo";
         
         public string GitBranchName = "";
-        public string GitHash = "";
+        public string GitCommitHash = "";
         public string BuildDateTime = "";
+        public int BuildDayOfYear = 0;
         public string CloudBuildBuildNumber;
         public string CloudBuildTargetName = "";
         public string CloudBuildGitBranchName = "";
+        public string CloudBuildGitCommitHash = "";
 
-        public string ShortVersionName
-        {
-            get
-            {
-                string text = Constants.CURRENT_VERSION_BASE;
+        public string ShortVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
 
-#if UNITY_CLOUD_BUILD
-                text += "b" + CloudBuildBuildNumber;
-#endif
-                return text;
-            }
-        }
-        
-        public string DisplayVersionName
-        {
-            get
-            {
-                string text = Constants.CURRENT_VERSION_BASE;
-
-#if UNITY_CLOUD_BUILD
-                text += "b" + CloudBuildBuildNumber;
-#endif
-                return text;
-            }
-        }
+        public string DisplayVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
         
         public string FullVersionName
         {
             get
             {
-                string text = Constants.CURRENT_VERSION_BASE;
+                string text = DisplayVersionName;
 
 #if UNITY_CLOUD_BUILD
-                text += "b" + CloudBuildBuildNumber;
-#else
-                if (!String.IsNullOrEmpty(GitHash))
+                if (!String.IsNullOrEmpty(CloudBuildGitCommitHash))
                 {
-                    text += $"@{GitHash}/{GitBranchName}";
+                    text += $" ({CloudBuildGitCommitHash})";
+                }
+#else
+                if (!String.IsNullOrEmpty(GitCommitHash))
+                {
+                    text += $" ({GitCommitHash}/{GitBranchName})";
                 }
 #endif
                 return text;
@@ -66,13 +49,7 @@ namespace LoomNetwork.CZB
             get
             {
                 Version baseVersion = Version.Parse(Constants.CURRENT_VERSION_BASE);
-                
-#if UNITY_CLOUD_BUILD
-                int buildNumber = int.Parse(CloudBuildBuildNumber);
-#else
-                int buildNumber = 0;
-#endif
-                return new Version(baseVersion.Major, baseVersion.Minor, baseVersion.Build, buildNumber);
+                return new Version(baseVersion.Major, baseVersion.Minor, baseVersion.Build, BuildDayOfYear);
             }
         }
         
