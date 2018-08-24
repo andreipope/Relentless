@@ -65,6 +65,7 @@ namespace LoomNetwork.CZB
             IsLoadedScene = false;
             _isLoadingStarted = true;
 
+            GameClient.Get<IAnalyticsManager>().LogScreen(appState.ToString());
             if (!_isLoadingScenesAsync)
             {
 #if UNITY_5_3_OR_NEWER
