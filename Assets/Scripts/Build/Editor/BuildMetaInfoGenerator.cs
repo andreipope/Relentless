@@ -79,7 +79,7 @@ namespace LoomNetwork.CZB
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
-            buildMetaInfo.CloudBuildBuildNumber = manifest.GetValue<string>("buildNumber");
+            buildMetaInfo.CloudBuildBuildNumber = Convert.ToInt32(manifest.GetValue<string>("buildNumber"));
             buildMetaInfo.CloudBuildGitBranchName = manifest.GetValue<string>("scmBranch");
             buildMetaInfo.CloudBuildGitCommitHash = manifest.GetValue<string>("scmCommitId");
             buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
