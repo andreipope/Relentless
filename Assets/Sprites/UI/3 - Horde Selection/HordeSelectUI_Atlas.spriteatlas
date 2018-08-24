@@ -5,7 +5,7 @@ SpriteAtlas:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: HordeSelectUI_Atlas_1
+  m_Name: HordeSelectUI_Atlas
   m_EditorData:
     textureSettings:
       serializedVersion: 2
@@ -50,6 +50,14 @@ SpriteAtlas:
     - {fileID: 2800000, guid: baa121720311546cb90e1e51a37b7f6b, type: 3}
     - {fileID: 2800000, guid: 219bad7c983f69149aa2702b84729b66, type: 3}
     - {fileID: 2800000, guid: a2fdc80a0e2c747c69c8b5be9878fd7c, type: 3}
+    - {fileID: 2800000, guid: a2c77e6bb3bd54d74afb6e6df15dff27, type: 3}
+    - {fileID: 2800000, guid: 78a2d5fbbc314cc49a5415ab2348f602, type: 3}
+    - {fileID: 2800000, guid: fccd1ea1767294fbe96162189a0f8534, type: 3}
+    - {fileID: 2800000, guid: 90bf08a99788d4c77b47ab2968ef6efb, type: 3}
+    - {fileID: 2800000, guid: 73f79c57c7ffb4efd85ef991b7b8dbbb, type: 3}
+    - {fileID: 2800000, guid: 16ccd3482809a4daebaf6c87a0af05e0, type: 3}
+    - {fileID: 2800000, guid: 70153b79ba1014456b1c23aae9652d9b, type: 3}
+    - {fileID: 2800000, guid: defc3cb4e5aa94d4bb506d748808c01f, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -57,8 +65,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0a30e872da26b43549c05186ca8939f8, type: 3}
   - {fileID: 21300000, guid: 219bad7c983f69149aa2702b84729b66, type: 3}
   - {fileID: 21300000, guid: 08795ac371b33c7448ace93a387734f4, type: 3}
+  - {fileID: 21300000, guid: 78a2d5fbbc314cc49a5415ab2348f602, type: 3}
+  - {fileID: 21300000, guid: a2c77e6bb3bd54d74afb6e6df15dff27, type: 3}
   - {fileID: 21300000, guid: 5a7836cb804889e43bb3a02b70b8396a, type: 3}
   - {fileID: 21300000, guid: a51cb50ce32386d42a8b1952b65fa18b, type: 3}
+  - {fileID: 21300000, guid: fccd1ea1767294fbe96162189a0f8534, type: 3}
+  - {fileID: 21300000, guid: defc3cb4e5aa94d4bb506d748808c01f, type: 3}
+  - {fileID: 21300000, guid: 73f79c57c7ffb4efd85ef991b7b8dbbb, type: 3}
+  - {fileID: 21300000, guid: 16ccd3482809a4daebaf6c87a0af05e0, type: 3}
+  - {fileID: 21300000, guid: 70153b79ba1014456b1c23aae9652d9b, type: 3}
+  - {fileID: 21300000, guid: 90bf08a99788d4c77b47ab2968ef6efb, type: 3}
   - {fileID: 21300000, guid: a2fdc80a0e2c747c69c8b5be9878fd7c, type: 3}
   - {fileID: 21300000, guid: 5b0222096e6a640579656d99cc3abdfa, type: 3}
   - {fileID: 21300000, guid: baa121720311546cb90e1e51a37b7f6b, type: 3}
@@ -80,8 +96,16 @@ SpriteAtlas:
   - header_short
   - hordeselect_tray
   - hordeselect_battlebutton_base
+  - hordeselect_new_horde
+  - hordeselect_chamber_bg
   - fxplaceholder_deck_glow
   - hordeselect_blankdeck
+  - hordeselection_deck_portrait_air
+  - 'hordeselection_deck_portrait_water '
+  - 'hordeselection_deck_portrait_fire '
+  - hordeselection_deck_portrait_life
+  - 'hordeselection_deck_portrait_toxic '
+  - 'hordeselection_deck_portrait_earth '
   - hordeselect_constructglow
   - hordeselect_battlebutton_frame
   - hordeselect_tray_panel
@@ -98,5 +122,5 @@ SpriteAtlas:
   - button_delete_pressed
   - button_edit_pressed
   - hordeselect_tray_+
-  m_Tag: HordeSelectUI_Atlas_1
+  m_Tag: HordeSelectUI_Atlas
   m_IsVariant: 0

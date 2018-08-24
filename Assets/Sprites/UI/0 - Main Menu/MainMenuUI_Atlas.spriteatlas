@@ -67,15 +67,15 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b17ffc90f3d5815448565324ea313083, type: 3}
   - {fileID: 21300000, guid: 80ddfb60c4c704898a64e8fe52cb66a6, type: 3}
   - {fileID: 21300000, guid: ac6172a00208f46089b307cf2240bee5, type: 3}
-  - {fileID: 21300000, guid: 91bf3d7a0ed37f24f8da8417c60328e9, type: 3}
   - {fileID: 21300000, guid: ee3d3d992561bcd4897534959928c81c, type: 3}
+  - {fileID: 21300000, guid: 91bf3d7a0ed37f24f8da8417c60328e9, type: 3}
   - {fileID: 21300000, guid: 08808448a72184527848a63bd74331f8, type: 3}
   - {fileID: 21300000, guid: 690a9751832f0bd4095ec2769fcea6bf, type: 3}
   - {fileID: 21300000, guid: 8c41560466649de4eb461236bd043c51, type: 3}
-  - {fileID: 21300000, guid: 0a5f5e9ac2714ea4b87e8c9578392c5d, type: 3}
-  - {fileID: 21300000, guid: 918fda0622eef4c808a2f4ab14d38f5f, type: 3}
-  - {fileID: 21300000, guid: 79abbd2e13b26d44fb42d72b1c0109b4, type: 3}
   - {fileID: 21300000, guid: 2c09e849665320c4ebddc2c1ee151457, type: 3}
+  - {fileID: 21300000, guid: 0a5f5e9ac2714ea4b87e8c9578392c5d, type: 3}
+  - {fileID: 21300000, guid: 79abbd2e13b26d44fb42d72b1c0109b4, type: 3}
+  - {fileID: 21300000, guid: 918fda0622eef4c808a2f4ab14d38f5f, type: 3}
   - {fileID: 21300000, guid: 739af16f03c4d463dad30f2c3265e73a, type: 3}
   - {fileID: 21300000, guid: 0862269123d024809933ada9e385c984, type: 3}
   - {fileID: 21300000, guid: da14fc5b612424cc2bb2e099900f563c, type: 3}
@@ -92,15 +92,15 @@ SpriteAtlas:
   - mainmenu_opener
   - mainmenu_button_army_normal
   - mainmenu_button_army_pressed
-  - mainmenu_button
   - mainmenu_button_pressed
+  - mainmenu_button
   - glow_play
   - mainmenu_pack
   - mainmenu_button_sfx
-  - mainmenu_button_music
-  - mainmenu_button_play_text
-  - mainmenu_button_music_off
   - mainmenu_button_sfx_off
+  - mainmenu_button_music
+  - mainmenu_button_music_off
+  - mainmenu_button_play_text
   - mainmenu_panel_accountstatus
   - marker_offline
   - marker_online

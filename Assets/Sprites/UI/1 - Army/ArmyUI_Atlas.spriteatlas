@@ -28,8 +28,8 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 91f26c96c3874dc45847b827f5e6ad3e, type: 3}
-    - {fileID: 2800000, guid: 34990ce8f9940bf47b547937e788c883, type: 3}
+    - {fileID: 2800000, guid: de06b75d6e49dd541b3367693976fb2e, type: 3}
+    - {fileID: 2800000, guid: 4eb9a6a3dba7d406ebe891915ec7a9a3, type: 3}
     - {fileID: 2800000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
     - {fileID: 2800000, guid: 1cebcdc100b3d38459818e17e19e7fee, type: 3}
     - {fileID: 2800000, guid: 40d58650ec7663d40b4b919aff42d90c, type: 3}
@@ -48,9 +48,6 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 26959719ec0f34144810292474dd0e74, type: 3}
     - {fileID: 2800000, guid: 163d098e8aca3f14499bcb2b025b230b, type: 3}
     - {fileID: 2800000, guid: 6d593f2a75f6d934e87194b394af8f81, type: 3}
-    - {fileID: 2800000, guid: de06b75d6e49dd541b3367693976fb2e, type: 3}
-    - {fileID: 2800000, guid: 4eb9a6a3dba7d406ebe891915ec7a9a3, type: 3}
-    - {fileID: 2800000, guid: aa41724a2712d40c398fb4cd04f77fa0, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -60,7 +57,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
   - {fileID: 21300000, guid: 40d58650ec7663d40b4b919aff42d90c, type: 3}
   - {fileID: 21300000, guid: a2998a310217e59468b557bf0df41e76, type: 3}
-  - {fileID: 21300000, guid: 34990ce8f9940bf47b547937e788c883, type: 3}
   - {fileID: 21300000, guid: 37026f530e9d3c84d84a637bcfcad8ce, type: 3}
   - {fileID: 21300000, guid: 2abdc483572e320429f7ad59b54ba952, type: 3}
   - {fileID: 21300000, guid: e62d6d44d5b237549bc129faebee16a7, type: 3}
@@ -75,8 +71,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 163d098e8aca3f14499bcb2b025b230b, type: 3}
   - {fileID: 21300000, guid: e9bda46f502edc34ba3c0c9afb8e22a8, type: 3}
   - {fileID: 21300000, guid: a6a5827f062abdd47926341b815242c8, type: 3}
-  - {fileID: 21300000, guid: aa41724a2712d40c398fb4cd04f77fa0, type: 3}
-  - {fileID: 21300000, guid: 91f26c96c3874dc45847b827f5e6ad3e, type: 3}
   m_PackedSpriteNamesToIndex:
   - header_short
   - header_long
@@ -84,7 +78,6 @@ SpriteAtlas:
   - button_arrow_off
   - button_back_normal
   - button_back_pressed
-  - icon_cardcount_big
   - button_element_fire_normal
   - button_element_air_normal
   - button_element_air_pressed
@@ -99,7 +92,5 @@ SpriteAtlas:
   - button_element_water_normal
   - button_element_earth_normal
   - button_element_tool_pressed
-  - icon_card_count_med
-  - icon_cardcount_small
   m_Tag: ArmyUI_Atlas
   m_IsVariant: 0

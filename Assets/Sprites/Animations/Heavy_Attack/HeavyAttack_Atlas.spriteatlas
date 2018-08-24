@@ -5,7 +5,7 @@ SpriteAtlas:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: HeavyAttack_Atlas_1
+  m_Name: HeavyAttack_Atlas
   m_EditorData:
     textureSettings:
       serializedVersion: 2
@@ -55,12 +55,25 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 13fb3a84264254878a3bae209c6911c6, type: 3}
     - {fileID: 2800000, guid: dbcc5fad4b7fb49f7890e9f96def9a64, type: 3}
     - {fileID: 2800000, guid: f057e982ba2ef495dbc6bc3b90d82430, type: 3}
+    - {fileID: 2800000, guid: 6f3ed398322b14925a4fa9af9832a32b, type: 3}
+    - {fileID: 2800000, guid: 7f46f5822c9e744d3b234ad8699f7003, type: 3}
+    - {fileID: 2800000, guid: a36595bd702db4fc49f37a6227c1e402, type: 3}
+    - {fileID: 2800000, guid: dc3d562116f5f4cf4bab8049fc78930b, type: 3}
+    - {fileID: 2800000, guid: 427f093d59aa64672adbe238366c2d44, type: 3}
+    - {fileID: 2800000, guid: af5ed2b586fd94b1495944a0f67baf7c, type: 3}
+    - {fileID: 2800000, guid: f5ccb1790c8f94828b2804befacc2e91, type: 3}
+    - {fileID: 2800000, guid: 371d2187e99f94670a73703bbda4918e, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 6a72bd259c1b9483699de05b2e1fe516, type: 3}
   - {fileID: 21300000, guid: e162b73b039e54cc588e1360ab96b008, type: 3}
+  - {fileID: 21300000, guid: a36595bd702db4fc49f37a6227c1e402, type: 3}
+  - {fileID: 21300000, guid: 7f46f5822c9e744d3b234ad8699f7003, type: 3}
+  - {fileID: 21300000, guid: 6f3ed398322b14925a4fa9af9832a32b, type: 3}
+  - {fileID: 21300000, guid: dc3d562116f5f4cf4bab8049fc78930b, type: 3}
   - {fileID: 21300000, guid: f057e982ba2ef495dbc6bc3b90d82430, type: 3}
+  - {fileID: 21300000, guid: 427f093d59aa64672adbe238366c2d44, type: 3}
   - {fileID: 21300000, guid: 2f5b22ca34248411ca5ffddb7c2392be, type: 3}
   - {fileID: 21300000, guid: dbcc5fad4b7fb49f7890e9f96def9a64, type: 3}
   - {fileID: 21300000, guid: caf0ebbb48c64445f978878f22a8f361, type: 3}
@@ -70,7 +83,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6c98869dfe70a4100af433f92608fba9, type: 3}
   - {fileID: 21300000, guid: b88506442fcc74c95aa2be8a4b0f718d, type: 3}
   - {fileID: 21300000, guid: aa6725ae07fb543ac82fbb4707ceba5e, type: 3}
+  - {fileID: 21300000, guid: f5ccb1790c8f94828b2804befacc2e91, type: 3}
+  - {fileID: 21300000, guid: af5ed2b586fd94b1495944a0f67baf7c, type: 3}
   - {fileID: 21300000, guid: c5f88b2cbb1c644a28fd77d4d8d09dfe, type: 3}
+  - {fileID: 21300000, guid: 371d2187e99f94670a73703bbda4918e, type: 3}
   - {fileID: 21300000, guid: fd2ee369608be4dd9b3581d73b392fa0, type: 3}
   - {fileID: 21300000, guid: c07ab6af351644e06965e2dd05448dc7, type: 3}
   - {fileID: 21300000, guid: 75e206e62faab46b1998cc71af11b59c, type: 3}
@@ -88,7 +104,12 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - smash_attack_018
   - smash_attack_015
+  - smash_attack_030
+  - smash_attack_029
+  - smash_attack_028
+  - smash_attack_031
   - smash_attack_027
+  - smash_attack_032
   - smash_attack_020
   - smash_attack_026
   - smash_attack_021
@@ -98,7 +119,10 @@ SpriteAtlas:
   - smash_attack_014
   - smash_attack_023
   - smash_attack_022
+  - smash_attack_034
+  - smash_attack_033
   - smash_attack_017
+  - smash_attack_035
   - smash_attack_016
   - smash_attack_013
   - smash_attack_012
@@ -113,5 +137,5 @@ SpriteAtlas:
   - smash_attack_004
   - smash_attack_006
   - smash_attack_005
-  m_Tag: HeavyAttack_Atlas_1
+  m_Tag: HeavyAttack_Atlas
   m_IsVariant: 0
