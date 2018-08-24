@@ -38,6 +38,8 @@ namespace LoomNetwork.CZB
         public Transform cardTransform;
         public CollectionCardData _cardData;
 
+        public bool blockedClosing = false;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -103,6 +105,9 @@ namespace LoomNetwork.CZB
 
         private void ClosePopup()
         {
+            if (blockedClosing)
+                return;
+
             Hide();
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
         }

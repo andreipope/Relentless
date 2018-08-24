@@ -986,7 +986,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 500, y: 80}
+  m_SizeDelta: {x: 1015.4, y: 80}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1759763180
 MonoBehaviour:
@@ -1020,7 +1020,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Alpha 0.1.0.0 '
+  m_Text: Alpha
 --- !u!222 &1759763181
 CanvasRenderer:
   m_ObjectHideFlags: 0

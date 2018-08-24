@@ -122,6 +122,8 @@ namespace LoomNetwork.CZB
             if (!CardDistribution)
                 return;
 
+            _gameplayManager.IsPrepairingEnded = true;
+
             GameClient.Get<ICameraManager>().FadeOut(immediately: true);
 
             _timerManager.StopTimer(DirectlyEndCardDistribution);
@@ -146,7 +148,7 @@ namespace LoomNetwork.CZB
                 {
                     card.HandBoardCard.enabled = true;
                 }, null, 2f);
-            }
+            } 
 
             if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
             {

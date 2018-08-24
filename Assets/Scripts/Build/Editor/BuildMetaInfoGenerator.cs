@@ -41,6 +41,7 @@ namespace LoomNetwork.CZB
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
             buildMetaInfo.BuildDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ");
+            buildMetaInfo.BuildDayOfYear = DateTime.UtcNow.DayOfYear;
             
 #if !UNITY_CLOUD_BUILD
             string output;
@@ -64,22 +65,23 @@ namespace LoomNetwork.CZB
                 if (exitCode != 0)
                     throw new Exception("exitCode != 0");
 
-                buildMetaInfo.GitHash = output;
+                buildMetaInfo.GitCommitHash = output;
             } catch (Exception e)
             {
-                buildMetaInfo.GitHash = "[error]";
+                buildMetaInfo.GitCommitHash = "[error]";
                 Debug.LogException(e);
             }
 #endif
             
             EditorUtility.SetDirty(buildMetaInfo);
         }
-        
+
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
             buildMetaInfo.CloudBuildBuildNumber = manifest.GetValue<string>("buildNumber");
             buildMetaInfo.CloudBuildGitBranchName = manifest.GetValue<string>("scmBranch");
+            buildMetaInfo.CloudBuildGitCommitHash = manifest.GetValue<string>("scmCommitId");
             buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
             EditorUtility.SetDirty(buildMetaInfo);
         }

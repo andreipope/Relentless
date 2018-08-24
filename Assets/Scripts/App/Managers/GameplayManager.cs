@@ -33,6 +33,7 @@ namespace LoomNetwork.CZB
         public bool GameStarted { get; set; }
         public bool GameEnded { get; set; }
         public bool IsTutorial { get; set; }
+        public bool IsPrepairingEnded { get; set; }
 
         public int TurnDuration { get; set; }
         public int CurrentTurn { get; set; }
@@ -151,6 +152,7 @@ namespace LoomNetwork.CZB
 
                 GameStarted = true;
                 GameEnded = false;
+                IsPrepairingEnded = false;
 
                 OnGameStartedEvent?.Invoke();
 
@@ -162,6 +164,7 @@ namespace LoomNetwork.CZB
         {
             GameStarted = false;
             GameEnded = true;
+             IsPrepairingEnded = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -171,8 +174,6 @@ namespace LoomNetwork.CZB
 
         private void StartInitializeGame()
         {
-            
-
             //initialize players
             GetController<PlayerController>().InitializePlayer();
 
@@ -208,6 +209,11 @@ namespace LoomNetwork.CZB
         {
             foreach (var controller in _controllers)
                 controller.ResetAll();
+        }
+
+        public bool IsGameplayReady()
+        {
+            return !GameEnded && GameStarted && IsPrepairingEnded;
         }
     }
 }

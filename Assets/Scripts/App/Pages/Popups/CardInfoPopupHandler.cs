@@ -30,6 +30,8 @@ namespace LoomNetwork.CZB
         private BoardCard _previewCard;
         private BoardCard _selectedCollectionCard;
 
+        private bool _blockedClosing = false;
+
         public bool IsStateChanging { get; private set; }
         public bool IsInteractable { get; private set; }
 
@@ -74,6 +76,9 @@ namespace LoomNetwork.CZB
 
         private void Close()
         {
+            if (_blockedClosing)
+                return;
+
             SetIsStateChanging(true);
 
             Closing?.Invoke();
@@ -98,6 +103,8 @@ namespace LoomNetwork.CZB
         {
             ClearPreviewCard();
             Opening?.Invoke();
+
+            _blockedClosing = true;
 
             SetIsStateChanging(true);
             _selectedCollectionCard = card;
@@ -131,8 +138,15 @@ namespace LoomNetwork.CZB
             });
 
 
+            _uiManager.GetPopup<CardInfoPopup>().blockedClosing = true;
             _uiManager.GetPopup<CardInfoPopup>().cardTransform = _previewCard.transform;
             _uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _blockedClosing = false;
+                _uiManager.GetPopup<CardInfoPopup>().blockedClosing = false;
+            }, null, 1f);
         }
 
         private void SetIsStateChanging(bool isStartedStateChange) {

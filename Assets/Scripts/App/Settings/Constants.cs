@@ -116,7 +116,7 @@ namespace LoomNetwork.CZB.Common
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
         internal const float POINTER_ON_CLICK_DELAY = 1.5f;
-        internal const float POINTER_MIN_DRAG_DELTA = 5f;
+        internal const float POINTER_MIN_DRAG_DELTA = 3f;
         internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
