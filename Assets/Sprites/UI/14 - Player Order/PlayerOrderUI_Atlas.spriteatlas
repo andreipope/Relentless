@@ -24,8 +24,8 @@ SpriteAtlas:
       padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 0
-      enableTightPacking: 0
+      enableRotation: 1
+      enableTightPacking: 1
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: c89848ab4736ba1428f21e69a85ebb81, type: 3}
