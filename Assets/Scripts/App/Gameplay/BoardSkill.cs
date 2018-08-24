@@ -316,6 +316,9 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
+            if (!_gameplayManager.IsGameplayReady())
+                return;
+
             //if (owner.IsLocalPlayer)
             {
                 _pointerEventSolver.Update();
@@ -335,11 +338,17 @@ namespace LoomNetwork.CZB
 
         public void OnMouseDownEventHandler()
         {
+            if (!_gameplayManager.IsGameplayReady())
+                return;
+
             _pointerEventSolver.PushPointer();
         }
 
         public void OnMouseUpEventHandler()
         {
+            if (!_gameplayManager.IsGameplayReady())
+                return;
+
             _pointerEventSolver.PopPointer(); 
         }
 

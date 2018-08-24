@@ -96,7 +96,6 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
 
-
         }
 
         public void Dispose()
@@ -263,12 +262,11 @@ namespace LoomNetwork.CZB
         {
             StartTurn();
 
-            // get special cards to hand
-            var player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-
-            //    var firstUnusedCard = player.CardsInDeck.Find(x => !player.CardsInHand.Contains(x) && player.CardsPreparingToHand.Find(y => y.WorkingCard != x) != null);
-
-            _cardsController.AddCardToHand(player);//, firstUnusedCard);
+            if (!_gameplayManager.IsTutorial)
+            {
+                var player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+                _cardsController.AddCardToHand(player);
+            }
 
             //    if (!_gameplayManager.IsTutorial)
             //     _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
@@ -630,7 +628,7 @@ namespace LoomNetwork.CZB
             boardCard.SetHighlightingEnabled(highlight);
             boardCard.isPreview = true;
 
-            InternalTools.SetLayerRecursively(boardCard.gameObject, 11);
+            InternalTools.SetLayerRecursively(boardCard.gameObject, 0);
 
             if (target is BoardUnit)
                 boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
@@ -641,9 +639,20 @@ namespace LoomNetwork.CZB
             newPos.y += 2.0f;
             currentBoardCard.transform.position = newPos;
             currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
-            currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
+
+
+            Vector3 sizeOfCard = Vector3.one;
+
+            if (!InternalTools.IsTabletScreen())
+                sizeOfCard = new Vector3(.8f, .8f, .8f);
+            else
+                sizeOfCard = new Vector3(.4f, .4f, .4f);
+
+
+            currentBoardCard.transform.localScale = sizeOfCard;
+
             currentBoardCard.GetComponent<SortingGroup>().sortingOrder = 1000;
-            currentBoardCard.layer = LayerMask.NameToLayer("Ignore Raycast");
+            currentBoardCard.layer = LayerMask.NameToLayer("Default");
             currentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
 

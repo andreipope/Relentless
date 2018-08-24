@@ -122,6 +122,15 @@ namespace LoomNetwork.CZB
             _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
             _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
 
+            if (!InternalTools.IsTabletScreen())
+            {
+                _parentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                _parentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
+
+                _parentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                _parentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
+            }             
+
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
             animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
@@ -540,7 +549,16 @@ namespace LoomNetwork.CZB
                 _buffOnCardInfoObjects.Add(buff);
             }
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
+            float cardSize = 7.2f;
+            float centerOffset = -7f;
+
+            if (!InternalTools.IsTabletScreen())
+            {
+                cardSize = 6.6f;
+                centerOffset = -10f;
+            }
+
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
 
             var parent = buffs.Count > 0 ? _parentOfRightBlockOfCardInfo : _parentOfLeftBlockOfCardInfo;
 
@@ -591,7 +609,7 @@ namespace LoomNetwork.CZB
 
             buffs.Clear();
 
-            InternalTools.GroupVerticalObjects(parent, 0f);
+            InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
 
             #endregion
         }
@@ -674,7 +692,16 @@ namespace LoomNetwork.CZB
             }
             buffs.Clear();
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
+            float cardSize = 7.2f;
+            float centerOffset = -7f;
+
+            if (!InternalTools.IsTabletScreen())
+            {
+                cardSize = 6.6f;
+                centerOffset = -10f;
+            }
+
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
         }
 
         public void ClearBuffsOnUnit()

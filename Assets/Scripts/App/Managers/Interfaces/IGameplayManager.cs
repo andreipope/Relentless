@@ -31,6 +31,7 @@ namespace LoomNetwork.CZB
         bool GameStarted { get; set; }
         bool GameEnded { get; set; }
         bool IsTutorial { get; set; }
+        bool IsPrepairingEnded { get; set; }
 
         int TutorialStep { get; set; }
 
@@ -48,5 +49,7 @@ namespace LoomNetwork.CZB
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
 
         void ResetWholeGameplayScene();
+
+        bool IsGameplayReady();
     }    
 }

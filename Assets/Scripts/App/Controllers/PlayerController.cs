@@ -5,6 +5,7 @@
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -167,8 +168,6 @@ namespace LoomNetwork.CZB
             //_heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }
 
-
-        // OPTIMIZE THIS CODE(shit) --- comment by AS
         private void HandleInput()
         {
             var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -252,7 +251,7 @@ namespace LoomNetwork.CZB
                     }
                 }
 
-                if (IsActive)
+             //   if (IsActive)
                 {
                     var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                     var hitCards = new List<GameObject>();
@@ -410,7 +409,14 @@ namespace LoomNetwork.CZB
 
         public void HandCardPreview(object[] param)
         {
-            _battlegroundController.CreateCardPreview(param[0], new Vector3(-6f, -2.5f, 0.1f), false);
+            Vector3 cardPosition = Vector3.zero;
+
+            if (!InternalTools.IsTabletScreen())
+                cardPosition = new Vector3(-9f, -3f, 0f);
+            else
+                cardPosition = new Vector3(-6f, -2.5f, 0f);
+
+            _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
         }
 
         private void StopHandTimer()

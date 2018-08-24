@@ -139,6 +139,18 @@ namespace LoomNetwork.CZB.Helpers
             return list;
         }
 
-     
+        public static float DeviceDiagonalSizeInInches()
+        {
+            float screenWidth = Screen.width / Screen.dpi;
+            float screenHeight = Screen.height / Screen.dpi;
+            float diagonalInches = Mathf.Sqrt(Mathf.Pow(screenWidth, 2) + Mathf.Pow(screenHeight, 2));
+
+            return diagonalInches;
+        }
+
+        public static bool IsTabletScreen()
+        {
+            return (DeviceDiagonalSizeInInches() > 6.5f);
+        }
     }
 }
