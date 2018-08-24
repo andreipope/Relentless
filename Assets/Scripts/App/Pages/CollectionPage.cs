@@ -380,8 +380,7 @@ namespace LoomNetwork.CZB
 				boardCard.SetHighlightingEnabled(false);
 				boardCard.transform.position = cardPositions[i % cardPositions.Count].position;
                 boardCard.transform.localScale = Vector3.one * 0.32f;
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI;
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 11;
+                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI1;
 
                 _createdBoardCards.Add(boardCard);
             }

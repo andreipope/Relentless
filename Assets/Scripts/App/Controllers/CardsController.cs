@@ -194,8 +194,7 @@ namespace LoomNetwork.CZB
         {
             var boardCard = CreateBoardCard(card);
             var sortingGroup = boardCard.gameObject.GetComponent<SortingGroup>();
-            sortingGroup.sortingLayerName = "GameUI";
-            sortingGroup.sortingOrder = 11;
+            sortingGroup.sortingLayerName = Constants.LAYER_GAME_UI1;
             player.CardsPreparingToHand.Add(boardCard);
             boardCard.HandBoardCard.enabled = false;
             boardCard.MoveCardFromDeckToCenter();

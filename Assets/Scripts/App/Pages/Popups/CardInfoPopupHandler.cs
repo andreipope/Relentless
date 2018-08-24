@@ -110,8 +110,7 @@ namespace LoomNetwork.CZB
             _previewCard.gameObject.transform.position = card.gameObject.transform.position;
             _previewCard.gameObject.transform.localScale = card.gameObject.transform.lossyScale;
 
-            _previewCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI;
-            _previewCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 21;
+            _previewCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI2;
 
             PreviewCardInstantiated?.Invoke(_previewCard);
             

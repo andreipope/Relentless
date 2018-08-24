@@ -206,7 +206,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 540465013
-  m_SortingOrder: 10
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &687476403
 GameObject:
@@ -300,8 +300,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 540465013
-  m_SortingOrder: 20
+  m_SortingLayerID: -2131230863
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1001 &915356691
 Prefab:
@@ -438,9 +438,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.049999982
+    y: 0
     width: 1
-    height: 0.90000004
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -842,8 +842,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 540465013
-  m_SortingOrder: 30
+  m_SortingLayerID: -1311579977
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1543458683
 GameObject:
@@ -1104,7 +1104,7 @@ Canvas:
   m_GameObject: {fileID: 2037977785}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
