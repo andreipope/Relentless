@@ -5,7 +5,7 @@ SpriteAtlas:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: FeralAttack_Atlas_1
+  m_Name: FeralAttack_Atlas
   m_EditorData:
     textureSettings:
       serializedVersion: 2
@@ -24,8 +24,8 @@ SpriteAtlas:
       padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 0
-      enableTightPacking: 0
+      enableRotation: 1
+      enableTightPacking: 1
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: fc022a97ea6984c79b13da79b0e7d747, type: 3}
@@ -54,9 +54,32 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 80c92c3ad70794b5bbd99de76604c08e, type: 3}
     - {fileID: 2800000, guid: 08f7261d573aa438a8c65aea8e0928b6, type: 3}
     - {fileID: 2800000, guid: 048a8d51c634a4fb5b0d9e69f76b005f, type: 3}
+    - {fileID: 2800000, guid: 3868135beb72a4a6e83dfeae62e4022a, type: 3}
+    - {fileID: 2800000, guid: 6e0e5863218214a4c89688b55a47d1a9, type: 3}
+    - {fileID: 2800000, guid: 423017b93050943e9b0bc9377acbfcdc, type: 3}
+    - {fileID: 2800000, guid: f5d4bdfe14c5947908528ecbffe8caca, type: 3}
+    - {fileID: 2800000, guid: cdeb2dd87b96a4ecf9fc4d6487cbe39a, type: 3}
+    - {fileID: 2800000, guid: 4bba41b84e9c8440ebe6cb9d0fd3bb56, type: 3}
+    - {fileID: 2800000, guid: b08a70d385c424bdeb3db373f4ba4cbc, type: 3}
+    - {fileID: 2800000, guid: e97844121704645768dab2114f015262, type: 3}
+    - {fileID: 2800000, guid: f521e96bd8af148bb86ede8ce0b8b93c, type: 3}
+    - {fileID: 2800000, guid: 129b56c09bed445fc8f6c2a10e13b81c, type: 3}
+    - {fileID: 2800000, guid: 225a62575a33143618fbfe4fd23c3d1e, type: 3}
+    - {fileID: 2800000, guid: 484466aa8364a4ab8a751c053afbbc45, type: 3}
+    - {fileID: 2800000, guid: 72136713009dc447e9adb71d9e89a473, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: cdeb2dd87b96a4ecf9fc4d6487cbe39a, type: 3}
+  - {fileID: 21300000, guid: e97844121704645768dab2114f015262, type: 3}
+  - {fileID: 21300000, guid: 6e0e5863218214a4c89688b55a47d1a9, type: 3}
+  - {fileID: 21300000, guid: 4bba41b84e9c8440ebe6cb9d0fd3bb56, type: 3}
+  - {fileID: 21300000, guid: 3868135beb72a4a6e83dfeae62e4022a, type: 3}
+  - {fileID: 21300000, guid: b08a70d385c424bdeb3db373f4ba4cbc, type: 3}
+  - {fileID: 21300000, guid: 129b56c09bed445fc8f6c2a10e13b81c, type: 3}
+  - {fileID: 21300000, guid: f521e96bd8af148bb86ede8ce0b8b93c, type: 3}
+  - {fileID: 21300000, guid: 423017b93050943e9b0bc9377acbfcdc, type: 3}
+  - {fileID: 21300000, guid: f5d4bdfe14c5947908528ecbffe8caca, type: 3}
   - {fileID: 21300000, guid: 22b03aff2a88f40ab877c079cbbd5a66, type: 3}
   - {fileID: 21300000, guid: 048a8d51c634a4fb5b0d9e69f76b005f, type: 3}
   - {fileID: 21300000, guid: 80c92c3ad70794b5bbd99de76604c08e, type: 3}
@@ -74,6 +97,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1b2a24e3581da4513a2890ff9e8bec35, type: 3}
   - {fileID: 21300000, guid: 0c47c33951bd34a4b88aea3d0f88a8ad, type: 3}
   - {fileID: 21300000, guid: 98ac493ead2444560974da1272f0a57d, type: 3}
+  - {fileID: 21300000, guid: 72136713009dc447e9adb71d9e89a473, type: 3}
+  - {fileID: 21300000, guid: 225a62575a33143618fbfe4fd23c3d1e, type: 3}
+  - {fileID: 21300000, guid: 484466aa8364a4ab8a751c053afbbc45, type: 3}
   - {fileID: 21300000, guid: f66e38e7038ee44ae92f01927d56a8dd, type: 3}
   - {fileID: 21300000, guid: 1e9ad26c946c04e99b52fb7540b36e41, type: 3}
   - {fileID: 21300000, guid: 76a402d72d2144ba5b98ef2a1f56e5c6, type: 3}
@@ -84,6 +110,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c34670159be7a4d079754282fb75aaa1, type: 3}
   - {fileID: 21300000, guid: 01fcebb0ba8944362bff74610fc0be2b, type: 3}
   m_PackedSpriteNamesToIndex:
+  - Bite_Attack_031
+  - Bite_Attack_034
+  - Bite_Attack_028
+  - Bite_Attack_032
+  - Bite_Attack_027
+  - Bite_Attack_033
+  - Bite_Attack_036
+  - Bite_Attack_035
+  - Bite_Attack_029
+  - Bite_Attack_030
   - Bite_Attack_019
   - Bite_Attack_026
   - Bite_Attack_024
@@ -101,6 +137,9 @@ SpriteAtlas:
   - Bite_Attack_005
   - Bite_Attack_004
   - Bite_Attack_014
+  - Bite_Attack_039
+  - Bite_Attack_037
+  - Bite_Attack_038
   - Bite_Attack_003
   - Bite_Attack_013
   - Bite_Attack_008
@@ -110,5 +149,5 @@ SpriteAtlas:
   - Bite_Attack_010
   - Bite_Attack_011
   - Bite_Attack_012
-  m_Tag: FeralAttack_Atlas_1
+  m_Tag: FeralAttack_Atlas
   m_IsVariant: 0
