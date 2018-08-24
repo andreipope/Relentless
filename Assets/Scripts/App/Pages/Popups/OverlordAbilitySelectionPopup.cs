@@ -28,8 +28,9 @@ namespace LoomNetwork.CZB
         private GameObject _selfPage;
 
 		private Button _continueButton;
-		private Button _buyButton;
-		private GameObject _abilitiesGroup;
+        private Button _buyButton;
+        private Button _cancelButton;
+        private GameObject _abilitiesGroup;
 		private TextMeshProUGUI _title;
 		private TextMeshProUGUI _skillName;
 		private TextMeshProUGUI _skillDescription;
@@ -57,18 +58,10 @@ namespace LoomNetwork.CZB
 		    }
 
             _abilities.Clear();
-		}
-
-        public void CloseButtonHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            Hide();
-        }
+		}      
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-
             if (_selfPage == null)
                 return;
 
@@ -87,7 +80,10 @@ namespace LoomNetwork.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
-            _continueButton.onClick.AddListener(CloseButtonHandler);
+            _cancelButton = _selfPage.transform.Find("Button_Cancel").GetComponent<Button>();
+
+            _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
+            _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
             _title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
             _skillName = _selfPage.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
@@ -141,6 +137,23 @@ namespace LoomNetwork.CZB
         private void AbilityInstanceOnSelectionChanged(AbilityInstance ability) {
             _skillName.text = ability.Skill.title;
             _skillDescription.text = ability.Skill.description;
+        }
+
+
+
+        public void ContinueButtonOnClickHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            OnHidePopupEvent?.Invoke();
+
+            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
+        }
+
+        public void CancelButtonOnClickHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
         private class AbilityInstance : IDisposable

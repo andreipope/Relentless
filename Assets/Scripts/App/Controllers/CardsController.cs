@@ -122,6 +122,8 @@ namespace LoomNetwork.CZB
             if (!CardDistribution)
                 return;
 
+            _gameplayManager.IsPrepairingEnded = true;
+
             GameClient.Get<ICameraManager>().FadeOut(immediately: true);
 
             _timerManager.StopTimer(DirectlyEndCardDistribution);
@@ -146,7 +148,7 @@ namespace LoomNetwork.CZB
                 {
                     card.HandBoardCard.enabled = true;
                 }, null, 2f);
-            }
+            } 
 
             if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
             {
@@ -194,8 +196,7 @@ namespace LoomNetwork.CZB
         {
             var boardCard = CreateBoardCard(card);
             var sortingGroup = boardCard.gameObject.GetComponent<SortingGroup>();
-            sortingGroup.sortingLayerName = "GameUI";
-            sortingGroup.sortingOrder = 11;
+            sortingGroup.sortingLayerName = Constants.LAYER_GAME_UI1;
             player.CardsPreparingToHand.Add(boardCard);
             boardCard.HandBoardCard.enabled = false;
             boardCard.MoveCardFromDeckToCenter();

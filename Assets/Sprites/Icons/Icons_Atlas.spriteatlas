@@ -24,8 +24,8 @@ SpriteAtlas:
       padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 0
-      enableTightPacking: 0
+      enableRotation: 1
+      enableTightPacking: 1
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: 53d5d7ece1b077f42a74eb7569b077ca, type: 3}
@@ -71,6 +71,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 80a88c26184cb5c46a4dbd8ba13cb6ab, type: 3}
   - {fileID: 21300000, guid: 51c187300dcd6f341bf6425001746946, type: 3}
   - {fileID: 21300000, guid: 5fc9fb8004db7b849b8111dcd7c814db, type: 3}
+  - {fileID: 21300000, guid: 0fd0405482874ff4792efad0ab0cf498, type: 3}
   - {fileID: 21300000, guid: df08aa84b7ec21d4caaa051f19bc6a25, type: 3}
   - {fileID: 21300000, guid: 5eee333583b9a58448af315e63d551da, type: 3}
   - {fileID: 21300000, guid: 098184850de67ce49a8ee642672ad7e8, type: 3}
@@ -81,9 +82,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b3410b0bff9b96c4986e196f2f4d7eb3, type: 3}
   - {fileID: 21300000, guid: 4bf09c1c073893d49909aec68d7b29fa, type: 3}
   - {fileID: 21300000, guid: 53d5d7ece1b077f42a74eb7569b077ca, type: 3}
-  - {fileID: 21300000, guid: ee18845f48e56a04f97df9da855ddbaa, type: 3}
-  - {fileID: 21300000, guid: 0fd0405482874ff4792efad0ab0cf498, type: 3}
   - {fileID: 21300000, guid: fa0f378d1165ab646a33f0cfc13bfdd9, type: 3}
+  - {fileID: 21300000, guid: ee18845f48e56a04f97df9da855ddbaa, type: 3}
   - {fileID: 21300000, guid: 3a85d160fd7bbdb47b42601c236d5c43, type: 3}
   - {fileID: 21300000, guid: 97cd97e12d12f95479c8acb849fa5ff6, type: 3}
   - {fileID: 21300000, guid: d9f259e11371c7d45b5e2c73bb076607, type: 3}
@@ -109,6 +109,7 @@ SpriteAtlas:
   - 506709160
   - battleground_past_action_bar_icon_damage
   - battleground_past_action_bar_icon_feral
+  - battleground_past_action_bar_icon_effect
   - battleground_past_action_bar_icon_attack_buff
   - battleground_past_action_bar_icon_heavy
   - battleground_past_action_bar_icon_death_mark
@@ -119,9 +120,8 @@ SpriteAtlas:
   - battleground_past_action_bar_icon_guard
   - battleground_past_action_bar_icon_life_gain
   - battleground_mechanic_icon_blank_large
-  - battleground_past_action_bar_icon_overflow
-  - battleground_past_action_bar_icon_effect
   - battleground_past_action_bar_icon_attack
+  - battleground_past_action_bar_icon_overflow
   - battleground_mechanic_icon_reanimate
   - battleground_mechanic_icon_shatter
   - battleground_mechanic_icon_blank

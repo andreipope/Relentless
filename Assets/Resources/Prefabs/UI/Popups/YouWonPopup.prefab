@@ -836,9 +836,9 @@ SortingGroup:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1032057541681026}
   m_Enabled: 1
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 30
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 0
 --- !u!212 &212034287761448284
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -71,7 +71,9 @@ namespace LoomNetwork.CZB.Common
         internal const string LAYER_BOARD_CARDS = "BoardCards";
         internal const string LAYER_DEFAULT = "Default";
         internal const string LAYER_FOREGROUND = "Foreground";
-        internal const string LAYER_GAME_UI = "GameUI";
+		internal const string LAYER_GAME_UI1 = "GameUI1";
+		internal const string LAYER_GAME_UI2 = "GameUI2";
+		internal const string LAYER_GAME_UI3 = "GameUI3";
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";
@@ -114,7 +116,7 @@ namespace LoomNetwork.CZB.Common
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
         internal const float POINTER_ON_CLICK_DELAY = 1.5f;
-        internal const float POINTER_MIN_DRAG_DELTA = 5f;
+        internal const float POINTER_MIN_DRAG_DELTA = 3f;
         internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
