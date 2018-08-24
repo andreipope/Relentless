@@ -10,6 +10,7 @@ namespace LoomNetwork.CZB.BackendCommunication
     {
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
+        private IAnalyticsManager _analyticsManager;
         private PlayerEventListener _playerEventListener;
         private PlayerEventListener _opponentEventListener;
 
@@ -17,6 +18,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
             
             _gameplayManager.OnGameInitializedEvent += GameplayManagerOnGameInitializedEvent;
             _gameplayManager.OnGameEndedEvent += GameplayManagerOnGameEndedEvent;
@@ -27,6 +29,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             _playerEventListener?.OnGameEndedEventHandler(obj);
             _playerEventListener?.Dispose();
             _opponentEventListener?.Dispose();
+            
+            _analyticsManager.NotifyFinishedMatch(obj);
         }
 
         private void GameplayManagerOnGameInitializedEvent()
@@ -38,6 +42,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
             
             _playerEventListener.OnGameInitializedEventHandler();
+            
+            _analyticsManager.NotifyStartedMatch();
         }
 
         public void Update()
