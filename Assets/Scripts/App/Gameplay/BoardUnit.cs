@@ -44,6 +44,7 @@ namespace LoomNetwork.CZB
         private RanksController _ranksController;
         private AbilitiesController _abilitiesController;
         private CardsController _cardsController;
+        private InputController _inputController;
 
         private GameObject _fightTargetingArrowPrefab;
 
@@ -208,6 +209,7 @@ namespace LoomNetwork.CZB
             _ranksController = _gameplayManager.GetController<RanksController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
+            _inputController = _gameplayManager.GetController<InputController>();
 
             _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             _selfObject.transform.SetParent(parent, false);
@@ -237,10 +239,15 @@ namespace LoomNetwork.CZB
 
             //arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
 
-            _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
-            _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
-            _onBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
-            _onBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
+         //   _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
+         //   _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
+            _onBehaviourHandler.OnTriggerEnterEvent += OnTriggerEnter;
+            _onBehaviourHandler.OnTriggerExitEvent += OnTriggerExit;
+
+
+            _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
+            _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
+
             /*
             animatorControllers = new List<UnitAnimatorInfo>();
             for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
@@ -840,11 +847,11 @@ namespace LoomNetwork.CZB
         {
             if (abilitiesTargetingArrow != null)
             {
-                MonoBehaviour.Destroy(abilitiesTargetingArrow.gameObject);
+                abilitiesTargetingArrow.Dispose();
             }
             if (fightTargetingArrow != null)
             {
-                MonoBehaviour.Destroy(fightTargetingArrow.gameObject);
+                fightTargetingArrow.Dispose();
             }
         }
 
@@ -884,7 +891,7 @@ namespace LoomNetwork.CZB
                 _sleepingParticles.Stop();
         }
 
-        private void OnTriggerEnter2D(Collider2D collider)
+        private void OnTriggerEnter(Collider collider)
         {
             if (collider.transform.parent != null)
             {
@@ -896,7 +903,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnTriggerExit2D(Collider2D collider)
+        private void OnTriggerExit(Collider collider)
         {
             if (collider.transform.parent != null)
             {
@@ -907,6 +914,19 @@ namespace LoomNetwork.CZB
                 }
             }
         }
+
+        private void UnitSelectedEventHandler(BoardUnit unit)
+        {
+            if (unit == this)
+                OnMouseDown(null);
+        }
+
+        private void UnitDeselectedEventHandler(BoardUnit unit)
+        {
+            if (unit == this)
+                OnMouseUp(null);
+        }
+
 
         private void OnMouseDown(GameObject obj)
         {

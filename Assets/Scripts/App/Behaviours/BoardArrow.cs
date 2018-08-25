@@ -14,6 +14,7 @@ public class BoardArrow : MonoBehaviour
 {
     protected IGameplayManager _gameplayManager;
     protected BoardArrowController _boardArrowController;
+    protected InputController _inputController;
 
     public Action onTargetSelected;
 
@@ -52,6 +53,7 @@ public class BoardArrow : MonoBehaviour
     {
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+        _inputController = _gameplayManager.GetController<InputController>();
 
         _selfObject = gameObject;
 
@@ -69,6 +71,10 @@ public class BoardArrow : MonoBehaviour
 
         _boardArrowController.CurrentBoardArrow = this;
         _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
+
+        _inputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
+        _inputController.UnitSelectingEvent += UnitSelectingEventHandler;
+        _inputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
     }
 
     protected virtual void Update()
@@ -78,6 +84,9 @@ public class BoardArrow : MonoBehaviour
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
             UpdateLength(mousePosition, _isInverse);
+
+
+            //  CastRay(Input.mousePosition, 9);
         }
     }
 
@@ -175,6 +184,74 @@ public class BoardArrow : MonoBehaviour
 
     public void Dispose()
     {
+        _inputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
+        _inputController.UnitSelectingEvent -= UnitSelectingEventHandler;
+        _inputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
+
+        ResetSelecting();
+
+        MonoBehaviour.Destroy(_selfObject);
+    }
+
+
+    private void ResetSelecting()
+    {
+        if (selectedCard != null)
+        {
+            try
+            {
+                selectedCard.SetSelectedUnit(false);
+            }
+            catch { }
+            selectedCard = null;
+        }
+
+        if (selectedPlayer != null)
+        {
+            try
+            {
+                selectedPlayer.SetGlowStatus(false);
+            }
+            catch { }
+            selectedPlayer = null;
+        }
+    }
+
+    private void PlayerSelectingEventHandler(Player player)
+    {
+        OnPlayerSelected(player);
+    }
+
+    private void UnitSelectingEventHandler(BoardUnit unit)
+    {
+        OnCardSelected(unit);
+    }
+
+    private void NoObjectsSelectedEventHandler()
+    {
+        ResetSelecting();
+    }
+
+    private void CastRay(Vector3 origin, int layerMask)
+    {
+        Vector3 point = Camera.main.ScreenToWorldPoint(origin);
+
+        Debug.DrawRay(point, Vector3.forward, Color.red);
+
+        var hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << layerMask);
+
+        if (hits.Length > 0)
+        {
+            foreach (var hit in hits)
+                CheckColliders(hit.collider);
+        }
+
+    }
+
+    private void CheckColliders(Collider2D collider)
+    {
+        // check on units
+
         if (selectedCard != null)
         {
             selectedCard.SetSelectedUnit(false);
@@ -187,6 +264,31 @@ public class BoardArrow : MonoBehaviour
             selectedPlayer = null;
         }
 
-        MonoBehaviour.Destroy(_selfObject);
+        foreach (var unit in _gameplayManager.CurrentPlayer.BoardCards)
+        {
+            if (unit.gameObject == collider.gameObject)
+            {
+                OnCardSelected(unit);
+                break;
+            }
+        }
+
+
+        foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
+        {
+            if (unit.gameObject == collider.gameObject)
+            {
+                OnCardSelected(unit);
+                break;
+            }
+        }
+
+        // check on players
+
+        if (_gameplayManager.CurrentPlayer.AvatarObject == collider.gameObject)
+            OnPlayerSelected(_gameplayManager.CurrentPlayer);
+
+        if (_gameplayManager.OpponentPlayer.AvatarObject == collider.gameObject)
+            OnPlayerSelected(_gameplayManager.OpponentPlayer);
     }
 }

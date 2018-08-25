@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
             startedDrag = false;
 
             creature.DoCombat(selectedCard != null ? (object)selectedCard : (object)selectedPlayer);
-            Destroy(gameObject);
+            Dispose();
         }
 
         public override void OnCardSelected(BoardUnit unit)

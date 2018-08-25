@@ -332,7 +332,7 @@ namespace LoomNetwork.CZB
         {
             if (_targettingArrow != null)
             {
-                MonoBehaviour.Destroy(_targettingArrow.gameObject);
+                _targettingArrow.Dispose();
                 _targettingArrow = null;
             }
             //_targettingArrow.Deactivate();
