@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
         public string GitCommitHash = "";
         public string BuildDateTime = "";
         public int BuildDayOfYear = 0;
-        public string CloudBuildBuildNumber;
+        public int CloudBuildBuildNumber;
         public string CloudBuildTargetName = "";
         public string CloudBuildGitBranchName = "";
         public string CloudBuildGitCommitHash = "";
