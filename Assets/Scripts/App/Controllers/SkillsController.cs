@@ -518,12 +518,9 @@ namespace LoomNetwork.CZB
 
                 BoardUnit unit = target as BoardUnit;
 
-                if (unit.Card.libraryCard.cardSetType == owner.SelfHero.heroElement)
-                {
-                    Debug.Log("Boom");
+
                     unit.BuffedHP += skill.value;
                     unit.CurrentHP += skill.value;
-                }
 
                 //TODO: remove this empty gameobject logic
                 Transform transform = new GameObject().transform;
