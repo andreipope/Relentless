@@ -532,26 +532,19 @@ namespace LoomNetwork.CZB
             _shieldSprite.SetActive(true);
         }
 
-        public void ArrivalAnimationEventHandler(/*string param*/)
+        public void ArrivalAnimationEventHandler()
         {
-            // if (param.Equals("ArrivalAnimationDone"))
-            // {
             unitContentObject.SetActive(true);
 
             if (!_ignoreArrivalEndEvents)
             {
                 if (hasFeral)
                 {
-                    //  frameSprite.sprite = frameSprites[1];
                     StopSleepingParticles();
                     if (ownerPlayer != null)
                         SetHighlightingEnabled(true);
                 }
             }
-
-            //InternalTools.SetLayerRecursively(_selfObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
-            if (!ownerPlayer.IsLocalPlayer)
-                _shieldSprite.transform.localPosition = new Vector3(_shieldSprite.transform.localPosition.x, _shieldSprite.transform.localPosition.y, 4f);
 
             if (!_ignoreArrivalEndEvents)
             {
