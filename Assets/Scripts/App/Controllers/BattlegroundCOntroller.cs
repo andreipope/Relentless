@@ -651,7 +651,7 @@ namespace LoomNetwork.CZB
 
             currentBoardCard.transform.localScale = sizeOfCard;
 
-            currentBoardCard.GetComponent<SortingGroup>().sortingOrder = 1000;
+            currentBoardCard.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI3;
             currentBoardCard.layer = LayerMask.NameToLayer("Default");
             currentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
