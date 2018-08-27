@@ -120,7 +120,7 @@ namespace LoomNetwork.CZB
 
                 damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
-                if (attackedUnit.HasBuffShield)
+                if (damageAttacking > 0 && attackedUnit.HasBuffShield)
                 {
                     damageAttacking = 0;
                     attackedUnit.UseShieldFromBuff();
@@ -138,7 +138,7 @@ namespace LoomNetwork.CZB
                 {
                     damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
-                    if (attackingUnit.HasBuffShield)
+                    if (damageAttacked > 0 && attackingUnit.HasBuffShield)
                     {
                         damageAttacked = 0;
                         attackingUnit.UseShieldFromBuff();
@@ -175,7 +175,7 @@ new object[]
 
             if (attackedUnit != null)
             {
-                if (attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnit.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();
@@ -270,7 +270,7 @@ new object[]
 
             if (attackedUnit != null)
             {
-                if (attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnit.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();

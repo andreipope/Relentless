@@ -25,15 +25,19 @@ namespace LoomNetwork.CZB
             _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
         }
 
-        public void OnScroll(PointerEventData eventData) {
-            scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
+        public void OnScroll(PointerEventData eventData)
+        {
+            if (scene != null)
+                scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
         }
 
-        private void SingleClickAction() {
+        private void SingleClickAction()
+        {
             scene.SelectCard(this, card);
         }
 
-        private void DoubleClickAction() {
+        private void DoubleClickAction()
+        {
             if (!isHordeItem)
                 scene.AddCardToDeck(this, card);
             else
