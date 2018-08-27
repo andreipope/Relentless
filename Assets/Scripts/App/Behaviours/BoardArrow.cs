@@ -198,21 +198,17 @@ public class BoardArrow : MonoBehaviour
     {
         if (selectedCard != null)
         {
-            try
-            {
+            if(selectedCard.gameObject != null)
                 selectedCard.SetSelectedUnit(false);
-            }
-            catch { }
+
             selectedCard = null;
         }
 
         if (selectedPlayer != null)
         {
-            try
-            {
+            if (selectedPlayer.AvatarObject != null)
                 selectedPlayer.SetGlowStatus(false);
-            }
-            catch { }
+
             selectedPlayer = null;
         }
     }
