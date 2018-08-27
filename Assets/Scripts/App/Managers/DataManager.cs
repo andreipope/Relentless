@@ -172,7 +172,10 @@ namespace LoomNetwork.CZB
 			foreach (var file in files)
 				if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VERSION_FILE_RESOLUTION))
 					file.Delete();
-			File.Create(dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION);
+		    using (File.Create(dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION))
+		    {
+		        
+		    }
 
 			PlayerPrefs.DeleteAll ();
 		}
