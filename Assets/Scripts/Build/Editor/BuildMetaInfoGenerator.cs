@@ -78,14 +78,26 @@ namespace LoomNetwork.CZB
 
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
-            BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
-            buildMetaInfo.CloudBuildBuildNumber = Convert.ToInt32(manifest.GetValue<string>("buildNumber"));
-            buildMetaInfo.CloudBuildGitBranchName = manifest.GetValue<string>("scmBranch");
-            buildMetaInfo.CloudBuildGitCommitHash = manifest.GetValue<string>("scmCommitId");
-            buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
 #if UNITY_CLOUD_BUILD
             Debug.Log("Cloud Build manifest:\r\n" + manifest.ToJson());
-#endif            
+#endif        
+            
+            BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
+            buildMetaInfo.GitBranchName = manifest.GetValue<string>("scmBranch");
+            buildMetaInfo.GitCommitHash = manifest.GetValue<string>("scmCommitId");
+            buildMetaInfo.CloudBuildBuildNumber = Convert.ToInt32(manifest.GetValue<string>("buildNumber"));
+            buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
+
+            const int gitShortHashLength = 8;
+            buildMetaInfo.GitCommitHash = 
+                buildMetaInfo.GitCommitHash.Substring(
+                    0, 
+                    buildMetaInfo.GitCommitHash.Length > gitShortHashLength ? 
+                        gitShortHashLength : 
+                        buildMetaInfo.GitCommitHash.Length
+                );
+            
+    
             EditorUtility.SetDirty(buildMetaInfo);
         }
         
