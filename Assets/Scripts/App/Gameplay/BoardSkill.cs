@@ -195,7 +195,7 @@ namespace LoomNetwork.CZB
         {
             if (fightTargetingArrow != null)
             {
-                MonoBehaviour.Destroy(fightTargetingArrow.gameObject);
+                fightTargetingArrow.Dispose();
             }
         }
 

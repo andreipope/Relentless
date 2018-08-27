@@ -66,6 +66,9 @@ namespace LoomNetwork.CZB.Common
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
 
+        internal const string PLAYER_BOARD = "PlayerBoard";
+        internal const string OPPONENT_BOARD = "OpponentBoard";
+
 
         internal const string LAYER_HAND_CARDS = "HandCards";
         internal const string LAYER_BOARD_CARDS = "BoardCards";
