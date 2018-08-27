@@ -241,6 +241,7 @@ namespace LoomNetwork.CZB
                     fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
                     fightTargetingArrow.targetsType = skill.skillTargetTypes;
+                    fightTargetingArrow.elementType = skill.elementTargetTypes;
 
                     //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
                         fightTargetingArrow.ignoreHeavy = true;

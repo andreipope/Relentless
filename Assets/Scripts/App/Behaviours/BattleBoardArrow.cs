@@ -44,6 +44,10 @@ namespace LoomNetwork.CZB
             if (unit.CurrentHP <= 0)
                 return;
 
+            if (elementType.Count > 0 && !elementType.Contains(unit.Card.libraryCard.cardSetType))
+                return;
+
+
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) ||
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.OPPONENT_CARD) && unit.transform.CompareTag("OpponentOwned")))

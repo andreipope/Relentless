@@ -38,6 +38,7 @@ public class BoardArrow : MonoBehaviour
     protected BoardUnit boardCreature;
 
     public List<Enumerators.SkillTargetType> targetsType = new List<Enumerators.SkillTargetType>();
+    public List<Enumerators.SetType> elementType = new List<Enumerators.SetType>();
 
     public BoardUnit selectedCard { get; set; }
     public Player selectedPlayer { get; set; }

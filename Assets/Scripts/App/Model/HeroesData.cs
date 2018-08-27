@@ -89,6 +89,7 @@ namespace LoomNetwork.CZB.Data
 		public string iconPath;
 		public string description;
         public string skillTargets;
+        public string elementTargets;
         public int cooldown;
         public int initialCooldown;
         public int value;
@@ -102,6 +103,7 @@ namespace LoomNetwork.CZB.Data
         public Enumerators.OverlordSkill overlordSkill;
         [JsonIgnore]
         public List<Enumerators.SkillTargetType> skillTargetTypes;
+        public List<Enumerators.SetType> elementTargetTypes;
 
         public HeroSkill()
         {
@@ -116,6 +118,10 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(skillTargets))
                 skillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(skillTargets);
             else skillTargetTypes = new List<Enumerators.SkillTargetType>();
+
+            if (!string.IsNullOrEmpty(elementTargets))
+                elementTargetTypes = Utilites.CastList<Enumerators.SetType>(elementTargets);
+            else elementTargetTypes = new List<Enumerators.SetType>();
         }
     }
 }
