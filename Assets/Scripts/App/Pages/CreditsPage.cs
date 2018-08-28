@@ -77,6 +77,8 @@ namespace LoomNetwork.CZB
 
             _isActive = true;
             _creditsListScroll.verticalNormalizedPosition = 1;
+            
+            FillCredits();
         }
 
         public void Hide()

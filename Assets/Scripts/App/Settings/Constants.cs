@@ -114,6 +114,7 @@ namespace LoomNetwork.CZB.Common
         internal static float OVERLORD_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float SPELL_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float BATTLEGROUND_EFFECTS_SOUND_VOLUME = 0.25f;
+		internal static float ZOMBIE_DEATH_VO_DELAY_BEFORE_FADEOUT = 3f;
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;

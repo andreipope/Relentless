@@ -45,9 +45,10 @@ namespace LoomNetwork.CZB
 		private GameObject _cardSetsIcons;
 
         private int _numSets,
-                    _currentSet,
                     _currentElementPage,
                     _numElementPages;
+
+        private Enumerators.SetType _currentSet;
 
         private Toggle _airToggle,
                         _earthToggle,
@@ -187,7 +188,7 @@ namespace LoomNetwork.CZB
         }
 
 		private void iconSetButtonClick (Button toggleObj) {
-			_currentSet = toggleObj.transform.GetSiblingIndex ();
+			_currentSet = (Enumerators.SetType) toggleObj.transform.GetSiblingIndex ();
             _currentElementPage = 0;
 			LoadCards (_currentElementPage, _currentSet);
 		}
@@ -222,8 +223,8 @@ namespace LoomNetwork.CZB
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _currentSet = (int)type;
-            LoadCards(0, (int)type);
+            _currentSet = type;
+            LoadCards(0, type);
         }
 
         private void ChangeStatePopup(bool isStart)
@@ -279,7 +280,7 @@ namespace LoomNetwork.CZB
 
                 if (_currentSet < 0)
                 {
-                    _currentSet = _numSets - 1;
+                    _currentSet = (Enumerators.SetType) (_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -296,7 +297,7 @@ namespace LoomNetwork.CZB
             {
                 _currentSet += direction;
 
-                if (_currentSet >= _numSets)
+                if ((int) _currentSet >= _numSets)
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
@@ -314,7 +315,7 @@ namespace LoomNetwork.CZB
 		private void highlightCorrectIcon () {
 			for (int i = 0; i < _cardSetsIcons.transform.childCount; i++) {
 				GameObject c = _cardSetsIcons.transform.GetChild (i).GetChild (0).gameObject;
-				if (i == _currentSet) {
+				if (i == (int) _currentSet) {
 					c.SetActive (true);
 				} else {
 					c.SetActive (false);
@@ -325,7 +326,7 @@ namespace LoomNetwork.CZB
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[_currentSet].cards.Count / (float)cardPositions.Count);
+            _numElementPages = Mathf.CeilToInt((float) SetTypeUtility.GetCardSet(_dataManager, _currentSet).cards.Count / (float)cardPositions.Count);
         }
 
         public void OnNextPageButtonPressed()
@@ -333,13 +334,14 @@ namespace LoomNetwork.CZB
 
 		}
 
-		public void LoadCards(int page, int setIndex)
+		public void LoadCards(int page, Enumerators.SetType setType)
 		{
             // CorrectSetIndex(ref setIndex);
 
-            _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
 
-            var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
+		    var set = SetTypeUtility.GetCardSet(_dataManager, setType);
+
             var cards = set.cards;
 
 			var startIndex = page * cardPositions.Count;

@@ -101,7 +101,9 @@ namespace LoomNetwork.CZB
 
         public void SelectCard(BoardCard card)
         {
+            _uiManager.GetPopup<CardInfoPopup>().Hide();
             ClearPreviewCard();
+            
             Opening?.Invoke();
 
             _blockedClosing = true;
