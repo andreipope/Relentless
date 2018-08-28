@@ -570,7 +570,7 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols:
-    1: FORCE_REMOTE_ENDPOINT
+    1: 
     7: 
   platformArchitecture: {}
   scriptingBackend: {}
