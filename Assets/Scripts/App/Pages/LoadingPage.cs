@@ -176,6 +176,9 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive (false);
             GameObject.Destroy (_selfPage);
             _selfPage = null;
+
+	        _percentage = 0f;
+	        _isLoaded = false;
         }
 
         public void Dispose()
