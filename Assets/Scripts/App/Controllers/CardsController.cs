@@ -107,7 +107,7 @@ namespace LoomNetwork.CZB
         {
             CardDistribution = true;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.5f, 0, false);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
             if (_gameplayManager.IsTutorial)
                 EndCardDistribution();
@@ -571,38 +571,24 @@ namespace LoomNetwork.CZB
                     animationSequence.OnComplete(() =>
                     {
                         RemoveCard(new object[] { card });
-                        _timerManager.AddTimer(_animationsController.PlayArrivalAnimationDelay, new object[] { boardUnit }, 0.1f, false);
+
+                        _timerManager.AddTimer((param) => {
+                            boardUnit.PlayArrivalAnimation();
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
+                            {
+                                _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
+                            });
+                        }, null, 0.1f, false);
                     });
 
-                    //GameClient.Get<ITimerManager>().AddTimer(RemoveCard, new object[] {card}, 0.5f, false);
-                    //_timerManager.AddTimer(PlayArrivalAnimationDelay, new object[] { currentCreature }, 0.7f, false);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
-                    {
-                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
-                    });
 
-                    //  if (!Constants.DEV_MODE)
+
                     player.Goo -= card.manaCost;
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
-                    //actionComplete?.Invoke();
-
-                    //Debug.Log("<color=green> Now type: " + libraryCard.cardType + "</color>" + boardCreature.transform.position + "  " + currentCreature.transform.position);
-                    //PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-
                 }
                 else if (libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 {
-                    //var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                    //var sequence = DOTween.Sequence();
-                    //sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                    //sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
-                    //sequence.Play().OnComplete(() =>
-                    //{ 
-
-                    //
-                    //  player.RemoveCardFromHand(card.WorkingCard);
                     player.CardsInHand.Remove(card.WorkingCard);
                     _battlegroundController.playerHandCards.Remove(card);
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -614,12 +600,7 @@ namespace LoomNetwork.CZB
                     boardSpell.transform.position = Vector3.zero;
 
                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
-                    //});
-
-                    //    actionComplete?.Invoke();
                 }
-                // }
-                // );
             }
             else
             {

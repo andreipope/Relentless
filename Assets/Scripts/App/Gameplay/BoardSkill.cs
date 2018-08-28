@@ -360,7 +360,7 @@ namespace LoomNetwork.CZB
             if (_currentOverlordAbilityInfoObject != null)
                 return;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             Vector3 position = Vector3.zero;
 

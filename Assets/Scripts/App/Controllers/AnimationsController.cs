@@ -106,17 +106,6 @@ namespace LoomNetwork.CZB
             });
         }
 
-        public void PlayArrivalAnimationDelay(object[] param)
-        {
-            BoardUnit currentCreature = null;
-            if (param != null)
-            {
-                currentCreature = param[0] as BoardUnit;
-                currentCreature.PlayArrivalAnimation();
-            }
-        }
-
-
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
         {
             boardCard.DrawCardFromOpponentDeckToPlayer();

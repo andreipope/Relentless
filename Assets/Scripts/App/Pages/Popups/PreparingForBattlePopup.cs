@@ -58,7 +58,7 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);

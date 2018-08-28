@@ -84,7 +84,7 @@ namespace LoomNetwork.CZB
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
             _selfPage.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
