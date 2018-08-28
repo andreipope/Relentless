@@ -22,6 +22,8 @@ namespace LoomNetwork.CZB
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private ITutorialManager _tutorialManager;
+        private ISoundManager _soundManager;
+
         private GameObject _selfPage;
 
 		private TextMeshProUGUI _text;
@@ -41,6 +43,7 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
@@ -83,7 +86,6 @@ namespace LoomNetwork.CZB
             _nextButton = _selfPage.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
             _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
             _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
-
             _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
 
@@ -167,10 +169,20 @@ namespace LoomNetwork.CZB
         {
 
         }
-
-        private void SkipButtonOnClickHandler()
+        
+        private void SkipTutorialButtonOnClickHandler()
         {
-            _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
+            Action callback = () =>
+            {
+                _tutorialManager.SkipTutorial();
+
+                _uiManager.HidePopup<YourTurnPopup>();
+
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+            };
+
+            _uiManager.DrawPopup<ConfirmationPopup>(callback);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
         private void BackButtonOnClickHandler()

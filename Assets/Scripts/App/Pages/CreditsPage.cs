@@ -48,11 +48,6 @@ namespace LoomNetwork.CZB
             _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
         }
 
-        private void OnLoadCacheCompletedEventHandler()
-        {
-            FillCredits();
-        }
-
         public void Update()
         {
             if(_isActive)
@@ -77,7 +72,7 @@ namespace LoomNetwork.CZB
 
             _isActive = true;
             _creditsListScroll.verticalNormalizedPosition = 1;
-            
+
             FillCredits();
         }
 

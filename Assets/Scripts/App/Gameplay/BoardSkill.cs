@@ -124,9 +124,8 @@ namespace LoomNetwork.CZB
                 DrawAbilityTooltip();
             else
             {
-                if (!_usedInThisTurn)
+                if (!_usedInThisTurn && owner.IsLocalPlayer)
                 {
-                    if (owner.IsLocalPlayer)
                         StartDoSkill();
                 }
                 else DrawAbilityTooltip();
@@ -355,6 +354,9 @@ namespace LoomNetwork.CZB
 
         private void DrawAbilityTooltip()
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             if (_currentOverlordAbilityInfoObject != null)
                 return;
 
