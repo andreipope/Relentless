@@ -5,7 +5,7 @@ SpriteAtlas:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Horde_Choose_Portraits
+  m_Name: Horde_Choose_Portraits_Atlas
   m_EditorData:
     textureSettings:
       serializedVersion: 2
@@ -24,13 +24,13 @@ SpriteAtlas:
       padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
-      enableTightPacking: 1
+      enableRotation: 0
+      enableTightPacking: 0
     variantMultiplier: 1
     packables: []
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites: []
   m_PackedSpriteNamesToIndex: []
-  m_Tag: Horde_Choose_Portraits
+  m_Tag: Horde_Choose_Portraits_Atlas
   m_IsVariant: 0
