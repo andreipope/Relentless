@@ -182,6 +182,7 @@ namespace LoomNetwork.CZB
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
+            Debug.Log("== Saving cache type " + type);
             if (!File.Exists(_cacheDataPathes[type]))
                 File.Create(_cacheDataPathes[type]).Close();
             switch (type)

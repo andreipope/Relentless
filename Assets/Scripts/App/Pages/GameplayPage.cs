@@ -216,7 +216,7 @@ namespace LoomNetwork.CZB
                 _ranksController = _gameplayManager.GetController<RanksController>();
             }
 
-            int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
+            _gameplayManager.PlayerDeckId = _currentDeckId;
 
             OpponentDeck randomOpponentDeck = 
                 _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];

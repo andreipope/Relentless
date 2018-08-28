@@ -283,7 +283,7 @@ namespace LoomNetwork.CZB
             } catch (Exception e)
             {
                 Debug.LogException(e);
-                OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
+                OpenAlertDialog($"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
             }
         }
 
