@@ -34,6 +34,8 @@ namespace LoomNetwork.CZB
 		private List<GameObject> _focusObjects;
 		private Sprite[] _janePoses;
 
+        private Button _buttonBack;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -82,11 +84,15 @@ namespace LoomNetwork.CZB
             _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
             _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
 
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+
+
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
 
             _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
             _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _skipButton.onClick.AddListener(_tutorialManager.SkipTutorial);
+            _skipButton.onClick.AddListener(SkipButtonOnClickHandler);
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
             _focusObjects.Clear ();
 
@@ -160,6 +166,16 @@ namespace LoomNetwork.CZB
         public void Update()
         {
 
+        }
+
+        private void SkipButtonOnClickHandler()
+        {
+            _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
+        }
+
+        private void BackButtonOnClickHandler()
+        {
+            _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }
 }

@@ -166,7 +166,10 @@ namespace LoomNetwork.CZB
                 _zippingVFX = GameObject.Find("Background/Zapping").gameObject;
                 _zippingVFX.SetActive(false);
             }
-                
+
+            if (_gameplayManager.IsTutorial)
+                _buttonBack.gameObject.SetActive(false);
+
             StartGame();
             KeepButtonVisibility(false);
         }
