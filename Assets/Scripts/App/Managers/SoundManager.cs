@@ -124,6 +124,19 @@ namespace LoomNetwork.CZB
             CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
         }
 
+		public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+		{
+			foreach (var item in _soundContainers)
+			{
+				if (cardSoundType.ToString().Equals(item.tag))
+					return;
+			}
+
+
+			var thisSoundContainer = CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
+			FadeSound (thisSoundContainer, false, 0.005f, 0f, fadeOutAfterTime);
+		}
+
         public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
             PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue: isInQueue);
@@ -170,21 +183,20 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void FadeSound(SoundContainer soundContainer, bool isIn = false, float volumeStep = 0, float targetVolume = 0)
+		private void FadeSound(SoundContainer soundContainer, bool isIn = false, float volumeStep = 0, float targetVolume = 0, float targetTime = 0.1f)
         {
             var list = new List<SoundContainer>();
             list.Add(soundContainer);
-            FadeSound(list, isIn, volumeStep, targetVolume);
+			FadeSound(list, isIn, volumeStep, targetVolume, targetTime);
         }
 
-        private void FadeSound(List<SoundContainer> soundcontainers, bool isIn = false, float volumeStep = 0.05f, float targetVolume = 1)
+		private void FadeSound(List<SoundContainer> soundcontainers, bool isIn = false, float volumeStep = 0.05f, float targetVolume = 1, float targetTime = 0.1f)
         {
             GameClient.Get<ITimerManager>().AddTimer((x) => {
                 bool stop = false;
                 foreach (var container in soundcontainers)
                 {
-
-                    if (container.audioSource == null)
+                    if (container == null || container.audioSource == null)
                         break;
                     container.audioSource.volume += volumeStep * (isIn ? 1 : -1);
 
@@ -202,7 +214,7 @@ namespace LoomNetwork.CZB
                 }
                 if (!stop)
                     FadeSound(soundcontainers, isIn, volumeStep, targetVolume);
-            }, null, .1f);
+			}, null, targetTime);
         }
 
         private SoundContainer CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false,
