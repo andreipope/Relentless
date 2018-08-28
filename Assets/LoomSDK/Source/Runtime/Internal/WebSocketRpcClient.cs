@@ -115,7 +115,7 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.ConnectAsync();
             }
-            catch (Exception)
+            catch
             {
                 this.webSocket.OnOpen -= openHandler;
                 this.webSocket.OnClose -= closeHandler;
@@ -140,7 +140,7 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.CloseAsync(CloseStatusCode.Normal, "Client disconnected.");
             }
-            catch (Exception)
+            catch
             {
                 this.webSocket.OnClose -= handler;
                 throw;
@@ -176,9 +176,18 @@ namespace Loom.Client.Internal
         {
             var tcs = new TaskCompletionSource<T>();
             var msgId = Guid.NewGuid().ToString();
-            EventHandler<MessageEventArgs> handler = null;
-            handler = (sender, e) =>
+            EventHandler<CloseEventArgs> closeHandler = null;
+            EventHandler<MessageEventArgs> messageHandler = null;
+            closeHandler = (sender, e) =>
             {
+                tcs.TrySetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}"));
+            };
+            
+            messageHandler = (sender, e) =>
+            {
+                this.webSocket.OnClose -= closeHandler;
+                this.webSocket.OnMessage -= messageHandler;
+                
                 try
                 {
                     // TODO: set a timeout and throw exception when it's exceeded
@@ -187,7 +196,7 @@ namespace Loom.Client.Internal
                         var partialMsg = JsonConvert.DeserializeObject<JsonRpcResponse>(e.Data);
                         if (partialMsg.Id == msgId)
                         {
-                            this.webSocket.OnMessage -= handler;
+                            this.webSocket.OnMessage -= messageHandler;
                             if (partialMsg.Error != null)
                             {
                                 throw new RpcClientException(String.Format(
@@ -212,14 +221,17 @@ namespace Loom.Client.Internal
                     tcs.TrySetException(ex);
                 }
             };
-            this.webSocket.OnMessage += handler;
+  
+            this.webSocket.OnClose += closeHandler;
+            this.webSocket.OnMessage += messageHandler;
             try
             {
                 await SendAsync<U>(method, args, msgId);
             }
-            catch (Exception)
+            catch
             {
-                this.webSocket.OnMessage -= handler;
+                this.webSocket.OnClose -= closeHandler;
+                this.webSocket.OnMessage -= messageHandler;
                 throw;
             }
             return await tcs.Task;
