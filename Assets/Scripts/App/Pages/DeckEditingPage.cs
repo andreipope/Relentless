@@ -46,11 +46,12 @@ namespace LoomNetwork.CZB
         private Deck _currentDeck;
 
         private int _numSets,
-                    _currentSet,
                     _currentElementPage,
                     _numElementPages,
                     _numHordePages,
                     _currentHordePage;
+
+        private Enumerators.SetType _currentSet;
 
         private Toggle _airToggle,
                         _earthToggle,
@@ -321,12 +322,12 @@ namespace LoomNetwork.CZB
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
-            if ((int)type == _currentSet)
+            if (type == _currentSet)
                 return;
 
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
 
-            _currentSet = (int)type;
+            _currentSet = type;
             _currentElementPage = 0;
             LoadCards(_currentElementPage, _currentSet);
         }
@@ -398,7 +399,7 @@ namespace LoomNetwork.CZB
         {
             _currentHordePage++;
 
-            if (_currentHordePage > _numHordePages)
+            if (_currentHordePage >= _numHordePages)
                 _currentHordePage = 0;
             CalculateVisibility();
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
@@ -418,7 +419,7 @@ namespace LoomNetwork.CZB
 
                 if (_currentSet < 0)
                 {
-                    _currentSet = _numSets - 1;
+                    _currentSet = (Enumerators.SetType) (_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -435,7 +436,7 @@ namespace LoomNetwork.CZB
             {
                 _currentSet += direction;
 
-                if (_currentSet >= _numSets)
+                if ((int) _currentSet >= _numSets)
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
@@ -476,16 +477,14 @@ namespace LoomNetwork.CZB
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.sets[_currentSet].cards.Count / (float)CARDS_PER_PAGE);
+            _numElementPages = Mathf.CeilToInt((float) SetTypeUtility.GetCardSet(_dataManager, _currentSet).cards.Count / (float) CARDS_PER_PAGE);
         }
 
-        public void LoadCards(int page, int setIndex)
+        public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild(setIndex).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
 
-            //if(needCast)
-            //    CorrectSetIndex(ref setIndex);
-            var set = _dataManager.CachedCardsLibraryData.sets[setIndex];
+            var set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             var cards = set.cards;
             //_currentSetName = set.name;
@@ -609,9 +608,14 @@ namespace LoomNetwork.CZB
 
         private void UpdateTopDeck()
         {
-            _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / CARDS_PER_PAGE);
+            UpdateHordePagesCount();
             _currentHordePage = 0;
             RepositionHordeCards();
+        }
+
+        private void UpdateHordePagesCount()
+        {
+            _numHordePages = Mathf.CeilToInt((float)(_createdHordeCards.Count) / CARDS_PER_PAGE);
         }
 
         private void CalculateVisibility()
@@ -646,7 +650,7 @@ namespace LoomNetwork.CZB
 
                 int setIndex, cardIndex;
                 GetSetAndIndexForCard(boardCard.libraryCard, out setIndex, out cardIndex);
-                _currentSet = setIndex;
+                _currentSet = SetTypeUtility.GetCardSetType(_dataManager, setIndex);
                 _currentElementPage = cardIndex / CARDS_PER_PAGE;
                 UpdateCardsPage();
 
@@ -676,7 +680,13 @@ namespace LoomNetwork.CZB
 
                 MonoBehaviour.DestroyImmediate(boardCard.gameObject);
 
-                UpdateTopDeck();
+                int currentHordePage = _currentHordePage;
+                UpdateHordePagesCount();
+                if (currentHordePage >= _numHordePages)
+                {
+                    _currentHordePage = _numHordePages - 1;
+                }
+                RepositionHordeCards();
                 UpdateNumCardsText();
             }
             else
@@ -748,7 +758,7 @@ namespace LoomNetwork.CZB
 
                 _createdHordeCards.Add(boardCard);
 
-                _numHordePages = Mathf.CeilToInt((_createdHordeCards.Count - 1) / CARDS_PER_PAGE);
+                UpdateHordePagesCount();
                 CalculateVisibility();
             }
 
