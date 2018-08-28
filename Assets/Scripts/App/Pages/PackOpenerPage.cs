@@ -198,7 +198,7 @@ namespace LoomNetwork.CZB
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
-                GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
                 _isCardPreview = true;
             }
             else
