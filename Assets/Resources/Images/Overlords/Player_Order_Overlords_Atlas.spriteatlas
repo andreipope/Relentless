@@ -27,7 +27,13 @@ SpriteAtlas:
       enableRotation: 1
       enableTightPacking: 1
     variantMultiplier: 1
-    packables: []
+    packables:
+    - {fileID: 2800000, guid: 15433cfe7a4904348bd20ca31b95cb29, type: 3}
+    - {fileID: 2800000, guid: 55af278549a8a90428a6eb968f090075, type: 3}
+    - {fileID: 2800000, guid: a168b1717054f8e40bb25502b55e4e07, type: 3}
+    - {fileID: 2800000, guid: 1c60824fb9767e74392997381fac1a27, type: 3}
+    - {fileID: 2800000, guid: b879a97604e92784db174e470d4b93e3, type: 3}
+    - {fileID: 2800000, guid: 911a6115837a5954c99149d2df2c0e74, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites: []
