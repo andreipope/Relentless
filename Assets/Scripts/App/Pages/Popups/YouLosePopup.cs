@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;

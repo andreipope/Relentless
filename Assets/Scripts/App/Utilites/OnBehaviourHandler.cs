@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public event Action<GameObject> OnMouseUpEvent;
         public event Action<GameObject> OnMouseDownEvent;
@@ -21,6 +21,9 @@ namespace LoomNetwork.CZB
         public event Action<PointerEventData> OnPointerEnterEvent;
         public event Action<PointerEventData> OnPointerExitEvent;
         public event Action<GameObject> OnUpdateEvent;
+        public event Action<PointerEventData, GameObject> OnDragEvent;
+        public event Action<PointerEventData, GameObject> OnBeginDragEvent;
+        public event Action<PointerEventData, GameObject> OnEndDragEvent;
 
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -31,6 +34,21 @@ namespace LoomNetwork.CZB
         public void OnPointerExit(PointerEventData eventData)
         {
             OnPointerExitEvent?.Invoke(eventData);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            OnDragEvent?.Invoke(eventData, gameObject);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            OnBeginDragEvent?.Invoke(eventData, gameObject);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            OnEndDragEvent?.Invoke(eventData, gameObject);
         }
 
         private void Update()

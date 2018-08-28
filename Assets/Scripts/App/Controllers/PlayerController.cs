@@ -308,39 +308,11 @@ namespace LoomNetwork.CZB
             if (_startedOnClickDelay)
             {
                 _delayTimerOfClick += Time.deltaTime;
-
-                /*if (_delayTimerOfClick > Constants.POINTER_ON_CLICK_DELAY)
-                {
-
-                    _delayTimerOfClick = 0f;
-                    _startedOnClickDelay = false;
-                    // _topmostBoardCard = null;
-                    // _selectedBoardUnit = null;
-
-                    //if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
-                    //{
-                    //    StopHandTimer();
-                    //    _battlegroundController.DestroyCardPreview();
-
-                    //    if (_boardArrowController.IsBoardArrowNowInTheBattle &&  (_boardArrowController.CurrentBoardArrow != null && !_boardArrowController.CurrentBoardArrow.IsDragging()))
-                    //        HandCardPreview(new object[] { _selectedBoardUnit });
-                    //}
-                }
-                else if (Input.GetMouseButtonUp(0) && _delayTimerOfClick <= Constants.POINTER_ON_CLICK_DELAY)
-                {
-                    
-
-                    _delayTimerOfClick = 0f;
-                    _startedOnClickDelay = false;
-                    // _topmostBoardCard = null;
-                    // _selectedBoardUnit = null;
-                } */
             } 
 
             if(Input.GetMouseButtonUp(0))
                 _pointerEventSolver.PopPointer();
-
-
+           
             if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
             {
                 _battlegroundController.DestroyCardPreview();
@@ -351,8 +323,11 @@ namespace LoomNetwork.CZB
         {
             //Debug.Log("PointerEventSolver_OnDragStartedEventHandler");
 
-            if(_startedOnClickDelay && _delayTimerOfClick < 0.5f)
-            CheckCardPreviewShow();
+            if (_startedOnClickDelay && _delayTimerOfClick < 0.3f)
+            {
+                if (_boardArrowController.CurrentBoardArrow == null)
+                    CheckCardPreviewShow();
+            }
         }
 
         private void PointerEventSolver_OnClickEventHandler()

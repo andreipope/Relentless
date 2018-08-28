@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4956491385005218}
   - component: {fileID: 212848763382382874}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Object_Used
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4690475904272874}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Element_SlotOfCards
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4534407389955034}
   - component: {fileID: 212044632305737186}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Object_Free
   m_TagString: Untagged
   m_Icon: {fileID: 0}

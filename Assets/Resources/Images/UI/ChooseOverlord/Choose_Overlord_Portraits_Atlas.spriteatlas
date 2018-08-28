@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Choose_Overlord_Portraits_Atlas
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 5786961164824aa40b0c7a426d0e1545, type: 3}
+    - {fileID: 2800000, guid: aecd589204deb0f41889e793468457bf, type: 3}
+    - {fileID: 2800000, guid: d5014323ef5b3ce4a951d2c413fb98bf, type: 3}
+    - {fileID: 2800000, guid: 19632e3f3b3794c46abbaf02f9bd9cf2, type: 3}
+    - {fileID: 2800000, guid: 06f41a4dcd6682d46bc3f7163f2af1b5, type: 3}
+    - {fileID: 2800000, guid: f129a3b694f6a514eb92751711f1f31b, type: 3}
+    - {fileID: 2800000, guid: c2d91f718c3df8447bc893df7655ec9b, type: 3}
+    - {fileID: 2800000, guid: 8c7bae8a3e6a2c249aa1b3786f3a8eb8, type: 3}
+    - {fileID: 2800000, guid: 92082a898c405144ca2c0c7ca9c8d3fd, type: 3}
+    - {fileID: 2800000, guid: 5d13aa9c03603fc4cb78d99a897785f7, type: 3}
+    - {fileID: 2800000, guid: e38133d11ec188a45bc3b7812f851886, type: 3}
+    - {fileID: 2800000, guid: 94572353051b8bf4bbd70f41a8db36ce, type: 3}
+    - {fileID: 2800000, guid: 0dbb62a597e90e94a84a2e61c7c6dd4c, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: e38133d11ec188a45bc3b7812f851886, type: 3}
+  - {fileID: 21300000, guid: 94572353051b8bf4bbd70f41a8db36ce, type: 3}
+  - {fileID: 21300000, guid: 0dbb62a597e90e94a84a2e61c7c6dd4c, type: 3}
+  - {fileID: 21300000, guid: 92082a898c405144ca2c0c7ca9c8d3fd, type: 3}
+  - {fileID: 21300000, guid: 8c7bae8a3e6a2c249aa1b3786f3a8eb8, type: 3}
+  - {fileID: 21300000, guid: 5d13aa9c03603fc4cb78d99a897785f7, type: 3}
+  - {fileID: 21300000, guid: 5786961164824aa40b0c7a426d0e1545, type: 3}
+  - {fileID: 21300000, guid: c2d91f718c3df8447bc893df7655ec9b, type: 3}
+  - {fileID: 21300000, guid: aecd589204deb0f41889e793468457bf, type: 3}
+  - {fileID: 21300000, guid: d5014323ef5b3ce4a951d2c413fb98bf, type: 3}
+  - {fileID: 21300000, guid: f129a3b694f6a514eb92751711f1f31b, type: 3}
+  - {fileID: 21300000, guid: 06f41a4dcd6682d46bc3f7163f2af1b5, type: 3}
+  - {fileID: 21300000, guid: 19632e3f3b3794c46abbaf02f9bd9cf2, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - portrait_life_hero
+  - portrait_toxic_hero
+  - portrait_water_hero
+  - portrait_earth_hero
+  - portrait_air_hero
+  - portrait_fire_hero
+  - icon_element_air
+  - icon_element_water
+  - icon_element_earth
+  - icon_element_fire
+  - icon_element_toxic
+  - icon_element_tool
+  - icon_element_life
+  m_Tag: Choose_Overlord_Portraits_Atlas
+  m_IsVariant: 0

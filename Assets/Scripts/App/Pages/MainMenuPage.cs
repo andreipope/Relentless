@@ -70,7 +70,11 @@ namespace LoomNetwork.CZB
             UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
         }
 
-        private void UpdateConnectionStateUI() {
+        private void UpdateConnectionStateUI()
+        {
+            if (_selfPage == null)
+                return;
+            
             _connectionStatusText.text = 
                 _backendFacade.IsConnected ? 
                     "<color=green>Online</color>" : 
@@ -249,12 +253,37 @@ namespace LoomNetwork.CZB
         private async void ReconnectButtonOnClickHandler() {
             try
             {
-                // FIXME: add waiting popup
-                await _backendDataControlMediator.LoginAndLoadData();
+				ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+
+				Func<Task> connectFunc = async () =>
+				{
+					bool success = true;
+					try
+					{
+						await _backendDataControlMediator.LoginAndLoadData();
+					} catch (Exception)
+					{
+						// HACK: ignore to allow offline mode
+					}
+
+					if (!_backendFacade.IsConnected) {
+						success = false;
+					}
+
+					if (success)
+					{
+						connectionPopup.Hide();
+					} else {
+						connectionPopup.ShowFailedOnMenu();
+					}
+				};
+				_uiManager.DrawPopup<ConnectionPopup>();
+				connectionPopup.ConnectFunc = connectFunc;
+				await connectionPopup.ExecuteConnection();
             } catch (Exception e)
             {
                 Debug.LogException(e);
-                OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
+                OpenAlertDialog($"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
             }
         }
 

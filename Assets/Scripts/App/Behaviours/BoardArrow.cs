@@ -14,6 +14,7 @@ public class BoardArrow : MonoBehaviour
 {
     protected IGameplayManager _gameplayManager;
     protected BoardArrowController _boardArrowController;
+    protected InputController _inputController;
 
     public Action onTargetSelected;
 
@@ -38,6 +39,7 @@ public class BoardArrow : MonoBehaviour
     protected BoardUnit boardCreature;
 
     public List<Enumerators.SkillTargetType> targetsType = new List<Enumerators.SkillTargetType>();
+    public List<Enumerators.SetType> elementType = new List<Enumerators.SetType>();
 
     public BoardUnit selectedCard { get; set; }
     public Player selectedPlayer { get; set; }
@@ -52,6 +54,7 @@ public class BoardArrow : MonoBehaviour
     {
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+        _inputController = _gameplayManager.GetController<InputController>();
 
         _selfObject = gameObject;
 
@@ -67,17 +70,24 @@ public class BoardArrow : MonoBehaviour
             _selfObject.transform.localScale = new Vector3(-1, 1, 1);
         //  _targetObjectsGroup.SetActive(false);
 
-        _boardArrowController.CurrentBoardArrow = this;
-        _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
+        _inputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
+        _inputController.UnitSelectingEvent += UnitSelectingEventHandler;
+        _inputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
     }
 
     protected virtual void Update()
     {
         if (startedDrag)
         {
+            _boardArrowController.CurrentBoardArrow = this;
+            _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
+
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
             UpdateLength(mousePosition, _isInverse);
+
+
+            //  CastRay(Input.mousePosition, 9);
         }
     }
 
@@ -175,18 +185,47 @@ public class BoardArrow : MonoBehaviour
 
     public void Dispose()
     {
+        _inputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
+        _inputController.UnitSelectingEvent -= UnitSelectingEventHandler;
+        _inputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
+
+        ResetSelecting();
+
+        MonoBehaviour.Destroy(_selfObject);
+    }
+
+
+    private void ResetSelecting()
+    {
         if (selectedCard != null)
         {
-            selectedCard.SetSelectedUnit(false);
+            if(selectedCard.gameObject != null)
+                selectedCard.SetSelectedUnit(false);
+
             selectedCard = null;
         }
 
         if (selectedPlayer != null)
         {
-            selectedPlayer.SetGlowStatus(false);
+            if (selectedPlayer.AvatarObject != null)
+                selectedPlayer.SetGlowStatus(false);
+
             selectedPlayer = null;
         }
+    }
 
-        MonoBehaviour.Destroy(_selfObject);
+    private void PlayerSelectingEventHandler(Player player)
+    {
+        OnPlayerSelected(player);
+    }
+
+    private void UnitSelectingEventHandler(BoardUnit unit)
+    {
+        OnCardSelected(unit);
+    }
+
+    private void NoObjectsSelectedEventHandler()
+    {
+        ResetSelecting();
     }
 }

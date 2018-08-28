@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
             _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YOURTURN_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             _selfPage.transform.localScale = Vector3.zero;
             _selfPage.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
@@ -91,17 +91,5 @@ namespace LoomNetwork.CZB
         {
 
         }
-
-        private void OnClickOkButtonEventHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-                GameClient.Get<ITutorialManager>().StopTutorial();
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(LoomNetwork.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            Hide();
-        }
-
     }
 }

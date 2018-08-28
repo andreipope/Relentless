@@ -9,7 +9,7 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-	    internal const string CURRENT_VERSION_BASE = "0.1.0";
+	    internal const string CURRENT_VERSION_BASE = "0.1.2";
 	    internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
 
         internal const string VERSION_FILE_RESOLUTION = ".ver";
@@ -66,6 +66,9 @@ namespace LoomNetwork.CZB.Common
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
 
+        internal const string PLAYER_BOARD = "PlayerBoard";
+        internal const string OPPONENT_BOARD = "OpponentBoard";
+
 
         internal const string LAYER_HAND_CARDS = "HandCards";
         internal const string LAYER_BOARD_CARDS = "BoardCards";
@@ -111,6 +114,7 @@ namespace LoomNetwork.CZB.Common
         internal static float OVERLORD_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float SPELL_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float BATTLEGROUND_EFFECTS_SOUND_VOLUME = 0.25f;
+		internal static float ZOMBIE_DEATH_VO_DELAY_BEFORE_FADEOUT = 3f;
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;

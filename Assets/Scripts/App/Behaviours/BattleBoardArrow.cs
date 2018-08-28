@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
             startedDrag = false;
 
             creature.DoCombat(selectedCard != null ? (object)selectedCard : (object)selectedPlayer);
-            Destroy(gameObject);
+            Dispose();
         }
 
         public override void OnCardSelected(BoardUnit unit)
@@ -43,6 +43,10 @@ namespace LoomNetwork.CZB
 
             if (unit.CurrentHP <= 0)
                 return;
+
+            if (elementType.Count > 0 && !elementType.Contains(unit.Card.libraryCard.cardSetType))
+                return;
+
 
             if (targetsType.Contains(Common.Enumerators.SkillTargetType.ALL_CARDS) ||
                 (targetsType.Contains(Common.Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) ||

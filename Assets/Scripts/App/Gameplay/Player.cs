@@ -232,8 +232,8 @@ namespace LoomNetwork.CZB
             _deathAnimamtor.enabled = false;
             _deathAnimamtor.StopPlayback();
 
-            _avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
-            _avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
+            //_avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
+            //_avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
 
             PlayerHPChangedEvent += PlayerHPChangedEventHandler;
 
@@ -505,25 +505,25 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnTriggerEnter2DEventHandler(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (boardArrow != null)
-                    boardArrow.OnPlayerSelected(this);
-            }
-        }
+        //private void OnTriggerEnter2DEventHandler(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (boardArrow != null)
+        //            boardArrow.OnPlayerSelected(this);
+        //    }
+        //}
 
-        private void OnTriggerExit2DEventHandler(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (boardArrow != null)
-                    boardArrow.OnPlayerUnselected(this);
-            }
-        }
+        //private void OnTriggerExit2DEventHandler(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (boardArrow != null)
+        //            boardArrow.OnPlayerUnselected(this);
+        //    }
+        //}
 
         #endregion
     }

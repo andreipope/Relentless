@@ -124,9 +124,8 @@ namespace LoomNetwork.CZB
                 DrawAbilityTooltip();
             else
             {
-                if (!_usedInThisTurn)
+                if (!_usedInThisTurn && owner.IsLocalPlayer)
                 {
-                    if (owner.IsLocalPlayer)
                         StartDoSkill();
                 }
                 else DrawAbilityTooltip();
@@ -195,7 +194,7 @@ namespace LoomNetwork.CZB
         {
             if (fightTargetingArrow != null)
             {
-                MonoBehaviour.Destroy(fightTargetingArrow.gameObject);
+                fightTargetingArrow.Dispose();
             }
         }
 
@@ -241,6 +240,7 @@ namespace LoomNetwork.CZB
                     fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
                     fightTargetingArrow.targetsType = skill.skillTargetTypes;
+                    fightTargetingArrow.elementType = skill.elementTargetTypes;
 
                     //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
                         fightTargetingArrow.ignoreHeavy = true;
@@ -354,10 +354,13 @@ namespace LoomNetwork.CZB
 
         private void DrawAbilityTooltip()
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             if (_currentOverlordAbilityInfoObject != null)
                 return;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             Vector3 position = Vector3.zero;
 

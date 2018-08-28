@@ -97,6 +97,7 @@ namespace LoomNetwork.CZB
             _controllers.Add(new BoardArrowController());
             _controllers.Add(new SkillsController());
             _controllers.Add(new RanksController());
+            _controllers.Add(new InputController());
 
             foreach (var controller in _controllers)
                 controller.Init();

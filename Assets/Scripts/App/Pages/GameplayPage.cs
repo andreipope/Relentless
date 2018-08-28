@@ -166,7 +166,10 @@ namespace LoomNetwork.CZB
                 _zippingVFX = GameObject.Find("Background/Zapping").gameObject;
                 _zippingVFX.SetActive(false);
             }
-                
+
+            if (_gameplayManager.IsTutorial)
+                _buttonBack.gameObject.SetActive(false);
+
             StartGame();
             KeepButtonVisibility(false);
         }
@@ -213,7 +216,7 @@ namespace LoomNetwork.CZB
                 _ranksController = _gameplayManager.GetController<RanksController>();
             }
 
-            int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
+            _gameplayManager.PlayerDeckId = _currentDeckId;
 
             OpponentDeck randomOpponentDeck = 
                 _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
@@ -501,6 +504,7 @@ namespace LoomNetwork.CZB
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
+                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
 
