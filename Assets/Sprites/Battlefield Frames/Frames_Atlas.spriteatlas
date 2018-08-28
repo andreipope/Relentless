@@ -51,9 +51,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
   - {fileID: 21300000, guid: 071634884bd22e944a060691bcb7c043, type: 3}
   - {fileID: 21300000, guid: 078d1cf8d85f72644ba2ff319cdf1ab6, type: 3}
-  - {fileID: 21300000, guid: 2f51c0fa3ce8f844ea0513a27e482636, type: 3}
-  - {fileID: 21300000, guid: cddaf331961fda24ca449c618bd9358d, type: 3}
-  - {fileID: 21300000, guid: 03d5b7be870c9f74282c0990fe0b6456, type: 3}
   - {fileID: 21300000, guid: ed5ab0f0c07c86240b38b74bb27328be, type: 3}
   - {fileID: 21300000, guid: 0ddb7636dd4071c48b41de86c4631383, type: 3}
   - {fileID: 21300000, guid: bfaea2c874177874daac5c8e38b719e0, type: 3}
@@ -67,9 +64,6 @@ SpriteAtlas:
   - glow_card_onfield
   - glow_skill
   - glow_skill
-  - frame_heavy
-  - frame_feral
-  - frame_walker
   - hero_sword
   - glow_goo
   - glow_goo
