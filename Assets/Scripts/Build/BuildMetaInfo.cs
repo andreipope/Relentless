@@ -16,8 +16,6 @@ namespace LoomNetwork.CZB
         public int BuildDayOfYear = 0;
         public int CloudBuildBuildNumber;
         public string CloudBuildTargetName = "";
-        public string CloudBuildGitBranchName = "";
-        public string CloudBuildGitCommitHash = "";
 
         public string ShortVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
 
@@ -29,17 +27,14 @@ namespace LoomNetwork.CZB
             {
                 string text = DisplayVersionName;
 
-#if UNITY_CLOUD_BUILD
-                if (!String.IsNullOrEmpty(CloudBuildGitCommitHash))
-                {
-                    text += $" ({CloudBuildGitCommitHash})";
-                }
-#else
                 if (!String.IsNullOrEmpty(GitCommitHash))
                 {
+#if UNITY_CLOUD_BUILD
+                    text += $" ({GitCommitHash})";
+#else
                     text += $" ({GitCommitHash}/{GitBranchName})";
-                }
 #endif
+                }
                 return text;
             }
         }

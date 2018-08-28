@@ -70,7 +70,11 @@ namespace LoomNetwork.CZB
             UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
         }
 
-        private void UpdateConnectionStateUI() {
+        private void UpdateConnectionStateUI()
+        {
+            if (_selfPage == null)
+                return;
+            
             _connectionStatusText.text = 
                 _backendFacade.IsConnected ? 
                     "<color=green>Online</color>" : 
