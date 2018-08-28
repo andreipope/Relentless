@@ -70,9 +70,6 @@ public class BoardArrow : MonoBehaviour
             _selfObject.transform.localScale = new Vector3(-1, 1, 1);
         //  _targetObjectsGroup.SetActive(false);
 
-        _boardArrowController.CurrentBoardArrow = this;
-        _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
-
         _inputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
         _inputController.UnitSelectingEvent += UnitSelectingEventHandler;
         _inputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
@@ -82,6 +79,9 @@ public class BoardArrow : MonoBehaviour
     {
         if (startedDrag)
         {
+            _boardArrowController.CurrentBoardArrow = this;
+            _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
+
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
             UpdateLength(mousePosition, _isInverse);
@@ -227,65 +227,5 @@ public class BoardArrow : MonoBehaviour
     private void NoObjectsSelectedEventHandler()
     {
         ResetSelecting();
-    }
-
-    private void CastRay(Vector3 origin, int layerMask)
-    {
-        Vector3 point = Camera.main.ScreenToWorldPoint(origin);
-
-        Debug.DrawRay(point, Vector3.forward, Color.red);
-
-        var hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << layerMask);
-
-        if (hits.Length > 0)
-        {
-            foreach (var hit in hits)
-                CheckColliders(hit.collider);
-        }
-
-    }
-
-    private void CheckColliders(Collider2D collider)
-    {
-        // check on units
-
-        if (selectedCard != null)
-        {
-            selectedCard.SetSelectedUnit(false);
-            selectedCard = null;
-        }
-
-        if (selectedPlayer != null)
-        {
-            selectedPlayer.SetGlowStatus(false);
-            selectedPlayer = null;
-        }
-
-        foreach (var unit in _gameplayManager.CurrentPlayer.BoardCards)
-        {
-            if (unit.gameObject == collider.gameObject)
-            {
-                OnCardSelected(unit);
-                break;
-            }
-        }
-
-
-        foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
-        {
-            if (unit.gameObject == collider.gameObject)
-            {
-                OnCardSelected(unit);
-                break;
-            }
-        }
-
-        // check on players
-
-        if (_gameplayManager.CurrentPlayer.AvatarObject == collider.gameObject)
-            OnPlayerSelected(_gameplayManager.CurrentPlayer);
-
-        if (_gameplayManager.OpponentPlayer.AvatarObject == collider.gameObject)
-            OnPlayerSelected(_gameplayManager.OpponentPlayer);
     }
 }

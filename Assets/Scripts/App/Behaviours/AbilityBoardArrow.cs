@@ -25,6 +25,8 @@ namespace LoomNetwork.CZB
         private int _onRightMouseDownInputIndex;
         private int _onEscapeInputIndex;
 
+        private bool _isAbilitySecondTouchActivated = false;
+
         public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
         public BoardUnit selfBoardCreature;
 
@@ -36,11 +38,14 @@ namespace LoomNetwork.CZB
         {
             _inputManager = GameClient.Get<IInputManager>();
 
-            _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, null, OnMouseButtonDownHandler, null);
-            _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, null, OnRightMouseButtonDownHandler, null);
-            _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonDownHandler, null);
-
             Init();
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler, null, null);
+                _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler, null, null);
+                _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
+            }, null, Time.fixedDeltaTime);
         }
 
         protected override void OnDestroy()
@@ -95,10 +100,10 @@ namespace LoomNetwork.CZB
             {
                 selectedCard.SetSelectedUnit(false);
                 //  _targetObjectsGroup.SetActive(false);
-                selectedCard = null;
-
                 OnCardUnselectedevent?.Invoke(creature);
-            } 
+            }
+
+            selectedCard = null;
         }
 
         public override void OnPlayerSelected(Player player)
@@ -130,13 +135,14 @@ namespace LoomNetwork.CZB
 
                 selectedPlayer.SetGlowStatus(false);
                 //_targetObjectsGroup.SetActive(false);
-                selectedPlayer = null;
 
                 OnPlayerUnselectedEvent?.Invoke(player);
             }
+
+            selectedPlayer = null;
         }
 
-        protected void OnMouseButtonDownHandler()
+        protected void OnMouseButtonUpHandler()
         {
             if (startedDrag)
             {
@@ -145,7 +151,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected void OnRightMouseButtonDownHandler()
+        protected void OnRightMouseButtonUpHandler()
         {
             if (startedDrag)
             {
