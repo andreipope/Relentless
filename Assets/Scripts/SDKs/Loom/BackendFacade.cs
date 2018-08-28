@@ -20,27 +20,16 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class BackendFacade : IService
     {
-
-        public const string AuthBackendHost = 
-
-#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
-            "http://stage.loom.games";
-#else
-            "http://loom.games";
-#endif
-
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public event ContractCreatedEventHandler ContractCreated;
+        
+        public string ReaderHost { get; set; }
 
-#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
-        public string WriterHost { get; set; } = "ws://127.0.0.1:46657/websocket";
-        public string ReaderHost { get; set; } = "ws://127.0.0.1:9999/queryws";
-#else
-        public string WriterHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
-        public string ReaderHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
-#endif
+        public string WriterHost { get; set; }
 
+        public string AuthBackendHost { get; set; }
+        
         public Contract Contract { get; private set; }
 
         public bool IsConnected =>
@@ -48,8 +37,11 @@ namespace LoomNetwork.CZB.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        public BackendFacade()
+        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
         {
+            AuthBackendHost = authBackendHost;
+            ReaderHost = readerHost; 
+            WriterHost = writerHost;
             Debug.Log($"Using auth backend {AuthBackendHost}");
         }
 
