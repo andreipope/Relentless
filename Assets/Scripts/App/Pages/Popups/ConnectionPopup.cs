@@ -32,6 +32,7 @@ namespace LoomNetwork.CZB
 	    private IDataManager _dataManager;
 
 		private Button _reconnectButton;
+		private Button _closeButton;
 	    private Transform _failedGroup;
 	    private Transform _connectingGroup;
 	    
@@ -52,6 +53,10 @@ namespace LoomNetwork.CZB
 	    private async void PressedReconnectHandler () {
 		    await ExecuteConnection();
 	    }
+
+		private async void PressedCloseHandler () {
+			Hide ();
+		}
 
         public void Hide()
         {
@@ -77,8 +82,10 @@ namespace LoomNetwork.CZB
             _failedGroup = _selfPage.transform.Find("Failed_Group");
             _connectingGroup = _selfPage.transform.Find("Connecting_Group");
             _reconnectButton = _failedGroup.Find("Button_Reconnect").GetComponent<Button>();
+			_closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
+			_closeButton.onClick.AddListener (PressedCloseHandler);
 
             _state = ConnectionState.Connecting;
             SetUIState(ConnectionState.Connecting);
@@ -102,11 +109,19 @@ namespace LoomNetwork.CZB
 				    await task;
 			    } catch (Exception e)
 			    {
-				    SetUIState(ConnectionState.ConnectionFailed);
+					if (GameClient.Get<IAppStateManager> ().AppState == Common.Enumerators.AppState.MAIN_MENU) {
+						SetUIState (ConnectionState.ConnectionFailedOnMenu);
+					} else {
+						SetUIState (ConnectionState.ConnectionFailed);
+					}
 			    }
 		    }
 	    }
 
+		public void ShowFailedOnMenu () {
+			SetUIState(ConnectionState.ConnectionFailedOnMenu);
+		}
+			
 	    private void SetUIState(ConnectionState state) {
 		    _state = state;
 		    _connectingGroup.gameObject.SetActive(false);
@@ -116,9 +131,16 @@ namespace LoomNetwork.CZB
 			    case ConnectionState.Connecting:
 				    _connectingGroup.gameObject.SetActive(true);
 				    break;
-			    case ConnectionState.ConnectionFailed:
-				    _failedGroup.gameObject.SetActive(true);
+				case ConnectionState.ConnectionFailed:
+					_failedGroup.gameObject.SetActive (true);
+					_closeButton.gameObject.SetActive (false);
+					_reconnectButton.gameObject.SetActive (true);
 				    break;
+				case ConnectionState.ConnectionFailedOnMenu:
+					_failedGroup.gameObject.SetActive (true);
+					_closeButton.gameObject.SetActive (true);
+					_reconnectButton.gameObject.SetActive (false);
+					break;
 			    default:
 				    throw new ArgumentOutOfRangeException();
 		    }
@@ -127,7 +149,8 @@ namespace LoomNetwork.CZB
 	    private enum ConnectionState
 	    {
 		    Connecting,
-		    ConnectionFailed
+		    ConnectionFailed,
+			ConnectionFailedOnMenu
 	    }
     }
 }
