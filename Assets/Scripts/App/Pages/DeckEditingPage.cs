@@ -386,29 +386,38 @@ namespace LoomNetwork.CZB
 
         private void HordeArrowLeftButtonHandler()
         {
+            MoveHordeToLeft();
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+        }
+
+        private void MoveHordeToLeft()
+        {
             _currentHordePage--;
             if (_currentHordePage < 0)
                 _currentHordePage = _numHordePages;
             CalculateVisibility();
-
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
         private void HordeArrowRightButtonHandler()
+        {
+            MoveHordeToRight();
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+        }
+
+        private void MoveHordeToRight()
         {
             _currentHordePage++;
 
             if (_currentHordePage > _numHordePages)
                 _currentHordePage = 0;
             CalculateVisibility();
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
         #endregion
 
         public void MoveCardsPage(int direction)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+            //GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
 
             _currentElementPage += direction;
 
@@ -967,11 +976,11 @@ namespace LoomNetwork.CZB
             {
                 if (scrollDelta.y > 0.5f)
                 {
-                    HordeArrowRightButtonHandler();
+                    MoveHordeToRight();
                 }
                 else if (scrollDelta.y < -0.5f)
                 {
-                    HordeArrowLeftButtonHandler();
+                    MoveHordeToLeft();
                 }
             }
             else
