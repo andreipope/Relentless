@@ -170,11 +170,11 @@ namespace LoomNetwork.CZB
 
         }
         
-        private void SkipTutorialButtonOnClickHandler()
+        private void SkipButtonOnClickHandler()
         {
             Action callback = () =>
             {
-                _tutorialManager.SkipTutorial();
+                _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
 
                 _uiManager.HidePopup<YourTurnPopup>();
 
