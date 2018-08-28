@@ -161,16 +161,24 @@ namespace LoomNetwork.CZB
 
         public void StopTutorial()
         {
-            CancelTutorial();
+            _uiManager.HidePopup<TutorialPopup>();
+            _tutorialStarted = false;
             GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
             GameClient.Get<IDataManager>().SaveAllCache();
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
         }
 
-        public void CancelTutorial()
+        public void SkipTutorial(Enumerators.AppState state)
         {
-            _uiManager.HidePopup<TutorialPopup>();
-            _tutorialStarted = false;
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+             Action callback = () =>
+            {
+                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(state);
+            };
+            _uiManager.DrawPopup<ConfirmationPopup>(callback);
         }
 
         public void Update()
@@ -220,8 +228,6 @@ namespace LoomNetwork.CZB
             if (_currentStep >= _steps.Count - 1)
             {
                 GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
-                //GameClient.Get<IUIManager>().DrawPopup<YouWonPopup>();
-                //GameClient.Get<ITutorialManager>().StopTutorial();
                 return;
             }
             if (_currentStep == 11)
@@ -270,12 +276,6 @@ namespace LoomNetwork.CZB
                 else if(_currentStep != 12 && _currentStep != 17 )
                     _popup.ShowNextButton();
             }
-        }
-
-        public void SkipTutorial()
-        {
-            GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
         }
 
         public void ReportAction(Enumerators.TutorialReportAction action)

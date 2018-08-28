@@ -36,6 +36,8 @@ namespace LoomNetwork.CZB
 		private List<GameObject> _focusObjects;
 		private Sprite[] _janePoses;
 
+        private Button _buttonBack;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -84,12 +86,15 @@ namespace LoomNetwork.CZB
             _nextButton = _selfPage.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
             _playButton = _selfPage.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
             _skipButton = _selfPage.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+
 
             _janeImage = _selfPage.transform.Find("NPC").GetComponent<Image>();
 
             _nextButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
             _playButton.onClick.AddListener(_tutorialManager.NextButtonClickHandler);
-            _skipButton.onClick.AddListener(SkipTutorialButtonOnClickHandler);
+            _skipButton.onClick.AddListener(SkipButtonOnClickHandler);
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
 
             _focusObjects.Clear ();
 
@@ -164,7 +169,7 @@ namespace LoomNetwork.CZB
         {
 
         }
-
+        
         private void SkipTutorialButtonOnClickHandler()
         {
             Action callback = () =>
@@ -178,6 +183,11 @@ namespace LoomNetwork.CZB
 
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
             _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+        }
+
+        private void BackButtonOnClickHandler()
+        {
+            _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }
 }
