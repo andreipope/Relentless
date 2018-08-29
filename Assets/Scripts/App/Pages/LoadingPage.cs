@@ -78,8 +78,8 @@ namespace LoomNetwork.CZB
                 else
                 {
                     //_pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
-					float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
-					_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
+					//float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
+					//_pressAnyText.transform.localScale = new Vector2(scalePressAnyTextValue, scalePressAnyTextValue);
                     if (Input.anyKey)
                     {
                         //_loginForm.SetActive(true);
