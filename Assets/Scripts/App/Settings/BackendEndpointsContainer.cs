@@ -1,4 +1,4 @@
-#define USE_GAMECHAIN_1_FOR_PUBLIC
+#define USE_GAMECHAIN_1_FOR_PRODUCTION
 
 using System.Collections.Generic;
 
@@ -22,7 +22,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                     new BackendEndpoint(
                         "http://loom.games",
                         // FIXME
-#if USE_GAMECHAIN_1_FOR_PUBLIC
+#if USE_GAMECHAIN_1_FOR_PRODUCTION
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                     BackendPurpose.Staging,
                     new BackendEndpoint(
                         "http://stage.loom.games",
-#if USE_GAMECHAIN_1_FOR_PUBLIC
+#if USE_GAMECHAIN_1_FOR_PRODUCTION
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
