@@ -50,6 +50,9 @@ namespace LoomNetwork.CZB
 
         private GameObject _markerOffline;
         private GameObject _markerOnline;
+	    
+	    private ColorBlock _buttonPlayColorBlock;
+	    private Color _buttonPlayClearColor = new Color(1f, 1f, 1f, 0f);
 
         public void Init()
         {
@@ -88,7 +91,12 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-
+	        if (_buttonPlay == null)
+		        return;
+	        
+	        var lerpedColor = Color.Lerp(Color.white, _buttonPlayClearColor, Mathf.PingPong(Time.time, 1f));
+	        _buttonPlayColorBlock.normalColor = lerpedColor;
+	        _buttonPlay.colors = _buttonPlayColorBlock;
         }
 
         public void Show()
@@ -158,6 +166,7 @@ namespace LoomNetwork.CZB
             }*/
 
             UpdateConnectionStateUI();
+	        _buttonPlayColorBlock = _buttonPlay.colors;
         }
 
         private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract) {
