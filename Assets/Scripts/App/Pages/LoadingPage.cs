@@ -104,9 +104,10 @@ namespace LoomNetwork.CZB
 										success = false;
 										_uiManager.DrawPopup<LoginPopup>();
 										_uiManager.GetPopup<LoginPopup>().Show(e);
-									} catch (Exception)
+									} catch (Exception e)
 									{
 										// HACK: ignore to allow offline mode
+										Debug.LogWarning(e);
 									}
 									
 									connectionPopup.Hide();
