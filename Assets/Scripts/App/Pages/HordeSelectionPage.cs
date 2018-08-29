@@ -193,7 +193,8 @@ namespace LoomNetwork.CZB
             _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveAllCache();
+            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             try
             {
@@ -235,7 +236,7 @@ namespace LoomNetwork.CZB
             _selectedDeckId = (int) deck.SelfDeck.id;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeckId;
 
-            _dataManager.SaveAllCache();
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             deck.selectionContainer.parent.SetAsLastSibling();
 
             BattleButtonUpdate();
