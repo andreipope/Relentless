@@ -975,7 +975,9 @@ namespace LoomNetwork.CZB
 
             if (success)
             {
+				_dataManager.CachedUserLocalData.lastSelectedDeckId = (int)_currentDeck.id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+				await _dataManager.SaveCache (Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
             }
         }
