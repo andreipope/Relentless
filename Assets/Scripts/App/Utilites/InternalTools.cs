@@ -150,7 +150,13 @@ namespace LoomNetwork.CZB.Helpers
 
         public static bool IsTabletScreen()
         {
-            return (DeviceDiagonalSizeInInches() > 6.5f);
+#if FORCE_TABLET_UI
+            return true;
+#elif FORCE_PHONE_UI
+            return false;
+#else
+            return DeviceDiagonalSizeInInches() > 6.5f;
+#endif
         }
     }
 }
