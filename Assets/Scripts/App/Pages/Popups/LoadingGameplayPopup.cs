@@ -82,7 +82,11 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
             
-            _progressBar.fillAmount = (float)_sceneManager.SceneLoadingProgress / 100f;
+            _progressBar.fillAmount = Mathf.Max(_progressBar.fillAmount, (float)_sceneManager.SceneLoadingProgress / 100f);
+
+            if (_sceneManager.SceneLoadingProgress >= 100) {
+                Hide ();
+            }
         }
 
     }

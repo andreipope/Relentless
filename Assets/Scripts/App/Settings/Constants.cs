@@ -123,6 +123,8 @@ namespace LoomNetwork.CZB.Common
         internal const float POINTER_MIN_DRAG_DELTA = 3f;
         internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
 
+        internal const float LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT = 2f;
+
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
 
