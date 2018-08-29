@@ -31,16 +31,15 @@ namespace LoomNetwork.CZB
         /// </summary>
         internal GameClient() : base()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PUBLIC_BACKEND && !USE_STAGING_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
             BackendPurpose backend = BackendPurpose.Local;
-#elif USE_PUBLIC_BACKEND
-            BackendPurpose backend = BackendPurpose.Public;
+#elif USE_PRODUCTION_BACKEND
+            BackendPurpose backend = BackendPurpose.Production;
 #else
             BackendPurpose backend = BackendPurpose.Staging;
 #endif
 
             BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
-
             AddService<ITimerManager>(new TimerManager());
             AddService<ILoadObjectsManager>(new LoadObjectsManager());
             AddService<IInputManager>(new InputManager());

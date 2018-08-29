@@ -42,12 +42,13 @@ namespace LoomNetwork.CZB.BackendCommunication
             AuthBackendHost = authBackendHost;
             ReaderHost = readerHost; 
             WriterHost = writerHost;
+            
             Debug.Log($"Using auth backend {AuthBackendHost}");
+            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
 
         public async Task CreateContract(byte[] privateKey)
         {
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 

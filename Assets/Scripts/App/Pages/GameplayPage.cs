@@ -143,9 +143,6 @@ namespace LoomNetwork.CZB
         {
             if (_selfPage == null || !_selfPage.activeSelf)
                 return;
-
-            if (_reportGameActionsPanel != null)
-                _reportGameActionsPanel.Update();
         }
 
         public void Show()
