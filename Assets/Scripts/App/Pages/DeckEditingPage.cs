@@ -314,10 +314,11 @@ namespace LoomNetwork.CZB
             _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
-            LoadCards(0, 0);
+            Enumerators.SetType heroSetType = 
+                _dataManager.CachedHeroesData.Heroes
+                    .Find(x => x.heroId == _currentDeck.heroId).heroElement;
+            LoadCards(0, heroSetType);
         }
-
-
 
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
