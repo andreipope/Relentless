@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _markerOffline;
         private GameObject _markerOnline;
-
+	    
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -88,7 +88,6 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-
         }
 
         public void Show()
