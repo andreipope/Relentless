@@ -31,6 +31,15 @@ namespace LoomNetwork.CZB
         /// </summary>
         internal GameClient() : base()
         {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
+            BackendPurpose backend = BackendPurpose.Local;
+#elif USE_PRODUCTION_BACKEND
+            BackendPurpose backend = BackendPurpose.Production;
+#else
+            BackendPurpose backend = BackendPurpose.Staging;
+#endif
+
+            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
             AddService<ITimerManager>(new TimerManager());
             AddService<ILoadObjectsManager>(new LoadObjectsManager());
             AddService<IInputManager>(new InputManager());
@@ -47,7 +56,11 @@ namespace LoomNetwork.CZB
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<BackendFacade>(new BackendFacade());
+            AddService<BackendFacade>(new BackendFacade(
+                backendEndpoint.AuthHost,
+                backendEndpoint.ReaderHost,
+                backendEndpoint.WriterHost
+                ));
             AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
