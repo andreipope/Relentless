@@ -32,8 +32,6 @@ namespace LoomNetwork.CZB
 
         private List<ReportViewBase> _allReports;
 
-        private float _graveYardTopOffset = 0;
-
         public ReportPanelItem() { }
 
         public ReportPanelItem(GameObject gameObject)
@@ -54,20 +52,7 @@ namespace LoomNetwork.CZB
 
             _actionsQueueController.GotNewActionReportEvent += GotNewActionReportEventHandler;
 
-            _graveYardTopOffset = 0;
             _reportGroup.padding.top = 0;
-        }
-
-        public void Update()
-        {
-            if (selfPanel == null)
-                return;
-
-            if (_reportGroup.padding.top > _graveYardTopOffset)
-            {
-                float offset = Mathf.Lerp((float)_reportGroup.padding.top, (float)_graveYardTopOffset, Time.deltaTime * 2);
-                _reportGroup.padding = new RectOffset(0, 0, Mathf.FloorToInt(offset), 0);
-            }
         }
 
         public void Dispose()
@@ -81,7 +66,6 @@ namespace LoomNetwork.CZB
                 item.Dispose();
             _allReports.Clear();
 
-            _graveYardTopOffset = 0;
             _reportGroup.padding.top = 0;
         }
 
@@ -140,9 +124,6 @@ namespace LoomNetwork.CZB
             }
             if (reportView != null)
                 _allReports.Add(reportView);
-
-            if (_allReports.Count > 4)
-                _graveYardTopOffset = -80f - (120f * (_allReports.Count - 5));
         }
     }
 }
