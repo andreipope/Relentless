@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
 
         public int cardsAmountDeckEditing = 0;
 
-        public bool cardShouldBeDistributed = false;
+        public bool cardShouldBeChanged = false;
 
         public bool isNewCard = false;
         public bool isPreview;
@@ -467,9 +467,9 @@ namespace LoomNetwork.CZB
             if (!_cardsController.CardDistribution)
                 return;
 
-            cardShouldBeDistributed = !cardShouldBeDistributed;
+            cardShouldBeChanged = !cardShouldBeChanged;
 
-            distibuteCardObject.SetActive(cardShouldBeDistributed);
+            distibuteCardObject.SetActive(cardShouldBeChanged);
         }
 
 
