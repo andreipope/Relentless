@@ -113,8 +113,6 @@ namespace LoomNetwork.CZB
             else if(state == Enumerators.AppState.APP_INIT)
             {
                 _appStateManager.ChangeAppState(_finishMatchAppState);
-
-                _uiManager.HidePopup<LoadingGameplayPopup>();
             }
         }
     }
