@@ -100,9 +100,17 @@ namespace LoomNetwork.CZB
 #else
             AsyncOperation asyncOperation = Application.LoadLevelAsync(levelName);
 #endif
-            while (!asyncOperation.isDone)
+            float delayTime = Constants.LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT;
+            if (levelName != Enumerators.AppState.APP_INIT.ToString ())
+                delayTime = 0;
+            
+            while (!asyncOperation.isDone || delayTime > 0 )
             {
+                delayTime -= Time.deltaTime;
                 SceneLoadingProgress = Mathf.RoundToInt(asyncOperation.progress * 100f);
+                if (delayTime > 0) {
+                    SceneLoadingProgress = Mathf.Min (SceneLoadingProgress, 90);
+                }
                 yield return null;
             }
         }
