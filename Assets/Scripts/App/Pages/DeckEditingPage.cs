@@ -314,32 +314,11 @@ namespace LoomNetwork.CZB
             _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
-            LoadCards(0, GetSetType(_currentDeck.heroId));
+            Enumerators.SetType heroSetType = 
+                _dataManager.CachedHeroesData.Heroes
+                    .Find(x => x.heroId == _currentDeck.heroId).heroElement;
+            LoadCards(0, heroSetType);
         }
-
-        private Enumerators.SetType GetSetType(int heroId)
-        {
-            switch (heroId)
-            {
-                case 0:
-                    return Enumerators.SetType.EARTH;
-                case 1:
-                   return Enumerators.SetType.FIRE;
-                case 2:
-                    return Enumerators.SetType.WATER;
-                case 3:
-                    return Enumerators.SetType.AIR;
-                case 4:
-                    return Enumerators.SetType.TOXIC;
-                case 5:
-                    return Enumerators.SetType.LIFE;
-                case 6:
-                    return Enumerators.SetType.ITEM;
-            }
-
-            return Enumerators.SetType.FIRE;
-        }
-
 
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
