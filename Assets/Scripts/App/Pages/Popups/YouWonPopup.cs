@@ -88,12 +88,30 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-            int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
+
+            var dataManager = GameClient.Get<IDataManager>();
+            int heroId = dataManager.CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
+            Hero currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
             _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
             //_nameHeroText.text = heroName + " Hero";
+            
+            //Debug.Log(" ========= currentPlayerHero = " + currentPlayerHero.name);
+            //Debug.Log(" Hp = " + currentPlayerHero.experience + " , Level = " + currentPlayerHero.experience);
+            
+            GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 900);
+            //Debug.Log(" === current Player " + currentPlayerHero.experience + " , " + currentPlayerHero.level);
+            
+            // save to data manager cached hero list
+            for (var i = 0; i < dataManager.CachedHeroesData.heroes.Count; i++)
+            {
+                if (dataManager.CachedHeroesData.heroes[i].heroId == heroId)
+                {
+                    dataManager.CachedHeroesData.heroes[i] = currentPlayerHero;
+                    break;
+                }
+            }
 
             //_winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
 			//_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
@@ -114,6 +132,8 @@ namespace LoomNetwork.CZB
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+
+            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
             _uiManager.HidePopup<YouWonPopup>();
         }
