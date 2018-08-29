@@ -124,7 +124,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "TARGET_FIRE",
               "buffType": "ENTRY"
@@ -310,7 +309,6 @@
               "activityType": "PASSIVE",
               "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS|opponent",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_FIRE",
               "buffType": "ENTRY"
@@ -497,7 +495,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
               "value": 1,
               "effectType": "TARGET_WATER",
               "buffType": "ENTRY"
@@ -753,7 +750,6 @@
               "activityType": "PASSIVE",
               "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_WATER_WAVE",
               "buffType": "ENTRY"
@@ -832,7 +828,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
               "value": 1,
               "effectType": "TARGET_ROCK",
               "buffType": "ENTRY"
@@ -1104,7 +1099,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
-              "affectObjectType": "none",
               "cardType": "HEAVY",
               "buffType": "ENTRY"
             }
@@ -2447,7 +2441,6 @@
               "activityType": "PASSIVE",
               "callType": "DEATH",
               "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
-              "affectObjectType": "none",
               "value": 3,
               "effectType": "MASSIVE_TOXIC_ALL",
               "buffType": "DEATH"

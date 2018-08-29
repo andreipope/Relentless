@@ -35,7 +35,8 @@ public class EndTurnButton : MonoBehaviour
     public void SetEnabled(bool enabled)
     {
         active = enabled;
-        buttonText.text = enabled ? "END\nTURN" : "WAIT";
+        buttonText.text = enabled ? "END\nTURN" : "\nWAIT";
+        thisRenderer.sprite = enabled ? defaultSprite : pressedSprite;
     }
 
     private void OnMouseEnter()
@@ -45,6 +46,8 @@ public class EndTurnButton : MonoBehaviour
 
     private void OnMouseExit()
     {
+        if (!active) return;
+        
         hovering = false;
         thisRenderer.sprite = defaultSprite;
         buttonText.transform.localPosition = textDefaultPosition;
@@ -73,7 +76,7 @@ public class EndTurnButton : MonoBehaviour
             SetEnabled(false);
         }
 
-        thisRenderer.sprite = defaultSprite;
+        //thisRenderer.sprite = defaultSprite;
         buttonText.transform.localPosition = textDefaultPosition;
     }
 }

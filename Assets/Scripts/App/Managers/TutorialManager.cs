@@ -165,7 +165,7 @@ namespace LoomNetwork.CZB
             _tutorialStarted = false;
             GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
-            GameClient.Get<IDataManager>().SaveAllCache();
+            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
         }
 

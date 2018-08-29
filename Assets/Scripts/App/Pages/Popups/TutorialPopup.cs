@@ -172,17 +172,7 @@ namespace LoomNetwork.CZB
         
         private void SkipButtonOnClickHandler()
         {
-            Action callback = () =>
-            {
-                _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
-
-                _uiManager.HidePopup<YourTurnPopup>();
-
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-            };
-
-            _uiManager.DrawPopup<ConfirmationPopup>(callback);
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
         }
 
         private void BackButtonOnClickHandler()

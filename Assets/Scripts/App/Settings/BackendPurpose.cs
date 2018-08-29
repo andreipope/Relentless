@@ -4,6 +4,6 @@ namespace LoomNetwork.CZB.BackendCommunication
     {
         Local,
         Staging,
-        Public
+        Production
     }
 }
