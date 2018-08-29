@@ -37,12 +37,16 @@ namespace LoomNetwork.CZB
         private GameObject _playerBoard;
         private GameObject _opponentBoard;
 
+        private BoardUnit _fakeBoardCard;
+
 
         private int _cardInstanceId = 0;
 
         public GameObject creatureCardViewPrefab,
                            opponentCardPrefab,
                            spellCardViewPrefab;
+
+        public int indexOfCard;
 
         public bool CardDistribution { get; set; }
 
@@ -70,6 +74,8 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+
+            indexOfCard = -1;
         }
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
@@ -504,6 +510,27 @@ namespace LoomNetwork.CZB
                     MonoBehaviour.Destroy(go);
                 });
             });
+        }
+
+        public void HoverPlayerCardOnBattleground (Player player, BoardCard card, HandBoardCard handCard) {
+            var libraryCard = card.WorkingCard.libraryCard;
+            if (libraryCard.cardKind == Enumerators.CardKind.CREATURE) {
+                int newIndexOfCard = 0;
+                float newCreatureCardPosition = card.transform.position.x;
+
+                // set correct position on board depends from card view position
+                for (int i = 0; i < player.BoardCards.Count; i++)
+                {
+                    if (newCreatureCardPosition > player.BoardCards[i].transform.position.x)
+                        newIndexOfCard = i + 1;
+                    else break;
+                }
+
+                if (player.BoardCards.Count > 0 && indexOfCard != newIndexOfCard) {
+                    indexOfCard = newIndexOfCard;
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayerTest (indexOfCard);
+                }
+            }
         }
 
         public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard)
