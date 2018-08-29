@@ -23,8 +23,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                         "http://loom.games",
                         // FIXME
 #if USE_GAMECHAIN_1_FOR_PUBLIC
-                        "ws://gamechain.dappchains.com:9999/queryws",
-                        "ws://gamechain.dappchains.com:46657/websocket"
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
@@ -39,8 +39,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                        "ws://gamechain.dappchains.com:9999/queryws",
-                        "ws://gamechain.dappchains.com:46657/websocket"
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
 
                     )

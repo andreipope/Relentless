@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 224749383341719126}
   - component: {fileID: 222324409676071938}
   - component: {fileID: 114710901244953488}
+  - component: {fileID: 95590940575468942}
   m_Layer: 0
   m_Name: PressAnyText
   m_TagString: Untagged
@@ -451,6 +452,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &95590940575468942
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1587505957174384}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5a6be945688824053aecbcec0a573b88, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!95 &95799871783013690
 Animator:
   serializedVersion: 3
