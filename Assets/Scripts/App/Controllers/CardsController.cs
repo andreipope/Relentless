@@ -131,9 +131,16 @@ namespace LoomNetwork.CZB
             // for local player
 
             List<BoardCard> cards = new List<BoardCard>();
-            cards.AddRange(_gameplayManager.CurrentPlayer.CardsPreparingToHand.FindAll(x => x.cardShouldBeDistributed));
+            cards.AddRange(_gameplayManager.CurrentPlayer.CardsPreparingToHand.FindAll(x => x.cardShouldBeChanged));
             foreach (var card in cards)
+            {
+                //_gameplayManager.CurrentPlayer.CardsInDeck.IndexOf(card.WorkingCard);
+                _gameplayManager.CurrentPlayer.CardsInDeck.Remove(card.WorkingCard);
+                _gameplayManager.CurrentPlayer.CardsInDeck.Add(card.WorkingCard);
                 card.ReturnCardToDeck();
+            }
+
+
 
             foreach (var card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {

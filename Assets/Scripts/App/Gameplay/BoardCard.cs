@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
 
         public int cardsAmountDeckEditing = 0;
 
-        public bool cardShouldBeDistributed = false;
+        public bool cardShouldBeChanged = false;
 
         public bool isNewCard = false;
         public bool isPreview;
@@ -119,18 +119,6 @@ namespace LoomNetwork.CZB
 
             _parentOfEditingGroupUI = transform.Find("DeckEditingGroupUI");
 
-            _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
-            _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
-
-            if (!InternalTools.IsTabletScreen())
-            {
-                _parentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                _parentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
-
-                _parentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                _parentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
-            }             
-
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
             animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
@@ -182,6 +170,22 @@ namespace LoomNetwork.CZB
 
             amountText.transform.parent.gameObject.SetActive(false);
             distibuteCardObject.SetActive(false);
+
+            if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
+
+                _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
+                _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
+
+                if (!InternalTools.IsTabletScreen())
+                {
+                    _parentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    _parentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
+
+                    _parentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    _parentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
+                }
+            }
         }
 
         private void PlayerGooChangedEventHandler(int obj)
@@ -467,9 +471,9 @@ namespace LoomNetwork.CZB
             if (!_cardsController.CardDistribution)
                 return;
 
-            cardShouldBeDistributed = !cardShouldBeDistributed;
+            cardShouldBeChanged = !cardShouldBeChanged;
 
-            distibuteCardObject.SetActive(cardShouldBeDistributed);
+            distibuteCardObject.SetActive(cardShouldBeChanged);
         }
 
 
@@ -616,11 +620,11 @@ namespace LoomNetwork.CZB
 
         public void DrawTooltipInfoOfCard(BoardCard boardCard)
         {
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+
+
             if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 return;
-
-
-            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 

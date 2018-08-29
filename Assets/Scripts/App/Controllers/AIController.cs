@@ -154,7 +154,7 @@ namespace LoomNetwork.CZB
         {
             if (!_gameplayManager.IsTutorial)
             {
-                _minTurnForAttack = _random.Next(1, 3);
+                //_minTurnForAttack = _random.Next(1, 3);
                 FillActions();
 
                 SetAITypeByDeck();
@@ -233,6 +233,7 @@ namespace LoomNetwork.CZB
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
+            bool wasAction = false;
             foreach (var card in GetUnitCardsInHand())
             {
                 if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
@@ -241,7 +242,7 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
                     PlayCardOnBoard(card);
-                    await LetsThink(cancellationToken);
+                    wasAction = true;
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
@@ -255,6 +256,7 @@ namespace LoomNetwork.CZB
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
                     PlayCardOnBoard(card);
+                    wasAction = true;
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
@@ -262,9 +264,11 @@ namespace LoomNetwork.CZB
                 // if (Constants.DEV_MODE)
                 //     break;
             }
-
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
+            if (wasAction)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+            }
         }
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
@@ -354,20 +358,30 @@ namespace LoomNetwork.CZB
         // ai step 3
         private async Task UsePlayerSkills(CancellationToken cancellationToken)
         {
-          //  return;
+            //  return;
+            bool wasAction = false;
             if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
-          
-            if (_skillsController.opponentPrimarySkill.IsSkillReady)
-                DoBoardSkill(_skillsController.opponentPrimarySkill);
 
-            await LetsThink(cancellationToken);
+            if (_skillsController.opponentPrimarySkill.IsSkillReady)
+            {
+                DoBoardSkill(_skillsController.opponentPrimarySkill);
+                wasAction = true;
+            }
+            if(wasAction)
+                await LetsThink(cancellationToken);
 
             if (_skillsController.opponentSecondarySkill.IsSkillReady)
+            {
                 DoBoardSkill(_skillsController.opponentSecondarySkill);
+                wasAction = true;
+            }
 
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
+            if (wasAction)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+            }
         }
 
         // some thinking - delay between general actions

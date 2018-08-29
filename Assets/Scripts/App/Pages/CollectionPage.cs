@@ -271,6 +271,7 @@ namespace LoomNetwork.CZB
         public void MoveCardsPage(int direction)
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+            CalculateNumberOfPages();
 
             _currentElementPage += direction;
 
@@ -308,7 +309,6 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            CalculateNumberOfPages();
             LoadCards(_currentElementPage, _currentSet);
         }
 
@@ -394,39 +394,5 @@ namespace LoomNetwork.CZB
 		{
 			_uiManager.DrawPopup<WarningPopup>(msg);
 		}
-
-		public void SetActive(int id, bool active)
-		{
-
-		}
-
-        private void CorrectSetIndex(ref int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    index = 3;
-                    break;
-                case 1:
-                    index = 4;
-                    break;
-                case 2:
-                    index = 1;
-                    break;
-                case 3:
-                    index = 5;
-                    break;
-                case 4:
-                    index = 0;
-                    break;
-                case 5:
-                    index = 2;
-                    break;
-                case 6:
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }

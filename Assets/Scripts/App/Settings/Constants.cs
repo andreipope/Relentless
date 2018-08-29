@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB.Common
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 
-        internal static int DELAY_BETWEEN_AI_ACTIONS = 1200;
+        internal static int DELAY_BETWEEN_AI_ACTIONS = 1100;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
@@ -122,6 +122,8 @@ namespace LoomNetwork.CZB.Common
         internal const float POINTER_ON_CLICK_DELAY = 1.5f;
         internal const float POINTER_MIN_DRAG_DELTA = 3f;
         internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
+
+        internal const float LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT = 2f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 

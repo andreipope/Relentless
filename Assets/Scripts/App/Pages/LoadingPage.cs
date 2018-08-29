@@ -159,6 +159,11 @@ namespace LoomNetwork.CZB
 
             _pressAnyTextColor = _pressAnyText.color;
 
+#if UNITY_IOS || UNITY_ANDROID
+            _pressAnyText.text = "TAP TO CONTINUE";
+#else
+            _pressAnyText.text = "PRESS ANY KEY";
+#endif
             _loadingText.text = "LOADING...";
 
             _pressAnyText.gameObject.SetActive(false);

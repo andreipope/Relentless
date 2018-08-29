@@ -314,10 +314,11 @@ namespace LoomNetwork.CZB
             _numSets = _dataManager.CachedCardsLibraryData.sets.Count - 1;
             CalculateNumberOfPages();
 
-            LoadCards(0, 0);
+            Enumerators.SetType heroSetType = 
+                _dataManager.CachedHeroesData.Heroes
+                    .Find(x => x.heroId == _currentDeck.heroId).heroElement;
+            LoadCards(0, heroSetType);
         }
-
-
 
         #region button handlers
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
@@ -336,17 +337,15 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmQuitEventHandler;
-            _uiManager.DrawPopup<QuestionPopup>("This deck is unsaved, are you sure you want to go back?");
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to save the current horde?");
         }
 
         private void ConfirmQuitEventHandler(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmQuitEventHandler;
-            if (!status)
-                return;
-
-            if (Constants.DEV_MODE)
+            if (status)
                 OnDoneButtonPressed();
+
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
         }
 
