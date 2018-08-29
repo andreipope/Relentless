@@ -45,6 +45,7 @@ namespace LoomNetwork.CZB
 
             this.gameAction = gameAction;
             selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
+			selfObject.transform.SetSiblingIndex (0);
             previewImage = selfObject.transform.Find("Image").GetComponent<Image>();
 
             var behaviour = selfObject.GetComponent<OnBehaviourHandler>();

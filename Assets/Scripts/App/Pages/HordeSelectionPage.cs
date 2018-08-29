@@ -41,6 +41,8 @@ namespace LoomNetwork.CZB
                        _deleteButton,
                        _editButton;
 
+		private TextMeshProUGUI gooValueText;
+
         private ButtonShiftingContent _buttonArmy;
 
         private Image _firstSkill,
@@ -83,7 +85,9 @@ namespace LoomNetwork.CZB
         {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
-            _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
+			_containerOfDecks = _selfPage.transform.Find ("Panel_DecksContainer/Group");
+
+			gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
@@ -124,6 +128,8 @@ namespace LoomNetwork.CZB
             _newHordeDeckButton.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
 
             _battleButton.interactable = true;
+
+			gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             //todod improve I guess
             _selectedDeckId = _dataManager.CachedUserLocalData.lastSelectedDeckId;
@@ -193,7 +199,8 @@ namespace LoomNetwork.CZB
             _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveAllCache();
+            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             try
             {
@@ -235,7 +242,7 @@ namespace LoomNetwork.CZB
             _selectedDeckId = (int) deck.SelfDeck.id;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeckId;
 
-            _dataManager.SaveAllCache();
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             deck.selectionContainer.parent.SetAsLastSibling();
 
             BattleButtonUpdate();

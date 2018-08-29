@@ -55,7 +55,7 @@ namespace LoomNetwork.CZB
         public void CloseButtonHandler()
         {
 			_dataManager.CachedUserLocalData.agreedTerms = true;
-			_dataManager.SaveAllCache ();
+	        _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             Hide();
         }
