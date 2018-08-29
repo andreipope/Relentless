@@ -12,6 +12,7 @@ using DG.Tweening;
 using TMPro;
 using System;
 using System.Linq;
+using LoomNetwork.CZB.BackendCommunication;
 
 namespace LoomNetwork.CZB
 {
@@ -25,6 +26,7 @@ namespace LoomNetwork.CZB
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
         private ITimerManager _timerManager;
+        private BackendDataControlMediator _backendDataControlMediator;
 
 
         private BattlegroundController _battlegroundController;
@@ -88,6 +90,7 @@ namespace LoomNetwork.CZB
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
            
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
           //  _cards = new List<CardInGraveyard>();
@@ -264,7 +267,11 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.text = currentPlayerHero.FullName;
+                string playerNameText = currentPlayerHero.FullName;
+                if (_backendDataControlMediator.LoadUserDataModel()) {
+                    playerNameText = _backendDataControlMediator.UserDataModel.UserId;
+                }
+                _playerNameText.text = playerNameText;
             }
             if (currentOpponentHero != null)
             {
