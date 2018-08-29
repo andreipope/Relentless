@@ -379,6 +379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224870716038146596}
   - component: {fileID: 114023966483407140}
+  - component: {fileID: 95576329361876134}
   m_Layer: 0
   m_Name: Button_Play
   m_TagString: Untagged
@@ -1017,6 +1018,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &95576329361876134
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1408418531808508}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d24b140554b51497982e515e314aac11, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!95 &95977270168131034
 Animator:
   serializedVersion: 3
