@@ -43,8 +43,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             ReaderHost = readerHost; 
             WriterHost = writerHost;
             
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
             Debug.Log($"Using auth backend {AuthBackendHost}");
+            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
 
         public async Task CreateContract(byte[] privateKey)

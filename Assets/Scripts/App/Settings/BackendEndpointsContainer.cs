@@ -1,3 +1,5 @@
+#define USE_GAMECHAIN_1_FOR_PUBLIC
+
 using System.Collections.Generic;
 
 namespace LoomNetwork.CZB.BackendCommunication
@@ -16,22 +18,31 @@ namespace LoomNetwork.CZB.BackendCommunication
                     )
                 },
                 {
-                    BackendPurpose.Staging,
+                    BackendPurpose.Production,
                     new BackendEndpoint(
                         "http://loom.games",
                         // FIXME
-                        "ws://127.0.0.2:9999/queryws",
-                        "ws://127.0.0.2:46657/websocket"
-                        /*"ws://battleground-testnet-asia1.dappchains.com:9999/queryws", 
-                        "ws://battleground-testnet-asia1.dappchains.com:46657/websocket"*/
+#if USE_GAMECHAIN_1_FOR_PUBLIC
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket"
+#else
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket"
+#endif
                     )
                 },
                 {
-                    BackendPurpose.Public,
+                    BackendPurpose.Staging,
                     new BackendEndpoint(
-                        "http://loom.games",
-                        "ws://battleground-testnet-asia1.dappchains.com:9999/queryws",
-                        "ws://battleground-testnet-asia1.dappchains.com:46657/websocket"
+                        "http://stage.loom.games",
+#if USE_GAMECHAIN_1_FOR_PUBLIC
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket"
+#else
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket"
+#endif
+
                     )
                 }
             };
