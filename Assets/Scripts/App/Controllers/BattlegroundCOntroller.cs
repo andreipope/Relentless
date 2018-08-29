@@ -72,6 +72,7 @@ namespace LoomNetwork.CZB
         public List<BoardUnit> playerGraveyardCards = new List<BoardUnit>();
         public List<BoardUnit> opponentGraveyardCards = new List<BoardUnit>();
 
+        private BoardUnit _lastBoardUntilOnPreview;
 
         public void Init()
         {
@@ -142,6 +143,11 @@ namespace LoomNetwork.CZB
         {
             if (cardToDestroy == null)
                 return;
+
+            if (_lastBoardUntilOnPreview != null && cardToDestroy == _lastBoardUntilOnPreview)
+            {
+                DestroyCardPreview();
+            }
 
             bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer ? false : true;
 
@@ -574,6 +580,7 @@ namespace LoomNetwork.CZB
         }
 
         // rewrite
+        
         public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
             isPreviewActive = true;
@@ -585,6 +592,7 @@ namespace LoomNetwork.CZB
             }
             else if (target is BoardUnit)
             {
+                _lastBoardUntilOnPreview = target as BoardUnit;
                 currentPreviewedCardId = (target as BoardUnit).Card.instanceId;
             }
 
@@ -676,6 +684,7 @@ namespace LoomNetwork.CZB
         {
             if (currentBoardCard != null)
             {
+                _lastBoardUntilOnPreview = null;
                 var oldCardPreview = currentBoardCard;
                 foreach (var renderer in oldCardPreview.GetComponentsInChildren<SpriteRenderer>())
                 {

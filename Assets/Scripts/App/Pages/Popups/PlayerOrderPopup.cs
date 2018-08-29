@@ -223,13 +223,15 @@ namespace LoomNetwork.CZB
                     {
                         CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
                     }
+                    if (index == turnsCount - 1)
+                        _soundManager.StopPlaying(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
                 });
             }
 
             sequence.Play();
 
 
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.SFX_SOUND_VOLUME, false, false, false);
+            _soundManager.PlaySound(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SFX_SOUND_VOLUME, true, false, false);
         }
 
 
