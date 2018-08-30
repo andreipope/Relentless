@@ -394,7 +394,7 @@ namespace LoomNetwork.CZB
         {
             _currentHordePage--;
             if (_currentHordePage < 0)
-                _currentHordePage = _numHordePages;
+                _currentHordePage = _numHordePages - 1;
             CalculateVisibility();
         }
 
@@ -571,7 +571,7 @@ namespace LoomNetwork.CZB
         {
             _currentDeck.name = value;
         }
-
+        
         public void LoadDeckInfo(Deck deck)
         {
             _deckNameInputField.text = deck.name;
@@ -789,6 +789,11 @@ namespace LoomNetwork.CZB
                         Canvas.ForceUpdateCanvases();
                     }
                     );
+            }
+
+            if (_currentHordePage + 1 < _numHordePages)
+            {
+                MoveHordeToRight();
             }
         }
 
