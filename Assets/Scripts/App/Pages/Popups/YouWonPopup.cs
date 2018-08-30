@@ -5,8 +5,10 @@
 
 using LoomNetwork.CZB.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -36,6 +38,10 @@ namespace LoomNetwork.CZB
         private TextMeshProUGUI _message;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
+        private Image _experienceBar;
+        private WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
+        private TextMeshProUGUI _currentLevel;
+        private TextMeshProUGUI _nextLevel;
 
 
         //private TextMeshProUGUI _nameHeroText;
@@ -80,6 +86,10 @@ namespace LoomNetwork.CZB
             //_nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
             _buttonOk = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
+            _buttonOk.gameObject.SetActive(false);
+            _experienceBar = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar").GetComponent<Image>();
+            _currentLevel = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel").GetComponent<TextMeshProUGUI>();
+            _nextLevel = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/NextLevel").GetComponent<TextMeshProUGUI>();
 
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
@@ -88,16 +98,67 @@ namespace LoomNetwork.CZB
             _selfPage.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-            int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
+
+            var dataManager = GameClient.Get<IDataManager>();
+            int heroId = dataManager.CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
+            var currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.element.ToString().ToLower();
             _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
             //_nameHeroText.text = heroName + " Hero";
+ 
+            // TODO : instead of 1000, should be a value accordint to Level
+            // TODO : instead of 400, should be how much player experinece on wining game
+            _currentLevel.text = currentPlayerHero.level.ToString();
+            _nextLevel.text = (currentPlayerHero.level + 1).ToString();
+            var currentExperiencePercentage = (float)currentPlayerHero.experience / 1000;
+            _experienceBar.fillAmount = currentExperiencePercentage;
+            GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 400);
+            var updatedExperiencePercetage = (float)currentPlayerHero.experience / 1000; 
+         
+            //Debug.Log(updatedExperiencePercetage + " , " + currentExperiencePercentage);
+            if(updatedExperiencePercetage < currentExperiencePercentage)
+                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.level));
+            else
+                MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
+            
+            
+            // save to data manager cached hero list
+            var index = dataManager.CachedHeroesData.heroes.FindIndex(hero => hero.heroId == heroId);
+            if(index != -1) dataManager.CachedHeroesData.heroes[index] = currentPlayerHero;
+            //else Debug.LogError(" =========== Hero not foound ======================= ");
 
             //_winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
-			//_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
-		}
+            //_winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
+        }
+
+        private IEnumerator FillExperinceBar(float xpPercentage)
+        {
+            yield return _experienceFillWait;
+            _experienceBar.DOFillAmount(xpPercentage, 1f);
+            
+            yield return _experienceFillWait;
+            _buttonOk.gameObject.SetActive(true);
+        }
+        
+        private IEnumerator FillExperinceBarWithLevelUp(float xpPercentage, int currentLevel)
+        {
+            yield return _experienceFillWait;
+            _experienceBar.DOFillAmount(1, 1f);
+            
+            // show level up pop up or something
+            yield return _experienceFillWait;
+            //Debug.Log("====== Show LevelUp Pop Up Or Message ==============");
+            _experienceBar.fillAmount = 0f;
+            _currentLevel.text = currentLevel.ToString();
+            _nextLevel.text = (currentLevel + 1).ToString();
+            
+            yield return _experienceFillWait;
+            _experienceBar.DOFillAmount(xpPercentage, 1f);
+            
+            yield return _experienceFillWait;
+            _buttonOk.gameObject.SetActive(true);
+        }
 
         public void Show(object data)
         {
@@ -115,8 +176,22 @@ namespace LoomNetwork.CZB
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
+            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
             _uiManager.HidePopup<YouWonPopup>();
         }
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
