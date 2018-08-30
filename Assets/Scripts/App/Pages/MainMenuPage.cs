@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _markerOffline;
         private GameObject _markerOnline;
-
+	    
         public void Init()
         {
 			_uiManager = GameClient.Get<IUIManager>();
@@ -62,9 +62,38 @@ namespace LoomNetwork.CZB
 			_dataManager = GameClient.Get<IDataManager> ();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            
+            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
+        }
 
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state) {
+            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
+        }
+
+        private void UpdateConnectionStateUI()
+        {
+            if (_selfPage == null)
+                return;
+            
+            _connectionStatusText.text = 
+                _backendFacade.IsConnected ? 
+                    "<color=green>Online</color>" : 
+                    "<color=red>Offline</color>";
+            
+            _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
+            _markerOffline.gameObject.SetActive (_buttonReconnect.gameObject.activeSelf);
+			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
+            _markerOnline.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
+        }
+
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
-			_selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
@@ -79,10 +108,10 @@ namespace LoomNetwork.CZB
             _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
-            
+
             _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
             _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
-			_buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
+            _buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
             _markerOffline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Offline").gameObject;
             _markerOnline = _selfPage.transform.Find ("ConnectionPanel/Marker_Status_Online").gameObject;
 
@@ -95,42 +124,10 @@ namespace LoomNetwork.CZB
             _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
-            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
+            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);            
+            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
             _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
-            
-            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
-            
-            Hide();
-            
-        }
 
-        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state) {
-            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
-        }
-
-        private void UpdateConnectionStateUI() {
-            if (!_selfPage.activeSelf)
-                return;
-
-            _connectionStatusText.text = 
-                _backendFacade.IsConnected ? 
-                    "<color=green>Online</color>" : 
-                    "<color=red>Offline</color>";
-            
-            _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
-            _markerOffline.gameObject.SetActive (_buttonReconnect.gameObject.activeSelf);
-			_buttonLogout.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
-            _markerOnline.gameObject.SetActive (!_buttonReconnect.gameObject.activeSelf);
-        }
-
-        public void Update()
-        {
-
-        }
-
-        public void Show()
-        {
-            _selfPage.SetActive(true);
             _buttonArmy.interactable = true;
 
             _packsCount.text = _playerManager.LocalUser.packsCount <= 99 ? _playerManager.LocalUser.packsCount.ToString() : "99";
@@ -176,16 +173,23 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-        }
-
-        public void Dispose()
-        {
             if (_backendFacade.Contract != null)
             {
                 _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
                 _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
             }
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+        }
+
+        public void Dispose()
+        {
+            
         }
 
         #region Buttons Handlers
@@ -248,12 +252,37 @@ namespace LoomNetwork.CZB
         private async void ReconnectButtonOnClickHandler() {
             try
             {
-                // FIXME: add waiting popup
-                await _backendDataControlMediator.LoginAndLoadData();
+				ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+
+				Func<Task> connectFunc = async () =>
+				{
+					bool success = true;
+					try
+					{
+						await _backendDataControlMediator.LoginAndLoadData();
+					} catch (Exception)
+					{
+						// HACK: ignore to allow offline mode
+					}
+
+					if (!_backendFacade.IsConnected) {
+						success = false;
+					}
+
+					if (success)
+					{
+						connectionPopup.Hide();
+					} else {
+						connectionPopup.ShowFailedOnMenu();
+					}
+				};
+				_uiManager.DrawPopup<ConnectionPopup>();
+				connectionPopup.ConnectFunc = connectFunc;
+				await connectionPopup.ExecuteConnection();
             } catch (Exception e)
             {
                 Debug.LogException(e);
-                OpenAlertDialog("Reconnect failed. Reason: " + e.GetType().Name);
+                OpenAlertDialog($"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
             }
         }
 

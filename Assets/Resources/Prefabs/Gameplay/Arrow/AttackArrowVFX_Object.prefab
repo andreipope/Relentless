@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4095752374591564}
   - component: {fileID: 198211425815352016}
   - component: {fileID: 199550231804437538}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TargetStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4797831560052582}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Group_TargetObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 4832523622878086}
   - component: {fileID: 198788533472519262}
   - component: {fileID: 199116717727764708}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TargetOrbs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 4210273692471868}
   - component: {fileID: 198402315750228956}
   - component: {fileID: 199987061468152408}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: UpSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4495360199803716}
   - component: {fileID: 198815848492771888}
   - component: {fileID: 199500894635616334}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: MarkersStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4879718318632774}
   - component: {fileID: 198827253111379960}
   - component: {fileID: 199349107841022110}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: UpBubblesOld
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 4103524808243540}
   - component: {fileID: 198751672757137272}
   - component: {fileID: 199866163916438574}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TargetVanish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4357522178338090}
-  m_Layer: 11
+  - component: {fileID: 210480304935745024}
+  m_Layer: 0
   m_Name: AttackArrowVFX_Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +154,7 @@ GameObject:
   - component: {fileID: 4585825919887698}
   - component: {fileID: 198861740165712116}
   - component: {fileID: 199858387898408850}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: StartPulseLoop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +171,7 @@ GameObject:
   - component: {fileID: 4373863198558674}
   - component: {fileID: 198365600319689336}
   - component: {fileID: 199839447621030668}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: MarkersStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +186,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4467314280033372}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Group_RootObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +203,7 @@ GameObject:
   - component: {fileID: 4032601134976290}
   - component: {fileID: 198650294258452402}
   - component: {fileID: 199677782739921140}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: StartPulse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +220,7 @@ GameObject:
   - component: {fileID: 4052892620776176}
   - component: {fileID: 198623808995518256}
   - component: {fileID: 199819904953723680}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: UpBubbles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +237,7 @@ GameObject:
   - component: {fileID: 4942273004813054}
   - component: {fileID: 198003391261426238}
   - component: {fileID: 199266087645218684}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TargetLoop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +254,7 @@ GameObject:
   - component: {fileID: 4452686823036590}
   - component: {fileID: 58620323180591734}
   - component: {fileID: 50002581107616792}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Target_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +271,7 @@ GameObject:
   - component: {fileID: 4267055051473252}
   - component: {fileID: 198611935997823486}
   - component: {fileID: 199737171009735910}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: MarkersStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -286,7 +287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4598454003551530}
   - component: {fileID: 212076426721075566}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -467,7 +468,7 @@ Transform:
   m_GameObject: {fileID: 1924614238036974}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 1.032, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0, z: 1}
   m_Children:
   - {fileID: 4467314280033372}
   m_Father: {fileID: 4357522178338090}
@@ -21259,7 +21260,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -2122086951
+  randomSeed: 569953756
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -38433,7 +38434,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1120766514
+  randomSeed: -1975341006
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -42469,6 +42470,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210480304935745024
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1188416742911516}
+  m_Enabled: 1
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 5
 --- !u!212 &212076426721075566
 SpriteRenderer:
   m_ObjectHideFlags: 1

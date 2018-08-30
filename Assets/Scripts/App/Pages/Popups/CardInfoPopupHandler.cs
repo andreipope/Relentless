@@ -9,6 +9,8 @@ using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityEngine.Rendering;
+using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
 {
@@ -27,6 +29,8 @@ namespace LoomNetwork.CZB
 
         private BoardCard _previewCard;
         private BoardCard _selectedCollectionCard;
+
+        private bool _blockedClosing = false;
 
         public bool IsStateChanging { get; private set; }
         public bool IsInteractable { get; private set; }
@@ -48,9 +52,9 @@ namespace LoomNetwork.CZB
 
         public void Update() {
             IsInteractable = false;
-            if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<DesintigrateCardPopup>().Self.activeSelf &&
-                !_uiManager.GetPopup<WarningPopup>().Self.activeSelf)
+            if (_uiManager.GetPopup<CardInfoPopup>().Self == null &&
+                _uiManager.GetPopup<DesintigrateCardPopup>().Self == null &&
+                _uiManager.GetPopup<WarningPopup>().Self == null)
             {
                 if (!IsStateChanging && _previewCard != null)
                 {
@@ -72,6 +76,9 @@ namespace LoomNetwork.CZB
 
         private void Close()
         {
+            if (_blockedClosing)
+                return;
+
             SetIsStateChanging(true);
 
             Closing?.Invoke();
@@ -94,8 +101,12 @@ namespace LoomNetwork.CZB
 
         public void SelectCard(BoardCard card)
         {
+            _uiManager.GetPopup<CardInfoPopup>().Hide();
             ClearPreviewCard();
+            
             Opening?.Invoke();
+
+            _blockedClosing = true;
 
             SetIsStateChanging(true);
             _selectedCollectionCard = card;
@@ -108,10 +119,10 @@ namespace LoomNetwork.CZB
             _previewCard.gameObject.transform.position = card.gameObject.transform.position;
             _previewCard.gameObject.transform.localScale = card.gameObject.transform.lossyScale;
 
+            _previewCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI2;
+
             PreviewCardInstantiated?.Invoke(_previewCard);
-
-            Utilites.SetLayerRecursively(_previewCard.gameObject, 11);
-
+            
             Sequence mySequence = DOTween.Sequence();
             mySequence.Append(_previewCard.transform.DORotate(new Vector3(-20, 30, -20), .2f));
             mySequence.Append(_previewCard.transform.DORotate(new Vector3(0, 0, 0), .4f));
@@ -129,8 +140,15 @@ namespace LoomNetwork.CZB
             });
 
 
+            _uiManager.GetPopup<CardInfoPopup>().blockedClosing = true;
             _uiManager.GetPopup<CardInfoPopup>().cardTransform = _previewCard.transform;
             _uiManager.DrawPopup<CardInfoPopup>(card.libraryCard);
+
+            GameClient.Get<ITimerManager>().AddTimer((x) =>
+            {
+                _blockedClosing = false;
+                _uiManager.GetPopup<CardInfoPopup>().blockedClosing = false;
+            }, null, 1f);
         }
 
         private void SetIsStateChanging(bool isStartedStateChange) {

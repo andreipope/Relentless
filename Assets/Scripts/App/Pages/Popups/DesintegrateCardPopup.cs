@@ -41,21 +41,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
-
-            _yesButton = _selfPage.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
-            _noButton = _selfPage.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
-            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>(); 
-
-            _yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
-			_noButton.onClickEvent.AddListener(CloseDesintegratePopup);
-            _backButton.onClickEvent.AddListener(CloseDesintegratePopup);
-
-            //_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
-
-            Hide();
         }
 
 
@@ -80,7 +65,12 @@ namespace LoomNetwork.CZB
                 cardTransform.DOKill();
                 cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
             }*/
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -89,20 +79,30 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _yesButton = _selfPage.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
+            _noButton = _selfPage.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
+            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>(); 
+
+            _yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
+            _noButton.onClickEvent.AddListener(CloseDesintegratePopup);
+            _backButton.onClickEvent.AddListener(CloseDesintegratePopup);
+
+            //_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
         }
 
         public void Show(object data)
         {
+            Show();
+
             _cardData =  data as CollectionCardData;
             //_description.text = _card.description;
             if (_cardData.amount == 0)
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
             else
                 _yesButton.GetComponent<MenuButtonNoGlow>().interactable = true;
-
-                  
-            Show();
         }
 
         public void Update()

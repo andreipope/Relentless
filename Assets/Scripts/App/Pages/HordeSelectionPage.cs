@@ -41,6 +41,8 @@ namespace LoomNetwork.CZB
                        _deleteButton,
                        _editButton;
 
+		private TextMeshProUGUI gooValueText;
+
         private ButtonShiftingContent _buttonArmy;
 
         private Image _firstSkill,
@@ -73,10 +75,19 @@ namespace LoomNetwork.CZB
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+        }
 
+        public void Update()
+        {
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeSelectionPage"), _uiManager.Canvas.transform, false);
 
-            _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
+			_containerOfDecks = _selfPage.transform.Find ("Panel_DecksContainer/Group");
+
+			gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
@@ -118,29 +129,27 @@ namespace LoomNetwork.CZB
 
             _battleButton.interactable = true;
 
-            Hide();
-        }
+			gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
-        public void Update()
-        {
-        }
-
-        public void Show()
-        {
             //todod improve I guess
             _selectedDeckId = _dataManager.CachedUserLocalData.lastSelectedDeckId;
             _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
-            _selfPage.SetActive(true);
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-            ResetHordeDecks();
+            if (_selfPage == null)
+                return;
 
-            _scrolledDeck = -1;
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
+
+            /*ResetHordeDecks();
+
+            _scrolledDeck = -1;*/
         }
 
         public void Dispose()
@@ -190,7 +199,8 @@ namespace LoomNetwork.CZB
             _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
             _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveAllCache();
+            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             try
             {
@@ -199,13 +209,13 @@ namespace LoomNetwork.CZB
                     deck.SelfDeck.id,
                     _dataManager.CachedDecksLastModificationTimestamp
                     );
-                CustomDebug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
+                Debug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
             } catch (Exception e)
             {
                 // HACK for offline mode
                 if (false)
                 {
-                    CustomDebug.Log("Result === " + e);
+                    Debug.Log("Result === " + e);
                     OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
                     return;
                 }
@@ -232,7 +242,7 @@ namespace LoomNetwork.CZB
             _selectedDeckId = (int) deck.SelfDeck.id;
             _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeckId;
 
-            _dataManager.SaveAllCache();
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             deck.selectionContainer.parent.SetAsLastSibling();
 
             BattleButtonUpdate();

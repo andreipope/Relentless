@@ -72,6 +72,35 @@ namespace LoomNetwork.CZB
 
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
+            _createdBoardCards = new List<BoardCard>();
+        }
+
+
+        public void Update()
+        {
+            if (_selfPage != null && _selfPage.activeInHierarchy)
+            {
+                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        if (_isCardPreview)
+                            CardPreview(false);
+                        else
+                            CardClickeCheck();
+                    }
+
+                    if((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.W))
+                    {
+                        _activatedTemporaryPack = true;
+                    }
+
+                }
+            }
+        }
+
+        public void Show()
+        {
             _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
@@ -95,52 +124,25 @@ namespace LoomNetwork.CZB
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
 
-            _createdBoardCards = new List<BoardCard>();
-
-            Hide();
-        }
-
-
-        public void Update()
-        {
-            if (_selfPage.activeInHierarchy)
-            {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (_isCardPreview)
-                            CardPreview(false);
-                        else
-                            CardClickeCheck();
-                    }
-
-                    if((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.W))
-                    {
-                        _activatedTemporaryPack = true;
-                    }
-
-                }
-            }
-        }
-
-        public void Show()
-        {
-            _selfPage.SetActive(true);
             InitObjects();
-
         }
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
             Dispose();
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
         {
-            ResetBoardCards();
-            MonoBehaviour.Destroy(_backgroundCanvas);
+            //ResetBoardCards();
+            //MonoBehaviour.Destroy(_backgroundCanvas);
             MonoBehaviour.Destroy(_cardPlaceholders);
         }
 
@@ -196,7 +198,7 @@ namespace LoomNetwork.CZB
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
-                GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
                 _isCardPreview = true;
             }
             else

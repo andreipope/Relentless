@@ -28,8 +28,9 @@ namespace LoomNetwork.CZB
         private GameObject _selfPage;
 
 		private Button _continueButton;
-		private Button _buyButton;
-		private GameObject _abilitiesGroup;
+        private Button _buyButton;
+        private Button _cancelButton;
+        private GameObject _abilitiesGroup;
 		private TextMeshProUGUI _title;
 		private TextMeshProUGUI _skillName;
 		private TextMeshProUGUI _skillDescription;
@@ -45,30 +46,8 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 			_dataManager = GameClient.Get<IDataManager> ();
-
-			_selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-			_continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
-			_continueButton.onClick.AddListener(CloseButtonHandler);
-
-			_title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
-			_skillName = _selfPage.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
-			_skillDescription = _selfPage.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
-
-			_abilitiesGroup = _selfPage.transform.Find ("Abilities").gameObject;
-
-			_heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
-
+           
             _abilities = new List<AbilityInstance>();
-            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
-            {
-                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
-                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
-                _abilities.Add(abilityInstance);
-            }
-
-            Hide();
         }
 
 		public void Dispose()
@@ -79,18 +58,16 @@ namespace LoomNetwork.CZB
 		    }
 
             _abilities.Clear();
-		}
-
-        public void CloseButtonHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            Hide();
-        }
+		}      
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -99,15 +76,40 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage.SetActive(true);
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
+            _cancelButton = _selfPage.transform.Find("Button_Cancel").GetComponent<Button>();
+
+            _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
+            _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
+
+            _title = _selfPage.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+            _skillName = _selfPage.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
+            _skillDescription = _selfPage.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
+
+            _abilitiesGroup = _selfPage.transform.Find ("Abilities").gameObject;
+
+            _heroImage = _selfPage.transform.Find("HeroImage").GetComponent<Image>();
+
+            _abilities.Clear ();
+
+            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+            {
+                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
+                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
+                _abilities.Add(abilityInstance);
+            }
         }
 
         public void Show(object data)
 		{
+            Show();
+
 			FillInfo ((Hero) data);
 		    _abilities[0].IsSelected = true;
             AbilityInstanceOnSelectionChanged (_abilities [0]);
-            Show();
         }
 
         public void Update()
@@ -135,6 +137,23 @@ namespace LoomNetwork.CZB
         private void AbilityInstanceOnSelectionChanged(AbilityInstance ability) {
             _skillName.text = ability.Skill.title;
             _skillDescription.text = ability.Skill.description;
+        }
+
+
+
+        public void ContinueButtonOnClickHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+
+            OnHidePopupEvent?.Invoke();
+
+            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
+        }
+
+        public void CancelButtonOnClickHandler()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
         private class AbilityInstance : IDisposable

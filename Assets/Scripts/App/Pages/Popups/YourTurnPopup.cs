@@ -37,9 +37,6 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YourTurnPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
             Hide();
         }
 
@@ -52,9 +49,14 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
 			GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -63,9 +65,11 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YourTurnPopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YOURTURN_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
-            _selfPage.SetActive(true);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             _selfPage.transform.localScale = Vector3.zero;
             _selfPage.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
@@ -87,17 +91,5 @@ namespace LoomNetwork.CZB
         {
 
         }
-
-        private void OnClickOkButtonEventHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
-                GameClient.Get<ITutorialManager>().StopTutorial();
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(LoomNetwork.CZB.Common.Enumerators.AppState.DECK_SELECTION);
-            Hide();
-        }
-
     }
 }

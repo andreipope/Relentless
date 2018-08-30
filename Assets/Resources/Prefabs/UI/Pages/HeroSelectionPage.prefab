@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224603440996931538}
   - component: {fileID: 222379353856994284}
   - component: {fileID: 114692956477006172}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_OverlordName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222361961889820018}
   - component: {fileID: 114193128362709732}
   - component: {fileID: 114300175275610396}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_RightArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 222394583072504990}
   - component: {fileID: 114084216638458318}
   - component: {fileID: 114295932259138566}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Continue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 224271857509048754}
   - component: {fileID: 222160899458204122}
   - component: {fileID: 114895154421052888}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224724106162879958}
   - component: {fileID: 222898798722005976}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HeroSelectionPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 224714280553398300}
   - component: {fileID: 222780215229167150}
   - component: {fileID: 114327470656456696}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_OverlordInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 222363563762436842}
   - component: {fileID: 114556454113400860}
   - component: {fileID: 114305730533642302}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 222961716913541020}
   - component: {fileID: 114609586244336356}
   - component: {fileID: 114657564839986448}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Button_LeftArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224244789721050234}
   - component: {fileID: 222509429227638818}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_Type
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 224179719556996546}
   - component: {fileID: 222636257926405888}
   - component: {fileID: 114637012117037770}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_ShortDescription
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 224798690650975062}
   - component: {fileID: 222852329224977480}
   - component: {fileID: 114444851807097990}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BottomMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 222831596498441012}
   - component: {fileID: 114442512562758950}
   - component: {fileID: 114463689220360436}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_OverlordContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 224747240953559834}
   - component: {fileID: 222398075050348914}
   - component: {fileID: 114038477604249344}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: FadeMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 224033317346318582}
   - component: {fileID: 222981925092046956}
   - component: {fileID: 114308062408025336}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 224521934000944276}
   - component: {fileID: 222903576727944010}
   - component: {fileID: 114314288732644808}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 224081576694802024}
   - component: {fileID: 222526270936674016}
   - component: {fileID: 114334737214986156}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_ElementType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 224218792614520052}
   - component: {fileID: 222691182925023920}
   - component: {fileID: 114624644629401604}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_LeftMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,7 +313,7 @@ GameObject:
   - component: {fileID: 224141899145573890}
   - component: {fileID: 222774019670263572}
   - component: {fileID: 114626346168870932}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_RightMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 224442113439965370}
   - component: {fileID: 222866594462722482}
   - component: {fileID: 114500991353477292}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_ChooseOverlord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 224179486053996382}
   - component: {fileID: 222763776266264176}
   - component: {fileID: 114250429545041994}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text_LongDescription
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 224943931653059712}
   - component: {fileID: 222589684925714962}
   - component: {fileID: 114735194973656700}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TMP SubMeshUI [Timeline SDF No Outline + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 222068326578749088}
   - component: {fileID: 114925854744776554}
   - component: {fileID: 114842238575706468}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 224750073705932004}
   - component: {fileID: 222697654892915868}
   - component: {fileID: 114330663283385558}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_BackgroundContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2133,7 +2133,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -6, y: -42}
+  m_AnchoredPosition: {x: -6, y: -77}
   m_SizeDelta: {x: 1850, y: 1204}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224943931653059712

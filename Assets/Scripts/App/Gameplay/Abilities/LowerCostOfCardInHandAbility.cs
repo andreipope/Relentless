@@ -10,9 +10,11 @@ namespace LoomNetwork.CZB
 {
     public class LowerCostOfCardInHandAbility : AbilityBase
     {
+        public int value = 0;
+
         public LowerCostOfCardInHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
-
+            value = ability.value;
         }
 
         public override void Activate()
@@ -44,7 +46,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            _cardsController.LowGooCostOfCardInHand(playerCallerOfAbility);
+            _cardsController.LowGooCostOfCardInHand(playerCallerOfAbility, null, value);
         }
     }
 }

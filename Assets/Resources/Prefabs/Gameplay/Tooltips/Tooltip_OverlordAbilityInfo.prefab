@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4723075952354650}
   - component: {fileID: 212234415449265442}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_IconBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4648315261848210}
   - component: {fileID: 212121820228189944}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 23255542177866738}
   - component: {fileID: 33320666409724960}
   - component: {fileID: 114458601292827714}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: TMP SubMesh [FiraSans-Regular SDF Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4820512696638560}
   - component: {fileID: 212687277749870314}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Image_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 33219242820939382}
   - component: {fileID: 222264781667271526}
   - component: {fileID: 114366535440513576}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 33196285906281802}
   - component: {fileID: 222803336119647240}
   - component: {fileID: 114930666336816874}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Text_Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4001210192753504}
   - component: {fileID: 212957867461486794}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Tooltip_OverlordAbilityInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,9 +266,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2002
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 22
 --- !u!23 &23664836445570016
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -300,9 +300,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2002
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 22
 --- !u!33 &33196285906281802
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -602,9 +602,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2001
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 21
   m_Sprite: {fileID: 21300000, guid: c347666f3037626479acddd5ece11864, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -646,9 +646,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2003
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 23
   m_Sprite: {fileID: 21300000, guid: dea0893d38daa5044aeec78219045936, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -690,9 +690,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2004
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 24
   m_Sprite: {fileID: 21300000, guid: 2aca8d28525ce404a8bedc0f77734ca1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -734,9 +734,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 540465013
-  m_SortingLayer: 7
-  m_SortingOrder: 2000
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: 8f63b5af6cdfaf641be5228c865167b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

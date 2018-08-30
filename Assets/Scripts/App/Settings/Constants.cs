@@ -9,10 +9,8 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-	    internal const string CURRENT_VERSION = "0.1.0.0";
-	    internal const string CURRENT_VERSION_POSTFIX = "";
+	    internal const string CURRENT_VERSION_BASE = "0.1.2";
 	    internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
-	    internal const string CURRENT_VERSION_FULL = CURRENT_VERSION + CURRENT_VERSION_POSTFIX;
 
         internal const string VERSION_FILE_RESOLUTION = ".ver";
 
@@ -51,6 +49,7 @@ namespace LoomNetwork.CZB.Common
         internal static int MAX_DECK_SIZE = 30;
         internal static int MIN_DECK_SIZE = 30;
         internal static int MAX_DECKS_AT_ALL = 6;
+        internal static int MAX_CARDS_IN_HAND = 10;
 
         internal static int DEFAULT_PLAYER_HP = 20;
         internal static int DEFAULT_PLAYER_GOO = 0;
@@ -62,16 +61,22 @@ namespace LoomNetwork.CZB.Common
 
         internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
 
-        internal static int DELAY_BETWEEN_AI_ACTIONS = 1200;
+        internal static int DELAY_BETWEEN_AI_ACTIONS = 1100;
 
         internal const string TAG_PLAYER_OWNED = "PlayerOwned";
         internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
+
+        internal const string PLAYER_BOARD = "PlayerBoard";
+        internal const string OPPONENT_BOARD = "OpponentBoard";
 
 
         internal const string LAYER_HAND_CARDS = "HandCards";
         internal const string LAYER_BOARD_CARDS = "BoardCards";
         internal const string LAYER_DEFAULT = "Default";
         internal const string LAYER_FOREGROUND = "Foreground";
+		internal const string LAYER_GAME_UI1 = "GameUI1";
+		internal const string LAYER_GAME_UI2 = "GameUI2";
+		internal const string LAYER_GAME_UI3 = "GameUI3";
 
         internal const string ZONE_HAND = "Hand";
         internal const string ZONE_BOARD = "Board";
@@ -109,15 +114,20 @@ namespace LoomNetwork.CZB.Common
         internal static float OVERLORD_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float SPELL_ABILITY_SOUND_VOLUME = 0.1f;
         internal static float BATTLEGROUND_EFFECTS_SOUND_VOLUME = 0.25f;
+		internal static float ZOMBIE_DEATH_VO_DELAY_BEFORE_FADEOUT = 3f;
 
         internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
         internal static float CARD_DISTRIBUTION_TIME = 5f;
 
-        internal const float TOOLTIP_APPEAR_ON_CLICK_DELAY = 1f;
+        internal const float POINTER_ON_CLICK_DELAY = 1.5f;
+        internal const float POINTER_MIN_DRAG_DELTA = 3f;
+        internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
+
+        internal const float LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT = 2f;
 
         internal const int TUTORIAL_PLAYER_HERO_ID = 4;
 
 
-        internal const bool DEV_MODE = false;  
+        internal const bool DEV_MODE =  false;  
     }
 }

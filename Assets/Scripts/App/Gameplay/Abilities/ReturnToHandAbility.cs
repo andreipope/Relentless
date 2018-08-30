@@ -45,6 +45,10 @@ namespace LoomNetwork.CZB
 
             Player unitOwner = targetUnit.ownerPlayer;
             WorkingCard returningCard = targetUnit.Card;
+
+            returningCard.initialCost = returningCard.libraryCard.cost;
+            returningCard.realCost = returningCard.initialCost;
+
             Vector3 unitPosition = targetUnit.transform.position;
 
             CreateVFX(unitPosition, true, 3f, true);

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
 using Loom.Newtonsoft.Json;
+using Loom.Newtonsoft.Json.Converters;
 using Loom.Newtonsoft.Json.Serialization;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.Internal;
 using Plugins.AsyncAwaitUtil.Source;
@@ -18,27 +20,16 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class BackendFacade : IService
     {
-
-        public const string AuthBackendHost = 
-
-#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
-            "http://stage.loom.games";
-#else
-            "http://loom.games";
-#endif
-
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public event ContractCreatedEventHandler ContractCreated;
+        
+        public string ReaderHost { get; set; }
 
-#if (UNITY_EDITOR || FORCE_LOCAL_ENDPOINT) && !FORCE_REMOTE_ENDPOINT
-        public string WriterHost { get; set; } = "ws://127.0.0.1:46657/websocket";
-        public string ReaderHost { get; set; } = "ws://127.0.0.1:9999/queryws";
-#else
-        public string WriterHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:46657/websocket";
-        public string ReaderHost { get; set; } = "ws://battleground-testnet-asia1.dappchains.com:9999/queryws";
-#endif
+        public string WriterHost { get; set; }
 
+        public string AuthBackendHost { get; set; }
+        
         public Contract Contract { get; private set; }
 
         public bool IsConnected =>
@@ -46,14 +37,18 @@ namespace LoomNetwork.CZB.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        public BackendFacade()
+        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
         {
+            AuthBackendHost = authBackendHost;
+            ReaderHost = readerHost; 
+            WriterHost = writerHost;
+            
             Debug.Log($"Using auth backend {AuthBackendHost}");
+            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
 
         public async Task CreateContract(byte[] privateKey)
         {
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
@@ -69,12 +64,14 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             DAppChainClient client = new DAppChainClient(writer, reader)
                 { Logger = Debug.unityLogger };
-
+            
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
                 new NonceTxMiddleware(publicKey, client),
                 new SignedTxMiddleware(privateKey)
             });
+
+            client.AutoReconnect = false;
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
@@ -271,6 +268,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
+            
             BetaKeyValidationResponse betaKeyValidationResponse = httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
             return betaKeyValidationResponse.IsValid;
         }
@@ -280,7 +280,14 @@ namespace LoomNetwork.CZB.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            BetaConfig betaConfig = httpResponseMessage.DeserializeAsJson<BetaConfig>();
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
+            
+            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
+                httpResponseMessage.ReadToEnd(), 
+                // FIXME: backend should return valid version numbers at all times
+                new VersionConverterWithFallback(Version.Parse(Constants.CURRENT_VERSION_BASE))
+                );
             return betaConfig;
         }
 

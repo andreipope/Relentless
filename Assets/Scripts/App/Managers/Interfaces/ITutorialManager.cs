@@ -12,7 +12,6 @@ namespace LoomNetwork.CZB
     {
         void StartTutorial();
         void StopTutorial();
-        void CancelTutorial();
         void ReportAction(Enumerators.TutorialReportAction action);
         int CurrentStep { get; }
         bool IsTutorial { get; }
@@ -20,8 +19,6 @@ namespace LoomNetwork.CZB
         void ActivateSelectTarget();
         void DeactivateSelectTarget();
         void NextButtonClickHandler();
-        void SkipTutorial();
-        //void StopTimer(Action<object[]> handler);
-        //void AddTimer(Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false, bool storeTimer = false);
+        void SkipTutorial(Enumerators.AppState state);
     }
 }

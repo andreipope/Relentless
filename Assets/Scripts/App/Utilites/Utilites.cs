@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
+using Debug = UnityEngine.Debug;
 
 namespace LoomNetwork.Internal
 {
@@ -39,34 +40,86 @@ namespace LoomNetwork.Internal
                 DebugLog("Clean Cache Failed");
             }
         }
+        
+        [MenuItem("Utilites/Build/Build AssetBundles + Game")]
+        public static void BuildAssetBundlesAndGame()
+        {
+            BuildAssetBundlesAndGame(EditorUserBuildSettings.activeBuildTarget);
+        }
 
-        [MenuItem("Utilites/CacheAndBundles/Build Asset Bundles")]
+        private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
+        {
+            BuildAssetBundles(buildTarget);
+            BuildGame(EditorUserBuildSettings.activeBuildTarget);
+
+            // Delete existing StreamingAssets bundles
+            string assetBundleStreamingRoot = Application.streamingAssetsPath + "/AssetBundles";
+            string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
+            foreach (string existingBundle in existingBundles)
+            {
+                File.Delete(existingBundle);
+            }
+
+            // Copy to StreamingAssets
+            string[] files = Directory.GetFiles(GetAssetBundlesBuildPath(buildTarget));
+            if (!Directory.Exists(assetBundleStreamingRoot))
+            {
+                Directory.CreateDirectory(assetBundleStreamingRoot);
+            }
+
+            foreach (string file in files)
+            {
+                string outPath = Path.Combine(assetBundleStreamingRoot, Path.GetFileName(file));
+                File.Copy(file, outPath);
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Utilites/Build/Build Asset Bundles")]
         public static void BuildAssetBundles()
         {
-            string outputPath = Path.Combine("AssetBundles", GetPlatformFolderForAssetBundles(EditorUserBuildSettings.activeBuildTarget));
+            BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        private static void BuildGame(BuildTarget buildTarget)
+        {
+            string outputPath = Path.Combine("Builds", buildTarget.ToString());
 
             if (!Directory.Exists(outputPath))
                 Directory.CreateDirectory(outputPath);
 
-            BuildPipeline.BuildAssetBundles(outputPath, 0, EditorUserBuildSettings.activeBuildTarget);
-        }
-
-        public static string GetPlatformFolderForAssetBundles(BuildTarget target)
-        {
-            switch (target)
+            outputPath = Path.Combine(outputPath, PlayerSettings.productName);
+            switch (buildTarget)
             {
-                case BuildTarget.Android:
-                    return "Android";
-                case BuildTarget.iOS:
-                    return "iOS";
                 case BuildTarget.StandaloneWindows:
                 case BuildTarget.StandaloneWindows64:
-                    return "Windows";
-                // Add more build targets for your own.
-                // If you add more targets, don't forget to add the same platforms to GetPlatformFolderForAssetBundles(RuntimePlatform) function.
-                default:
-                    return null;
+                    outputPath += ".exe";
+                    break;
             }
+
+            BuildPlayerOptions buildPlayerOptions;
+            buildPlayerOptions.scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray();
+            buildPlayerOptions.locationPathName = outputPath;
+            buildPlayerOptions.target = buildTarget;
+            buildPlayerOptions.targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+            string buildPlayer = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            Debug.Log(buildPlayer);
+        }
+
+        private static void BuildAssetBundles(BuildTarget buildTarget)
+        {
+            string outputPath = GetAssetBundlesBuildPath(buildTarget);
+
+            if (!Directory.Exists(outputPath))
+                Directory.CreateDirectory(outputPath);
+
+            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.UncompressedAssetBundle, buildTarget);
+        }
+
+        private static string GetAssetBundlesBuildPath(BuildTarget buildTarget)
+        {
+            return Path.Combine("AssetBundles", buildTarget.ToString());
         }
 #endif
 

@@ -232,8 +232,8 @@ namespace LoomNetwork.CZB
             _deathAnimamtor.enabled = false;
             _deathAnimamtor.StopPlayback();
 
-            _avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
-            _avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
+            //_avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
+            //_avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
 
             PlayerHPChangedEvent += PlayerHPChangedEventHandler;
 
@@ -251,7 +251,7 @@ namespace LoomNetwork.CZB
         {
             OnStartTurnEvent?.Invoke();
 
-           if (_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooOnCurrentTurn++;
                 Goo = GooOnCurrentTurn + currentGooModificator;
@@ -269,11 +269,7 @@ namespace LoomNetwork.CZB
                     }
                 }
 
-                if (/*((turn != 1 && IsLocalPlayer) || !IsLocalPlayer) && */CardsInDeck.Count > 0)
-                {
-                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
-                }
-
+                _cardsController.AddCardToHand(this);
             }
         }
 
@@ -421,6 +417,7 @@ namespace LoomNetwork.CZB
         {
             if (isTutorial)
                 return;
+
             for (int i = 0; i < Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME; i++)
             {
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
@@ -428,18 +425,22 @@ namespace LoomNetwork.CZB
                 else
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
             }
-            if (_gameplayManager.CurrentTurnPlayer != this )
-            {
-                _cardsController.AddCardToHand(this, CardsInDeck[0]);
-            }
         }
 
         public void DistributeCard()
         {
             if (IsLocalPlayer)
-                _cardsController.AddCardToDistributionState(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());// CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
             else
                 _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+        }
+
+        private WorkingCard GetCardThatNotInDistribution()
+        {
+            var usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
+            var cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+
+            return cards[0];
         }
 
         public void PlayerDie()
@@ -504,25 +505,25 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnTriggerEnter2DEventHandler(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (boardArrow != null)
-                    boardArrow.OnPlayerSelected(this);
-            }
-        }
+        //private void OnTriggerEnter2DEventHandler(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (boardArrow != null)
+        //            boardArrow.OnPlayerSelected(this);
+        //    }
+        //}
 
-        private void OnTriggerExit2DEventHandler(Collider2D collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (boardArrow != null)
-                    boardArrow.OnPlayerUnselected(this);
-            }
-        }
+        //private void OnTriggerExit2DEventHandler(Collider2D collider)
+        //{
+        //    if (collider.transform.parent != null)
+        //    {
+        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        //        if (boardArrow != null)
+        //            boardArrow.OnPlayerUnselected(this);
+        //    }
+        //}
 
         #endregion
     }

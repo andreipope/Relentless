@@ -2,7 +2,6 @@
 using UnityEngine;
 
 namespace LoomNetwork.CZB {
-    [ExecuteInEditMode]
     public class CameraForceAspectBox : MonoBehaviour {
         [SerializeField]
         private float _targetAspectRatio = 16f / 9f;

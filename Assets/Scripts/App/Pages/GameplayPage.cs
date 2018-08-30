@@ -12,6 +12,7 @@ using DG.Tweening;
 using TMPro;
 using System;
 using System.Linq;
+using LoomNetwork.CZB.BackendCommunication;
 
 namespace LoomNetwork.CZB
 {
@@ -25,6 +26,7 @@ namespace LoomNetwork.CZB
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
         private ITimerManager _timerManager;
+        private BackendDataControlMediator _backendDataControlMediator;
 
 
         private BattlegroundController _battlegroundController;
@@ -88,23 +90,13 @@ namespace LoomNetwork.CZB
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _timerManager = GameClient.Get<ITimerManager>();
-
-      
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
-
-            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
-            _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
-
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+           
             _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
           //  _cards = new List<CardInGraveyard>();
 
             _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
-
 
             _deckStatus = new List<CardZoneOnBoardStatus>();
             _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
@@ -119,10 +111,6 @@ namespace LoomNetwork.CZB
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_couple"), 40));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(_loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
-
-            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
-
-            Hide();
         }
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
@@ -137,9 +125,16 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            _selfPage.SetActive(false);
-
             _isPlayerInited = false;
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            _reportGameActionsPanel.Dispose();
+            _reportGameActionsPanel = null;
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
         }
 
         public void Dispose()
@@ -149,22 +144,31 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if (!_selfPage.activeSelf)
+            if (_selfPage == null || !_selfPage.activeSelf)
                 return;
-
-            if (_reportGameActionsPanel != null)
-                _reportGameActionsPanel.Update();
         }
 
         public void Show()
         {
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/GameplayPage"));
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
+
+            _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
+
+            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
+
             if (_zippingVFX == null)
             {
                 _zippingVFX = GameObject.Find("Background/Zapping").gameObject;
                 _zippingVFX.SetActive(false);
             }
 
-            _selfPage.SetActive(true);
+            if (_gameplayManager.IsTutorial)
+                _buttonBack.gameObject.SetActive(false);
 
             StartGame();
             KeepButtonVisibility(false);
@@ -212,7 +216,7 @@ namespace LoomNetwork.CZB
                 _ranksController = _gameplayManager.GetController<RanksController>();
             }
 
-            int deckId = _gameplayManager.PlayerDeckId = _currentDeckId;
+            _gameplayManager.PlayerDeckId = _currentDeckId;
 
             OpponentDeck randomOpponentDeck = 
                 _dataManager.CachedOpponentDecksData.decks[UnityEngine.Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
@@ -260,7 +264,11 @@ namespace LoomNetwork.CZB
             if (currentPlayerHero != null)
             {
                 SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
-                _playerNameText.text = currentPlayerHero.FullName;
+                string playerNameText = currentPlayerHero.FullName;
+                if (_backendDataControlMediator.LoadUserDataModel()) {
+                    playerNameText = _backendDataControlMediator.UserDataModel.UserId;
+                }
+                _playerNameText.text = playerNameText;
             }
             if (currentOpponentHero != null)
             {
@@ -500,6 +508,7 @@ namespace LoomNetwork.CZB
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
+                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
 

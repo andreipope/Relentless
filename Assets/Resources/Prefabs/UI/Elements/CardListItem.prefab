@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224816140272457962}
   - component: {fileID: 222924366171532188}
   - component: {fileID: 114965090383203204}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardAmountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 224601901773816822}
   - component: {fileID: 222169240956978162}
   - component: {fileID: 114703919981113350}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_CardsCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224744112109395134}
   - component: {fileID: 114341730544984828}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 222191782000095734}
   - component: {fileID: 114200459589208456}
   - component: {fileID: 114546009270274798}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: DeleteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224276515877894414}
   - component: {fileID: 222817140181157118}
   - component: {fileID: 114532946169472630}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 222921580314102380}
   - component: {fileID: 114836673103881262}
   - component: {fileID: 114863997569812386}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_LogoMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224210612397989982}
   - component: {fileID: 114555953424546778}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel_CardCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 224765212256376556}
   - component: {fileID: 222852685950039320}
   - component: {fileID: 114121758571978670}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardTitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224425731365636386}
   - component: {fileID: 222689229118685870}
   - component: {fileID: 114258466756733410}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image_Logo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,9 +538,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 817343d5632d5044d95b2f0842654f92, type: 2}
-  m_sharedMaterial: {fileID: 21077132964564454, guid: 817343d5632d5044d95b2f0842654f92,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 715b80e429c437e40867928a4e1fc975, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 715b80e429c437e40867928a4e1fc975, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

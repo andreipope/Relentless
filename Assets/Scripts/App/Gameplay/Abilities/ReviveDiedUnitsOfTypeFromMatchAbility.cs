@@ -72,31 +72,22 @@ namespace LoomNetwork.CZB
             var libraryCard = workingCard.libraryCard.Clone();
 
             var card = new WorkingCard(libraryCard, playerOwner);
-            var unit = CreateBoardUnit(card);
+            var unit = _battlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
             playerOwner.AddCardToBoard(card);
             playerOwner.BoardCards.Add(unit);
-            _battlegroundController.playerBoardCards.Add(unit);
 
-            if (!playerOwner.IsLocalPlayer) _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            else _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
-        }
-
-        private BoardUnit CreateBoardUnit(WorkingCard card)
-        {
-            GameObject _playerBoard = playerCallerOfAbility.IsLocalPlayer ? _battlegroundController.playerBoardObject : _battlegroundController.opponentBoardObject;
-
-            var boardUnit = new BoardUnit(_playerBoard.transform);
-            boardUnit.transform.tag = playerCallerOfAbility.IsLocalPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
-            boardUnit.transform.parent = _playerBoard.transform;
-            boardUnit.transform.position = new Vector2(1.9f * playerCallerOfAbility.BoardCards.Count, 0);
-            boardUnit.ownerPlayer = playerCallerOfAbility;
-            boardUnit.SetObjectInfo(card);
-
-            boardUnit.PlayArrivalAnimation();
-
-            return boardUnit;
+            if (playerOwner.IsLocalPlayer)
+            {
+                _battlegroundController.playerBoardCards.Add(unit);
+                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+            }
+            else
+            {
+                _battlegroundController.opponentBoardCards.Add(unit);
+                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+            }
         }
     }
 }

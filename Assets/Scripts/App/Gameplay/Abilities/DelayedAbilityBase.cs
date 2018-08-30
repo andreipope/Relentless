@@ -49,6 +49,9 @@ namespace LoomNetwork.CZB
             if (abilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
+         //   if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+           //     return;
+
             CountDelay();
         }
 

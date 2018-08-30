@@ -31,12 +31,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
-
-
-            Hide();
         }
 
 
@@ -46,10 +40,16 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-           GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
-            OnHidePopupEvent?.Invoke();
-            _selfPage.SetActive(false);
+            GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
 
+            OnHidePopupEvent?.Invoke();
+
+            if (_selfPage == null)
+                return;
+
+            _selfPage.SetActive (false);
+            GameObject.Destroy (_selfPage);
+            _selfPage = null;
 		}
 
         public void SetMainPriority()
@@ -58,13 +58,14 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ICameraManager>().FadeIn(0.7f, 1);
-            _selfPage.SetActive(true);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+
+            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
+            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
         }
 
         public void Show(object data)
         {
-
             Show();
         }
 

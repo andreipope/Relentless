@@ -157,7 +157,7 @@ namespace LoomNetwork.CZB
                 _targettingArrow.OnInputEndEvent -= OnInputEndEventHandler;
                 _targettingArrow.OnInputCancelEvent -= OnInputCancelEventHandler;
 
-                MonoBehaviour.Destroy(_targettingArrow.gameObject);
+                _targettingArrow.Dispose();
                 _targettingArrow = null;
             }
         }

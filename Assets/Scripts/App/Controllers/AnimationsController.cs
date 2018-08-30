@@ -52,14 +52,28 @@ namespace LoomNetwork.CZB
 
             Vector3 partWay = Vector3.zero;
 
-
-
             if (isCreatureAttacker)
                 partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.6f);
             else
                 partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.7f);
 
             // Debug.LogError(originalPos + " -> " + target.transform.position);
+
+            if (isCreatureAttacker)
+            {
+                var shieldObject = source.transform.Find("Other/Shield");
+                var originalShieldPosition = shieldObject.transform.position;
+
+                var partWayShield = Vector3.Lerp(originalShieldPosition + (Vector3.forward * 5f), target.transform.position + (Vector3.forward * 5f), 0.6f);
+
+                shieldObject.transform.DOMove(partWayShield, 0.1f).SetEase(Ease.InSine).OnComplete(() =>
+                {
+                    shieldObject.transform.DOMove(originalShieldPosition, duration).SetEase(Ease.OutSine).OnComplete(() =>
+                    {
+
+                    });
+                });
+            }
 
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(() =>
             {
@@ -91,17 +105,6 @@ namespace LoomNetwork.CZB
                     onHitCallback();
             });
         }
-
-        public void PlayArrivalAnimationDelay(object[] param)
-        {
-            BoardUnit currentCreature = null;
-            if (param != null)
-            {
-                currentCreature = param[0] as BoardUnit;
-                currentCreature.PlayArrivalAnimation();
-            }
-        }
-
 
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
         {

@@ -456,6 +456,10 @@ namespace LoomNetwork.CZB
             BoardUnit targetUnit = (target as BoardUnit);
             Player unitOwner = targetUnit.ownerPlayer;
             WorkingCard returningCard = targetUnit.Card;
+
+            returningCard.initialCost = returningCard.libraryCard.cost;
+            returningCard.realCost = returningCard.initialCost;
+
             Vector3 unitPosition = targetUnit.transform.position;
 
             _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), targetUnit);
@@ -514,12 +518,9 @@ namespace LoomNetwork.CZB
 
                 BoardUnit unit = target as BoardUnit;
 
-                if (unit.Card.libraryCard.cardSetType == owner.SelfHero.heroElement)
-                {
-                    Debug.Log("Boom");
+
                     unit.BuffedHP += skill.value;
                     unit.CurrentHP += skill.value;
-                }
 
                 //TODO: remove this empty gameobject logic
                 Transform transform = new GameObject().transform;

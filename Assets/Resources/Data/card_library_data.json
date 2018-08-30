@@ -45,7 +45,7 @@
           "kind": "CREATURE",
           "name": "Quazi",
           "cost": 1,
-          "description": "<b>Feral</b>, <b>Overflow</b> 2, <b>End:</b> 2 damage to this and adjecent zombies",
+          "description": "<b>Feral</b>, <b>Overflow</b> 2, <b>End:</b> 2 damage to this and adjacent zombies",
           "flavorText": "Has a great fascination with church bells...",
           "picture": "Quazi",
           "damage": 0,
@@ -124,7 +124,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "TARGET_FIRE",
               "buffType": "ENTRY"
@@ -310,7 +309,6 @@
               "activityType": "PASSIVE",
               "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS|opponent",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_FIRE",
               "buffType": "ENTRY"
@@ -497,7 +495,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
-              "affectObjectType": "none",
               "value": 1,
               "effectType": "TARGET_WATER",
               "buffType": "ENTRY"
@@ -521,7 +518,7 @@
           "kind": "CREATURE",
           "name": "Freezzee",
           "cost": 4,
-          "description": "<b>Entry: Freeze</b> zombie and adjecent zombies, 2 damage if Frozen",
+          "description": "<b>Entry: Freeze</b> zombie and adjacent zombies, 2 damage if Frozen",
           "flavorText": "How he loves decorating with ice sculptures... Everywhere!",
           "picture": "Freezzee",
           "damage": 2,
@@ -715,7 +712,7 @@
           "rank": "COMMANDER",
           "abilities": [
             {
-              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS",
+              "type": "RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS",
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "opponent_all_cards|player_all_cards",
@@ -753,7 +750,6 @@
               "activityType": "PASSIVE",
               "callType": "ENTRY",
               "targetType": "OPPONENT_ALL_CARDS | OPPONENT",
-              "affectObjectType": "none",
               "value": 2,
               "effectType": "MASSIVE_WATER_WAVE",
               "buffType": "ENTRY"
@@ -831,8 +827,7 @@
               "type": "DAMAGE_TARGET",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
-              "affectObjectType": "none",
+              "targetType": "player_card|opponent_card",
               "value": 1,
               "effectType": "TARGET_ROCK",
               "buffType": "ENTRY"
@@ -1104,7 +1099,6 @@
               "activityType": "active",
               "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
-              "affectObjectType": "none",
               "cardType": "HEAVY",
               "buffType": "ENTRY"
             }
@@ -1322,7 +1316,8 @@
               "activityType": "passive",
               "callType": "ENTRY",
               "targetType": "player_card",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "value": -1
             }
           ],
           "cardViewInfo": {
@@ -1602,7 +1597,8 @@
               "callType": "IN_HAND",
               "targetType": "player",
               "setType": "air",
-              "buffType": "PERMANENT"
+              "buffType": "PERMANENT",
+              "value":  -1
             }
           ],
           "cardViewInfo": {
@@ -2445,7 +2441,6 @@
               "activityType": "PASSIVE",
               "callType": "DEATH",
               "targetType": "PLAYER_ALL_CARDS|OPPONENT_ALL_CARDS",
-              "affectObjectType": "none",
               "value": 3,
               "effectType": "MASSIVE_TOXIC_ALL",
               "buffType": "DEATH"
@@ -2623,7 +2618,7 @@
           "kind": "SPELL",
           "name": "Nail Bomb",
           "cost": 4,
-          "description": "Deal 4 damage to zombie and adjecent zombies",
+          "description": "Deal 4 damage to zombie and adjacent zombies",
           "flavorText": "When you really want to nail it!",
           "picture": "NailBomb",
           "damage": 0,
@@ -2635,7 +2630,7 @@
               "type": "DAMAGE_TARGET_ADJUSTMENTS",
               "activityType": "active",
               "callType": "ENTRY",
-              "targetType": "player_card|opponent_card|player|opponent",
+              "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "TARGET_ADJUSTMENTS_BOMB",
               "buffType": "SWING"

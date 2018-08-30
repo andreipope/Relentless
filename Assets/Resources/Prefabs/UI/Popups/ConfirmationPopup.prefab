@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224567315970242414}
   - component: {fileID: 222309581741834218}
   - component: {fileID: 114707911525108344}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 114412276589031314}
   - component: {fileID: 222798603078704598}
   - component: {fileID: 114898615892328902}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_No
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 224190520579583336}
   - component: {fileID: 222749452028807934}
   - component: {fileID: 114873300415008024}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Text_Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 224000187864437058}
   - component: {fileID: 222784033042810158}
   - component: {fileID: 114146310008495160}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: ConfirmationPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 114665132522078886}
   - component: {fileID: 222649528304049912}
   - component: {fileID: 114950416265195806}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Yes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224648511356757736}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 224090504531747450}
   - component: {fileID: 222274377211863772}
   - component: {fileID: 114031899790623334}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 224395912093463234}
   - component: {fileID: 222109083679772264}
   - component: {fileID: 114592409919553188}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 224465698813841302}
   - component: {fileID: 222361781462105750}
   - component: {fileID: 114071279479218116}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,14 +315,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: f294cb90a4c5ccc46abe579d60687804, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

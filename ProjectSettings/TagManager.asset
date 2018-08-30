@@ -17,10 +17,10 @@ TagManager:
   - 
   - 
   - VFX
-  - OBJ2
-  - UI2
-  - OBJ3
-  - UI3
+  - Battleground
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -56,12 +56,18 @@ TagManager:
   - name: BoardCards
     uniqueID: 3017639489
     locked: 0
-  - name: HandCards
-    uniqueID: 3794351331
-    locked: 0
   - name: Foreground
     uniqueID: 2546685719
     locked: 0
-  - name: GameUI
+  - name: GameUI1
     uniqueID: 540465013
+    locked: 0
+  - name: HandCards
+    uniqueID: 3794351331
+    locked: 0
+  - name: GameUI2
+    uniqueID: 2163736433
+    locked: 0
+  - name: GameUI3
+    uniqueID: 2983387319
     locked: 0

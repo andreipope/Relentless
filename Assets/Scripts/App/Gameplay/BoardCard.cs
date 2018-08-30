@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
 
         public int cardsAmountDeckEditing = 0;
 
-        public bool cardShouldBeDistributed = false;
+        public bool cardShouldBeChanged = false;
 
         public bool isNewCard = false;
         public bool isPreview;
@@ -119,9 +119,6 @@ namespace LoomNetwork.CZB
 
             _parentOfEditingGroupUI = transform.Find("DeckEditingGroupUI");
 
-            _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
-            _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
-
             //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
 
             animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
@@ -154,8 +151,8 @@ namespace LoomNetwork.CZB
 
             isNewCard = true;
 
-            manaCost = libraryCard.cost;
-            initialCost = manaCost;
+            initialCost = WorkingCard.initialCost;
+            manaCost = initialCost;
 
             WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
 
@@ -172,6 +169,23 @@ namespace LoomNetwork.CZB
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
 
             amountText.transform.parent.gameObject.SetActive(false);
+            distibuteCardObject.SetActive(false);
+
+            if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            {
+
+                _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
+                _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
+
+                if (!InternalTools.IsTabletScreen())
+                {
+                    _parentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    _parentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
+
+                    _parentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    _parentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
+                }
+            }
         }
 
         private void PlayerGooChangedEventHandler(int obj)
@@ -188,8 +202,8 @@ namespace LoomNetwork.CZB
             amountText.text = amount.ToString();
             costText.text = libraryCard.cost.ToString();
 
-            manaCost = libraryCard.cost;
-            initialCost = manaCost;
+            initialCost = libraryCard.cost;
+            manaCost = initialCost;
 
             var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
 
@@ -203,15 +217,50 @@ namespace LoomNetwork.CZB
             backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
             pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
+
+            distibuteCardObject.SetActive(false);
         }
 
 
-        public void SetCardCost(int cost)
+        public void SetCardCost(int value, bool changeRealCost = false)
         {
-            libraryCard.cost = cost;
-            manaCost = libraryCard.cost;
-            costText.text = manaCost.ToString();
+            if (changeRealCost)
+            {
+                WorkingCard.libraryCard.cost = value;
+                WorkingCard.realCost = value;
+                manaCost = WorkingCard.realCost;
+                costText.text = manaCost.ToString();
+            }
+            else
+            {
+                manaCost = value;
+                costText.text = manaCost.ToString();
+            }
 
+
+            UpdateColorOfCost();
+        }
+
+        public void ChangeCardCostOn(int value, bool changeRealCost = false)
+        {
+            if (changeRealCost)
+            {
+                WorkingCard.libraryCard.cost += value;
+                WorkingCard.realCost += value;
+                manaCost = WorkingCard.realCost;
+                costText.text = manaCost.ToString();
+            }
+            else
+            {
+                manaCost = WorkingCard.realCost + value;
+                costText.text = manaCost.ToString();
+            }
+
+            UpdateColorOfCost();
+        }
+
+        private void UpdateColorOfCost()
+        {
             if (manaCost > initialCost)
                 costText.color = Color.red;
             else if (manaCost < initialCost)
@@ -422,15 +471,15 @@ namespace LoomNetwork.CZB
             if (!_cardsController.CardDistribution)
                 return;
 
-            cardShouldBeDistributed = !cardShouldBeDistributed;
+            cardShouldBeChanged = !cardShouldBeChanged;
 
-            distibuteCardObject.SetActive(cardShouldBeDistributed);
+            distibuteCardObject.SetActive(cardShouldBeChanged);
         }
 
 
         public void DrawTooltipInfoOfUnit(BoardUnit unit)
         {
-            GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
@@ -486,7 +535,7 @@ namespace LoomNetwork.CZB
                             title = buffInfo.name,
                             description = buffInfo.tooltip,
                             tooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                            value = abil.value
+                            value = GetValueOfAbilityByType(abil)
                         });
                 }
             }
@@ -504,7 +553,16 @@ namespace LoomNetwork.CZB
                 _buffOnCardInfoObjects.Add(buff);
             }
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
+            float cardSize = 7.2f;
+            float centerOffset = -7f;
+
+            if (!InternalTools.IsTabletScreen())
+            {
+                cardSize = 6.6f;
+                centerOffset = -10f;
+            }
+
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
 
             var parent = buffs.Count > 0 ? _parentOfRightBlockOfCardInfo : _parentOfLeftBlockOfCardInfo;
 
@@ -555,18 +613,18 @@ namespace LoomNetwork.CZB
 
             buffs.Clear();
 
-            InternalTools.GroupVerticalObjects(parent, 0f);
+            InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
 
             #endregion
         }
 
         public void DrawTooltipInfoOfCard(BoardCard boardCard)
         {
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+
+
             if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.SPELL)
                 return;
-
-
-            GameClient.Get<ICameraManager>().FadeIn(0.65f, 1);
 
             _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
@@ -638,7 +696,16 @@ namespace LoomNetwork.CZB
             }
             buffs.Clear();
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f);
+            float cardSize = 7.2f;
+            float centerOffset = -7f;
+
+            if (!InternalTools.IsTabletScreen())
+            {
+                cardSize = 6.6f;
+                centerOffset = -10f;
+            }
+
+            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
         }
 
         public void ClearBuffsOnUnit()

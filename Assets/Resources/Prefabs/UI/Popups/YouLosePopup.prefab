@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224014264788417668}
   - component: {fileID: 223017549513129464}
   - component: {fileID: 114957206698334508}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 114970367565880200}
   - component: {fileID: 222746128485882042}
   - component: {fileID: 114707921855997724}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button_Continue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 4377946842301140}
   - component: {fileID: 198687327682050150}
   - component: {fileID: 199958846913535066}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4198113644485736}
   - component: {fileID: 212690532855298722}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SelectHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4648173582719894}
   - component: {fileID: 212983967359548322}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: CZB_2D_New_You_Lost_txt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 4742418388660648}
   - component: {fileID: 198144716839109148}
   - component: {fileID: 199859144643958114}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Spark (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4876654230514168}
   - component: {fileID: 212143363510096874}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: BackPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4298466293093378}
   - component: {fileID: 212819910905191856}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: CZB_2D_New_You_Lost_LvlupBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 4520227781058340}
   - component: {fileID: 198209103856616590}
   - component: {fileID: 199934796116337184}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Smoke (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 4846118545077344}
   - component: {fileID: 198651733282967968}
   - component: {fileID: 199643522789086204}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4707421380508684}
   - component: {fileID: 331974840895053274}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: BotMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 4860794600865984}
   - component: {fileID: 198955144960452936}
   - component: {fileID: 199251312607094046}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4754679419067026}
   - component: {fileID: 212623374480617804}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: CZB_2D_New_You_Lost_googlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 4427960205690686}
   - component: {fileID: 198621050574162294}
   - component: {fileID: 199360883916145354}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooTexturesLoop (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 4864010043059610}
   - component: {fileID: 198346652252282516}
   - component: {fileID: 199661000626219610}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SlimeParticle (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 4636992118594656}
   - component: {fileID: 198587826977083010}
   - component: {fileID: 199882479532378128}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -286,7 +286,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224780635034467386}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Shifted
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 4107518543401162}
   - component: {fileID: 198532703329050962}
   - component: {fileID: 199050628869448604}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SlimeParticle (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   - component: {fileID: 4253987771179926}
   - component: {fileID: 198435635282324540}
   - component: {fileID: 199170508722975792}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooTexturesLoop (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 224211498763992378}
   - component: {fileID: 222519174865080834}
   - component: {fileID: 114160431006601160}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4511838479098952}
   - component: {fileID: 331671326273780546}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 4085071796226886}
   - component: {fileID: 198646427392443346}
   - component: {fileID: 199475565163316502}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SlimeParticle (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 4123670839497622}
   - component: {fileID: 198241295400474290}
   - component: {fileID: 199050517359368010}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooTexturesLoop (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 4922336287090470}
   - component: {fileID: 198089605796704028}
   - component: {fileID: 199389836013011766}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4511785827562468}
   - component: {fileID: 212792713178476770}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: CZB_2D_New_You_Lost_goo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 4020924735642736}
   - component: {fileID: 198312068518887612}
   - component: {fileID: 199033943370739522}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -453,7 +453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4776125039066948}
   - component: {fileID: 212203354073069076}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: CZB_2D_New_You_Lost_goo_Bot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   - component: {fileID: 4123321471366662}
   - component: {fileID: 198524241473397834}
   - component: {fileID: 199149497015952184}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooTexturesLoop (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,7 +485,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4474682040705836}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -500,7 +500,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4904158208413960}
-  m_Layer: 12
+  - component: {fileID: 210910179922028552}
+  m_Layer: 0
   m_Name: YouLosePopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +518,7 @@ GameObject:
   - component: {fileID: 4329939278169648}
   - component: {fileID: 198702752558364560}
   - component: {fileID: 199641134248002320}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SlimeParticle (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -534,7 +535,7 @@ GameObject:
   - component: {fileID: 4125589023165960}
   - component: {fileID: 198072126700547018}
   - component: {fileID: 199172854712537330}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Smoke (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -551,7 +552,7 @@ GameObject:
   - component: {fileID: 4656554127448670}
   - component: {fileID: 198552584200023942}
   - component: {fileID: 199208396858691010}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooTexturesLoop (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,7 +569,7 @@ GameObject:
   - component: {fileID: 4487340773777424}
   - component: {fileID: 198471250038528664}
   - component: {fileID: 199401473251114508}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooBubblesLoop (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -584,7 +585,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4935242846774714}
   - component: {fileID: 95934129910074006}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YouLosePopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56030,7 +56031,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1962624490
+  randomSeed: 682414385
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -67244,6 +67245,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210910179922028552
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1931702925111118}
+  m_Enabled: 1
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 20
 --- !u!212 &212143363510096874
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -67581,8 +67592,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 540465013
-  m_SortingOrder: 0
+  m_SortingLayerID: -1311579977
+  m_SortingOrder: 31
   m_TargetDisplay: 0
 --- !u!224 &224014264788417668
 RectTransform:

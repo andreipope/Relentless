@@ -10,6 +10,8 @@ using UnityEngine;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LoomNetwork.CZB
 {
@@ -43,6 +45,7 @@ namespace LoomNetwork.CZB
         private GameObject fightTargetingArrowPrefab;// rewrite
 
         private System.Random _random = new System.Random();
+        private CancellationTokenSource _aiBrainCancellationTokenSource;
 
         public BoardCard currentSpellCard;
 
@@ -70,6 +73,8 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
+            
+            
         }
 
         public void Dispose()
@@ -82,8 +87,7 @@ namespace LoomNetwork.CZB
 
         public void ResetAll()
         {
-            ThreadTool.Instance.AbortAllThreads(this);
-            ThreadTool.Instance.ClearMainthreadActions();
+            _aiBrainCancellationTokenSource?.Cancel();
         }
 
         public void InitializePlayer()
@@ -112,8 +116,8 @@ namespace LoomNetwork.CZB
                 {
                     for (var i = 0; i < card.amount; i++)
                     {
-                        playerDeck.Add(card.cardName);
-                       //  playerDeck.Add("Zeptic");
+                          playerDeck.Add(card.cardName);
+                        //playerDeck.Add("Tainted Goo");
                     }
                 }
 
@@ -143,43 +147,53 @@ namespace LoomNetwork.CZB
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
         {
-            ThreadTool.Instance.AbortAllThreads(this);
+            _aiBrainCancellationTokenSource?.Cancel();
         }
 
         private void OnGameStartedEventHandler()
         {
             if (!_gameplayManager.IsTutorial)
             {
-                _minTurnForAttack = _random.Next(1, 3);
+                //_minTurnForAttack = _random.Next(1, 3);
                 FillActions();
 
                 SetAITypeByDeck();
             }
         }
 
-        private void OnStartTurnEventHandler()
+        private async void OnStartTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer) || !_gameplayManager.GameStarted)
             {
-                ThreadTool.Instance.AbortAllThreads(this);
+                _aiBrainCancellationTokenSource?.Cancel();
                 return;
             }
 
-            DoAIBrain();
-        }
+            _aiBrainCancellationTokenSource = new CancellationTokenSource();
+            Debug.Log("brain started");
+            
+            try
+            {
+                await DoAIBrain(_aiBrainCancellationTokenSource.Token);
+            } catch (OperationCanceledException e)
+            {
+                Debug.Log("brain canceled!");
+            }
+            Debug.Log("brain finished");
 
+        }
         private void OnEndTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer))
                 return;
 
-            ThreadTool.Instance.AbortAllThreads(this);
+            _aiBrainCancellationTokenSource.Cancel();
 
             _attackedUnitTargets.Clear();
             _unitsToIgnoreThisTurn.Clear();
         }
 
-        private void DoAIBrain()
+        private async Task DoAIBrain(CancellationToken cancellationToken)
         {
             if (!_enabledAIBrain && Constants.DEV_MODE)
             {
@@ -190,75 +204,77 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            _timerManager.AddTimer((x) =>
+            await Task.Delay(TimeSpan.FromSeconds(1f));
+            cancellationToken.ThrowIfCancellationRequested();
+            await PlayCardsFromHand(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
+                (_tutorialManager as TutorialManager).paused = true;
+            else
             {
-                ThreadTool.Instance.StartOneTimeThread(PlayCardsFromHand, () =>
+                await UseUnitsOnBoard(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                await UsePlayerSkills(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                if (_gameplayManager.OpponentPlayer.SelfHero.heroElement == Enumerators.SetType.FIRE)
                 {
-                    if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
-                        (_tutorialManager as TutorialManager).paused = true;
-                    else
-                    {
-                        ThreadTool.Instance.StartOneTimeThread(UseUnitsOnBoard, () =>
-                        {
-                            ThreadTool.Instance.StartOneTimeThread(UsePlayerSkills, () =>
-                            {
-                                _battlegroundController.StopTurn();
-                            }, this);
-                        }, this);
-                    }
-                }, this);
-
-            }, null, 1f);
+                    await UseUnitsOnBoard(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    _battlegroundController.StopTurn();
+                }
+                else
+                {
+                    _battlegroundController.StopTurn();
+                }
+                
+            }
         }
         // ai step 1
-        private void PlayCardsFromHand()
+        private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
-            try
+            bool wasAction = false;
+            foreach (var card in GetUnitCardsInHand())
             {
-                foreach (var card in GetUnitCardsInHand())
+                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+                    break;
+
+                if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
-                        break;
-
-                    if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
-                    {
-                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(card); });
-                        LetsThink();
-                        LetsThink();
-                        LetsThink();
-                    }
-
-                    //  if (Constants.DEV_MODE)
-                    //     break;
+                    PlayCardOnBoard(card);
+                    wasAction = true;
+                    await LetsThink(cancellationToken);
+                    await LetsThink(cancellationToken);
                 }
 
-                foreach (var card in GetSpellCardsInHand())
-                {
-                    if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
-                    {
-                        ThreadTool.Instance.RunInMainThread(() => { PlayCardOnBoard(card); });
-                        LetsThink();
-                        LetsThink();
-                    }
-
-                    // if (Constants.DEV_MODE)
-                    //     break;
-                }
-                LetsThink();
-                LetsThink();
+                //  if (Constants.DEV_MODE)
+                //     break;
             }
-            catch(Exception ex)
+
+            foreach (var card in GetSpellCardsInHand())
             {
-                Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+                if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
+                {
+                    PlayCardOnBoard(card);
+                    wasAction = true;
+                    await LetsThink(cancellationToken);
+                    await LetsThink(cancellationToken);
+                }
+
+                // if (Constants.DEV_MODE)
+                //     break;
+            }
+            if (wasAction)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
             }
         }
         // ai step 2
-        private void UseUnitsOnBoard()
+        private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
           //  return;
 
-            try
-            {
                 var unitsOnBoard = new List<BoardUnit>();
                 var alreadyUsedUnits = new List<BoardUnit>();
 
@@ -275,12 +291,10 @@ namespace LoomNetwork.CZB
                                 var attackedUnit = GetTargetOpponentUnit();
                                 if (attackedUnit != null)
                                 {
-                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedUnit); });
-
+                                    unit.DoCombat(attackedUnit); 
                                     alreadyUsedUnits.Add(unit);
 
-                                    LetsThink();
-
+                                    await LetsThink(cancellationToken);
                                     if (!OpponentHasHeavyUnits())
                                         break;
                                 }
@@ -303,8 +317,8 @@ namespace LoomNetwork.CZB
                         {
                             if (UnitCanBeUsable(unit))
                             {
-                                ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                                LetsThink();
+                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                await LetsThink(cancellationToken);
                             }
                         }
                     }
@@ -319,70 +333,62 @@ namespace LoomNetwork.CZB
                             {
                                 if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                                 {
-                                    ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                                    LetsThink();
+                                    unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                    await LetsThink(cancellationToken);
                                 }
                                 else
                                 {
                                     var attackedCreature = GetRandomOpponentUnit();
                                     if (attackedCreature != null)
                                     {
-                                        ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(attackedCreature); });
-                                        LetsThink();
+                                        unit.DoCombat(attackedCreature);
+                                        await LetsThink(cancellationToken);
                                     }
                                     else
                                     {
-                                        ThreadTool.Instance.RunInMainThread(() => { unit.DoCombat(_gameplayManager.CurrentPlayer); });
-                                        LetsThink();
+                                        unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                        await LetsThink(cancellationToken);
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch(System.Exception ex)
-            {
-                Debug.LogError(ex.Message + "\n" + ex.StackTrace);
-            }
         }
         // ai step 3
-        private void UsePlayerSkills()
+        private async Task UsePlayerSkills(CancellationToken cancellationToken)
         {
-          //  return;
-
-            try
-            {
-                if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
+            //  return;
+            bool wasAction = false;
+            if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
-          
-                ThreadTool.Instance.RunInMainThread(() =>
-                {
-                    if (_skillsController.opponentPrimarySkill.IsSkillReady)
-                        DoBoardSkill(_skillsController.opponentPrimarySkill);
-                });
 
-                LetsThink();
-
-                ThreadTool.Instance.RunInMainThread(() =>
-                {
-                    if (_skillsController.opponentSecondarySkill.IsSkillReady)
-                        DoBoardSkill(_skillsController.opponentSecondarySkill);
-                });
-
-                LetsThink();
-                LetsThink();
-            }
-            catch (Exception ex)
+            if (_skillsController.opponentPrimarySkill.IsSkillReady)
             {
-                Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+                DoBoardSkill(_skillsController.opponentPrimarySkill);
+                wasAction = true;
+            }
+            if(wasAction)
+                await LetsThink(cancellationToken);
+
+            if (_skillsController.opponentSecondarySkill.IsSkillReady)
+            {
+                DoBoardSkill(_skillsController.opponentSecondarySkill);
+                wasAction = true;
+            }
+
+            if (wasAction)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
             }
         }
 
         // some thinking - delay between general actions
-        private void LetsThink()
-        {      
-            System.Threading.Thread.Sleep(Constants.DELAY_BETWEEN_AI_ACTIONS);
+        private async Task LetsThink(CancellationToken cancellationToken)
+        {
+            await Task.Delay(Constants.DELAY_BETWEEN_AI_ACTIONS, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         private bool CardCanBePlayable(WorkingCard card)
@@ -401,9 +407,10 @@ namespace LoomNetwork.CZB
             {
                 foreach(var ability in card.libraryCard.abilities)
                 {
-                    if(ability.type.Equals("ATTACK_OVERLORD"))
+                    if(ability.abilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
-                        if (ability.value >= _gameplayManager.OpponentPlayer.HP)
+                        // smart enough HP to use goo carriers
+                        if (ability.value * 2 >= _gameplayManager.OpponentPlayer.HP)
                             return false;
                     }
                 }
@@ -414,7 +421,16 @@ namespace LoomNetwork.CZB
 
         private void PlayCardOnBoard(WorkingCard card)
         {
-            var target = GetAbilityTarget(card);
+            bool needTargetForAbility = false;
+
+            if (card.libraryCard.abilities != null && card.libraryCard.abilities.Count > 0)
+                needTargetForAbility = card.libraryCard.abilities.FindAll(x => x.abilityTargetTypes.Count > 0).Count > 0;
+
+            object target = null;
+
+            if (needTargetForAbility)
+                target = GetAbilityTarget(card);
+
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE && _battlegroundController.opponentBoardCards.Count < Constants.MAX_BOARD_UNITS)
             {
                 //if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
@@ -430,8 +446,11 @@ namespace LoomNetwork.CZB
             }
             else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                if (target != null)
+                if ((target != null && needTargetForAbility) || !needTargetForAbility)
                 {
+                    _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
+                    _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+
                     _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
                     _cardsController.DrawCardInfo(card);
                 }

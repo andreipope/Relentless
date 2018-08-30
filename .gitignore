@@ -3,7 +3,9 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
+/[Aa]ssetBundles/
 /Assets/AssetStoreTools*
+/Assets/StreamingAssets/AssetBundles/*
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -37,3 +39,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Local-only files
+Assets/Resources/BuildMetaInfo.asset
+Assets/Resources/BuildMetaInfo.asset.meta

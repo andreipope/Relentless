@@ -13,7 +13,13 @@ public static class LoomTestContext
 
     public static void TestSetUp(string userId = "Loom")
     {
-        BackendFacade = new BackendFacade();
+        BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
+        BackendFacade = 
+            new BackendFacade(
+                backendEndpoint.AuthHost,
+                backendEndpoint.ReaderHost,
+                backendEndpoint.WriterHost
+            );
         BackendDataControlMediator.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
 

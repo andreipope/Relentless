@@ -69,6 +69,11 @@ namespace LoomNetwork.CZB.Data
 
             return card;
         }
+
+        public override string ToString()
+        {
+            return $"({nameof(name)}: {name}, {nameof(cardSetType)}: {cardType})";
+        }
     }
 
     public class CardViewInfo

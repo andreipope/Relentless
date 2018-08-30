@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 198298471973757926}
   - component: {fileID: 114356410711814726}
   - component: {fileID: 199831366391322270}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooParticlesMid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4781413439858868}
   - component: {fileID: 95293102930645358}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YourTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4560772654766034}
   - component: {fileID: 212101397114790970}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Pipes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4394671891222638}
-  m_Layer: 12
+  - component: {fileID: 210334028024767918}
+  m_Layer: 0
   m_Name: YourTurnPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4764644479347010}
   - component: {fileID: 212971522039829972}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: MidPipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +104,7 @@ GameObject:
   - component: {fileID: 198007541463482328}
   - component: {fileID: 114982140214001212}
   - component: {fileID: 199563801839360126}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooParticlesR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4855111300185846}
   - component: {fileID: 212600462087701872}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PipesRGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4267540876435086}
   - component: {fileID: 212557122031659982}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: YourTurnBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,7 +152,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4935100038388766}
   - component: {fileID: 212882049886677112}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Turn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4298300854914514}
   - component: {fileID: 212299818375804636}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: MidPipeGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4881732889265998}
   - component: {fileID: 212709663197420588}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Your
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4866646845317320}
   - component: {fileID: 212035430976987394}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Rays
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +215,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4402924088359662}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +233,7 @@ GameObject:
   - component: {fileID: 198221470001132108}
   - component: {fileID: 114127754585410632}
   - component: {fileID: 199430357962779556}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooParticlesL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4096794447523028}
   - component: {fileID: 212840611100940024}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PipeLGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,7 +267,7 @@ GameObject:
   - component: {fileID: 198867456713141006}
   - component: {fileID: 114936755982302848}
   - component: {fileID: 199054571540237992}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: GooParticlesL_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +283,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4506305031888996}
   - component: {fileID: 212401110970605498}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Shine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14251,6 +14252,16 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210334028024767918
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1124057291051402}
+  m_Enabled: 1
+  m_SortingLayerID: -1311579977
+  m_SortingLayer: 9
+  m_SortingOrder: 20
 --- !u!212 &212035430976987394
 SpriteRenderer:
   m_ObjectHideFlags: 1
