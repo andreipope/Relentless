@@ -44,7 +44,7 @@ namespace LoomNetwork.CZB
         {
             hero.level++;
             hero.experience = 0;
-            hero.ValidateSkillLocking();
+            //hero.ValidateSkillLocking();
         }
     }
 }
