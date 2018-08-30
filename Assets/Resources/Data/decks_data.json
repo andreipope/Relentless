@@ -5,27 +5,27 @@
       "name": "Default",
       "cards": [
         {
-          "cardName": "Pyromaz",
+          "cardName": "Poizom",
           "amount": 4
         },
         {
-          "cardName": "Burrrnn",
-          "amount": 4
+          "cardName": "Hazmaz",
+          "amount": 2
         },
         {
-          "cardName": "Izze",
-          "amount": 4
+          "cardName": "Zeeter",
+          "amount": 1
         },
         {
           "cardName": "Zhatterer",
           "amount": 4
         },
         {
-          "cardName": "Rockky",
-          "amount": 4
+          "cardName": "Zludge",
+          "amount": 1
         },
         {
-          "cardName": "Blocker",
+          "cardName": "Znowman",
           "amount": 4
         },
         {
@@ -48,9 +48,33 @@
           "cardName": "Modo",
           "amount": 1
         },
-        {
-          "cardName": "Werezomb",
+		{
+          "cardName": "Ghoul",
           "amount": 1
+        },
+		{
+          "cardName": "Hazzard",
+          "amount": 1
+        },
+		{
+          "cardName": "Ectoplasm",
+          "amount": 1
+        },
+		{
+          "cardName": "Bouncer",
+          "amount": 2
+        },
+		{
+          "cardName": "Stapler",
+          "amount": 1
+        },
+		{
+          "cardName": "Goo Bottles",
+          "amount": 1
+        },
+		{
+          "cardName": "Chainsaw",
+          "amount": 2
         }
       ]
     }
