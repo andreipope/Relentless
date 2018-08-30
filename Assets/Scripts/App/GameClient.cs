@@ -52,6 +52,7 @@ namespace LoomNetwork.CZB
             AddService<ISoundManager>(new SoundManager());
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
+            AddService<IOverlordManager>(new OverlordManager());
             AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());

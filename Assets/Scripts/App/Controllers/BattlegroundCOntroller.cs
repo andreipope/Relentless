@@ -42,6 +42,8 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> _cardsInDestroy;
 
+        private Sequence rearrangingRealTimeSequence;
+
         //  public int TurnDuration { get; private set; }
         public int currentTurn;
         public bool gameFinished;
@@ -52,8 +54,7 @@ namespace LoomNetwork.CZB
         public int currentPreviewedCardId;
 
 
-        public bool _rearrangingBottomBoard,
-                    _rearrangingTopBoard,
+        public bool _rearrangingTopBoard,
                     isPreviewActive;
 
         public GameObject playerBoardObject,
@@ -181,7 +182,7 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer((f) =>
                     {
                         UpdatePositionOfBoardUnitsOfOpponent();
-                        UpdatePositionOfBoardUnitsOfPlayer();
+                        UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
                     }, null, Time.deltaTime, false);
 
                 }, null, soundLength);
@@ -457,29 +458,20 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void UpdatePositionOfBoardUnitsOfPlayer(Action onComplete = null)
+        public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnit> cardsList, Action onComplete = null)
         {
-            if (_rearrangingBottomBoard)
-            {
-                _timerManager.AddTimer((x) =>
-                {
-                    UpdatePositionOfBoardUnitsOfPlayer(onComplete);
-                }, null, .3f, false);
-                return;
-            }
-
-
             if (_gameplayManager.GameEnded)
                 return;
 
-            var playerBoardCards = _gameplayManager.CurrentPlayer.BoardCards;
-
-            _rearrangingBottomBoard = true;
+            if (rearrangingRealTimeSequence != null) {
+                rearrangingRealTimeSequence.Kill ();
+                rearrangingRealTimeSequence = null;
+            }
 
             var boardWidth = 0.0f;
             var spacing = 0.2f; // -0.2
             var cardWidth = 0.0f;
-            foreach (var card in playerBoardCards)
+            foreach (var card in cardsList)
             {
                 cardWidth = 2.5f;
                 boardWidth += cardWidth;
@@ -487,22 +479,23 @@ namespace LoomNetwork.CZB
             }
             boardWidth -= spacing;
 
-            var newPositions = new List<Vector2>(playerBoardCards.Count);
+            var newPositions = new List<Vector2>(cardsList.Count);
             var pivot = playerBoardObject.transform.position;
 
-            for (var i = 0; i < playerBoardCards.Count; i++)
+            for (var i = 0; i < cardsList.Count; i++)
             {
-                var card = playerBoardCards[i];
+                var card = cardsList[i];
                 newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
-                pivot.x += boardWidth / playerBoardCards.Count;
+                pivot.x += boardWidth / cardsList.Count;
             }
 
             var sequence = DOTween.Sequence();
-            for (var i = 0; i < playerBoardCards.Count; i++)
+            for (var i = 0; i < cardsList.Count; i++)
             {
-                var card = playerBoardCards[i];
+                var card = cardsList[i];
                 sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
+            rearrangingRealTimeSequence = sequence;
             sequence.OnComplete(() =>
             {
                 if (onComplete != null)
@@ -510,11 +503,6 @@ namespace LoomNetwork.CZB
                     onComplete();
                 }
             });
-
-            _timerManager.AddTimer((x) =>
-            {
-                _rearrangingBottomBoard = false;
-            }, null, 1.5f, false);
         }
 
 

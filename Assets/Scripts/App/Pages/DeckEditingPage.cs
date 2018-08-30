@@ -221,6 +221,7 @@ namespace LoomNetwork.CZB
             if (_currentDeckId == -1)
             {
                 _currentDeck = new Deck();
+                _currentDeck.id = -1;
                 _currentDeck.name = "HORDE " + _dataManager.CachedDecksData.decks.Count;
                 _currentDeck.cards = new List<DeckCardData>();
             }
@@ -394,7 +395,7 @@ namespace LoomNetwork.CZB
         {
             _currentHordePage--;
             if (_currentHordePage < 0)
-                _currentHordePage = _numHordePages;
+                _currentHordePage = _numHordePages - 1;
             CalculateVisibility();
         }
 
@@ -571,7 +572,7 @@ namespace LoomNetwork.CZB
         {
             _currentDeck.name = value;
         }
-
+        
         public void LoadDeckInfo(Deck deck)
         {
             _deckNameInputField.text = deck.name;
@@ -790,6 +791,11 @@ namespace LoomNetwork.CZB
                     }
                     );
             }
+
+            if (_currentHordePage + 1 < _numHordePages)
+            {
+                MoveHordeToRight();
+            }
         }
 
         private void CreateExchangeAnimationCard(
@@ -886,18 +892,6 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            // HACK for offline mode: in online mode, local data should only be saved after
-            // backend operation has succeeded
-            // Quick Fix for : if there are no decks, error
-            if (_dataManager.CachedDecksData.decks.Count > 0)
-            {
-                _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
-            }
-            else
-            {
-                _currentDeck.id = 0;
-            }
-
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
 
             foreach (Deck deck in _dataManager.CachedDecksData.decks)
@@ -913,6 +907,19 @@ namespace LoomNetwork.CZB
             bool success = true;
             if (_currentDeckId == -1)
             {
+                // HACK for offline mode: in online mode, local data should only be saved after
+                // backend operation has succeeded
+                // Quick Fix for : if there are no decks, error
+                if (_dataManager.CachedDecksData.decks.Count > 0)
+                {
+                    _currentDeck.id = _dataManager.CachedDecksData.decks.Max(d => d.id) + 1;
+                }
+                else
+                {
+                    _currentDeck.id = 0;
+                }
+                
+                // Add new deck
                 _currentDeck.heroId = _currentHeroId;
                 _dataManager.CachedDecksData.decks.Add(_currentDeck);
 
@@ -941,6 +948,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
+                // Update existing deck
                 for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
                 {
                     if (_dataManager.CachedDecksData.decks[i].id == _currentDeckId)
