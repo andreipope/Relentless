@@ -55,6 +55,7 @@ namespace LoomNetwork.CZB
             List<object> allies = new List<object>();
 
             allies.AddRange(playerCallerOfAbility.BoardCards);
+            allies.Remove(abilityUnitOwner);
             allies.Add(playerCallerOfAbility);
 
             allies = InternalTools.GetRandomElementsFromList(allies, value);
