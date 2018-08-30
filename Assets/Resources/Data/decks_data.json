@@ -1,6 +1,7 @@
 {
   "decks": [
     {
+      "id": 0,
       "heroId": 4,
       "name": "Default",
       "cards": [

@@ -40,7 +40,7 @@ namespace LoomNetwork.Internal
                 DebugLog("Clean Cache Failed");
             }
         }
-        
+
         [MenuItem("Utilites/Build/Build AssetBundles + Game")]
         public static void BuildAssetBundlesAndGame()
         {
@@ -98,7 +98,7 @@ namespace LoomNetwork.Internal
                     break;
             }
 
-            BuildPlayerOptions buildPlayerOptions;
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray();
             buildPlayerOptions.locationPathName = outputPath;
             buildPlayerOptions.target = buildTarget;
@@ -457,7 +457,7 @@ namespace LoomNetwork.Internal
         {
             return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
         }
-        
+
         public static T CreateFromJSON<T>(string jsonString)
         {
             return JsonUtility.FromJson<T>(jsonString);
@@ -477,14 +477,14 @@ namespace LoomNetwork.Internal
             color.a = alpha;
             return color;
         }
-        
+
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static long GetCurrentUnixTimestampMillis()
         {
-            DateTime localDateTime = DateTime.Now;          
+            DateTime localDateTime = DateTime.Now;
             DateTime universalDateTime = localDateTime.ToUniversalTime();
             return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
-        } 
+        }
     }
 }

@@ -568,7 +568,7 @@ namespace LoomNetwork.CZB
         }
 
         // rewrite
-        
+
         public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
             isPreviewActive = true;
