@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
         public int CloudBuildBuildNumber;
         public string CloudBuildTargetName = "";
 
-        public string ShortVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
+        public string ShortVersionName => DisplayVersionName;
 
         public string DisplayVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
         
