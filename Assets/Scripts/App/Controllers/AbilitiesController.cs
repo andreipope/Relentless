@@ -614,7 +614,7 @@ namespace LoomNetwork.CZB
 
                         activeAbility.ability.SelectedTargetAction(true);
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
                         //  Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
 
@@ -694,7 +694,7 @@ namespace LoomNetwork.CZB
                 activeAbility.ability.SelectedTargetAction(true);
             }
 
-            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
+            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
             _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
         }
 
