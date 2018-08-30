@@ -164,11 +164,11 @@
 					"amount": 1
 				},
 				{
-					"cardName": "Pit",
+					"cardName": "Rockky",
 					"amount": 4
 				},
 				{
-					"cardName": "Ozmoziz",
+					"cardName": "Hazmaz",
 					"amount": 1
 				},
 				{
@@ -177,7 +177,7 @@
 
 				},
 				{
-					"cardName": "Geyzer",
+					"cardName": "Znowman",
 					"amount": 1
 				}
 			]
@@ -212,7 +212,7 @@
 				"cardName": "Bloomer",
 				"amount": 2
 			}, {
-				"cardName": "Zap",
+				"cardName": "Vindrom",
 				"amount": 2
 			}, {
 				"cardName": "Shroom",
@@ -227,7 +227,7 @@
 				"cardName": "Puffer",
 				"amount": 2
 			}, {
-				"cardName": "Hazzard",
+				"cardName": "Poizom",
 				"amount": 2
 			}, {
 				"cardName": "Ghoul",
@@ -303,7 +303,7 @@
           "amount": 2
         },
         {
-          "cardName": "Modo",
+          "cardName": "Cynderman",
           "amount": 2
         },
         {
@@ -367,7 +367,7 @@
           "amount": 2
         },
         {
-          "cardName": "Geyzer",
+          "cardName": "Znowman",
           "amount": 2
         },
         {
@@ -379,7 +379,7 @@
           "amount": 1
         },
         {
-          "cardName": "Quazi",
+          "cardName": "Cynderman",
           "amount": 1
         },
         {
@@ -387,11 +387,11 @@
           "amount": 1
         },
         {
-          "cardName": "Modo",
+          "cardName": "Werezomb",
           "amount": 1
         },
         {
-          "cardName": "Pit",
+          "cardName": "Rockky",
           "amount": 3
         }
       ]
