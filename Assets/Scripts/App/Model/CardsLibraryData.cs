@@ -132,6 +132,11 @@ namespace LoomNetwork.CZB.Data
     {
         public string name;
         public List<Card> cards;
+
+        public override string ToString()
+        {
+            return $"({nameof(name)}: {name}, {cards.Count} cards)";
+        }
     }
 
     
