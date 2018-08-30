@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
             else
             {
                 _battlegroundController.playerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer();
+                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
             }
 
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]

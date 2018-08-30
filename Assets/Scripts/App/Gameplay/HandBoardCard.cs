@@ -84,6 +84,8 @@ public class HandBoardCard
 
             if (boardZone.GetComponent<BoxCollider2D> ().bounds.Contains (transform.position) && _isHandCard) {
                 _cardsController.HoverPlayerCardOnBattleground (ownerPlayer, cardView, this);
+            } else {
+                _cardsController.ResetPlayerCardsOnBattlegroundPosition ();
             }
 
             if (Vector3.Distance(initialPos, transform.position) > 1f)
@@ -129,7 +131,8 @@ public class HandBoardCard
         if (!startedDrag)
             return;
 
-        _cardsController.indexOfCard = -1;
+        _cardsController.ResetPlayerCardsOnBattlegroundPosition ();
+
         _alreadySelected = false;
         startedDrag = false;
         _playerController.IsCardSelected = false;

@@ -105,7 +105,7 @@ namespace LoomNetwork.CZB
 
         public void RearrangeHands()
         {
-            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer();
+            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
             GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
             GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();

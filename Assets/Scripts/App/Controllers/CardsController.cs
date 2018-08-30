@@ -39,14 +39,13 @@ namespace LoomNetwork.CZB
 
         private BoardUnit _fakeBoardCard;
 
-
         private int _cardInstanceId = 0;
 
         public GameObject creatureCardViewPrefab,
                            opponentCardPrefab,
                            spellCardViewPrefab;
 
-        public int indexOfCard;
+        private int indexOfCard;
 
         public bool CardDistribution { get; set; }
 
@@ -528,7 +527,34 @@ namespace LoomNetwork.CZB
 
                 if (player.BoardCards.Count > 0 && indexOfCard != newIndexOfCard) {
                     indexOfCard = newIndexOfCard;
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayerTest (indexOfCard);
+
+                    var playerCards = _gameplayManager.CurrentPlayer.BoardCards;
+                    List<BoardUnit> toArrangeList = new List<BoardUnit> ();
+
+                    for (int i = 0; i < playerCards.Count; i++) {
+                        toArrangeList.Add(playerCards[i]);
+                    }
+
+                    if (_fakeBoardCard != null) { 
+                        MonoBehaviour.Destroy(_fakeBoardCard.gameObject);
+                        _fakeBoardCard = null;
+                    }
+                        
+                    _fakeBoardCard = new BoardUnit (_playerBoard.transform);
+                    toArrangeList.Insert (indexOfCard, _fakeBoardCard);
+
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (toArrangeList);
+                }
+            }
+        }
+
+        public void ResetPlayerCardsOnBattlegroundPosition () {
+            if (indexOfCard != -1) {
+                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer.BoardCards);
+                indexOfCard = -1;
+                if (_fakeBoardCard != null) { 
+                    MonoBehaviour.Destroy(_fakeBoardCard.gameObject);
+                    _fakeBoardCard = null;
                 }
             }
         }
@@ -601,7 +627,7 @@ namespace LoomNetwork.CZB
 
                         _timerManager.AddTimer((param) => {
                             boardUnit.PlayArrivalAnimation();
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(() =>
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards, () =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
                             });
