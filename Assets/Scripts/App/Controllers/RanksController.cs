@@ -33,10 +33,9 @@ namespace LoomNetwork.CZB
 
         public void UpdateRanksByElements(List<BoardUnit> units, Data.Card card)
         {
-            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
-            var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
-            if(weakerUnitsList.Count > 0)
-                DoRankUpgrades(weakerUnitsList, card.cardSetType, card.cardRank);
+            var filter = units.Where(unit => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
+            if(filter.Count > 0)
+                DoRankUpgrades(filter, card.cardSetType, card.cardRank);
         }
 
         public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
