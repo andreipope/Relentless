@@ -407,6 +407,14 @@
           <Value>[^a-z ]StyleCopIgnoreUtilityWindow.cs</Value>
           <Value>[^a-z ]StyleCopIgnoreUtilityXMLTool.cs</Value>
           <Value>[^a-z ]Zb.cs</Value>
+          <Value>[^a-z ]Animators.Generated.cs</Value>
+          <Value>[^a-z ]Input.Generated.cs</Value>
+          <Value>[^a-z ]LayerMask.Generated.cs</Value>
+          <Value>[^a-z ]Layers.Generated.cs</Value>
+          <Value>[^a-z ]Resources.Generated.cs</Value>
+          <Value>[^a-z ]Scenes.Generated.cs</Value>
+          <Value>[^a-z ]SortingLayers.Generated.cs</Value>
+          <Value>[^a-z ]Tags.Generated.cs</Value>
         </CollectionProperty>
       </ParserSettings>
     </Parser>

@@ -161,3 +161,11 @@ MonoBehaviour:
   - relativePath: /Assets/Plugins/StyleCopIgnoreUtility/Editor/StyleCopIgnoreUtilityWindow.cs
   - relativePath: /Assets/Plugins/StyleCopIgnoreUtility/Editor/StyleCopIgnoreUtilityXMLTool.cs
   - relativePath: /Assets/Scripts/Generated/Protobuf/Zb.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Animators.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Input.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/LayerMask.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Layers.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Resources.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Scenes.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/SortingLayers.Generated.cs
+  - relativePath: /Assets/Scripts/Generated/TypeSafe/Tags.Generated.cs
