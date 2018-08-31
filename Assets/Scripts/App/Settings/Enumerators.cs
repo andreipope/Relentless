@@ -351,7 +351,8 @@
 
         public enum SpreadsheetType
         {
-            TUTORIAL
+            TUTORIAL,
+            FLAVOR_TEXT
         }
 
         public enum AIActionType

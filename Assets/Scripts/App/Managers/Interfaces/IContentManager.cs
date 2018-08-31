@@ -13,6 +13,7 @@ namespace LoomNetwork.CZB
 {
     public interface IContentManager
     {
-        List<SpreadsheetModelTutorialInfo> TutorialInfo { get; }
+        List<SpreadsheetModelInfo> TutorialInfo { get; }
+        List<SpreadsheetModelInfo> FlavorTextInfo { get; }
     }
 }
