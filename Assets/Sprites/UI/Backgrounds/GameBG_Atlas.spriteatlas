@@ -3,10 +3,11 @@
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: GameBG_Atlas
   m_EditorData:
+    serializedVersion: 2
     textureSettings:
       serializedVersion: 2
       anisoLevel: 1
@@ -18,8 +19,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
-    packingParameters:
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
       serializedVersion: 2
       padding: 8
       blockOffset: 1
@@ -42,28 +54,28 @@ SpriteAtlas:
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: c7f3beee9550df64b8ec0be9293273ca, type: 3}
   - {fileID: 21300000, guid: d10390531c841674995abbb0708aac6c, type: 3}
-  - {fileID: 21300000, guid: 51bb2844234e314499a3231a40ca0399, type: 3}
-  - {fileID: 21300000, guid: 253028fc360d9974abf4115c1d631ae2, type: 3}
-  - {fileID: 21300000, guid: e449ef57272c6924b856320d01e32232, type: 3}
-  - {fileID: 21300000, guid: 16c48a5fd0e80ee42ad14e6976559ad1, type: 3}
-  - {fileID: 21300000, guid: 5025957db15f5f441ad8992e37c98f5b, type: 3}
   - {fileID: 21300000, guid: 3227bfa31edf31b45a1e78fb1347030b, type: 3}
+  - {fileID: 21300000, guid: 51bb2844234e314499a3231a40ca0399, type: 3}
   - {fileID: 21300000, guid: 5ce0ffe523abebd48b89ffe408e70068, type: 3}
+  - {fileID: 21300000, guid: e449ef57272c6924b856320d01e32232, type: 3}
+  - {fileID: 21300000, guid: 253028fc360d9974abf4115c1d631ae2, type: 3}
   - {fileID: 21300000, guid: d9d81e4da6fdb0c49b9a533b483c2209, type: 3}
+  - {fileID: 21300000, guid: 5025957db15f5f441ad8992e37c98f5b, type: 3}
+  - {fileID: 21300000, guid: c7f3beee9550df64b8ec0be9293273ca, type: 3}
+  - {fileID: 21300000, guid: 16c48a5fd0e80ee42ad14e6976559ad1, type: 3}
   - {fileID: 21300000, guid: 6ca343ef5a23abc4b8419dffecb8c0dd, type: 3}
   m_PackedSpriteNamesToIndex:
-  - battleground_bg
   - deck_full
-  - deck_bunch
-  - deck_couple
-  - deck_single
-  - opponent_bottle_mask
-  - mask_bottle_player
   - graveyard_single
+  - deck_bunch
   - graveyard_bunch
+  - deck_single
+  - deck_couple
   - graveyard_couple
+  - mask_bottle_player
+  - battleground_bg
+  - opponent_bottle_mask
   - graveyard_fulldeck
   m_Tag: GameBG_Atlas
   m_IsVariant: 0

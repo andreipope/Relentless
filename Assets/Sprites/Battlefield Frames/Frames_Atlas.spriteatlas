@@ -3,10 +3,11 @@
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Frames_Atlas
   m_EditorData:
+    serializedVersion: 2
     textureSettings:
       serializedVersion: 2
       anisoLevel: 1
@@ -18,8 +19,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
-    packingParameters:
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
       serializedVersion: 2
       padding: 8
       blockOffset: 1
@@ -43,30 +55,30 @@ SpriteAtlas:
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: b10ef86d1eded4e4882f5b4d082a55aa, type: 3}
-  - {fileID: 21300000, guid: e59c5a74bbb6ec74e91afc466f784b1f, type: 3}
-  - {fileID: 21300000, guid: def9a82c13ba4914291df1dd3e22ae5d, type: 3}
-  - {fileID: 21300000, guid: 51f8e92bad8f48e4697ac2ce222ba212, type: 3}
-  - {fileID: 21300000, guid: 0922fdc5f6e8ad44abbe6d6001738c13, type: 3}
-  - {fileID: 21300000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
-  - {fileID: 21300000, guid: 071634884bd22e944a060691bcb7c043, type: 3}
-  - {fileID: 21300000, guid: 078d1cf8d85f72644ba2ff319cdf1ab6, type: 3}
   - {fileID: 21300000, guid: ed5ab0f0c07c86240b38b74bb27328be, type: 3}
+  - {fileID: 21300000, guid: e59c5a74bbb6ec74e91afc466f784b1f, type: 3}
+  - {fileID: 21300000, guid: 0922fdc5f6e8ad44abbe6d6001738c13, type: 3}
   - {fileID: 21300000, guid: 0ddb7636dd4071c48b41de86c4631383, type: 3}
+  - {fileID: 21300000, guid: 071634884bd22e944a060691bcb7c043, type: 3}
   - {fileID: 21300000, guid: bfaea2c874177874daac5c8e38b719e0, type: 3}
+  - {fileID: 21300000, guid: 078d1cf8d85f72644ba2ff319cdf1ab6, type: 3}
+  - {fileID: 21300000, guid: 51f8e92bad8f48e4697ac2ce222ba212, type: 3}
+  - {fileID: 21300000, guid: def9a82c13ba4914291df1dd3e22ae5d, type: 3}
   - {fileID: 21300000, guid: 8fd773dc1ee851f42a1d95be89c710d4, type: 3}
+  - {fileID: 21300000, guid: b10ef86d1eded4e4882f5b4d082a55aa, type: 3}
+  - {fileID: 21300000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
   m_PackedSpriteNamesToIndex:
-  - glow_card_inhand
-  - glow_hero
-  - glow_hero
-  - glow_card_inhand
-  - glow_card_onfield
-  - glow_card_onfield
-  - glow_skill
-  - glow_skill
   - hero_sword
+  - glow_hero
+  - glow_card_onfield
   - glow_goo
+  - glow_skill
   - glow_goo
+  - glow_skill
+  - glow_card_inhand
+  - glow_hero
   - hero_shield
+  - glow_card_inhand
+  - glow_card_onfield
   m_Tag: Frames_Atlas
   m_IsVariant: 0

@@ -3,10 +3,11 @@
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Player_Order_Overlords_Atlas
   m_EditorData:
+    serializedVersion: 2
     textureSettings:
       serializedVersion: 2
       anisoLevel: 1
@@ -18,8 +19,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
-    packingParameters:
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
       serializedVersion: 2
       padding: 4
       blockOffset: 1
@@ -38,17 +50,17 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: a168b1717054f8e40bb25502b55e4e07, type: 3}
-  - {fileID: 21300000, guid: 1c60824fb9767e74392997381fac1a27, type: 3}
+  - {fileID: 21300000, guid: 911a6115837a5954c99149d2df2c0e74, type: 3}
+  - {fileID: 21300000, guid: 55af278549a8a90428a6eb968f090075, type: 3}
   - {fileID: 21300000, guid: b879a97604e92784db174e470d4b93e3, type: 3}
   - {fileID: 21300000, guid: 15433cfe7a4904348bd20ca31b95cb29, type: 3}
-  - {fileID: 21300000, guid: 55af278549a8a90428a6eb968f090075, type: 3}
-  - {fileID: 21300000, guid: 911a6115837a5954c99149d2df2c0e74, type: 3}
+  - {fileID: 21300000, guid: 1c60824fb9767e74392997381fac1a27, type: 3}
   m_PackedSpriteNamesToIndex:
   - abilityselect_hero_fire
-  - abilityselect_hero_life
+  - abilityselect_hero_water
+  - abilityselect_hero_earth
   - abilityselect_hero_toxic
   - abilityselect_hero_air
-  - abilityselect_hero_earth
-  - abilityselect_hero_water
+  - abilityselect_hero_life
   m_Tag: Player_Order_Overlords_Atlas
   m_IsVariant: 0

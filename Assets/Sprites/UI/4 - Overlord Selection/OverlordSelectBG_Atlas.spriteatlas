@@ -3,10 +3,11 @@
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: OverlordSelectBG_Atlas
   m_EditorData:
+    serializedVersion: 2
     textureSettings:
       serializedVersion: 2
       anisoLevel: 1
@@ -18,8 +19,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
-    packingParameters:
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
       serializedVersion: 2
       padding: 8
       blockOffset: 1
@@ -36,13 +48,13 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: a4580e34cfaf61343ba9d551289c41de, type: 3}
-  - {fileID: 21300000, guid: a29c1c4c950b63f47970963d0600fe02, type: 3}
   - {fileID: 21300000, guid: 2a3dab16f6baa8c438f6ee3e96c5e2dc, type: 3}
+  - {fileID: 21300000, guid: a29c1c4c950b63f47970963d0600fe02, type: 3}
   - {fileID: 21300000, guid: 65f93a2f6b88b074e99d969ba9a83246, type: 3}
   m_PackedSpriteNamesToIndex:
   - overlordselect_background
-  - overlordselect_mask_mid
   - overlordselect_mask_R
+  - overlordselect_mask_mid
   - overlordselect_mask_L
   m_Tag: OverlordSelectBG_Atlas
   m_IsVariant: 0

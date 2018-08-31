@@ -3,10 +3,11 @@
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: PlayerOrderUI_Atlas
   m_EditorData:
+    serializedVersion: 2
     textureSettings:
       serializedVersion: 2
       anisoLevel: 1
@@ -18,8 +19,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
-    packingParameters:
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
       serializedVersion: 2
       padding: 8
       blockOffset: 1
@@ -42,28 +54,28 @@ SpriteAtlas:
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: f5bf85effe00e6447961056a3edb420f, type: 3}
   - {fileID: 21300000, guid: 117fe3d10695f124ab218c3dfb92f0f4, type: 3}
-  - {fileID: 21300000, guid: c89848ab4736ba1428f21e69a85ebb81, type: 3}
+  - {fileID: 21300000, guid: 5fb04d93c9673494483edb8eed57766f, type: 3}
+  - {fileID: 21300000, guid: 1e2f1994183c961479273f830468e412, type: 3}
   - {fileID: 21300000, guid: b2149b753b99de44c951150ac4daa5eb, type: 3}
+  - {fileID: 21300000, guid: 21c16be507faf844c926b9ced41d2bd8, type: 3}
+  - {fileID: 21300000, guid: fc62d1b6559858b4883e15de018bd114, type: 3}
   - {fileID: 21300000, guid: 9f1ceb1b4fa7b8b459e075ce2a8e2ec5, type: 3}
   - {fileID: 21300000, guid: c75b1d7bafe312840b2b6064d358a836, type: 3}
+  - {fileID: 21300000, guid: c89848ab4736ba1428f21e69a85ebb81, type: 3}
   - {fileID: 21300000, guid: c221ccedb932c644c8d45ae59208ba62, type: 3}
-  - {fileID: 21300000, guid: 1e2f1994183c961479273f830468e412, type: 3}
-  - {fileID: 21300000, guid: fc62d1b6559858b4883e15de018bd114, type: 3}
-  - {fileID: 21300000, guid: 5fb04d93c9673494483edb8eed57766f, type: 3}
-  - {fileID: 21300000, guid: 21c16be507faf844c926b9ced41d2bd8, type: 3}
+  - {fileID: 21300000, guid: f5bf85effe00e6447961056a3edb420f, type: 3}
   m_PackedSpriteNamesToIndex:
-  - playerorder_pipe_left
   - playerorder_pipe_right
-  - fxplaceholder_card
+  - playerorder_text_1st
+  - playerorder_text_V
   - playerorder_card_back
+  - playerorder_text_2nd
+  - playerorder_text_S
   - playerorder_card_front
   - playerorder_pipe_glow
+  - fxplaceholder_card
   - playerorder_pipe_mid_glow
-  - playerorder_text_V
-  - playerorder_text_S
-  - playerorder_text_1st
-  - playerorder_text_2nd
+  - playerorder_pipe_left
   m_Tag: PlayerOrderUI_Atlas
   m_IsVariant: 0

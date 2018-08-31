@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Build.Reporting;
 using Debug = UnityEngine.Debug;
 
 namespace LoomNetwork.Internal
@@ -103,8 +104,9 @@ namespace LoomNetwork.Internal
             buildPlayerOptions.locationPathName = outputPath;
             buildPlayerOptions.target = buildTarget;
             buildPlayerOptions.targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-            string buildPlayer = BuildPipeline.BuildPlayer(buildPlayerOptions);
-            Debug.Log(buildPlayer);
+            BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            if (buildReport.summary.result != BuildResult.Succeeded)
+                throw new Exception("build failed");
         }
 
         private static void BuildAssetBundles(BuildTarget buildTarget)

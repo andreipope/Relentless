@@ -32,6 +32,7 @@ ExportedObj/
 
 # Unity3D generated meta files
 *.pidb.meta
+/Logs/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
@@ -39,6 +40,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# StyleCop
+StyleCop.Cache
 
 # Local-only files
 Assets/Resources/BuildMetaInfo.asset
