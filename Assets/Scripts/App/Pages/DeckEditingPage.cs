@@ -224,6 +224,7 @@ namespace LoomNetwork.CZB
                 _currentDeck.id = -1;
                 _currentDeck.name = "HORDE " + _dataManager.CachedDecksData.decks.Count;
                 _currentDeck.cards = new List<DeckCardData>();
+                _currentDeck.heroId = _currentHeroId;
             }
             else
             {
