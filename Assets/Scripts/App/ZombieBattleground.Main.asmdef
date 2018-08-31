@@ -1,0 +1,14 @@
+{
+    "name": "ZombieBattleground.Main",
+    "references": [
+        "Unity.TextMeshPro",
+        "LoomSDK",
+        "ZombieBattleground.Generated",
+        "AsyncAwaitUtil",
+        "GoogleAnalytics"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

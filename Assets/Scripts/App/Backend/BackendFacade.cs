@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
@@ -12,6 +13,7 @@ using LoomNetwork.CZB.Protobuf;
 using LoomNetwork.Internal;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
+using Contract = Loom.Client.Contract;
 using Random = System.Random;
 using Deck = LoomNetwork.CZB.Data.Deck;
 using ProtobufDeck = LoomNetwork.CZB.Protobuf.Deck;
