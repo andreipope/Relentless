@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
             List<BoardUnit> allies = new List<BoardUnit>();
 
             allies = playerCallerOfAbility.BoardCards.Where((unit) => unit != abilityUnitOwner && 
-                              unit.IsFeralUnit() == false && unit.numTurnsOnBoard == 0).ToList();
+                              !unit.hasFeral && unit.numTurnsOnBoard == 0).ToList();
 
             if (allies.Count > 0)
             {
