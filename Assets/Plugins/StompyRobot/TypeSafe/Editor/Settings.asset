@@ -20,12 +20,12 @@ MonoBehaviour:
   IncludeNonActiveScenes: 1
   MinimumBuildTime: 3.5
   Namespace: LoomNetwork.CZB
-  OutputDirectory: Assets/Scripts/Generated/TypeSafe
+  OutputDirectory: Scripts/Generated/TypeSafe
   ResourceFolderFilter:
   - Assets/Plugins
   TriggerOnInputChange: 1
   TriggerOnLayerChange: 1
-  TriggerOnResourceChange: 1
+  TriggerOnResourceChange: 0
   TriggerOnSceneChange: 1
   TriggerOnAssetChange: 1
   Whitelist: []

@@ -44,6 +44,12 @@ sysinfo.txt
 # StyleCop
 StyleCop.Cache
 
+# ReUniter
+.reuniter_data
+
+# Mac crap
+.DS_Store
+
 # Local-only files
 Assets/Resources/BuildMetaInfo.asset
 Assets/Resources/BuildMetaInfo.asset.meta

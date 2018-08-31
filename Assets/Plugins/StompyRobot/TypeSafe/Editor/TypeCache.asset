@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Name: TypeCache
   m_EditorClassIdentifier: 
   Contents:
-  - Path: Assets/Assets/Resources/Images/Overlords/Player_Order_Overlords_Atlas.spriteatlas
-    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
   - Path: Assets/Plugins/TextMesh Pro/Resources/LineBreaking Leading Characters.txt
     Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -36,14 +33,8 @@ MonoBehaviour:
   - Path: Assets/Assets/Resources/LoomCopyright.txt
     Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  - Path: Assets/Assets/Resources/Images/Cards/Illustrations/Cards_Illustrations_Atlas.spriteatlas
-    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
   - Path: Assets/Assets/Resources/SpreadsheetsData/NONE_TUTORIAL.csv
     Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Assets/Resources/Images/Elementals/GamePlay_Icons_Atlas.spriteatlas
-    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   - Path: Assets/Assets/Resources/Data/credits_data.json
     Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
@@ -60,6 +51,39 @@ MonoBehaviour:
   - Path: Assets/Assets/Resources/Data/decks_data.json
     Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Data/card_library_data.json
+    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Plugins/TextMesh Pro/Resources/Shaders/TMPro_Surface.cginc
+    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Plugins/TextMesh Pro/Resources/Shaders/TMPro.cginc
+    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Data/opponent_decks_data.json
+    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Data/heroes_data.json
+    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/DOTweenSettings.asset
+    Type: DG.Tweening.Core.DOTweenSettings, DOTween, Version=1.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/BuildMetaInfo.asset
+    Type: LoomNetwork.CZB.BuildMetaInfo, ZombieBattleground.Main, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - Path: Assets/Plugins/TextMesh Pro/Resources/TMP Settings.asset
+    Type: TMPro.TMP_Settings, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Images/Overlords/Player_Order_Overlords_Atlas.spriteatlas
+    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Images/Cards/Illustrations/Cards_Illustrations_Atlas.spriteatlas
+    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  - Path: Assets/Assets/Resources/Images/Elementals/GamePlay_Icons_Atlas.spriteatlas
+    Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   - Path: Assets/Assets/Resources/Images/UI/ChooseHorde/Horde_Choose_Portraits_Atlas.spriteatlas
     Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -72,36 +96,6 @@ MonoBehaviour:
   - Path: Assets/Assets/Resources/Images/Heroes/Gameplay_Heroes_Atlas.spriteatlas
     Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  - Path: Assets/Assets/Resources/Data/card_library_data.json
-    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Plugins/TextMesh Pro/Resources/Shaders/TMPro_Surface.cginc
-    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
   - Path: Assets/Assets/Resources/Images/Tutorial/Tutorial_Girl_Atlas.spriteatlas
     Type: UnityEngine.U2D.SpriteAtlas, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Plugins/TextMesh Pro/Resources/Shaders/TMPro.cginc
-    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Plugins/StyleCopIgnoreUtility/Resources/RedBlueGames/StyleCopIgnoreUtilitySettings.asset
-    Type: RedBlueGames.StyleCopIgnoreUtility.StyleCopIgnoreUtilityData, Assembly-CSharp-Editor-firstpass,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Assets/Assets/Resources/Data/opponent_decks_data.json
-    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Assets/Resources/Data/heroes_data.json
-    Type: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Assets/Resources/DOTweenSettings.asset
-    Type: DG.Tweening.Core.DOTweenSettings, DOTween, Version=1.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - Path: Assets/Resources/RedBlueGames/StyleCopIgnoreUtilitySettings.asset
-    Type: RedBlueGames.StyleCopIgnoreUtility.StyleCopIgnoreUtilityData, Assembly-CSharp-Editor-firstpass,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Assets/Assets/Resources/BuildMetaInfo.asset
-    Type: LoomNetwork.CZB.BuildMetaInfo, ZombieBattleground.Main, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - Path: Assets/Plugins/TextMesh Pro/Resources/TMP Settings.asset
-    Type: TMPro.TMP_Settings, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null

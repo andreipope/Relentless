@@ -155,6 +155,8 @@ MonoBehaviour:
   - relativePath: /Assets/Plugins/Opencoding/Console/Editor/DebugConsoleInspector.cs
   - relativePath: /Assets/Plugins/Opencoding/Console/Editor/DetectUpgrade.cs
   - relativePath: /Assets/Plugins/Opencoding/Console/NativeMethods.cs
+  - relativePath: /Assets/Plugins/ReUniter/Editor/ReUniterSelectionHistoryTracker.cs
+  - relativePath: /Assets/Plugins/ReUniter/Editor/ReUniterWindow.cs
   - relativePath: /Assets/Plugins/StompyRobot/TypeSafe/Editor/MenuItems.cs
   - relativePath: /Assets/Plugins/StyleCopIgnoreUtility/Editor/IStyleCopIgnoreUtilityView.cs
   - relativePath: /Assets/Plugins/StyleCopIgnoreUtility/Editor/StyleCopIgnoreUtility.cs

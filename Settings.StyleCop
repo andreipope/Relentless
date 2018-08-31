@@ -401,6 +401,8 @@
           <Value>[^a-z ]DebugConsoleInspector.cs</Value>
           <Value>[^a-z ]DetectUpgrade.cs</Value>
           <Value>[^a-z ]NativeMethods.cs</Value>
+          <Value>[^a-z ]ReUniterSelectionHistoryTracker.cs</Value>
+          <Value>[^a-z ]ReUniterWindow.cs</Value>
           <Value>[^a-z ]MenuItems.cs</Value>
           <Value>[^a-z ]IStyleCopIgnoreUtilityView.cs</Value>
           <Value>[^a-z ]StyleCopIgnoreUtility.cs</Value>
