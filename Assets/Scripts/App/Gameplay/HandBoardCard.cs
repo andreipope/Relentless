@@ -87,9 +87,6 @@ public class HandBoardCard
             } else {
                 _cardsController.ResetPlayerCardsOnBattlegroundPosition ();
             }
-
-            if (Vector3.Distance(initialPos, transform.position) > 1f)
-                _playerController.HideCardPreview();
         }
     }
 
@@ -103,7 +100,7 @@ public class HandBoardCard
             startedDrag = true;
             initialPos = transform.position;
             initialRotation = transform.eulerAngles;
-
+            
             transform.eulerAngles = Vector3.zero;
 
             _playerController.IsCardSelected = true;
