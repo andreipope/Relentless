@@ -229,7 +229,7 @@
                 AssetDatabase.CreateFolder("Assets/Resources", "RedBlueGames");
             }
 
-            this.saveData = AssetDatabase.LoadAssetAtPath<StyleCopIgnoreUtilityData>(UtilitySettingsRelativePath + UtilitySettingsFileName);
+            this.saveData = Resources.Load<StyleCopIgnoreUtilityData>(UtilitySettingsFileName);
             if (this.SaveData == null)
             {
                 var newModelAsset = ScriptableObject.CreateInstance<StyleCopIgnoreUtilityData>();

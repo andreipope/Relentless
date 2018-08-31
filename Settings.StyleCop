@@ -306,8 +306,13 @@
           <Value>[^a-z ]CachedNumbers.cs</Value>
           <Value>[^a-z ]UIUtils.cs</Value>
           <Value>[^a-z ]AFPSCounter.cs</Value>
-          <Value>[^a-z ]Basics.cs</Value>
-          <Value>[^a-z ]Sequences.cs</Value>
+          <Value>[^a-z ]DOTweenModuleAudio.cs</Value>
+          <Value>[^a-z ]DOTweenModulePhysics.cs</Value>
+          <Value>[^a-z ]DOTweenModulePhysics2D.cs</Value>
+          <Value>[^a-z ]DOTweenModuleSprite.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUI.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUnityVersion.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUtils.cs</Value>
           <Value>[^a-z ]AdvertiserOptInAttribute.cs</Value>
           <Value>[^a-z ]RangedTooltipAttribute.cs</Value>
           <Value>[^a-z ]TooltipAttribute.cs</Value>
@@ -396,6 +401,7 @@
           <Value>[^a-z ]DebugConsoleInspector.cs</Value>
           <Value>[^a-z ]DetectUpgrade.cs</Value>
           <Value>[^a-z ]NativeMethods.cs</Value>
+          <Value>[^a-z ]MenuItems.cs</Value>
           <Value>[^a-z ]IStyleCopIgnoreUtilityView.cs</Value>
           <Value>[^a-z ]StyleCopIgnoreUtility.cs</Value>
           <Value>[^a-z ]StyleCopIgnoreUtilityData.cs</Value>
