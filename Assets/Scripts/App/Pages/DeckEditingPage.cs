@@ -338,7 +338,7 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmQuitEventHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Would you like to save the current horde?");
+            _uiManager.DrawPopup<QuestionPopup>(new object[] { "Would you like to save the current horde?", true });
         }
 
         private void ConfirmQuitEventHandler(bool status)
