@@ -25,6 +25,8 @@ namespace LoomNetwork.CZB
         private IUIManager _uiManager;
         private GameObject _selfPage;
 
+        private Button _backButton;
+
 		private TextMeshProUGUI _text;
         //private MenuButton _button1,
         //                    _button2;
@@ -65,12 +67,13 @@ namespace LoomNetwork.CZB
 
             _buttonYes = _selfPage.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
             _buttonNo = _selfPage.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
+            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
             //_closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
 
             //_closeButton.onClickEvent.AddListener(Hide);
             _buttonYes.onClick.AddListener(ConfirmationButtonHandler);
             _buttonNo.onClick.AddListener(NoButtonOnClickHandler);
-
+            _backButton.onClick.AddListener(BackButtonHandler);
 
             _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
         }
@@ -79,7 +82,17 @@ namespace LoomNetwork.CZB
         {
             Show();
 
-            _text.text = (string)data;
+            if (data is object[])
+            {
+                object[] param = (object[])data;
+                _text.text = (string)param[0];
+                _backButton.gameObject.SetActive((bool)param[1]);
+            }
+            else
+            {
+                _backButton.gameObject.SetActive(false);
+                _text.text = (string)data;
+            }
         }
 
         public void Update()
@@ -102,5 +115,10 @@ namespace LoomNetwork.CZB
             _uiManager.HidePopup<QuestionPopup>();
         }
 
+        private void BackButtonHandler()
+        {
+            ConfirmationEvent = null;
+            Hide();
+        }
     }
 }
