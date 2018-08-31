@@ -432,15 +432,19 @@ namespace LoomNetwork.CZB
             var boardCard = opponentBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
-
-                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+                if(boardCard.transform != null)
+                    boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
 
                 opponentBoardCards.Remove(boardCard);
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-                MonoBehaviour.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+                if (boardCard.gameObject != null)
+                {
+                    boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
+                    MonoBehaviour.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+                }
+                Debug.Log("Destroy = " + boardCard.CurrentHP + "_" + boardCard.Card.libraryCard.name);
             }
             else if (_aiController.currentSpellCard != null && card == _aiController.currentSpellCard.WorkingCard)
             {

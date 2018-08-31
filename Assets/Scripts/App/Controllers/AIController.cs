@@ -844,7 +844,7 @@ namespace LoomNetwork.CZB
             return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0);
         }
 
-        private BoardUnit GetRandomUnit(bool lowHP = false)
+        private BoardUnit GetRandomUnit(bool lowHP = false, List<BoardUnit> unitsToIgnore = null)
         {
             List<BoardUnit> eligibleUnits = null;
 
@@ -852,6 +852,9 @@ namespace LoomNetwork.CZB
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP > 0 && !_attackedUnitTargets.Contains(x));
             else
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHP < x.MaxCurrentHP && !_attackedUnitTargets.Contains(x));
+
+            if (unitsToIgnore != null)
+                eligibleUnits = eligibleUnits.FindAll(x => !unitsToIgnore.Contains(x));
 
             if (eligibleUnits.Count > 0)
                 return eligibleUnits[_random.Next(0, eligibleUnits.Count)];
@@ -922,7 +925,9 @@ namespace LoomNetwork.CZB
 
                         if (_gameplayManager.OpponentPlayer.HP > 13)
                         {
-                            var units = GetUnitsWithLowHP();
+                            if (skill.skill.elementTargetTypes.Count > 0)
+                                _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => !skill.skill.elementTargetTypes.Contains(x.Card.libraryCard.cardSetType));
+                            var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 
                             if (units.Count > 0)
                             {
@@ -934,7 +939,12 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.OverlordSkill.RABIES:
                     {
-                        var unit = GetRandomUnit();
+
+                        _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
+                         (skill.skill.elementTargetTypes.Count > 0 && !skill.skill.elementTargetTypes.Contains(x.Card.libraryCard.cardSetType) ||
+                         x.numTurnsOnBoard > 0 || x.hasFeral
+                        ));
+                        var unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
 
                         if (unit != null)
                         {
@@ -963,6 +973,9 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.OverlordSkill.PUSH:
                     {
+                        if(skill.skill.elementTargetTypes.Count > 0)
+                            _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => !skill.skill.elementTargetTypes.Contains(x.Card.libraryCard.cardSetType));
+
                         var units = GetUnitsWithLowHP(_unitsToIgnoreThisTurn);
 
                         if (units.Count > 0)

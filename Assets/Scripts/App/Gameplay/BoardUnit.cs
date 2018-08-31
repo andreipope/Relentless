@@ -295,13 +295,15 @@ namespace LoomNetwork.CZB
 
         public void Die(bool returnToHand = false)
         {
+            //Debug.Log("DIE - " + Card.libraryCard.name);
             _timerManager.StopTimer(CheckIsCanDie);
 
             UnitHPChangedEvent -= healthChangedDelegate;
             UnitDamageChangedEvent -= damageChangedDelegate;
 
             _dead = true;
-
+            //if(CurrentHP > 0)
+              //  Debug.LogError(Card.libraryCard.name);
             if (!returnToHand)
                 _battlegroundController.KillBoardCard(this);
         }
@@ -310,7 +312,6 @@ namespace LoomNetwork.CZB
         {
             if (!_readyForBuffs)
                 return;
-            UnityEngine.Debug.Log(Card.libraryCard.name + " Buffed " + type);
             _buffsOnUnit.Add(type);
         }
 
@@ -542,16 +543,12 @@ namespace LoomNetwork.CZB
         public void ArrivalAnimationEventHandler()
         {
             unitContentObject.SetActive(true);
-
+            if (hasFeral)
+                StopSleepingParticles();
             if (!_ignoreArrivalEndEvents)
-            {
                 if (hasFeral)
-                {
-                    StopSleepingParticles();
                     if (ownerPlayer != null)
                         SetHighlightingEnabled(true);
-                }
-            }
 
             if (!_ignoreArrivalEndEvents)
             {

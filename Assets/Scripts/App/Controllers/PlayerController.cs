@@ -137,9 +137,6 @@ namespace LoomNetwork.CZB
 
         public void SetHand()
         {
-            //if (_gameplayManager.IsTutorial)
-           //     _cardsController.AddCardToHand(_gameplayManager.CurrentPlayer, _gameplayManager.CurrentPlayer.CardsInDeck[0]);
-
             _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
 
             GameClient.Get<ITimerManager>().AddTimer((x) =>
@@ -163,9 +160,6 @@ namespace LoomNetwork.CZB
             IsActive = false;
             IsPlayerStunned = false;
             IsCardSelected = false;
-
-            //Write code for analize amount of experience getted in the battle
-            //_heroController.ChangeExperience(endGameType == Enumerators.EndGameType.WIN ? 100 : -50);
         }
 
         private void HandleInput()
@@ -174,130 +168,78 @@ namespace LoomNetwork.CZB
 
             if (Input.GetMouseButtonDown(0))
             {
-                // if (!IsCardSelected)
+                var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+                var hitCards = new List<GameObject>();
+                var hitHandCard = false;
+                var hitBoardCard = false;
+                foreach (var hit in hits)
                 {
-                    var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
-                    var hitCards = new List<GameObject>();
-                    var hitHandCard = false;
-                    var hitBoardCard = false;
+                    if (hit.collider != null &&
+                        hit.collider.gameObject != null &&
+                        _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject) != null)
+                    {
+                        hitCards.Add(hit.collider.gameObject);
+                        hitHandCard = true;
+                    }
+                }
+                if (!hitHandCard)
+                {
                     foreach (var hit in hits)
                     {
-                        if (hit.collider != null &&
-                            hit.collider.gameObject != null &&
-                            _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject) != null)
+                        if (hit.collider != null && hit.collider.name.Contains("BoardCreature"))
                         {
                             hitCards.Add(hit.collider.gameObject);
-                            hitHandCard = true;
+                            hitBoardCard = true;
                         }
-                    }
-                    if (!hitHandCard)
-                    {
-                        foreach (var hit in hits)
-                        {
-                            if (hit.collider != null && hit.collider.name.Contains("BoardCreature"))
-                            {
-                                hitCards.Add(hit.collider.gameObject);
-                                hitBoardCard = true;
-                            }
-                        }
-                    }
-
-                    if (hitHandCard)
-                    {
-                        if (hitCards.Count > 0)
-                        {
-                            hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-
-                            var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
-                            if (topmostBoardCard != null && !topmostBoardCard.isPreview)
-                            {
-                                var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
-                                _pointerEventSolver.PushPointer(delta);
-
-                                _startedOnClickDelay = true;
-                                _isPreviewHandCard = true;
-                                _topmostBoardCard = topmostBoardCard;
-                            }
-                        }
-                    }
-                    else if (hitBoardCard)
-                    {
-                        if (hitCards.Count > 0)
-                        {
-                            StopHandTimer();
-
-                            hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                            var selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
-                            if (selectedBoardUnit != null && (!_battlegroundController.isPreviewActive || selectedBoardUnit.Card.instanceId != _battlegroundController.currentPreviewedCardId))
-                            {
-                                var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
-                                _pointerEventSolver.PushPointer(delta);
-
-                                 _startedOnClickDelay = true;
-                                _isPreviewHandCard = false;
-                                _selectedBoardUnit = selectedBoardUnit;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        StopHandTimer();
-                        _battlegroundController.DestroyCardPreview();
-
-                        // _delayTimerOfClick = 0f;
-                        // _startedOnClickDelay = false;
-                        _topmostBoardCard = null;
-                        _selectedBoardUnit = null;
                     }
                 }
 
-             //   if (IsActive)
+                if (hitHandCard)
                 {
-                    var hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
-                    var hitCards = new List<GameObject>();
-                    foreach (var hit in hits)
-                    {
-                        if (hit.collider != null && hit.collider.gameObject != null)
-                        {
-                            var boardCardObject = _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject);
-                            if (boardCardObject != null && !boardCardObject.isPreview && boardCardObject.CanBePlayed(_gameplayManager.CurrentPlayer))
-                            {
-                                hitCards.Add(hit.collider.gameObject);
-                            }
-                        }
-                    }
                     if (hitCards.Count > 0)
                     {
-                        if (_battlegroundController.cardsZoomed || _tutorialManager.IsTutorial)
+                        hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
+
+                        var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                        if (topmostBoardCard != null && !topmostBoardCard.isPreview)
                         {
-                            _battlegroundController.DestroyCardPreview();
-                            hitCards = hitCards.OrderByDescending(x => x.transform.position.z).ToList();
+                            var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                            _pointerEventSolver.PushPointer(delta);
 
-                            var topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
-                            var topmostHandCard = topmostBoardCard.HandBoardCard;
-                            if (topmostHandCard != null)
-                            {
-                                topmostBoardCard.HandBoardCard.OnSelected();
-
-                                if (_tutorialManager.IsTutorial)
-                                    _tutorialManager.DeactivateSelectTarget();
-                            }
-                        }
-                        else if (!_tutorialManager.IsTutorial)
-                        {
-                            _timerManager.StopTimer(SetStatusZoomingFalse);
-                            _cardsZooming = true;
-                            _timerManager.AddTimer(SetStatusZoomingFalse, null, 2f);
-
-                            _battlegroundController.cardsZoomed = true;
-                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                            _startedOnClickDelay = true;
+                            _isPreviewHandCard = true;
+                            _topmostBoardCard = topmostBoardCard;
                         }
                     }
+                }
+                else if (hitBoardCard)
+                {
+                    if (hitCards.Count > 0)
+                    {
+                        StopHandTimer();
+
+                        hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
+                        var selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
+                        if (selectedBoardUnit != null && (!_battlegroundController.isPreviewActive || selectedBoardUnit.Card.instanceId != _battlegroundController.currentPreviewedCardId))
+                        {
+                            var delta = Application.isMobilePlatform ? Constants.POINTER_MIN_DRAG_DELTA * 2f : Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                            _pointerEventSolver.PushPointer(delta);
+
+                                _startedOnClickDelay = true;
+                            _isPreviewHandCard = false;
+                            _selectedBoardUnit = selectedBoardUnit;
+                        }
+                    }
+                }
+                else
+                {
+                    if (_battlegroundController.isPreviewActive)
+                        HideCardPreview();
                     else
                     {
                         _timerManager.StopTimer(SetStatusZoomingFalse);
                         _cardsZooming = true;
-                        _timerManager.AddTimer(SetStatusZoomingFalse, null, 2f);
+                        _timerManager.AddTimer(SetStatusZoomingFalse, null, 1f);
 
                         _battlegroundController.cardsZoomed = false;
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -321,18 +263,25 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnDragStartedEventHandler()
         {
-            //Debug.Log("PointerEventSolver_OnDragStartedEventHandler");
-
-            if (_startedOnClickDelay && _delayTimerOfClick < 0.3f)
-            {
+                _topmostBoardCard.HandBoardCard.OnSelected();
+                if (_tutorialManager.IsTutorial)
+                    _tutorialManager.DeactivateSelectTarget();
                 if (_boardArrowController.CurrentBoardArrow == null)
-                    CheckCardPreviewShow();
-            }
+                    HideCardPreview();
         }
 
         private void PointerEventSolver_OnClickEventHandler()
         {
-            CheckCardPreviewShow();
+            if (_battlegroundController.cardsZoomed)
+                CheckCardPreviewShow();
+            else {
+                _timerManager.StopTimer(SetStatusZoomingFalse);
+                _cardsZooming = true;
+                _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
+
+                _battlegroundController.cardsZoomed = true;
+                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            }
         }
 
         private void PointerEventSolver_OnEndEventHandler()
@@ -345,13 +294,16 @@ namespace LoomNetwork.CZB
         {
             if (_isPreviewHandCard)
             {
-                if (_topmostBoardCard != null && _battlegroundController.cardsZoomed && !_cardsZooming)
+                if (_topmostBoardCard != null && !_cardsZooming)
                 {
                     StopHandTimer();
                     _battlegroundController.DestroyCardPreview();
 
                     if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow) { }
-                    else HandCardPreview(new object[] { _topmostBoardCard });
+                    else
+                    {
+                        HandCardPreview(new object[] { _topmostBoardCard });
+                    }
                 }
             }
             else
@@ -370,9 +322,6 @@ namespace LoomNetwork.CZB
 
         public void HideCardPreview()
         {
-            if (!_startedOnClickDelay)
-                return;
-
             StopHandTimer();
             _battlegroundController.DestroyCardPreview();
 
@@ -396,11 +345,8 @@ namespace LoomNetwork.CZB
 
         private void StopHandTimer()
         {
-          //  if (_handCardPreviewTimerStarted)
-            {
-                GameClient.Get<ITimerManager>().StopTimer(HandCardPreview);
-                _handCardPreviewTimerStarted = false;
-            }
+            GameClient.Get<ITimerManager>().StopTimer(HandCardPreview);
+            _handCardPreviewTimerStarted = false;
         }
 
         private void SetStatusZoomingFalse(object[] param)
@@ -418,14 +364,6 @@ namespace LoomNetwork.CZB
 
         public void UpdateHandCardsHighlight()
         {
-            //if (PlayerInfo.BoardSkills[0] != null && IsActive)
-            //{
-            //    if (PlayerInfo.Goo >= PlayerInfo.BoardSkills[0].manaCost)
-            //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(true);
-            //    else
-            //        PlayerInfo.BoardSkills[0].SetHighlightingEnabled(false);
-            //}
-
             if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
             {
                 foreach (var card in _battlegroundController.playerHandCards)
