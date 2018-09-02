@@ -20,24 +20,9 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             AbilityUnitOwner.AttackAsFirst = true;
-        }
-
-        protected override void UnitOnDieEventHandler()
-        {
-            base.UnitOnDieEventHandler();
         }
     }
 }

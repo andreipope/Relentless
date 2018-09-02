@@ -58,7 +58,6 @@ namespace LoomNetwork.CZB
                             SelectedPlayer?.SetGlowStatus(false);
 
                             SelectedPlayer = null;
-                            CreateTarget(unit.Transform.position);
                             SelectedCard.SetSelectedUnit(true);
 
                             OnCardSelectedEvent?.Invoke(unit);
@@ -73,8 +72,6 @@ namespace LoomNetwork.CZB
             if (SelectedCard == creature)
             {
                 SelectedCard.SetSelectedUnit(false);
-
-                // _targetObjectsGroup.SetActive(false);
                 OnCardUnselectedevent?.Invoke(creature);
             }
 
@@ -92,7 +89,6 @@ namespace LoomNetwork.CZB
                 SelectedCard?.SetSelectedUnit(false);
 
                 SelectedCard = null;
-                CreateTarget(player.AvatarObject.transform.position);
                 SelectedPlayer.SetGlowStatus(true);
                 OnPlayerSelectedEvent?.Invoke(player);
             }
@@ -103,12 +99,9 @@ namespace LoomNetwork.CZB
             if (SelectedPlayer == player)
             {
                 SelectedCard?.SetSelectedUnit(false);
-
                 SelectedCard = null;
-
                 SelectedPlayer.SetGlowStatus(false);
 
-                // _targetObjectsGroup.SetActive(false);
                 OnPlayerUnselectedEvent?.Invoke(player);
             }
 
@@ -124,9 +117,9 @@ namespace LoomNetwork.CZB
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler, null, null);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler, null, null);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
+                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
+                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler);
+                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler);
                 },
                 null,
                 Time.fixedDeltaTime);
@@ -139,11 +132,6 @@ namespace LoomNetwork.CZB
             _inputManager.UnregisterInputHandler(_onMouseDownInputIndex);
             _inputManager.UnregisterInputHandler(_onRightMouseDownInputIndex);
             _inputManager.UnregisterInputHandler(_onEscapeInputIndex);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
         }
 
         protected void OnMouseButtonUpHandler()

@@ -7,7 +7,6 @@ namespace LoomNetwork.CZB.Data
 {
     public class Card
     {
-        // [JsonIgnore]
         public int Id;
 
         public Enumerators.SetType CardSetType;
@@ -20,7 +19,7 @@ namespace LoomNetwork.CZB.Data
 
         public string Description;
 
-        public string FlavorText; // new
+        public string FlavorText;
 
         public string Picture;
 

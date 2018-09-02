@@ -62,9 +62,6 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             return;
 
         OnItemEndDrag?.Invoke(_mDraggingIcon);
-
-        // if (m_DraggingIcon != null)
-        // Destroy(m_DraggingIcon);
     }
 
     public static T FindInParents<T>(GameObject go)

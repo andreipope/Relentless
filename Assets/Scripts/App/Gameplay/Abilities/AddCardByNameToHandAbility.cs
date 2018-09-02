@@ -5,7 +5,7 @@ namespace LoomNetwork.CZB
 {
     public class AddCardByNameToHandAbility : AbilityBase
     {
-        public string Name;
+        public string Name { get; }
 
         public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -23,16 +23,6 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -41,11 +31,6 @@ namespace LoomNetwork.CZB
             {
                 CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

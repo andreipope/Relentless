@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {
-        public int Value = 1;
+        public int Value { get; }
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -92,8 +92,6 @@ namespace LoomNetwork.CZB
 
             if (leftAdjustment != null)
             {
-                // CreateVFX(cardCaller.transform.position);
-                // CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, leftAdjustment.card), leftAdjustment.transform.position);
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -104,8 +102,6 @@ namespace LoomNetwork.CZB
 
             if (rightAdjastment != null)
             {
-                // cardCaller.FightCreatureBySkill(value, rightAdjastment.card);
-                // CreateAndMoveParticle(() => playerCallerOfAbility.FightCreatureBySkill(value, rightAdjastment.card), rightAdjastment.transform.position);
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -125,13 +121,6 @@ namespace LoomNetwork.CZB
             {
                 switch (AffectObjectType)
                 {
-                    /*      case Enumerators.AffectObjectType.PLAYER:
-                              //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
-                              //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value, false), targetPlayer.transform.position);
-                              //else
-                              //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
-                              CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
-                              break; */
                     case Enumerators.AffectObjectType.CHARACTER:
                         Action(TargetUnit);
                         CreateAndMoveParticle(
@@ -161,7 +150,6 @@ namespace LoomNetwork.CZB
             Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
-                // CreateVFX(cardCaller.transform.position);
                 GameObject particleMain = Object.Instantiate(VfxObject);
                 particleMain.transform.position = Utilites.CastVfxPosition(startPosition + Vector3.forward);
                 particleMain.transform.DOMove(Utilites.CastVfxPosition(targetPosition), 0.5f).OnComplete(
@@ -203,7 +191,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { particleObj }, time, false);
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { particleObj }, time);
             }
         }
 

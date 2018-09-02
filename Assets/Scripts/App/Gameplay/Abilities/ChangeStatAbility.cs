@@ -6,11 +6,10 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
 
-        public Enumerators.StatType StatType;
+        public Enumerators.StatType StatType { get; }
 
-        public int Value = 1;
+        public int Value { get; }
 
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -24,21 +23,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
 
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)

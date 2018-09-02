@@ -35,7 +35,6 @@ namespace LoomNetwork.CZB
             AnimatorClipInfo[] clip = anim.GetCurrentAnimatorClipInfo(0);
             _animationLength = clip[0].clip.length * anim.speed;
 
-            // Debug.Log("HeavyArrivalAnimation clip length: "+_animationLength);
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {

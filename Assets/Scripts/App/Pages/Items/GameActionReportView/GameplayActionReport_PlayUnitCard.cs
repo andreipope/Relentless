@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
@@ -26,21 +25,6 @@ namespace LoomNetwork.CZB
             PreviewImage.sprite = _playedCard.Sprite;
 
             _playedCardPreviewObject = CreateCardPreview(_playedCard.Card, Vector3.zero);
-        }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

@@ -10,8 +10,6 @@ namespace LoomNetwork.CZB
 
         public Card Card;
 
-        public bool IsActive;
-
         public bool IsHordeItem;
 
         private MultiPointerClickHandler _multiPointerClickHandler;
@@ -23,7 +21,6 @@ namespace LoomNetwork.CZB
 
         private void Awake()
         {
-            IsActive = true;
             _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
             _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
             _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;

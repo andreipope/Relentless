@@ -124,14 +124,10 @@ namespace LoomNetwork.CZB
                     _buttonMelt.GetComponent<MenuButtonNoGlow>().Interactable = false;
                 }
 
-                // _uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
                 else
                 {
-                    /*cardTransform.DOKill();
-                    cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);*/
                     Hide();
                     _uiManager.DrawPopup<DesintigrateCardPopup>(CardData);
-                    _uiManager.GetPopup<DesintigrateCardPopup>().CardTransform = CardTransform;
                 }
             }
             else

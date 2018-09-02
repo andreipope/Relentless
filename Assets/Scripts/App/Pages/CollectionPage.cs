@@ -20,8 +20,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
         private IDataManager _dataManager;
 
         private GameObject _selfPage;
@@ -52,7 +50,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
@@ -183,7 +180,6 @@ namespace LoomNetwork.CZB
                     }
                 });
 
-            // _uiManager.Canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Camera2").GetComponent<Camera>();
             _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             _selfPage.SetActive(true);
@@ -265,7 +261,6 @@ namespace LoomNetwork.CZB
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            // CorrectSetIndex(ref setIndex);
             _toggleGroup.transform.GetChild((int)setType).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
@@ -350,11 +345,8 @@ namespace LoomNetwork.CZB
                 CardPositions.Add(placeholder);
             }
 
-            // pageText.text = "Page " + (currentPage + 1) + "/" + numPages;
             _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
             CalculateNumberOfPages();
-
-            // _cardSetsSlider.value = 0;
             LoadCards(0, 0);
 
             _cardCounter.text = _dataManager.CachedCollectionData.Cards.Count + "/" + _dataManager.CachedCardsLibraryData.Cards.Count;
@@ -397,7 +389,6 @@ namespace LoomNetwork.CZB
 
         private void ChangeStatePopup(bool isStart)
         {
-            // _cardSetsSlider.interactable = !isStart;
             _buttonBuy.interactable = !isStart;
             _buttonOpen.interactable = !isStart;
             _buttonArrowLeft.interactable = !isStart;

@@ -77,9 +77,9 @@ namespace LoomNetwork.CZB
 
         public GameObject CreateCardPreview(WorkingCard card, Vector3 pos)
         {
-            BoardCard boardCard = null;
-            GameObject currentBoardCard = null;
-            string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
+            BoardCard boardCard;
+            GameObject currentBoardCard;
+            CardsController.GetSetOfCard(card.LibraryCard);
 
             switch (card.LibraryCard.CardKind)
             {
@@ -143,9 +143,9 @@ namespace LoomNetwork.CZB
         // todo improve
         public GameObject CreateAbilityPreview(WorkingCard card, Vector3 pos)
         {
-            BoardCard boardCard = null;
-            GameObject currentBoardCard = null;
-            string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
+            BoardCard boardCard;
+            GameObject currentBoardCard;
+            CardsController.GetSetOfCard(card.LibraryCard);
 
             switch (card.LibraryCard.CardKind)
             {

@@ -14,8 +14,6 @@ namespace LoomNetwork.CZB
 
         private ITutorialManager _tutorialManager;
 
-        private ISoundManager _soundManager;
-
         private TextMeshProUGUI _text;
 
         private GameObject _yesnoObject;
@@ -41,8 +39,6 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
-
             _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
 
             _focusObjects = new List<GameObject>();
@@ -115,7 +111,7 @@ namespace LoomNetwork.CZB
             {
                 _bubbleObject.SetActive(false);
                 _tutorialManager.IsBubbleShow = false;
-                GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f, false);
+                GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f);
             }
 
             _text.text = (string)data;

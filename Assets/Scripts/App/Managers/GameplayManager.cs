@@ -18,13 +18,7 @@ namespace LoomNetwork.CZB
 
         private ITimerManager _timerManager;
 
-        private ITutorialManager _tutorialManager;
-
         private List<IController> _controllers;
-
-        public int TurnDuration { get; set; }
-
-        public int CurrentTurn { get; set; }
 
         private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
@@ -79,7 +73,7 @@ namespace LoomNetwork.CZB
 
             GameEnded = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
@@ -171,7 +165,6 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             InitControllers();
 

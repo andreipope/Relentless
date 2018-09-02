@@ -27,16 +27,6 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);

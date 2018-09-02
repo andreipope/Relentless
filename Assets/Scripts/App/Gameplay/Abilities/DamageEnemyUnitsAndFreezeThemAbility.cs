@@ -5,7 +5,8 @@ namespace LoomNetwork.CZB
 {
     public class DamageEnemyUnitsAndFreezeThemAbility : AbilityBase
     {
-        public int Value;
+
+        public int Value { get; }
 
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,16 +22,6 @@ namespace LoomNetwork.CZB
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)
@@ -63,16 +54,6 @@ namespace LoomNetwork.CZB
                         break;
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

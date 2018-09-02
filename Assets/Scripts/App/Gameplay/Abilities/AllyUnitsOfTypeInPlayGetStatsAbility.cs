@@ -5,11 +5,12 @@ namespace LoomNetwork.CZB
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-        public int Health;
 
-        public int Damage;
+        public int Health { get; }
 
-        public Enumerators.SetType SetType;
+        public int Damage { get; }
+
+        public Enumerators.SetType SetType { get; }
 
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -29,16 +30,6 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -54,16 +45,6 @@ namespace LoomNetwork.CZB
                     unit.CurrentHp += Health;
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

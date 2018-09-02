@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Common;
@@ -20,8 +19,6 @@ namespace LoomNetwork.CZB
 
         OpponentDecksData CachedOpponentDecksData { get; set; }
 
-        ActionData CachedActionsLibraryData { get; set; }
-
         CreditsData CachedCreditsData { get; set; }
 
         long CachedDecksLastModificationTimestamp { get; set; }
@@ -31,8 +28,6 @@ namespace LoomNetwork.CZB
         Task LoadRemoteConfig();
 
         Task StartLoadCache();
-
-        Task SaveAllCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
 

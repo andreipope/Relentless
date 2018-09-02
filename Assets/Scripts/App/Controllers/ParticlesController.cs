@@ -51,8 +51,7 @@ namespace LoomNetwork.CZB
                         DestoryParticle(id);
                     },
                     null,
-                    duration,
-                    false);
+                    duration);
             }
 
             return id;

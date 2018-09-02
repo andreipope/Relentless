@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
 {
-    public Action OnTargetSelected;
-
     public List<Enumerators.SkillTargetType> TargetsType = new List<Enumerators.SkillTargetType>();
 
     public List<Enumerators.SetType> ElementType = new List<Enumerators.SetType>();
@@ -20,11 +18,7 @@ public class BoardArrow : MonoBehaviour
 
     protected GameObject TargetObjectsGroup, RootObjectsGroup, ArrowObject, TargetColliderObject;
 
-    protected ParticleSystem UpBubbles;
-
     protected bool StartedDrag;
-
-    protected BoardUnit BoardCreature;
 
     private readonly float _defaultArrowScale = 6.25f;
 
@@ -144,8 +138,6 @@ public class BoardArrow : MonoBehaviour
         ArrowObject = _selfObject.transform.Find("Arrow").gameObject;
         TargetColliderObject = _selfObject.transform.Find("Target_Collider").gameObject;
 
-        UpBubbles = RootObjectsGroup.transform.Find("UpBubbles").GetComponent<ParticleSystem>();
-
         if (_isInverse)
         {
             _selfObject.transform.localScale = new Vector3(-1, 1, 1);
@@ -182,11 +174,6 @@ public class BoardArrow : MonoBehaviour
             },
             null,
             0.25f);
-    }
-
-    protected void CreateTarget(Vector3 target)
-    {
-        // _targetObjectsGroup.SetActive(true);
     }
 
     private void Awake()

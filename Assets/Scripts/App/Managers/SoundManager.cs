@@ -19,8 +19,6 @@ namespace LoomNetwork.CZB
 
         private float _musicVolume;
 
-        private Queue<QueuedSoundElement> _queuedSoundElements;
-
         public void Dispose()
         {
         }
@@ -36,7 +34,6 @@ namespace LoomNetwork.CZB
 
             _soundContainers = new List<SoundContainer>();
             _containersToRemove = new List<SoundContainer>();
-            _queuedSoundElements = new Queue<QueuedSoundElement>();
 
             InitializeSounds();
         }
@@ -86,15 +83,6 @@ namespace LoomNetwork.CZB
                     _containersToRemove.Clear();
                 }
             }
-
-            // if (_queuedSoundElements.Count > 0)
-            // {
-            // if (_soundContainers.FindAll(x => x.isInQueue && x.audioSource.isPlaying).Count == 0)
-            // {
-            // _currentActiveQueuedSoundElement = _queuedSoundElements.Dequeue();
-            // _currentActiveQueuedSoundElement.DoAction();
-            // }
-            // }
         }
 
         public bool SfxMuted { get; set; }
@@ -216,8 +204,6 @@ namespace LoomNetwork.CZB
 
         public void SetMusicVolume(float value)
         {
-            // GameClient.Get<IPlayerManager>().GetPlayerData.volumeMusic = value;
-            // GameClient.Get<IDataManager>().SavePlayerData();
             _musicVolume = value;
             List<SoundContainer> containers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
 
@@ -233,8 +219,6 @@ namespace LoomNetwork.CZB
 
         public void SetSoundVolume(float value)
         {
-            // GameClient.Get<IPlayerManager>().GetPlayerData.volumeSound = value;
-            // GameClient.Get<IDataManager>().SavePlayerData();
             _sfxVolume = value;
             List<SoundContainer> containers = _soundContainers.FindAll(x => !x.SoundParameters.IsBackground);
 
@@ -361,14 +345,6 @@ namespace LoomNetwork.CZB
             bool isInQueue = false,
             string tag = "")
         {
-            // if (isInQueue)
-            // {
-            // Debug.LogError("added sounds in queue " + soundType.ToString());
-            // _queuedSoundElements.Enqueue(new QueuedSoundElement(() => { DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue); }));
-
-            // Debug.LogError(_queuedSoundElements.Count + " _queuedSoundElements count");
-            // }
-            // else 
             return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
         }
 
@@ -435,7 +411,6 @@ namespace LoomNetwork.CZB
 
             soundParam.StartPosition = 0f;
 
-            container.IsInQueue = isInQueue;
             container.Tag = tag;
             container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
 
@@ -516,8 +491,6 @@ namespace LoomNetwork.CZB
         public bool ForceClose;
 
         public int CurrentSoundIndex;
-
-        public bool IsInQueue;
 
         public string Tag;
 

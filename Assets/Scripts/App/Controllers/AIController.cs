@@ -24,13 +24,7 @@ namespace LoomNetwork.CZB
 
         private IDataManager _dataManager;
 
-        private ILoadObjectsManager _loadObjectsManager;
-
-        private ISoundManager _soundManager;
-
         private ITutorialManager _tutorialManager;
-
-        private ITimerManager _timerManager;
 
         private BattlegroundController _battlegroundController;
 
@@ -40,17 +34,9 @@ namespace LoomNetwork.CZB
 
         private AbilitiesController _abilitiesController;
 
-        private BattleController _battleController;
-
-        private AnimationsController _animationsController;
-
-        private VfxController _vfxController;
-
         private SkillsController _skillsController;
 
         private Enumerators.AiType _aiType;
-
-        private List<ActionItem> _allActions;
 
         private List<BoardUnit> _attackedUnitTargets;
 
@@ -66,18 +52,12 @@ namespace LoomNetwork.CZB
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
-            _battleController = _gameplayManager.GetController<BattleController>();
-            _animationsController = _gameplayManager.GetController<AnimationsController>();
-            _vfxController = _gameplayManager.GetController<VfxController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
@@ -144,14 +124,6 @@ namespace LoomNetwork.CZB
             _aiType = (Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type);
         }
 
-        private void FillActions()
-        {
-            _allActions = new List<ActionItem>();
-
-            List<Enumerators.AiActionType> allActionsType = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).OpponentActions;
-            _allActions = _dataManager.CachedActionsLibraryData.GetActions(allActionsType.ToArray());
-        }
-
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
         {
             _aiBrainCancellationTokenSource?.Cancel();
@@ -161,9 +133,6 @@ namespace LoomNetwork.CZB
         {
             if (!_gameplayManager.IsTutorial)
             {
-                // _minTurnForAttack = _random.Next(1, 3);
-                FillActions();
-
                 SetAiTypeByDeck();
             }
         }

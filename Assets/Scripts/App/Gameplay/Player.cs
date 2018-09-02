@@ -11,13 +11,7 @@ namespace LoomNetwork.CZB
 {
     public class Player
     {
-        public int Id;
-
-        public int DeckId;
-
         public int Turn;
-
-        public string Nickname;
 
         public int InitialHp;
 
@@ -57,10 +51,6 @@ namespace LoomNetwork.CZB
 
         private readonly FadeTool _gooBarFadeTool;
 
-        private ITutorialManager _tutorialManager;
-
-        private VfxController _vfxController;
-
         private int _goo;
 
         private int _gooOnCurrentTurn;
@@ -81,24 +71,19 @@ namespace LoomNetwork.CZB
 
         private List<WorkingCard> _cardsInBoard;
 
-        private OnBehaviourHandler _avatarOnBehaviourHandler;
-
         public Player(GameObject playerObject, bool isOpponent)
         {
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
-            Id = isOpponent?1:0;
 
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
-            _vfxController = _gameplayManager.GetController<VfxController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -128,15 +113,10 @@ namespace LoomNetwork.CZB
 
             SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
 
-            Nickname = SelfHero.FullName;
-            DeckId = _gameplayManager.PlayerDeckId;
-
             _health = Constants.DefaultPlayerHp;
             InitialHp = _health;
             BuffedHp = 0;
             _goo = Constants.DefaultPlayerGoo;
-
-            _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -479,7 +459,7 @@ namespace LoomNetwork.CZB
 
             _skillsController.DisableSkillsContent(this);
 
-            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume);
 
             if (!_gameplayManager.IsTutorial)
             {

@@ -10,21 +10,6 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public override void Activate()
-        {
-            base.Activate();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);

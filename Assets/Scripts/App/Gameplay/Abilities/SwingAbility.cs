@@ -6,7 +6,7 @@ namespace LoomNetwork.CZB
 {
     public class SwingAbility : AbilityBase
     {
-        public int Value;
+        public int Value { get; }
 
         public SwingAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -19,16 +19,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)

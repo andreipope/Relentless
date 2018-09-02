@@ -458,7 +458,7 @@ namespace LoomNetwork.CZB
                                     workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                     workingCard.Owner.AddCardToBoard(workingCard);
 
-                                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
+                                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f);
 
                                     GameClient.Get<ITimerManager>().AddTimer(
                                         creat =>
@@ -770,7 +770,7 @@ namespace LoomNetwork.CZB
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
 
-                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f, false);
+                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f);
 
                     GameClient.Get<ITimerManager>().AddTimer(
                         creat =>

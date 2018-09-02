@@ -5,9 +5,9 @@ namespace LoomNetwork.CZB
 {
     public class AttackNumberOfTimesPerTurnAbility : AbilityBase
     {
-        public Enumerators.AttackInfoType AttackInfo;
+        public Enumerators.AttackInfoType AttackInfo { get; }
 
-        public int Value = 1;
+        public int Value { get; }
 
         private int _numberOfAttacksWas;
 
@@ -23,16 +23,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             AbilityUnitOwner.AttackInfoType = AttackInfo;
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
@@ -54,10 +44,6 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
             _numberOfAttacksWas = 0;
-        }
-
-        private void Action()
-        {
         }
     }
 }

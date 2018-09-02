@@ -57,7 +57,7 @@ namespace LoomNetwork.CZB
 
             Self.transform.localScale = Vector3.zero;
             Self.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
-            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 4f, false);
+            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 4f);
         }
 
         public void Show(object data)

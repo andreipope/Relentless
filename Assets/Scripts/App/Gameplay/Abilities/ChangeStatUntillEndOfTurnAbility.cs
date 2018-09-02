@@ -6,9 +6,10 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
-        public int Health;
 
-        public int Damage;
+        public int Health { get; }
+
+        public int Damage { get; }
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -25,16 +26,6 @@ namespace LoomNetwork.CZB
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)
@@ -66,15 +57,6 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-        }
 
         protected override void OnEndTurnEventHandler()
         {

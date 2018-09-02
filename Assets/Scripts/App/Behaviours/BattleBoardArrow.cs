@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB
 
             StartedDrag = false;
 
-            creature.DoCombat(SelectedCard != null?SelectedCard:(object)SelectedPlayer);
+            creature.DoCombat(SelectedCard ?? (object)SelectedPlayer);
             Dispose();
         }
 
@@ -50,7 +50,6 @@ namespace LoomNetwork.CZB
 
                     SelectedPlayer = null;
                     SelectedCard.SetSelectedUnit(true);
-                    CreateTarget(unit.Transform.position);
                 }
             }
         }
@@ -60,8 +59,6 @@ namespace LoomNetwork.CZB
             if (SelectedCard == creature)
             {
                 SelectedCard.SetSelectedUnit(false);
-
-                // _targetObjectsGroup.SetActive(false);
                 SelectedCard = null;
             }
         }
@@ -91,7 +88,6 @@ namespace LoomNetwork.CZB
                     SelectedCard?.SetSelectedUnit(false);
 
                     SelectedCard = null;
-                    CreateTarget(player.AvatarObject.transform.position);
                 }
             }
         }
@@ -101,12 +97,8 @@ namespace LoomNetwork.CZB
             if (SelectedPlayer == player)
             {
                 SelectedCard?.SetSelectedUnit(false);
-
                 SelectedCard = null;
-
                 SelectedPlayer.SetGlowStatus(false);
-
-                // _targetObjectsGroup.SetActive(false);
                 SelectedPlayer = null;
             }
         }

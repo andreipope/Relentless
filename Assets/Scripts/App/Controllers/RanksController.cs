@@ -8,15 +8,12 @@ namespace LoomNetwork.CZB
 {
     public class RanksController : IController
     {
-        private IGameplayManager _gameplayManager;
-
         public void Dispose()
         {
         }
 
         public void Init()
         {
-            _gameplayManager = GameClient.Get<IGameplayManager>();
         }
 
         public void Update()
@@ -59,9 +56,6 @@ namespace LoomNetwork.CZB
                     LifeRankBuff(units, rank);
                     break;
             }
-
-            // foreach (var unit in units)
-            // unit.ApplyBuffs();
         }
 
         private void AirRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
@@ -232,7 +226,6 @@ namespace LoomNetwork.CZB
 
                 foreach (Enumerators.BuffType buff in buffTypes)
                 {
-                    // units[random].BuffUnit(buffs);
                     units[random].ApplyBuff(buff);
                 }
 

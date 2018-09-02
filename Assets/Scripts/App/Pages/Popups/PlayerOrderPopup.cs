@@ -182,7 +182,7 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
+                sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
                 sequenceOpponent.AppendCallback(
                     () =>
                     {
@@ -200,7 +200,7 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
+                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
                 sequence.AppendCallback(
                     () =>
                     {
@@ -218,7 +218,7 @@ namespace LoomNetwork.CZB
 
             sequence.Play();
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
         }
 
         private void CheckPlayerObjects(ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)

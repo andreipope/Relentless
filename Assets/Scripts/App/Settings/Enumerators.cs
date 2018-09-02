@@ -224,7 +224,6 @@ namespace LoomNetwork.CZB.Common
             DECKS_DATA,
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
-            OPPONENT_ACTIONS_LIBRARY_DATA,
             CREDITS_DATA,
             BUFFS_TOOLTIP_DATA
         }

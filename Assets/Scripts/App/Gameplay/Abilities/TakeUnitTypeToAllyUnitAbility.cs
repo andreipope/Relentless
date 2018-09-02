@@ -51,11 +51,6 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
         private void TakeTypeToUnit(BoardUnit unit)
         {
             if (unit == null)

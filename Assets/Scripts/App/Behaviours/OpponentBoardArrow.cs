@@ -27,7 +27,6 @@ namespace LoomNetwork.CZB
             _targetPosition.z = 0;
 
             UpdateLength(_targetPosition, false);
-            CreateTarget(_targetPosition);
         }
 
         public override void Dispose()

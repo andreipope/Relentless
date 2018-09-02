@@ -6,12 +6,10 @@ namespace LoomNetwork.CZB
 {
     public class DealDamageToThisAndAdjacentUnitsAbility : AbilityBase
     {
-        public int Value = 1;
 
         public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
         }
 
         public override void Activate()
@@ -19,16 +17,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object param = null)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 
@@ -14,12 +15,15 @@ namespace LoomNetwork.CZB
 
         public string GitCommitHash = "";
 
+        // ReSharper disable once NotAccessedField.Global
         public string BuildDateTime = "";
 
         public int BuildDayOfYear;
 
+        // ReSharper disable once NotAccessedField.Global
         public int CloudBuildBuildNumber;
 
+        // ReSharper disable once NotAccessedField.Global
         public string CloudBuildTargetName = "";
 
         public string ShortVersionName => DisplayVersionName;

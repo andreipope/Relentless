@@ -279,7 +279,7 @@ namespace LoomNetwork.CZB
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
 
-                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume, false, false);
+                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume);
             }
 
             IsNewCard = false;
@@ -290,7 +290,7 @@ namespace LoomNetwork.CZB
             CardAnimator.enabled = true;
             CardAnimator.SetTrigger("DeckToCenterDistribute");
 
-            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume, false, false);
+            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
         public virtual void SetDefaultAnimation(int id)
@@ -310,7 +310,7 @@ namespace LoomNetwork.CZB
                 CardAnimator.SetFloat("Id", id);
             }
 
-            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume, false, false);
+            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
         public virtual void OnAnimationEvent(string name)

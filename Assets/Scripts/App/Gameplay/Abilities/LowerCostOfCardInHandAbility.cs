@@ -23,26 +23,11 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, null, Value);
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

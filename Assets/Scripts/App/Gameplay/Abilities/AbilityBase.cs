@@ -15,8 +15,6 @@ namespace LoomNetwork.CZB
 
         public Enumerators.AbilityCallType AbilityCallType;
 
-        public Enumerators.AbilityType AbilityType;
-
         public Enumerators.AffectObjectType AffectObjectType;
 
         public Enumerators.AbilityEffectType AbilityEffectType;
@@ -59,8 +57,6 @@ namespace LoomNetwork.CZB
 
         protected CardsController CardsController;
 
-        protected RanksController RanksController;
-
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected IGameplayManager GameplayManager;
@@ -99,11 +95,9 @@ namespace LoomNetwork.CZB
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
-            RanksController = GameplayManager.GetController<RanksController>();
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityType = ability.AbilityType;
             AbilityActivityType = ability.AbilityActivityType;
             AbilityCallType = ability.AbilityCallType;
             AbilityTargetTypes = ability.AbilityTargetTypes;
@@ -378,7 +372,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time, false);
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time);
             }
         }
 

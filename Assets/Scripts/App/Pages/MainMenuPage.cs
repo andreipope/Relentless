@@ -17,8 +17,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
         private IAppStateManager _stateManager;
 
         private ISoundManager _soundManager;
@@ -61,7 +59,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
@@ -312,16 +309,12 @@ namespace LoomNetwork.CZB
         private void OnValueChangedEventMusic(bool value)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            // _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
             _soundManager.SetMusicMuted(!value);
         }
 
         private void OnValueChangedEventSfx(bool value)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            // _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
             _soundManager.SetSoundMuted(!value);
         }
 

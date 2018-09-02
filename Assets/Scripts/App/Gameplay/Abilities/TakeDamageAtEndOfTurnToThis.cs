@@ -6,7 +6,7 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageAtEndOfTurnToThis : AbilityBase
     {
-        public int Value;
+        public int Value { get; }
 
         public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,27 +21,12 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
             CreateVfx(AbilityUnitOwner.Transform.position, true, 5f);
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
 
         protected override void OnEndTurnEventHandler()

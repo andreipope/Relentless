@@ -7,13 +7,10 @@ namespace LoomNetwork.CZB
 {
     public class DesintigrateCardPopup : IUIPopup
     {
-        public Transform CardTransform;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
 
-        // private TextMeshProUGUI _description;
         private MenuButtonNoGlow _yesButton, _noButton, _backButton;
 
         private TextMeshProUGUI _buttonText;
@@ -34,11 +31,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            /*if (cardTransform != null)
-            {
-                cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
-            }*/
             if (Self == null)
                 return;
 
@@ -63,8 +55,6 @@ namespace LoomNetwork.CZB
             _yesButton.OnClickEvent.AddListener(DesintegrateButtonHandler);
             _noButton.OnClickEvent.AddListener(CloseDesintegratePopup);
             _backButton.OnClickEvent.AddListener(CloseDesintegratePopup);
-
-            // _description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
         }
 
         public void Show(object data)
@@ -72,8 +62,6 @@ namespace LoomNetwork.CZB
             Show();
 
             _cardData = data as CollectionCardData;
-
-            // _description.text = _card.description;
             if (_cardData.Amount == 0)
             {
                 _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
@@ -94,7 +82,6 @@ namespace LoomNetwork.CZB
             Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.Name == _cardData.CardName);
             _uiManager.DrawPopup<CardInfoPopup>(libraryCard);
 
-            // (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
             Hide();
         }
 

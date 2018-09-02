@@ -10,8 +10,6 @@ namespace LoomNetwork.CZB
     {
         public delegate void MainAppDelegate(object param);
 
-        public static int MainThreadId;
-
         public event MainAppDelegate OnLevelWasLoadedEvent;
 
         public event Action LateUpdateEvent;
@@ -30,8 +28,6 @@ namespace LoomNetwork.CZB
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            MainThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
         private void Start()

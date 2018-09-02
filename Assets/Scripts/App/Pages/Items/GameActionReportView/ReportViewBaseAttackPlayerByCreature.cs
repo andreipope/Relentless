@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
@@ -34,21 +33,6 @@ namespace LoomNetwork.CZB
             TextMeshPro damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_attackingCreature.CurrentDamage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up;
-        }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

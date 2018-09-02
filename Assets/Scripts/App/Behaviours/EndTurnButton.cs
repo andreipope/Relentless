@@ -84,7 +84,6 @@ public class EndTurnButton : MonoBehaviour
             SetEnabled(false);
         }
 
-        // thisRenderer.sprite = defaultSprite;
         _buttonText.transform.localPosition = _textDefaultPosition;
     }
 }

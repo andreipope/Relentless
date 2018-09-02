@@ -6,8 +6,6 @@ namespace LoomNetwork.CZB
     {
         private const float DefaultArrowScale = 6.25f;
 
-        private ILoadObjectsManager _loadObjectsManager;
-
         private GameObject _selfObject;
 
         private GameObject _targetObjectsGroup, _rootObjectsGroup, _arrowObject;
@@ -64,14 +62,9 @@ namespace LoomNetwork.CZB
 
         private void Init(Vector3 from)
         {
-            // public SelectTargetArrow(Vector2 from)
             _fromPosition = from;
-
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
             _selfObject = gameObject;
 
-            // _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackArrowVFX_Object"));
             _targetObjectsGroup = _selfObject.transform.Find("Group_TargetObjects").gameObject;
             _rootObjectsGroup = _selfObject.transform.Find("Group_RootObjects").gameObject;
             _arrowObject = _selfObject.transform.Find("Arrow").gameObject;

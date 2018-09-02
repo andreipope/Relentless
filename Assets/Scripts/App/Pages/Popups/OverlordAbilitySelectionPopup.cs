@@ -21,8 +21,6 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private IDataManager _dataManager;
-
         private Button _continueButton;
 
         private Button _buyButton;
@@ -41,15 +39,12 @@ namespace LoomNetwork.CZB
 
         private List<AbilityInstance> _abilities;
 
-        private Hero _heroData;
-
         public GameObject Self { get; private set; }
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
 
             _abilities = new List<AbilityInstance>();
         }
@@ -137,7 +132,6 @@ namespace LoomNetwork.CZB
 
         private void FillInfo(Hero heroData)
         {
-            _heroData = heroData;
             _heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
             _heroImage.SetNativeSize();
 

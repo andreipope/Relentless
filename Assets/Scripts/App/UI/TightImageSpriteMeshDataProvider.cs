@@ -18,7 +18,6 @@ namespace LoomNetwork.CZB
 
             spriteMeshData = new SpriteMeshData
             {
-                SpriteInstanceId = sprite.GetInstanceID(),
                 Triangles = sprite.triangles,
                 UV = sprite.uv,
                 Vertices = sprite.vertices
@@ -30,8 +29,6 @@ namespace LoomNetwork.CZB
 
         public class SpriteMeshData
         {
-            public int SpriteInstanceId;
-
             public ushort[] Triangles;
 
             public Vector2[] UV;

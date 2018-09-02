@@ -14,13 +14,11 @@ namespace LoomNetwork.CZB
 {
     public class HordeSelectionPage : IUIElement
     {
-        private const int HordeItemSpace = 570, KHordeContainerXoffset = 60;
+        private const int HordeItemSpace = 570, HordeContainerXoffset = 60;
 
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
-
-        private ILocalizationManager _localizationManager;
 
         private IDataManager _dataManager;
 
@@ -52,8 +50,6 @@ namespace LoomNetwork.CZB
 
         private int _scrolledDeck = -1;
 
-        // private int _decksCount = 3;
-
         // new horde deck object
         private GameObject _newHordeDeckObject;
 
@@ -63,7 +59,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
@@ -297,7 +292,7 @@ namespace LoomNetwork.CZB
                 _scrolledDeck--;
             }
 
-            _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
+            _containerOfDecks.transform.localPosition = new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
         }
 
         private void OpenAlertDialog(string msg)
@@ -325,7 +320,7 @@ namespace LoomNetwork.CZB
 
             if (oldIndex != _scrolledDeck)
             {
-                _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
+                _containerOfDecks.transform.localPosition = new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
             }
         }
 
@@ -362,21 +357,12 @@ namespace LoomNetwork.CZB
 
             private readonly Button _buttonSelect;
 
-            private IUIManager _uiManager;
-
-            private IAppStateManager _appStateManager;
-
-            private IDataManager _dataManager;
-
             public HordeDeckObject(Transform parent, Deck deck, Hero hero, int index)
             {
                 SelfDeck = deck;
                 SelfHero = hero;
 
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-                _uiManager = GameClient.Get<IUIManager>();
-                _appStateManager = GameClient.Get<IAppStateManager>();
-                _dataManager = GameClient.Get<IDataManager>();
                 _soundManager = GameClient.Get<ISoundManager>();
 
                 _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_HordeSelectionObject"), parent, false);
@@ -570,17 +556,6 @@ namespace LoomNetwork.CZB
 
             BattleButtonUpdate();
         }
-
-        // private void BuyButtonHandler()
-        // {
-        // GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-        // GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
-        // }
-        // private void OpenButtonHandler()
-        // {
-        // GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-        // GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
-        // }
 
         #endregion
     }

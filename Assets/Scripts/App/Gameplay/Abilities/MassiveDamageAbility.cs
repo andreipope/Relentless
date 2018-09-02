@@ -7,7 +7,7 @@ namespace LoomNetwork.CZB
 {
     public class MassiveDamageAbility : AbilityBase
     {
-        public int Value = 1;
+        public int Value;
 
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -32,11 +32,6 @@ namespace LoomNetwork.CZB
 
         public override void Dispose()
         {
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
 
         protected override void UnitOnDieEventHandler()

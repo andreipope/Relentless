@@ -12,12 +12,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
-        private IAppStateManager _stateManager;
-
-        private ISoundManager _soundManager;
-
         private IDataManager _dataManager;
 
         private GameObject _selfPage;
@@ -41,9 +35,6 @@ namespace LoomNetwork.CZB
             _credits = new List<CreditView>();
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
-            _stateManager = GameClient.Get<IAppStateManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
             _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
@@ -96,28 +87,27 @@ namespace LoomNetwork.CZB
 
         private void FillCredits()
         {
-            CreditView credit = null;
-            CreditSubSectionView section = null;
             for (int i = 0; i < _dataManager.CachedCreditsData.CreditsInfo.Count; i++)
             {
                 if (i > 0)
                 {
-                    section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
+                    new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
                 }
 
                 for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Credits.Count; j++)
                 {
-                    credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName, _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post);
+                    CreditView credit =
+                        new CreditView(
+                            _creditListItemPrefab,
+                            _panelCreditsList,
+                            _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName,
+                            _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post
+                            );
                     _credits.Add(credit);
                 }
             }
 
             _buttonThanks.transform.parent.SetAsLastSibling();
-        }
-
-        private void OpenAlertDialog(string msg)
-        {
-            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         private void BackButtonOnClickHandler()

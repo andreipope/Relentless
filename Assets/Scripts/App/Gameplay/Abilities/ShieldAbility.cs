@@ -20,31 +20,11 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             AbilityUnitOwner.BuffShield();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

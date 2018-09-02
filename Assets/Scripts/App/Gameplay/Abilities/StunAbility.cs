@@ -6,9 +6,10 @@ namespace LoomNetwork.CZB
 {
     public class StunAbility : AbilityBase
     {
-        public Enumerators.StatType StatType;
 
-        public int Value = 1;
+        public Enumerators.StatType StatType { get; }
+
+        public int Value { get; }
 
         public StunAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -30,21 +31,6 @@ namespace LoomNetwork.CZB
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
 
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)

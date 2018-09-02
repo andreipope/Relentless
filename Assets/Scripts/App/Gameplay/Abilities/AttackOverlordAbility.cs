@@ -7,9 +7,9 @@ namespace LoomNetwork.CZB
 {
     public class AttackOverlordAbility : AbilityBase
     {
-        public int Value = 1;
+        public int Value { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes;
+        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
 
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -28,16 +28,6 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object param = null)
@@ -59,11 +49,6 @@ namespace LoomNetwork.CZB
                     default: continue;
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

@@ -11,21 +11,6 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public override void Activate()
-        {
-            base.Activate();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -71,7 +56,7 @@ namespace LoomNetwork.CZB
             GameObject playerBoard = owner.IsLocalPlayer?BattlegroundController.PlayerBoardObject:BattlegroundController.OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnit.Transform.parent = playerBoard.transform;
             boardUnit.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
             boardUnit.OwnerPlayer = owner;

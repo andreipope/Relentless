@@ -15,8 +15,6 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private IDataManager _dataManager;
-
         private Button _reconnectButton;
 
         private Button _closeButton;
@@ -33,7 +31,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
         }
 
         public void Dispose()

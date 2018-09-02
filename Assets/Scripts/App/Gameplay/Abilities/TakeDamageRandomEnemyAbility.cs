@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value;
+        public int Value { get; }
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -26,16 +26,6 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)
@@ -62,16 +52,6 @@ namespace LoomNetwork.CZB
                     CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

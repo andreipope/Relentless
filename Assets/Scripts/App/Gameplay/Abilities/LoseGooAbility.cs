@@ -23,27 +23,12 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             PlayerCallerOfAbility.Goo -= Value;
             PlayerCallerOfAbility.GooOnCurrentTurn -= Value;
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

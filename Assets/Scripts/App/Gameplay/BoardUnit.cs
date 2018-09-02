@@ -152,34 +152,17 @@ namespace LoomNetwork.CZB
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
 
-            // unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
 
-            // arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
             _onBehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            // arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
-
-            // _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
-            // _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
             _onBehaviourHandler.OnTriggerEnterEvent += OnTriggerEnter;
             _onBehaviourHandler.OnTriggerExitEvent += OnTriggerExit;
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
-            /*
-            animatorControllers = new List<UnitAnimatorInfo>();
-            for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
-            {
-                animatorControllers.Add(new UnitAnimatorInfo()
-                {
-                    animator = _loadObjectsManager.GetObjectByPath<RuntimeAnimatorController>("Animators/" + ((Enumerators.CardType)i).ToString() + "ArrivalController"),
-                    cardType = (Enumerators.CardType)i
-                });
-            }
-              */
             BuffsOnUnit = new List<Enumerators.BuffType>();
             AttackedBoardObjectsThisTurn = new List<object>();
 
@@ -214,11 +197,7 @@ namespace LoomNetwork.CZB
             get => _currentDamage;
             set
             {
-                int oldDamage = _currentDamage;
-
                 _currentDamage = Mathf.Clamp(value, 0, 99999);
-
-                // if (oldDamage != _currentDamage)
                 UnitDamageChangedEvent?.Invoke();
             }
         }
@@ -232,11 +211,7 @@ namespace LoomNetwork.CZB
             get => _currentHealth;
             set
             {
-                int oldHealth = _currentHealth;
-
                 _currentHealth = Mathf.Clamp(value, 0, 99);
-
-                // if (oldHealth != _currentHealth)
                 UnitHpChangedEvent?.Invoke();
             }
         }
@@ -308,16 +283,12 @@ namespace LoomNetwork.CZB
 
         public void Die(bool returnToHand = false)
         {
-            // Debug.Log("DIE - " + Card.libraryCard.name);
             _timerManager.StopTimer(CheckIsCanDie);
 
             UnitHpChangedEvent -= _healthChangedDelegate;
             UnitDamageChangedEvent -= _damageChangedDelegate;
 
             _dead = true;
-
-            // if(CurrentHP > 0)
-            // Debug.LogError(Card.libraryCard.name);
             if (!returnToHand)
             {
                 _battlegroundController.KillBoardCard(this);
@@ -376,7 +347,6 @@ namespace LoomNetwork.CZB
 
                         HasBuffRush = false;
 
-                        // IsPlayable = _attacked;
                         break;
                     case Enumerators.BuffType.GUARD:
                         HasBuffShield = false;
@@ -402,16 +372,12 @@ namespace LoomNetwork.CZB
             if (!_readyForBuffs)
                 return;
 
-            // foreach (var buff in _buffsOnUnit)
-            // {
             switch (type)
             {
                 case Enumerators.BuffType.ATTACK:
                     CurrentDamage++;
                     break;
                 case Enumerators.BuffType.DAMAGE:
-
-                    // AdditionalDamage++;
                     break;
                 case Enumerators.BuffType.DEFENCE:
                     CurrentHp++;
@@ -428,7 +394,6 @@ namespace LoomNetwork.CZB
                         HasBuffRush = true;
                     }
 
-                    // IsPlayable = !_attacked;
                     _sleepingParticles.gameObject.SetActive(false);
                     break;
                 case Enumerators.BuffType.GUARD:
@@ -442,12 +407,6 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            // }
-
-            // BuffedHP += AdditionalDefense;
-            // CurrentHP += BuffedHP;
-            // BuffedDamage += AdditionalAttack;
-            // CurrentDamage += BuffedDamage;
             UpdateFrameByType();
         }
 
@@ -464,7 +423,7 @@ namespace LoomNetwork.CZB
 
             if (HasBuffHeavy)
             {
-                SetAsHeavyUnit(true);
+                SetAsHeavyUnit();
             }
             else
             {
@@ -483,51 +442,41 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void SetAsHeavyUnit(bool buff = false)
+        public void SetAsHeavyUnit()
         {
             if (HasHeavy)
                 return;
 
-            // if (!buff)
-            // {
             HasHeavy = true;
             HasFeral = false;
             InitialUnitType = Enumerators.CardType.HEAVY;
 
-            // }
-            // Debug.Log();
             ChangeTypeFrame(2.5f, 1.7f);
         }
 
-        public void SetAsWalkerUnit(bool buff = false)
+        public void SetAsWalkerUnit()
         {
             if (!HasHeavy && !HasFeral && !HasBuffHeavy)
                 return;
 
-            // if (!buff)
-            // {
             HasHeavy = false;
             HasFeral = false;
             HasBuffHeavy = false;
             InitialUnitType = Enumerators.CardType.WALKER;
 
-            // }
             ChangeTypeFrame(1.3f, 0.3f);
         }
 
-        public void SetAsFeralUnit(bool buff = false)
+        public void SetAsFeralUnit()
         {
             if (HasFeral)
                 return;
 
-            // if (!buff)
-            // {
             HasHeavy = false;
             HasBuffHeavy = false;
             HasFeral = true;
             InitialUnitType = Enumerators.CardType.FERAL;
 
-            // }
             ChangeTypeFrame(2.7f, 1.7f);
 
             if (!AttackedThisTurn && !IsPlayable)
@@ -594,13 +543,6 @@ namespace LoomNetwork.CZB
                 _ranksController.UpdateRanksByElements(OwnerPlayer.BoardCards, Card.LibraryCard);
             }
 
-            // }
-            /* else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
-             {
-                 InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
-
-                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;
-             }*/
             _initialScale = GameObject.transform.localScale;
 
             _ignoreArrivalEndEvents = false;
@@ -647,7 +589,6 @@ namespace LoomNetwork.CZB
             _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Position);
             _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Scale);
 
-            // unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
             if (Card.Type == Enumerators.CardType.WALKER)
             {
                 _sleepingParticles.transform.position += Vector3.up * 0.7f;
@@ -693,8 +634,7 @@ namespace LoomNetwork.CZB
                             _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
                         },
                         null,
-                        .55f,
-                        false);
+                        .55f);
 
                     _timerManager.AddTimer(
                         x =>
@@ -702,8 +642,7 @@ namespace LoomNetwork.CZB
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?2.9f:1.7f,
-                        false);
+                        OwnerPlayer.IsLocalPlayer?2.9f:1.7f);
 
                     break;
                 case Enumerators.CardType.HEAVY:
@@ -711,10 +650,7 @@ namespace LoomNetwork.CZB
                         x =>
                         {
                             _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
-                        },
-                        null,
-                        1f,
-                        false);
+                        });
 
                     _timerManager.AddTimer(
                         x =>
@@ -722,8 +658,7 @@ namespace LoomNetwork.CZB
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?2.7f:1.7f,
-                        false);
+                        OwnerPlayer.IsLocalPlayer?2.7f:1.7f);
                     HasHeavy = true;
                     break;
                 case Enumerators.CardType.WALKER:
@@ -734,31 +669,19 @@ namespace LoomNetwork.CZB
                             _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
                         },
                         null,
-                        .6f,
-                        false);
+                        .6f);
                     _timerManager.AddTimer(
                         x =>
                         {
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?1.3f:0.3f,
-                        false);
+                        OwnerPlayer.IsLocalPlayer?1.3f:0.3f);
 
                     break;
             }
 
-            if (HasHeavy)
-            {
-                // glowSprite.gameObject.SetActive(false);
-                // pictureMaskTransform.localScale = new Vector3(50, 55, 1);
-                // frameSprite.sprite = frameSprites[2];
-            }
-
             SetHighlightingEnabled(false);
-
-            // unitAnimator.StopPlayback();
-            // unitAnimator.Play(0);
         }
 
         public void PlayArrivalAnimation()
@@ -839,8 +762,6 @@ namespace LoomNetwork.CZB
             SetHighlightingEnabled(false);
 
             UnitStatus = Enumerators.UnitStatusType.FROZEN;
-
-            // sleepingParticles.Play();
         }
 
         public void CancelTargetingArrows()
@@ -904,9 +825,6 @@ namespace LoomNetwork.CZB
                 IsPlayable = false;
                 AttackedThisTurn = true;
 
-                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                // sortingGroup.sortingOrder = 100;
                 _actionsQueueController.AddNewActionInToQueue(
                     (parameter, completeCallback) =>
                     {
@@ -919,19 +837,15 @@ namespace LoomNetwork.CZB
                             () =>
                             {
                                 Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-
-                                // positionOfVFX.y = 4.45f; // was used only for local player
                                 _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx, CurrentDamage);
 
                                 _battleController.AttackPlayerByUnit(this, targetPlayer);
                             },
                             () =>
                             {
-                                // sortingGroup.sortingOrder = 0;
                                 _fightTargetingArrow = null;
                                 IsAttacking = false;
 
-                                // completeCallback?.Invoke();
                                 SetHighlightingEnabled(true);
                             });
 
@@ -956,11 +870,6 @@ namespace LoomNetwork.CZB
                     {
                         AttackedBoardObjectsThisTurn.Add(targetCard);
 
-                        // sortingGroup.sortingOrder = 100;
-
-                        // play sound when target creature attack more than our
-                        // if (targetCard.CurrentDamage > CurrentDamage)
-                        // _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
                         _animationsController.DoFightAnimation(
                             GameObject,
                             targetCard.Transform.gameObject,
@@ -978,7 +887,6 @@ namespace LoomNetwork.CZB
                             },
                             () =>
                             {
-                                // sortingGroup.sortingOrder = 0;
                                 _fightTargetingArrow = null;
                                 IsAttacking = false;
 
@@ -1074,8 +982,7 @@ namespace LoomNetwork.CZB
                     ArrivalAnimationEventHandler();
                 },
                 null,
-                OwnerPlayer.IsLocalPlayer?playerTime:opponentTime,
-                false);
+                OwnerPlayer.IsLocalPlayer?playerTime:opponentTime);
 
             _readyForBuffs = true;
         }
@@ -1095,7 +1002,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
+                _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time);
             }
         }
 
@@ -1194,10 +1101,6 @@ namespace LoomNetwork.CZB
 
         private void OnMouseDown(GameObject obj)
         {
-            // if (fightTargetingArrowPrefab == null)
-            // return;
-
-            // Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
             if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
                 return;
 

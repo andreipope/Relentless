@@ -76,8 +76,7 @@ namespace LoomNetwork.CZB
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
                             },
                             null,
-                            0.5f,
-                            false);
+                            0.5f);
                     }
 
                     if (damage > 6)
@@ -90,10 +89,7 @@ namespace LoomNetwork.CZB
                                 effect.transform.eulerAngles = Vector3.forward * 90;
 
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
-                            },
-                            null,
-                            1.0f,
-                            false);
+                            });
                     }
 
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
@@ -143,8 +139,7 @@ namespace LoomNetwork.CZB
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
                             },
                             null,
-                            0.5f,
-                            false);
+                            0.5f);
 
                         // GameClient.Get<ITimerManager>().AddTimer((a) =>
                         // {

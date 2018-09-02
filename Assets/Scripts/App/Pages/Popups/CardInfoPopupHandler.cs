@@ -10,12 +10,6 @@ namespace LoomNetwork.CZB
     {
         private IUIManager _uiManager;
 
-        private ILoadObjectsManager _loadObjectsManager;
-
-        private ILocalizationManager _localizationManager;
-
-        private IDataManager _dataManager;
-
         private BoardCard _previewCard;
 
         private BoardCard _selectedCollectionCard;
@@ -39,9 +33,6 @@ namespace LoomNetwork.CZB
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
-            _dataManager = GameClient.Get<IDataManager>();
         }
 
         public void Show()
@@ -129,9 +120,7 @@ namespace LoomNetwork.CZB
                 {
                     _blockedClosing = false;
                     _uiManager.GetPopup<CardInfoPopup>().BlockedClosing = false;
-                },
-                null,
-                1f);
+                });
         }
 
         private void Close()

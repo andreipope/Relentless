@@ -1,7 +1,6 @@
 ﻿using System;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
@@ -34,21 +33,6 @@ namespace LoomNetwork.CZB
 
                 _playedCardPreviewObject = CreateCardPreview(_playedCard.WorkingCard, Vector3.zero);
             }
-        }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

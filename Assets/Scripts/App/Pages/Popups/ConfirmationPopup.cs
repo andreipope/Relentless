@@ -57,8 +57,6 @@ namespace LoomNetwork.CZB
             _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-
-            // Time.timeScale = 0;
         }
 
         public void Show(object data)

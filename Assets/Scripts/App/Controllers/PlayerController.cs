@@ -14,20 +14,13 @@ namespace LoomNetwork.CZB
 
         private IDataManager _dataManager;
 
-        private IPlayerManager _playerManager;
-
         private ITutorialManager _tutorialManager;
 
         private ITimerManager _timerManager;
 
-        private AbilitiesController _abilitiesController;
-
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
-
-        private SkillsController _skillsController;
-
         private BoardArrowController _boardArrowController;
 
         private bool _startedOnClickDelay;
@@ -44,7 +37,6 @@ namespace LoomNetwork.CZB
 
         private PointerEventSolver _pointerEventSolver;
 
-        // private HeroController _heroController;
         public bool IsPlayerStunned { get; set; }
 
         public bool IsCardSelected { get; set; }
@@ -55,17 +47,13 @@ namespace LoomNetwork.CZB
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
 
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-            _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
-            // _heroController = _gameplayManager.GetController<HeroController>();
             _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
 
@@ -120,10 +108,8 @@ namespace LoomNetwork.CZB
                     for (int i = 0; i < card.Amount; i++)
                     {
 #if DEV_MODE
-
-// playerDeck.Add("Whizpar");
-
-// playerDeck.Add("Nail Bomb");
+                        // playerDeck.Add("Whizpar");
+                        // playerDeck.Add("Nail Bomb");
 #endif
 
                         playerDeck.Add(card.CardName);
@@ -145,9 +131,7 @@ namespace LoomNetwork.CZB
                 x =>
                 {
                     _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
-                },
-                null,
-                1f);
+                });
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
@@ -294,7 +278,7 @@ namespace LoomNetwork.CZB
                     {
                         _timerManager.StopTimer(SetStatusZoomingFalse);
                         _cardsZooming = true;
-                        _timerManager.AddTimer(SetStatusZoomingFalse, null, 1f);
+                        _timerManager.AddTimer(SetStatusZoomingFalse);
 
                         _battlegroundController.CardsZoomed = false;
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();

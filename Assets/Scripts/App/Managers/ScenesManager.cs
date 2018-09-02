@@ -12,8 +12,6 @@ namespace LoomNetwork.CZB
 
         private IAppStateManager _appStateManager;
 
-        private IUIManager _uiManager;
-
         public event Action<Enumerators.AppState> SceneForAppStateWasLoadedEvent;
 
         public Enumerators.AppState CurrentAppStateScene { get; set; }
@@ -48,7 +46,6 @@ namespace LoomNetwork.CZB
             MainApp.Instance.OnLevelWasLoadedEvent += OnLevelWasLoadedHandler;
 
             _appStateManager = GameClient.Get<IAppStateManager>();
-            _uiManager = GameClient.Get<IUIManager>();
 
             OnLevelWasLoadedHandler(null);
         }

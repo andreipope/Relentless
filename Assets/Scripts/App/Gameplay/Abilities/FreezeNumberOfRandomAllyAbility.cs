@@ -8,9 +8,10 @@ namespace LoomNetwork.CZB
 {
     public class FreezeNumberOfRandomAllyAbility : AbilityBase
     {
-        public int Value;
 
-        public int Turns = 1;
+        public int Value { get; }
+
+        public int Turns { get; }
 
         public FreezeNumberOfRandomAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -31,16 +32,6 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -55,22 +46,18 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < allies.Count; i++)
             {
-                if (allies[i] is Player)
+                switch (allies[i])
                 {
-                    (allies[i] as Player).Stun(Enumerators.StunType.FREEZE, Turns);
-                    CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f);
-                }
-                else if (allies[i] is BoardUnit)
-                {
-                    (allies[i] as BoardUnit).Stun(Enumerators.StunType.FREEZE, Turns);
-                    CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
+                    case Player player:
+                        player.Stun(Enumerators.StunType.FREEZE, Turns);
+                        CreateVfx(player.AvatarObject.transform.position, true, 5f);
+                        break;
+                    case BoardUnit unit:
+                        unit.Stun(Enumerators.StunType.FREEZE, Turns);
+                        CreateVfx(unit.Transform.position, true, 5f);
+                        break;
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

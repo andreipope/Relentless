@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
 {
     public class DamageTargetAbility : AbilityBase
     {
-        public int Value = 1;
+        public int Value { get; }
 
         public DamageTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)

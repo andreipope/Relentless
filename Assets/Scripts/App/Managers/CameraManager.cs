@@ -64,7 +64,6 @@ namespace LoomNetwork.CZB.Gameplay
             _timerManager = GameClient.Get<ITimerManager>();
             _fadeImageGroups = new CanvasGroup[3];
 
-            // _selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
             _fadeImageGroups[0] = GameObject.Find("Canvas1/Image_Fade").GetComponent<CanvasGroup>();
             _fadeImageGroups[1] = GameObject.Find("Canvas2/Image_Fade").GetComponent<CanvasGroup>();
             _fadeImageGroups[2] = GameObject.Find("Canvas3/Image_Fade").GetComponent<CanvasGroup>();

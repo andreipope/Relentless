@@ -19,8 +19,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
         private IDataManager _dataManager;
 
         private IPlayerManager _playerManager;
@@ -57,7 +55,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
@@ -100,7 +97,6 @@ namespace LoomNetwork.CZB
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 
-            // _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
             _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
@@ -134,19 +130,7 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            // ResetBoardCards();
-            // MonoBehaviour.Destroy(_backgroundCanvas);
             Object.Destroy(_cardPlaceholders);
-        }
-
-        private void ResetBoardCards()
-        {
-            foreach (BoardCard item in _createdBoardCards)
-            {
-                item.Dispose();
-            }
-
-            _createdBoardCards.Clear();
         }
 
         private void CardClickeCheck()
@@ -273,7 +257,6 @@ namespace LoomNetwork.CZB
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
 
-            // animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
             animationSequence.OnComplete(
                 () =>
                 {

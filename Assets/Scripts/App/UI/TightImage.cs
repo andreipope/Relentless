@@ -94,7 +94,6 @@ namespace LoomNetwork.CZB
 
             Rect r = GetPixelAdjustedRect();
 
-            // Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
             if (shouldPreserveAspect && size.sqrMagnitude > 0.0f)
             {
                 float spriteRatio = size.x / size.y;

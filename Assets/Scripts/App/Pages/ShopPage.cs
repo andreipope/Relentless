@@ -16,8 +16,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
         private IPlayerManager _playerManager;
 
         private GameObject _selfPage;
@@ -26,15 +24,13 @@ namespace LoomNetwork.CZB
 
         private Button _buttonOpen, _buttonCollection, _buttonBack, _buttonBuy;
 
-        private TextMeshProUGUI _description, _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
+        private TextMeshProUGUI _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
 
         private int _currentPackId = -1;
 
         private GameObject[] _packsObjects;
 
         private Image[] _imageObjects;
-
-        private float _itemYstartPos;
 
         private Color _deselectedColor;
 
@@ -44,7 +40,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
             _selectedColor = Color.white;
@@ -62,7 +57,6 @@ namespace LoomNetwork.CZB
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _description = _selfPage.transform.Find("BuyNowPanel/Description").GetComponent<TextMeshProUGUI>();
             _wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
 
             _buttonItem1 = _selfPage.transform.Find("Item1").GetComponent<Button>();
@@ -89,8 +83,6 @@ namespace LoomNetwork.CZB
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
-
-            _itemYstartPos = _buttonItem1.gameObject.transform.position.y;
 
             _packsObjects = new[] { _buttonItem1.gameObject, _buttonItem2.gameObject, _buttonItem3.gameObject, _buttonItem4.gameObject };
 
@@ -195,11 +187,8 @@ namespace LoomNetwork.CZB
             if (_currentPackId == id)
                 return;
 
-            Vector3 pos;
             if (_currentPackId > -1)
             {
-                pos = _packsObjects[_currentPackId].transform.position;
-                pos.y = _itemYstartPos;
                 _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0f, 0.3f);
             }
 
@@ -216,10 +205,6 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            // _description = "";
-            // _cost.text = _costs[_currentPackId] + " $";
-            pos = _packsObjects[_currentPackId].GetComponent<RectTransform>().position;
-            pos.y = _itemYstartPos - 1;
             _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0.8f, 0.3f);
         }
 

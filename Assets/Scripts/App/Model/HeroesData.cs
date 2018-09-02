@@ -111,15 +111,16 @@ namespace LoomNetwork.CZB.Data
         public int Health;
 
         [JsonIgnore]
-        public bool Unlocked;
-
-        [JsonIgnore]
         public Enumerators.OverlordSkill OverlordSkill;
 
         [JsonIgnore]
         public List<Enumerators.SkillTargetType> SkillTargetTypes;
 
+        [JsonIgnore]
+        public bool Unlocked;
+
         public List<Enumerators.SetType> ElementTargetTypes;
+
 
         public void CastData()
         {

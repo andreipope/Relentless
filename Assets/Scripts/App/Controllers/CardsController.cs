@@ -113,8 +113,6 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.GetPage<GameplayPage>().KeepButtonVisibility(true);
             }
-
-            // _timerManager.AddTimer(DirectlyEndCardDistribution, null, Constants.CARD_DISTRIBUTION_TIME);
         }
 
         public void EndCardDistribution()
@@ -133,7 +131,6 @@ namespace LoomNetwork.CZB
             cards.AddRange(_gameplayManager.CurrentPlayer.CardsPreparingToHand.FindAll(x => x.CardShouldBeChanged));
             foreach (BoardCard card in cards)
             {
-                // _gameplayManager.CurrentPlayer.CardsInDeck.IndexOf(card.WorkingCard);
                 _gameplayManager.CurrentPlayer.CardsInDeck.Remove(card.WorkingCard);
                 _gameplayManager.CurrentPlayer.CardsInDeck.Add(card.WorkingCard);
                 card.ReturnCardToDeck();
@@ -222,7 +219,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < count; i++)
             {
                 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
-                player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f, false);
+                player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f);
                 player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
 
                 pivot.x += handWidth / count;
@@ -235,8 +232,6 @@ namespace LoomNetwork.CZB
             Object.Destroy(card.GameObject);
 
             callback?.Invoke();
-
-            // UpdatePositionOfCardsForDistribution(card.WorkingCard.owner);
         }
 
         public void AddCardToHand(Player player, WorkingCard card = null)
@@ -298,9 +293,6 @@ namespace LoomNetwork.CZB
             if (_battlegroundController.CurrentTurn == 0)
             {
                 boardCard.SetDefaultAnimation(boardCard.WorkingCard.Owner.CardsInHand.Count);
-
-                // if (playerHandCards.Count == 4)
-                // RearrangeHand();
             }
 
             _battlegroundController.PlayerHandCards.Add(boardCard);
@@ -323,7 +315,6 @@ namespace LoomNetwork.CZB
                 boardCard.HandBoardCard.CheckStatusOfHighlight();
             }
 
-            // UpdateCardsStatusEvent?.Invoke(card.owner);
             return boardCard.GameObject;
         }
 
@@ -349,36 +340,23 @@ namespace LoomNetwork.CZB
 
         public void RemoveCard(object[] param)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
             BoardCard card = param[0] as BoardCard;
-
-            // BoardCreature currentCreature = null;
-            // if (param.Length > 1)
-            // currentCreature = param[1] as BoardCreature;
             GameObject go = card.GameObject;
 
-            // if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
-            // return;
             SortingGroup sortingGroup = card.GameObject.GetComponent<SortingGroup>();
 
             Sequence animationSequence3 = DOTween.Sequence();
-
-            // animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, 90), .2f));
             animationSequence3.Append(go.transform.DORotate(new Vector3(0, 90, 90), .3f));
 
-            // go.transform.DOScale(new Vector3(.19f, .19f, .19f), .2f);
             go.transform.DOScale(new Vector3(.195f, .195f, .195f), .2f);
             animationSequence3.OnComplete(
                 () =>
                 {
                     go.transform.Find("Back").gameObject.SetActive(true);
                     Sequence animationSequence4 = DOTween.Sequence();
-
-                    // animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
                     animationSequence4.Append(go.transform.DORotate(new Vector3(0, 180, 0f), .45f));
-
-                    // animationSequence4.AppendInterval(2f);
 
                     // Changing layers to all child objects to set them Behind the Graveyard Card
                     sortingGroup.sortingLayerID = SRSortingLayers.Foreground;
@@ -402,8 +380,6 @@ namespace LoomNetwork.CZB
                 });
 
             Sequence animationSequence2 = DOTween.Sequence();
-
-            // animationSequence2.Append(go.transform.DOMove(new Vector3(-4.1f, -1, 0), .3f));
             animationSequence2.Append(go.transform.DOMove(new Vector3(-7.74f, -1, 0), 0.7f));
 
             animationSequence2.OnComplete(
@@ -431,37 +407,17 @@ namespace LoomNetwork.CZB
 
         public void RemoveOpponentCard(object[] param)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
             GameObject go = param[0] as GameObject;
-            BoardUnit currentCreature = null;
-            if (param.Length > 1)
-            {
-                currentCreature = param[1] as BoardUnit;
-            }
-
-            // if (!go.transform.Find("BackgroundBack").gameObject.activeSelf)
-            // return;
             SortingGroup sortingGroup = go.GetComponent<SortingGroup>();
 
             Sequence animationSequence3 = DOTween.Sequence();
 
-            // animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, 90), .2f));
             animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -30f), .4f));
             go.transform.DOScale(new Vector3(1, 1, 1), .2f);
-            animationSequence3.OnComplete(
-                () =>
-                {
-                    // if (go.transform.Find("BackgroundBack") != null)
-                    // go.transform.Find("BackgroundBack").gameObject.SetActive(true);
-                    // //Sequence animationSequence4 = DOTween.Sequence();
-                    // //animationSequence4.Append(go.transform.DORotate(new Vector3(40f, 180, 90f), .3f));
-                    // //animationSequence4.AppendInterval(2f);
-                });
 
             Sequence animationSequence2 = DOTween.Sequence();
-
-            // animationSequence2.Append(go.transform.DOMove(new Vector3(-4.85f, 6.3f, 0), .3f));
             animationSequence2.Append(go.transform.DOMove(new Vector3(7.7f, 14f, 0), .6f));
 
             animationSequence2.OnComplete(
@@ -473,7 +429,6 @@ namespace LoomNetwork.CZB
                         go.transform.GetChild(i).gameObject.layer = 0;
                     }
 
-                    // sortingGroup.sortingLayerName = "Default";
                     sortingGroup.sortingOrder = 7; // Foreground layer
 
                     Sequence animationSequence4 = DOTween.Sequence();
@@ -559,9 +514,8 @@ namespace LoomNetwork.CZB
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
 
-                _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume, false, false);
+                _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume);
 
-                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
                 player.ThrowPlayCardEvent(card.WorkingCard);
 
                 switch (libraryCard.CardKind)
@@ -597,16 +551,12 @@ namespace LoomNetwork.CZB
 
                         player.BoardCards.Insert(indexOfCard, boardUnit);
 
-                        // _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
                         _timerManager.AddTimer(
                             creat =>
                             {
                                 card.WorkingCard.Owner.GraveyardCardsCount++;
-                            },
-                            null,
-                            1f);
+                            });
 
-                        // Destroy(card.gameObject);
                         card.RemoveCardParticle.Play();
 
                         _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnit.OwnerPlayer, boardUnit }));
@@ -632,8 +582,7 @@ namespace LoomNetwork.CZB
                                             });
                                     },
                                     null,
-                                    0.1f,
-                                    false);
+                                    0.1f);
                             });
 
                         player.Goo -= card.ManaCost;
@@ -672,15 +621,13 @@ namespace LoomNetwork.CZB
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND, Constants.CardsMoveSoundVolume);
 
             player.ThrowPlayCardEvent(card);
 
             randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>
                 {
-                    // GameClient.Get<ITimerManager>().AddTimer(DestroyRandomCard, new object[] { randomCard }, 1f, false);
-                    // randomCard.GetComponent<Animator>().SetTrigger("RemoveCard");
                     randomCard.transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>().Play();
 
                     randomCard.transform.DOScale(Vector3.one * 1.2f, 0.6f).OnComplete(
@@ -700,9 +647,7 @@ namespace LoomNetwork.CZB
                                 x =>
                                 {
                                     player.GraveyardCardsCount++;
-                                },
-                                null,
-                                1f);
+                                });
                         });
                 });
 
@@ -845,7 +790,7 @@ namespace LoomNetwork.CZB
                     x =>
                     {
                         player.CardsInHand.Add(workingCard);
-                        _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
+                        _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
                     },
                     null,
                     animationDuration);

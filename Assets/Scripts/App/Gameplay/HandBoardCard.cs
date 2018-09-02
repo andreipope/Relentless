@@ -40,15 +40,11 @@ public class HandBoardCard
 
     private bool _canceledPlay;
 
-    private int _handInd;
-
     public HandBoardCard(GameObject selfObject, BoardCard boardCard)
     {
         GameObject = selfObject;
 
         CardView = boardCard;
-
-        _handInd = GetHashCode();
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -140,11 +136,10 @@ public class HandBoardCard
         StartedDrag = false;
         _playerController.IsCardSelected = false;
 
-        bool playable = true;
-        if (_canceledPlay || !CardView.CanBeBuyed(OwnerPlayer) || CardView.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.CREATURE && OwnerPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
-        {
-            playable = false;
-        }
+        bool playable = !_canceledPlay &&
+            CardView.CanBeBuyed(OwnerPlayer) &&
+            (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
+                OwnerPlayer.BoardCards.Count < Constants.MaxBoardUnits);
 
         if (playable)
         {
@@ -168,7 +163,7 @@ public class HandBoardCard
         {
             _isReturnToHand = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
             Transform.DOMove(InitialPos, 0.5f).OnComplete(
                 () =>
@@ -197,7 +192,7 @@ public class HandBoardCard
         GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerHandCards;
         GameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
-        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume, false, false);
+        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
         Transform.DOMove(InitialPos, 0.5f).OnComplete(
             () =>

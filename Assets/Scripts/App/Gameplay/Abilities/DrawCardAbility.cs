@@ -5,7 +5,7 @@ namespace LoomNetwork.CZB
 {
     public class DrawCardAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.SetType SetType { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,16 +21,6 @@ namespace LoomNetwork.CZB
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)
@@ -54,11 +44,6 @@ namespace LoomNetwork.CZB
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
         }
     }
 }

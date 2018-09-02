@@ -24,10 +24,7 @@ namespace LoomNetwork.CZB
 
         public int CurrentPreviewedCardId;
 
-        // public int TurnDuration { get; private set; }
         public int CurrentTurn;
-
-        public bool GameFinished;
 
         public List<BoardUnit> OpponentBoardCards = new List<BoardUnit>();
 
@@ -101,8 +98,6 @@ namespace LoomNetwork.CZB
             _ranksController = _gameplayManager.GetController<RanksController>();
 
             _cardsInDestroy = new List<BoardUnit>();
-
-            LoadGameConfiguration();
 
             _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
         }
@@ -183,7 +178,6 @@ namespace LoomNetwork.CZB
                             cardToDestroy.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
                             cardToDestroy.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Card);
 
-                            // _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
                             cardToDestroy.ThrowOnDieEvent();
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
@@ -195,34 +189,21 @@ namespace LoomNetwork.CZB
                                     UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
                                 },
                                 null,
-                                Time.deltaTime,
-                                false);
+                                Time.deltaTime);
                         },
                         null,
                         soundLength);
-                },
-                null,
-                1f);
+                });
         }
 
         public void CheckGameDynamic()
         {
-            // if (_gameplayManager.OpponentPlayer.HP > 9 && _gameplayManager.CurrentPlayer.HP > 9)
-            // {
-            // if (_battleDynamic)
-            // _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-            // _battleDynamic = false;
-            // }
-            // else
-            // {
             if (!_battleDynamic)
             {
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
             }
 
             _battleDynamic = true;
-
-            // }
         }
 
         public void UpdateGraveyard(int index, Player player)
@@ -255,9 +236,6 @@ namespace LoomNetwork.CZB
         {
             CurrentTurn = Constants.FirstGameTurnIndex;
 
-            GameFinished = false;
-
-            // _timerManager.StopTimer(RunTurnAsync);
             if (_gameplayManager.IsTutorial)
             {
                 _gameplayManager.OpponentPlayer.Hp = 12;
@@ -289,15 +267,10 @@ namespace LoomNetwork.CZB
                 Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
                 _cardsController.AddCardToHand(player);
             }
-
-            // if (!_gameplayManager.IsTutorial)
-            // _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
-            // _timerManager.StopTimer(RunTurnAsync);
-            GameFinished = true;
             CurrentTurn = 0;
 
             ClearBattleground();
@@ -329,8 +302,6 @@ namespace LoomNetwork.CZB
             _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(_gameplayManager.IsLocalPlayerTurn());
 
             UpdatePositionOfCardsInOpponentHand();
-
-            // RearrangeOpponentHand(!_gameplayManager.IsLocalPlayerTurn(), true);
             _playerController.IsActive = _gameplayManager.IsLocalPlayerTurn();
 
             if (_gameplayManager.IsLocalPlayerTurn())
@@ -423,31 +394,26 @@ namespace LoomNetwork.CZB
 
         public void StopTurn()
         {
-            // _timerManager.StopTimer(RunTurnAsync);
             EndTurn();
             StartTurn();
-
-            // if (!_gameplayManager.IsTutorial)
-            // _timerManager.AddTimer(RunTurnAsync, null, TurnDuration, true, false);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            Vector3 graveyardPos = PlayerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
             BoardUnit boardCard = PlayerBoardCards.Find(x => x.Card == card);
-            if (boardCard != null)
-            {
-                boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
+            if (boardCard == null)
+                return;
 
-                PlayerBoardCards.Remove(boardCard);
-                PlayerGraveyardCards.Add(boardCard);
+            boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
 
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.StopSleepingParticles();
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+            PlayerBoardCards.Remove(boardCard);
+            PlayerGraveyardCards.Add(boardCard);
 
-                Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
-            }
+            boardCard.SetHighlightingEnabled(false);
+            boardCard.StopSleepingParticles();
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+
+            Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
@@ -548,8 +514,7 @@ namespace LoomNetwork.CZB
                         UpdatePositionOfBoardUnitsOfOpponent(onComplete);
                     },
                     null,
-                    .1f,
-                    false);
+                    .1f);
                 return;
             }
 
@@ -602,8 +567,7 @@ namespace LoomNetwork.CZB
                     RearrangingTopBoard = false;
                 },
                 null,
-                1.5f,
-                false);
+                1.5f);
         }
 
         // rewrite
@@ -893,14 +857,6 @@ namespace LoomNetwork.CZB
             boardUnit.PlayArrivalAnimation();
 
             return boardUnit;
-        }
-
-        private void LoadGameConfiguration()
-        {
-            // TurnDuration = Constants.DEFAULT_TURN_DURATION;
-
-            // if (_gameplayManager.IsTutorial)
-            // TurnDuration = 10000000;
         }
     }
 }

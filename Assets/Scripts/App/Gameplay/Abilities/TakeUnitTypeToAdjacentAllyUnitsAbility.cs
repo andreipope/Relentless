@@ -23,22 +23,11 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             Player opponent = GetOpponentOverlord();
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
@@ -62,16 +51,6 @@ namespace LoomNetwork.CZB
                     TakeTypeToUnit(opponent.BoardCards[targetIndex + 1]);
                 }
             }
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         private void TakeTypeToUnit(BoardUnit unit)

@@ -33,8 +33,6 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
         private IDataManager _dataManager;
 
         private BackendFacade _backendFacade;
@@ -103,7 +101,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -122,7 +119,6 @@ namespace LoomNetwork.CZB
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
 
-            // _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersEditingDeck");
             _backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
 
             _createdArmyCards = new List<BoardCard>();
@@ -297,7 +293,6 @@ namespace LoomNetwork.CZB
 
         public void MoveCardsPage(int direction)
         {
-            // GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
             _currentElementPage += direction;
 
             if (_currentElementPage < 0)
@@ -344,8 +339,6 @@ namespace LoomNetwork.CZB
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
-
-            // _currentSetName = set.name;
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
@@ -363,9 +356,7 @@ namespace LoomNetwork.CZB
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)
-                {
                     continue;
-                }
 
                 BoardCard boardCard = CreateCard(card, Vector3.zero, _armyCardsContainer);
 
@@ -446,8 +437,6 @@ namespace LoomNetwork.CZB
                     if (item.LibraryCard.Name == card.CardName)
                     {
                         itemFound = true;
-
-                        // item.AddCard();
                         break;
                     }
                 }
@@ -577,7 +566,6 @@ namespace LoomNetwork.CZB
                     foundItem = item;
                     itemFound = true;
 
-                    // item.AddCard();
                     break;
                 }
             }
@@ -851,20 +839,11 @@ namespace LoomNetwork.CZB
         private void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
-            foreach (BoardCard card in _createdArmyCards)
-            {
-                card.GameObject.GetComponent<DeckBuilderCard>().IsActive = false;
-            }
-
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         private void OnCloseAlertDialogEventHandler()
         {
-            foreach (BoardCard card in _createdArmyCards)
-            {
-                card.GameObject.GetComponent<DeckBuilderCard>().IsActive = true;
-            }
         }
 
         private void InitObjects()
@@ -1066,11 +1045,6 @@ namespace LoomNetwork.CZB
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
         }
 
-        // private void OpenButtonHandler()
-        // {
-        // GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-        // GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
-        // }
         private void SaveButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);

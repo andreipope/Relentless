@@ -6,15 +6,16 @@ namespace LoomNetwork.CZB
 {
     public class DelayedAbilityBase : AbilityBase
     {
-        public int Delay;
 
-        protected int DelayedTurnsLeft;
+        public int Delay { get; }
+
+        private int _delayedTurnsLeft;
 
         public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Delay = ability.Delay;
-            DelayedTurnsLeft = Delay;
+            _delayedTurnsLeft = Delay;
         }
 
         public override void Activate()
@@ -24,26 +25,6 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
         protected override void OnEndTurnEventHandler()
         {
             base.OnEndTurnEventHandler();
@@ -51,8 +32,6 @@ namespace LoomNetwork.CZB
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
-            // if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-            // return;
             CountDelay();
         }
 
@@ -68,14 +47,14 @@ namespace LoomNetwork.CZB
 
         private void CountDelay()
         {
-            if (DelayedTurnsLeft == 0)
+            if (_delayedTurnsLeft == 0)
             {
                 Action();
 
                 AbilitiesController.DeactivateAbility(ActivityId);
             }
 
-            DelayedTurnsLeft--;
+            _delayedTurnsLeft--;
         }
     }
 }

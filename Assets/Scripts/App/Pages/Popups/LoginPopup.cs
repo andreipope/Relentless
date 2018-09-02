@@ -19,8 +19,6 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private IDataManager _dataManager;
-
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -49,7 +47,6 @@ namespace LoomNetwork.CZB
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }

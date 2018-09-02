@@ -9,7 +9,8 @@ namespace LoomNetwork.CZB
 {
     public class HealTargetAbility : AbilityBase
     {
-        public int Value = 1;
+
+        public int Value { get; }
 
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)

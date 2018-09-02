@@ -28,7 +28,6 @@ namespace LoomNetwork.CZB
 
         protected override void Update()
         {
-            // base.Update();
             if (IsEnabled)
             {
                 UpdateLength(_targetPosition);

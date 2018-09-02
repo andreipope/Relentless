@@ -39,12 +39,6 @@ namespace LoomNetwork.CZB
 
         private readonly PointerEventSolver _pointerEventSolver;
 
-        private BattleController _battleController;
-
-        private BattlegroundController _battlegroundController;
-
-        private VfxController _vfxController;
-
         private int _cooldown;
 
         private bool _usedInThisTurn;
@@ -68,10 +62,7 @@ namespace LoomNetwork.CZB
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
-            _battleController = _gameplayManager.GetController<BattleController>();
-            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
-            _vfxController = _gameplayManager.GetController<VfxController>();
 
             _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
@@ -88,9 +79,6 @@ namespace LoomNetwork.CZB
 
             _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             {
-                // _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
-                // _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
-                // if (owner.IsLocalPlayer)
                 _pointerEventSolver = new PointerEventSolver();
                 _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
                 _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;

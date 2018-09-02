@@ -4,7 +4,6 @@ using System.Linq;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
 using Newtonsoft.Json;
-using UnityEngine;
 
 namespace LoomNetwork.CZB.Data
 {

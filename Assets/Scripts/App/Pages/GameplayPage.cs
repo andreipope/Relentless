@@ -23,25 +23,17 @@ namespace LoomNetwork.CZB
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private ILocalizationManager _localizationManager;
-
-        private IPlayerManager _playerManager;
-
         private IDataManager _dataManager;
 
         private IGameplayManager _gameplayManager;
 
         private ISoundManager _soundManager;
 
-        private ITimerManager _timerManager;
-
         private BackendDataControlMediator _backendDataControlMediator;
 
         private BattlegroundController _battlegroundController;
 
-        private RanksController _ranksController;
-
-        private GameObject _selfPage, _playedCardPrefab;
+        private GameObject _selfPage;
 
         private Button _buttonBack;
 
@@ -71,15 +63,10 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
-            _playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
 
             // _cards = new List<CardInGraveyard>();
             _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;
@@ -168,8 +155,6 @@ namespace LoomNetwork.CZB
 
                 _battlegroundController.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardUpdatedEventHandler;
                 _battlegroundController.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardUpdatedEventHandler;
-
-                _ranksController = _gameplayManager.GetController<RanksController>();
             }
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;

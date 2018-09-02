@@ -128,7 +128,7 @@ namespace LoomNetwork.CZB
 
                     _battlegroundController.OpponentHandCards.Add(boardCard);
 
-                    _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
+                    _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
                 },
                 null,
                 1.1f);

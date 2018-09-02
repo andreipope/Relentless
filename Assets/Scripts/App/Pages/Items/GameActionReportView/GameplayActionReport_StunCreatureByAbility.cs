@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
@@ -27,21 +26,6 @@ namespace LoomNetwork.CZB
 
             _abilityOwnerObject = CreateCardPreview(_abilityUnitOwner.Card, Vector3.zero);
             _stunnedUnitPreviewObject = CreateCardPreview(_abilityUsedOnUnit.Card, Vector3.zero);
-        }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

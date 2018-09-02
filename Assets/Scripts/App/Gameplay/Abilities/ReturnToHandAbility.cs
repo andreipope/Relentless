@@ -6,7 +6,8 @@ namespace LoomNetwork.CZB
 {
     public class ReturnToHandAbility : AbilityBase
     {
-        public int Value = 1;
+
+        public int Value { get; }
 
         public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
