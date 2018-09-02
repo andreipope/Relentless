@@ -45,7 +45,8 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 DoFadeForChildren(Button, 0.5f, 0.3f);
                 DoFadeForChildren(OnHoverOverlay, 0, 0.3f);
                 DoFadeForChildren(OnClickOverlay, 0, 0.3f);
-            } else
+            }
+            else
             {
                 OnHoverOverlay.DOKill();
                 OnClickOverlay.DOKill();

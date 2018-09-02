@@ -387,7 +387,8 @@ namespace LoomNetwork.CZB
                         DecksDataWithTimestamp localDecksDataWithTimestamp = DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPathes[type]);
                         localDecksData = localDecksDataWithTimestamp.DecksData;
                         localDecksDataTimestamp = localDecksDataWithTimestamp.LastModificationTimestamp;
-                    } else
+                    }
+                    else
                     {
                         localDecksData = CachedDecksData;
                     }
@@ -402,7 +403,8 @@ namespace LoomNetwork.CZB
                             // remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.Decks.ToString());
                             remoteDecksData = new DecksData { Decks = listDecksResponse.Decks.Select(d => JsonConvert.DeserializeObject<Deck>(d.ToString())).ToList() };
                             remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
-                        } else
+                        }
+                        else
                         {
                             Debug.Log(" List Deck Response is Null == ");
                         }
@@ -417,11 +419,13 @@ namespace LoomNetwork.CZB
                         {
                             Debug.Log("Remote decks timestamp == local decks timestamp, no sync needed");
                             CachedDecksData = remoteDecksData;
-                        } else if (remoteDecksDataTimestamp > localDecksDataTimestamp)
+                        }
+                        else if (remoteDecksDataTimestamp > localDecksDataTimestamp)
                         {
                             Debug.Log("Remote decks data is newer than local, using remote data");
                             CachedDecksData = remoteDecksData;
-                        } else
+                        }
+                        else
                         {
                             Debug.Log("Local decks data is newer than remote, synchronizing remote state with local");
                             try
@@ -448,11 +452,13 @@ namespace LoomNetwork.CZB
                                 throw;
                             }
                         }
-                    } else if (remoteDecksData != null)
+                    }
+                    else if (remoteDecksData != null)
                     {
                         Debug.Log("Using remote decks data");
                         CachedDecksData = remoteDecksData;
-                    } else if (localDecksData != null)
+                    }
+                    else if (localDecksData != null)
                     {
                         Debug.Log("Using local decks data");
                         CachedDecksData = localDecksData;

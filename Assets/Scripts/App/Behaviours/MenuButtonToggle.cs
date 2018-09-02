@@ -22,7 +22,8 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
             OnHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
             OnClickOverlayToggleEnabled.DOKill();
             OnClickOverlayToggleEnabled.DOFade(1.0f, 0.2f);
-        } else
+        }
+        else
         {
             OnHoverOverlayToggleDisabled.DOKill();
             OnHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
@@ -37,7 +38,8 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             OnHoverOverlayToggleEnabled.DOKill();
             OnHoverOverlayToggleEnabled.DOFade(1.0f, 0.5f);
-        } else
+        }
+        else
         {
             OnHoverOverlayToggleDisabled.DOKill();
             OnHoverOverlayToggleDisabled.DOFade(1.0f, 0.5f);
@@ -50,7 +52,8 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             OnHoverOverlayToggleEnabled.DOKill();
             OnHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
-        } else
+        }
+        else
         {
             OnHoverOverlayToggleDisabled.DOKill();
             OnHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
@@ -71,7 +74,8 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             OnHoverOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
             OnClickOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
-        } else
+        }
+        else
         {
             OnHoverOverlayToggleDisabled.enabled = false;
             OnClickOverlayToggleDisabled.enabled = false;
@@ -109,7 +113,8 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             ButtonEnabled.enabled = true;
             ButtonDisabled.enabled = false;
-        } else
+        }
+        else
         {
             ButtonEnabled.enabled = false;
             ButtonDisabled.enabled = true;

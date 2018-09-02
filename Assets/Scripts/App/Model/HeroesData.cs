@@ -131,7 +131,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(SkillTargets))
             {
                 SkillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(SkillTargets);
-            } else
+            }
+            else
             {
                 SkillTargetTypes = new List<Enumerators.SkillTargetType>();
             }
@@ -139,7 +140,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(ElementTargets))
             {
                 ElementTargetTypes = Utilites.CastList<Enumerators.SetType>(ElementTargets);
-            } else
+            }
+            else
             {
                 ElementTargetTypes = new List<Enumerators.SetType>();
             }

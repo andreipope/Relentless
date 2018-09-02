@@ -116,7 +116,8 @@ namespace LoomNetwork.CZB
             if (updatedExperiencePercetage < currentExperiencePercentage)
             {
                 MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.Level));
-            } else
+            }
+            else
             {
                 MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
             }

@@ -213,7 +213,8 @@ namespace LoomNetwork.CZB
                 _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
                 GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.Local);
-            } else
+            }
+            else
             {
                 _stateManager.ChangeAppState(Enumerators.AppState.DeckSelection);
             }
@@ -287,7 +288,8 @@ namespace LoomNetwork.CZB
                     if (success)
                     {
                         connectionPopup.Hide();
-                    } else
+                    }
+                    else
                     {
                         connectionPopup.ShowFailedOnMenu();
                     }

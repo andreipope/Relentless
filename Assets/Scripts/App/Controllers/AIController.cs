@@ -115,7 +115,8 @@ namespace LoomNetwork.CZB
                 playerDeck.Add("Golem");
                 playerDeck.Add("Rockky");
                 playerDeck.Add("Rockky");
-            } else
+            }
+            else
             {
                 int deckId = _gameplayManager.OpponentDeckId;
                 foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId).Cards)
@@ -210,7 +211,8 @@ namespace LoomNetwork.CZB
             if (_tutorialManager.IsTutorial && (_tutorialManager.CurrentStep == 11))
             {
                 (_tutorialManager as TutorialManager).Paused = true;
-            } else
+            }
+            else
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -222,7 +224,8 @@ namespace LoomNetwork.CZB
                     await UseUnitsOnBoard(cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
                     _battlegroundController.StopTurn();
-                } else
+                }
+                else
                 {
                     _battlegroundController.StopTurn();
                 }
@@ -326,7 +329,8 @@ namespace LoomNetwork.CZB
                         }
                     }
                 }
-            } else
+            }
+            else
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {
@@ -338,14 +342,16 @@ namespace LoomNetwork.CZB
                             {
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
-                            } else
+                            }
+                            else
                             {
                                 BoardUnit attackedCreature = GetRandomOpponentUnit();
                                 if (attackedCreature != null)
                                 {
                                     unit.DoCombat(attackedCreature);
                                     await LetsThink(cancellationToken);
-                                } else
+                                }
+                                else
                                 {
                                     unit.DoCombat(_gameplayManager.CurrentPlayer);
                                     await LetsThink(cancellationToken);
@@ -458,7 +464,8 @@ namespace LoomNetwork.CZB
                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
 
                 _cardsController.DrawCardInfo(card);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 if (((target != null) && needTargetForAbility) || !needTargetForAbility)
                 {
@@ -518,7 +525,8 @@ namespace LoomNetwork.CZB
                                 {
                                     _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Creature, boardUnitElement, null, false, null, target);
                                 });
-                        } else
+                        }
+                        else
                         {
                             _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Creature, boardUnitElement, null, false, null);
                         }
@@ -527,7 +535,8 @@ namespace LoomNetwork.CZB
                 // Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
 
                 // _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
                 spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
@@ -559,7 +568,8 @@ namespace LoomNetwork.CZB
                         {
                             _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Spell, boardSpell, null, false, null, target);
                         });
-                } else
+                }
+                else
                 {
                     _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Spell, boardSpell, null, false, null);
                 }
@@ -661,7 +671,8 @@ namespace LoomNetwork.CZB
                             if (ability.Value > 0)
                             {
                                 AddRandomTargetUnit(false, ref target);
-                            } else
+                            }
+                            else
                             {
                                 AddRandomTargetUnit(true, ref target);
                             }
@@ -685,7 +696,8 @@ namespace LoomNetwork.CZB
                             if (ability.Value > 0)
                             {
                                 AddRandomTargetUnit(false, ref target);
-                            } else
+                            }
+                            else
                             {
                                 AddRandomTargetUnit(true, ref target);
                             }
@@ -722,7 +734,8 @@ namespace LoomNetwork.CZB
                             if (units.Count > 0)
                             {
                                 target = units[_random.Next(0, units.Count)];
-                            } else
+                            }
+                            else
                             {
                                 target = _gameplayManager.OpponentPlayer;
                             }
@@ -757,7 +770,8 @@ namespace LoomNetwork.CZB
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OpponentCard))
             {
                 AddRandomTargetUnit(true, ref target);
-            } else if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.Opponent))
+            }
+            else if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.Opponent))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -800,7 +814,8 @@ namespace LoomNetwork.CZB
             if (opponent)
             {
                 boardUnit = GetRandomOpponentUnit();
-            } else
+            }
+            else
             {
                 boardUnit = GetRandomUnit(lowHp);
             }
@@ -914,7 +929,8 @@ namespace LoomNetwork.CZB
             if (!lowHp)
             {
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => (x.CurrentHp > 0) && !_attackedUnitTargets.Contains(x));
-            } else
+            }
+            else
             {
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => (x.CurrentHp < x.MaxCurrentHp) && !_attackedUnitTargets.Contains(x));
             }
@@ -1069,7 +1085,8 @@ namespace LoomNetwork.CZB
                         _unitsToIgnoreThisTurn.Add(target as BoardUnit);
 
                         selectedObjectType = Enumerators.AffectObjectType.Character;
-                    } else
+                    }
+                    else
                     {
                         BoardUnit unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
 
@@ -1080,7 +1097,8 @@ namespace LoomNetwork.CZB
                             _unitsToIgnoreThisTurn.Add(target as BoardUnit);
 
                             selectedObjectType = Enumerators.AffectObjectType.Character;
-                        } else
+                        }
+                        else
                         {
                             return;
                         }
@@ -1106,7 +1124,8 @@ namespace LoomNetwork.CZB
                         skill.FightTargetingArrow.SelectedPlayer = target as Player;
                         skill.EndDoSkill();
                     });
-            } else
+            }
+            else
             {
                 if (target != null)
                 {

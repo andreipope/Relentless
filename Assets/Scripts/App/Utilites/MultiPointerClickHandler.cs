@@ -23,7 +23,8 @@ namespace LoomNetwork.CZB
             {
                 _clickCount++;
                 _lastClickTime = Time.unscaledTime;
-            } else
+            }
+            else
             {
                 _lastClickTime = Time.unscaledTime;
                 _clickCount = 1;

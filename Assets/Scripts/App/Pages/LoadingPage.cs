@@ -76,7 +76,8 @@ namespace LoomNetwork.CZB
                         _progressBar.gameObject.SetActive(false);
                         _pressAnyText.gameObject.SetActive(true);
                     }
-                } else
+                }
+                else
                 {
                     // _pressAnyText.color = new Color(_pressAnyTextColor.r, _pressAnyTextColor.g, _pressAnyTextColor.b, Mathf.PingPong(Time.time, 1));
                     // float scalePressAnyTextValue = 1-Mathf.PingPong(Time.time*0.1f, 0.25f);
@@ -121,7 +122,8 @@ namespace LoomNetwork.CZB
                                 _uiManager.DrawPopup<ConnectionPopup>();
                                 connectionPopup.ConnectFunc = connectFunc;
                                 await connectionPopup.ExecuteConnection();
-                            } else
+                            }
+                            else
                             {
                                 _uiManager.DrawPopup<LoginPopup>();
                             }

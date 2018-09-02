@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
             RanksController = GameplayManager.GetController<RanksController>();
 
             AbilityData = ability;
-            this.CardKind = cardKind;
+            CardKind = cardKind;
             AbilityType = ability.AbilityType;
             AbilityActivityType = ability.AbilityActivityType;
             AbilityCallType = ability.AbilityCallType;
@@ -136,10 +136,12 @@ namespace LoomNetwork.CZB
             if (CardKind == Enumerators.CardKind.Creature)
             {
                 TargettingArrow.Begin(AbilityUnitOwner.Transform.position);
-            } else if (CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (CardKind == Enumerators.CardKind.Spell)
             {
                 TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
-            } else
+            }
+            else
             {
                 TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
             }
@@ -189,7 +191,8 @@ namespace LoomNetwork.CZB
                 {
                     // boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
-            } else if ((CardKind == Enumerators.CardKind.Spell) && (BoardSpell != null))
+            }
+            else if ((CardKind == Enumerators.CardKind.Spell) && (BoardSpell != null))
             {
                 BoardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
             }
@@ -197,7 +200,8 @@ namespace LoomNetwork.CZB
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
                 SelectedPlayer = _playerAvatar;
-            } else
+            }
+            else
             {
                 SelectedPlayer = _opponenentAvatar;
             }
@@ -227,10 +231,12 @@ namespace LoomNetwork.CZB
             if (TargetUnit != null)
             {
                 AffectObjectType = Enumerators.AffectObjectType.Character;
-            } else if (TargetPlayer != null)
+            }
+            else if (TargetPlayer != null)
             {
                 AffectObjectType = Enumerators.AffectObjectType.Player;
-            } else
+            }
+            else
             {
                 AffectObjectType = Enumerators.AffectObjectType.None;
             }
@@ -246,7 +252,8 @@ namespace LoomNetwork.CZB
 
                 OnObjectSelectedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectedByTargettingArrowCallback = null;
-            } else
+            }
+            else
             {
                 OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectFailedByTargettingArrowCallback = null;
@@ -291,7 +298,8 @@ namespace LoomNetwork.CZB
                 if (!justPosition)
                 {
                     VfxObject.transform.position = (pos - Constants.VfxOffset) + Vector3.forward;
-                } else
+                }
+                else
                 {
                     VfxObject.transform.position = pos;
                 }
@@ -367,7 +375,8 @@ namespace LoomNetwork.CZB
             if (isDirectly)
             {
                 DestroyParticle(null);
-            } else
+            }
+            else
             {
                 GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time, false);
             }

@@ -40,7 +40,8 @@ namespace LoomNetwork.CZB
                             if (_timers[i].Finished)
                             {
                                 _timers.RemoveAt(i);
-                            } else
+                            }
+                            else
                             {
                                 _timers[i].Update();
                             }
@@ -80,7 +81,8 @@ namespace LoomNetwork.CZB
                     newParams[newParams.Length - 1] = timer.Index;
 
                     parameters = newParams;
-                } else
+                }
+                else
                 {
                     parameters = new object[1];
                     parameters[0] = timer.Index;
@@ -122,7 +124,7 @@ namespace LoomNetwork.CZB
         public Timer(Action<object[]> handler, object[] parameters, float time, bool loop)
         {
             Handler = handler;
-            this.Parameters = parameters;
+            Parameters = parameters;
             _time = time;
             _currentTime = time;
             _loop = loop;
@@ -145,7 +147,8 @@ namespace LoomNetwork.CZB
                 if (_loop)
                 {
                     _currentTime = _time;
-                } else
+                }
+                else
                 {
                     Finished = true;
                 }

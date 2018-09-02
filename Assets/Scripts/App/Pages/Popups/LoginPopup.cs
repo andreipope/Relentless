@@ -169,7 +169,8 @@ namespace LoomNetwork.CZB
                     Debug.LogWarning(e);
                     SetUIState(LoginState.BetaKeyValidationFailed);
                 }
-            } else
+            }
+            else
             {
                 _uiManager.DrawPopup<WarningPopup>("Input a valid Tester Key");
             }

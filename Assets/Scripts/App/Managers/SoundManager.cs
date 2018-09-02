@@ -260,7 +260,8 @@ namespace LoomNetwork.CZB
             if (id == 0)
             {
                 container = _soundContainers.Find(x => x.SoundType == soundType);
-            } else
+            }
+            else
             {
                 container = _soundContainers.Find(x => (x.SoundType == soundType) && (x.GetHashCode() == id));
             }
@@ -278,7 +279,8 @@ namespace LoomNetwork.CZB
             if (id == 0)
             {
                 container = _soundContainers.Find(x => x.SoundParameters.AudioClips == clips);
-            } else
+            }
+            else
             {
                 container = _soundContainers.Find(x => (x.SoundParameters.AudioClips == clips) && (x.GetHashCode() == id));
             }
@@ -337,7 +339,8 @@ namespace LoomNetwork.CZB
                             container.AudioSource.Stop();
                             container.ForceClose = true;
                             stop = true;
-                        } else if (isIn && (container.AudioSource.volume >= targetVolume))
+                        }
+                        else if (isIn && (container.AudioSource.volume >= targetVolume))
                         {
                             container.AudioSource.volume = targetVolume;
                             stop = true;
@@ -421,7 +424,8 @@ namespace LoomNetwork.CZB
             if (volume < 0)
             {
                 soundParam.Volume = _sfxVolume;
-            } else
+            }
+            else
             {
                 soundParam.Volume = volume;
             }
@@ -429,7 +433,8 @@ namespace LoomNetwork.CZB
             if (SfxMuted && !soundParam.IsBackground)
             {
                 soundParam.IsMute = true;
-            } else if (MusicMuted && soundParam.IsBackground)
+            }
+            else if (MusicMuted && soundParam.IsBackground)
             {
                 soundParam.IsMute = true;
             }
@@ -597,7 +602,7 @@ namespace LoomNetwork.CZB
 
         public QueuedSoundElement(Action action)
         {
-            this.Action = action;
+            Action = action;
         }
 
         public void DoAction()

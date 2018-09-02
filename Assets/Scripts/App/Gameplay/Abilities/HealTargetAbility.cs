@@ -77,7 +77,8 @@ namespace LoomNetwork.CZB
                         CreateVfx(target, true);
                         callback();
                     });
-            } else if (AbilityEffectType == Enumerators.AbilityEffectType.HealDirectly)
+            }
+            else if (AbilityEffectType == Enumerators.AbilityEffectType.HealDirectly)
             {
                 CreateVfx(target, true);
                 callback();

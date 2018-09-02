@@ -178,14 +178,16 @@ namespace LoomNetwork.CZB
                             ParticlesController.RegisterParticleSystem(particle, true);
 
                             SoundManager.PlaySound(Enumerators.SoundType.Spells, "NailBomb", Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.None);
-                        } else if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsAir)
+                        }
+                        else if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsAir)
                         {
                             // one particle
                             ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
                             main.loop = false;
                         }
                     });
-            } else
+            }
+            else
             {
                 CreateVfx(Utilites.CastVfxPosition(TargetUnit.Transform.position));
                 callback();
@@ -199,7 +201,8 @@ namespace LoomNetwork.CZB
             if (isDirectly)
             {
                 DestroyParticle(new object[] { particleObj });
-            } else
+            }
+            else
             {
                 GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { particleObj }, time, false);
             }

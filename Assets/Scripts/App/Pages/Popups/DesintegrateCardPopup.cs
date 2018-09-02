@@ -78,7 +78,8 @@ namespace LoomNetwork.CZB
             if (_cardData.Amount == 0)
             {
                 _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
-            } else
+            }
+            else
             {
                 _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = true;
             }

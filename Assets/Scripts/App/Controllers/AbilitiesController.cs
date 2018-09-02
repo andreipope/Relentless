@@ -146,12 +146,14 @@ namespace LoomNetwork.CZB
                     if (boardObject is BoardCard)
                     {
                         activeAbility.Ability.BoardCard = boardObject as BoardCard;
-                    } else
+                    }
+                    else
                     {
                         if (kind == Enumerators.CardKind.Creature)
                         {
                             activeAbility.Ability.AbilityUnitOwner = boardObject as BoardUnit;
-                        } else
+                        }
+                        else
                         {
                             activeAbility.Ability.BoardSpell = boardObject as BoardSpell;
                         }
@@ -311,7 +313,8 @@ namespace LoomNetwork.CZB
                     {
                         return true;
                     }
-                } else if (target.Equals(Enumerators.AbilityTargetType.OpponentCard))
+                }
+                else if (target.Equals(Enumerators.AbilityTargetType.OpponentCard))
                 {
                     List<BoardUnit> units = opponent.BoardCards.FindAll(x => (x.InitialUnitType == ability.TargetCardType) && (x.UnitStatus == ability.TargetUnitStatusType));
 
@@ -345,7 +348,8 @@ namespace LoomNetwork.CZB
                     {
                         return true;
                     }
-                } else if (target.Equals(Enumerators.AbilityTargetType.OpponentCard))
+                }
+                else if (target.Equals(Enumerators.AbilityTargetType.OpponentCard))
                 {
                     List<BoardUnit> units = opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
@@ -391,7 +395,8 @@ namespace LoomNetwork.CZB
                 if (IsAbilityCanActivateTargetAtStart(item))
                 {
                     canUseAbility = true;
-                } else
+                }
+                else
                 {
                     // if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
                     activeAbility.Ability.Activate();
@@ -402,7 +407,8 @@ namespace LoomNetwork.CZB
             {
                 // if (isPlayer)
                 // currentSpellCard = card;
-            } else
+            }
+            else
             {
                 workingCard.Owner.RemoveCardFromHand(workingCard);
                 workingCard.Owner.AddCardToBoard(workingCard);
@@ -487,7 +493,8 @@ namespace LoomNetwork.CZB
                                     // currentSpellCard = null;
 
                                     // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
-                                } else
+                                }
+                                else
                                 {
                                     Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
                                     action?.Invoke(card);
@@ -497,12 +504,14 @@ namespace LoomNetwork.CZB
 
                                 ResolveAllAbilitiesOnUnit(boardObject);
                             });
-                    } else
+                    }
+                    else
                     {
                         if (target is BoardUnit)
                         {
                             activeAbility.Ability.TargetUnit = target as BoardUnit;
-                        } else if (target is Player)
+                        }
+                        else if (target is Player)
                         {
                             activeAbility.Ability.TargetPlayer = target as Player;
                         }
@@ -517,14 +526,16 @@ namespace LoomNetwork.CZB
 
                         ResolveAllAbilitiesOnUnit(boardObject);
                     }
-                } else
+                }
+                else
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                     onCompleteCallback?.Invoke();
 
                     ResolveAllAbilitiesOnUnit(boardObject);
                 }
-            } else
+            }
+            else
             {
                 CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                 onCompleteCallback?.Invoke();
@@ -774,7 +785,8 @@ namespace LoomNetwork.CZB
                 }
 
                 action?.Invoke(card);
-            } else
+            }
+            else
             {
                 if (activeAbility == null)
 
@@ -783,7 +795,8 @@ namespace LoomNetwork.CZB
                 if (target is BoardUnit)
                 {
                     activeAbility.Ability.TargetUnit = target as BoardUnit;
-                } else if (target is Player)
+                }
+                else if (target is Player)
                 {
                     activeAbility.Ability.TargetPlayer = target as Player;
                 }

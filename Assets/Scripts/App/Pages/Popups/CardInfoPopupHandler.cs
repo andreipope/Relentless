@@ -173,7 +173,8 @@ namespace LoomNetwork.CZB
             if (isStartedStateChange)
             {
                 StateChanging?.Invoke();
-            } else
+            }
+            else
             {
                 StateChanged?.Invoke();
             }

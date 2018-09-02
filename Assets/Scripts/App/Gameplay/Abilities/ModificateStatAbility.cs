@@ -51,7 +51,8 @@ namespace LoomNetwork.CZB
                         {
                             TargetUnit.BuffedDamage += Value;
                             TargetUnit.CurrentDamage += Value;
-                        } else if (StatType == Enumerators.StatType.Health)
+                        }
+                        else if (StatType == Enumerators.StatType.Health)
                         {
                             TargetUnit.BuffedHp += Value;
                             TargetUnit.CurrentHp += Value;

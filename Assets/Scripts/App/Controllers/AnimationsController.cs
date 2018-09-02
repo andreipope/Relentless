@@ -58,7 +58,8 @@ namespace LoomNetwork.CZB
             if (isCreatureAttacker)
             {
                 partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.6f);
-            } else
+            }
+            else
             {
                 partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.7f);
             }

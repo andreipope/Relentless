@@ -348,8 +348,8 @@ namespace LoomNetwork.CZB
 
             public CardZoneOnBoardStatus(Sprite statusSprite, int percent)
             {
-                this.StatusSprite = statusSprite;
-                this.Percent = percent;
+                StatusSprite = statusSprite;
+                Percent = percent;
             }
         }
 
@@ -392,7 +392,8 @@ namespace LoomNetwork.CZB
             if (index == 0)
             {
                 _playerDeckStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
-            } else
+            }
+            else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
@@ -411,7 +412,8 @@ namespace LoomNetwork.CZB
             if (index == 0)
             {
                 _playerGraveyardStatusTexture.sprite = _graveyardStatus.Find(x => x.Percent == index).StatusSprite;
-            } else
+            }
+            else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
@@ -422,7 +424,8 @@ namespace LoomNetwork.CZB
                 if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];
-                } else
+                }
+                else
                 {
                     nearest = nearestObjects[1];
                 }
@@ -442,7 +445,8 @@ namespace LoomNetwork.CZB
             if (index == 0)
             {
                 _opponentDeckStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
-            } else
+            }
+            else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
@@ -461,7 +465,8 @@ namespace LoomNetwork.CZB
             if (index == 0)
             {
                 _opponentGraveyardStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
-            } else
+            }
+            else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
@@ -472,7 +477,8 @@ namespace LoomNetwork.CZB
                 if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];
-                } else
+                }
+                else
                 {
                     nearest = nearestObjects[1];
                 }
@@ -492,7 +498,8 @@ namespace LoomNetwork.CZB
             if (health > 9)
             {
                 _playerHealthText.color = Color.white;
-            } else
+            }
+            else
             {
                 _playerHealthText.color = Color.red;
             }
@@ -527,7 +534,8 @@ namespace LoomNetwork.CZB
             if (health > 9)
             {
                 _opponentHealthText.color = Color.white;
-            } else
+            }
+            else
             {
                 _opponentHealthText.color = Color.red;
             }

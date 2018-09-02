@@ -115,7 +115,8 @@ namespace LoomNetwork.CZB
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Burrrnn");
                 playerDeck.Add("Azuraz");
-            } else
+            }
+            else
             {
                 int deckId = _gameplayManager.PlayerDeckId;
                 foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
@@ -184,7 +185,8 @@ namespace LoomNetwork.CZB
             if (!InternalTools.IsTabletScreen())
             {
                 cardPosition = new Vector3(-9f, -3f, 0f);
-            } else
+            }
+            else
             {
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
@@ -209,7 +211,8 @@ namespace LoomNetwork.CZB
                     if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
                     {
                         card.SetHighlightingEnabled(true);
-                    } else
+                    }
+                    else
                     {
                         card.SetHighlightingEnabled(false);
                     }
@@ -265,7 +268,8 @@ namespace LoomNetwork.CZB
                             _topmostBoardCard = topmostBoardCard;
                         }
                     }
-                } else if (hitBoardCard)
+                }
+                else if (hitBoardCard)
                 {
                     if (hitCards.Count > 0)
                     {
@@ -283,12 +287,14 @@ namespace LoomNetwork.CZB
                             _selectedBoardUnit = selectedBoardUnit;
                         }
                     }
-                } else
+                }
+                else
                 {
                     if (_battlegroundController.IsPreviewActive)
                     {
                         HideCardPreview();
-                    } else
+                    }
+                    else
                     {
                         _timerManager.StopTimer(SetStatusZoomingFalse);
                         _cardsZooming = true;
@@ -335,7 +341,8 @@ namespace LoomNetwork.CZB
             if (_battlegroundController.CardsZoomed)
             {
                 CheckCardPreviewShow();
-            } else
+            }
+            else
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;
@@ -363,12 +370,14 @@ namespace LoomNetwork.CZB
 
                     if ((_boardArrowController.CurrentBoardArrow != null) && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
                     {
-                    } else
+                    }
+                    else
                     {
                         HandCardPreview(new object[] { _topmostBoardCard });
                     }
                 }
-            } else
+            }
+            else
             {
                 if ((_selectedBoardUnit != null) && !_selectedBoardUnit.IsAttacking)
                 {
@@ -377,7 +386,8 @@ namespace LoomNetwork.CZB
 
                     if ((_boardArrowController.CurrentBoardArrow != null) && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
                     {
-                    } else
+                    }
+                    else
                     {
                         HandCardPreview(new object[] { _selectedBoardUnit });
                     }

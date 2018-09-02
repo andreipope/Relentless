@@ -110,7 +110,8 @@ namespace LoomNetwork.CZB
             if (hideAll)
             {
                 HideAllPages();
-            } else
+            }
+            else
             {
                 if (CurrentPage != null)
                 {
@@ -144,7 +145,8 @@ namespace LoomNetwork.CZB
             if (message == null)
             {
                 popup.Show();
-            } else
+            }
+            else
             {
                 popup.Show(message);
             }

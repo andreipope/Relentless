@@ -272,7 +272,8 @@ namespace LoomNetwork.CZB
                 {
                     _selectedDeckId = (int)_hordeDecks[0].SelfDeck.Id;
                 }
-            } else
+            }
+            else
             {
                 _selectedDeckId = -1;
             }
@@ -292,7 +293,8 @@ namespace LoomNetwork.CZB
             if (_scrolledDeck < 2)
             {
                 _scrolledDeck = 0;
-            } else
+            }
+            else
             {
                 _scrolledDeck--;
             }

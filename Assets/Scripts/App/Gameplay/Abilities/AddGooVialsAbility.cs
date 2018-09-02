@@ -45,7 +45,8 @@ namespace LoomNetwork.CZB
                 {
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
-            } else if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo - 1)
+            }
+            else if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo - 1)
             {
                 for (int i = 0; i < Count - 1; i++)
                 {

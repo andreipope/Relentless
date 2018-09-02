@@ -79,7 +79,8 @@ namespace LoomNetwork.CZB
                 if (leftAdjustment.IsStun)
                 {
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
-                } else
+                }
+                else
                 {
                     leftAdjustment.Stun(Enumerators.StunType.Freeze, 1);
                 }
@@ -92,7 +93,8 @@ namespace LoomNetwork.CZB
                 if (rightAdjastment.IsStun)
                 {
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
-                } else
+                }
+                else
                 {
                     rightAdjastment.Stun(Enumerators.StunType.Freeze, 1);
                 }
@@ -103,7 +105,8 @@ namespace LoomNetwork.CZB
             if (creature.IsStun)
             {
                 BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, creature);
-            } else
+            }
+            else
             {
                 creature.Stun(Enumerators.StunType.Freeze, 1);
             }

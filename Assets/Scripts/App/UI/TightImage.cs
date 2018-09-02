@@ -10,7 +10,8 @@ namespace LoomNetwork.CZB
             if (overrideSprite == null)
             {
                 base.OnPopulateMesh(toFill);
-            } else
+            }
+            else
             {
                 switch (type)
                 {
@@ -18,7 +19,8 @@ namespace LoomNetwork.CZB
                         if (overrideSprite.packed && (overrideSprite.packingMode == SpritePackingMode.Rectangle))
                         {
                             base.OnPopulateMesh(toFill);
-                        } else
+                        }
+                        else
                         {
                             GenerateTightMeshSprite(toFill, overrideSprite, preserveAspect);
                         }
@@ -103,7 +105,8 @@ namespace LoomNetwork.CZB
                     float oldHeight = r.height;
                     r.height = r.width * (1.0f / spriteRatio);
                     r.y += (oldHeight - r.height) * rectTransform.pivot.y;
-                } else
+                }
+                else
                 {
                     float oldWidth = r.width;
                     r.width = r.height * spriteRatio;

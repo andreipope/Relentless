@@ -80,15 +80,18 @@ namespace LoomNetwork.CZB
                             break;
                     }
                 }
-            } else
+            }
+            else
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     CastRay(Input.mousePosition, _unitsLayerMask);
-                } else if (Input.GetMouseButton(0))
+                }
+                else if (Input.GetMouseButton(0))
                 {
                     CastRay(Input.mousePosition, _unitsLayerMask, true);
-                } else if (Input.GetMouseButtonUp(0))
+                }
+                else if (Input.GetMouseButtonUp(0))
                 {
                     foreach (BoardUnit unit in _selectedUnitsList)
                     {
@@ -114,7 +117,8 @@ namespace LoomNetwork.CZB
                 {
                     CheckColliders(hit.collider, permanent);
                 }
-            } else
+            }
+            else
             {
                 NoObjectsSelectedEvent?.Invoke();
             }
@@ -146,7 +150,8 @@ namespace LoomNetwork.CZB
                         }
 
                         UnitSelectedEvent?.Invoke(unit);
-                    } else
+                    }
+                    else
                     {
                         UnitSelectingEvent?.Invoke(unit);
                     }
@@ -169,7 +174,8 @@ namespace LoomNetwork.CZB
                         }
 
                         UnitSelectedEvent?.Invoke(unit);
-                    } else
+                    }
+                    else
                     {
                         UnitSelectingEvent?.Invoke(unit);
                     }
@@ -186,7 +192,8 @@ namespace LoomNetwork.CZB
                 if (!permanent)
                 {
                     PlayerSelectedEvent?.Invoke(_gameplayManager.CurrentPlayer);
-                } else
+                }
+                else
                 {
                     PlayerSelectingEvent?.Invoke(_gameplayManager.CurrentPlayer);
                 }
@@ -199,7 +206,8 @@ namespace LoomNetwork.CZB
                 if (!permanent)
                 {
                     PlayerSelectedEvent?.Invoke(_gameplayManager.OpponentPlayer);
-                } else
+                }
+                else
                 {
                     PlayerSelectingEvent?.Invoke(_gameplayManager.OpponentPlayer);
                 }

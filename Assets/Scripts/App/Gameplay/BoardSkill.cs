@@ -247,7 +247,8 @@ namespace LoomNetwork.CZB
                 {
                     StartDoSkill();
                 }
-            } else
+            }
+            else
             {
                 DrawAbilityTooltip();
             }
@@ -258,12 +259,14 @@ namespace LoomNetwork.CZB
             if (Skill.SkillTargetTypes.Count > 0)
             {
                 DrawAbilityTooltip();
-            } else
+            }
+            else
             {
                 if (!_usedInThisTurn && Owner.IsLocalPlayer)
                 {
                     StartDoSkill();
-                } else
+                }
+                else
                 {
                     DrawAbilityTooltip();
                 }
@@ -287,7 +290,8 @@ namespace LoomNetwork.CZB
             if (Owner.IsStunned)
             {
                 BlockSkill();
-            } else
+            }
+            else
             {
                 if (IsSkillReady)
                 {
@@ -338,7 +342,8 @@ namespace LoomNetwork.CZB
             if (Skill.SkillTargetTypes.Count == 0)
             {
                 _skillsController.DoSkillAction(this, Owner);
-            } else
+            }
+            else
             {
                 if (Owner.IsLocalPlayer)
                 {
@@ -347,7 +352,8 @@ namespace LoomNetwork.CZB
                         _skillsController.DoSkillAction(this);
                         _playerController.IsCardSelected = false;
                     }
-                } else
+                }
+                else
                 {
                     _skillsController.DoSkillAction(this);
                 }
@@ -388,16 +394,19 @@ namespace LoomNetwork.CZB
                 if (IsPrimary)
                 {
                     position = new Vector3(4f, 0.5f, 0);
-                } else
+                }
+                else
                 {
                     position = new Vector3(-4f, 0.5f, 0);
                 }
-            } else
+            }
+            else
             {
                 if (IsPrimary)
                 {
                     position = new Vector3(4f, -1.15f, 0);
-                } else
+                }
+                else
                 {
                     position = new Vector3(-4f, -1.15f, 0);
                 }

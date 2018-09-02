@@ -108,7 +108,8 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsTutorial)
             {
                 EndCardDistribution();
-            } else
+            }
+            else
             {
                 _uiManager.GetPage<GameplayPage>().KeepButtonVisibility(true);
             }
@@ -189,7 +190,8 @@ namespace LoomNetwork.CZB
                                    _battlegroundController.StartGameplayTurns();
                                }, null, 2f); */
                 _battlegroundController.StartGameplayTurns();
-            } else
+            }
+            else
             {
                 _battlegroundController.StartGameplayTurns();
             }
@@ -287,7 +289,8 @@ namespace LoomNetwork.CZB
             if (player.Equals(otherPlayer))
             {
                 player.AddCardToHand(card);
-            } else
+            }
+            else
             {
                 player.AddCardToHandFromOpponentDeck(otherPlayer, card);
             }
@@ -319,7 +322,8 @@ namespace LoomNetwork.CZB
                     },
                     null,
                     2f);
-            } else
+            }
+            else
             {
                 boardCard.HandBoardCard.CheckStatusOfHighlight();
             }
@@ -394,7 +398,8 @@ namespace LoomNetwork.CZB
                         if (child.name != "Back")
                         {
                             child.gameObject.SetActive(false);
-                        } else
+                        }
+                        else
                         {
                             child.gameObject.layer = 0;
                         }
@@ -503,7 +508,8 @@ namespace LoomNetwork.CZB
                     if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
                     {
                         newIndexOfCard = i + 1;
-                    } else
+                    }
+                    else
                     {
                         break;
                     }
@@ -574,7 +580,8 @@ namespace LoomNetwork.CZB
                         if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
                         {
                             indexOfCard = i + 1;
-                        } else
+                        }
+                        else
                         {
                             break;
                         }
@@ -635,7 +642,8 @@ namespace LoomNetwork.CZB
 
                     player.Goo -= card.ManaCost;
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MoveCard);
-                } else if (libraryCard.CardKind == Enumerators.CardKind.Spell)
+                }
+                else if (libraryCard.CardKind == Enumerators.CardKind.Spell)
                 {
                     player.CardsInHand.Remove(card.WorkingCard);
                     _battlegroundController.PlayerHandCards.Remove(card);
@@ -649,7 +657,8 @@ namespace LoomNetwork.CZB
 
                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.Spell, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
                 }
-            } else
+            }
+            else
             {
                 card.HandBoardCard.ResetToInitialPosition();
             }
@@ -710,7 +719,8 @@ namespace LoomNetwork.CZB
             {
                 go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
                 boardCard = new UnitBoardCard(go);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard"));
                 boardCard = new SpellBoardCard(go);
@@ -755,7 +765,8 @@ namespace LoomNetwork.CZB
                 BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
 
                 boardCard.ChangeCardCostOn(value, true);
-            } else
+            }
+            else
             {
                 card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
             }
@@ -771,7 +782,8 @@ namespace LoomNetwork.CZB
                 }
 
                 boardCard.SetCardCost(value);
-            } else
+            }
+            else
             {
                 card.RealCost = Mathf.Clamp(value, 0, 99);
             }
@@ -820,7 +832,8 @@ namespace LoomNetwork.CZB
                     },
                     null,
                     animationDuration);
-            } else
+            }
+            else
             {
                 GameObject boardCard = AddCardToOpponentHand(workingCard);
                 boardCard.transform.position = Vector3.zero;
@@ -909,7 +922,8 @@ namespace LoomNetwork.CZB
             {
                 go = Object.Instantiate(CreatureCardViewPrefab);
                 boardCard = new UnitBoardCard(go);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 go = Object.Instantiate(SpellCardViewPrefab);
                 boardCard = new SpellBoardCard(go);

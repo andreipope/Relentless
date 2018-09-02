@@ -92,7 +92,8 @@ namespace LoomNetwork.CZB
                     if (!_disableShop)
                     {
                         _uiManager.SetPage<ShopPage>();
-                    } else
+                    }
+                    else
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                         return;
@@ -105,7 +106,8 @@ namespace LoomNetwork.CZB
                     if (!_disablePacks)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
-                    } else
+                    }
+                    else
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                         return;
@@ -147,7 +149,8 @@ namespace LoomNetwork.CZB
             if (AppState != Enumerators.AppState.Shop)
             {
                 _previouseState = AppState;
-            } else
+            }
+            else
             {
                 _previouseState = Enumerators.AppState.MainMenu;
             }
@@ -184,7 +187,8 @@ namespace LoomNetwork.CZB
             if (enablePause)
             {
                 Time.timeScale = 0;
-            } else
+            }
+            else
             {
                 Time.timeScale = 1;
             }

@@ -85,7 +85,8 @@ namespace LoomNetwork.CZB
             {
                 BattlegroundController.PlayerBoardCards.Add(unit);
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
-            } else
+            }
+            else
             {
                 BattlegroundController.OpponentBoardCards.Add(unit);
                 BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();

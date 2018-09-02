@@ -97,7 +97,8 @@ namespace LoomNetwork.CZB
                     if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MainMenu)
                     {
                         SetUIState(ConnectionState.ConnectionFailedOnMenu);
-                    } else
+                    }
+                    else
                     {
                         SetUIState(ConnectionState.ConnectionFailed);
                     }

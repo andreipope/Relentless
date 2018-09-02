@@ -60,7 +60,8 @@ namespace LoomNetwork.CZB
                 {
                     (allies[i] as Player).Stun(Enumerators.StunType.Freeze, Turns);
                     CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f);
-                } else if (allies[i] is BoardUnit)
+                }
+                else if (allies[i] is BoardUnit)
                 {
                     (allies[i] as BoardUnit).Stun(Enumerators.StunType.Freeze, Turns);
                     CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);

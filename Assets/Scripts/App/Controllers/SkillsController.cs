@@ -109,7 +109,8 @@ namespace LoomNetwork.CZB
             {
                 _playerPrimarySkill.Hide();
                 _playerSecondarySkill.Hide();
-            } else
+            }
+            else
             {
                 OpponentPrimarySkill.Hide();
                 OpponentSecondarySkill.Hide();
@@ -122,7 +123,8 @@ namespace LoomNetwork.CZB
             {
                 _playerPrimarySkill.BlockSkill();
                 _playerSecondarySkill.BlockSkill();
-            } else
+            }
+            else
             {
                 OpponentPrimarySkill.BlockSkill();
                 OpponentSecondarySkill.BlockSkill();
@@ -165,7 +167,8 @@ namespace LoomNetwork.CZB
                                 DoActionByType(skill, targetPlayer);
                                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.UseAbility);
                             });
-                    } else if (skill.FightTargetingArrow.SelectedCard != null)
+                    }
+                    else if (skill.FightTargetingArrow.SelectedCard != null)
                     {
                         BoardUnit targetUnit = skill.FightTargetingArrow.SelectedCard;
 
@@ -183,7 +186,8 @@ namespace LoomNetwork.CZB
 
                     skill.CancelTargetingArrows();
                     skill.FightTargetingArrow = null;
-                } else if (target != null)
+                }
+                else if (target != null)
                 {
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
@@ -385,7 +389,8 @@ namespace LoomNetwork.CZB
                 _soundManager.PlaySound(Enumerators.SoundType.OverlordAbilities, skill.Title.Trim().ToLower().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.None);
 
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.StunUnitBySkill, new object[] { owner, unit }));
-            } else if (target is Player)
+            }
+            else if (target is Player)
             {
                 Player player = target as Player;
 
@@ -422,7 +427,8 @@ namespace LoomNetwork.CZB
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
                 _soundManager.PlaySound(Enumerators.SoundType.OverlordAbilities, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.None);
-            } else
+            }
+            else
             {
                 BoardUnit unit = target as BoardUnit;
 
@@ -459,7 +465,8 @@ namespace LoomNetwork.CZB
 
                 // TODO additional damage to heros
                 _battleController.AttackPlayerBySkill(owner, skill, player);
-            } else
+            }
+            else
             {
                 BoardUnit creature = target as BoardUnit;
                 int attackModifier = 0;

@@ -89,7 +89,8 @@ public class HandBoardCard
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
-            } else
+            }
+            else
             {
                 _cardsController.ResetPlayerCardsOnBattlegroundPosition();
             }
@@ -120,7 +121,8 @@ public class HandBoardCard
         if (CardView.CanBePlayed(OwnerPlayer) && CardView.CanBeBuyed(OwnerPlayer))
         {
             CardView.SetHighlightingEnabled(true);
-        } else
+        }
+        else
         {
             CardView.SetHighlightingEnabled(false);
         }
@@ -155,7 +157,8 @@ public class HandBoardCard
                 _isHandCard = false;
                 _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
                 CardView.SetHighlightingEnabled(false);
-            } else
+            }
+            else
             {
                 Transform.position = InitialPos;
                 Transform.eulerAngles = InitialRotation;
@@ -164,7 +167,8 @@ public class HandBoardCard
                     _tutorialManager.ActivateSelectTarget();
                 }
             }
-        } else
+        }
+        else
         {
             _isReturnToHand = true;
 

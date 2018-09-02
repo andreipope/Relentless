@@ -120,7 +120,8 @@ namespace LoomNetwork.CZB.Helpers
                     {
                         columns.Add(colName.Trim("\n\r ".ToCharArray())); // TODO remove trim
                     }
-                } else
+                }
+                else
                 {
                     object templated = Activator.CreateInstance(_classTemplate);
                     for (int i = 0; i < c.Length; i++)
@@ -147,11 +148,13 @@ namespace LoomNetwork.CZB.Helpers
                             {
                                 Vector3 useVector = new Vector3(float.Parse(c[i].Split(':')[0]), float.Parse(c[i].Split(':')[1]), float.Parse(c[i].Split(':')[2]));
                                 templateInfo.SetValue(templated, useVector);
-                            } else if (colType == typeof(string[]))
+                            }
+                            else if (colType == typeof(string[]))
                             {
                                 string[] useList = c[i].Split('|');
                                 templateInfo.SetValue(templated, useList);
-                            } else
+                            }
+                            else
                             {
                                 // Debug.Log("------- " + c[i]);
                                 templateInfo.SetValue(templated, Convert.ChangeType(c[i], colType));

@@ -231,7 +231,8 @@ namespace LoomNetwork.CZB
             if (player.IsLocalPlayer)
             {
                 OnPlayerGraveyardUpdatedEvent?.Invoke(index);
-            } else
+            }
+            else
             {
                 OnOpponentGraveyardUpdatedEvent?.Invoke(index);
             }
@@ -363,7 +364,8 @@ namespace LoomNetwork.CZB
                 }
 
                 _uiManager.DrawPopup<YourTurnPopup>();
-            } else
+            }
+            else
             {
                 foreach (BoardUnit card in OpponentBoardCards)
                 {
@@ -403,7 +405,8 @@ namespace LoomNetwork.CZB
                 {
                     card.OnEndTurn();
                 }
-            } else
+            }
+            else
             {
                 foreach (BoardUnit card in OpponentBoardCards)
                 {
@@ -472,7 +475,8 @@ namespace LoomNetwork.CZB
                 }
 
                 Debug.Log("Destroy = " + boardCard.CurrentHp + "_" + boardCard.Card.LibraryCard.Name);
-            } else if ((_aiController.CurrentSpellCard != null) && (card == _aiController.CurrentSpellCard.WorkingCard))
+            }
+            else if ((_aiController.CurrentSpellCard != null) && (card == _aiController.CurrentSpellCard.WorkingCard))
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
                 _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
@@ -622,7 +626,8 @@ namespace LoomNetwork.CZB
             if (target is BoardCard)
             {
                 CurrentPreviewedCardId = (target as BoardCard).WorkingCard.InstanceId;
-            } else if (target is BoardUnit)
+            }
+            else if (target is BoardUnit)
             {
                 _lastBoardUntilOnPreview = target as BoardUnit;
                 CurrentPreviewedCardId = (target as BoardUnit).Card.InstanceId;
@@ -641,7 +646,8 @@ namespace LoomNetwork.CZB
             if (target is BoardCard)
             {
                 card = (target as BoardCard).WorkingCard;
-            } else if (target is BoardUnit)
+            }
+            else if (target is BoardUnit)
             {
                 card = (target as BoardUnit).Card;
             }
@@ -653,7 +659,8 @@ namespace LoomNetwork.CZB
             {
                 CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                 boardCard = new UnitBoardCard(CurrentBoardCard);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
                 boardCard = new SpellBoardCard(CurrentBoardCard);
@@ -673,7 +680,8 @@ namespace LoomNetwork.CZB
             if (target is BoardUnit)
             {
                 boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
-            } else if (target is BoardCard)
+            }
+            else if (target is BoardCard)
             {
                 boardCard.DrawTooltipInfoOfCard(target as BoardCard);
             }
@@ -688,7 +696,8 @@ namespace LoomNetwork.CZB
             if (!InternalTools.IsTabletScreen())
             {
                 sizeOfCard = new Vector3(.8f, .8f, .8f);
-            } else
+            }
+            else
             {
                 sizeOfCard = new Vector3(.4f, .4f, .4f);
             }
@@ -842,7 +851,8 @@ namespace LoomNetwork.CZB
 
                     card.transform.DOMove(movePosition, 0.5f);
                     card.transform.DORotate(rotatePosition, 0.5f);
-                } else
+                }
+                else
                 {
                     card.transform.position = movePosition;
                     card.transform.rotation = Quaternion.Euler(rotatePosition);

@@ -90,7 +90,8 @@ namespace LoomNetwork.CZB
                         if (endGameType == Enumerators.EndGameType.Win)
                         {
                             _uiManager.DrawPopup<YouWonPopup>();
-                        } else if (endGameType == Enumerators.EndGameType.Lose)
+                        }
+                        else if (endGameType == Enumerators.EndGameType.Lose)
                         {
                             _uiManager.DrawPopup<YouLosePopup>();
                         }
@@ -230,7 +231,8 @@ namespace LoomNetwork.CZB
             if (!IsTutorial)
             {
                 CurrentTurnPlayer = Random.Range(0, 100) > 50?CurrentPlayer:OpponentPlayer;
-            } else
+            }
+            else
             {
                 CurrentTurnPlayer = CurrentPlayer;
             }
@@ -240,7 +242,8 @@ namespace LoomNetwork.CZB
             if (!IsTutorial)
             {
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
-            } else
+            }
+            else
             {
                 GetController<PlayerController>().SetHand();
                 GetController<CardsController>().StartCardDistribution();

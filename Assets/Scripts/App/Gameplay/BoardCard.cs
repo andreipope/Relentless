@@ -228,7 +228,8 @@ namespace LoomNetwork.CZB
                 WorkingCard.RealCost = value;
                 ManaCost = WorkingCard.RealCost;
                 CostText.text = ManaCost.ToString();
-            } else
+            }
+            else
             {
                 ManaCost = value;
                 CostText.text = ManaCost.ToString();
@@ -245,7 +246,8 @@ namespace LoomNetwork.CZB
                 WorkingCard.RealCost += value;
                 ManaCost = WorkingCard.RealCost;
                 CostText.text = ManaCost.ToString();
-            } else
+            }
+            else
             {
                 ManaCost = WorkingCard.RealCost + value;
                 CostText.text = ManaCost.ToString();
@@ -272,7 +274,8 @@ namespace LoomNetwork.CZB
             if (!IsNewCard)
             {
                 UpdatePositionOnHand();
-            } else if (CurrentTurn != 0)
+            }
+            else if (CurrentTurn != 0)
             {
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
@@ -303,7 +306,8 @@ namespace LoomNetwork.CZB
             if (DataManager.CachedUserLocalData.Tutorial)
             {
                 CardAnimator.SetFloat("Id", 2);
-            } else
+            }
+            else
             {
                 CardAnimator.SetFloat("Id", id);
             }
@@ -439,10 +443,12 @@ namespace LoomNetwork.CZB
             if (maxCopies > 3)
             {
                 offset = 0.8f;
-            } else if (maxCopies > 2)
+            }
+            else if (maxCopies > 2)
             {
                 offset = 0.5f;
-            } else if (maxCopies > 1)
+            }
+            else if (maxCopies > 1)
             {
                 offset = 0.7f;
             }
@@ -748,10 +754,12 @@ namespace LoomNetwork.CZB
             if (ManaCost > InitialCost)
             {
                 CostText.color = Color.red;
-            } else if (ManaCost < InitialCost)
+            }
+            else if (ManaCost < InitialCost)
             {
                 CostText.color = Color.green;
-            } else
+            }
+            else
             {
                 CostText.color = Color.white;
             }
@@ -766,7 +774,8 @@ namespace LoomNetwork.CZB
             if (CanBePlayed(player) && CanBeBuyed(player))
             {
                 SetHighlightingEnabled(true);
-            } else
+            }
+            else
             {
                 SetHighlightingEnabled(false);
             }
@@ -827,7 +836,7 @@ namespace LoomNetwork.CZB
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                this.BuffTooltipInfo = buffTooltipInfo;
+                BuffTooltipInfo = buffTooltipInfo;
 
                 _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
 
@@ -894,7 +903,8 @@ namespace LoomNetwork.CZB
                 {
                     FreeObject.SetActive(false);
                     UsedObject.SetActive(true);
-                } else
+                }
+                else
                 {
                     FreeObject.SetActive(true);
                     UsedObject.SetActive(false);

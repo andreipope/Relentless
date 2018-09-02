@@ -76,7 +76,8 @@ namespace LoomNetwork.CZB
             if (service is T)
             {
                 Services.Add(typeof(T), service);
-            } else
+            }
+            else
             {
                 throw new Exception("Service " + service + " have not implemented interface: " + typeof(T));
             }

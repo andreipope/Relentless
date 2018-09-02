@@ -87,7 +87,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(TargetType))
             {
                 AbilityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(TargetType);
-            } else
+            }
+            else
             {
                 AbilityTargetTypes = new List<Enumerators.AbilityTargetType>();
             }
@@ -95,7 +96,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(StatType))
             {
                 AbilityStatType = Utilites.CastStringTuEnum<Enumerators.StatType>(StatType);
-            } else
+            }
+            else
             {
                 AbilityStatType = Enumerators.StatType.None;
             }
@@ -103,7 +105,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(SetType))
             {
                 AbilitySetType = Utilites.CastStringTuEnum<Enumerators.SetType>(SetType);
-            } else
+            }
+            else
             {
                 AbilitySetType = Enumerators.SetType.None;
             }
@@ -111,7 +114,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(EffectType))
             {
                 AbilityEffectType = Utilites.CastStringTuEnum<Enumerators.AbilityEffectType>(EffectType);
-            } else
+            }
+            else
             {
                 AbilityEffectType = Enumerators.AbilityEffectType.None;
             }
@@ -119,7 +123,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(AttackInfo))
             {
                 AttackInfoType = Utilites.CastStringTuEnum<Enumerators.AttackInfoType>(AttackInfo);
-            } else
+            }
+            else
             {
                 AttackInfoType = Enumerators.AttackInfoType.Any;
             }
@@ -127,7 +132,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(CardType))
             {
                 TargetCardType = Utilites.CastStringTuEnum<Enumerators.CardType>(CardType);
-            } else
+            }
+            else
             {
                 TargetCardType = Enumerators.CardType.None;
             }
@@ -135,7 +141,8 @@ namespace LoomNetwork.CZB.Data
             if (!string.IsNullOrEmpty(UnitStatus))
             {
                 TargetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(UnitStatus);
-            } else
+            }
+            else
             {
                 TargetUnitStatusType = Enumerators.UnitStatusType.None;
             }

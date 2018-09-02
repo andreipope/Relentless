@@ -37,7 +37,8 @@ namespace LoomNetwork.CZB
             {
                 PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
                 _attackingCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
-            } else
+            }
+            else
             {
                 string rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
                 string cardSetName = CardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.LibraryCard);

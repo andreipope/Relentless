@@ -99,7 +99,8 @@ namespace LoomNetwork.CZB
                 // {
                 // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
                 // }, null, 0.75f, false);
-            } else if (type == Enumerators.CardType.Heavy)
+            }
+            else if (type == Enumerators.CardType.Heavy)
             {
                 Enumerators.SoundType soundType = Enumerators.SoundType.HeavyAttack1;
                 string prefabName = "Prefabs/VFX/HeavyAttackVFX";
@@ -120,7 +121,8 @@ namespace LoomNetwork.CZB
                 /* GameClient.Get<ITimerManager>().AddTimer((a) =>
                                      {
                                      }, null, 0.75f, false);*/
-            } else
+            }
+            else
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                 effect = Object.Instantiate(vfxPrefab);
@@ -148,7 +150,8 @@ namespace LoomNetwork.CZB
                     _soundManager.PlaySound(Enumerators.SoundType.WalkerAttack2, Constants.CreatureAttackSoundVolume, false, false, true);
 
                     // }, null, 0.75f, false);
-                } else
+                }
+                else
                 {
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
                     // {
@@ -201,10 +204,12 @@ namespace LoomNetwork.CZB
             if (target is BoardUnit)
             {
                 position = (target as BoardUnit).Transform.position;
-            } else if (target is Player)
+            }
+            else if (target is Player)
             {
                 position = (target as Player).AvatarObject.transform.position;
-            } else if (target is Transform)
+            }
+            else if (target is Transform)
             {
                 position = (target as Transform).transform.position;
             }
@@ -235,7 +240,8 @@ namespace LoomNetwork.CZB
                             Object.Destroy(particleSystem);
                         }
                     });
-            } else if (target is BoardUnit)
+            }
+            else if (target is BoardUnit)
             {
                 particleSystem.transform.DOMove(Utilites.CastVfxPosition((target as BoardUnit).Transform.position), .5f).OnComplete(
                     () =>
@@ -257,7 +263,8 @@ namespace LoomNetwork.CZB
             if (onObject is BoardUnit)
             {
                 target = (onObject as BoardUnit).Transform;
-            } else if (onObject is Player)
+            }
+            else if (onObject is Player)
             {
                 target = (onObject as Player).AvatarObject.transform;
             }

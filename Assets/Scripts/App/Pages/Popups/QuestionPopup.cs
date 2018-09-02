@@ -81,7 +81,8 @@ namespace LoomNetwork.CZB
                 object[] param = (object[])data;
                 _text.text = (string)param[0];
                 _backButton.gameObject.SetActive((bool)param[1]);
-            } else
+            }
+            else
             {
                 _backButton.gameObject.SetActive(false);
                 _text.text = (string)data;

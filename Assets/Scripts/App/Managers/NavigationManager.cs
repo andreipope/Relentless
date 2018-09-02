@@ -50,7 +50,8 @@ namespace LoomNetwork.CZB
                         }
 
                         _currentEventSystem.SetSelectedGameObject(nextSelectable.gameObject, new BaseEventData(_currentEventSystem));
-                    } else
+                    }
+                    else
                     {
 #if UNITY_EDITOR
                         Debug.Log("next nagivation element not found");

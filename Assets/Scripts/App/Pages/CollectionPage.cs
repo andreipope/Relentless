@@ -230,7 +230,8 @@ namespace LoomNetwork.CZB
                     _currentSet = (Enumerators.SetType)(_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
-                } else
+                }
+                else
                 {
                     CalculateNumberOfPages();
 
@@ -238,7 +239,8 @@ namespace LoomNetwork.CZB
 
                     _currentElementPage = _currentElementPage < 0?0:_currentElementPage;
                 }
-            } else if (_currentElementPage >= _numElementPages)
+            }
+            else if (_currentElementPage >= _numElementPages)
             {
                 _currentSet += direction;
 
@@ -246,7 +248,8 @@ namespace LoomNetwork.CZB
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
-                } else
+                }
+                else
                 {
                     _currentElementPage = 0;
                 }
@@ -296,7 +299,8 @@ namespace LoomNetwork.CZB
                 {
                     go = Object.Instantiate(CardCreaturePrefab);
                     boardCard = new UnitBoardCard(go);
-                } else if (card.CardKind == Enumerators.CardKind.Spell)
+                }
+                else if (card.CardKind == Enumerators.CardKind.Spell)
                 {
                     go = Object.Instantiate(CardSpellPrefab);
                     boardCard = new SpellBoardCard(go);
@@ -360,7 +364,8 @@ namespace LoomNetwork.CZB
                 if (i == (int)_currentSet)
                 {
                     c.SetActive(true);
-                } else
+                }
+                else
                 {
                     c.SetActive(false);
                 }

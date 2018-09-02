@@ -16,7 +16,8 @@ namespace LoomNetwork.CZB
             {
                 _targetPosition = (_target as Player).AvatarObject.transform.position;
                 (_target as Player).SetGlowStatus(true);
-            } else if (_target is BoardUnit)
+            }
+            else if (_target is BoardUnit)
             {
                 _targetPosition = (_target as BoardUnit).Transform.position;
                 (_target as BoardUnit).SetSelectedUnit(true);
@@ -35,7 +36,8 @@ namespace LoomNetwork.CZB
                 if (_target is Player)
                 {
                     (_target as Player).SetGlowStatus(false);
-                } else if (_target is BoardUnit)
+                }
+                else if (_target is BoardUnit)
                 {
                     (_target as BoardUnit).SetSelectedUnit(false);
                 }

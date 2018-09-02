@@ -44,11 +44,13 @@ namespace LoomNetwork.CZB
                     if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.Player)
                     {
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
-                    } else if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.Opponent)
+                    }
+                    else if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.Opponent)
                     {
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer);
                     }
-                } else
+                }
+                else
                 {
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }

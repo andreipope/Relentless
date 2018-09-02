@@ -89,8 +89,8 @@ namespace LoomNetwork.CZB
 
         public ParticleSystemElement(ulong id, GameObject particleObject)
         {
-            this.Id = id;
-            this.ParticleObject = particleObject;
+            Id = id;
+            ParticleObject = particleObject;
         }
 
         public void Dispose()

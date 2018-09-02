@@ -115,7 +115,8 @@ namespace LoomNetwork.CZB
             {
                 _heroSelectScrollSequence = DOTween.Sequence();
                 _heroSelectScrollSequence.Append(DOTween.To(() => overlordContainerRectTransform.anchoredPosition, v => overlordContainerRectTransform.anchoredPosition = v, CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex), KScrollAnimationDuration)).AppendCallback(() => _heroSelectScrollSequence = null);
-            } else
+            }
+            else
             {
                 overlordContainerRectTransform.anchoredPosition = CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex);
             }
@@ -171,7 +172,8 @@ namespace LoomNetwork.CZB
                 if (!item.Equals(overlordObject))
                 {
                     item.Deselect();
-                } else
+                }
+                else
                 {
                     item.Select();
                 }
@@ -190,12 +192,14 @@ namespace LoomNetwork.CZB
                 SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false);
                 SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true);
                 _loopFakeOverlordObjects[KLoopStartFakeHeroCount].Deselect(force: true);
-            } else if (newIndex >= _overlordObjects.Count)
+            }
+            else if (newIndex >= _overlordObjects.Count)
             {
                 SetSelectedHeroIndexAndUpdateScrollPosition(-1, false, false);
                 SetSelectedHeroIndexAndUpdateScrollPosition(0, true);
                 _loopFakeOverlordObjects[KLoopStartFakeHeroCount - 1].Deselect(force: true);
-            } else
+            }
+            else
             {
                 SetSelectedHeroIndexAndUpdateScrollPosition(newIndex, true);
             }

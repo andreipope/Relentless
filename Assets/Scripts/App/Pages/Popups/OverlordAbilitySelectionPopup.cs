@@ -252,7 +252,8 @@ namespace LoomNetwork.CZB
                 if (Skill != null)
                 {
                     _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
-                } else
+                }
+                else
                 {
                     _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
                 }

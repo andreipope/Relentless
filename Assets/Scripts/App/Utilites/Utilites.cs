@@ -133,7 +133,8 @@ namespace LoomNetwork.Internal
             if (Caching.ClearCache())
             {
                 DebugLog("Clean Cache Successful");
-            } else
+            }
+            else
             {
                 DebugLog("Clean Cache Failed");
             }
@@ -338,7 +339,8 @@ namespace LoomNetwork.Internal
                 if (EditorSceneManager.SaveOpenScenes())
                 {
                     DebugLog("All Opened scenes was saved successfull!");
-                } else
+                }
+                else
                 {
                     DebugLog("Saving opened scenes failed");
                 }
@@ -353,7 +355,7 @@ namespace LoomNetwork.Internal
 
             private EditorCoroutine(IEnumerator routine)
             {
-                this._routine = routine;
+                _routine = routine;
             }
 
             public static EditorCoroutine Start(IEnumerator routine)

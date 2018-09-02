@@ -28,7 +28,8 @@ namespace LoomNetwork.CZB
             if (isTemporary)
             {
                 GetSpecialCardPack();
-            } else
+            }
+            else
             {
                 for (int i = 0; i < Constants.CardsInPack; i++)
                 {

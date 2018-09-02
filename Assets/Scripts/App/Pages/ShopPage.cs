@@ -211,7 +211,8 @@ namespace LoomNetwork.CZB
                 if (i == _currentPackId)
                 {
                     _imageObjects[i].color = _selectedColor;
-                } else
+                }
+                else
                 {
                     _imageObjects[i].color = _deselectedColor;
                 }

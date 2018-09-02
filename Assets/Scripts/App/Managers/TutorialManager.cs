@@ -236,7 +236,8 @@ namespace LoomNetwork.CZB
             if (CurrentStep != 32)
             {
                 NextStepCommonEndActions();
-            } else
+            }
+            else
             {
                 GameClient.Get<ITimerManager>().AddTimer(
                     x =>
@@ -264,7 +265,8 @@ namespace LoomNetwork.CZB
                     null,
                     6f,
                     false);
-            } else
+            }
+            else
             {
                 _soundManager.PlaySound(Enumerators.SoundType.Tutorial, CurrentStep, Constants.TutorialSoundVolume, false, false);
             }
@@ -289,13 +291,15 @@ namespace LoomNetwork.CZB
                 {
                     _popup.ShowNextButton();
                 }
-            } else
+            }
+            else
             {
                 _popup.HideTutorialFocus();
                 if (CurrentStep == 3)
                 {
                     _popup.ShowQuestion();
-                } else if ((CurrentStep != 12) && (CurrentStep != 17))
+                }
+                else if ((CurrentStep != 12) && (CurrentStep != 17))
                 {
                     _popup.ShowNextButton();
                 }
@@ -345,9 +349,9 @@ namespace LoomNetwork.CZB
             _index = index;
 
             // this.focusPoints = Vector2.zero;
-            this.Description = description;
-            this.Focusing = focusing;
-            this.Pose = pose;
+            Description = description;
+            Focusing = focusing;
+            Pose = pose;
             Finished = false;
             index++;
             TutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
@@ -366,13 +370,13 @@ namespace LoomNetwork.CZB
             _index = index;
 
             // this.focusPoints = Vector2.zero;
-            this.Description = description;
-            this.Focusing = focusing;
-            this.Pose = pose;
+            Description = description;
+            Focusing = focusing;
+            Pose = pose;
 
             Finished = false;
             index++;
-            this.IsArrowEnabled = isArrowEnabled;
+            IsArrowEnabled = isArrowEnabled;
             TutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
             TutorialTargetingArrowInfo.StartPosition = startPosition;
             TutorialTargetingArrowInfo.TargetPosition = targetPosition;

@@ -60,7 +60,8 @@ namespace LoomNetwork.CZB
                 rect.y = (1.0f - scaleHeight) / 2.0f;
 
                 _camera.rect = rect;
-            } else
+            }
+            else
             {
                 // add pillarbox
                 float scaleWidth = 1.0f / scaleHeight;

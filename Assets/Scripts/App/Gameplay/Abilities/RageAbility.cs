@@ -54,7 +54,8 @@ namespace LoomNetwork.CZB
                     AbilityUnitOwner.BuffedDamage += Value;
                     AbilityUnitOwner.CurrentDamage += Value;
                 }
-            } else
+            }
+            else
             {
                 if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
                 {

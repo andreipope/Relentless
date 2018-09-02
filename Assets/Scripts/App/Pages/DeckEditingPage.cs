@@ -261,7 +261,8 @@ namespace LoomNetwork.CZB
                 _currentDeck.Name = "HORDE " + _dataManager.CachedDecksData.Decks.Count;
                 _currentDeck.Cards = new List<DeckCardData>();
                 _currentDeck.HeroId = _currentHeroId;
-            } else
+            }
+            else
             {
                 _currentDeck = _dataManager.CachedDecksData.Decks.First(d => d.Id == _currentDeckId).Clone();
             }
@@ -309,7 +310,8 @@ namespace LoomNetwork.CZB
                     _currentSet = (Enumerators.SetType)(_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
-                } else
+                }
+                else
                 {
                     CalculateNumberOfPages();
 
@@ -317,7 +319,8 @@ namespace LoomNetwork.CZB
 
                     _currentElementPage = _currentElementPage < 0?0:_currentElementPage;
                 }
-            } else if (_currentElementPage >= _numElementPages)
+            }
+            else if (_currentElementPage >= _numElementPages)
             {
                 _currentSet += direction;
 
@@ -325,7 +328,8 @@ namespace LoomNetwork.CZB
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
-                } else
+                }
+                else
                 {
                     _currentElementPage = 0;
                 }
@@ -388,7 +392,8 @@ namespace LoomNetwork.CZB
             {
                 go = Object.Instantiate(_cardCreaturePrefab);
                 boardCard = new UnitBoardCard(go);
-            } else if (card.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.CardKind == Enumerators.CardKind.Spell)
             {
                 go = Object.Instantiate(_cardSpellPrefab);
                 boardCard = new SpellBoardCard(go);
@@ -520,7 +525,8 @@ namespace LoomNetwork.CZB
 
                 RepositionHordeCards();
                 UpdateNumCardsText();
-            } else
+            }
+            else
             {
                 boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.LibraryCard), boardCard.CardsAmountDeckEditing);
             }
@@ -704,7 +710,8 @@ namespace LoomNetwork.CZB
                 if (_dataManager.CachedDecksData.Decks.Count > 0)
                 {
                     _currentDeck.Id = _dataManager.CachedDecksData.Decks.Max(d => d.Id) + 1;
-                } else
+                }
+                else
                 {
                     _currentDeck.Id = 0;
                 }
@@ -729,7 +736,8 @@ namespace LoomNetwork.CZB
                         OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                     }
                 }
-            } else
+            }
+            else
             {
                 // Update existing deck
                 for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
@@ -774,11 +782,13 @@ namespace LoomNetwork.CZB
                 if (scrollDelta.y > 0.5f)
                 {
                     MoveHordeToRight();
-                } else if (scrollDelta.y < -0.5f)
+                }
+                else if (scrollDelta.y < -0.5f)
                 {
                     MoveHordeToLeft();
                 }
-            } else
+            }
+            else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));
             }
@@ -790,7 +800,8 @@ namespace LoomNetwork.CZB
             if (deckBuilderCard.IsHordeItem)
             {
                 boardCard = _createdHordeCards.First(c => c.LibraryCard.Id == card.Id);
-            } else
+            }
+            else
             {
                 boardCard = _createdArmyCards.First(c => c.LibraryCard.Id == card.Id);
             }
@@ -915,7 +926,8 @@ namespace LoomNetwork.CZB
                 if ((i + 1 > _currentHordePage * KCardsPerPage) && (i + 1 < ((_currentHordePage + 1) * KCardsPerPage) + 1))
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
-                } else
+                }
+                else
                 {
                     _createdHordeCards[i].GameObject.SetActive(false);
                 }

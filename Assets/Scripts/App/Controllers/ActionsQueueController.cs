@@ -93,7 +93,8 @@ namespace LoomNetwork.CZB
             {
                 _actionInProgress = _actionsToDo.Dequeue();
                 _actionInProgress.DoAction();
-            } else
+            }
+            else
             {
                 _actionInProgress = null;
             }
@@ -116,9 +117,9 @@ namespace LoomNetwork.CZB
         {
             _timerManager = GameClient.Get<ITimerManager>();
 
-            this.Action = action;
-            this.Parameter = parameter;
-            this.Report = report;
+            Action = action;
+            Parameter = parameter;
+            Report = report;
         }
 
         public event Action<GameAction<T>> OnActionDoneEvent;
@@ -160,8 +161,8 @@ namespace LoomNetwork.CZB
 
         public GameActionReport(Enumerators.ActionType actionType, object[] parameters)
         {
-            this.ActionType = actionType;
-            this.Parameters = parameters;
+            ActionType = actionType;
+            Parameters = parameters;
         }
     }
 }

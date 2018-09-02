@@ -24,16 +24,19 @@ namespace LoomNetwork.CZB
                 if (_dataManager.CachedUserLocalData.AppLanguage == Enumerators.Language.None)
                 {
                     SetLanguage(_defaultLanguage);
-                } else
+                }
+                else
                 {
                     SetLanguage(_dataManager.CachedUserLocalData.AppLanguage);
                 }
-            } else
+            }
+            else
             {
                 if (_dataManager.CachedUserLocalData.AppLanguage == Enumerators.Language.None)
                 {
                     SetLanguage(SupportedLanguages[Application.systemLanguage]);
-                } else
+                }
+                else
                 {
                     SetLanguage(_dataManager.CachedUserLocalData.AppLanguage);
                 }

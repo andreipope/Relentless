@@ -39,7 +39,8 @@ namespace LoomNetwork.CZB
             if (!_isLoadingScenesAsync)
             {
                 SceneManager.LoadScene(appState.ToString());
-            } else
+            }
+            else
             {
                 MainApp.Instance.StartCoroutine(LoadLevelAsync(appState.ToString()));
             }

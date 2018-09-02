@@ -471,7 +471,8 @@ namespace LoomNetwork.CZB
             if (HasBuffHeavy)
             {
                 SetAsHeavyUnit(true);
-            } else
+            }
+            else
             {
                 switch (InitialUnitType)
                 {
@@ -578,7 +579,8 @@ namespace LoomNetwork.CZB
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.Cards, Card.LibraryCard.Name.ToLower() + "_" + Constants.KCardSoundPlay + "1", Constants.ZombiesSoundVolume, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.Cards, Card.LibraryCard.Name.ToLower() + "_" + Constants.KCardSoundPlay + "2", Constants.ZombiesSoundVolume / 2f, false, true);
-                } else
+                }
+                else
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.Cards, Card.LibraryCard.Name.ToLower() + "_" + Constants.KCardSoundPlay, Constants.ZombiesSoundVolume, false, true);
                 }
@@ -825,7 +827,8 @@ namespace LoomNetwork.CZB
             if (status)
             {
                 GameObject.transform.localScale = _initialScale + (Vector3.one * 0.1f);
-            } else
+            }
+            else
             {
                 GameObject.transform.localScale = _initialScale;
             }
@@ -955,7 +958,8 @@ namespace LoomNetwork.CZB
                             null,
                             1.5f);
                     });
-            } else if (target is BoardUnit)
+            }
+            else if (target is BoardUnit)
             {
                 BoardUnit targetCard = target as BoardUnit;
                 SetHighlightingEnabled(false);
@@ -1025,7 +1029,8 @@ namespace LoomNetwork.CZB
                 {
                     return true;
                 }
-            } else if (!AttackedThisTurn && HasBuffRush)
+            }
+            else if (!AttackedThisTurn && HasBuffRush)
             {
                 return true;
             }
@@ -1047,7 +1052,8 @@ namespace LoomNetwork.CZB
                 if (_arrivalDone)
                 {
                     RemoveUnitFromBoard();
-                } else
+                }
+                else
                 {
                     _timerManager.AddTimer(CheckIsCanDie, null, Time.deltaTime, true);
                 }
@@ -1101,7 +1107,8 @@ namespace LoomNetwork.CZB
             if (isDirectly)
             {
                 DestroyParticle(new object[] { currentParticle });
-            } else
+            }
+            else
             {
                 _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
             }
@@ -1145,10 +1152,12 @@ namespace LoomNetwork.CZB
             if (stat > initialStat)
             {
                 text.color = Color.green;
-            } else if ((stat < initialStat) || (stat < maxCurrentStat))
+            }
+            else if ((stat < initialStat) || (stat < maxCurrentStat))
             {
                 text.color = Color.red;
-            } else
+            }
+            else
             {
                 text.color = Color.white;
             }

@@ -284,7 +284,8 @@ namespace LoomNetwork.CZB
             if (_strongerElemental.ContainsKey(attackerElement) && _strongerElemental[attackerElement].Equals(defenderElement))
             {
                 modifier++;
-            } else if (_weakerElemental.ContainsKey(attackerElement) && _weakerElemental[attackerElement].Equals(defenderElement))
+            }
+            else if (_weakerElemental.ContainsKey(attackerElement) && _weakerElemental[attackerElement].Equals(defenderElement))
             {
                 modifier--;
             }

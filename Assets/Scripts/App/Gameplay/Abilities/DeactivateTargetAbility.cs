@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB
         public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1)
             : base(cardKind, ability)
         {
-            this.Value = value;
+            Value = value;
         }
 
         public override void Activate()
@@ -70,7 +70,8 @@ namespace LoomNetwork.CZB
                 {
                     // targetCreature.Card.DisconnectAbility((uint)abilityType);
                     UnitOnDieEventHandler();
-                } else if (CardKind == Enumerators.CardKind.Spell)
+                }
+                else if (CardKind == Enumerators.CardKind.Spell)
                 {
                     SpellOnUsedEventHandler();
 
@@ -89,12 +90,14 @@ namespace LoomNetwork.CZB
                 {
                     TargetUnit.Card.IsPlayable = false;
                     TargetUnit.SetHighlightingEnabled(false);
-                } else
+                }
+                else
                 {
                     if (CardKind == Enumerators.CardKind.Creature)
                     {
                         UnitOnDieEventHandler();
-                    } else if (CardKind == Enumerators.CardKind.Spell)
+                    }
+                    else if (CardKind == Enumerators.CardKind.Spell)
                     {
                         SpellOnUsedEventHandler();
                         AbilitiesController.DeactivateAbility(ActivityId);

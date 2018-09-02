@@ -38,7 +38,8 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (DragOnSurfaces)
         {
             _mDraggingPlane = transform as RectTransform;
-        } else
+        }
+        else
         {
             _mDraggingPlane = canvas.transform as RectTransform;
         }

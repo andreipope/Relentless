@@ -97,7 +97,8 @@ namespace LoomNetwork.CZB
             if (CardData.Amount == 0)
             {
                 _buttonMelt.GetComponent<ButtonShiftingContent>().interactable = false;
-            } else
+            }
+            else
             {
                 _buttonMelt.GetComponent<ButtonShiftingContent>().interactable = true;
             }
@@ -134,7 +135,8 @@ namespace LoomNetwork.CZB
                     _uiManager.DrawPopup<DesintigrateCardPopup>(CardData);
                     _uiManager.GetPopup<DesintigrateCardPopup>().CardTransform = CardTransform;
                 }
-            } else
+            }
+            else
             {
                 _uiManager.DrawPopup<WarningPopup>($"Melting is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}.\n Thanks for helping us make this game Awesome\n-Loom Team");
             }

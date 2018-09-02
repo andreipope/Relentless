@@ -19,10 +19,12 @@ namespace LoomNetwork.CZB.Helpers
             if (value is VerticalLayoutGroup)
             {
                 group = value as VerticalLayoutGroup;
-            } else if (value is GameObject)
+            }
+            else if (value is GameObject)
             {
                 group = (value as GameObject).GetComponent<VerticalLayoutGroup>();
-            } else if (value is Transform)
+            }
+            else if (value is Transform)
             {
                 group = (value as Transform).GetComponent<VerticalLayoutGroup>();
             }
@@ -134,7 +136,8 @@ namespace LoomNetwork.CZB.Helpers
             if (root.Count < count)
             {
                 list.AddRange(root);
-            } else
+            }
+            else
             {
                 object element = null;
                 for (int i = 0; i < count; i++)

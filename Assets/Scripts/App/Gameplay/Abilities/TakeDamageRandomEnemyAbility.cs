@@ -56,7 +56,8 @@ namespace LoomNetwork.CZB
                 {
                     BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allies[i] as Player);
                     CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
-                } else if (allies[i] is BoardUnit)
+                }
+                else if (allies[i] is BoardUnit)
                 {
                     BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allies[i] as BoardUnit);
                     CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);

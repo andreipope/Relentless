@@ -240,12 +240,14 @@ namespace LoomNetwork.CZB
                 {
                     _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
                     _playerCardBackObject.transform.localScale = Vector3.one;
-                } else
+                }
+                else
                 {
                     _playerCardFrontObject.transform.localScale = Vector3.one;
                     _playerCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
-            } else if (Mathf.Abs(finalRotate) >= 0)
+            }
+            else if (Mathf.Abs(finalRotate) >= 0)
             {
                 if (startWithSecondPlayer)
                 {
@@ -253,7 +255,8 @@ namespace LoomNetwork.CZB
                     _playerSecondTurnObject.SetActive(true);
 
                     startWithSecondPlayer = false;
-                } else
+                }
+                else
                 {
                     _playerFirstTurnObject.SetActive(true);
                     _playerSecondTurnObject.SetActive(false);
@@ -268,7 +271,8 @@ namespace LoomNetwork.CZB
 
                     _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
                     _playerCardBackObject.transform.localScale = Vector3.one;
-                } else
+                }
+                else
                 {
                     _playerFirstTurnObject.transform.localScale = Vector3.one;
                     _playerSecondTurnObject.transform.localScale = Vector3.one;
@@ -297,12 +301,14 @@ namespace LoomNetwork.CZB
                 {
                     _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
                     _opponentCardBackObject.transform.localScale = Vector3.one;
-                } else
+                }
+                else
                 {
                     _opponentCardFrontObject.transform.localScale = Vector3.one;
                     _opponentCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
                 }
-            } else if (Mathf.Abs(finalRotate) >= 0)
+            }
+            else if (Mathf.Abs(finalRotate) >= 0)
             {
                 if (startWithSecondOpponent)
                 {
@@ -310,7 +316,8 @@ namespace LoomNetwork.CZB
                     _opponentSecondTurnObject.SetActive(true);
 
                     startWithSecondOpponent = false;
-                } else
+                }
+                else
                 {
                     _opponentFirstTurnObject.SetActive(true);
                     _opponentSecondTurnObject.SetActive(false);
@@ -325,7 +332,8 @@ namespace LoomNetwork.CZB
 
                     _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
                     _opponentCardBackObject.transform.localScale = Vector3.one;
-                } else
+                }
+                else
                 {
                     _opponentFirstTurnObject.transform.localScale = Vector3.one;
                     _opponentSecondTurnObject.transform.localScale = Vector3.one;

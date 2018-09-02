@@ -76,7 +76,8 @@ namespace LoomNetwork.CZB
                 if (i < _currentValue)
                 {
                     Active(_gooBottles[i]);
-                } else
+                }
+                else
                 {
                     Disactive(_gooBottles[i]);
                 }
@@ -116,7 +117,8 @@ namespace LoomNetwork.CZB
                 CreateOverflow();
 
                 _isInOverflow = true;
-            } else if ((_currentValue <= _maxValue) && _isInOverflow)
+            }
+            else if ((_currentValue <= _maxValue) && _isInOverflow)
             {
                 DestroyOverflow();
 

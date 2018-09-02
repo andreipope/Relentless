@@ -75,7 +75,8 @@ namespace LoomNetwork.CZB
                         if (_isCardPreview)
                         {
                             CardPreview(false);
-                        } else
+                        }
+                        else
                         {
                             CardClickeCheck();
                         }
@@ -160,14 +161,16 @@ namespace LoomNetwork.CZB
                         if (card.Transform.Find("Back").gameObject.activeSelf)
                         {
                             CardSelected(card);
-                        } else
+                        }
+                        else
                         {
                             _cardPreviewOriginal = card.Transform;
                             CardPreview(true);
                         }
                     }
                 }
-            } else if (_cardsTurned == 5)
+            }
+            else if (_cardsTurned == 5)
             {
                 MoveCardsToBottomAndDestroy();
             }
@@ -195,7 +198,8 @@ namespace LoomNetwork.CZB
 
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
                 _isCardPreview = true;
-            } else
+            }
+            else
             {
                 GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
@@ -254,7 +258,8 @@ namespace LoomNetwork.CZB
             if (_playerManager.LocalUser.PacksCount > 0)
             {
                 _packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
-            } else
+            }
+            else
             {
                 _lock = true;
             }
@@ -312,7 +317,8 @@ namespace LoomNetwork.CZB
                 if (card.CardKind == Enumerators.CardKind.Creature)
                 {
                     go = Object.Instantiate(_cardCreaturePrefab);
-                } else if (card.CardKind == Enumerators.CardKind.Spell)
+                }
+                else if (card.CardKind == Enumerators.CardKind.Spell)
                 {
                     go = Object.Instantiate(_cardSpellPrefab);
                 }

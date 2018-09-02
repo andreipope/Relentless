@@ -8,8 +8,8 @@ namespace LoomNetwork.CZB.Helpers
 
         public IntVector2(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public override string ToString()
@@ -28,9 +28,9 @@ namespace LoomNetwork.CZB.Helpers
 
         public FloatVector3(float x, float y, float z)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
         public FloatVector3(float general)

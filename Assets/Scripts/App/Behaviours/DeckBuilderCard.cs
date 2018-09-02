@@ -42,7 +42,8 @@ namespace LoomNetwork.CZB
             if (!IsHordeItem)
             {
                 Scene.AddCardToDeck(this, Card);
-            } else
+            }
+            else
             {
                 Scene.RemoveCardFromDeck(this, Card);
             }

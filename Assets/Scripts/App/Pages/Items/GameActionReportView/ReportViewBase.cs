@@ -44,7 +44,7 @@ namespace LoomNetwork.CZB
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             CardsController = GameplayManager.GetController<CardsController>();
 
-            this.GameAction = gameAction;
+            GameAction = gameAction;
             SelfObject = Object.Instantiate(prefab, parent, false);
             SelfObject.transform.SetSiblingIndex(0);
             PreviewImage = SelfObject.transform.Find("Image").GetComponent<Image>();
@@ -83,7 +83,8 @@ namespace LoomNetwork.CZB
             {
                 currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);
@@ -145,7 +146,8 @@ namespace LoomNetwork.CZB
             {
                 currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
-            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            }
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
                 currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);

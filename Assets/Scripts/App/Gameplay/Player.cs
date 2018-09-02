@@ -115,11 +115,13 @@ namespace LoomNetwork.CZB
                 if (!_gameplayManager.IsTutorial)
                 {
                     heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
-                } else
+                }
+                else
                 {
                     heroId = Constants.KTutorialPlayerHeroId;
                 }
-            } else
+            }
+            else
             {
                 heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
             }
@@ -317,7 +319,8 @@ namespace LoomNetwork.CZB
             {
                 cardObject = _cardsController.AddCardToHand(card, silent);
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
-            } else
+            }
+            else
             {
                 cardObject = _cardsController.AddCardToOpponentHand(card, silent);
 
@@ -338,7 +341,8 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
-            } else
+            }
+            else
             {
                 _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this, _cardsController.GetOpponentBoardCard(card));
             }
@@ -375,7 +379,8 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 _battlegroundController.RemovePlayerCardFromBoardToGraveyard(card);
-            } else
+            }
+            else
             {
                 _battlegroundController.RemoveOpponentCardFromBoardToGraveyard(card);
             }
@@ -440,7 +445,8 @@ namespace LoomNetwork.CZB
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                 {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
-                } else
+                }
+                else
                 {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
                 }
@@ -452,7 +458,8 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution()); // CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
-            } else
+            }
+            else
             {
                 _cardsController.AddCardToHand(this, CardsInDeck[Random.Range(0, CardsInDeck.Count)]);
             }

@@ -55,7 +55,8 @@ namespace LoomNetwork.CZB
             {
                 _isResolved = true;
                 OnDragStartedEvent?.Invoke();
-            } else
+            }
+            else
             {
                 _pressTimer += Time.unscaledDeltaTime;
 

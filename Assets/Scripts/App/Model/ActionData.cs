@@ -29,7 +29,8 @@ public class ActionData
             if (act != null)
             {
                 allActions.Add(act);
-            } else
+            }
+            else
             {
                 Debug.LogError("Type not found!");
             }

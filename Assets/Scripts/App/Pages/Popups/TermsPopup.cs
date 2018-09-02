@@ -96,7 +96,8 @@ namespace LoomNetwork.CZB
             if (_toggle.isOn)
             {
                 _gotItButton.gameObject.SetActive(true);
-            } else
+            }
+            else
             {
                 _gotItButton.gameObject.SetActive(false);
             }
