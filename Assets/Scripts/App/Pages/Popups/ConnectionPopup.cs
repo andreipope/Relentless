@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
                     await task;
                 } catch (Exception e)
                 {
-                    if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MAIN_MENU)
+                    if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MainMenu)
                     {
                         SetUIState(ConnectionState.ConnectionFailedOnMenu);
                     } else

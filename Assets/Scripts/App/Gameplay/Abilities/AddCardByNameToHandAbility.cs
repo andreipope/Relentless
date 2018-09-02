@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class AddCardByNameToHandAbility : AbilityBase
     {
-        public string name;
+        public string Name;
 
         public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            name = ability.name;
+            Name = ability.Name;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,9 +38,9 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (((name != "Corrupted Goo") && (name != "Tainted Goo")) || (((name == "Corrupted Goo") || (name == "Tainted Goo")) && (cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement)))
+            if (((Name != "Corrupted Goo") && (Name != "Tainted Goo")) || (((Name == "Corrupted Goo") || (Name == "Tainted Goo")) && (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement)))
             {
-                _cardsController.CreateNewCardByNameAndAddToHand(playerCallerOfAbility, name);
+                CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
             }
         }
 

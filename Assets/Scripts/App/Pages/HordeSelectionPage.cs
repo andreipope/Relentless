@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
 {
     public class HordeSelectionPage : IUIElement
     {
-        private const int HORDE_ITEM_SPACE = 570, HORDE_CONTAINER_XOFFSET = 60;
+        private const int KHordeItemSpace = 570, KHordeContainerXoffset = 60;
 
         private IUIManager _uiManager;
 
@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
 
         private Button _backButton, _battleButton, _battleButtonWarning, _leftArrowButton, _rightArrowButton, _deleteButton, _editButton;
 
-        private TextMeshProUGUI gooValueText;
+        private TextMeshProUGUI _gooValueText;
 
         private ButtonShiftingContent _buttonArmy;
 
@@ -82,7 +82,7 @@ namespace LoomNetwork.CZB
 
             _containerOfDecks = _selfPage.transform.Find("Panel_DecksContainer/Group");
 
-            gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
+            _gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
 
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<ButtonShiftingContent>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
@@ -122,10 +122,10 @@ namespace LoomNetwork.CZB
 
             _battleButton.interactable = true;
 
-            gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
+            _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             // todod improve I guess
-            _selectedDeckId = _dataManager.CachedUserLocalData.lastSelectedDeckId;
+            _selectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
             _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
@@ -156,16 +156,16 @@ namespace LoomNetwork.CZB
             _hordeDecks = new List<HordeDeckObject>();
 
             HordeDeckObject hordeDeck = null;
-            for (int i = 0; i < _dataManager.CachedDecksData.decks.Count; i++)
+            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
             {
-                hordeDeck = new HordeDeckObject(_containerOfDecks, _dataManager.CachedDecksData.decks[i], _dataManager.CachedHeroesData.Heroes.Find(x => x.heroId == _dataManager.CachedDecksData.decks[i].heroId), i);
+                hordeDeck = new HordeDeckObject(_containerOfDecks, _dataManager.CachedDecksData.Decks[i], _dataManager.CachedHeroesData.HeroesParsed.Find(x => x.HeroId == _dataManager.CachedDecksData.Decks[i].HeroId), i);
                 hordeDeck.HordeDeckSelectedEvent += HordeDeckSelectedEventHandler;
                 hordeDeck.DeleteDeckEvent += DeleteDeckEventHandler;
 
                 _hordeDecks.Add(hordeDeck);
             }
 
-            _newHordeDeckObject.transform.localPosition = Vector3.right * HORDE_ITEM_SPACE * _hordeDecks.Count;
+            _newHordeDeckObject.transform.localPosition = Vector3.right * KHordeItemSpace * _hordeDecks.Count;
         }
 
         private void ResetHordeDecks()
@@ -188,23 +188,23 @@ namespace LoomNetwork.CZB
         {
             // HACK for offline mode in online mode, local data should only be saved after
             // backend operation has succeeded
-            _dataManager.CachedDecksData.decks.Remove(deck.SelfDeck);
-            _dataManager.CachedUserLocalData.lastSelectedDeckId = -1;
+            _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
             _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.DecksData);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.UserLocalData);
 
             try
             {
-                await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, deck.SelfDeck.id, _dataManager.CachedDecksLastModificationTimestamp);
-                Debug.Log($" ====== Delete Deck {deck.SelfDeck.id} Successfully ==== ");
+                await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, deck.SelfDeck.Id, _dataManager.CachedDecksLastModificationTimestamp);
+                Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             } catch (Exception e)
             {
                 // HACK for offline mode
                 if (false)
                 {
                     Debug.Log("Result === " + e);
-                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.id}: " + e.Message);
+                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
                     return;
                 }
             }
@@ -216,23 +216,23 @@ namespace LoomNetwork.CZB
         {
             if (_hordeSelection.gameObject.activeSelf)
             {
-                HordeDeckObject horde = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+                HordeDeckObject horde = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
                 horde.Deselect();
             }
 
             deck.Select();
 
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper() + "_" + deck.SelfHero.skills[deck.SelfHero.primarySkill].skill.ToLower());
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.element.ToUpper() + "_" + deck.SelfHero.skills[deck.SelfHero.secondarySkill].skill.ToLower());
+            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.Element.ToUpper() + "_" + deck.SelfHero.Skills[deck.SelfHero.PrimarySkill].Skill.ToLower());
+            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + deck.SelfHero.Element.ToUpper() + "_" + deck.SelfHero.Skills[deck.SelfHero.SecondarySkill].Skill.ToLower());
 
-            _hordeSelection.transform.SetParent(deck.selectionContainer, false);
+            _hordeSelection.transform.SetParent(deck.SelectionContainer, false);
             _hordeSelection.gameObject.SetActive(true);
 
-            _selectedDeckId = (int)deck.SelfDeck.id;
-            _dataManager.CachedUserLocalData.lastSelectedDeckId = _selectedDeckId;
+            _selectedDeckId = (int)deck.SelfDeck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            deck.selectionContainer.parent.SetAsLastSibling();
+            _dataManager.SaveCache(Enumerators.CacheDataType.UserLocalData);
+            deck.SelectionContainer.parent.SetAsLastSibling();
 
             BattleButtonUpdate();
         }
@@ -240,7 +240,7 @@ namespace LoomNetwork.CZB
         private void BattleButtonUpdate()
         {
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE))
+            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize))
             {
                 _battleButton.interactable = false;
                 _battleButtonWarning.gameObject.SetActive(true);
@@ -259,7 +259,7 @@ namespace LoomNetwork.CZB
             _newHordeDeckObject.transform.SetAsLastSibling();
             _newHordeDeckObject.SetActive(true);
 
-            HordeDeckObject deck = _hordeDecks.Find(x => x.SelfDeck.id == _dataManager.CachedUserLocalData.lastSelectedDeckId);
+            HordeDeckObject deck = _hordeDecks.Find(x => x.SelfDeck.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
             if (deck != null)
             {
                 HordeDeckSelectedEventHandler(deck);
@@ -267,10 +267,10 @@ namespace LoomNetwork.CZB
 
             if (_hordeDecks.Count > 0)
             {
-                HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+                HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
                 if (foundDeck == null)
                 {
-                    _selectedDeckId = (int)_hordeDecks[0].SelfDeck.id;
+                    _selectedDeckId = (int)_hordeDecks[0].SelfDeck.Id;
                 }
             } else
             {
@@ -297,7 +297,7 @@ namespace LoomNetwork.CZB
                 _scrolledDeck--;
             }
 
-            _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - (HORDE_ITEM_SPACE * _scrolledDeck), 420, 0);
+            _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - (KHordeItemSpace * _scrolledDeck), 420, 0);
         }
 
         private void OpenAlertDialog(string msg)
@@ -328,7 +328,7 @@ namespace LoomNetwork.CZB
 
             if (oldIndex != _scrolledDeck)
             {
-                _containerOfDecks.transform.localPosition = new Vector3(HORDE_CONTAINER_XOFFSET - (HORDE_ITEM_SPACE * _scrolledDeck), 420, 0);
+                _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - (KHordeItemSpace * _scrolledDeck), 420, 0);
             }
         }
 
@@ -347,9 +347,7 @@ namespace LoomNetwork.CZB
 
         public class HordeDeckObject
         {
-            public event Action<HordeDeckObject> HordeDeckSelectedEvent;
-
-            public event Action<HordeDeckObject> DeleteDeckEvent;
+            public Transform SelectionContainer;
 
             private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -366,8 +364,6 @@ namespace LoomNetwork.CZB
             private readonly TextMeshProUGUI _cardsInDeckCountText;
 
             private readonly Button _buttonSelect;
-
-            public Transform selectionContainer;
 
             private IUIManager _uiManager;
 
@@ -387,9 +383,9 @@ namespace LoomNetwork.CZB
                 _soundManager = GameClient.Get<ISoundManager>();
 
                 _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_HordeSelectionObject"), parent, false);
-                _selfObject.transform.localPosition = Vector3.right * HORDE_ITEM_SPACE * index;
+                _selfObject.transform.localPosition = Vector3.right * KHordeItemSpace * index;
 
-                selectionContainer = _selfObject.transform.Find("SelectionContainer");
+                SelectionContainer = _selfObject.transform.Find("SelectionContainer");
 
                 _setTypeIcon = _selfObject.transform.Find("Panel_HordeType/Image").GetComponent<Image>();
                 _hordePicture = _selfObject.transform.Find("Image_HordePicture").GetComponent<Image>();
@@ -399,14 +395,18 @@ namespace LoomNetwork.CZB
 
                 _buttonSelect = _selfObject.transform.Find("Button_Select").GetComponent<Button>();
 
-                _cardsInDeckCountText.text = SelfDeck.GetNumCards() + "/" + Constants.MAX_DECK_SIZE;
-                _descriptionText.text = deck.name;
+                _cardsInDeckCountText.text = SelfDeck.GetNumCards() + "/" + Constants.MaxDeckSize;
+                _descriptionText.text = deck.Name;
 
-                _setTypeIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.element.ToLower());
-                _hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" + SelfHero.element.ToLower());
+                _setTypeIcon.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" + SelfHero.Element.ToLower());
+                _hordePicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" + SelfHero.Element.ToLower());
 
                 _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }
+
+            public event Action<HordeDeckObject> HordeDeckSelectedEvent;
+
+            public event Action<HordeDeckObject> DeleteDeckEvent;
 
             public Deck SelfDeck { get; }
 
@@ -443,7 +443,7 @@ namespace LoomNetwork.CZB
 
             private void SelectButtonOnClickHandler()
             {
-                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
                 HordeDeckSelectedEvent?.Invoke(this);
             }
         }
@@ -452,31 +452,31 @@ namespace LoomNetwork.CZB
 
         private void CollectionButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _appStateManager.ChangeAppState(Enumerators.AppState.Collection);
         }
 
         private void BackButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _appStateManager.ChangeAppState(Enumerators.AppState.MainMenu);
         }
 
         private void BattleButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
-            _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
+            _matchManager.FindMatch(Enumerators.MatchType.Local);
         }
 
         private void BattleButtonWarningOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE))
+            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize))
             {
-                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MIN_DECK_SIZE + " cards.");
+                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
             }
 
 #endif
@@ -484,24 +484,24 @@ namespace LoomNetwork.CZB
 
         private void LeftArrowButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             SwitchOverlordObject(-1);
         }
 
         private void RightArrowButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(1);
         }
 
         private void SkillButtonOnSingleClickHandler(int skillIndex)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
-                HeroSkill skill = skillIndex == 0?deck.SelfHero.skills[deck.SelfHero.primarySkill]:deck.SelfHero.skills[deck.SelfHero.secondarySkill];
+                HeroSkill skill = skillIndex == 0?deck.SelfHero.Skills[deck.SelfHero.PrimarySkill]:deck.SelfHero.Skills[deck.SelfHero.SecondarySkill];
 
                 _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
             }
@@ -509,8 +509,8 @@ namespace LoomNetwork.CZB
 
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
                 _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(deck.SelfHero);
@@ -524,11 +524,11 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = -1;
 
-            _appStateManager.ChangeAppState(Enumerators.AppState.HERO_SELECTION);
+            _appStateManager.ChangeAppState(Enumerators.AppState.HeroSelection);
         }
 
         private void DeleteButtonOnClickHandler()
@@ -537,14 +537,14 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
-                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmDeleteDeckEventHandler;
 
-                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.SelfDeck.name + "?");
+                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.SelfDeck.Name + "?");
             }
         }
 
@@ -556,10 +556,10 @@ namespace LoomNetwork.CZB
 
             if (_selectedDeckId != -1)
             {
-                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
                 _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = _selectedDeckId;
-                _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
+                _appStateManager.ChangeAppState(Enumerators.AppState.DeckEditing);
             }
         }
 
@@ -571,7 +571,7 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
+            HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deckToDelete != null)
             {
                 DeleteDeckEventHandler(deckToDelete);
@@ -590,6 +590,7 @@ namespace LoomNetwork.CZB
         // GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
         // GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.PACK_OPENER);
         // }
+
         #endregion
     }
 }

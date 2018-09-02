@@ -95,7 +95,7 @@ namespace LoomNetwork.Internal
             return string.IsNullOrEmpty(str)?null:Convert.FromBase64String(str);
         }
 
-        public static T CreateFromJSON<T>(string jsonString)
+        public static T CreateFromJson<T>(string jsonString)
         {
             return JsonUtility.FromJson<T>(jsonString);
         }
@@ -105,7 +105,7 @@ namespace LoomNetwork.Internal
             return JsonUtility.ToJson(obj);
         }
 
-        public static Vector3 CastVFXPosition(Vector3 position)
+        public static Vector3 CastVfxPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
         }
@@ -307,13 +307,13 @@ namespace LoomNetwork.Internal
 
         private static readonly int MinutesDelay = 2;
 
-        private static bool IsStop;
+        private static bool _isStop;
 
         [MenuItem("Utilites/AutoSaverScene/Init Auto Saving")]
         public static void Init()
         {
             DebugLog("Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
-            IsStop = false;
+            _isStop = false;
             EditorCoroutine.Start(Save());
         }
 
@@ -321,7 +321,7 @@ namespace LoomNetwork.Internal
         public static void Stop()
         {
             DebugLog("Stop Auto Saving");
-            IsStop = true;
+            _isStop = true;
         }
 
         private static IEnumerator Save()
@@ -332,7 +332,7 @@ namespace LoomNetwork.Internal
                 yield return null;
             }
 
-            if (!IsStop)
+            if (!_isStop)
             {
                 DebugLog("Start Auto Save");
                 if (EditorSceneManager.SaveOpenScenes())
@@ -349,16 +349,16 @@ namespace LoomNetwork.Internal
 
         private class EditorCoroutine
         {
-            private readonly IEnumerator routine;
+            private readonly IEnumerator _routine;
 
-            private EditorCoroutine(IEnumerator _routine)
+            private EditorCoroutine(IEnumerator routine)
             {
-                routine = _routine;
+                this._routine = routine;
             }
 
-            public static EditorCoroutine Start(IEnumerator _routine)
+            public static EditorCoroutine Start(IEnumerator routine)
             {
-                EditorCoroutine coroutine = new EditorCoroutine(_routine);
+                EditorCoroutine coroutine = new EditorCoroutine(routine);
                 coroutine.Start();
                 return coroutine;
             }
@@ -375,7 +375,7 @@ namespace LoomNetwork.Internal
 
             private void Update()
             {
-                if (!routine.MoveNext())
+                if (!_routine.MoveNext())
                 {
                     Stop();
                 }

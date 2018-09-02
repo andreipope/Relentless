@@ -11,25 +11,25 @@ namespace LoomNetwork.CZB
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
+                case Enumerators.AbilityEffectType.TargetAdjustmentsAir:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
         }
@@ -48,7 +48,7 @@ namespace LoomNetwork.CZB
 
             BoardUnit unit = info as BoardUnit;
 
-            Player playerOwner = unit.ownerPlayer;
+            Player playerOwner = unit.OwnerPlayer;
 
             BoardUnit leftAdjustment = null, rightAdjastment = null;
 
@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
             /*if (targetIndex == -1)
                 for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
@@ -97,9 +97,9 @@ namespace LoomNetwork.CZB
                 CreateAndMoveParticle(
                     () =>
                     {
-                        _battleController.AttackUnitByAbility(caller, abilityData, leftAdjustment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment);
                     },
-                    leftAdjustment.transform.position);
+                    leftAdjustment.Transform.position);
             }
 
             if (rightAdjastment != null)
@@ -109,9 +109,9 @@ namespace LoomNetwork.CZB
                 CreateAndMoveParticle(
                     () =>
                     {
-                        _battleController.AttackUnitByAbility(caller, abilityData, rightAdjastment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment);
                     },
-                    rightAdjastment.transform.position);
+                    rightAdjastment.Transform.position);
             }
         }
 
@@ -119,11 +119,11 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
-                switch (affectObjectType)
+                switch (AffectObjectType)
                 {
                     /*      case Enumerators.AffectObjectType.PLAYER:
                               //if (targetPlayer.playerInfo.netId == playerCallerOfAbility.netId)
@@ -132,14 +132,14 @@ namespace LoomNetwork.CZB
                               //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
                               CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                               break; */
-                    case Enumerators.AffectObjectType.CHARACTER:
-                        Action(targetUnit);
+                    case Enumerators.AffectObjectType.Character:
+                        Action(TargetUnit);
                         CreateAndMoveParticle(
                             () =>
                             {
-                                _battleController.AttackUnitByAbility(caller, abilityData, targetUnit);
+                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                             },
-                            targetUnit.transform.position);
+                            TargetUnit.Transform.position);
 
                         break;
                 }
@@ -150,7 +150,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
 
                 return;
 
@@ -159,35 +159,35 @@ namespace LoomNetwork.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE?abilityUnitOwner.transform.position:selectedPlayer.Transform.position;
-            if (abilityCallType != Enumerators.AbilityCallType.ATTACK)
+            Vector3 startPosition = CardKind == Enumerators.CardKind.Creature?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+            if (AbilityCallType != Enumerators.AbilityCallType.Attack)
             {
                 // CreateVFX(cardCaller.transform.position);
-                GameObject particleMain = Object.Instantiate(_vfxObject);
-                particleMain.transform.position = Utilites.CastVFXPosition(startPosition + Vector3.forward);
-                particleMain.transform.DOMove(Utilites.CastVFXPosition(targetPosition), 0.5f).OnComplete(
+                GameObject particleMain = Object.Instantiate(VfxObject);
+                particleMain.transform.position = Utilites.CastVfxPosition(startPosition + Vector3.forward);
+                particleMain.transform.DOMove(Utilites.CastVfxPosition(targetPosition), 0.5f).OnComplete(
                     () =>
                     {
                         callback();
-                        if (abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
+                        if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsBomb)
                         {
                             DestroyParticle(particleMain, true);
-                            GameObject prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                            GameObject prefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                             GameObject particle = Object.Instantiate(prefab);
-                            particle.transform.position = Utilites.CastVFXPosition(targetPosition + Vector3.forward);
-                            _particlesController.RegisterParticleSystem(particle, true);
+                            particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
+                            ParticlesController.RegisterParticleSystem(particle, true);
 
-                            _soundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb", Constants.SPELL_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
-                        } else if (abilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
+                            SoundManager.PlaySound(Enumerators.SoundType.Spells, "NailBomb", Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.None);
+                        } else if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsAir)
                         {
                             // one particle
-                            ParticleSystem.MainModule main = _vfxObject.GetComponent<ParticleSystem>().main;
+                            ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
                             main.loop = false;
                         }
                     });
             } else
             {
-                CreateVFX(Utilites.CastVFXPosition(targetUnit.transform.position));
+                CreateVfx(Utilites.CastVfxPosition(TargetUnit.Transform.position));
                 callback();
             }
 

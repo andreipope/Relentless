@@ -5,20 +5,20 @@ namespace LoomNetwork.CZB
 {
     public class DelayedGainAttackAbility : DelayedAbilityBase
     {
-        public int value;
+        public int Value;
 
         public DelayedGainAttackAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            abilityUnitOwner.CurrentDamage += value;
-            abilityUnitOwner.BuffedDamage += value;
+            AbilityUnitOwner.CurrentDamage += Value;
+            AbilityUnitOwner.BuffedDamage += Value;
         }
     }
 }

@@ -29,10 +29,10 @@ namespace LoomNetwork.CZB
 
         public void UpdateRanksByElements(List<BoardUnit> units, Card card)
         {
-            List<BoardUnit> filter = units.Where(unit => (unit.Card.libraryCard.cardSetType == card.cardSetType) && ((int)unit.Card.libraryCard.cardRank < (int)card.cardRank)).ToList();
+            List<BoardUnit> filter = units.Where(unit => (unit.Card.LibraryCard.CardSetType == card.CardSetType) && ((int)unit.Card.LibraryCard.CardRank < (int)card.CardRank)).ToList();
             if (filter.Count > 0)
             {
-                DoRankUpgrades(filter, card.cardSetType, card.cardRank);
+                DoRankUpgrades(filter, card.CardSetType, card.CardRank);
             }
         }
 
@@ -40,22 +40,22 @@ namespace LoomNetwork.CZB
         {
             switch (element)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.SetType.Air:
                     AirRankBuff(units, rank);
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.SetType.Earth:
                     EarthRankBuff(units, rank);
                     break;
-                case Enumerators.SetType.WATER:
+                case Enumerators.SetType.Water:
                     WaterRankBuff(units, rank);
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.SetType.Fire:
                     FireRankBuff(units, rank);
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.SetType.Toxic:
                     ToxicRankBuff(units, rank);
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.SetType.Life:
                     LifeRankBuff(units, rank);
                     break;
             }
@@ -70,17 +70,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.GUARD);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Guard);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Guard);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Guard);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 3;
                     break;
             }
@@ -94,17 +94,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.HEAVY);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Heavy);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Heavy);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Heavy);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 3;
                     break;
             }
@@ -118,17 +118,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Rush);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Rush);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.RUSH);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Rush);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 3;
                     break;
             }
@@ -142,17 +142,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Reanimate);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Reanimate);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Reanimate);
+                    buffs.Add(Enumerators.BuffType.Defence);
                     count = 3;
                     break;
             }
@@ -166,17 +166,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Destroy);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Destroy);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Destroy);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 3;
                     break;
             }
@@ -190,17 +190,17 @@ namespace LoomNetwork.CZB
             int count = 1;
             switch (rank)
             {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
+                case Enumerators.CardRank.Officer:
+                    buffs.Add(Enumerators.BuffType.Freeze);
                     break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.Commander:
+                    buffs.Add(Enumerators.BuffType.Freeze);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 2;
                     break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
+                case Enumerators.CardRank.General:
+                    buffs.Add(Enumerators.BuffType.Freeze);
+                    buffs.Add(Enumerators.BuffType.Attack);
                     count = 3;
                     break;
             }
@@ -212,7 +212,7 @@ namespace LoomNetwork.CZB
         {
             foreach (BoardUnit unit in units)
             {
-                Debug.Log(unit.Card.libraryCard.name);
+                Debug.Log(unit.Card.LibraryCard.Name);
 
                 unit.BuffUnit(buffType);
             }

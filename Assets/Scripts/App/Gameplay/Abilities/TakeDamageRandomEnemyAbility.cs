@@ -8,23 +8,23 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
         }
@@ -54,12 +54,12 @@ namespace LoomNetwork.CZB
             {
                 if (allies[i] is Player)
                 {
-                    _battleController.AttackPlayerByAbility(GetCaller(), abilityData, allies[i] as Player);
-                    CreateVFX((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allies[i] as Player);
+                    CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
                 } else if (allies[i] is BoardUnit)
                 {
-                    _battleController.AttackUnitByAbility(GetCaller(), abilityData, allies[i] as BoardUnit);
-                    CreateVFX((allies[i] as BoardUnit).transform.position, true, 5f);
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allies[i] as BoardUnit);
+                    CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
                 }
             }
         }

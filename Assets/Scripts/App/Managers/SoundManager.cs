@@ -53,20 +53,20 @@ namespace LoomNetwork.CZB
                 {
                     foreach (SoundContainer container in _soundContainers)
                     {
-                        if (!container.forceClose)
+                        if (!container.ForceClose)
                         {
-                            if (container.container == null)
+                            if (container.Container == null)
                             {
-                                container.forceClose = true;
+                                container.ForceClose = true;
                                 continue;
                             }
 
-                            if (container.audioSource.isPlaying)
+                            if (container.AudioSource.isPlaying)
                             {
                                 continue;
                             }
 
-                            if (container.isPlaylist)
+                            if (container.IsPlaylist)
                             {
                                 if (container.PlayNextSound())
                                 {
@@ -107,25 +107,25 @@ namespace LoomNetwork.CZB
 
         public float GetSoundLength(Enumerators.SoundType soundType, string namePattern)
         {
-            SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+            SoundTypeList soundTypeList = _gameSounds.Find(x => x.SoundType == soundType);
 
-            AudioClip clip = soundTypeList.audioTypeClips.Find(x => x.name.Contains(namePattern));
+            AudioClip clip = soundTypeList.AudioTypeClips.Find(x => x.name.Contains(namePattern));
 
             return clip != null?clip.length:0f;
         }
 
         public float GetSoundLength(Enumerators.SoundType soundType)
         {
-            SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+            SoundTypeList soundTypeList = _gameSounds.Find(x => x.SoundType == soundType);
 
-            return soundTypeList.audioTypeClips.Count > 0?soundTypeList.audioTypeClips[0].length:0f;
+            return soundTypeList.AudioTypeClips.Count > 0?soundTypeList.AudioTypeClips[0].length:0f;
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.None)
         {
             foreach (SoundContainer item in _soundContainers)
             {
-                if (cardSoundType.ToString().Equals(item.tag))
+                if (cardSoundType.ToString().Equals(item.Tag))
 
                     return;
             }
@@ -133,11 +133,11 @@ namespace LoomNetwork.CZB
             CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.None)
         {
             foreach (SoundContainer item in _soundContainers)
             {
-                if (cardSoundType.ToString().Equals(item.tag))
+                if (cardSoundType.ToString().Equals(item.Tag))
 
                     return;
             }
@@ -163,13 +163,13 @@ namespace LoomNetwork.CZB
 
         public void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false)
         {
-            List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
-            float volumeStep = oldContainers[0].audioSource.volume / 15f;
+            List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
+            float volumeStep = oldContainers[0].AudioSource.volume / 15f;
             FadeSound(oldContainers, volumeStep: volumeStep);
 
             SoundContainer soundContainer = CreateSound(soundType, 0, parent, isLoop);
-            soundContainer.audioSource.time = oldContainers[0].audioSource.time;
-            FadeSound(soundContainer, true, volumeStep, oldContainers[0].audioSource.volume);
+            soundContainer.AudioSource.time = oldContainers[0].AudioSource.time;
+            FadeSound(soundContainer, true, volumeStep, oldContainers[0].AudioSource.volume);
         }
 
         public void PlaySound(
@@ -192,13 +192,13 @@ namespace LoomNetwork.CZB
 
         public void SetMusicMuted(bool status)
         {
-            List<SoundContainer> containers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+            List<SoundContainer> containers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
 
             if (containers != null)
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.audioSource.mute = status;
+                    container.AudioSource.mute = status;
                 }
             }
 
@@ -207,13 +207,13 @@ namespace LoomNetwork.CZB
 
         public void SetSoundMuted(bool status)
         {
-            List<SoundContainer> containers = _soundContainers.FindAll(x => !x.soundParameters.isBackground);
+            List<SoundContainer> containers = _soundContainers.FindAll(x => !x.SoundParameters.IsBackground);
 
             if (containers != null)
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.audioSource.mute = status;
+                    container.AudioSource.mute = status;
                 }
             }
 
@@ -225,14 +225,14 @@ namespace LoomNetwork.CZB
             // GameClient.Get<IPlayerManager>().GetPlayerData.volumeMusic = value;
             // GameClient.Get<IDataManager>().SavePlayerData();
             _musicVolume = value;
-            List<SoundContainer> containers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+            List<SoundContainer> containers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
 
             if (containers != null)
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.soundParameters.volume = _musicVolume;
-                    container.audioSource.volume = _musicVolume;
+                    container.SoundParameters.Volume = _musicVolume;
+                    container.AudioSource.volume = _musicVolume;
                 }
             }
         }
@@ -242,14 +242,14 @@ namespace LoomNetwork.CZB
             // GameClient.Get<IPlayerManager>().GetPlayerData.volumeSound = value;
             // GameClient.Get<IDataManager>().SavePlayerData();
             _sfxVolume = value;
-            List<SoundContainer> containers = _soundContainers.FindAll(x => !x.soundParameters.isBackground);
+            List<SoundContainer> containers = _soundContainers.FindAll(x => !x.SoundParameters.IsBackground);
 
             if (containers != null)
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.soundParameters.volume = _sfxVolume;
-                    container.audioSource.volume = _sfxVolume;
+                    container.SoundParameters.Volume = _sfxVolume;
+                    container.AudioSource.volume = _sfxVolume;
                 }
             }
         }
@@ -259,16 +259,16 @@ namespace LoomNetwork.CZB
             SoundContainer container;
             if (id == 0)
             {
-                container = _soundContainers.Find(x => x.soundType == soundType);
+                container = _soundContainers.Find(x => x.SoundType == soundType);
             } else
             {
-                container = _soundContainers.Find(x => (x.soundType == soundType) && (x.GetHashCode() == id));
+                container = _soundContainers.Find(x => (x.SoundType == soundType) && (x.GetHashCode() == id));
             }
 
             if (container != null)
             {
-                container.audioSource.Stop();
-                container.forceClose = true;
+                container.AudioSource.Stop();
+                container.ForceClose = true;
             }
         }
 
@@ -277,16 +277,16 @@ namespace LoomNetwork.CZB
             SoundContainer container;
             if (id == 0)
             {
-                container = _soundContainers.Find(x => x.soundParameters.audioClips == clips);
+                container = _soundContainers.Find(x => x.SoundParameters.AudioClips == clips);
             } else
             {
-                container = _soundContainers.Find(x => (x.soundParameters.audioClips == clips) && (x.GetHashCode() == id));
+                container = _soundContainers.Find(x => (x.SoundParameters.AudioClips == clips) && (x.GetHashCode() == id));
             }
 
             if (container != null)
             {
-                container.audioSource.Stop();
-                container.forceClose = true;
+                container.AudioSource.Stop();
+                container.ForceClose = true;
             }
         }
 
@@ -294,19 +294,19 @@ namespace LoomNetwork.CZB
         {
             foreach (SoundContainer container in _soundContainers)
             {
-                container.audioSource.Stop();
-                container.forceClose = true;
+                container.AudioSource.Stop();
+                container.ForceClose = true;
             }
         }
 
         private void StopBackroundMusic()
         {
-            List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.soundParameters.isBackground);
+            List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
 
             foreach (SoundContainer oldCotainer in oldContainers)
             {
-                oldCotainer.audioSource.Stop();
-                oldCotainer.forceClose = true;
+                oldCotainer.AudioSource.Stop();
+                oldCotainer.ForceClose = true;
             }
         }
 
@@ -325,21 +325,21 @@ namespace LoomNetwork.CZB
                     bool stop = false;
                     foreach (SoundContainer container in soundcontainers)
                     {
-                        if ((container == null) || (container.audioSource == null))
+                        if ((container == null) || (container.AudioSource == null))
                         {
                             break;
                         }
 
-                        container.audioSource.volume += volumeStep * (isIn?1:-1);
+                        container.AudioSource.volume += volumeStep * (isIn?1:-1);
 
-                        if ((container.audioSource.volume == 0) && !isIn)
+                        if ((container.AudioSource.volume == 0) && !isIn)
                         {
-                            container.audioSource.Stop();
-                            container.forceClose = true;
+                            container.AudioSource.Stop();
+                            container.ForceClose = true;
                             stop = true;
-                        } else if (isIn && (container.audioSource.volume >= targetVolume))
+                        } else if (isIn && (container.AudioSource.volume >= targetVolume))
                         {
-                            container.audioSource.volume = targetVolume;
+                            container.AudioSource.volume = targetVolume;
                             stop = true;
                         }
                     }
@@ -388,61 +388,61 @@ namespace LoomNetwork.CZB
         {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();
-            SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
+            SoundTypeList soundTypeList = _gameSounds.Find(x => x.SoundType == soundType);
 
             switch (soundType)
             {
-                case Enumerators.SoundType.BACKGROUND:
-                case Enumerators.SoundType.BATTLEGROUND:
-                    soundParam.isBackground = true;
+                case Enumerators.SoundType.Background:
+                case Enumerators.SoundType.Battleground:
+                    soundParam.IsBackground = true;
                     break;
                 default:
-                    soundParam.isBackground = false;
+                    soundParam.IsBackground = false;
                     break;
             }
 
-            soundParam.audioClips = soundTypeList.audioTypeClips;
+            soundParam.AudioClips = soundTypeList.AudioTypeClips;
             if (!string.IsNullOrEmpty(clipTitle))
             {
-                soundParam.audioClips = soundParam.audioClips.Where(clip => clip.name.Contains(clipTitle)).ToList();
+                soundParam.AudioClips = soundParam.AudioClips.Where(clip => clip.name.Contains(clipTitle)).ToList();
             }
 
             // small hack to ignore missing audio clips
-            if (soundParam.audioClips.Count == 0)
+            if (soundParam.AudioClips.Count == 0)
             {
                 return null;
             }
 
-            soundParam.isLoop = isLoop;
-            soundParam.isMute = false;
-            soundParam.playOnAwake = false;
+            soundParam.IsLoop = isLoop;
+            soundParam.IsMute = false;
+            soundParam.PlayOnAwake = false;
 
-            soundParam.priority = 128;
+            soundParam.Priority = 128;
             if (volume < 0)
             {
-                soundParam.volume = _sfxVolume;
+                soundParam.Volume = _sfxVolume;
             } else
             {
-                soundParam.volume = volume;
+                soundParam.Volume = volume;
             }
 
-            if (SfxMuted && !soundParam.isBackground)
+            if (SfxMuted && !soundParam.IsBackground)
             {
-                soundParam.isMute = true;
-            } else if (MusicMuted && soundParam.isBackground)
+                soundParam.IsMute = true;
+            } else if (MusicMuted && soundParam.IsBackground)
             {
-                soundParam.isMute = true;
+                soundParam.IsMute = true;
             }
 
-            soundParam.startPosition = 0f;
+            soundParam.StartPosition = 0f;
 
-            container.isInQueue = isInQueue;
-            container.tag = tag;
+            container.IsInQueue = isInQueue;
+            container.Tag = tag;
             container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
 
             if (parent != null)
             {
-                container.container.transform.SetParent(parent);
+                container.Container.transform.SetParent(parent);
             }
 
             _soundContainers.Add(container);
@@ -459,8 +459,8 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < countOfTypes; i++)
             {
                 soundsList = new SoundTypeList();
-                soundsList.soundType = (Enumerators.SoundType)i;
-                soundsList.audioTypeClips = LoadAudioClipsByType(soundsList.soundType);
+                soundsList.SoundType = (Enumerators.SoundType)i;
+                soundsList.AudioTypeClips = LoadAudioClipsByType(soundsList.SoundType);
 
                 _gameSounds.Add(soundsList);
             }
@@ -474,10 +474,10 @@ namespace LoomNetwork.CZB
 
             switch (soundType)
             {
-                case Enumerators.SoundType.TUTORIAL:
-                case Enumerators.SoundType.CARDS:
-                case Enumerators.SoundType.OVERLORD_ABILITIES:
-                case Enumerators.SoundType.SPELLS:
+                case Enumerators.SoundType.Tutorial:
+                case Enumerators.SoundType.Cards:
+                case Enumerators.SoundType.OverlordAbilities:
+                case Enumerators.SoundType.Spells:
                     pathToSoundsLibrary = "Sounds/" + soundType.ToString().Replace("_", string.Empty);
                     list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
                     break;
@@ -492,68 +492,68 @@ namespace LoomNetwork.CZB
 
     public class SoundTypeList
     {
-        public Enumerators.SoundType soundType;
+        public Enumerators.SoundType SoundType;
 
-        public List<AudioClip> audioTypeClips;
+        public List<AudioClip> AudioTypeClips;
 
         public SoundTypeList()
         {
-            audioTypeClips = new List<AudioClip>();
+            AudioTypeClips = new List<AudioClip>();
         }
     }
 
     public class SoundContainer
     {
-        public Enumerators.SoundType soundType;
+        public Enumerators.SoundType SoundType;
 
-        public AudioSource audioSource;
+        public AudioSource AudioSource;
 
-        public GameObject container;
+        public GameObject Container;
 
-        public SoundParam soundParameters;
+        public SoundParam SoundParameters;
 
-        public bool isPlaylist;
+        public bool IsPlaylist;
 
-        public bool forceClose;
+        public bool ForceClose;
 
-        public int currentSoundIndex;
+        public int CurrentSoundIndex;
 
-        public bool isInQueue;
+        public bool IsInQueue;
 
-        public string tag;
+        public string Tag;
 
         public void Init(Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled, int soundIndex = 0)
         {
-            forceClose = false;
-            currentSoundIndex = soundIndex;
-            soundParameters = soundParam;
-            isPlaylist = playlistEnabled;
-            soundType = type;
-            container = new GameObject("AudioClip " + soundType);
-            container.transform.SetParent(soundsContainerRoot, false);
-            audioSource = container.AddComponent<AudioSource>();
+            ForceClose = false;
+            CurrentSoundIndex = soundIndex;
+            SoundParameters = soundParam;
+            IsPlaylist = playlistEnabled;
+            SoundType = type;
+            Container = new GameObject("AudioClip " + SoundType);
+            Container.transform.SetParent(soundsContainerRoot, false);
+            AudioSource = Container.AddComponent<AudioSource>();
 
-            audioSource.clip = soundParam.audioClips[currentSoundIndex];
-            audioSource.volume = soundParam.volume;
-            audioSource.loop = soundParam.isLoop;
-            audioSource.time = soundParam.startPosition;
-            audioSource.mute = soundParam.isMute;
-            audioSource.playOnAwake = soundParam.playOnAwake;
-            audioSource.priority = soundParam.priority;
-            audioSource.spatialBlend = 1f;
+            AudioSource.clip = soundParam.AudioClips[CurrentSoundIndex];
+            AudioSource.volume = soundParam.Volume;
+            AudioSource.loop = soundParam.IsLoop;
+            AudioSource.time = soundParam.StartPosition;
+            AudioSource.mute = soundParam.IsMute;
+            AudioSource.playOnAwake = soundParam.PlayOnAwake;
+            AudioSource.priority = soundParam.Priority;
+            AudioSource.spatialBlend = 1f;
 
-            audioSource.Play();
+            AudioSource.Play();
         }
 
         public bool PlayNextSound()
         {
-            currentSoundIndex++;
+            CurrentSoundIndex++;
 
-            if (currentSoundIndex < soundParameters.audioClips.Count)
+            if (CurrentSoundIndex < SoundParameters.AudioClips.Count)
             {
-                audioSource.Stop();
-                audioSource.clip = soundParameters.audioClips[currentSoundIndex];
-                audioSource.Play();
+                AudioSource.Stop();
+                AudioSource.clip = SoundParameters.AudioClips[CurrentSoundIndex];
+                AudioSource.Play();
                 return true;
             }
 
@@ -562,47 +562,47 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            if (container != null)
+            if (Container != null)
             {
-                audioSource.Stop();
-                Object.Destroy(container);
+                AudioSource.Stop();
+                Object.Destroy(Container);
             }
         }
     }
 
     public class SoundParam
     {
-        public float volume;
+        public float Volume;
 
-        public float startPosition;
+        public float StartPosition;
 
-        public bool isLoop;
+        public bool IsLoop;
 
-        public bool isMute;
+        public bool IsMute;
 
-        public bool playOnAwake;
+        public bool PlayOnAwake;
 
-        public bool isBackground;
+        public bool IsBackground;
 
-        public int priority;
+        public int Priority;
 
-        public List<AudioClip> audioClips;
+        public List<AudioClip> AudioClips;
     }
 
     public class QueuedSoundElement
     {
-        public Action action;
+        public Action Action;
 
-        public SoundContainer container;
+        public SoundContainer Container;
 
         public QueuedSoundElement(Action action)
         {
-            this.action = action;
+            this.Action = action;
         }
 
         public void DoAction()
         {
-            action?.Invoke();
+            Action?.Invoke();
         }
     }
 }

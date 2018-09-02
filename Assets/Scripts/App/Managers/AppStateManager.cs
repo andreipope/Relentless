@@ -6,9 +6,9 @@ namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
-        private readonly bool disableShop = true;
+        private readonly bool _disableShop = true;
 
-        private readonly bool disablePacks = true;
+        private readonly bool _disablePacks = true;
 
         private readonly float _backButtonResetDelay = 0.5f;
 
@@ -46,16 +46,16 @@ namespace LoomNetwork.CZB
 
             switch (stateTo)
             {
-                case Enumerators.AppState.APP_INIT:
+                case Enumerators.AppState.AppInit:
                 {
                     _uiManager.SetPage<LoadingPage>();
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Background, 128, Constants.BackgroundSoundVolume, null, true, false, true);
                 }
 
                     break;
-                case Enumerators.AppState.LOGIN:
+                case Enumerators.AppState.Login:
                     break;
-                case Enumerators.AppState.MAIN_MENU:
+                case Enumerators.AppState.MainMenu:
                 {
                     // GameObject.Find("MainApp/Camera").SetActive(true);
                     // GameObject.Find("MainApp/Camera2").SetActive(true);
@@ -63,33 +63,33 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.HERO_SELECTION:
+                case Enumerators.AppState.HeroSelection:
                 {
                     _uiManager.SetPage<HeroSelectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.DECK_SELECTION:
+                case Enumerators.AppState.DeckSelection:
                 {
                     _uiManager.SetPage<HordeSelectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.COLLECTION:
+                case Enumerators.AppState.Collection:
                 {
                     _uiManager.SetPage<CollectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.DECK_EDITING:
+                case Enumerators.AppState.DeckEditing:
                 {
                     _uiManager.SetPage<DeckEditingPage>();
                 }
 
                     break;
-                case Enumerators.AppState.SHOP:
+                case Enumerators.AppState.Shop:
                 {
-                    if (!disableShop)
+                    if (!_disableShop)
                     {
                         _uiManager.SetPage<ShopPage>();
                     } else
@@ -100,9 +100,9 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.PACK_OPENER:
+                case Enumerators.AppState.PackOpener:
                 {
-                    if (!disablePacks)
+                    if (!_disablePacks)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                     } else
@@ -113,7 +113,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.GAMEPLAY:
+                case Enumerators.AppState.Gameplay:
                 {
                     _uiManager.SetPage<GameplayPage>();
 
@@ -134,7 +134,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.CREDITS:
+                case Enumerators.AppState.Credits:
                 {
                     _uiManager.SetPage<CreditsPage>();
                 }
@@ -144,12 +144,12 @@ namespace LoomNetwork.CZB
                     throw new NotImplementedException("Not Implemented " + stateTo + " state!");
             }
 
-            if (AppState != Enumerators.AppState.SHOP)
+            if (AppState != Enumerators.AppState.Shop)
             {
                 _previouseState = AppState;
             } else
             {
-                _previouseState = Enumerators.AppState.MAIN_MENU;
+                _previouseState = Enumerators.AppState.MainMenu;
             }
 
             AppState = stateTo;

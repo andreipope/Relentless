@@ -17,8 +17,6 @@ namespace LoomNetwork.CZB.BackendCommunication
     {
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
-        public event ContractCreatedEventHandler ContractCreated;
-
         public BackendFacade(string authBackendHost, string readerHost, string writerHost)
         {
             AuthBackendHost = authBackendHost;
@@ -28,6 +26,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             Debug.Log($"Using auth backend {AuthBackendHost}");
             Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
+
+        public event ContractCreatedEventHandler ContractCreated;
 
         public string ReaderHost { get; set; }
 
@@ -76,75 +76,94 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         #region Card Collection
 
-        private const string GetCardCollectionMethod = "GetCollection";
+        private const string KGetCardCollectionMethod = "GetCollection";
 
         public async Task<GetCollectionResponse> GetCardCollection(string userId)
         {
             GetCollectionRequest request = new GetCollectionRequest { UserId = userId };
 
-            return await Contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
+            return await Contract.StaticCallAsync<GetCollectionResponse>(KGetCardCollectionMethod, request);
         }
 
         #endregion
 
         #region Card Library
 
-        private const string GetCardLibraryMethod = "ListCardLibrary";
+        private const string KGetCardLibraryMethod = "ListCardLibrary";
 
         public async Task<ListCardLibraryResponse> GetCardLibrary()
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest();
 
-            return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
+            return await Contract.StaticCallAsync<ListCardLibraryResponse>(KGetCardLibraryMethod, request);
         }
 
         #endregion
 
         #region Deck Management
 
-        private const string GetDeckDataMethod = "ListDecks";
+        private const string KGetDeckDataMethod = "ListDecks";
 
-        private const string DeleteDeckMethod = "DeleteDeck";
+        private const string KDeleteDeckMethod = "DeleteDeck";
 
-        private const string AddDeckMethod = "CreateDeck";
+        private const string KAddDeckMethod = "CreateDeck";
 
-        private const string EditDeckMethod = "EditDeck";
+        private const string KEditDeckMethod = "EditDeck";
 
         public async Task<ListDecksResponse> GetDecks(string userId)
         {
             ListDecksRequest request = new ListDecksRequest { UserId = userId };
 
-            return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+            return await Contract.StaticCallAsync<ListDecksResponse>(KGetDeckDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId, long lastModificationTimestamp)
         {
-            DeleteDeckRequest request = new DeleteDeckRequest { UserId = userId, DeckId = deckId, LastModificationTimestamp = lastModificationTimestamp };
+            DeleteDeckRequest request = new DeleteDeckRequest
+            {
+                UserId = userId,
+                DeckId = deckId,
+                LastModificationTimestamp = lastModificationTimestamp
+            };
 
-            await Contract.CallAsync(DeleteDeckMethod, request);
+            await Contract.CallAsync(KDeleteDeckMethod, request);
         }
 
         public async Task EditDeck(string userId, Deck deck, long lastModificationTimestamp)
         {
             EditDeckRequest request = EditDeckRequest(userId, deck, lastModificationTimestamp);
 
-            await Contract.CallAsync(EditDeckMethod, request);
+            await Contract.CallAsync(KEditDeckMethod, request);
         }
 
         public async Task<long> AddDeck(string userId, Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
-            for (int i = 0; i < deck.cards.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
-                CardCollection cardInCollection = new CardCollection { CardName = deck.cards[i].cardName, Amount = deck.cards[i].amount };
+                CardCollection cardInCollection = new CardCollection
+                {
+                    CardName = deck.Cards[i].CardName,
+                    Amount = deck.Cards[i].Amount
+                };
                 Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
                 cards.Add(cardInCollection);
             }
 
-            CreateDeckRequest request = new CreateDeckRequest { UserId = userId, Deck = new ProtobufDeck { Name = deck.name, HeroId = deck.heroId, Cards = { cards } }, LastModificationTimestamp = lastModificationTimestamp };
+            CreateDeckRequest request = new CreateDeckRequest
+            {
+                UserId = userId,
+                Deck = new ProtobufDeck
+                {
+                    Name = deck.Name,
+                    HeroId = deck.HeroId,
+                    Cards = { cards }
+                },
+                LastModificationTimestamp = lastModificationTimestamp
+            };
 
-            CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
+            CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(KAddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 
@@ -152,14 +171,29 @@ namespace LoomNetwork.CZB.BackendCommunication
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
-            for (int i = 0; i < deck.cards.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
-                CardCollection cardInCollection = new CardCollection { CardName = deck.cards[i].cardName, Amount = deck.cards[i].amount };
+                CardCollection cardInCollection = new CardCollection
+                {
+                    CardName = deck.Cards[i].CardName,
+                    Amount = deck.Cards[i].Amount
+                };
                 Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
                 cards.Add(cardInCollection);
             }
 
-            EditDeckRequest request = new EditDeckRequest { UserId = userId, Deck = new ProtobufDeck { Id = deck.id, Name = deck.name, HeroId = deck.heroId, Cards = { cards } }, LastModificationTimestamp = lastModificationTimestamp };
+            EditDeckRequest request = new EditDeckRequest
+            {
+                UserId = userId,
+                Deck = new ProtobufDeck
+                {
+                    Id = deck.Id,
+                    Name = deck.Name,
+                    HeroId = deck.HeroId,
+                    Cards = { cards }
+                },
+                LastModificationTimestamp = lastModificationTimestamp
+            };
             return request;
         }
 
@@ -167,33 +201,33 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         #region Heroes
 
-        private const string HeroesList = "ListHeroes";
+        private const string KHeroesList = "ListHeroes";
 
         public async Task<ListHeroesResponse> GetHeroesList(string userId)
         {
             ListHeroesRequest request = new ListHeroesRequest { UserId = userId };
 
-            return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
+            return await Contract.StaticCallAsync<ListHeroesResponse>(KHeroesList, request);
         }
 
         #endregion
 
         #region Login
 
-        private const string CreateAccountMethod = "CreateAccount";
+        private const string KCreateAccountMethod = "CreateAccount";
 
         public async Task SignUp(string userId)
         {
             UpsertAccountRequest req = new UpsertAccountRequest { UserId = userId };
 
-            await Contract.CallAsync(CreateAccountMethod, req);
+            await Contract.CallAsync(KCreateAccountMethod, req);
         }
 
         #endregion
 
         #region Turn Logs
 
-        private const string UploadActionLogMethod = "UploadHistory"; // just a random method for now
+        private const string KUploadActionLogMethod = "UploadHistory"; // just a random method for now
 
         public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
         {
@@ -215,14 +249,14 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         #region Auth
 
-        private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+        private const string KAuthBetaKeyValidationEndPoint = "/user/beta/validKey";
 
-        private const string AuthBetaConfigEndPoint = "/user/beta/config";
+        private const string KAuthBetaConfigEndPoint = "/user/beta/config";
 
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = AuthBackendHost + KAuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
@@ -234,7 +268,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         public async Task<BetaConfig> GetBetaConfig(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = AuthBackendHost + KAuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
@@ -243,7 +277,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 httpResponseMessage.ReadToEnd(),
 
                 // FIXME: backend should return valid version numbers at all times
-                new VersionConverterWithFallback(Version.Parse(Constants.CURRENT_VERSION_BASE)));
+                new VersionConverterWithFallback(Version.Parse(Constants.KCurrentVersionBase)));
             return betaConfig;
         }
 

@@ -29,9 +29,9 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
-                _battlegroundController.TakeControlUnit(playerCallerOfAbility, targetUnit);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
             }
         }
     }

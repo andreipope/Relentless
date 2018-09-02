@@ -6,7 +6,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {
-        public static readonly Dictionary<BackendPurpose, BackendEndpoint> Endpoints = new Dictionary<BackendPurpose, BackendEndpoint>
+        public static readonly Dictionary<BackendPurpose, BackendEndpoint> KEndpoints = new Dictionary<BackendPurpose, BackendEndpoint>
         {
             { BackendPurpose.Local, new BackendEndpoint("http://stage.loom.games", "ws://127.0.0.1:9999/queryws", "ws://127.0.0.1:46657/websocket") },
             {

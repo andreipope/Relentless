@@ -6,7 +6,7 @@ namespace LoomNetwork.CZB
     {
         public void ChangeExperience(Hero hero, int value)
         {
-            hero.experience += value;
+            hero.Experience += value;
             CheckLevel(hero);
         }
 
@@ -24,16 +24,16 @@ namespace LoomNetwork.CZB
 
         private void CheckLevel(Hero hero)
         {
-            if (hero.experience > 1000)
+            if (hero.Experience > 1000)
             {
-                LevelUP(hero);
+                LevelUp(hero);
             }
         }
 
-        private void LevelUP(Hero hero)
+        private void LevelUp(Hero hero)
         {
-            hero.level++;
-            hero.experience = 0;
+            hero.Level++;
+            hero.Experience = 0;
 
             // hero.ValidateSkillLocking();
         }

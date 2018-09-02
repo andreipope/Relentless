@@ -39,7 +39,7 @@ namespace LoomNetwork.CZB
 
         private ButtonShiftingContent _buttonBuy, _buttonOpen, _buttonCredits, _buttonTutorial, _buttonQuit;
 
-        private MenuButtonToggle _buttonMusic, _buttonSFX;
+        private MenuButtonToggle _buttonMusic, _buttonSfx;
 
         private TextMeshProUGUI _packsCount;
 
@@ -91,7 +91,7 @@ namespace LoomNetwork.CZB
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
             _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
-            _buttonSFX = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
+            _buttonSfx = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
@@ -103,7 +103,7 @@ namespace LoomNetwork.CZB
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
-            _buttonArmy.onClickEvent.AddListener(OnClickCollection);
+            _buttonArmy.OnClickEvent.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
@@ -111,19 +111,19 @@ namespace LoomNetwork.CZB
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
             _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);
-            _buttonMusic.onValueChangedEvent.AddListener(OnValueChangedEventMusic);
-            _buttonSFX.onValueChangedEvent.AddListener(OnValueChangedEventSFX);
+            _buttonMusic.OnValueChangedEvent.AddListener(OnValueChangedEventMusic);
+            _buttonSfx.OnValueChangedEvent.AddListener(OnValueChangedEventSfx);
 
-            _buttonArmy.interactable = true;
+            _buttonArmy.Interactable = true;
 
-            _packsCount.text = _playerManager.LocalUser.packsCount <= 99?_playerManager.LocalUser.packsCount.ToString():"99";
+            _packsCount.text = _playerManager.LocalUser.PacksCount <= 99?_playerManager.LocalUser.PacksCount.ToString():"99";
 
             _logoAnimator.SetBool("LogoShow", true);
 
             _buttonMusic.SetStatus(!_soundManager.MusicMuted);
-            _buttonSFX.SetStatus(!_soundManager.SfxMuted);
+            _buttonSfx.SetStatus(!_soundManager.SfxMuted);
 
-            if (!_dataManager.CachedUserLocalData.agreedTerms)
+            if (!_dataManager.CachedUserLocalData.AgreedTerms)
             {
                 _uiManager.DrawPopup<TermsPopup>();
             }
@@ -207,43 +207,43 @@ namespace LoomNetwork.CZB
 
         private void OnClickPlay()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            if (GameClient.Get<IDataManager>().CachedUserLocalData.tutorial)
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
                 _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.Local);
             } else
             {
-                _stateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+                _stateManager.ChangeAppState(Enumerators.AppState.DeckSelection);
             }
         }
 
         private void TutorialButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = true;
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = true;
             GameClient.Get<IGameplayManager>().IsTutorial = true;
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.Local);
         }
 
         private void OnClickCollection()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.Collection);
         }
 
         private void BuyButtonHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.SHOP);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.Shop);
         }
 
         private void CreditsButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.CREDITS);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.Credits);
         }
 
         private void QuitButtonOnClickHandler()
@@ -258,8 +258,8 @@ namespace LoomNetwork.CZB
 
         private void OpenButtonHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.PackOpener);
         }
 
         private async void ReconnectButtonOnClickHandler()
@@ -306,20 +306,20 @@ namespace LoomNetwork.CZB
         {
             _dataManager.DeleteData();
             _backendDataControlMediator.UserDataModel = null;
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.AppInit);
         }
 
         private void OnValueChangedEventMusic(bool value)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             // _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
             _soundManager.SetMusicMuted(!value);
         }
 
-        private void OnValueChangedEventSFX(bool value)
+        private void OnValueChangedEventSfx(bool value)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             // _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
             _soundManager.SetSoundMuted(!value);

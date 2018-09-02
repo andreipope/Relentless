@@ -6,19 +6,19 @@ using UnityEngine.Rendering;
 
 public class HandBoardCard
 {
-    public Player ownerPlayer;
+    public Player OwnerPlayer;
 
-    public GameObject boardZone;
+    public GameObject BoardZone;
 
-    public bool enabled = true;
+    public bool Enabled = true;
 
-    protected BoardCard cardView;
+    protected BoardCard CardView;
 
-    protected bool startedDrag;
+    protected bool StartedDrag;
 
-    protected Vector3 initialPos;
+    protected Vector3 InitialPos;
 
-    protected Vector3 initialRotation;
+    protected Vector3 InitialRotation;
 
     private readonly IGameplayManager _gameplayManager;
 
@@ -44,9 +44,9 @@ public class HandBoardCard
 
     public HandBoardCard(GameObject selfObject, BoardCard boardCard)
     {
-        gameObject = selfObject;
+        GameObject = selfObject;
 
-        cardView = boardCard;
+        CardView = boardCard;
 
         _handInd = GetHashCode();
 
@@ -57,28 +57,28 @@ public class HandBoardCard
         _playerController = _gameplayManager.GetController<PlayerController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
 
-        _behaviourHandler = gameObject.GetComponent<OnBehaviourHandler>();
+        _behaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
         _behaviourHandler.OnMouseUpEvent += OnMouseUp;
         _behaviourHandler.OnUpdateEvent += OnUpdateEventHandler;
     }
 
-    public Transform transform => gameObject.transform;
+    public Transform Transform => GameObject.transform;
 
-    public GameObject gameObject { get; }
+    public GameObject GameObject { get; }
 
     public void OnUpdateEventHandler(GameObject obj)
     {
-        if (!enabled)
+        if (!Enabled)
 
             return;
 
-        if (startedDrag)
+        if (StartedDrag)
         {
-            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 newPos = transform.position;
+            Transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 newPos = Transform.position;
             newPos.z = 0;
-            transform.position = newPos;
+            Transform.position = newPos;
 
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
             {
@@ -86,9 +86,9 @@ public class HandBoardCard
                 OnMouseUp(null);
             }
 
-            if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
+            if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(ownerPlayer, cardView, this);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
             } else
             {
                 _cardsController.ResetPlayerCardsOnBattlegroundPosition();
@@ -98,17 +98,17 @@ public class HandBoardCard
 
     public void OnSelected()
     {
-        if (!enabled)
+        if (!Enabled)
 
             return;
 
-        if (_playerController.IsActive && cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected && enabled)
+        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected && Enabled)
         {
-            startedDrag = true;
-            initialPos = transform.position;
-            initialRotation = transform.eulerAngles;
+            StartedDrag = true;
+            InitialPos = Transform.position;
+            InitialRotation = Transform.eulerAngles;
 
-            transform.eulerAngles = Vector3.zero;
+            Transform.eulerAngles = Vector3.zero;
 
             _playerController.IsCardSelected = true;
             _alreadySelected = true;
@@ -117,48 +117,48 @@ public class HandBoardCard
 
     public void CheckStatusOfHighlight()
     {
-        if (cardView.CanBePlayed(ownerPlayer) && cardView.CanBeBuyed(ownerPlayer))
+        if (CardView.CanBePlayed(OwnerPlayer) && CardView.CanBeBuyed(OwnerPlayer))
         {
-            cardView.SetHighlightingEnabled(true);
+            CardView.SetHighlightingEnabled(true);
         } else
         {
-            cardView.SetHighlightingEnabled(false);
+            CardView.SetHighlightingEnabled(false);
         }
     }
 
     public void OnMouseUp(GameObject obj)
     {
-        if (!enabled)
+        if (!Enabled)
 
             return;
 
-        if (!startedDrag)
+        if (!StartedDrag)
 
             return;
 
         _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
         _alreadySelected = false;
-        startedDrag = false;
+        StartedDrag = false;
         _playerController.IsCardSelected = false;
 
         bool playable = true;
-        if (_canceledPlay || !cardView.CanBeBuyed(ownerPlayer) || ((cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE) && (ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS)))
+        if (_canceledPlay || !CardView.CanBeBuyed(OwnerPlayer) || ((CardView.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.Creature) && (OwnerPlayer.BoardCards.Count >= Constants.MaxBoardUnits)))
         {
             playable = false;
         }
 
         if (playable)
         {
-            if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
+            if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(ownerPlayer, cardView, this);
-                cardView.SetHighlightingEnabled(false);
+                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
+                CardView.SetHighlightingEnabled(false);
             } else
             {
-                transform.position = initialPos;
-                transform.eulerAngles = initialRotation;
+                Transform.position = InitialPos;
+                Transform.eulerAngles = InitialRotation;
                 if (_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ActivateSelectTarget();
@@ -168,13 +168,13 @@ public class HandBoardCard
         {
             _isReturnToHand = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CardFlyHand, Constants.CardsMoveSoundVolume, false, false);
 
-            transform.DOMove(initialPos, 0.5f).OnComplete(
+            Transform.DOMove(InitialPos, 0.5f).OnComplete(
                 () =>
                 {
-                    transform.position = initialPos;
-                    transform.eulerAngles = initialRotation;
+                    Transform.position = InitialPos;
+                    Transform.eulerAngles = InitialRotation;
                     _isReturnToHand = false;
                 });
         }
@@ -182,27 +182,27 @@ public class HandBoardCard
 
     public void ResetToInitialPosition()
     {
-        transform.position = initialPos;
-        transform.eulerAngles = initialRotation;
+        Transform.position = InitialPos;
+        Transform.eulerAngles = InitialRotation;
     }
 
     public void ResetToHandAnimation()
     {
         _canceledPlay = false;
         _alreadySelected = false;
-        startedDrag = false;
+        StartedDrag = false;
         _isReturnToHand = true;
         _isHandCard = true;
-        enabled = true;
-        gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_HAND_CARDS;
-        gameObject.GetComponent<SortingGroup>().sortingOrder = 0;
+        Enabled = true;
+        GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerHandCards;
+        GameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
-        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+        _soundManager.PlaySound(Enumerators.SoundType.CardFlyHand, Constants.CardsMoveSoundVolume, false, false);
 
-        transform.DOMove(initialPos, 0.5f).OnComplete(
+        Transform.DOMove(InitialPos, 0.5f).OnComplete(
             () =>
             {
-                transform.position = initialPos;
+                Transform.position = InitialPos;
                 _isReturnToHand = false;
             });
     }

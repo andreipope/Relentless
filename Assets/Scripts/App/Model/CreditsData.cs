@@ -4,23 +4,23 @@ namespace LoomNetwork.CZB.Data
 {
     public class CreditsData
     {
-        public List<CreditsInfo> creditsInfo;
+        public List<CreditsInfo> CreditsInfo;
 
         public CreditsData()
         {
-            creditsInfo = new List<CreditsInfo>();
+            CreditsInfo = new List<CreditsInfo>();
         }
     }
 
     public class CreditsInfo
     {
-        public string subsectionType;
+        public string SubsectionType;
 
-        public List<CreditItem> credits;
+        public List<CreditItem> Credits;
 
         public CreditsInfo()
         {
-            credits = new List<CreditItem>();
+            Credits = new List<CreditItem>();
         }
     }
 

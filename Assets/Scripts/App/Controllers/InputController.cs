@@ -7,8 +7,6 @@ namespace LoomNetwork.CZB
 {
     public class InputController : IController
     {
-        private readonly int _unitsLayerMask = 9;
-
         public Action<BoardUnit> UnitSelectedEvent;
 
         public Action<BoardUnit> UnitDeselectedEvent;
@@ -20,6 +18,8 @@ namespace LoomNetwork.CZB
         public Action<Player> PlayerSelectingEvent;
 
         public Action NoObjectsSelectedEvent;
+
+        private readonly int _unitsLayerMask = 9;
 
         private IGameplayManager _gameplayManager;
 
@@ -122,7 +122,7 @@ namespace LoomNetwork.CZB
 
         private void CheckColliders(Collider2D collider, bool permanent = false)
         {
-            if (collider.name.Equals(Constants.PLAYER_BOARD) || collider.name.Equals(Constants.OPPONENT_BOARD))
+            if (collider.name.Equals(Constants.KPlayerBoard) || collider.name.Equals(Constants.KOpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
 
@@ -134,7 +134,7 @@ namespace LoomNetwork.CZB
 
             foreach (BoardUnit unit in _gameplayManager.CurrentPlayer.BoardCards)
             {
-                if (unit.gameObject == collider.gameObject)
+                if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
 
@@ -157,7 +157,7 @@ namespace LoomNetwork.CZB
 
             foreach (BoardUnit unit in _gameplayManager.OpponentPlayer.BoardCards)
             {
-                if (unit.gameObject == collider.gameObject)
+                if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
 

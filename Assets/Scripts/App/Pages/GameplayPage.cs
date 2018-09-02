@@ -15,9 +15,9 @@ namespace LoomNetwork.CZB
 {
     public class GameplayPage : IUIElement
     {
-        public OnBehaviourHandler playerPrimarySkillHandler, playerSecondarySkillHandler;
+        public OnBehaviourHandler PlayerPrimarySkillHandler, PlayerSecondarySkillHandler;
 
-        public OnBehaviourHandler opponentPrimarySkillHandler, opponentSecondarySkillHandler;
+        public OnBehaviourHandler OpponentPrimarySkillHandler, OpponentSecondarySkillHandler;
 
         private IUIManager _uiManager;
 
@@ -55,11 +55,11 @@ namespace LoomNetwork.CZB
 
         private SpriteRenderer _playerDeckStatusTexture, _opponentDeckStatusTexture, _playerGraveyardStatusTexture, _opponentGraveyardStatusTexture;
 
-        private GameObject _zippingVFX;
+        private GameObject _zippingVfx;
 
         private bool _isPlayerInited;
 
-        private int topOffset;
+        private int _topOffset;
 
         private ReportPanelItem _reportGameActionsPanel;
 
@@ -139,10 +139,10 @@ namespace LoomNetwork.CZB
 
             _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
 
-            if (_zippingVFX == null)
+            if (_zippingVfx == null)
             {
-                _zippingVFX = GameObject.Find("Background/Zapping").gameObject;
-                _zippingVFX.SetActive(false);
+                _zippingVfx = GameObject.Find("Background/Zapping").gameObject;
+                _zippingVfx.SetActive(false);
             }
 
             if (_gameplayManager.IsTutorial)
@@ -175,20 +175,20 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck = _dataManager.CachedOpponentDecksData.decks[Random.Range(0, _dataManager.CachedOpponentDecksData.decks.Count)];
-            _gameplayManager.OpponentDeckId = randomOpponentDeck.id;
+            OpponentDeck randomOpponentDeck = _dataManager.CachedOpponentDecksData.Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+            _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
 
-            int heroId = Constants.TUTORIAL_PLAYER_HERO_ID; // TUTORIAL
+            int heroId = Constants.KTutorialPlayerHeroId; // TUTORIAL
 
             if (!_gameplayManager.IsTutorial)
             {
-                heroId = _dataManager.CachedDecksData.decks.First(o => o.id == CurrentDeckId).heroId;
+                heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
             }
 
-            int opponentHeroId = randomOpponentDeck.heroId;
+            int opponentHeroId = randomOpponentDeck.HeroId;
 
-            Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
+            Hero currentPlayerHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.HeroesParsed[opponentHeroId];
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture = GameObject.Find("Opponent/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
@@ -210,15 +210,15 @@ namespace LoomNetwork.CZB
 
             _endTurnButton = GameObject.Find("EndTurnButton");
 
-            playerPrimarySkillHandler = GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
-            playerSecondarySkillHandler = GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+            PlayerPrimarySkillHandler = GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+            PlayerSecondarySkillHandler = GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
-            opponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
-            opponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+            OpponentPrimarySkillHandler = GameObject.Find("Opponent/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+            OpponentSecondarySkillHandler = GameObject.Find("Opponent/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {
-                SetHeroInfo(currentPlayerHero, "Player", playerPrimarySkillHandler.gameObject, playerSecondarySkillHandler.gameObject);
+                SetHeroInfo(currentPlayerHero, "Player", PlayerPrimarySkillHandler.gameObject, PlayerSecondarySkillHandler.gameObject);
                 string playerNameText = currentPlayerHero.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
                 {
@@ -230,7 +230,7 @@ namespace LoomNetwork.CZB
 
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent", opponentPrimarySkillHandler.gameObject, opponentSecondarySkillHandler.gameObject);
+                SetHeroInfo(currentOpponentHero, "Opponent", OpponentPrimarySkillHandler.gameObject, OpponentSecondarySkillHandler.gameObject);
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
@@ -239,13 +239,13 @@ namespace LoomNetwork.CZB
 
         public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            HeroSkill skillPrim = hero.skills[hero.primarySkill];
-            HeroSkill skillSecond = hero.skills[hero.secondarySkill];
+            HeroSkill skillPrim = hero.Skills[hero.PrimarySkill];
+            HeroSkill skillSecond = hero.Skills[hero.SecondarySkill];
 
-            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement + "_" + skillPrim.skill.ToLower());
-            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.heroElement + "_" + skillSecond.skill.ToLower());
+            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" + skillPrim.Skill.ToLower());
+            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" + skillSecond.Skill.ToLower());
 
-            Texture2D heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.heroElement + "_EXP");
+            Texture2D heroTexture = _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");
             Transform transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
 
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -256,7 +256,7 @@ namespace LoomNetwork.CZB
                 transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
             }
 
-            Sprite heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.heroElement + "_EXP");
+            Sprite heroHighlight = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
         }
 
@@ -304,52 +304,52 @@ namespace LoomNetwork.CZB
             BoardUnit cardToDestroy = (BoardUnit)card[0];
             if (cardToDestroy != null)
             {
-                cardToDestroy.transform.DOKill();
-                Object.Destroy(cardToDestroy.gameObject);
+                cardToDestroy.Transform.DOKill();
+                Object.Destroy(cardToDestroy.GameObject);
             }
         }
 
         private int GetPercentFromMaxDeck(int index)
         {
-            return (100 * index) / (int)Constants.DECK_MAX_SIZE;
+            return (100 * index) / (int)Constants.DeckMaxSize;
         }
 
         private class CardInGraveyard
         {
-            public readonly GameObject selfObject;
+            public readonly GameObject SelfObject;
 
-            public readonly Image image;
+            public readonly Image Image;
 
             public CardInGraveyard(GameObject gameObject, Sprite sprite = null)
             {
-                selfObject = gameObject;
-                image = selfObject.transform.Find("Image").GetComponent<Image>();
+                SelfObject = gameObject;
+                Image = SelfObject.transform.Find("Image").GetComponent<Image>();
 
                 if (sprite != null)
                 {
-                    image.sprite = sprite;
+                    Image.sprite = sprite;
                 }
             }
 
             public void Dispose()
             {
-                if (selfObject != null)
+                if (SelfObject != null)
                 {
-                    Object.Destroy(selfObject);
+                    Object.Destroy(SelfObject);
                 }
             }
         }
 
         private class CardZoneOnBoardStatus
         {
-            public readonly int percent;
+            public readonly int Percent;
 
-            public readonly Sprite statusSprite;
+            public readonly Sprite StatusSprite;
 
             public CardZoneOnBoardStatus(Sprite statusSprite, int percent)
             {
-                this.statusSprite = statusSprite;
-                this.percent = percent;
+                this.StatusSprite = statusSprite;
+                this.Percent = percent;
             }
         }
 
@@ -361,22 +361,22 @@ namespace LoomNetwork.CZB
             Player opponent = _gameplayManager.OpponentPlayer;
 
             player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
-            player.PlayerHPChangedEvent += OnPlayerHPChanged;
+            player.PlayerHpChangedEvent += OnPlayerHpChanged;
             player.PlayerGooChangedEvent += OnPlayerGooChanged;
             player.PlayerVialGooChangedEvent += OnPlayerVialGooChanged;
             opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
-            opponent.PlayerHPChangedEvent += OnOpponentHPChanged;
+            opponent.PlayerHpChangedEvent += OnOpponentHpChanged;
             opponent.PlayerGooChangedEvent += OnOpponentGooChanged;
             opponent.PlayerVialGooChangedEvent += OnOpponentVialGooChanged;
 
             player.OnStartTurnEvent += OnStartTurnEventHandler;
 
             OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
-            OnPlayerHPChanged(player.HP);
+            OnPlayerHpChanged(player.Hp);
             OnPlayerGooChanged(player.Goo);
             OnPlayerVialGooChanged(player.GooOnCurrentTurn);
             OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
-            OnOpponentHPChanged(opponent.HP);
+            OnOpponentHpChanged(opponent.Hp);
             OnOpponentGooChanged(opponent.GooOnCurrentTurn);
             OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
         }
@@ -391,14 +391,14 @@ namespace LoomNetwork.CZB
 
             if (index == 0)
             {
-                _playerDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+                _playerDeckStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
             } else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).First();
+                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).First();
 
-                _playerDeckStatusTexture.sprite = nearest.statusSprite;
+                _playerDeckStatusTexture.sprite = nearest.StatusSprite;
             }
         }
 
@@ -410,16 +410,16 @@ namespace LoomNetwork.CZB
 
             if (index == 0)
             {
-                _playerGraveyardStatusTexture.sprite = _graveyardStatus.Find(x => x.percent == index).statusSprite;
+                _playerGraveyardStatusTexture.sprite = _graveyardStatus.Find(x => x.Percent == index).StatusSprite;
             } else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
+                List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
                 CardZoneOnBoardStatus nearest = null;
 
-                if (nearestObjects[0].percent > 0)
+                if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];
                 } else
@@ -427,7 +427,7 @@ namespace LoomNetwork.CZB
                     nearest = nearestObjects[1];
                 }
 
-                _playerGraveyardStatusTexture.sprite = nearest.statusSprite;
+                _playerGraveyardStatusTexture.sprite = nearest.StatusSprite;
             }
         }
 
@@ -441,14 +441,14 @@ namespace LoomNetwork.CZB
 
             if (index == 0)
             {
-                _opponentDeckStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+                _opponentDeckStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
             } else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).First();
+                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).First();
 
-                _opponentDeckStatusTexture.sprite = nearest.statusSprite;
+                _opponentDeckStatusTexture.sprite = nearest.StatusSprite;
             }
         }
 
@@ -460,16 +460,16 @@ namespace LoomNetwork.CZB
 
             if (index == 0)
             {
-                _opponentGraveyardStatusTexture.sprite = _deckStatus.Find(x => x.percent == index).statusSprite;
+                _opponentGraveyardStatusTexture.sprite = _deckStatus.Find(x => x.Percent == index).StatusSprite;
             } else
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.percent - percent)).Where(y => y.percent > 0).ToList();
+                List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus.OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
                 CardZoneOnBoardStatus nearest = null;
 
-                if (nearestObjects[0].percent > 0)
+                if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];
                 } else
@@ -477,11 +477,11 @@ namespace LoomNetwork.CZB
                     nearest = nearestObjects[1];
                 }
 
-                _opponentGraveyardStatusTexture.sprite = nearest.statusSprite;
+                _opponentGraveyardStatusTexture.sprite = nearest.StatusSprite;
             }
         }
 
-        private void OnPlayerHPChanged(int health)
+        private void OnPlayerHpChanged(int health)
         {
             if (!_isPlayerInited)
 
@@ -516,7 +516,7 @@ namespace LoomNetwork.CZB
             _playerManaBar.SetVialGoo(currentTurnGoo);
         }
 
-        private void OnOpponentHPChanged(int health)
+        private void OnOpponentHpChanged(int health)
         {
             if (!_isPlayerInited)
 
@@ -553,7 +553,7 @@ namespace LoomNetwork.CZB
 
         private void OnStartTurnEventHandler()
         {
-            _zippingVFX.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
+            _zippingVfx.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
         }
 
         #endregion
@@ -566,15 +566,15 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.HidePopup<YourTurnPopup>();
 
-                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                _gameplayManager.EndGame(Enumerators.EndGameType.Cancel);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MainMenu);
 
-                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+                _soundManager.StopPlaying(Enumerators.SoundType.Tutorial);
+                _soundManager.CrossfaidSound(Enumerators.SoundType.Background, null, true);
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void KeepButtonOnClickHandler()

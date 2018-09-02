@@ -6,22 +6,22 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
-        public int health;
+        public int Health;
 
-        public int damage;
+        public int Damage;
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            health = ability.health;
-            damage = ability.damage;
+            Health = ability.Health;
+            Damage = ability.Damage;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -46,23 +46,23 @@ namespace LoomNetwork.CZB
 
             foreach (BoardUnit unit in opponent.BoardCards)
             {
-                if (damage != 0)
+                if (Damage != 0)
                 {
-                    unit.DamageDebuffUntillEndOfTurn += damage;
-                    int buffresult = unit.CurrentDamage + damage;
+                    unit.DamageDebuffUntillEndOfTurn += Damage;
+                    int buffresult = unit.CurrentDamage + Damage;
 
                     if (buffresult < 0)
                     {
                         unit.DamageDebuffUntillEndOfTurn -= buffresult;
                     }
 
-                    unit.CurrentDamage += damage;
+                    unit.CurrentDamage += Damage;
                 }
 
-                if (health != 0)
+                if (Health != 0)
                 {
-                    unit.HPDebuffUntillEndOfTurn += health;
-                    unit.CurrentHP += health;
+                    unit.HpDebuffUntillEndOfTurn += Health;
+                    unit.CurrentHp += Health;
                 }
             }
         }
@@ -91,14 +91,14 @@ namespace LoomNetwork.CZB
                     unit.DamageDebuffUntillEndOfTurn = 0;
                 }
 
-                if (unit.HPDebuffUntillEndOfTurn != 0)
+                if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentHP += Mathf.Abs(unit.HPDebuffUntillEndOfTurn);
-                    unit.HPDebuffUntillEndOfTurn = 0;
+                    unit.CurrentHp += Mathf.Abs(unit.HpDebuffUntillEndOfTurn);
+                    unit.HpDebuffUntillEndOfTurn = 0;
                 }
             }
 
-            _abilitiesController.DeactivateAbility(activityId);
+            AbilitiesController.DeactivateAbility(ActivityId);
         }
     }
 }

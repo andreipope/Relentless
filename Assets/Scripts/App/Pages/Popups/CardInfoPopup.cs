@@ -8,13 +8,13 @@ namespace LoomNetwork.CZB
 {
     public class CardInfoPopup : IUIPopup
     {
-        public Transform cardTransform;
+        public Transform CardTransform;
 
-        public CollectionCardData _cardData;
+        public CollectionCardData CardData;
 
-        public bool blockedClosing = false;
+        public bool BlockedClosing = false;
 
-        private readonly bool disableMelt = true;
+        private readonly bool _disableMelt = true;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -72,7 +72,7 @@ namespace LoomNetwork.CZB
             _description = Self.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
             _amountAward = Self.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void Show(object data)
@@ -80,11 +80,11 @@ namespace LoomNetwork.CZB
             Show();
 
             _card = data as Card;
-            _description.text = _card.flavorText;
+            _description.text = _card.FlavorText;
 
-            _amountAward.text = (5 * ((int)_card.cardRank + 1)).ToString();
+            _amountAward.text = (5 * ((int)_card.CardRank + 1)).ToString();
 
-            _cardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.name);
+            CardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.Name);
             UpdateCardAmount();
         }
 
@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
 
         public void UpdateCardAmount()
         {
-            if (_cardData.amount == 0)
+            if (CardData.Amount == 0)
             {
                 _buttonMelt.GetComponent<ButtonShiftingContent>().interactable = false;
             } else
@@ -105,24 +105,24 @@ namespace LoomNetwork.CZB
 
         private void ClosePopup()
         {
-            if (blockedClosing)
+            if (BlockedClosing)
 
                 return;
 
             Hide();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DeckeditingRemoveCard, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            int amount = _cardData.amount;
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            int amount = CardData.Amount;
 
-            if (!disableMelt)
+            if (!_disableMelt)
             {
                 if (amount == 0)
                 {
-                    _buttonMelt.GetComponent<MenuButtonNoGlow>().interactable = false;
+                    _buttonMelt.GetComponent<MenuButtonNoGlow>().Interactable = false;
                 }
 
                 // _uiManager.DrawPopup<WarningPopup>("Sorry you don't have cards to desintegrate");
@@ -131,8 +131,8 @@ namespace LoomNetwork.CZB
                     /*cardTransform.DOKill();
                     cardTransform.DOScale(new Vector3(.3f, .3f, .3f), 0.2f);*/
                     Hide();
-                    _uiManager.DrawPopup<DesintigrateCardPopup>(_cardData);
-                    _uiManager.GetPopup<DesintigrateCardPopup>().cardTransform = cardTransform;
+                    _uiManager.DrawPopup<DesintigrateCardPopup>(CardData);
+                    _uiManager.GetPopup<DesintigrateCardPopup>().CardTransform = CardTransform;
                 }
             } else
             {

@@ -7,95 +7,95 @@ using UnityEngine.UI;
 
 public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public bool isToggleEnabled;
+    public bool IsToggleEnabled;
 
-    public MenuButtonToggleEvent onValueChangedEvent = new MenuButtonToggleEvent();
+    public MenuButtonToggleEvent OnValueChangedEvent = new MenuButtonToggleEvent();
 
     [SerializeField]
-    protected Image onHoverOverlayToggleDisabled, onClickOverlayToggleDisabled, onHoverOverlayToggleEnabled, onClickOverlayToggleEnabled, buttonEnabled, buttonDisabled;
+    protected Image OnHoverOverlayToggleDisabled, OnClickOverlayToggleDisabled, OnHoverOverlayToggleEnabled, OnClickOverlayToggleEnabled, ButtonEnabled, ButtonDisabled;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (isToggleEnabled)
+        if (IsToggleEnabled)
         {
-            onHoverOverlayToggleEnabled.DOKill();
-            onHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
-            onClickOverlayToggleEnabled.DOKill();
-            onClickOverlayToggleEnabled.DOFade(1.0f, 0.2f);
+            OnHoverOverlayToggleEnabled.DOKill();
+            OnHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
+            OnClickOverlayToggleEnabled.DOKill();
+            OnClickOverlayToggleEnabled.DOFade(1.0f, 0.2f);
         } else
         {
-            onHoverOverlayToggleDisabled.DOKill();
-            onHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
-            onClickOverlayToggleDisabled.DOKill();
-            onClickOverlayToggleDisabled.DOFade(1.0f, 0.2f);
+            OnHoverOverlayToggleDisabled.DOKill();
+            OnHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
+            OnClickOverlayToggleDisabled.DOKill();
+            OnClickOverlayToggleDisabled.DOFade(1.0f, 0.2f);
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isToggleEnabled)
+        if (IsToggleEnabled)
         {
-            onHoverOverlayToggleEnabled.DOKill();
-            onHoverOverlayToggleEnabled.DOFade(1.0f, 0.5f);
+            OnHoverOverlayToggleEnabled.DOKill();
+            OnHoverOverlayToggleEnabled.DOFade(1.0f, 0.5f);
         } else
         {
-            onHoverOverlayToggleDisabled.DOKill();
-            onHoverOverlayToggleDisabled.DOFade(1.0f, 0.5f);
+            OnHoverOverlayToggleDisabled.DOKill();
+            OnHoverOverlayToggleDisabled.DOFade(1.0f, 0.5f);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isToggleEnabled)
+        if (IsToggleEnabled)
         {
-            onHoverOverlayToggleEnabled.DOKill();
-            onHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
+            OnHoverOverlayToggleEnabled.DOKill();
+            OnHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
         } else
         {
-            onHoverOverlayToggleDisabled.DOKill();
-            onHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
+            OnHoverOverlayToggleDisabled.DOKill();
+            OnHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
         }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isToggleEnabled)
+        if (IsToggleEnabled)
         {
-            onHoverOverlayToggleEnabled.enabled = false;
-            onClickOverlayToggleEnabled.enabled = false;
-            buttonEnabled.enabled = false;
+            OnHoverOverlayToggleEnabled.enabled = false;
+            OnClickOverlayToggleEnabled.enabled = false;
+            ButtonEnabled.enabled = false;
 
-            onHoverOverlayToggleDisabled.enabled = true;
-            onClickOverlayToggleDisabled.enabled = true;
-            buttonDisabled.enabled = true;
+            OnHoverOverlayToggleDisabled.enabled = true;
+            OnClickOverlayToggleDisabled.enabled = true;
+            ButtonDisabled.enabled = true;
 
-            onHoverOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
-            onClickOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
+            OnHoverOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
+            OnClickOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
         } else
         {
-            onHoverOverlayToggleDisabled.enabled = false;
-            onClickOverlayToggleDisabled.enabled = false;
-            buttonDisabled.enabled = false;
+            OnHoverOverlayToggleDisabled.enabled = false;
+            OnClickOverlayToggleDisabled.enabled = false;
+            ButtonDisabled.enabled = false;
 
-            onHoverOverlayToggleEnabled.enabled = true;
-            onClickOverlayToggleEnabled.enabled = true;
-            buttonEnabled.enabled = true;
+            OnHoverOverlayToggleEnabled.enabled = true;
+            OnClickOverlayToggleEnabled.enabled = true;
+            ButtonEnabled.enabled = true;
 
-            onHoverOverlayToggleEnabled.color = new Color(1, 1, 1, 0);
-            onClickOverlayToggleEnabled.color = new Color(1, 1, 1, 0);
+            OnHoverOverlayToggleEnabled.color = new Color(1, 1, 1, 0);
+            OnClickOverlayToggleEnabled.color = new Color(1, 1, 1, 0);
         }
 
-        isToggleEnabled = !isToggleEnabled;
+        IsToggleEnabled = !IsToggleEnabled;
 
-        if (onValueChangedEvent != null)
+        if (OnValueChangedEvent != null)
         {
-            onValueChangedEvent.Invoke(isToggleEnabled);
+            OnValueChangedEvent.Invoke(IsToggleEnabled);
         }
     }
 
     public void SetStatus(bool status)
     {
-        isToggleEnabled = !status;
+        IsToggleEnabled = !status;
         OnPointerUp(null);
     }
 
@@ -105,14 +105,14 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void Start()
     {
-        if (isToggleEnabled)
+        if (IsToggleEnabled)
         {
-            buttonEnabled.enabled = true;
-            buttonDisabled.enabled = false;
+            ButtonEnabled.enabled = true;
+            ButtonDisabled.enabled = false;
         } else
         {
-            buttonEnabled.enabled = false;
-            buttonDisabled.enabled = true;
+            ButtonEnabled.enabled = false;
+            ButtonDisabled.enabled = true;
         }
     }
 

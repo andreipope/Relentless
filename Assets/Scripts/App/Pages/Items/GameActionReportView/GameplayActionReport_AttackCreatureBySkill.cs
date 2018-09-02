@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_AttackCreatureBySkill : ReportViewBase
+    public class GameplayActionReportAttackCreatureBySkill : ReportViewBase
     {
         private Player _callerPlayer;
 
@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _attackedCreatureObj, _attackingPlayerObj;
 
-        public GameplayActionReport_AttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportAttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -26,14 +26,14 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _callerPlayer = gameAction.parameters[0] as Player;
-            _usedSkill = gameAction.parameters[1] as HeroSkill;
-            _skillValue = (int)gameAction.parameters[2];
-            _skillUsedOnUnit = gameAction.parameters[3] as BoardUnit;
+            _callerPlayer = GameAction.Parameters[0] as Player;
+            _usedSkill = GameAction.Parameters[1] as HeroSkill;
+            _skillValue = (int)GameAction.Parameters[2];
+            _skillUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
 
-            previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.heroElement + "_EXP");
+            PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.HeroElement + "_EXP");
 
-            attackingPictureObject.SetActive(true);
+            AttackingPictureObject.SetActive(true);
 
             _attackedCreatureObj = CreateCardPreview(_skillUsedOnUnit.Card, Vector3.right * 6);
             _attackingPlayerObj = CreatePlayerPreview(_callerPlayer, Vector3.zero);

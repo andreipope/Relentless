@@ -8,19 +8,19 @@ namespace LoomNetwork.CZB
 {
     public class DamageTargetAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
         public DamageTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Update()
@@ -35,95 +35,95 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            CreateVFX(Vector3.zero);
+            CreateVfx(Vector3.zero);
         }
 
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
                 Action();
             }
         }
 
-        protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                case Enumerators.AbilityEffectType.TargetRock:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                case Enumerators.AbilityEffectType.TargetFire:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                case Enumerators.AbilityEffectType.TargetLife:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                case Enumerators.AbilityEffectType.TargetToxic:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
 
             // base.CreateVFX(pos);
-            Vector3 targetPosition = affectObjectType == Enumerators.AffectObjectType.CHARACTER?targetUnit.transform.position:targetPlayer.AvatarObject.transform.position;
+            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.Character?TargetUnit.Transform.position:TargetPlayer.AvatarObject.transform.position;
 
-            _vfxObject = Object.Instantiate(_vfxObject);
-            _vfxObject.transform.position = Utilites.CastVFXPosition(abilityUnitOwner.transform.position);
-            targetPosition = Utilites.CastVFXPosition(targetPosition);
-            _vfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-            ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
+            VfxObject = Object.Instantiate(VfxObject);
+            VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitOwner.Transform.position);
+            targetPosition = Utilites.CastVfxPosition(targetPosition);
+            VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+            ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
 
             if (!autoDestroy)
             {
-                _particleIds.Add(id);
+                ParticleIds.Add(id);
             }
         }
 
         private void ActionCompleted()
         {
-            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
-            switch (affectObjectType)
+            switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
 
                     // if (targetPlayer.id == playerCallerOfAbility.id)
-                    _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer);
+                    BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
 
                     // playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
-                    _battleController.AttackUnitByAbility(caller, abilityData, targetUnit);
+                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
             }
 
-            Vector3 targetPosition = _vfxObject.transform.position;
+            Vector3 targetPosition = VfxObject.transform.position;
 
             ClearParticles();
 
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                case Enumerators.AbilityEffectType.TargetRock:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                case Enumerators.AbilityEffectType.TargetFire:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                case Enumerators.AbilityEffectType.TargetLife:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                case Enumerators.AbilityEffectType.TargetToxic:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
             }
 
-            if (_vfxObject != null)
+            if (VfxObject != null)
             {
-                _vfxObject = Object.Instantiate(_vfxObject);
-                _vfxObject.transform.position = targetPosition;
-                _particlesController.RegisterParticleSystem(_vfxObject, true);
+                VfxObject = Object.Instantiate(VfxObject);
+                VfxObject.transform.position = targetPosition;
+                ParticlesController.RegisterParticleSystem(VfxObject, true);
             }
         }
     }

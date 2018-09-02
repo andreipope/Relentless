@@ -14,10 +14,13 @@ namespace LoomNetwork.CZB
         private TextMeshProUGUI _abilityDescriptionText;
 
         private Image _abilityIconImage;
+
         private TextMeshProUGUI _abilityNameText;
 
         private IDataManager _dataManager;
+
         private ILoadObjectsManager _loadObjectsManager;
+
         private IUIManager _uiManager;
 
         public GameObject Self { get; private set; }
@@ -45,9 +48,9 @@ namespace LoomNetwork.CZB
 
             HeroSkill skill = (HeroSkill)data;
 
-            _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath);
-            _abilityNameText.text = skill.title;
-            _abilityDescriptionText.text = skill.description;
+            _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.IconPath);
+            _abilityNameText.text = skill.Title;
+            _abilityDescriptionText.text = skill.Description;
         }
 
         public void Hide()

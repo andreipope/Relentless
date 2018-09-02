@@ -4,26 +4,26 @@ namespace LoomNetwork.CZB
 {
     public class Buff
     {
-        public bool rankingBuff;
+        public bool RankingBuff;
 
-        public Enumerators.CardRank cardRank;
+        public Enumerators.CardRank CardRank;
 
-        public Enumerators.BuffType buffType;
+        public Enumerators.BuffType BuffType;
 
-        public object[] parameters;
+        public object[] Parameters;
 
         public Buff(Enumerators.BuffType type, object[] param, Enumerators.CardRank rank)
         {
-            buffType = type;
-            parameters = param;
-            cardRank = rank;
-            rankingBuff = true;
+            BuffType = type;
+            Parameters = param;
+            CardRank = rank;
+            RankingBuff = true;
         }
 
         public Buff(Enumerators.BuffType type, object[] param)
         {
-            buffType = type;
-            parameters = param;
+            BuffType = type;
+            Parameters = param;
         }
     }
 }

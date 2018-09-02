@@ -9,166 +9,162 @@ namespace LoomNetwork.CZB
 {
     public class AbilityBase
     {
-        public ulong activityId;
+        public ulong ActivityId;
 
-        public Enumerators.AbilityActivityType abilityActivityType;
+        public Enumerators.AbilityActivityType AbilityActivityType;
 
-        public Enumerators.AbilityCallType abilityCallType;
+        public Enumerators.AbilityCallType AbilityCallType;
 
-        public Enumerators.AbilityType abilityType;
+        public Enumerators.AbilityType AbilityType;
 
-        public Enumerators.AffectObjectType affectObjectType;
+        public Enumerators.AffectObjectType AffectObjectType;
 
-        public Enumerators.AbilityEffectType abilityEffectType;
+        public Enumerators.AbilityEffectType AbilityEffectType;
 
-        public Enumerators.CardType targetCardType = Enumerators.CardType.NONE;
+        public Enumerators.CardType TargetCardType = Enumerators.CardType.None;
 
-        public Enumerators.UnitStatusType targetUnitStatusType = Enumerators.UnitStatusType.NONE;
+        public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.None;
 
-        public List<Enumerators.AbilityTargetType> abilityTargetTypes;
+        public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
 
-        public Enumerators.CardKind cardKind;
+        public Enumerators.CardKind CardKind;
 
-        public Card cardOwnerOfAbility;
+        public Card CardOwnerOfAbility;
 
-        public WorkingCard mainWorkingCard;
+        public WorkingCard MainWorkingCard;
 
-        public BoardUnit abilityUnitOwner;
+        public BoardUnit AbilityUnitOwner;
 
-        public Player playerCallerOfAbility;
+        public Player PlayerCallerOfAbility;
 
-        public BoardSpell boardSpell;
+        public BoardSpell BoardSpell;
 
-        public BoardCard boardCard;
+        public BoardCard BoardCard;
 
-        public BoardUnit targetUnit;
+        public BoardUnit TargetUnit;
 
-        public Player targetPlayer;
+        public Player TargetPlayer;
 
-        public Player selectedPlayer;
+        public Player SelectedPlayer;
 
-        protected AbilitiesController _abilitiesController;
+        protected AbilitiesController AbilitiesController;
 
-        protected ParticlesController _particlesController;
+        protected ParticlesController ParticlesController;
 
-        protected BattleController _battleController;
+        protected BattleController BattleController;
 
-        protected ActionsQueueController _actionsQueueController;
+        protected ActionsQueueController ActionsQueueController;
 
-        protected BattlegroundController _battlegroundController;
+        protected BattlegroundController BattlegroundController;
 
-        protected CardsController _cardsController;
+        protected CardsController CardsController;
 
-        protected RanksController _ranksController;
+        protected RanksController RanksController;
 
-        protected ILoadObjectsManager _loadObjectsManager;
+        protected ILoadObjectsManager LoadObjectsManager;
 
-        protected IGameplayManager _gameplayManager;
+        protected IGameplayManager GameplayManager;
 
-        protected IDataManager _dataManager;
+        protected IDataManager DataManager;
 
-        protected ITimerManager _timerManager;
+        protected ITimerManager TimerManager;
 
-        protected ISoundManager _soundManager;
+        protected ISoundManager SoundManager;
 
-        protected AbilityBoardArrow _targettingArrow;
+        protected GameObject VfxObject;
 
-        protected GameObject _vfxObject;
-
-        protected bool _isAbilityResolved;
+        protected bool IsAbilityResolved;
 
         protected Action OnObjectSelectedByTargettingArrowCallback;
 
         protected Action OnObjectSelectFailedByTargettingArrowCallback;
 
-        protected AbilityData abilityData;
+        protected List<ulong> ParticleIds;
 
-        protected List<ulong> _particleIds;
+        private readonly Player _playerAvatar;
 
-        private readonly Player playerAvatar;
-
-        private readonly Player opponenentAvatar;
+        private readonly Player _opponenentAvatar;
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
+            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            DataManager = GameClient.Get<IDataManager>();
+            TimerManager = GameClient.Get<ITimerManager>();
+            SoundManager = GameClient.Get<ISoundManager>();
 
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
-            _particlesController = _gameplayManager.GetController<ParticlesController>();
-            _battleController = _gameplayManager.GetController<BattleController>();
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
-            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-            _cardsController = _gameplayManager.GetController<CardsController>();
-            _ranksController = _gameplayManager.GetController<RanksController>();
+            AbilitiesController = GameplayManager.GetController<AbilitiesController>();
+            ParticlesController = GameplayManager.GetController<ParticlesController>();
+            BattleController = GameplayManager.GetController<BattleController>();
+            ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            CardsController = GameplayManager.GetController<CardsController>();
+            RanksController = GameplayManager.GetController<RanksController>();
 
-            abilityData = ability;
-            this.cardKind = cardKind;
-            abilityType = ability.abilityType;
-            abilityActivityType = ability.abilityActivityType;
-            abilityCallType = ability.abilityCallType;
-            abilityTargetTypes = ability.abilityTargetTypes;
-            abilityEffectType = ability.abilityEffectType;
-            playerAvatar = _gameplayManager.CurrentPlayer;
-            opponenentAvatar = _gameplayManager.OpponentPlayer;
+            AbilityData = ability;
+            this.CardKind = cardKind;
+            AbilityType = ability.AbilityType;
+            AbilityActivityType = ability.AbilityActivityType;
+            AbilityCallType = ability.AbilityCallType;
+            AbilityTargetTypes = ability.AbilityTargetTypes;
+            AbilityEffectType = ability.AbilityEffectType;
+            _playerAvatar = GameplayManager.CurrentPlayer;
+            _opponenentAvatar = GameplayManager.OpponentPlayer;
 
             PermanentInputEndEvent += OnInputEndEventHandler;
 
-            _particleIds = new List<ulong>();
+            ParticleIds = new List<ulong>();
         }
 
         protected event Action PermanentInputEndEvent;
 
-        public AbilityBoardArrow TargettingArrow => _targettingArrow;
+        public AbilityBoardArrow TargettingArrow { get; protected set; }
 
-        public AbilityData AbilityData => abilityData;
+        public AbilityData AbilityData { get; protected set; }
 
         public void ActivateSelectTarget(List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            _targettingArrow = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
-            _targettingArrow.possibleTargets = abilityTargetTypes;
-            _targettingArrow.selfBoardCreature = abilityUnitOwner;
-            _targettingArrow.targetUnitType = targetCardType;
-            _targettingArrow.targetUnitStatusType = targetUnitStatusType;
+            TargettingArrow = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
+            TargettingArrow.PossibleTargets = AbilityTargetTypes;
+            TargettingArrow.SelfBoardCreature = AbilityUnitOwner;
+            TargettingArrow.TargetUnitType = TargetCardType;
+            TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
 
-            if (cardKind == Enumerators.CardKind.CREATURE)
+            if (CardKind == Enumerators.CardKind.Creature)
             {
-                _targettingArrow.Begin(abilityUnitOwner.transform.position);
-            } else if (cardKind == Enumerators.CardKind.SPELL)
+                TargettingArrow.Begin(AbilityUnitOwner.Transform.position);
+            } else if (CardKind == Enumerators.CardKind.Spell)
             {
-                _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
+                TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
             } else
             {
-                _targettingArrow.Begin(playerCallerOfAbility.AvatarObject.transform.position);
+                TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
             }
 
-            _targettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
-            _targettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
-            _targettingArrow.OnPlayerSelectedEvent += OnPlayerSelectedHandler;
-            _targettingArrow.OnPlayerUnselectedEvent += OnPlayerUnselectedHandler;
-            _targettingArrow.OnInputEndEvent += OnInputEndEventHandler;
-            _targettingArrow.OnInputCancelEvent += OnInputCancelEventHandler;
+            TargettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
+            TargettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
+            TargettingArrow.OnPlayerSelectedEvent += OnPlayerSelectedHandler;
+            TargettingArrow.OnPlayerUnselectedEvent += OnPlayerUnselectedHandler;
+            TargettingArrow.OnInputEndEvent += OnInputEndEventHandler;
+            TargettingArrow.OnInputCancelEvent += OnInputCancelEventHandler;
         }
 
         public void DeactivateSelectTarget()
         {
-            if (_targettingArrow != null)
+            if (TargettingArrow != null)
             {
-                _targettingArrow.OnCardSelectedEvent -= OnCardSelectedEventHandler;
-                _targettingArrow.OnCardUnselectedevent -= OnCardUnselectedeventHandler;
-                _targettingArrow.OnPlayerSelectedEvent -= OnPlayerSelectedHandler;
-                _targettingArrow.OnPlayerUnselectedEvent -= OnPlayerUnselectedHandler;
-                _targettingArrow.OnInputEndEvent -= OnInputEndEventHandler;
-                _targettingArrow.OnInputCancelEvent -= OnInputCancelEventHandler;
+                TargettingArrow.OnCardSelectedEvent -= OnCardSelectedEventHandler;
+                TargettingArrow.OnCardUnselectedevent -= OnCardUnselectedeventHandler;
+                TargettingArrow.OnPlayerSelectedEvent -= OnPlayerSelectedHandler;
+                TargettingArrow.OnPlayerUnselectedEvent -= OnPlayerUnselectedHandler;
+                TargettingArrow.OnInputEndEvent -= OnInputEndEventHandler;
+                TargettingArrow.OnInputCancelEvent -= OnInputCancelEventHandler;
 
-                _targettingArrow.Dispose();
-                _targettingArrow = null;
+                TargettingArrow.Dispose();
+                TargettingArrow = null;
             }
         }
 
@@ -179,31 +175,31 @@ namespace LoomNetwork.CZB
 
         public virtual void Activate()
         {
-            playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
-            playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
+            PlayerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
+            PlayerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if ((cardKind == Enumerators.CardKind.CREATURE) && (abilityUnitOwner != null))
+            if ((CardKind == Enumerators.CardKind.Creature) && (AbilityUnitOwner != null))
             {
-                abilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
-                abilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
-                abilityUnitOwner.UnitHPChangedEvent += UnitHPChangedEventHandler;
-                abilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
+                AbilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
+                AbilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
+                AbilityUnitOwner.UnitHpChangedEvent += UnitHPChangedEventHandler;
+                AbilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
-                if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                if (AbilityActivityType == Enumerators.AbilityActivityType.Passive)
                 {
                     // boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
-            } else if ((cardKind == Enumerators.CardKind.SPELL) && (boardSpell != null))
+            } else if ((CardKind == Enumerators.CardKind.Spell) && (BoardSpell != null))
             {
-                boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
+                BoardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
             }
 
-            if (playerCallerOfAbility.IsLocalPlayer)
+            if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                selectedPlayer = playerAvatar;
+                SelectedPlayer = _playerAvatar;
             } else
             {
-                selectedPlayer = opponenentAvatar;
+                SelectedPlayer = _opponenentAvatar;
             }
         }
 
@@ -213,8 +209,8 @@ namespace LoomNetwork.CZB
 
         public virtual void Dispose()
         {
-            playerCallerOfAbility.OnEndTurnEvent -= OnEndTurnEventHandler;
-            playerCallerOfAbility.OnStartTurnEvent -= OnStartTurnEventHandler;
+            PlayerCallerOfAbility.OnEndTurnEvent -= OnEndTurnEventHandler;
+            PlayerCallerOfAbility.OnStartTurnEvent -= OnStartTurnEventHandler;
 
             DeactivateSelectTarget();
             ClearParticles();
@@ -228,22 +224,22 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            if (targetUnit != null)
+            if (TargetUnit != null)
             {
-                affectObjectType = Enumerators.AffectObjectType.CHARACTER;
-            } else if (targetPlayer != null)
+                AffectObjectType = Enumerators.AffectObjectType.Character;
+            } else if (TargetPlayer != null)
             {
-                affectObjectType = Enumerators.AffectObjectType.PLAYER;
+                AffectObjectType = Enumerators.AffectObjectType.Player;
             } else
             {
-                affectObjectType = Enumerators.AffectObjectType.NONE;
+                AffectObjectType = Enumerators.AffectObjectType.None;
             }
 
-            if (affectObjectType != Enumerators.AffectObjectType.NONE)
+            if (AffectObjectType != Enumerators.AffectObjectType.None)
             {
-                _isAbilityResolved = true;
+                IsAbilityResolved = true;
 
-                if (affectObjectType == Enumerators.AffectObjectType.CHARACTER)
+                if (AffectObjectType == Enumerators.AffectObjectType.Character)
                 {
                     // targetCreature.Card.ConnectAbility((uint)abilityType);
                 }
@@ -263,48 +259,48 @@ namespace LoomNetwork.CZB
 
         protected virtual void OnCardSelectedEventHandler(BoardUnit obj)
         {
-            targetUnit = obj;
+            TargetUnit = obj;
 
-            targetPlayer = null;
+            TargetPlayer = null;
         }
 
         protected virtual void OnCardUnselectedeventHandler(BoardUnit obj)
         {
-            targetUnit = null;
+            TargetUnit = null;
         }
 
         protected virtual void OnPlayerSelectedHandler(Player obj)
         {
-            targetPlayer = obj;
+            TargetPlayer = obj;
 
-            targetUnit = null;
+            TargetUnit = null;
         }
 
         protected virtual void OnPlayerUnselectedHandler(Player obj)
         {
-            targetPlayer = null;
+            TargetPlayer = null;
         }
 
-        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected virtual void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             // todo make it async
-            if (_vfxObject != null)
+            if (VfxObject != null)
             {
-                _vfxObject = Object.Instantiate(_vfxObject);
+                VfxObject = Object.Instantiate(VfxObject);
 
                 if (!justPosition)
                 {
-                    _vfxObject.transform.position = (pos - Constants.VFX_OFFSET) + Vector3.forward;
+                    VfxObject.transform.position = (pos - Constants.VfxOffset) + Vector3.forward;
                 } else
                 {
-                    _vfxObject.transform.position = pos;
+                    VfxObject.transform.position = pos;
                 }
 
-                ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
+                ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
 
                 if (!autoDestroy)
                 {
-                    _particleIds.Add(id);
+                    ParticleIds.Add(id);
                 }
             }
         }
@@ -325,7 +321,7 @@ namespace LoomNetwork.CZB
 
         protected virtual void OnEndTurnEventHandler()
         {
-            if (_targettingArrow != null)
+            if (TargettingArrow != null)
             {
                 OnInputEndEventHandler();
             }
@@ -339,11 +335,11 @@ namespace LoomNetwork.CZB
         {
             // if(targetCreature != null)
             // targetCreature.Card.DisconnectAbility((uint)abilityType);
-            abilityUnitOwner.UnitOnDieEvent -= UnitOnDieEventHandler;
-            abilityUnitOwner.UnitHPChangedEvent -= UnitHPChangedEventHandler;
-            abilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
+            AbilityUnitOwner.UnitOnDieEvent -= UnitOnDieEventHandler;
+            AbilityUnitOwner.UnitHpChangedEvent -= UnitHPChangedEventHandler;
+            AbilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
 
-            _abilitiesController.DeactivateAbility(activityId);
+            AbilitiesController.DeactivateAbility(ActivityId);
             Dispose();
         }
 
@@ -361,7 +357,7 @@ namespace LoomNetwork.CZB
 
         protected void SpellOnUsedEventHandler()
         {
-            boardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
+            BoardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
 
             // _abilitiesController.DeactivateAbility(activityId);
         }
@@ -379,25 +375,25 @@ namespace LoomNetwork.CZB
 
         protected void ClearParticles()
         {
-            foreach (ulong id in _particleIds)
+            foreach (ulong id in ParticleIds)
             {
-                _particlesController.DestoryParticle(id);
+                ParticlesController.DestoryParticle(id);
             }
         }
 
         protected object GetCaller()
         {
-            return abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            return AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
         }
 
         protected Player GetOpponentOverlord()
         {
-            return playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
         }
 
         private void DestroyParticle(object[] param)
         {
-            Object.Destroy(_vfxObject);
+            Object.Destroy(VfxObject);
         }
     }
 }

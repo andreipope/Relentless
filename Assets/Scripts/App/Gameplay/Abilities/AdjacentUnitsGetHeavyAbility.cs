@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -36,9 +36,9 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             int targetIndex = -1;
-            for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
+            for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (playerCallerOfAbility.BoardCards[i] == abilityUnitOwner)
+                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -49,12 +49,12 @@ namespace LoomNetwork.CZB
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeHeavyToUnit(playerCallerOfAbility.BoardCards[targetIndex - 1]);
+                    TakeHeavyToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1]);
                 }
 
-                if (targetIndex + 1 < playerCallerOfAbility.BoardCards.Count)
+                if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
                 {
-                    TakeHeavyToUnit(playerCallerOfAbility.BoardCards[targetIndex + 1]);
+                    TakeHeavyToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1]);
                 }
             }
         }

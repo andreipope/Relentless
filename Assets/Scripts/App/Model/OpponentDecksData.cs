@@ -7,13 +7,13 @@ namespace LoomNetwork.CZB.Data
 {
     public class OpponentDecksData
     {
-        public List<OpponentDeck> decks;
+        public List<OpponentDeck> Decks;
 
         public void ParseData()
         {
-            if (decks != null)
+            if (Decks != null)
             {
-                foreach (OpponentDeck deck in decks)
+                foreach (OpponentDeck deck in Decks)
                 {
                     deck.ParseData();
                 }
@@ -23,30 +23,30 @@ namespace LoomNetwork.CZB.Data
 
     public class OpponentDeck
     {
-        public int id;
+        public int Id;
 
-        public int heroId;
+        public int HeroId;
 
-        public string type;
+        public string Type;
 
-        public string actions;
+        public string Actions;
 
-        public List<DeckCardData> cards;
+        public List<DeckCardData> Cards;
 
         [JsonIgnore]
-        public List<Enumerators.AIActionType> opponentActions;
+        public List<Enumerators.AiActionType> OpponentActions;
 
         public void ParseData()
         {
-            opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
+            OpponentActions = Utilites.CastList<Enumerators.AiActionType>(Actions);
         }
 
         public int GetNumCards()
         {
             int amount = 0;
-            foreach (DeckCardData card in cards)
+            foreach (DeckCardData card in Cards)
             {
-                amount += card.amount;
+                amount += card.Amount;
             }
 
             return amount;

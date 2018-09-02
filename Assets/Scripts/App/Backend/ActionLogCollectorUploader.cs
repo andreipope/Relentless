@@ -82,7 +82,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
                 Player.OnEndTurnEvent += OnEndTurnEventHandler;
                 Player.OnStartTurnEvent += OnStartTurnEventHandler;
-                Player.PlayerHPChangedEvent += OnPlayerHPChangedEventHandler;
+                Player.PlayerHpChangedEvent += OnPlayerHPChangedEventHandler;
                 Player.PlayerGooChangedEvent += OnPlayerGooChangedEventHandler;
                 Player.PlayerVialGooChangedEvent += OnPlayerVialGooChangedEventHandler;
                 Player.DeckChangedEvent += OnDeckChangedEventHandler;
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             {
                 Player.OnEndTurnEvent -= OnEndTurnEventHandler;
                 Player.OnStartTurnEvent -= OnStartTurnEventHandler;
-                Player.PlayerHPChangedEvent -= OnPlayerHPChangedEventHandler;
+                Player.PlayerHpChangedEvent -= OnPlayerHPChangedEventHandler;
                 Player.PlayerGooChangedEvent -= OnPlayerGooChangedEventHandler;
                 Player.PlayerVialGooChangedEvent -= OnPlayerVialGooChangedEventHandler;
                 Player.DeckChangedEvent -= OnDeckChangedEventHandler;
@@ -193,12 +193,12 @@ namespace LoomNetwork.CZB.BackendCommunication
             {
                 return new
                 {
-                    card.instanceId,
-                    card.cardId,
-                    card.libraryCard.name,
-                    card.health,
-                    card.damage,
-                    type = card.type.ToString()
+                    instanceId = card.InstanceId,
+                    cardId = card.CardId,
+                    name = card.LibraryCard.Name,
+                    health = card.Health,
+                    damage = card.Damage,
+                    type = card.Type.ToString()
                 };
             }
         }

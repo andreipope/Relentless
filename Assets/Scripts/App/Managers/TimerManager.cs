@@ -6,9 +6,9 @@ namespace LoomNetwork.CZB
 {
     public class TimerManager : IService, ITimerManager
     {
-        private static readonly object _sync = new object();
+        private static readonly object Sync = new object();
 
-        private int timersCount;
+        private int _timersCount;
 
         private List<Timer> _timers;
 
@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            lock (_sync)
+            lock (Sync)
             {
                 for (int i = _timers.Count - 1; i > -1; i--)
                 {
@@ -37,7 +37,7 @@ namespace LoomNetwork.CZB
                     {
                         if (_timers[i] != null)
                         {
-                            if (_timers[i].finished)
+                            if (_timers[i].Finished)
                             {
                                 _timers.RemoveAt(i);
                             } else
@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
         {
             for (int i = 0; i < _timers.Count; i++)
             {
-                if (_timers[i]._handler == handler)
+                if (_timers[i].Handler == handler)
                 {
                     _timers.RemoveAt(i);
                 }
@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
         public void AddTimer(Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false, bool storeTimer = false)
         {
             Timer timer = new Timer(handler, parameters, time, loop);
-            timer.index = timersCount++;
+            timer.Index = _timersCount++;
 
             if (storeTimer)
             {
@@ -77,16 +77,16 @@ namespace LoomNetwork.CZB
                         newParams[i] = parameters[i];
                     }
 
-                    newParams[newParams.Length - 1] = timer.index;
+                    newParams[newParams.Length - 1] = timer.Index;
 
                     parameters = newParams;
                 } else
                 {
                     parameters = new object[1];
-                    parameters[0] = timer.index;
+                    parameters[0] = timer.Index;
                 }
 
-                timer.parameters = parameters;
+                timer.Parameters = parameters;
             }
 
             _timers.Add(timer);
@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
 
         public void StopTimer(int index)
         {
-            Timer timer = _timers.Find(x => x.index == index);
+            Timer timer = _timers.Find(x => x.Index == index);
 
             if (_timers.Contains(timer))
             {
@@ -105,13 +105,13 @@ namespace LoomNetwork.CZB
 
     public class Timer
     {
-        public Action<object[]> _handler;
+        public Action<object[]> Handler;
 
-        public object[] parameters;
+        public object[] Parameters;
 
-        public bool finished;
+        public bool Finished;
 
-        public int index;
+        public int Index;
 
         private readonly float _time;
 
@@ -121,12 +121,12 @@ namespace LoomNetwork.CZB
 
         public Timer(Action<object[]> handler, object[] parameters, float time, bool loop)
         {
-            _handler = handler;
-            this.parameters = parameters;
+            Handler = handler;
+            this.Parameters = parameters;
             _time = time;
             _currentTime = time;
             _loop = loop;
-            finished = false;
+            Finished = false;
         }
 
         public void Update()
@@ -136,7 +136,7 @@ namespace LoomNetwork.CZB
             {
                 try
                 {
-                    _handler(parameters);
+                    Handler(Parameters);
                 } catch (Exception ex)
                 {
                     Debug.LogError(ex.Message + " : " + ex.StackTrace);
@@ -147,7 +147,7 @@ namespace LoomNetwork.CZB
                     _currentTime = _time;
                 } else
                 {
-                    finished = true;
+                    Finished = true;
                 }
             }
         }

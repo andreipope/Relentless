@@ -6,24 +6,24 @@ namespace LoomNetwork.CZB
 {
     public class TakeDefenseIfOverlordHasLessDefenseThanAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
-        public int health;
+        public int Health;
 
         public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
-            health = ability.health;
+            Value = ability.Value;
+            Health = ability.Health;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -39,10 +39,10 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (playerCallerOfAbility.HP <= health)
+            if (PlayerCallerOfAbility.Hp <= Health)
             {
-                abilityUnitOwner.BuffedHP += value;
-                abilityUnitOwner.CurrentHP += value;
+                AbilityUnitOwner.BuffedHp += Value;
+                AbilityUnitOwner.CurrentHp += Value;
 
                 // CreateVFX(abilityUnitOwner.transform.position, true, 5f);
             }

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_PlaySpellCard : ReportViewBase
+    public class GameplayActionReportPlaySpellCard : ReportViewBase
     {
         private Player _callerPlayer;
 
@@ -13,7 +13,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _playedCardPreviewObject;
 
-        public GameplayActionReport_PlaySpellCard(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportPlaySpellCard(GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -22,15 +22,15 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _callerPlayer = gameAction.parameters[0] as Player;
+            _callerPlayer = GameAction.Parameters[0] as Player;
 
-            if (gameAction.parameters.Length > 1)
+            if (GameAction.Parameters.Length > 1)
             {
-                _playedCard = gameAction.parameters[1] as BoardCard;
+                _playedCard = GameAction.Parameters[1] as BoardCard;
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), _playedCard.WorkingCard.libraryCard.cardRank);
-                string cardSetName = cardsController.GetSetOfCard(_playedCard.WorkingCard.libraryCard);
-                previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), _playedCard.WorkingCard.libraryCard.picture.ToLower()));
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), _playedCard.WorkingCard.LibraryCard.CardRank);
+                string cardSetName = CardsController.GetSetOfCard(_playedCard.WorkingCard.LibraryCard);
+                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), _playedCard.WorkingCard.LibraryCard.Picture.ToLower()));
 
                 _playedCardPreviewObject = CreateCardPreview(_playedCard.WorkingCard, Vector3.zero);
             }

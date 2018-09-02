@@ -6,22 +6,22 @@ namespace LoomNetwork.CZB
 {
     public class AddGooVialsAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
-        public int count;
+        public int Count;
 
         public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
-            count = ability.count;
+            Value = ability.Value;
+            Count = ability.Count;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
             Action();
         }
 
@@ -39,21 +39,21 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (playerCallerOfAbility.GooOnCurrentTurn == Constants.MAXIMUM_PLAYER_GOO)
+            if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo)
             {
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < Count; i++)
                 {
-                    _cardsController.AddCardToHand(playerCallerOfAbility);
+                    CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
-            } else if (playerCallerOfAbility.GooOnCurrentTurn == Constants.MAXIMUM_PLAYER_GOO - 1)
+            } else if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo - 1)
             {
-                for (int i = 0; i < count - 1; i++)
+                for (int i = 0; i < Count - 1; i++)
                 {
-                    _cardsController.AddCardToHand(playerCallerOfAbility);
+                    CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
             }
 
-            playerCallerOfAbility.GooOnCurrentTurn += value;
+            PlayerCallerOfAbility.GooOnCurrentTurn += Value;
 
             // playerCallerOfAbility.Goo = playerCallerOfAbility.GooOnCurrentTurn;
         }

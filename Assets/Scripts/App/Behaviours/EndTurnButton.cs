@@ -7,62 +7,62 @@ using UnityEngine.Assertions;
 public class EndTurnButton : MonoBehaviour
 {
     [SerializeField]
-    private readonly Vector3 textPressedPosition = new Vector3(0, -0.12f, 0);
+    private readonly Vector3 _textPressedPosition = new Vector3(0, -0.12f, 0);
 
     [SerializeField]
-    private readonly Vector3 textDefaultPosition = new Vector3(0, -0.00f, 0);
+    private readonly Vector3 _textDefaultPosition = new Vector3(0, -0.00f, 0);
 
     [SerializeField]
-    private Sprite defaultSprite, pressedSprite;
+    private Sprite _defaultSprite, _pressedSprite;
 
     [SerializeField]
-    private TextMeshPro buttonText;
+    private TextMeshPro _buttonText;
 
-    private bool hovering;
+    private bool _hovering;
 
-    private bool active;
+    private bool _active;
 
-    private SpriteRenderer thisRenderer;
+    private SpriteRenderer _thisRenderer;
 
     public void SetEnabled(bool enabled)
     {
-        active = enabled;
-        buttonText.text = enabled?"END\nTURN":"\nWAIT";
-        thisRenderer.sprite = enabled?defaultSprite:pressedSprite;
+        _active = enabled;
+        _buttonText.text = enabled?"END\nTURN":"\nWAIT";
+        _thisRenderer.sprite = enabled?_defaultSprite:_pressedSprite;
     }
 
     private void Awake()
     {
-        Assert.IsNotNull(defaultSprite);
-        Assert.IsNotNull(pressedSprite);
-        thisRenderer = GetComponent<SpriteRenderer>();
+        Assert.IsNotNull(_defaultSprite);
+        Assert.IsNotNull(_pressedSprite);
+        _thisRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void OnMouseEnter()
     {
-        hovering = true;
+        _hovering = true;
     }
 
     private void OnMouseExit()
     {
-        if (!active)
+        if (!_active)
 
             return;
 
-        hovering = false;
-        thisRenderer.sprite = defaultSprite;
-        buttonText.transform.localPosition = textDefaultPosition;
+        _hovering = false;
+        _thisRenderer.sprite = _defaultSprite;
+        _buttonText.transform.localPosition = _textDefaultPosition;
     }
 
     private void OnMouseDown()
     {
-        if (!active)
+        if (!_active)
 
             return;
 
-        thisRenderer.sprite = pressedSprite;
-        buttonText.transform.localPosition = textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128, Constants.END_TURN_CLICK_SOUND_VOLUME, dropOldBackgroundMusic: false);
+        _thisRenderer.sprite = _pressedSprite;
+        _buttonText.transform.localPosition = _textPressedPosition;
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.EndTurn, 128, Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown
@@ -72,13 +72,13 @@ public class EndTurnButton : MonoBehaviour
 
             return;
 
-        if (active && hovering)
+        if (_active && _hovering)
         {
             GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
             SetEnabled(false);
         }
 
         // thisRenderer.sprite = defaultSprite;
-        buttonText.transform.localPosition = textDefaultPosition;
+        _buttonText.transform.localPosition = _textDefaultPosition;
     }
 }

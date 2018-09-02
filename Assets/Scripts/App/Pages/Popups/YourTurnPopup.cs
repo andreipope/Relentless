@@ -53,7 +53,7 @@ namespace LoomNetwork.CZB
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YourTurnPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YOURTURN_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YourturnPopup, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             Self.transform.localScale = Vector3.zero;

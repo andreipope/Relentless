@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LoomNetwork.CZB.Helpers
 {
-    public class CSVMap
+    public class CsvMap
     {
         /*
          * 
@@ -54,11 +54,11 @@ namespace LoomNetwork.CZB.Helpers
 
         Currently the only array type that is supported is a string array.
         */
-        private Hashtable columnMap = new Hashtable();
+        private Hashtable _columnMap = new Hashtable();
 
-        private Type ClassTemplate;
+        private Type _classTemplate;
 
-        public CSVMap()
+        public CsvMap()
         {
         }
 
@@ -66,9 +66,9 @@ namespace LoomNetwork.CZB.Helpers
         ///     Shortcut to defineColumns from constructor
         /// </summary>
         /// <param name="classDefinition">Class definition.</param>
-        public CSVMap(Type classDefinition)
+        public CsvMap(Type classDefinition)
         {
-            defineColumns(classDefinition);
+            DefineColumns(classDefinition);
         }
 
         /// <summary>
@@ -78,14 +78,14 @@ namespace LoomNetwork.CZB.Helpers
         ///     This will analyze your class and save the information for later.
         /// </summary>
         /// <param name="classDefinition">Class definition.</param>
-        public void defineColumns(Type classDefinition)
+        public void DefineColumns(Type classDefinition)
         {
-            ClassTemplate = classDefinition;
-            columnMap = new Hashtable();
+            _classTemplate = classDefinition;
+            _columnMap = new Hashtable();
             MemberInfo[] members = classDefinition.GetFields();
             foreach (FieldInfo m in members)
             {
-                columnMap[m.Name] = m;
+                _columnMap[m.Name] = m;
             }
         }
 
@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB.Helpers
         /// </summary>
         /// <returns>The csv from string.</returns>
         /// <param name="data">Data.</param>
-        public ArrayList loadCsvFromString(string data)
+        public ArrayList LoadCsvFromString(string data)
         {
             string[] lines = data.Split('\n');
             int ctr = 0;
@@ -122,21 +122,21 @@ namespace LoomNetwork.CZB.Helpers
                     }
                 } else
                 {
-                    object templated = Activator.CreateInstance(ClassTemplate);
+                    object templated = Activator.CreateInstance(_classTemplate);
                     for (int i = 0; i < c.Length; i++)
                     {
-                        if (i > columnMap.Count - 1)
+                        if (i > _columnMap.Count - 1)
                         {
                             continue;
                         }
 
-                        FieldInfo templateInfo = (FieldInfo)columnMap[columns[i]];
+                        FieldInfo templateInfo = (FieldInfo)_columnMap[columns[i]];
 
                         // Debug.Log("------- " + templateInfo);
                         // 	Debug.Log (templateInfo + " " + columns [i] + " " + columnMap.Count);
                         if (templateInfo == null)
                         {
-                            Debug.LogError("CSV Field Not Found In ClassTemplate: " + columns[i] + "  length: " + columns[i].ToString().Length + "  in " + ClassTemplate);
+                            Debug.LogError("CSV Field Not Found In ClassTemplate: " + columns[i] + "  length: " + columns[i].ToString().Length + "  in " + _classTemplate);
                         }
 
                         Type colType = templateInfo.FieldType;
@@ -176,7 +176,7 @@ namespace LoomNetwork.CZB.Helpers
         /// </summary>
         /// <returns>The csv from file.</returns>
         /// <param name="fileName">File name.</param>
-        public ArrayList loadCsvFromFile(string fileName)
+        public ArrayList LoadCsvFromFile(string fileName)
         {
             TextAsset textAsset = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
 
@@ -185,10 +185,10 @@ namespace LoomNetwork.CZB.Helpers
                 return null;
             }
 
-            return loadCsvFromString(textAsset.text);
+            return LoadCsvFromString(textAsset.text);
         }
 
-        public ArrayList loadCsvFromPersistentPathFile(string fileName)
+        public ArrayList LoadCsvFromPersistentPathFile(string fileName)
         {
             string text = File.ReadAllText(Path.Combine(Application.persistentDataPath, fileName));
 
@@ -197,7 +197,7 @@ namespace LoomNetwork.CZB.Helpers
                 return null;
             }
 
-            return loadCsvFromString(text);
+            return LoadCsvFromString(text);
         }
     }
 }

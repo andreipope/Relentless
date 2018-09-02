@@ -43,7 +43,7 @@ namespace LoomNetwork.CZB
 
         private Button _signUpButton, _loginButton;
 
-        private int a = 0;
+        private int _a = 0;
 
         public void Init()
         {
@@ -64,7 +64,7 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT))
+            if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.AppInit))
             {
                 if (!_isLoaded)
                 {
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
 
                                     if (success)
                                     {
-                                        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                                        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
                                     }
                                 };
                                 _uiManager.DrawPopup<ConnectionPopup>();
@@ -133,7 +133,7 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LogoAppear, Constants.SfxSoundVolume, false, false, true);
 
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -196,7 +196,7 @@ namespace LoomNetwork.CZB
 
         public void OnLoginButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             string usernameText = _usernameInputField.text;
             string passwordText = _passwordInputField.text;
 
@@ -272,7 +272,7 @@ namespace LoomNetwork.CZB
 
         private async void OnSignupButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             // parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
             // OpenAlertDialog("Will be available on full version");
@@ -308,7 +308,7 @@ namespace LoomNetwork.CZB
 
         private void OnLoadCacheComplete()
         {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
         }
 
         private void OpenAlertDialog(string msg)

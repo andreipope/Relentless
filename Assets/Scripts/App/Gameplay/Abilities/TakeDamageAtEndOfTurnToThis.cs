@@ -6,19 +6,19 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageAtEndOfTurnToThis : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Update()
@@ -35,8 +35,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner);
-            CreateVFX(abilityUnitOwner.transform.position, true, 5f);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+            CreateVfx(AbilityUnitOwner.Transform.position, true, 5f);
         }
 
         protected override void OnInputEndEventHandler()
@@ -48,11 +48,11 @@ namespace LoomNetwork.CZB
         {
             base.OnEndTurnEventHandler();
 
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
 
                 return;
 
-            if (abilityCallType != Enumerators.AbilityCallType.END)
+            if (AbilityCallType != Enumerators.AbilityCallType.End)
 
                 return;
 

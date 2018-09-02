@@ -9,14 +9,14 @@ namespace LoomNetwork.CZB
         public DestroyUnitByTypeAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            targetCardType = ability.targetCardType;
+            TargetCardType = ability.TargetCardType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -33,14 +33,14 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            _battlegroundController.DestroyBoardUnit(targetUnit);
+            BattlegroundController.DestroyBoardUnit(TargetUnit);
         }
 
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
                 Action();
             }

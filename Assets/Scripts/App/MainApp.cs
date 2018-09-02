@@ -10,13 +10,13 @@ namespace LoomNetwork.CZB
     {
         public delegate void MainAppDelegate(object param);
 
+        public static int MainThreadId;
+
         public event MainAppDelegate OnLevelWasLoadedEvent;
 
         public event Action LateUpdateEvent;
 
         public event Action FixedUpdateEvent;
-
-        public static int MainThreadId;
 
         public static MainApp Instance { get; private set; }
 
@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
 #endif
 
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.AppInit);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 

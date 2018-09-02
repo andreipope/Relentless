@@ -10,7 +10,7 @@ namespace LoomNetwork.CZB.Helpers
 {
     public class InternalTools
     {
-        private static readonly string LINE_BREAK = "%n%";
+        private static readonly string LineBreak = "%n%";
 
         public static void FixVerticalLayoutGroupFitting(Object value)
         {
@@ -57,7 +57,7 @@ namespace LoomNetwork.CZB.Helpers
                 return "";
             }
 
-            return data.Replace(LINE_BREAK, "\n");
+            return data.Replace(LineBreak, "\n");
         }
 
         public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)

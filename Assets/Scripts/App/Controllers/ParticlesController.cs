@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
 
         public void DestoryParticle(ulong id)
         {
-            ParticleSystemElement element = _particleSystemElements.Find(x => x.id == id);
+            ParticleSystemElement element = _particleSystemElements.Find(x => x.Id == id);
 
             if (element != null)
             {
@@ -83,21 +83,21 @@ namespace LoomNetwork.CZB
 
     public class ParticleSystemElement
     {
-        public ulong id;
+        public ulong Id;
 
-        public GameObject particleObject;
+        public GameObject ParticleObject;
 
         public ParticleSystemElement(ulong id, GameObject particleObject)
         {
-            this.id = id;
-            this.particleObject = particleObject;
+            this.Id = id;
+            this.ParticleObject = particleObject;
         }
 
         public void Dispose()
         {
-            if ((particleObject != null) && particleObject)
+            if ((ParticleObject != null) && ParticleObject)
             {
-                Object.Destroy(particleObject);
+                Object.Destroy(ParticleObject);
             }
         }
     }

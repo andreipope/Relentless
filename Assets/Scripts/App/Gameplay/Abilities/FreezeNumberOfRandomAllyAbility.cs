@@ -8,26 +8,26 @@ namespace LoomNetwork.CZB
 {
     public class FreezeNumberOfRandomAllyAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
-        public int turns = 1;
+        public int Turns = 1;
 
         public FreezeNumberOfRandomAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
-            turns = ability.turns;
+            Value = ability.Value;
+            Turns = ability.Turns;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
 
             Action();
         }
@@ -48,22 +48,22 @@ namespace LoomNetwork.CZB
 
             List<object> allies = new List<object>();
 
-            allies.AddRange(playerCallerOfAbility.BoardCards);
-            allies.Remove(abilityUnitOwner);
-            allies.Add(playerCallerOfAbility);
+            allies.AddRange(PlayerCallerOfAbility.BoardCards);
+            allies.Remove(AbilityUnitOwner);
+            allies.Add(PlayerCallerOfAbility);
 
-            allies = InternalTools.GetRandomElementsFromList(allies, value);
+            allies = InternalTools.GetRandomElementsFromList(allies, Value);
 
             for (int i = 0; i < allies.Count; i++)
             {
                 if (allies[i] is Player)
                 {
-                    (allies[i] as Player).Stun(Enumerators.StunType.FREEZE, turns);
-                    CreateVFX((allies[i] as Player).AvatarObject.transform.position, true, 5f);
+                    (allies[i] as Player).Stun(Enumerators.StunType.Freeze, Turns);
+                    CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f);
                 } else if (allies[i] is BoardUnit)
                 {
-                    (allies[i] as BoardUnit).Stun(Enumerators.StunType.FREEZE, turns);
-                    CreateVFX((allies[i] as BoardUnit).transform.position, true, 5f);
+                    (allies[i] as BoardUnit).Stun(Enumerators.StunType.Freeze, Turns);
+                    CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
                 }
             }
         }

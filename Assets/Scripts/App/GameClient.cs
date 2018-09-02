@@ -5,9 +5,9 @@ namespace LoomNetwork.CZB
 {
     public class GameClient : ServiceLocatorBase
     {
-        private static readonly object _sync = new object();
+        private static readonly object Sync = new object();
 
-        private static GameClient _Instance;
+        private static GameClient _instance;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameClient" /> class.
@@ -22,7 +22,7 @@ namespace LoomNetwork.CZB
             BackendPurpose backend = BackendPurpose.Staging;
 #endif
 
-            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.KEndpoints[backend];
             AddService<ITimerManager>(new TimerManager());
             AddService<ILoadObjectsManager>(new LoadObjectsManager());
             AddService<IInputManager>(new InputManager());
@@ -50,15 +50,15 @@ namespace LoomNetwork.CZB
         {
             get
             {
-                if (_Instance == null)
+                if (_instance == null)
                 {
-                    lock (_sync)
+                    lock (Sync)
                     {
-                        _Instance = new GameClient();
+                        _instance = new GameClient();
                     }
                 }
 
-                return _Instance;
+                return _instance;
             }
         }
 

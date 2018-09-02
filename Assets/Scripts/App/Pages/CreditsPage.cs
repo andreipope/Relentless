@@ -99,16 +99,16 @@ namespace LoomNetwork.CZB
         {
             CreditView credit = null;
             CreditSubSectionView section = null;
-            for (int i = 0; i < _dataManager.CachedCreditsData.creditsInfo.Count; i++)
+            for (int i = 0; i < _dataManager.CachedCreditsData.CreditsInfo.Count; i++)
             {
                 if (i > 0)
                 {
-                    section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
+                    section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
                 }
 
-                for (int j = 0; j < _dataManager.CachedCreditsData.creditsInfo[i].credits.Count; j++)
+                for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Credits.Count; j++)
                 {
-                    credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].FullName, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].Post);
+                    credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName, _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post);
                     _credits.Add(credit);
                 }
             }
@@ -123,18 +123,18 @@ namespace LoomNetwork.CZB
 
         private void BackButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
         }
     }
 
     public class CreditView
     {
-        public GameObject selfObject;
+        public GameObject SelfObject;
 
-        public TextMeshProUGUI fullNameText;
+        public TextMeshProUGUI FullNameText;
 
-        public TextMeshProUGUI postText;
+        public TextMeshProUGUI PostText;
 
         public CreditView()
         {
@@ -142,24 +142,24 @@ namespace LoomNetwork.CZB
 
         public CreditView(GameObject prefab, Transform parent, string name, string post)
         {
-            selfObject = Object.Instantiate(prefab, parent, false);
-            fullNameText = selfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
-            postText = selfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
-            fullNameText.text = name;
+            SelfObject = Object.Instantiate(prefab, parent, false);
+            FullNameText = SelfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
+            PostText = SelfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
+            FullNameText.text = name;
             if (string.IsNullOrWhiteSpace(name))
             {
-                fullNameText.gameObject.SetActive(false);
+                FullNameText.gameObject.SetActive(false);
             }
 
-            postText.text = post;
+            PostText.text = post;
         }
     }
 
     public class CreditSubSectionView
     {
-        public GameObject selfObject;
+        public GameObject SelfObject;
 
-        public TextMeshProUGUI sectionText;
+        public TextMeshProUGUI SectionText;
 
         public CreditSubSectionView()
         {
@@ -167,9 +167,9 @@ namespace LoomNetwork.CZB
 
         public CreditSubSectionView(GameObject prefab, Transform parent, string section)
         {
-            selfObject = Object.Instantiate(prefab, parent, false);
-            sectionText = selfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();
-            sectionText.text = section;
+            SelfObject = Object.Instantiate(prefab, parent, false);
+            SectionText = SelfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();
+            SectionText.text = section;
         }
     }
 }

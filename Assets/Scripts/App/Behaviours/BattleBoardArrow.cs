@@ -5,110 +5,110 @@ namespace LoomNetwork.CZB
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public List<object> ignoreBoardObjectsList;
+        public List<object> IgnoreBoardObjectsList;
 
         public List<BoardUnit> BoardCards;
 
-        public BoardUnit owner;
+        public BoardUnit Owner;
 
-        public bool ignoreHeavy = false;
+        public bool IgnoreHeavy = false;
 
         public void End(BoardUnit creature)
         {
-            if (!startedDrag)
+            if (!StartedDrag)
 
                 return;
 
-            startedDrag = false;
+            StartedDrag = false;
 
-            creature.DoCombat(selectedCard != null?selectedCard:(object)selectedPlayer);
+            creature.DoCombat(SelectedCard != null?SelectedCard:(object)SelectedPlayer);
             Dispose();
         }
 
         public override void OnCardSelected(BoardUnit unit)
         {
-            if (_gameplayManager.IsTutorial && ((_gameplayManager.TutorialStep == 19) || (_gameplayManager.TutorialStep == 27) || (_gameplayManager.TutorialStep == 32)))
+            if (GameplayManager.IsTutorial && ((GameplayManager.TutorialStep == 19) || (GameplayManager.TutorialStep == 27) || (GameplayManager.TutorialStep == 32)))
 
                 return;
 
-            if ((ignoreBoardObjectsList != null) && ignoreBoardObjectsList.Contains(unit))
+            if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(unit))
 
                 return;
 
-            if (unit.CurrentHP <= 0)
+            if (unit.CurrentHp <= 0)
 
                 return;
 
-            if ((elementType.Count > 0) && !elementType.Contains(unit.Card.libraryCard.cardSetType))
+            if ((ElementType.Count > 0) && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
 
                 return;
 
-            if (targetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) || (targetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) || (targetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) && unit.transform.CompareTag("OpponentOwned")))
+            if (TargetsType.Contains(Enumerators.SkillTargetType.AllCards) || (TargetsType.Contains(Enumerators.SkillTargetType.PlayerCard) && unit.Transform.CompareTag("PlayerOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.OpponentCard) && unit.Transform.CompareTag("OpponentOwned")))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || ignoreHeavy)
+                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || IgnoreHeavy)
                 {
-                    if (selectedCard != null)
+                    if (SelectedCard != null)
                     {
-                        selectedCard.SetSelectedUnit(false);
+                        SelectedCard.SetSelectedUnit(false);
                     }
 
-                    selectedCard = unit;
-                    if (selectedPlayer != null)
+                    SelectedCard = unit;
+                    if (SelectedPlayer != null)
                     {
-                        selectedPlayer.SetGlowStatus(false);
+                        SelectedPlayer.SetGlowStatus(false);
                     }
 
-                    selectedPlayer = null;
-                    selectedCard.SetSelectedUnit(true);
-                    CreateTarget(unit.transform.position);
+                    SelectedPlayer = null;
+                    SelectedCard.SetSelectedUnit(true);
+                    CreateTarget(unit.Transform.position);
                 }
             }
         }
 
         public override void OnCardUnselected(BoardUnit creature)
         {
-            if (selectedCard == creature)
+            if (SelectedCard == creature)
             {
-                selectedCard.SetSelectedUnit(false);
+                SelectedCard.SetSelectedUnit(false);
 
                 // _targetObjectsGroup.SetActive(false);
-                selectedCard = null;
+                SelectedCard = null;
             }
         }
 
         public override void OnPlayerSelected(Player player)
         {
-            if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19) && (_gameplayManager.TutorialStep != 28) && (_gameplayManager.TutorialStep != 32))
+            if (GameplayManager.IsTutorial && (GameplayManager.TutorialStep != 19) && (GameplayManager.TutorialStep != 28) && (GameplayManager.TutorialStep != 32))
 
                 return;
 
-            if (player.HP <= 0)
+            if (player.Hp <= 0)
 
                 return;
 
-            if ((ignoreBoardObjectsList != null) && ignoreBoardObjectsList.Contains(player))
+            if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(player))
 
                 return;
 
-            if ((owner != null) && !owner.hasFeral && owner.HasBuffRush)
+            if ((Owner != null) && !Owner.HasFeral && Owner.HasBuffRush)
 
                 return;
 
-            if ((targetsType.Contains(Enumerators.SkillTargetType.OPPONENT) && player.AvatarObject.CompareTag("OpponentOwned")) || (targetsType.Contains(Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned")))
+            if ((TargetsType.Contains(Enumerators.SkillTargetType.Opponent) && player.AvatarObject.CompareTag("OpponentOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.Player) && player.AvatarObject.CompareTag("PlayerOwned")))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || ignoreHeavy)
+                if (!opponentHasProvoke || IgnoreHeavy)
                 {
-                    selectedPlayer = player;
+                    SelectedPlayer = player;
 
-                    selectedPlayer.SetGlowStatus(true);
-                    if (selectedCard != null)
+                    SelectedPlayer.SetGlowStatus(true);
+                    if (SelectedCard != null)
                     {
-                        selectedCard.SetSelectedUnit(false);
+                        SelectedCard.SetSelectedUnit(false);
                     }
 
-                    selectedCard = null;
+                    SelectedCard = null;
                     CreateTarget(player.AvatarObject.transform.position);
                 }
             }
@@ -116,19 +116,19 @@ namespace LoomNetwork.CZB
 
         public override void OnPlayerUnselected(Player player)
         {
-            if (selectedPlayer == player)
+            if (SelectedPlayer == player)
             {
-                if (selectedCard != null)
+                if (SelectedCard != null)
                 {
-                    selectedCard.SetSelectedUnit(false);
+                    SelectedCard.SetSelectedUnit(false);
                 }
 
-                selectedCard = null;
+                SelectedCard = null;
 
-                selectedPlayer.SetGlowStatus(false);
+                SelectedPlayer.SetGlowStatus(false);
 
                 // _targetObjectsGroup.SetActive(false);
-                selectedPlayer = null;
+                SelectedPlayer = null;
             }
         }
 

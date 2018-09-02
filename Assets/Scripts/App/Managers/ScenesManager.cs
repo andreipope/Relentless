@@ -8,8 +8,6 @@ namespace LoomNetwork.CZB
 {
     public sealed class ScenesManager : IService, IScenesManager
     {
-        public event Action<Enumerators.AppState> SceneForAppStateWasLoadedEvent;
-
         private readonly bool _isLoadingScenesAsync = true;
 
         private bool _isLoadingStarted;
@@ -17,6 +15,8 @@ namespace LoomNetwork.CZB
         private IAppStateManager _appStateManager;
 
         private IUIManager _uiManager;
+
+        public event Action<Enumerators.AppState> SceneForAppStateWasLoadedEvent;
 
         public Enumerators.AppState CurrentAppStateScene { get; set; }
 
@@ -28,7 +28,7 @@ namespace LoomNetwork.CZB
 
         public void ChangeScene(Enumerators.AppState appState)
         {
-            if ((appState == Enumerators.AppState.NONE) || (CurrentAppStateScene == appState))
+            if ((appState == Enumerators.AppState.None) || (CurrentAppStateScene == appState))
 
                 return;
 
@@ -89,8 +89,8 @@ namespace LoomNetwork.CZB
         private IEnumerator LoadLevelAsync(string levelName)
         {
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(levelName);
-            float delayTime = Constants.LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT;
-            if (levelName != Enumerators.AppState.APP_INIT.ToString())
+            float delayTime = Constants.KLoadingTimeBetweenGameplayAndAppInit;
+            if (levelName != Enumerators.AppState.AppInit.ToString())
             {
                 delayTime = 0;
             }

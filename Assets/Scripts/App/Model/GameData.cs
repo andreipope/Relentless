@@ -6,25 +6,25 @@ namespace LoomNetwork.CZB.Data
     {
         public class GameProperties
         {
-            public int turnDuration;
+            public int TurnDuration;
 
-            public int deckSize;
+            public int DeckSize;
 
-            public int startCardsAmount;
+            public int StartCardsAmount;
 
-            public Enumerators.GameEndCondition endGameCondition;
+            public Enumerators.GameEndCondition EndGameCondition;
 
-            public int startLifeValue;
+            public int StartLifeValue;
 
-            public int minLifeValue;
+            public int MinLifeValue;
 
-            public int maxLifeValue;
+            public int MaxLifeValue;
 
-            public int startGooValue;
+            public int StartGooValue;
 
-            public int minGooValue;
+            public int MinGooValue;
 
-            public int maxGooValue;
+            public int MaxGooValue;
         }
     }
 }

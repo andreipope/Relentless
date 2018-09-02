@@ -4,15 +4,15 @@ namespace LoomNetwork.CZB.Data
 {
     public class UserLocalData
     {
-        public Enumerators.Language appLanguage;
+        public Enumerators.Language AppLanguage;
 
-        public bool tutorial = true;
+        public bool Tutorial = true;
 
-        public int lastSelectedDeckId;
+        public int LastSelectedDeckId;
 
-        public bool agreedTerms = false;
+        public bool AgreedTerms = false;
 
-        public bool openedFirstPack;
+        public bool OpenedFirstPack;
 
         public UserLocalData()
         {
@@ -21,9 +21,9 @@ namespace LoomNetwork.CZB.Data
 
         public void Reset()
         {
-            appLanguage = Enumerators.Language.NONE;
-            lastSelectedDeckId = -1;
-            openedFirstPack = false;
+            AppLanguage = Enumerators.Language.None;
+            LastSelectedDeckId = -1;
+            OpenedFirstPack = false;
         }
     }
 }

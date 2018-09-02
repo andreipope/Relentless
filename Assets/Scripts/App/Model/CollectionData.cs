@@ -4,13 +4,13 @@ namespace LoomNetwork.CZB.Data
 {
     public class CollectionData
     {
-        public List<CollectionCardData> cards;
+        public List<CollectionCardData> Cards;
 
         public CollectionCardData GetCardData(string id)
         {
-            foreach (CollectionCardData cardData in cards)
+            foreach (CollectionCardData cardData in Cards)
             {
-                if (cardData.cardName == id)
+                if (cardData.CardName == id)
                 {
                     return cardData;
                 }
@@ -21,14 +21,14 @@ namespace LoomNetwork.CZB.Data
 
         public void ChangeAmount(string idCard, int amoundChangeFactor)
         {
-            GetCardData(idCard).amount += amoundChangeFactor;
+            GetCardData(idCard).Amount += amoundChangeFactor;
         }
     }
 
     public class CollectionCardData
     {
-        public string cardName;
+        public string CardName;
 
-        public int amount;
+        public int Amount;
     }
 }

@@ -18,7 +18,7 @@ namespace LoomNetwork.CZB
                 (_target as Player).SetGlowStatus(true);
             } else if (_target is BoardUnit)
             {
-                _targetPosition = (_target as BoardUnit).transform.position;
+                _targetPosition = (_target as BoardUnit).Transform.position;
                 (_target as BoardUnit).SetSelectedUnit(true);
             }
 

@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class ButtonTextOffset : Button
 {
-    public TextMeshProUGUI buttonText;
+    public TextMeshProUGUI ButtonText;
 
-    public float textOffset;
+    public float TextOffset;
 
     private float _textStartY;
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        Vector2 vector = buttonText.rectTransform.anchoredPosition;
-        vector.y += textOffset;
-        buttonText.rectTransform.anchoredPosition = vector;
+        Vector2 vector = ButtonText.rectTransform.anchoredPosition;
+        vector.y += TextOffset;
+        ButtonText.rectTransform.anchoredPosition = vector;
 
         base.OnPointerDown(eventData);
     }
@@ -34,14 +34,14 @@ public class ButtonTextOffset : Button
 
     protected override void Awake()
     {
-        _textStartY = buttonText.rectTransform.anchoredPosition.y;
+        _textStartY = ButtonText.rectTransform.anchoredPosition.y;
         base.Awake();
     }
 
     private void PointerExit()
     {
-        Vector2 vector = buttonText.rectTransform.anchoredPosition;
+        Vector2 vector = ButtonText.rectTransform.anchoredPosition;
         vector.y = _textStartY;
-        buttonText.rectTransform.anchoredPosition = vector;
+        ButtonText.rectTransform.anchoredPosition = vector;
     }
 }

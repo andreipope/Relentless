@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
 
         private Button _buttonOpen, _buttonCollection, _buttonBack, _buttonBuy;
 
-        private TextMeshProUGUI _description, _costItem_1, _costItem_2, _costItem_3, _costItem_4, _wallet;
+        private TextMeshProUGUI _description, _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
 
         private int _currentPackId = -1;
 
@@ -70,10 +70,10 @@ namespace LoomNetwork.CZB
             _buttonItem3 = _selfPage.transform.Find("Item3").GetComponent<Button>();
             _buttonItem4 = _selfPage.transform.Find("Item4").GetComponent<Button>();
 
-            _costItem_1 = _buttonItem1.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            _costItem_2 = _buttonItem2.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            _costItem_3 = _buttonItem3.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
-            _costItem_4 = _buttonItem4.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem1 = _buttonItem1.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem2 = _buttonItem2.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem3 = _buttonItem3.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
+            _costItem4 = _buttonItem4.transform.Find("Cost").GetComponent<TextMeshProUGUI>();
 
             _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<Button>();
             _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<Button>();
@@ -101,18 +101,18 @@ namespace LoomNetwork.CZB
                 img.color = _deselectedColor;
             }
 
-            _playerManager.LocalUser.wallet = 1000;
-            _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
+            _playerManager.LocalUser.Wallet = 1000;
+            _wallet.text = _playerManager.LocalUser.Wallet.ToString("0.00") + " $";
             if (_currentPackId > -1)
             {
                 _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0f, 0f);
                 _currentPackId = -1;
             }
 
-            _costItem_1.text = "$ " + _costs[0];
-            _costItem_2.text = "$ " + _costs[1];
-            _costItem_3.text = "$ " + _costs[2];
-            _costItem_4.text = "$ " + _costs[3];
+            _costItem1.text = "$ " + _costs[0];
+            _costItem2.text = "$ " + _costs[1];
+            _costItem3.text = "$ " + _costs[2];
+            _costItem4.text = "$ " + _costs[3];
             _buttonItem1.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[0];
             _buttonItem2.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[1];
             _buttonItem3.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[2];
@@ -145,37 +145,37 @@ namespace LoomNetwork.CZB
 
         public void OpenButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PackOpener);
         }
 
         public void CollectionButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Collection);
         }
 
         private void BackButtonhandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().BackAppState();
         }
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             if ((_currentPackId >= _costs.Length) || (_currentPackId < 0))
             {
                 Debug.LogError("No pack chosen");
                 return;
             }
 
-            _playerManager.LocalUser.wallet -= _costs[_currentPackId];
-            _wallet.text = _playerManager.LocalUser.wallet.ToString("0.00") + " $";
+            _playerManager.LocalUser.Wallet -= _costs[_currentPackId];
+            _wallet.text = _playerManager.LocalUser.Wallet.ToString("0.00") + " $";
             GameObject prefab = null;
             for (int i = 0; i < _amount[_currentPackId]; i++)
             {
-                _playerManager.LocalUser.packsCount++;
+                _playerManager.LocalUser.PacksCount++;
 
                 prefab = _packsObjects[_currentPackId].transform.Find("PackItemPrefab").gameObject;
 

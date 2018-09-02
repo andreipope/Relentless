@@ -11,9 +11,9 @@ namespace LoomNetwork.CZB
 {
     public class OverlordAbilitySelectionPopup : IUIPopup
     {
-        private const int ABILITY_LIST_SIZE = 5;
+        private const int KAbilityListSize = 5;
 
-        private const int MAX_SELECTED_ABILITIES = 2;
+        private const int KMaxSelectedAbilities = 2;
 
         public static Action OnHidePopupEvent;
 
@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB
 
             _abilities.Clear();
 
-            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+            for (int i = 0; i < KAbilityListSize; i++)
             {
                 AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
                 abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
@@ -123,7 +123,7 @@ namespace LoomNetwork.CZB
 
         public void ContinueButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
             OnHidePopupEvent?.Invoke();
 
@@ -132,22 +132,22 @@ namespace LoomNetwork.CZB
 
         public void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
         private void FillInfo(Hero heroData)
         {
             _heroData = heroData;
-            _heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.element.ToLower());
+            _heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
             _heroImage.SetNativeSize();
 
-            for (int i = 0; i < ABILITY_LIST_SIZE; i++)
+            for (int i = 0; i < KAbilityListSize; i++)
             {
                 HeroSkill skill = null;
-                if (i < heroData.skills.Count)
+                if (i < heroData.Skills.Count)
                 {
-                    skill = heroData.skills[i];
+                    skill = heroData.Skills[i];
                 }
 
                 _abilities[i].Skill = skill;
@@ -157,8 +157,8 @@ namespace LoomNetwork.CZB
 
         private void AbilityInstanceOnSelectionChanged(AbilityInstance ability)
         {
-            _skillName.text = ability.Skill.title;
-            _skillDescription.text = ability.Skill.description;
+            _skillName.text = ability.Skill.Title;
+            _skillDescription.text = ability.Skill.Description;
         }
 
         private class AbilityInstance : IDisposable
@@ -251,7 +251,7 @@ namespace LoomNetwork.CZB
                 _abilityToggle.interactable = Skill != null;
                 if (Skill != null)
                 {
-                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.iconPath);
+                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
                 } else
                 {
                     _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");

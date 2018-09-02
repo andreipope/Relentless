@@ -6,22 +6,22 @@ namespace LoomNetwork.CZB
 {
     public class HeroWeaponAbility : AbilityBase
     {
-        public int health = 1;
+        public int Health = 1;
 
-        public int damage = 1;
+        public int Damage = 1;
 
         public HeroWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            health = ability.health;
-            damage = ability.damage;
+            Health = ability.Health;
+            Damage = ability.Damage;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
             Action();
         }
 

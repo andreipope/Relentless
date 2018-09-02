@@ -88,16 +88,16 @@ namespace LoomNetwork.CZB
 
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WonPopup, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
             Self.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
 
             IDataManager dataManager = GameClient.Get<IDataManager>();
-            int heroId = dataManager.CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
-            Hero currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
-            string heroName = currentPlayerHero.element.ToLower();
+            int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
+            Hero currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
+            string heroName = currentPlayerHero.Element.ToLower();
             _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
 
@@ -105,27 +105,27 @@ namespace LoomNetwork.CZB
 
             // TODO : instead of 1000, should be a value accordint to Level
             // TODO : instead of 400, should be how much player experinece on wining game
-            _currentLevel.text = currentPlayerHero.level.ToString();
-            _nextLevel.text = (currentPlayerHero.level + 1).ToString();
-            float currentExperiencePercentage = (float)currentPlayerHero.experience / 1000;
+            _currentLevel.text = currentPlayerHero.Level.ToString();
+            _nextLevel.text = (currentPlayerHero.Level + 1).ToString();
+            float currentExperiencePercentage = (float)currentPlayerHero.Experience / 1000;
             _experienceBar.fillAmount = currentExperiencePercentage;
             GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 400);
-            float updatedExperiencePercetage = (float)currentPlayerHero.experience / 1000;
+            float updatedExperiencePercetage = (float)currentPlayerHero.Experience / 1000;
 
             // Debug.Log(updatedExperiencePercetage + " , " + currentExperiencePercentage);
             if (updatedExperiencePercetage < currentExperiencePercentage)
             {
-                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.level));
+                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.Level));
             } else
             {
                 MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
             }
 
             // save to data manager cached hero list
-            int index = dataManager.CachedHeroesData.heroes.FindIndex(hero => hero.heroId == heroId);
+            int index = dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroId == heroId);
             if (index != -1)
             {
-                dataManager.CachedHeroesData.heroes[index] = currentPlayerHero;
+                dataManager.CachedHeroesData.Heroes[index] = currentPlayerHero;
             }
 
             // else Debug.LogError(" =========== Hero not foound ======================= ");
@@ -174,11 +174,11 @@ namespace LoomNetwork.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DeckSelection);
 
-            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HeroesData);
 
             _uiManager.HidePopup<YouWonPopup>();
         }

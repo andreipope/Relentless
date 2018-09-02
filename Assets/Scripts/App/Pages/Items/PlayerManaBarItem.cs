@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
 {
     public class PlayerManaBarItem
     {
-        private const int _meterArrowStep = 12;
+        private const int KMeterArrowStep = 12;
 
         private readonly GameObject _selfObject;
 
@@ -91,7 +91,7 @@ namespace LoomNetwork.CZB
             _gooAmountText.text = _currentValue + "/" + _maxValue;
             for (int i = 0; i < _gooBottles.Count; i++)
             {
-                _gooBottles[i].self.SetActive(i < _maxValue?true:false);
+                _gooBottles[i].Self.SetActive(i < _maxValue?true:false);
             }
 
             UpdateGooOVerflow();
@@ -99,14 +99,14 @@ namespace LoomNetwork.CZB
 
         public void Active(GooBottleItem item)
         {
-            item.fullBoottle.DOFade(1.0f, 0.5f);
-            item.glowBottle.DOFade(1.0f, 0.5f);
+            item.FullBoottle.DOFade(1.0f, 0.5f);
+            item.GlowBottle.DOFade(1.0f, 0.5f);
         }
 
         public void Disactive(GooBottleItem item)
         {
-            item.fullBoottle.DOFade(0.0f, 0.5f);
-            item.glowBottle.DOFade(0.0f, 0.5f);
+            item.FullBoottle.DOFade(0.0f, 0.5f);
+            item.GlowBottle.DOFade(0.0f, 0.5f);
         }
 
         private void UpdateGooOVerflow()
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateGooMeter()
         {
-            int targetRotation = 90 - (_meterArrowStep * _currentValue);
+            int targetRotation = 90 - (KMeterArrowStep * _currentValue);
             if (targetRotation < -90)
             {
                 targetRotation = -90;
@@ -159,14 +159,14 @@ namespace LoomNetwork.CZB
 
             _selfObject.SetActive(false);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeIn, Constants.BattlegroundEffectsSoundVolume);
 
-            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN));
+            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GooOverflowFadeIn));
         }
 
         private void PlayOverflowLoopDelay(object[] param)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeLoop, Constants.BattlegroundEffectsSoundVolume, true);
         }
 
         private void DestroyOverflow()
@@ -179,16 +179,16 @@ namespace LoomNetwork.CZB
 
             StopOverfowSounds();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT, Constants.BATTLEGROUND_EFFECTS_SOUND_VOLUME);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeOut, Constants.BattlegroundEffectsSoundVolume);
         }
 
         private void StopOverfowSounds()
         {
             GameClient.Get<ITimerManager>().StopTimer(PlayOverflowLoopDelay);
 
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN);
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP);
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeIn);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeLoop);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeOut);
         }
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
@@ -203,15 +203,15 @@ namespace LoomNetwork.CZB
 
         public struct GooBottleItem
         {
-            public SpriteRenderer fullBoottle, glowBottle;
+            public SpriteRenderer FullBoottle, GlowBottle;
 
-            public GameObject self;
+            public GameObject Self;
 
             public GooBottleItem(GameObject gameObject)
             {
-                self = gameObject;
-                fullBoottle = self.transform.Find("Goo").GetComponent<SpriteRenderer>();
-                glowBottle = self.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
+                Self = gameObject;
+                FullBoottle = Self.transform.Find("Goo").GetComponent<SpriteRenderer>();
+                GlowBottle = Self.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
             }
         }
     }

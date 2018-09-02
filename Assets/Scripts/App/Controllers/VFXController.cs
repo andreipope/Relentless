@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
-    public class VFXController : IController
+    public class VfxController : IController
     {
         private ISoundManager _soundManager;
 
@@ -48,19 +48,19 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void PlayAttackVFX(Enumerators.CardType type, Vector3 target, int damage)
+        public void PlayAttackVfx(Enumerators.CardType type, Vector3 target, int damage)
         {
             GameObject effect;
             GameObject vfxPrefab;
-            target = Utilites.CastVFXPosition(target);
+            target = Utilites.CastVfxPosition(target);
             Vector3 offset = Vector3.forward * 1;
 
-            if (type == Enumerators.CardType.FERAL)
+            if (type == Enumerators.CardType.Feral)
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                 effect = Object.Instantiate(vfxPrefab);
                 effect.transform.position = target - offset;
-                _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.FeralAttack, Constants.CreatureAttackSoundVolume, false, false, true);
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -99,14 +99,14 @@ namespace LoomNetwork.CZB
                 // {
                 // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
                 // }, null, 0.75f, false);
-            } else if (type == Enumerators.CardType.HEAVY)
+            } else if (type == Enumerators.CardType.Heavy)
             {
-                Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
+                Enumerators.SoundType soundType = Enumerators.SoundType.HeavyAttack1;
                 string prefabName = "Prefabs/VFX/HeavyAttackVFX";
                 if (damage > 4)
                 {
                     prefabName = "Prefabs/VFX/HeavyAttack2VFX";
-                    soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                    soundType = Enumerators.SoundType.HeavyAttack2;
                 }
 
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
@@ -115,7 +115,7 @@ namespace LoomNetwork.CZB
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
-                _soundManager.PlaySound(soundType, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
 
                 /* GameClient.Get<ITimerManager>().AddTimer((a) =>
                                      {
@@ -145,52 +145,52 @@ namespace LoomNetwork.CZB
 
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
                     // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.WalkerAttack2, Constants.CreatureAttackSoundVolume, false, false, true);
 
                     // }, null, 0.75f, false);
                 } else
                 {
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
                     // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.WalkerAttack1, Constants.CreatureAttackSoundVolume, false, false, true);
 
                     // }, null, 0.75f, false);
                 }
             }
         }
 
-        public void CreateVFX(Enumerators.SetType setType, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        public void CreateVfx(Enumerators.SetType setType, Vector3 position, bool autoDestroy = true, float delay = 3f)
         {
             GameObject prefab = null;
 
             switch (setType)
             {
-                case Enumerators.SetType.WATER:
+                case Enumerators.SetType.Water:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.SetType.Toxic:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.SetType.Fire:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.SetType.Life:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.SetType.Earth:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
                     break;
-                case Enumerators.SetType.AIR:
+                case Enumerators.SetType.Air:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
                     break;
             }
 
             GameObject particle = Object.Instantiate(prefab);
-            particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
+            particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-        public void CreateVFX(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
+        public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
             if (prefab == null)
 
@@ -200,7 +200,7 @@ namespace LoomNetwork.CZB
 
             if (target is BoardUnit)
             {
-                position = (target as BoardUnit).transform.position;
+                position = (target as BoardUnit).Transform.position;
             } else if (target is Player)
             {
                 position = (target as Player).AvatarObject.transform.position;
@@ -210,22 +210,22 @@ namespace LoomNetwork.CZB
             }
 
             GameObject particle = Object.Instantiate(prefab);
-            particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
+            particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-        public void CreateSkillVFX(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
+        public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
         {
             if (target == null)
 
                 return;
 
             GameObject particleSystem = Object.Instantiate(prefab);
-            particleSystem.transform.position = Utilites.CastVFXPosition(from + Vector3.forward);
+            particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
             if (target is Player)
             {
-                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(
+                particleSystem.transform.DOMove(Utilites.CastVfxPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(
                     () =>
                     {
                         callbackComplete(target);
@@ -237,7 +237,7 @@ namespace LoomNetwork.CZB
                     });
             } else if (target is BoardUnit)
             {
-                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as BoardUnit).transform.position), .5f).OnComplete(
+                particleSystem.transform.DOMove(Utilites.CastVfxPosition((target as BoardUnit).Transform.position), .5f).OnComplete(
                     () =>
                     {
                         callbackComplete(target);
@@ -256,7 +256,7 @@ namespace LoomNetwork.CZB
 
             if (onObject is BoardUnit)
             {
-                target = (onObject as BoardUnit).transform;
+                target = (onObject as BoardUnit).Transform;
             } else if (onObject is Player)
             {
                 target = (onObject as Player).AvatarObject.transform;

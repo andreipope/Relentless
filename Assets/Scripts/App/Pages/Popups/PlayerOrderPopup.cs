@@ -115,11 +115,11 @@ namespace LoomNetwork.CZB
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.text = player.name.ToUpper();
-            _opponentOverlordNameText.text = opponent.name.ToUpper();
+            _playerOverlordNameText.text = player.Name.ToUpper();
+            _opponentOverlordNameText.text = opponent.Name.ToUpper();
 
-            _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.element.ToLower());
-            _opponentOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + opponent.element.ToLower());
+            _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.Element.ToLower());
+            _opponentOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + opponent.Element.ToLower());
 
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
@@ -212,14 +212,14 @@ namespace LoomNetwork.CZB
 
                         if (index == turnsCount - 1)
                         {
-                            _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                            _soundManager.StopPlaying(Enumerators.SoundType.CardDeckToHandSingle);
                         }
                     });
             }
 
             sequence.Play();
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SFX_SOUND_VOLUME, true, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CardDeckToHandSingle, Constants.SfxSoundVolume, true, false, false);
         }
 
         private void CheckPlayerObjects(ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)

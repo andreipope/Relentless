@@ -7,13 +7,13 @@ namespace LoomNetwork.CZB.Data
 {
     public class HeroesData
     {
-        public List<Hero> heroes;
+        public List<Hero> Heroes;
 
         [JsonIgnore]
         private bool _casted;
 
         [JsonIgnore]
-        public List<Hero> Heroes
+        public List<Hero> HeroesParsed
         {
             get
             {
@@ -22,15 +22,15 @@ namespace LoomNetwork.CZB.Data
                     CastData();
                 }
 
-                return heroes;
+                return Heroes;
             }
         }
 
         public void CastData()
         {
-            foreach (Hero item in heroes)
+            foreach (Hero item in Heroes)
             {
-                item.heroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.element);
+                item.HeroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.Element);
                 item.CastSkills();
                 item.ValidateSkillLocking();
             }
@@ -41,45 +41,45 @@ namespace LoomNetwork.CZB.Data
 
     public class Hero
     {
-        public int heroId;
+        public int HeroId;
 
-        public string icon;
+        public string Icon;
 
-        public string name;
+        public string Name;
 
-        public string shortDescription;
+        public string ShortDescription;
 
-        public string longDescription;
+        public string LongDescription;
 
-        public string element;
+        public string Element;
 
-        public int experience;
+        public int Experience;
 
-        public int level;
+        public int Level;
 
         [JsonIgnore]
-        public Enumerators.SetType heroElement;
+        public Enumerators.SetType HeroElement;
 
-        public List<HeroSkill> skills;
+        public List<HeroSkill> Skills;
 
-        public int primarySkill;
+        public int PrimarySkill;
 
-        public int secondarySkill;
+        public int SecondarySkill;
 
-        public string FullName => $"{name}, {shortDescription}";
+        public string FullName => $"{Name}, {ShortDescription}";
 
         public void ValidateSkillLocking()
         {
-            int skillId = level % 4;
+            int skillId = Level % 4;
             for (int i = 0; i < skillId; i++)
             {
-                skills[i].unlocked = true;
+                Skills[i].Unlocked = true;
             }
         }
 
         public void CastSkills()
         {
-            foreach (HeroSkill skill in skills)
+            foreach (HeroSkill skill in Skills)
             {
                 skill.CastData();
             }
@@ -88,60 +88,60 @@ namespace LoomNetwork.CZB.Data
 
     public class HeroSkill
     {
-        public string title;
+        public string Title;
 
-        public string skill;
+        public string Skill;
 
-        public string iconPath;
+        public string IconPath;
 
-        public string description;
+        public string Description;
 
-        public string skillTargets;
+        public string SkillTargets;
 
-        public string elementTargets;
+        public string ElementTargets;
 
-        public int cooldown;
+        public int Cooldown;
 
-        public int initialCooldown;
+        public int InitialCooldown;
 
-        public int value;
+        public int Value;
 
-        public int attack;
+        public int Attack;
 
-        public int health;
-
-        [JsonIgnore]
-        public bool unlocked;
+        public int Health;
 
         [JsonIgnore]
-        public Enumerators.OverlordSkill overlordSkill;
+        public bool Unlocked;
 
         [JsonIgnore]
-        public List<Enumerators.SkillTargetType> skillTargetTypes;
+        public Enumerators.OverlordSkill OverlordSkill;
 
-        public List<Enumerators.SetType> elementTargetTypes;
+        [JsonIgnore]
+        public List<Enumerators.SkillTargetType> SkillTargetTypes;
+
+        public List<Enumerators.SetType> ElementTargetTypes;
 
         public void CastData()
         {
-            if (!string.IsNullOrEmpty(skill))
+            if (!string.IsNullOrEmpty(Skill))
             {
-                overlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(skill);
+                OverlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(Skill);
             }
 
-            if (!string.IsNullOrEmpty(skillTargets))
+            if (!string.IsNullOrEmpty(SkillTargets))
             {
-                skillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(skillTargets);
+                SkillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(SkillTargets);
             } else
             {
-                skillTargetTypes = new List<Enumerators.SkillTargetType>();
+                SkillTargetTypes = new List<Enumerators.SkillTargetType>();
             }
 
-            if (!string.IsNullOrEmpty(elementTargets))
+            if (!string.IsNullOrEmpty(ElementTargets))
             {
-                elementTargetTypes = Utilites.CastList<Enumerators.SetType>(elementTargets);
+                ElementTargetTypes = Utilites.CastList<Enumerators.SetType>(ElementTargets);
             } else
             {
-                elementTargetTypes = new List<Enumerators.SetType>();
+                ElementTargetTypes = new List<Enumerators.SetType>();
             }
         }
     }

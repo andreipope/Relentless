@@ -8,17 +8,17 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 {
     public Action<GameObject> OnItemEndDrag;
 
-    public bool dragOnSurfaces = true;
+    public bool DragOnSurfaces = true;
 
-    public bool locked;
+    public bool Locked;
 
-    private GameObject m_DraggingIcon;
+    private GameObject _mDraggingIcon;
 
-    private RectTransform m_DraggingPlane;
+    private RectTransform _mDraggingPlane;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (locked)
+        if (Locked)
 
             return;
 
@@ -27,20 +27,20 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
             return;
 
-        m_DraggingIcon = Instantiate(gameObject);
-        m_DraggingIcon.transform.Find("Amount").gameObject.SetActive(false);
-        Destroy(m_DraggingIcon.GetComponent<DragableObject>());
-        m_DraggingIcon.transform.position = gameObject.transform.position;
-        m_DraggingIcon.transform.localScale = Vector3.one;
-        m_DraggingIcon.transform.SetParent(canvas.transform, false);
-        m_DraggingIcon.transform.SetAsLastSibling();
+        _mDraggingIcon = Instantiate(gameObject);
+        _mDraggingIcon.transform.Find("Amount").gameObject.SetActive(false);
+        Destroy(_mDraggingIcon.GetComponent<DragableObject>());
+        _mDraggingIcon.transform.position = gameObject.transform.position;
+        _mDraggingIcon.transform.localScale = Vector3.one;
+        _mDraggingIcon.transform.SetParent(canvas.transform, false);
+        _mDraggingIcon.transform.SetAsLastSibling();
 
-        if (dragOnSurfaces)
+        if (DragOnSurfaces)
         {
-            m_DraggingPlane = transform as RectTransform;
+            _mDraggingPlane = transform as RectTransform;
         } else
         {
-            m_DraggingPlane = canvas.transform as RectTransform;
+            _mDraggingPlane = canvas.transform as RectTransform;
         }
 
         SetDraggedPosition(eventData);
@@ -48,11 +48,11 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void OnDrag(PointerEventData data)
     {
-        if (locked)
+        if (Locked)
 
             return;
 
-        if (m_DraggingIcon != null)
+        if (_mDraggingIcon != null)
         {
             SetDraggedPosition(data);
         }
@@ -60,13 +60,13 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (locked)
+        if (Locked)
 
             return;
 
         if (OnItemEndDrag != null)
         {
-            OnItemEndDrag(m_DraggingIcon);
+            OnItemEndDrag(_mDraggingIcon);
         }
 
         // if (m_DraggingIcon != null)
@@ -100,21 +100,21 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     private void SetDraggedPosition(PointerEventData data)
     {
-        if (locked)
+        if (Locked)
 
             return;
 
-        if (dragOnSurfaces && (data.pointerEnter != null) && (data.pointerEnter.transform as RectTransform != null))
+        if (DragOnSurfaces && (data.pointerEnter != null) && (data.pointerEnter.transform as RectTransform != null))
         {
-            m_DraggingPlane = data.pointerEnter.transform as RectTransform;
+            _mDraggingPlane = data.pointerEnter.transform as RectTransform;
         }
 
-        RectTransform rt = m_DraggingIcon.GetComponent<RectTransform>();
+        RectTransform rt = _mDraggingIcon.GetComponent<RectTransform>();
         Vector3 globalMousePos;
-        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(m_DraggingPlane, data.position, data.pressEventCamera, out globalMousePos))
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_mDraggingPlane, data.position, data.pressEventCamera, out globalMousePos))
         {
             rt.position = globalMousePos;
-            rt.rotation = m_DraggingPlane.rotation;
+            rt.rotation = _mDraggingPlane.rotation;
         }
     }
 }

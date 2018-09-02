@@ -12,7 +12,7 @@ namespace LoomNetwork.CZB
 {
     public class BuildMetaInfoGenerator : IPreprocessBuild
     {
-        private const string BUILD_META_INFO_PATH = "Assets/Resources/" + BuildMetaInfo.ResourcesPath + ".asset";
+        private const string KBuildMetaInfoPath = "Assets/Resources/" + BuildMetaInfo.KResourcesPath + ".asset";
 
         public int callbackOrder { get; }
 
@@ -94,12 +94,19 @@ namespace LoomNetwork.CZB
             }
 
             instance = ScriptableObject.CreateInstance<BuildMetaInfo>();
-            AssetDatabase.CreateAsset(instance, BUILD_META_INFO_PATH);
+            AssetDatabase.CreateAsset(instance, KBuildMetaInfoPath);
 
             return instance;
         }
 
-        private static void ExecuteCommand(string fileName, string arguments, out string output, out int exitCode, string standardInput = null, Encoding standardInputEncoding = null, int timeout = 5000)
+        private static void ExecuteCommand(
+            string fileName,
+            string arguments,
+            out string output,
+            out int exitCode,
+            string standardInput = null,
+            Encoding standardInputEncoding = null,
+            int timeout = 5000)
         {
             Process program = new Process
             {

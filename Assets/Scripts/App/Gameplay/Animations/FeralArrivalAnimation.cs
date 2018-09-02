@@ -9,9 +9,9 @@ namespace LoomNetwork.CZB
     {
         public Action<FeralArrivalAnimation> OnAnimationCompleted;
 
-        public GameObject selfObject;
+        public GameObject SelfObject;
 
-        public SpriteRenderer picture;
+        public SpriteRenderer Picture;
 
         private readonly ILoadObjectsManager _loader;
 
@@ -24,14 +24,14 @@ namespace LoomNetwork.CZB
         public FeralArrivalAnimation(Sprite sprite, Transform parent)
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
-            selfObject = Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/FeralArrivalAnimation"), parent);
-            selfObject.transform.localPosition = _offset;
-            picture = selfObject.transform.Find("Picture").GetComponent<SpriteRenderer>();
-            picture.sprite = sprite;
+            SelfObject = Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/FeralArrivalAnimation"), parent);
+            SelfObject.transform.localPosition = _offset;
+            Picture = SelfObject.transform.Find("Picture").GetComponent<SpriteRenderer>();
+            Picture.sprite = sprite;
 
             _onCompleteActions = new Dictionary<object[], Action<object[]>>();
 
-            Animator anim = selfObject.GetComponent<Animator>();
+            Animator anim = SelfObject.GetComponent<Animator>();
             AnimatorClipInfo[] clip = anim.GetCurrentAnimatorClipInfo(0);
             _animationLength = clip[0].clip.length * anim.speed;
 
@@ -65,9 +65,9 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            if (selfObject != null)
+            if (SelfObject != null)
             {
-                Object.Destroy(selfObject);
+                Object.Destroy(SelfObject);
             }
         }
     }

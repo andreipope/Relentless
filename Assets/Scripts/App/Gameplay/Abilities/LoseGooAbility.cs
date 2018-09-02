@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class LoseGooAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public LoseGooAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,8 +38,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.Goo -= value;
-            playerCallerOfAbility.GooOnCurrentTurn -= value;
+            PlayerCallerOfAbility.Goo -= Value;
+            PlayerCallerOfAbility.GooOnCurrentTurn -= Value;
         }
 
         protected override void OnInputEndEventHandler()

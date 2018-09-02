@@ -6,27 +6,27 @@ namespace LoomNetwork.CZB
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public DeckEditingPage scene;
+        public DeckEditingPage Scene;
 
-        public Card card;
+        public Card Card;
 
-        public bool isActive;
+        public bool IsActive;
 
-        public bool isHordeItem = false;
+        public bool IsHordeItem = false;
 
         private MultiPointerClickHandler _multiPointerClickHandler;
 
         public void OnScroll(PointerEventData eventData)
         {
-            if (scene != null)
+            if (Scene != null)
             {
-                scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
+                Scene.ScrollCardList(IsHordeItem, eventData.scrollDelta);
             }
         }
 
         private void Awake()
         {
-            isActive = true;
+            IsActive = true;
             _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
             _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
             _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
@@ -34,17 +34,17 @@ namespace LoomNetwork.CZB
 
         private void SingleClickAction()
         {
-            scene.SelectCard(this, card);
+            Scene.SelectCard(this, Card);
         }
 
         private void DoubleClickAction()
         {
-            if (!isHordeItem)
+            if (!IsHordeItem)
             {
-                scene.AddCardToDeck(this, card);
+                Scene.AddCardToDeck(this, Card);
             } else
             {
-                scene.RemoveCardFromDeck(this, card);
+                Scene.RemoveCardFromDeck(this, Card);
             }
         }
     }

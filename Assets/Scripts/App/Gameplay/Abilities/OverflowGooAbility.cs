@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class OverflowGooAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public OverflowGooAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,9 +38,9 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if ((cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement) || cardOwnerOfAbility.name.Equals("Corrupted Goo") || cardOwnerOfAbility.name.Equals("Tainted Goo"))
+            if ((CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement) || CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
-                playerCallerOfAbility.Goo += value;
+                PlayerCallerOfAbility.Goo += Value;
             }
         }
 

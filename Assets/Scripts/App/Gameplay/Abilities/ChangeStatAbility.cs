@@ -6,24 +6,24 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
-        public Enumerators.StatType statType;
+        public Enumerators.StatType StatType;
 
-        public int value = 1;
+        public int Value = 1;
 
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            statType = ability.abilityStatType;
-            value = ability.value;
+            StatType = ability.AbilityStatType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -44,19 +44,19 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
 
                 return;
 
-            switch (statType)
+            switch (StatType)
             {
-                case Enumerators.StatType.HEALTH:
-                    abilityUnitOwner.BuffedHP += value;
-                    abilityUnitOwner.CurrentHP += value;
+                case Enumerators.StatType.Health:
+                    AbilityUnitOwner.BuffedHp += Value;
+                    AbilityUnitOwner.CurrentHp += Value;
                     break;
-                case Enumerators.StatType.DAMAGE:
-                    abilityUnitOwner.BuffedDamage += value;
-                    abilityUnitOwner.CurrentDamage += value;
+                case Enumerators.StatType.Damage:
+                    AbilityUnitOwner.BuffedDamage += Value;
+                    AbilityUnitOwner.CurrentDamage += Value;
                     break;
             }
 

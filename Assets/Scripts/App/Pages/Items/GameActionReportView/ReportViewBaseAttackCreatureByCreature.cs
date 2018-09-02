@@ -21,16 +21,16 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _attackingCreature = gameAction.parameters[0] as BoardUnit;
-            _attackingDamage = (int)gameAction.parameters[1];
-            _attackedCreature = gameAction.parameters[2] as BoardUnit;
-            _attackedDamage = (int)gameAction.parameters[3];
+            _attackingCreature = GameAction.Parameters[0] as BoardUnit;
+            _attackingDamage = (int)GameAction.Parameters[1];
+            _attackedCreature = GameAction.Parameters[2] as BoardUnit;
+            _attackedDamage = (int)GameAction.Parameters[3];
 
-            previewImage.sprite = _attackingCreature.sprite;
+            PreviewImage.sprite = _attackingCreature.Sprite;
             _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
             _attackedCreatureObj = CreateCardPreview(_attackedCreature.Card, Vector3.right * 6);
 
-            attackingPictureObject.SetActive(true);
+            AttackingPictureObject.SetActive(true);
 
             GameObject attackViewPlayer = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);

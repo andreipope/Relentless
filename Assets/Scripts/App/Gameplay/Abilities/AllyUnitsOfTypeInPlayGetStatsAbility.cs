@@ -5,25 +5,25 @@ namespace LoomNetwork.CZB
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-        public int health;
+        public int Health;
 
-        public int damage;
+        public int Damage;
 
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            health = ability.health;
-            damage = ability.damage;
-            setType = ability.abilitySetType;
+            Health = ability.Health;
+            Damage = ability.Damage;
+            SetType = ability.AbilitySetType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -44,15 +44,15 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            foreach (BoardUnit unit in playerCallerOfAbility.BoardCards)
+            foreach (BoardUnit unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Card.libraryCard.cardSetType.Equals(setType) && (unit != abilityUnitOwner))
+                if (unit.Card.LibraryCard.CardSetType.Equals(SetType) && (unit != AbilityUnitOwner))
                 {
-                    unit.BuffedDamage += damage;
-                    unit.CurrentDamage += damage;
+                    unit.BuffedDamage += Damage;
+                    unit.CurrentDamage += Damage;
 
-                    unit.BuffedHP += health;
-                    unit.CurrentHP += health;
+                    unit.BuffedHp += Health;
+                    unit.CurrentHp += Health;
                 }
             }
         }

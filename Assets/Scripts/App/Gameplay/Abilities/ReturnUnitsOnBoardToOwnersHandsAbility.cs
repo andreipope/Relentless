@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -37,8 +37,8 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
 
             foreach (BoardUnit unit in units)
             {
@@ -60,11 +60,11 @@ namespace LoomNetwork.CZB
 
         private void ReturnBoardUnitToHand(BoardUnit unit)
         {
-            CreateVFX(unit.transform.position, true, 3f, true);
+            CreateVfx(unit.Transform.position, true, 3f, true);
 
-            _cardsController.ReturnCardToHand(playerCallerOfAbility, unit);
+            CardsController.ReturnCardToHand(PlayerCallerOfAbility, unit);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { playerCallerOfAbility, abilityData, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.ReturnToHandCardAbility, new object[] { PlayerCallerOfAbility, AbilityData, unit }));
         }
     }
 }

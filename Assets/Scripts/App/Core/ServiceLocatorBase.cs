@@ -5,14 +5,14 @@ namespace LoomNetwork.CZB
 {
     public abstract class ServiceLocatorBase : IServiceLocator
     {
-        protected IDictionary<Type, IService> _services;
+        protected IDictionary<Type, IService> Services;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ServiceLocatorBase" /> class.
         /// </summary>
         internal ServiceLocatorBase()
         {
-            _services = new Dictionary<Type, IService>();
+            Services = new Dictionary<Type, IService>();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
         {
             try
             {
-                return (T)_services[typeof(T)];
+                return (T)Services[typeof(T)];
             } catch (KeyNotFoundException)
             {
                 throw new Exception("Service " + typeof(T) + " is not registered!");
@@ -37,7 +37,7 @@ namespace LoomNetwork.CZB
         /// </summary>
         public void Update()
         {
-            foreach (IService service in _services.Values)
+            foreach (IService service in Services.Values)
             {
                 service.Update();
             }
@@ -49,7 +49,7 @@ namespace LoomNetwork.CZB
         /// <exception cref="System.Exception">Service don't have Init() method!</exception>
         public void InitServices()
         {
-            foreach (IService service in _services.Values)
+            foreach (IService service in Services.Values)
             {
                 service.Init();
             }
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
         /// </summary>
         public void Dispose()
         {
-            foreach (IService service in _services.Values)
+            foreach (IService service in Services.Values)
             {
                 service.Dispose();
             }
@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
         {
             if (service is T)
             {
-                _services.Add(typeof(T), service);
+                Services.Add(typeof(T), service);
             } else
             {
                 throw new Exception("Service " + service + " have not implemented interface: " + typeof(T));

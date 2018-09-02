@@ -8,34 +8,34 @@ namespace LoomNetwork.CZB
 {
     public class ChangeUnitsOfTypeStatAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
-        public Enumerators.StatType statType;
+        public Enumerators.StatType StatType;
 
-        public int value = 1;
+        public int Value = 1;
 
         public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            statType = ability.abilityStatType;
-            setType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.setType);
-            value = ability.value;
+            StatType = ability.AbilityStatType;
+            SetType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.SetType);
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (statType)
+            switch (StatType)
             {
-                case Enumerators.StatType.HEALTH:
-                case Enumerators.StatType.DAMAGE:
+                case Enumerators.StatType.Health:
+                case Enumerators.StatType.Damage:
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
             }
 
-            if (abilityCallType != Enumerators.AbilityCallType.PERMANENT)
+            if (AbilityCallType != Enumerators.AbilityCallType.Permanent)
 
                 return;
 
@@ -54,28 +54,28 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
-            List<BoardUnit> unitsOnBoard = playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType.Equals(setType));
+            List<BoardUnit> unitsOnBoard = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType.Equals(SetType));
 
             foreach (BoardUnit unit in unitsOnBoard)
             {
-                if (unit.Equals(abilityUnitOwner))
+                if (unit.Equals(AbilityUnitOwner))
                 {
                     continue;
                 }
 
-                switch (statType)
+                switch (StatType)
                 {
-                    case Enumerators.StatType.DAMAGE:
-                        unit.BuffedDamage += value;
-                        unit.CurrentDamage += value;
+                    case Enumerators.StatType.Damage:
+                        unit.BuffedDamage += Value;
+                        unit.CurrentDamage += Value;
                         break;
-                    case Enumerators.StatType.HEALTH:
-                        unit.BuffedHP += value;
-                        unit.CurrentHP += value;
+                    case Enumerators.StatType.Health:
+                        unit.BuffedHp += Value;
+                        unit.CurrentHp += Value;
                         break;
                 }
 
-                CreateVFX(unit.transform.position, true);
+                CreateVfx(unit.Transform.position, true);
             }
         }
     }

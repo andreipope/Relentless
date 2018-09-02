@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_HealCreatureByAbility : ReportViewBase
+    public class GameplayActionReportHealCreatureByAbility : ReportViewBase
     {
         private object _abilityOwner;
 
@@ -19,7 +19,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _healCreatureObj, _healedCreatureObj;
 
-        public GameplayActionReport_HealCreatureByAbility(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportHealCreatureByAbility(GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -28,24 +28,24 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _abilityOwner = gameAction.parameters[0];
-            _usedAbility = gameAction.parameters[1] as AbilityData;
-            _abilityValue = (int)gameAction.parameters[2];
-            _abilityUsedOnUnit = gameAction.parameters[3] as BoardUnit;
+            _abilityOwner = GameAction.Parameters[0];
+            _usedAbility = GameAction.Parameters[1] as AbilityData;
+            _abilityValue = (int)GameAction.Parameters[2];
+            _abilityUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
 
             if (_abilityOwner is BoardUnit)
             {
-                previewImage.sprite = (_abilityOwner as BoardUnit).sprite;
+                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
                 _healCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
             } else
             {
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.libraryCard.cardRank);
-                string cardSetName = cardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.libraryCard);
-                previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.libraryCard.picture.ToLower()));
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
+                string cardSetName = CardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.LibraryCard);
+                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.LibraryCard.Picture.ToLower()));
                 _healCreatureObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
             }
 
-            healPictureObject.SetActive(true);
+            HealPictureObject.SetActive(true);
 
             _healedCreatureObj = CreateCardPreview(_abilityUsedOnUnit.Card, Vector3.right * 6);
 

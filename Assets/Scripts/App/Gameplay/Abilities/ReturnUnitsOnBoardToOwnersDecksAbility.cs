@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -37,8 +37,8 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
 
             foreach (BoardUnit unit in units)
             {
@@ -60,12 +60,12 @@ namespace LoomNetwork.CZB
 
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
-            if (((abilityUnitOwner != null) && (unit == abilityUnitOwner)) || (unit == null))
+            if (((AbilityUnitOwner != null) && (unit == AbilityUnitOwner)) || (unit == null))
 
                 return;
 
             // implement animation
-            unit.ownerPlayer.AddCardToDeck(new WorkingCard(unit.Card.libraryCard.Clone(), unit.ownerPlayer));
+            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard.Clone(), unit.OwnerPlayer));
             unit.MoveUnitFromBoardToDeck();
         }
     }

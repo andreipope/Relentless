@@ -7,6 +7,24 @@ namespace LoomNetwork.CZB
 {
     public class AbilityBoardArrow : BoardArrow
     {
+        public List<Enumerators.AbilityTargetType> PossibleTargets = new List<Enumerators.AbilityTargetType>();
+
+        public BoardUnit SelfBoardCreature;
+
+        public Enumerators.CardType TargetUnitType;
+
+        public Enumerators.UnitStatusType TargetUnitStatusType;
+
+        private IInputManager _inputManager;
+
+        private int _onMouseDownInputIndex;
+
+        private int _onRightMouseDownInputIndex;
+
+        private int _onEscapeInputIndex;
+
+        private bool _isAbilitySecondTouchActivated = false;
+
         public event Action<BoardUnit> OnCardSelectedEvent;
 
         public event Action<BoardUnit> OnCardUnselectedevent;
@@ -19,52 +37,34 @@ namespace LoomNetwork.CZB
 
         public event Action OnInputCancelEvent;
 
-        public List<Enumerators.AbilityTargetType> possibleTargets = new List<Enumerators.AbilityTargetType>();
-
-        public BoardUnit selfBoardCreature;
-
-        public Enumerators.CardType targetUnitType;
-
-        public Enumerators.UnitStatusType targetUnitStatusType;
-
-        private IInputManager _inputManager;
-
-        private int _onMouseDownInputIndex;
-
-        private int _onRightMouseDownInputIndex;
-
-        private int _onEscapeInputIndex;
-
-        private bool _isAbilitySecondTouchActivated = false;
-
         public override void OnCardSelected(BoardUnit unit)
         {
-            if (unit.CurrentHP <= 0)
+            if (unit.CurrentHp <= 0)
 
                 return;
 
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) && unit.gameObject.CompareTag(Constants.TAG_PLAYER_OWNED)) || (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) && unit.gameObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) || possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.PlayerCard) && unit.GameObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.OpponentCard) && unit.GameObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
             {
-                if ((targetUnitType == Enumerators.CardType.NONE) || (unit.InitialUnitType == targetUnitType))
+                if ((TargetUnitType == Enumerators.CardType.None) || (unit.InitialUnitType == TargetUnitType))
                 {
-                    if ((targetUnitStatusType == Enumerators.UnitStatusType.NONE) || (unit.UnitStatus == targetUnitStatusType))
+                    if ((TargetUnitStatusType == Enumerators.UnitStatusType.None) || (unit.UnitStatus == TargetUnitStatusType))
                     {
-                        if (selfBoardCreature != unit)
+                        if (SelfBoardCreature != unit)
                         {
-                            if (selectedCard != null)
+                            if (SelectedCard != null)
                             {
-                                selectedCard.SetSelectedUnit(false);
+                                SelectedCard.SetSelectedUnit(false);
                             }
 
-                            selectedCard = unit;
-                            if (selectedPlayer != null)
+                            SelectedCard = unit;
+                            if (SelectedPlayer != null)
                             {
-                                selectedPlayer.SetGlowStatus(false);
+                                SelectedPlayer.SetGlowStatus(false);
                             }
 
-                            selectedPlayer = null;
-                            CreateTarget(unit.transform.position);
-                            selectedCard.SetSelectedUnit(true);
+                            SelectedPlayer = null;
+                            CreateTarget(unit.Transform.position);
+                            SelectedCard.SetSelectedUnit(true);
 
                             OnCardSelectedEvent?.Invoke(unit);
                         }
@@ -75,56 +75,56 @@ namespace LoomNetwork.CZB
 
         public override void OnCardUnselected(BoardUnit creature)
         {
-            if (selectedCard == creature)
+            if (SelectedCard == creature)
             {
-                selectedCard.SetSelectedUnit(false);
+                SelectedCard.SetSelectedUnit(false);
 
                 // _targetObjectsGroup.SetActive(false);
                 OnCardUnselectedevent?.Invoke(creature);
             }
 
-            selectedCard = null;
+            SelectedCard = null;
         }
 
         public override void OnPlayerSelected(Player player)
         {
-            if (player.HP <= 0)
+            if (player.Hp <= 0)
 
                 return;
 
-            if ((possibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(Constants.TAG_PLAYER_OWNED)) || (possibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(Constants.TAG_OPPONENT_OWNED)) || possibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.Player) && player.AvatarObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.Opponent) && player.AvatarObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
             {
-                selectedPlayer = player;
-                if (selectedCard != null)
+                SelectedPlayer = player;
+                if (SelectedCard != null)
                 {
-                    selectedCard.SetSelectedUnit(false);
+                    SelectedCard.SetSelectedUnit(false);
                 }
 
-                selectedCard = null;
+                SelectedCard = null;
                 CreateTarget(player.AvatarObject.transform.position);
-                selectedPlayer.SetGlowStatus(true);
+                SelectedPlayer.SetGlowStatus(true);
                 OnPlayerSelectedEvent?.Invoke(player);
             }
         }
 
         public override void OnPlayerUnselected(Player player)
         {
-            if (selectedPlayer == player)
+            if (SelectedPlayer == player)
             {
-                if (selectedCard != null)
+                if (SelectedCard != null)
                 {
-                    selectedCard.SetSelectedUnit(false);
+                    SelectedCard.SetSelectedUnit(false);
                 }
 
-                selectedCard = null;
+                SelectedCard = null;
 
-                selectedPlayer.SetGlowStatus(false);
+                SelectedPlayer.SetGlowStatus(false);
 
                 // _targetObjectsGroup.SetActive(false);
                 OnPlayerUnselectedEvent?.Invoke(player);
             }
 
-            selectedPlayer = null;
+            SelectedPlayer = null;
         }
 
         protected void Awake()
@@ -136,9 +136,9 @@ namespace LoomNetwork.CZB
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler, null, null);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler, null, null);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
+                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Mouse, 0, OnMouseButtonUpHandler, null, null);
+                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Mouse, 1, OnRightMouseButtonUpHandler, null, null);
+                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Keyboard, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
                 },
                 null,
                 Time.fixedDeltaTime);
@@ -160,18 +160,18 @@ namespace LoomNetwork.CZB
 
         protected void OnMouseButtonUpHandler()
         {
-            if (startedDrag)
+            if (StartedDrag)
             {
-                startedDrag = false;
+                StartedDrag = false;
                 OnInputEndEvent?.Invoke();
             }
         }
 
         protected void OnRightMouseButtonUpHandler()
         {
-            if (startedDrag)
+            if (StartedDrag)
             {
-                startedDrag = false;
+                StartedDrag = false;
                 OnInputCancelEvent?.Invoke();
             }
         }

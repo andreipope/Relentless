@@ -7,27 +7,27 @@ namespace LoomNetwork.CZB
 {
     public class SummonsAbility : AbilityBase
     {
-        public int count;
+        public int Count;
 
-        public string name;
+        public string Name;
 
-        public List<Enumerators.AbilityTargetType> targetTypes;
+        public List<Enumerators.AbilityTargetType> TargetTypes;
 
         public SummonsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            name = ability.name;
-            count = ability.count;
-            targetTypes = ability.abilityTargetTypes;
+            Name = ability.Name;
+            Count = ability.Count;
+            TargetTypes = ability.AbilityTargetTypes;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -43,21 +43,21 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            foreach (Enumerators.AbilityTargetType target in targetTypes)
+            foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        for (int i = 0; i < count; i++)
+                    case Enumerators.AbilityTargetType.Opponent:
+                        for (int i = 0; i < Count; i++)
                         {
                             SpawnMinion(GetOpponentOverlord());
                         }
 
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        for (int i = 0; i < count; i++)
+                    case Enumerators.AbilityTargetType.Player:
+                        for (int i = 0; i < Count; i++)
                         {
-                            SpawnMinion(playerCallerOfAbility);
+                            SpawnMinion(PlayerCallerOfAbility);
                         }
 
                         break;
@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if ((abilityCallType != Enumerators.AbilityCallType.TURN) || !_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+            if ((AbilityCallType != Enumerators.AbilityCallType.Turn) || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
 
                 return;
 
@@ -79,13 +79,13 @@ namespace LoomNetwork.CZB
 
         private void SpawnMinion(Player owner)
         {
-            if (owner.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+            if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
 
                 return;
 
-            Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
+            Card libraryCard = DataManager.CachedCardsLibraryData.GetCardFromName(Name).Clone();
 
-            string cardSetName = _cardsController.GetSetOfCard(libraryCard);
+            string cardSetName = CardsController.GetSetOfCard(libraryCard);
             WorkingCard card = new WorkingCard(libraryCard, owner);
             BoardUnit unit = CreateBoardUnit(card, cardSetName, owner);
 
@@ -94,29 +94,29 @@ namespace LoomNetwork.CZB
 
             if (!owner.IsLocalPlayer)
             {
-                _battlegroundController.opponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                BattlegroundController.OpponentBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             } else
             {
-                _battlegroundController.playerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                BattlegroundController.PlayerBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.SUMMON_UNIT_CARD, new object[] { owner, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.SummonUnitCard, new object[] { owner, unit }));
         }
 
         private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
         {
-            GameObject _playerBoard = owner.IsLocalPlayer?_battlegroundController.playerBoardObject:_battlegroundController.opponentBoardObject;
+            GameObject playerBoard = owner.IsLocalPlayer?BattlegroundController.PlayerBoardObject:BattlegroundController.OpponentBoardObject;
 
-            BoardUnit boardUnit = new BoardUnit(_playerBoard.transform);
-            boardUnit.transform.tag = owner.IsLocalPlayer?Constants.TAG_PLAYER_OWNED:Constants.TAG_OPPONENT_OWNED;
-            boardUnit.transform.parent = _playerBoard.transform;
-            boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
-            boardUnit.ownerPlayer = owner;
+            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
+            boardUnit.Transform.tag = owner.IsLocalPlayer?Constants.KTagPlayerOwned:Constants.KTagOpponentOwned;
+            boardUnit.Transform.parent = playerBoard.transform;
+            boardUnit.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
+            boardUnit.OwnerPlayer = owner;
             boardUnit.SetObjectInfo(card);
 
-            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
                 boardUnit.IsPlayable = true;
             }

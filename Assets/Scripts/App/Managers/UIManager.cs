@@ -98,9 +98,9 @@ namespace LoomNetwork.CZB
 
         public void HideAllPages()
         {
-            foreach (IUIElement _page in Pages)
+            foreach (IUIElement page in Pages)
             {
-                _page.Hide();
+                page.Hide();
             }
         }
 
@@ -118,31 +118,23 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            foreach (IUIElement _page in Pages)
+            foreach (IUIElement page in Pages)
             {
-                if (_page is T)
+                if (page is T)
                 {
-                    CurrentPage = _page;
+                    CurrentPage = page;
                     break;
                 }
             }
 
             CurrentPage.Show();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void DrawPopup<T>(object message = null, bool setMainPriority = false)
             where T : IUIPopup
         {
-            IUIPopup popup = null;
-            foreach (IUIPopup _popup in _uiPopups)
-            {
-                if (_popup is T)
-                {
-                    popup = _popup;
-                    break;
-                }
-            }
+            IUIPopup popup = GetPopup<T>();
 
             if (setMainPriority)
             {
@@ -161,46 +153,32 @@ namespace LoomNetwork.CZB
         public void HidePopup<T>()
             where T : IUIPopup
         {
-            foreach (IUIPopup _popup in _uiPopups)
-            {
-                if (_popup is T)
-                {
-                    _popup.Hide();
-                    break;
-                }
-            }
+            IUIPopup popup = GetPopup<T>();
+            popup.Hide();
         }
 
         public T GetPopup<T>()
             where T : IUIPopup
         {
-            IUIPopup popup = null;
-            foreach (IUIPopup _popup in _uiPopups)
+            for (int i = 0; i < _uiPopups.Count; i++)
             {
-                if (_popup is T)
-                {
-                    popup = _popup;
-                    break;
-                }
+                if (_uiPopups[i] is T popup)
+                    return popup;
             }
 
-            return (T)popup;
+            return default(T);
         }
 
         public T GetPage<T>()
             where T : IUIElement
         {
-            IUIElement page = null;
-            foreach (IUIElement _page in Pages)
+            for (int i = 0; i < Pages.Count; i++)
             {
-                if (_page is T)
-                {
-                    page = _page;
-                    break;
-                }
+                if (Pages[i] is T page)
+                    return page;
             }
 
-            return (T)page;
+            return default(T);
         }
     }
 }

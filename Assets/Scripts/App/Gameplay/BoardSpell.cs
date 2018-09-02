@@ -6,11 +6,11 @@ namespace LoomNetwork.CZB
 {
     public class BoardSpell
     {
-        public GameObject gameObject;
+        public GameObject GameObject;
 
-        public Transform transform;
+        public Transform Transform;
 
-        public BoardArrow targetingArrow;
+        public BoardArrow TargetingArrow;
 
         public WorkingCard Card;
 
@@ -18,12 +18,12 @@ namespace LoomNetwork.CZB
 
         public BoardSpell(GameObject obj, WorkingCard card)
         {
-            gameObject = obj;
-            transform = obj.transform;
+            GameObject = obj;
+            Transform = obj.transform;
 
             Card = card;
 
-            _eventHandler = gameObject.GetComponent<OnBehaviourHandler>();
+            _eventHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
             _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
         }
@@ -32,10 +32,10 @@ namespace LoomNetwork.CZB
 
         private void OnDestroyEventHandler(GameObject obj)
         {
-            if (targetingArrow != null)
+            if (TargetingArrow != null)
             {
-                Object.Destroy(targetingArrow.gameObject);
-                targetingArrow = null;
+                Object.Destroy(TargetingArrow.gameObject);
+                TargetingArrow = null;
             }
 
             SpellOnUsedEvent?.Invoke();

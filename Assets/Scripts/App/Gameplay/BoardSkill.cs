@@ -7,6 +7,16 @@ namespace LoomNetwork.CZB
 {
     public class BoardSkill
     {
+        public BoardArrow AbilitiesTargetingArrow;
+
+        public BattleBoardArrow FightTargetingArrow;
+
+        public GameObject SelfObject;
+
+        public Player Owner;
+
+        public HeroSkill Skill;
+
         private readonly ILoadObjectsManager _loadObjectsManager;
 
         private readonly IGameplayManager _gameplayManager;
@@ -21,7 +31,7 @@ namespace LoomNetwork.CZB
 
         private readonly TextMeshPro _cooldownText;
 
-        private readonly GameObject fightTargetingArrowPrefab;
+        private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly int _initialCooldown;
 
@@ -29,21 +39,11 @@ namespace LoomNetwork.CZB
 
         private readonly PointerEventSolver _pointerEventSolver;
 
-        public BoardArrow abilitiesTargetingArrow;
-
-        public BattleBoardArrow fightTargetingArrow;
-
-        public GameObject selfObject;
-
-        public Player owner;
-
-        public HeroSkill skill;
-
         private BattleController _battleController;
 
         private BattlegroundController _battlegroundController;
 
-        private VFXController _vfxController;
+        private VfxController _vfxController;
 
         private int _cooldown;
 
@@ -55,13 +55,13 @@ namespace LoomNetwork.CZB
 
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
-            selfObject = obj;
-            skill = skillInfo;
-            owner = player;
+            SelfObject = obj;
+            Skill = skillInfo;
+            Owner = player;
             IsPrimary = isPrimary;
 
-            _initialCooldown = skillInfo.initialCooldown;
-            _cooldown = skillInfo.cooldown;
+            _initialCooldown = skillInfo.InitialCooldown;
+            _cooldown = skillInfo.Cooldown;
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -71,22 +71,22 @@ namespace LoomNetwork.CZB
             _battleController = _gameplayManager.GetController<BattleController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
-            _vfxController = _gameplayManager.GetController<VFXController>();
+            _vfxController = _gameplayManager.GetController<VfxController>();
 
-            _glowObjectSprite = selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
+            _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
 
-            _cooldownText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
+            _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
             string name = isPrimary?"1stShutters":"2ndtShutters";
-            _shutterAnimator = selfObject.transform.parent.transform.Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
+            _shutterAnimator = SelfObject.transform.parent.transform.Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
             _shutterAnimator.enabled = false;
             _shutterAnimator.StopPlayback();
 
-            owner.OnStartTurnEvent += OnStartTurnEventHandler;
-            owner.OnEndTurnEvent += OnEndTurnEventHandler;
+            Owner.OnStartTurnEvent += OnStartTurnEventHandler;
+            Owner.OnEndTurnEvent += OnEndTurnEventHandler;
 
-            _behaviourHandler = selfObject.GetComponent<OnBehaviourHandler>();
+            _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             {
                 // _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
                 // _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
 
             _cooldownText.text = _cooldown.ToString();
 
-            fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
         public bool IsSkillReady => _cooldown == 0;
@@ -110,9 +110,9 @@ namespace LoomNetwork.CZB
 
         public void CancelTargetingArrows()
         {
-            if (fightTargetingArrow != null)
+            if (FightTargetingArrow != null)
             {
-                fightTargetingArrow.Dispose();
+                FightTargetingArrow.Dispose();
             }
         }
 
@@ -151,19 +151,19 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            if (owner.IsLocalPlayer)
+            if (Owner.IsLocalPlayer)
             {
-                if (skill.skillTargetTypes.Count > 0)
+                if (Skill.SkillTargetTypes.Count > 0)
                 {
-                    fightTargetingArrow = Object.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
-                    fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner?_gameplayManager.OpponentPlayer.BoardCards:_gameplayManager.CurrentPlayer.BoardCards;
-                    fightTargetingArrow.targetsType = skill.skillTargetTypes;
-                    fightTargetingArrow.elementType = skill.elementTargetTypes;
+                    FightTargetingArrow = Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
+                    FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == Owner?_gameplayManager.OpponentPlayer.BoardCards:_gameplayManager.CurrentPlayer.BoardCards;
+                    FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
+                    FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
 
                     // if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
-                    fightTargetingArrow.ignoreHeavy = true;
+                    FightTargetingArrow.IgnoreHeavy = true;
 
-                    fightTargetingArrow.Begin(selfObject.transform.position);
+                    FightTargetingArrow.Begin(SelfObject.transform.position);
 
                     if (_tutorialManager.IsTutorial)
                     {
@@ -196,7 +196,7 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            selfObject.SetActive(false);
+            SelfObject.SetActive(false);
         }
 
         public void Update()
@@ -241,9 +241,9 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnDragStartedEventHandler()
         {
-            if (skill.skillTargetTypes.Count > 0)
+            if (Skill.SkillTargetTypes.Count > 0)
             {
-                if (owner.IsLocalPlayer)
+                if (Owner.IsLocalPlayer)
                 {
                     StartDoSkill();
                 }
@@ -255,12 +255,12 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnClickEventHandler()
         {
-            if (skill.skillTargetTypes.Count > 0)
+            if (Skill.SkillTargetTypes.Count > 0)
             {
                 DrawAbilityTooltip();
             } else
             {
-                if (!_usedInThisTurn && owner.IsLocalPlayer)
+                if (!_usedInThisTurn && Owner.IsLocalPlayer)
                 {
                     StartDoSkill();
                 } else
@@ -272,7 +272,7 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnEndEventHandler()
         {
-            if (owner.IsLocalPlayer)
+            if (Owner.IsLocalPlayer)
             {
                 EndDoSkill();
             }
@@ -280,11 +280,11 @@ namespace LoomNetwork.CZB
 
         private void OnStartTurnEventHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
 
                 return;
 
-            if (owner.IsStunned)
+            if (Owner.IsStunned)
             {
                 BlockSkill();
             } else
@@ -300,7 +300,7 @@ namespace LoomNetwork.CZB
 
         private void OnEndTurnEventHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
 
                 return;
 
@@ -330,19 +330,19 @@ namespace LoomNetwork.CZB
 
         private void DoOnUpSkillAction()
         {
-            if (owner.IsLocalPlayer && _tutorialManager.IsTutorial)
+            if (Owner.IsLocalPlayer && _tutorialManager.IsTutorial)
             {
                 _tutorialManager.ActivateSelectTarget();
             }
 
-            if (skill.skillTargetTypes.Count == 0)
+            if (Skill.SkillTargetTypes.Count == 0)
             {
-                _skillsController.DoSkillAction(this, owner);
+                _skillsController.DoSkillAction(this, Owner);
             } else
             {
-                if (owner.IsLocalPlayer)
+                if (Owner.IsLocalPlayer)
                 {
-                    if (fightTargetingArrow != null)
+                    if (FightTargetingArrow != null)
                     {
                         _skillsController.DoSkillAction(this);
                         _playerController.IsCardSelected = false;
@@ -361,7 +361,7 @@ namespace LoomNetwork.CZB
                 return true;
             }
 
-            if (!IsSkillReady || (_gameplayManager.CurrentTurnPlayer != owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
+            if (!IsSkillReady || (_gameplayManager.CurrentTurnPlayer != Owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
             {
                 return false;
             }
@@ -383,7 +383,7 @@ namespace LoomNetwork.CZB
 
             Vector3 position = Vector3.zero;
 
-            if (owner.IsLocalPlayer)
+            if (Owner.IsLocalPlayer)
             {
                 if (IsPrimary)
                 {
@@ -403,7 +403,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _currentOverlordAbilityInfoObject = new OverlordAbilityInfoObject(skill, selfObject.transform, position);
+            _currentOverlordAbilityInfoObject = new OverlordAbilityInfoObject(Skill, SelfObject.transform, position);
         }
 
         public class OverlordAbilityInfoObject
@@ -424,20 +424,20 @@ namespace LoomNetwork.CZB
 
                 _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
 
-                transform.localPosition = position;
+                Transform.localPosition = position;
 
                 _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon").GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = skill.title.ToUpper();
-                _descriptionText.text = "    " + skill.description;
+                _callTypeText.text = skill.Title.ToUpper();
+                _descriptionText.text = "    " + skill.Description;
 
-                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath.Replace(" ", string.Empty));
+                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.IconPath.Replace(" ", string.Empty));
             }
 
-            public Transform transform => _selfObject.transform;
+            public Transform Transform => _selfObject.transform;
 
             public void Dispose()
             {

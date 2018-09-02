@@ -16,7 +16,7 @@ namespace LoomNetwork.CZB
 
         public PointerEventSolver()
         {
-            _dragDelta = Constants.POINTER_MIN_DRAG_DELTA;
+            _dragDelta = Constants.KPointerMinDragDelta;
         }
 
         public event Action OnClickEvent;
@@ -59,7 +59,7 @@ namespace LoomNetwork.CZB
             {
                 _pressTimer += Time.unscaledDeltaTime;
 
-                if (_pressTimer >= Constants.POINTER_ON_CLICK_DELAY)
+                if (_pressTimer >= Constants.KPointerOnClickDelay)
                 {
                     _isResolved = true;
                     OnDragStartedEvent?.Invoke();

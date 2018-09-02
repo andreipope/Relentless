@@ -7,7 +7,7 @@ namespace LoomNetwork.CZB
 {
     public class ContentManager : IService, IContentManager
     {
-        private static string TUTORIAL_LOCALIZATION_PATH = "https://docs.google.com/spreadsheets/d/1c6dQRpXM-mwT9NUsKKCp6XwE2OmIz9z1papZguXF--4/edit?usp=sharing";
+        private static string _tutorialLocalizationPath = "https://docs.google.com/spreadsheets/d/1c6dQRpXM-mwT9NUsKKCp6XwE2OmIz9z1papZguXF--4/edit?usp=sharing";
 
         private ILocalizationManager _localizationManager;
 
@@ -28,14 +28,14 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public ArrayList GetDataFromDB<T>(Enumerators.SpreadsheetType type, bool removeLatestLine = true)
+        public ArrayList GetDataFromDb<T>(Enumerators.SpreadsheetType type, bool removeLatestLine = true)
         {
-            string path = Constants.CONTENT_FOLDER_NAME + _localizationManager.CurrentLanguage + "_" + type + Constants.SPREADSHEET_FILE_FORMAT;
+            string path = Constants.KContentFolderName + _localizationManager.CurrentLanguage + "_" + type + Constants.KSpreadsheetFileFormat;
 
-            CSVMap map = new CSVMap(typeof(T));
+            CsvMap map = new CsvMap(typeof(T));
             ArrayList list;
 
-            list = map.loadCsvFromFile(path.Replace(Constants.SPREADSHEET_FILE_FORMAT, string.Empty));
+            list = map.LoadCsvFromFile(path.Replace(Constants.KSpreadsheetFileFormat, string.Empty));
 
             if (removeLatestLine)
             {
@@ -54,7 +54,7 @@ namespace LoomNetwork.CZB
         {
             TutorialInfo = new List<SpreadsheetModelTutorialInfo>();
 
-            ArrayList list = GetDataFromDB<SpreadsheetModelTutorialInfo>(Enumerators.SpreadsheetType.TUTORIAL);
+            ArrayList list = GetDataFromDb<SpreadsheetModelTutorialInfo>(Enumerators.SpreadsheetType.Tutorial);
 
             foreach (SpreadsheetModelTutorialInfo item in list)
             {

@@ -5,7 +5,7 @@ namespace LoomNetwork.CZB
 {
     public class EnemyThatAttacksBecomeFrozenAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
         public EnemyThatAttacksBecomeFrozenAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -41,13 +41,13 @@ namespace LoomNetwork.CZB
         {
             base.UnitGotDamageEventHandler(from);
 
-            if (abilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
+            if (AbilityCallType != Enumerators.AbilityCallType.AtDefence)
 
                 return;
 
             if (from is BoardUnit)
             {
-                (from as BoardUnit).Stun(Enumerators.StunType.FREEZE, value);
+                (from as BoardUnit).Stun(Enumerators.StunType.Freeze, Value);
             }
         }
     }

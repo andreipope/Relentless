@@ -4,174 +4,174 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-        internal const string CURRENT_VERSION_BASE = "0.1.2";
+        internal const string KCurrentVersionBase = "0.1.2";
 
-        internal const string CURRENT_VERSION_DEVELOPMENT_STAGE = "Alpha";
+        internal const string KCurrentVersionDevelopmentStage = "Alpha";
 
-        internal const string VERSION_FILE_RESOLUTION = ".ver";
+        internal const string KVersionFileResolution = ".ver";
 
-        internal const string LOCAL_USER_DATA_FILE_PATH = "0412DD0.dat";
+        internal const string KLocalUserDataFilePath = "0412DD0.dat";
 
-        internal const string LOCAL_CARDS_LIBRARY_DATA_FILE_PATH = "card_library_data.json";
+        internal const string KLocalCardsLibraryDataFilePath = "card_library_data.json";
 
-        internal const string LOCAL_COLLECTION_DATA_FILE_PATH = "collection_data.json";
+        internal const string KLocalCollectionDataFilePath = "collection_data.json";
 
-        internal const string LOCAL_HEROES_DATA_FILE_PATH = "heroes_data.json";
+        internal const string KLocalHeroesDataFilePath = "heroes_data.json";
 
-        internal const string LOCAL_DECKS_DATA_FILE_PATH = "decks_data.json";
+        internal const string KLocalDecksDataFilePath = "decks_data.json";
 
-        internal const string LOCAL_OPPONENT_DECKS_DATA_FILE_PATH = "opponent_decks_data.json";
+        internal const string KLocalOpponentDecksDataFilePath = "opponent_decks_data.json";
 
-        internal const string LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH = "action_library_data.json";
+        internal const string KLocalOpponentActionsLibraryDataFilePath = "action_library_data.json";
 
-        internal const string LOCAL_CREDITS_DATA_FILE_PATH = "credits_data.json";
+        internal const string KLocalCreditsDataFilePath = "credits_data.json";
 
-        internal const string LOCAL_BUFFS_TOOLTIP_DATA_FILE_PATH = "buffs_tooltip_data.json";
+        internal const string KLocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
 
-        internal const string PRIVATE_ENCRYPTION_KEY_FOR_APP = "sagatdsgsg7687sdg587a8gs89";
+        internal const string KPrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 
-        internal const string TAG_PLAYER_OWNED = "PlayerOwned";
+        internal const string KTagPlayerOwned = "PlayerOwned";
 
-        internal const string TAG_OPPONENT_OWNED = "OpponentOwned";
+        internal const string KTagOpponentOwned = "OpponentOwned";
 
-        internal const string PLAYER_BOARD = "PlayerBoard";
+        internal const string KPlayerBoard = "PlayerBoard";
 
-        internal const string OPPONENT_BOARD = "OpponentBoard";
+        internal const string KOpponentBoard = "OpponentBoard";
 
-        internal const string LAYER_HAND_CARDS = "HandCards";
+        internal const string KLayerHandCards = "HandCards";
 
-        internal const string LAYER_BOARD_CARDS = "BoardCards";
+        internal const string KLayerBoardCards = "BoardCards";
 
-        internal const string LAYER_DEFAULT = "Default";
+        internal const string KLayerDefault = "Default";
 
-        internal const string LAYER_FOREGROUND = "Foreground";
+        internal const string KLayerForeground = "Foreground";
 
-        internal const string LAYER_GAME_UI1 = "GameUI1";
+        internal const string KLayerGameUI1 = "GameUI1";
 
-        internal const string LAYER_GAME_UI2 = "GameUI2";
+        internal const string KLayerGameUI2 = "GameUI2";
 
-        internal const string LAYER_GAME_UI3 = "GameUI3";
+        internal const string KLayerGameUI3 = "GameUI3";
 
-        internal const string ZONE_HAND = "Hand";
+        internal const string KZoneHand = "Hand";
 
-        internal const string ZONE_BOARD = "Board";
+        internal const string KZoneBoard = "Board";
 
-        internal const string ZONE_DECK = "Deck";
+        internal const string KZoneDeck = "Deck";
 
-        internal const string ZONE_GRAVEYARD = "Graveyard";
+        internal const string KZoneGraveyard = "Graveyard";
 
-        internal const string TAG_LIFE = "Life";
+        internal const string KTagLife = "Life";
 
-        internal const string TAG_DAMAGE = "Damage";
+        internal const string KTagDamage = "Damage";
 
-        internal const string TAG_HP = "HP";
+        internal const string KTagHp = "HP";
 
-        internal const string TAG_MANA = "Goo";
+        internal const string KTagMana = "Goo";
 
-        internal const string STAT_DAMAGE = "DMG";
+        internal const string KStatDamage = "DMG";
 
-        internal const string STAT_HP = "HP";
+        internal const string KStatHp = "HP";
 
-        internal const string CONTENT_FOLDER_NAME = "SpreadsheetsData/";
+        internal const string KContentFolderName = "SpreadsheetsData/";
 
-        internal const string SPREADSHEET_FILE_FORMAT = ".csv";
+        internal const string KSpreadsheetFileFormat = ".csv";
 
-        internal const string CARD_SOUND_PLAY = "P";
+        internal const string KCardSoundPlay = "P";
 
-        internal const string CARD_SOUND_ATTACK = "A";
+        internal const string KCardSoundAttack = "A";
 
-        internal const string CARD_SOUND_DEATH = "D";
+        internal const string KCardSoundDeath = "D";
 
-        internal const float POINTER_ON_CLICK_DELAY = 1.5f;
+        internal const float KPointerOnClickDelay = 1.5f;
 
-        internal const float POINTER_MIN_DRAG_DELTA = 3f;
+        internal const float KPointerMinDragDelta = 3f;
 
-        internal const float POINTER_MIN_DRAG_DELTA_MOBILE = 35f;
+        internal const float KPointerMinDragDeltaMobile = 35f;
 
-        internal const float LOADING_TIME_BETWEEN_GAMEPLAY_AND_APP_INIT = 2f;
+        internal const float KLoadingTimeBetweenGameplayAndAppInit = 2f;
 
-        internal const int TUTORIAL_PLAYER_HERO_ID = 4;
+        internal const int KTutorialPlayerHeroId = 4;
 
-        internal static bool DATA_ENCRYPTION_ENABLED =
+        internal static bool DataEncryptionEnabled =
 #if !UNITY_EDITOR
             true;
 #else
             false;
 #endif
 
-        internal static uint HEROES_AMOUNT = 9;
+        internal static uint HeroesAmount = 9;
 
-        internal static uint DECK_MAX_SIZE = 30;
+        internal static uint DeckMaxSize = 30;
 
-        internal static uint CARD_ITEM_MAX_COPIES = 2;
+        internal static uint CardItemMaxCopies = 2;
 
-        internal static uint CARD_MINION_MAX_COPIES = 4;
+        internal static uint CardMinionMaxCopies = 4;
 
-        internal static uint CARD_OFFICER_MAX_COPIES = 2;
+        internal static uint CardOfficerMaxCopies = 2;
 
-        internal static uint CARD_COMMANDER_MAX_COPIES = 2;
+        internal static uint CardCommanderMaxCopies = 2;
 
-        internal static uint CARD_GENERAL_MAX_COPIES = 1;
+        internal static uint CardGeneralMaxCopies = 1;
 
-        internal static uint CARDS_IN_PACK = 5;
+        internal static uint CardsInPack = 5;
 
-        internal static uint MAX_BOARD_UNITS = 6;
+        internal static uint MaxBoardUnits = 6;
 
-        internal static int DEFAULT_TURN_DURATION = 60;
+        internal static int DefaultTurnDuration = 60;
 
-        internal static int MAX_DECK_SIZE = 30;
+        internal static int MaxDeckSize = 30;
 
-        internal static int MIN_DECK_SIZE = 30;
+        internal static int MinDeckSize = 30;
 
-        internal static int MAX_DECKS_AT_ALL = 6;
+        internal static int MaxDecksAtAll = 6;
 
-        internal static int MAX_CARDS_IN_HAND = 10;
+        internal static int MaxCardsInHand = 10;
 
-        internal static int DEFAULT_PLAYER_HP = 20;
+        internal static int DefaultPlayerHp = 20;
 
-        internal static int DEFAULT_PLAYER_GOO = 0;
+        internal static int DefaultPlayerGoo = 0;
 
-        internal static int MAXIMUM_PLAYER_GOO = 10;
+        internal static int MaximumPlayerGoo = 10;
 
-        internal static int FIRST_GAME_TURN_INDEX = 1;
+        internal static int FirstGameTurnIndex = 1;
 
-        internal static int DEFAULT_CARDS_IN_HAND_AT_START_GAME = 3;
+        internal static int DefaultCardsInHandAtStartGame = 3;
 
-        internal static float DELAY_BETWEEN_GAMEPLAY_ACTIONS = 0.01f;
+        internal static float DelayBetweenGameplayActions = 0.01f;
 
-        internal static int DELAY_BETWEEN_AI_ACTIONS = 1100;
+        internal static int DelayBetweenAiActions = 1100;
 
-        internal static Vector3 VFX_OFFSET = Vector3.zero;
+        internal static Vector3 VfxOffset = Vector3.zero;
 
         // SOUNDS VOLUME'S
-        internal static float ZOMBIES_SOUND_VOLUME = 0.05f;
+        internal static float ZombiesSoundVolume = 0.05f;
 
-        internal static float TUTORIAL_SOUND_VOLUME = 1f;
+        internal static float TutorialSoundVolume = 1f;
 
-        internal static float ARRIVAL_SOUND_VOLUME = 0.1f;
+        internal static float ArrivalSoundVolume = 0.1f;
 
-        internal static float CREATURE_ATTACK_SOUND_VOLUME = 0.05f;
+        internal static float CreatureAttackSoundVolume = 0.05f;
 
-        internal static float END_TURN_CLICK_SOUND_VOLUME = 0.1f;
+        internal static float EndTurnClickSoundVolume = 0.1f;
 
-        internal static float HERO_DEATH_SOUND_VOLUME = 0.1f;
+        internal static float HeroDeathSoundVolume = 0.1f;
 
-        internal static float CARDS_MOVE_SOUND_VOLUME = 0.025f;
+        internal static float CardsMoveSoundVolume = 0.025f;
 
-        internal static float BACKGROUND_SOUND_VOLUME = 0.05f;
+        internal static float BackgroundSoundVolume = 0.05f;
 
-        internal static float SFX_SOUND_VOLUME = 0.15f;
+        internal static float SfxSoundVolume = 0.15f;
 
-        internal static float OVERLORD_ABILITY_SOUND_VOLUME = 0.1f;
+        internal static float OverlordAbilitySoundVolume = 0.1f;
 
-        internal static float SPELL_ABILITY_SOUND_VOLUME = 0.1f;
+        internal static float SpellAbilitySoundVolume = 0.1f;
 
-        internal static float BATTLEGROUND_EFFECTS_SOUND_VOLUME = 0.25f;
+        internal static float BattlegroundEffectsSoundVolume = 0.25f;
 
-        internal static float ZOMBIE_DEATH_VO_DELAY_BEFORE_FADEOUT = 3f;
+        internal static float ZombieDeathVoDelayBeforeFadeout = 3f;
 
-        internal static float DELAY_TO_PLAY_DEATH_SOUND_OF_CREATURE = 2f;
+        internal static float DelayToPlayDeathSoundOfCreature = 2f;
 
-        internal static float CARD_DISTRIBUTION_TIME = 5f;
+        internal static float CardDistributionTime = 5f;
     }
 }

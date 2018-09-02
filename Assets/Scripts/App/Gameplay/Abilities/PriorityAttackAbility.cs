@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -33,7 +33,7 @@ namespace LoomNetwork.CZB
 
         public override void Action(object info = null)
         {
-            abilityUnitOwner.AttackAsFirst = true;
+            AbilityUnitOwner.AttackAsFirst = true;
         }
 
         protected override void UnitOnDieEventHandler()

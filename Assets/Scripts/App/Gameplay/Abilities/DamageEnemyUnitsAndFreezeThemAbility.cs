@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class DamageEnemyUnitsAndFreezeThemAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,29 +38,29 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            Player opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
 
-            foreach (Enumerators.AbilityTargetType target in abilityTargetTypes)
+            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTargetType.OpponentAllCards:
 
                         foreach (BoardUnit unit in opponent.BoardCards)
                         {
-                            _battleController.AttackUnitByAbility(GetCaller(), abilityData, unit);
+                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
                         }
 
                         foreach (BoardUnit unit in opponent.BoardCards)
                         {
-                            unit.Stun(Enumerators.StunType.FREEZE, value);
+                            unit.Stun(Enumerators.StunType.Freeze, Value);
                         }
 
                         break;
 
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        _battleController.AttackPlayerByAbility(GetCaller(), abilityData, opponent);
-                        opponent.Stun(Enumerators.StunType.FREEZE, value);
+                    case Enumerators.AbilityTargetType.Opponent:
+                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
+                        opponent.Stun(Enumerators.StunType.Freeze, Value);
                         break;
                 }
             }

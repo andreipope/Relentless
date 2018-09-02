@@ -5,31 +5,31 @@ namespace LoomNetwork.CZB
 {
     public class CostsLessIfCardTypeInHandAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
-        public int value;
+        public int Value;
 
         private int _changedCostOn = 0;
 
         public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            setType = ability.abilitySetType;
-            value = ability.value;
+            SetType = ability.AbilitySetType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.IN_HAND)
+            if (AbilityCallType != Enumerators.AbilityCallType.InHand)
 
                 return;
 
-            playerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
-            playerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
+            PlayerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
+            PlayerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
 
-            _timerManager.AddTimer(
+            TimerManager.AddTimer(
                 x =>
                 {
                     Action();
@@ -52,26 +52,26 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (!playerCallerOfAbility.CardsInHand.Contains(mainWorkingCard))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
 
                 return;
 
-            int gooCost = playerCallerOfAbility.CardsInHand.FindAll(x => (x.libraryCard.cardSetType == setType) && (x != mainWorkingCard)).Count * value;
+            int gooCost = PlayerCallerOfAbility.CardsInHand.FindAll(x => (x.LibraryCard.CardSetType == SetType) && (x != MainWorkingCard)).Count * Value;
 
             // gooCost = _changedCostOn;
 
             // _changedCostOn = gooCost;
-            _cardsController.SetGooCostOfCardInHand(playerCallerOfAbility, mainWorkingCard, mainWorkingCard.realCost + gooCost, boardCard);
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard, MainWorkingCard.RealCost + gooCost, BoardCard);
         }
 
         private void CardPlayedEventHandler(WorkingCard card)
         {
-            if (!card.Equals(mainWorkingCard))
+            if (!card.Equals(MainWorkingCard))
 
                 return;
 
-            playerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
-            playerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
+            PlayerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
+            PlayerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
         }
 
         private void HandChangedEventHandler(int obj)

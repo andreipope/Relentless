@@ -2,15 +2,15 @@ namespace LoomNetwork.CZB
 {
     public class User
     {
-        public float wallet;
+        public float Wallet;
 
-        public int packsCount;
+        public int PacksCount;
 
-        public int gooValue;
+        public int GooValue;
 
         public User()
         {
-            gooValue = 3000;
+            GooValue = 3000;
         }
     }
 }

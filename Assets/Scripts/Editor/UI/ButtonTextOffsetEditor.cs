@@ -10,7 +10,7 @@ public class ButtonTextOffsetEditor : ButtonEditor
         ButtonTextOffset component = (ButtonTextOffset)target;
         base.OnInspectorGUI();
 
-        component.buttonText = (TextMeshProUGUI)EditorGUILayout.ObjectField("Text", component.buttonText, typeof(TextMeshProUGUI), true);
-        component.textOffset = EditorGUILayout.FloatField("Text Offset", component.textOffset);
+        component.ButtonText = (TextMeshProUGUI)EditorGUILayout.ObjectField("Text", component.ButtonText, typeof(TextMeshProUGUI), true);
+        component.TextOffset = EditorGUILayout.FloatField("Text Offset", component.TextOffset);
     }
 }

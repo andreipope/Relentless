@@ -4,7 +4,7 @@ namespace LoomNetwork.CZB
 {
     public class TutorialBoardArrow : BoardArrow
     {
-        public bool isEnabled;
+        public bool IsEnabled;
 
         private Vector3 _targetPosition;
 
@@ -16,20 +16,20 @@ namespace LoomNetwork.CZB
 
         public void Activate()
         {
-            isEnabled = true;
+            IsEnabled = true;
             UpdateVisibility();
         }
 
         public void Deactivate()
         {
-            isEnabled = false;
+            IsEnabled = false;
             UpdateVisibility();
         }
 
         protected override void Update()
         {
             // base.Update();
-            if (isEnabled)
+            if (IsEnabled)
             {
                 UpdateLength(_targetPosition);
             }
@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateVisibility()
         {
-            gameObject.SetActive(isEnabled);
+            gameObject.SetActive(IsEnabled);
         }
     }
 }

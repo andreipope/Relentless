@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class DisableNextTurnGooAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public DisableNextTurnGooAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            playerCallerOfAbility.currentGooModificator += value;
+            PlayerCallerOfAbility.CurrentGooModificator += Value;
         }
 
         protected override void OnInputEndEventHandler()

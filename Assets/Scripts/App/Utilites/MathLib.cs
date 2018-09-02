@@ -4,45 +4,45 @@ namespace LoomNetwork.CZB.Helpers
 {
     public struct IntVector2
     {
-        public int x, y;
+        public int X, Y;
 
         public IntVector2(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         public override string ToString()
         {
-            return string.Format("x:{0}; y:{1}", x, y);
+            return string.Format("x:{0}; y:{1}", X, Y);
         }
     }
 
     public struct FloatVector3
     {
-        public static FloatVector3 one = new FloatVector3(1, 1, 1);
+        public static FloatVector3 One = new FloatVector3(1, 1, 1);
 
-        public static FloatVector3 zero = new FloatVector3(0, 0, 0);
+        public static FloatVector3 Zero = new FloatVector3(0, 0, 0);
 
-        public float x, y, z;
+        public float X, Y, Z;
 
         public FloatVector3(float x, float y, float z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
         }
 
         public FloatVector3(float general)
         {
-            x = general;
-            y = general;
-            z = general;
+            X = general;
+            Y = general;
+            Z = general;
         }
 
         public override string ToString()
         {
-            return string.Format("x:{0}; y:{1}; z:{2}", x, y, z);
+            return string.Format("x:{0}; y:{1}; z:{2}", X, Y, Z);
         }
     }
 
@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB.Helpers
     {
         public static Vector3 FloatVector3ToVector3(FloatVector3 vector)
         {
-            return new Vector3(vector.x, vector.y, vector.z);
+            return new Vector3(vector.X, vector.Y, vector.Z);
         }
 
         public static float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)

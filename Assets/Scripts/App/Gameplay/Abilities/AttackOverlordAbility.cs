@@ -7,26 +7,26 @@ namespace LoomNetwork.CZB
 {
     public class AttackOverlordAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
-        public List<Enumerators.AbilityTargetType> targetTypes;
+        public List<Enumerators.AbilityTargetType> TargetTypes;
 
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            targetTypes = ability.abilityTargetTypes;
-            value = ability.value;
+            TargetTypes = ability.AbilityTargetTypes;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
         }
@@ -45,17 +45,17 @@ namespace LoomNetwork.CZB
         {
             base.Action(param);
 
-            foreach (Enumerators.AbilityTargetType target in targetTypes)
+            foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().HP -= value;
-                        CreateVFX(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
+                    case Enumerators.AbilityTargetType.Opponent:
+                        GetOpponentOverlord().Hp -= Value;
+                        CreateVfx(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        playerCallerOfAbility.HP -= value;
-                        CreateVFX(playerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
+                    case Enumerators.AbilityTargetType.Player:
+                        PlayerCallerOfAbility.Hp -= Value;
+                        CreateVfx(PlayerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
                         break;
                     default: continue;
                 }

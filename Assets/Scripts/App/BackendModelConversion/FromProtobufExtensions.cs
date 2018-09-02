@@ -10,14 +10,14 @@ namespace LoomNetwork.CZB.Data
         {
             return new CollectionCardData
             {
-                amount = (int)cardCollection.Amount,
-                cardName = cardCollection.CardName
+                Amount = (int)cardCollection.Amount,
+                CardName = cardCollection.CardName
             };
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
         {
-            return new CollectionData { cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList() };
+            return new CollectionData { Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList() };
         }
 
         public static FloatVector3 FromProtobuf(this Coordinates coordinates)
@@ -29,25 +29,25 @@ namespace LoomNetwork.CZB.Data
         {
             return new AbilityData
             {
-                buffType = ability.BuffType,
-                type = ability.Type,
-                activityType = ability.ActivityType,
-                callType = ability.CallType,
-                targetType = ability.TargetType,
-                statType = ability.StatType,
-                setType = ability.SetType,
-                effectType = ability.EffectType,
-                cardType = ability.CardType,
-                unitStatus = ability.UnitStatus,
-                unitType = ability.UnitType,
-                value = ability.Value,
-                damage = ability.Damage,
-                health = ability.Health,
-                attackInfo = ability.AttackInfo,
-                name = ability.Name,
-                turns = ability.Turns,
-                count = ability.Count,
-                delay = ability.Delay
+                BuffType = ability.BuffType,
+                Type = ability.Type,
+                ActivityType = ability.ActivityType,
+                CallType = ability.CallType,
+                TargetType = ability.TargetType,
+                StatType = ability.StatType,
+                SetType = ability.SetType,
+                EffectType = ability.EffectType,
+                CardType = ability.CardType,
+                UnitStatus = ability.UnitStatus,
+                UnitType = ability.UnitType,
+                Value = ability.Value,
+                Damage = ability.Damage,
+                Health = ability.Health,
+                AttackInfo = ability.AttackInfo,
+                Name = ability.Name,
+                Turns = ability.Turns,
+                Count = ability.Count,
+                Delay = ability.Delay
             };
         }
 
@@ -60,8 +60,8 @@ namespace LoomNetwork.CZB.Data
 
             return new CardViewInfo
             {
-                position = cardViewInfo.Position.FromProtobuf(),
-                scale = cardViewInfo.Scale.FromProtobuf()
+                Position = cardViewInfo.Position.FromProtobuf(),
+                Scale = cardViewInfo.Scale.FromProtobuf()
             };
         }
 
@@ -69,34 +69,34 @@ namespace LoomNetwork.CZB.Data
         {
             return new Card
             {
-                id = (int)card.Id,
-                kind = card.Kind,
-                name = card.Name,
-                cost = card.Cost,
-                description = card.Description,
-                flavorText = card.FlavorText,
-                picture = card.Picture,
-                damage = card.Damage,
-                health = card.Health,
-                rank = card.Rank,
-                type = card.Type,
-                frame = card.Frame,
-                abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
-                cardViewInfo = card.CardViewInfo.FromProtobuf()
+                Id = (int)card.Id,
+                Kind = card.Kind,
+                Name = card.Name,
+                Cost = card.Cost,
+                Description = card.Description,
+                FlavorText = card.FlavorText,
+                Picture = card.Picture,
+                Damage = card.Damage,
+                Health = card.Health,
+                Rank = card.Rank,
+                Type = card.Type,
+                Frame = card.Frame,
+                Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
+                CardViewInfo = card.CardViewInfo.FromProtobuf()
             };
         }
 
         public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
         {
-            return new CardsLibraryData { sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList() };
+            return new CardsLibraryData { Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList() };
         }
 
         public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
         {
             return new CardSet
             {
-                name = !string.IsNullOrEmpty(cardSet.Name)?cardSet.Name:"none",
-                cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
+                Name = !string.IsNullOrEmpty(cardSet.Name)?cardSet.Name:"none",
+                Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
     }

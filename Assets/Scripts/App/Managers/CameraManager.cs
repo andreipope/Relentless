@@ -111,9 +111,9 @@ namespace LoomNetwork.CZB.Gameplay
 
             if (Mathf.Abs(_fadeImageGroups[level].alpha - to) < _fadeThreshold)
             {
-                CurrentFadeState = fadeIn?Enumerators.FadeState.FADED:Enumerators.FadeState.DEFAULT;
+                CurrentFadeState = fadeIn?Enumerators.FadeState.Faded:Enumerators.FadeState.Default;
 
-                if (CurrentFadeState == Enumerators.FadeState.DEFAULT)
+                if (CurrentFadeState == Enumerators.FadeState.Default)
                 {
                     _fadeImageGroups[level].gameObject.SetActive(false);
                 }

@@ -30,18 +30,18 @@ namespace LoomNetwork.CZB
             {
                 InputEvent item = new InputEvent
                 {
-                    code = inputCode,
+                    Code = inputCode,
                     OnInputEvent = onInput,
                     OnInputDownEvent = onInputDown,
                     OnInputUpEvent = onInputUp,
-                    type = type
+                    Type = type
                 };
 
-                item.index = _customFreeIndex++;
+                item.Index = _customFreeIndex++;
 
                 _inputHandlers.Add(item);
 
-                return item.index;
+                return item.Index;
             }
         }
 
@@ -49,7 +49,7 @@ namespace LoomNetwork.CZB
         {
             lock (_sync)
             {
-                InputEvent inputHandler = _inputHandlers.Find(x => x.index == index);
+                InputEvent inputHandler = _inputHandlers.Find(x => x.Index == index);
 
                 if (inputHandler != null)
                 {
@@ -91,40 +91,40 @@ namespace LoomNetwork.CZB
             {
                 item = _inputHandlers[i];
 
-                switch (item.type)
+                switch (item.Type)
                 {
-                    case Enumerators.InputType.MOUSE:
+                    case Enumerators.InputType.Mouse:
                     {
-                        if (Input.GetMouseButton(item.code))
+                        if (Input.GetMouseButton(item.Code))
                         {
                             item.ThrowOnInputEvent();
                         }
 
-                        if (Input.GetMouseButtonUp(item.code))
+                        if (Input.GetMouseButtonUp(item.Code))
                         {
                             item.ThrowOnInputUpEvent();
                         }
 
-                        if (Input.GetMouseButtonDown(item.code))
+                        if (Input.GetMouseButtonDown(item.Code))
                         {
                             item.ThrowOnInputDownEvent();
                         }
                     }
 
                         break;
-                    case Enumerators.InputType.KEYBOARD:
+                    case Enumerators.InputType.Keyboard:
                     {
-                        if (Input.GetKey((KeyCode)item.code))
+                        if (Input.GetKey((KeyCode)item.Code))
                         {
                             item.ThrowOnInputEvent();
                         }
 
-                        if (Input.GetKeyUp((KeyCode)item.code))
+                        if (Input.GetKeyUp((KeyCode)item.Code))
                         {
                             item.ThrowOnInputUpEvent();
                         }
 
-                        if (Input.GetKeyDown((KeyCode)item.code))
+                        if (Input.GetKeyDown((KeyCode)item.Code))
                         {
                             item.ThrowOnInputDownEvent();
                         }
@@ -138,11 +138,11 @@ namespace LoomNetwork.CZB
 
     public class InputEvent
     {
-        public int index;
+        public int Index;
 
-        public int code;
+        public int Code;
 
-        public Enumerators.InputType type;
+        public Enumerators.InputType Type;
 
         public Action OnInputUpEvent;
 

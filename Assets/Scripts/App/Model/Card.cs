@@ -8,67 +8,67 @@ namespace LoomNetwork.CZB.Data
     public class Card
     {
         // [JsonIgnore]
-        public int id;
+        public int Id;
 
-        public Enumerators.SetType cardSetType;
+        public Enumerators.SetType CardSetType;
 
-        public string kind;
+        public string Kind;
 
-        public string name;
+        public string Name;
 
-        public int cost;
+        public int Cost;
 
-        public string description;
+        public string Description;
 
-        public string flavorText; // new
+        public string FlavorText; // new
 
-        public string picture;
+        public string Picture;
 
-        public int damage;
+        public int Damage;
 
-        public int health;
+        public int Health;
 
-        public string rank;
+        public string Rank;
 
-        public string type;
+        public string Type;
 
-        public string frame;
+        public string Frame;
 
-        public List<AbilityData> abilities = new List<AbilityData>();
+        public List<AbilityData> Abilities = new List<AbilityData>();
 
-        public CardViewInfo cardViewInfo = new CardViewInfo();
-
-        [JsonIgnore]
-        public Enumerators.CardRank cardRank;
+        public CardViewInfo CardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
-        public Enumerators.CardType cardType;
+        public Enumerators.CardRank CardRank;
 
         [JsonIgnore]
-        public Enumerators.CardKind cardKind;
+        public Enumerators.CardType CardType;
+
+        [JsonIgnore]
+        public Enumerators.CardKind CardKind;
 
         public Card Clone()
         {
             Card card = new Card
             {
-                id = id,
-                kind = kind,
-                name = name,
-                cost = cost,
-                description = description,
-                flavorText = flavorText,
-                picture = picture,
-                damage = damage,
-                health = health,
-                rank = rank,
-                type = type,
-                cardSetType = cardSetType,
-                cardKind = cardKind,
-                cardRank = cardRank,
-                cardType = cardType,
-                abilities = abilities,
-                cardViewInfo = cardViewInfo,
-                frame = frame
+                Id = Id,
+                Kind = Kind,
+                Name = Name,
+                Cost = Cost,
+                Description = Description,
+                FlavorText = FlavorText,
+                Picture = Picture,
+                Damage = Damage,
+                Health = Health,
+                Rank = Rank,
+                Type = Type,
+                CardSetType = CardSetType,
+                CardKind = CardKind,
+                CardRank = CardRank,
+                CardType = CardType,
+                Abilities = Abilities,
+                CardViewInfo = CardViewInfo,
+                Frame = Frame
             };
 
             return card;
@@ -76,14 +76,14 @@ namespace LoomNetwork.CZB.Data
 
         public override string ToString()
         {
-            return $"({nameof(name)}: {name}, {nameof(cardSetType)}: {cardType})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardType})";
         }
     }
 
     public class CardViewInfo
     {
-        public FloatVector3 position = FloatVector3.zero;
+        public FloatVector3 Position = FloatVector3.Zero;
 
-        public FloatVector3 scale = new FloatVector3(0.38f);
+        public FloatVector3 Scale = new FloatVector3(0.38f);
     }
 }

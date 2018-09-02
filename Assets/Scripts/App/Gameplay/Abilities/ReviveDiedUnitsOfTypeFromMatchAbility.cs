@@ -6,19 +6,19 @@ namespace LoomNetwork.CZB
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            setType = ability.abilitySetType;
+            SetType = ability.AbilitySetType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -39,14 +39,14 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            List<WorkingCard> units = _gameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.libraryCard.cardSetType == setType);
+            List<WorkingCard> units = GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
             {
                 ReviveUnit(unit);
             }
 
-            units = _gameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.libraryCard.cardSetType == setType);
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
             {
@@ -66,16 +66,16 @@ namespace LoomNetwork.CZB
 
         private void ReviveUnit(WorkingCard workingCard)
         {
-            Player playerOwner = workingCard.owner;
+            Player playerOwner = workingCard.Owner;
 
-            if (playerOwner.BoardCards.Count >= Constants.MAX_BOARD_UNITS)
+            if (playerOwner.BoardCards.Count >= Constants.MaxBoardUnits)
 
                 return;
 
-            Card libraryCard = workingCard.libraryCard.Clone();
+            Card libraryCard = workingCard.LibraryCard.Clone();
 
             WorkingCard card = new WorkingCard(libraryCard, playerOwner);
-            BoardUnit unit = _battlegroundController.CreateBoardUnit(playerOwner, card);
+            BoardUnit unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
             playerOwner.AddCardToBoard(card);
@@ -83,12 +83,12 @@ namespace LoomNetwork.CZB
 
             if (playerOwner.IsLocalPlayer)
             {
-                _battlegroundController.playerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                BattlegroundController.PlayerBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             } else
             {
-                _battlegroundController.opponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                BattlegroundController.OpponentBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             }
         }
     }

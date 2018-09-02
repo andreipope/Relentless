@@ -5,24 +5,24 @@ namespace LoomNetwork.CZB
 {
     public class AttackNumberOfTimesPerTurnAbility : AbilityBase
     {
-        public Enumerators.AttackInfoType attackInfo;
+        public Enumerators.AttackInfoType AttackInfo;
 
-        public int value = 1;
+        public int Value = 1;
 
         private int _numberOfAttacksWas;
 
         public AttackNumberOfTimesPerTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
-            attackInfo = ability.attackInfoType;
+            Value = ability.Value;
+            AttackInfo = ability.AttackInfoType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            abilityUnitOwner.attackInfoType = attackInfo;
+            AbilityUnitOwner.AttackInfoType = AttackInfo;
         }
 
         public override void Update()
@@ -45,9 +45,9 @@ namespace LoomNetwork.CZB
 
             _numberOfAttacksWas++;
 
-            if (_numberOfAttacksWas < value)
+            if (_numberOfAttacksWas < Value)
             {
-                abilityUnitOwner.ForceSetCreaturePlayable();
+                AbilityUnitOwner.ForceSetCreaturePlayable();
             }
         }
 

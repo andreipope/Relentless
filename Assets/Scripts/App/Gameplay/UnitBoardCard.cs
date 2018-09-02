@@ -7,22 +7,22 @@ namespace LoomNetwork.CZB
 {
     public class UnitBoardCard : BoardCard
     {
-        public int initialHealth, initialDamage;
+        public int InitialHealth, InitialDamage;
 
-        protected TextMeshPro attackText;
+        protected TextMeshPro AttackText;
 
-        protected SpriteRenderer typeSprite;
+        protected SpriteRenderer TypeSprite;
 
-        protected TextMeshPro defenseText;
+        protected TextMeshPro DefenseText;
 
         private int _hp, _damage;
 
         public UnitBoardCard(GameObject selfObject)
             : base(selfObject)
         {
-            attackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
-            typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
+            AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
+            TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
         public event Action<int, int> HealthChangedEvent;
@@ -34,9 +34,9 @@ namespace LoomNetwork.CZB
             get => _hp;
             set
             {
-                int oldHP = _hp;
+                int oldHp = _hp;
                 _hp = Mathf.Clamp(value, 0, int.MaxValue);
-                HealthChangedEvent?.Invoke(oldHP, _hp);
+                HealthChangedEvent?.Invoke(oldHp, _hp);
             }
         }
 
@@ -45,9 +45,9 @@ namespace LoomNetwork.CZB
             get => _damage;
             set
             {
-                int _oldDamage = _damage;
+                int oldDamage = _damage;
                 _damage = Mathf.Clamp(value, 0, int.MaxValue);
-                DamageChangedEvent?.Invoke(_oldDamage, _damage);
+                DamageChangedEvent?.Invoke(oldDamage, _damage);
             }
         }
 
@@ -55,24 +55,24 @@ namespace LoomNetwork.CZB
         {
             base.Init(card);
 
-            Damage = card.libraryCard.damage;
-            initialDamage = card.libraryCard.damage;
+            Damage = card.LibraryCard.Damage;
+            InitialDamage = card.LibraryCard.Damage;
 
-            Health = card.libraryCard.health;
-            initialHealth = card.libraryCard.health;
+            Health = card.LibraryCard.Health;
+            InitialHealth = card.LibraryCard.Health;
 
-            attackText.text = Damage.ToString();
-            defenseText.text = Health.ToString();
+            AttackText.text = Damage.ToString();
+            DefenseText.text = Health.ToString();
 
-            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+            TypeSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {
-                attackText.text = newValue.ToString();
+                AttackText.text = newValue.ToString();
             };
             HealthChangedEvent += (oldValue, newValue) =>
             {
-                defenseText.text = newValue.ToString();
+                DefenseText.text = newValue.ToString();
             };
         }
 
@@ -80,10 +80,10 @@ namespace LoomNetwork.CZB
         {
             base.Init(card, amount);
 
-            attackText.text = card.damage.ToString();
-            defenseText.text = card.health.ToString();
+            AttackText.text = card.Damage.ToString();
+            DefenseText.text = card.Health.ToString();
 
-            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+            TypeSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
         }
     }
 }

@@ -35,7 +35,14 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void DoFightAnimation(GameObject source, GameObject target, float shakeStrength, Action onHitCallback, Action onCompleteCallback = null, bool isCreatureAttacker = true, float duration = 0.5f)
+        public void DoFightAnimation(
+            GameObject source,
+            GameObject target,
+            float shakeStrength,
+            Action onHitCallback,
+            Action onCompleteCallback = null,
+            bool isCreatureAttacker = true,
+            float duration = 0.5f)
         {
             Vector3 originalPos = source.transform.position;
 
@@ -43,7 +50,7 @@ namespace LoomNetwork.CZB
             int oldSortingOrder = sortingGroup.sortingOrder;
             string oldsortingLayerName = sortingGroup.sortingLayerName;
 
-            sortingGroup.sortingLayerName = Constants.LAYER_BOARD_CARDS;
+            sortingGroup.sortingLayerName = Constants.KLayerBoardCards;
             sortingGroup.sortingOrder = 1000;
 
             Vector3 partWay = Vector3.zero;
@@ -124,7 +131,7 @@ namespace LoomNetwork.CZB
                 {
                     animator.enabled = false;
 
-                    _battlegroundController.opponentHandCards.Add(boardCard);
+                    _battlegroundController.OpponentHandCards.Add(boardCard);
 
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, false);
                 },

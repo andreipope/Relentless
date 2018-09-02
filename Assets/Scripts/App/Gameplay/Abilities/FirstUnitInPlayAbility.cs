@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class FirstUnitInPlayAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public FirstUnitInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -38,13 +38,13 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if ((playerCallerOfAbility.BoardCards.Count == 0) || ((playerCallerOfAbility.BoardCards.Count == 1) && playerCallerOfAbility.BoardCards[0].Equals(abilityUnitOwner)))
+            if ((PlayerCallerOfAbility.BoardCards.Count == 0) || ((PlayerCallerOfAbility.BoardCards.Count == 1) && PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitOwner)))
             {
-                abilityUnitOwner.BuffedHP += value;
-                abilityUnitOwner.CurrentHP += value;
+                AbilityUnitOwner.BuffedHp += Value;
+                AbilityUnitOwner.CurrentHp += Value;
 
-                abilityUnitOwner.BuffedDamage += value;
-                abilityUnitOwner.CurrentDamage += value;
+                AbilityUnitOwner.BuffedDamage += Value;
+                AbilityUnitOwner.CurrentDamage += Value;
             }
         }
 

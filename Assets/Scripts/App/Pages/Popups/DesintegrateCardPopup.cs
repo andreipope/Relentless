@@ -7,7 +7,7 @@ namespace LoomNetwork.CZB
 {
     public class DesintigrateCardPopup : IUIPopup
     {
-        public Transform cardTransform;
+        public Transform CardTransform;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -61,9 +61,9 @@ namespace LoomNetwork.CZB
             _noButton = Self.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
             _backButton = Self.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>();
 
-            _yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
-            _noButton.onClickEvent.AddListener(CloseDesintegratePopup);
-            _backButton.onClickEvent.AddListener(CloseDesintegratePopup);
+            _yesButton.OnClickEvent.AddListener(DesintegrateButtonHandler);
+            _noButton.OnClickEvent.AddListener(CloseDesintegratePopup);
+            _backButton.OnClickEvent.AddListener(CloseDesintegratePopup);
 
             // _description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
         }
@@ -75,12 +75,12 @@ namespace LoomNetwork.CZB
             _cardData = data as CollectionCardData;
 
             // _description.text = _card.description;
-            if (_cardData.amount == 0)
+            if (_cardData.Amount == 0)
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
             } else
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = true;
             }
         }
 
@@ -90,8 +90,8 @@ namespace LoomNetwork.CZB
 
         private void CloseDesintegratePopup()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.Name == _cardData.CardName);
             _uiManager.DrawPopup<CardInfoPopup>(libraryCard);
 
             // (_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
@@ -100,17 +100,17 @@ namespace LoomNetwork.CZB
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _cardData.amount--;
-            if (_cardData.amount == 0)
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _cardData.Amount--;
+            if (_cardData.Amount == 0)
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
             }
 
-            GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.amount);
+            GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
 
-            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
-            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.cardRank + 1));
+            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.Name == _cardData.CardName);
+            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.CardRank + 1));
 
             _uiManager.GetPage<CollectionPage>().UpdateGooValue();
         }

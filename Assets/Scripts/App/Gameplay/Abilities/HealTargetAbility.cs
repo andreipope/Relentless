@@ -9,19 +9,19 @@ namespace LoomNetwork.CZB
 {
     public class HealTargetAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value = 1;
 
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -36,15 +36,15 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
-            switch (affectObjectType)
+            switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
-                    _battleController.HealPlayerByAbility(caller, abilityData, targetPlayer);
+                case Enumerators.AffectObjectType.Player:
+                    BattleController.HealPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
-                    _battleController.HealUnitByAbility(caller, abilityData, targetUnit);
+                case Enumerators.AffectObjectType.Character:
+                    BattleController.HealUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
             }
         }
@@ -53,7 +53,7 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
                 Action();
             }
@@ -61,25 +61,25 @@ namespace LoomNetwork.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 target)
         {
-            target = Utilites.CastVFXPosition(target);
-            if (abilityEffectType == Enumerators.AbilityEffectType.HEAL)
+            target = Utilites.CastVfxPosition(target);
+            if (AbilityEffectType == Enumerators.AbilityEffectType.Heal)
             {
-                Vector3 startPosition = cardKind == Enumerators.CardKind.CREATURE?abilityUnitOwner.transform.position:selectedPlayer.Transform.position;
-                _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                Vector3 startPosition = CardKind == Enumerators.CardKind.Creature?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
-                CreateVFX(startPosition);
-                _vfxObject.transform.DOMove(target, 0.5f).OnComplete(
+                CreateVfx(startPosition);
+                VfxObject.transform.DOMove(target, 0.5f).OnComplete(
                     () =>
                     {
                         ClearParticles();
-                        _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-                        CreateVFX(target, true);
+                        CreateVfx(target, true);
                         callback();
                     });
-            } else if (abilityEffectType == Enumerators.AbilityEffectType.HEAL_DIRECTLY)
+            } else if (AbilityEffectType == Enumerators.AbilityEffectType.HealDirectly)
             {
-                CreateVFX(target, true);
+                CreateVfx(target, true);
                 callback();
             }
         }

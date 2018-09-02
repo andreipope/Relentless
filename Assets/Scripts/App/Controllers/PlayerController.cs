@@ -118,9 +118,9 @@ namespace LoomNetwork.CZB
             } else
             {
                 int deckId = _gameplayManager.PlayerDeckId;
-                foreach (DeckCardData card in _dataManager.CachedDecksData.decks.First(d => d.id == deckId).cards)
+                foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
                 {
-                    for (int i = 0; i < card.amount; i++)
+                    for (int i = 0; i < card.Amount; i++)
                     {
 #if DEV_MODE
 
@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                        playerDeck.Add(card.cardName);
+                        playerDeck.Add(card.CardName);
                     }
                 }
             }
@@ -204,7 +204,7 @@ namespace LoomNetwork.CZB
         {
             if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
             {
-                foreach (BoardCard card in _battlegroundController.playerHandCards)
+                foreach (BoardCard card in _battlegroundController.PlayerHandCards)
                 {
                     if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
                     {
@@ -255,9 +255,9 @@ namespace LoomNetwork.CZB
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
 
                         BoardCard topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
-                        if ((topmostBoardCard != null) && !topmostBoardCard.isPreview)
+                        if ((topmostBoardCard != null) && !topmostBoardCard.IsPreview)
                         {
-                            float delta = Application.isMobilePlatform?Constants.POINTER_MIN_DRAG_DELTA * 2f:Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                            float delta = Application.isMobilePlatform?Constants.KPointerMinDragDelta * 2f:Constants.KPointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -273,9 +273,9 @@ namespace LoomNetwork.CZB
 
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
                         BoardUnit selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
-                        if ((selectedBoardUnit != null) && (!_battlegroundController.isPreviewActive || (selectedBoardUnit.Card.instanceId != _battlegroundController.currentPreviewedCardId)))
+                        if ((selectedBoardUnit != null) && (!_battlegroundController.IsPreviewActive || (selectedBoardUnit.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId)))
                         {
-                            float delta = Application.isMobilePlatform?Constants.POINTER_MIN_DRAG_DELTA * 2f:Constants.POINTER_MIN_DRAG_DELTA_MOBILE;
+                            float delta = Application.isMobilePlatform?Constants.KPointerMinDragDelta * 2f:Constants.KPointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -285,7 +285,7 @@ namespace LoomNetwork.CZB
                     }
                 } else
                 {
-                    if (_battlegroundController.isPreviewActive)
+                    if (_battlegroundController.IsPreviewActive)
                     {
                         HideCardPreview();
                     } else
@@ -294,7 +294,7 @@ namespace LoomNetwork.CZB
                         _cardsZooming = true;
                         _timerManager.AddTimer(SetStatusZoomingFalse, null, 1f);
 
-                        _battlegroundController.cardsZoomed = false;
+                        _battlegroundController.CardsZoomed = false;
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
                     }
                 }
@@ -332,7 +332,7 @@ namespace LoomNetwork.CZB
 
         private void PointerEventSolver_OnClickEventHandler()
         {
-            if (_battlegroundController.cardsZoomed)
+            if (_battlegroundController.CardsZoomed)
             {
                 CheckCardPreviewShow();
             } else
@@ -341,7 +341,7 @@ namespace LoomNetwork.CZB
                 _cardsZooming = true;
                 _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
 
-                _battlegroundController.cardsZoomed = true;
+                _battlegroundController.CardsZoomed = true;
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
             }
         }

@@ -5,36 +5,36 @@ namespace LoomNetwork.CZB
 {
     public class WorkingCard
     {
-        public int cardId;
+        public int CardId;
 
-        public Card libraryCard;
+        public Card LibraryCard;
 
-        public Player owner;
+        public Player Owner;
 
-        public int instanceId;
+        public int InstanceId;
 
-        public int initialHealth, initialDamage, health, damage;
+        public int InitialHealth, InitialDamage, Health, Damage;
 
-        public int initialCost, realCost;
+        public int InitialCost, RealCost;
 
-        public Enumerators.CardType type;
+        public Enumerators.CardType Type;
 
         public WorkingCard(Card card, Player player)
         {
-            libraryCard = card.Clone();
-            cardId = libraryCard.id;
-            owner = player;
+            LibraryCard = card.Clone();
+            CardId = LibraryCard.Id;
+            Owner = player;
 
-            initialHealth = libraryCard.health;
-            initialDamage = libraryCard.damage;
-            initialCost = libraryCard.cost;
-            health = initialHealth;
-            damage = initialDamage;
-            realCost = initialCost;
+            InitialHealth = LibraryCard.Health;
+            InitialDamage = LibraryCard.Damage;
+            InitialCost = LibraryCard.Cost;
+            Health = InitialHealth;
+            Damage = InitialDamage;
+            RealCost = InitialCost;
 
-            type = libraryCard.cardType;
+            Type = LibraryCard.CardType;
 
-            instanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
+            InstanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
         }
 
         public bool IsPlayable { get; set; }

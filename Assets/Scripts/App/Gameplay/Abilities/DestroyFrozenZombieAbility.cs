@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
         public DestroyFrozenZombieAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            targetUnitStatusType = ability.targetUnitStatusType;
+            TargetUnitStatusType = ability.TargetUnitStatusType;
         }
 
         public override void Activate()
@@ -30,9 +30,9 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
-                targetUnit.Die();
+                TargetUnit.Die();
             }
         }
     }

@@ -6,25 +6,25 @@ namespace LoomNetwork.CZB
 {
     public class ModificateStatAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
+        public Enumerators.SetType SetType;
 
-        public Enumerators.StatType statType;
+        public Enumerators.StatType StatType;
 
-        public int value = 1;
+        public int Value = 1;
 
         public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            setType = ability.abilitySetType;
-            statType = ability.abilityStatType;
-            value = ability.value;
+            SetType = ability.AbilitySetType;
+            StatType = ability.AbilityStatType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -41,23 +41,23 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            switch (affectObjectType)
+            switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                 {
-                    if ((targetUnit.Card.libraryCard.cardSetType == setType) || (setType == Enumerators.SetType.NONE))
+                    if ((TargetUnit.Card.LibraryCard.CardSetType == SetType) || (SetType == Enumerators.SetType.None))
                     {
-                        if (statType == Enumerators.StatType.DAMAGE)
+                        if (StatType == Enumerators.StatType.Damage)
                         {
-                            targetUnit.BuffedDamage += value;
-                            targetUnit.CurrentDamage += value;
-                        } else if (statType == Enumerators.StatType.HEALTH)
+                            TargetUnit.BuffedDamage += Value;
+                            TargetUnit.CurrentDamage += Value;
+                        } else if (StatType == Enumerators.StatType.Health)
                         {
-                            targetUnit.BuffedHP += value;
-                            targetUnit.CurrentHP += value;
+                            TargetUnit.BuffedHp += Value;
+                            TargetUnit.CurrentHp += Value;
                         }
 
-                        CreateVFX(targetUnit.transform.position);
+                        CreateVfx(TargetUnit.Transform.position);
                     }
                 }
 
@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
                 Action();
             }

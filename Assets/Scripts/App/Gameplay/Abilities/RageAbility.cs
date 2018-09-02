@@ -5,14 +5,14 @@ namespace LoomNetwork.CZB
 {
     public class RageAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         private bool _wasChanged;
 
         public RageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
@@ -48,18 +48,18 @@ namespace LoomNetwork.CZB
             // return;
             if (!_wasChanged)
             {
-                if (abilityUnitOwner.CurrentHP < abilityUnitOwner.MaxCurrentHP)
+                if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
                 {
                     _wasChanged = true;
-                    abilityUnitOwner.BuffedDamage += value;
-                    abilityUnitOwner.CurrentDamage += value;
+                    AbilityUnitOwner.BuffedDamage += Value;
+                    AbilityUnitOwner.CurrentDamage += Value;
                 }
             } else
             {
-                if (abilityUnitOwner.CurrentHP >= abilityUnitOwner.MaxCurrentHP)
+                if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
                 {
-                    abilityUnitOwner.BuffedDamage -= value;
-                    abilityUnitOwner.CurrentDamage -= value;
+                    AbilityUnitOwner.BuffedDamage -= Value;
+                    AbilityUnitOwner.CurrentDamage -= Value;
                     _wasChanged = false;
                 }
             }

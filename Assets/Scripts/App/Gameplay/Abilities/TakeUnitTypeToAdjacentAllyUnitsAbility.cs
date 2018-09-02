@@ -5,19 +5,19 @@ namespace LoomNetwork.CZB
 {
     public class TakeUnitTypeToAdjacentAllyUnitsAbility : AbilityBase
     {
-        public Enumerators.CardType cardType;
+        public Enumerators.CardType CardType;
 
         public TakeUnitTypeToAdjacentAllyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            cardType = ability.targetCardType;
+            CardType = ability.TargetCardType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -39,12 +39,12 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             Player opponent = GetOpponentOverlord();
-            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
 
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
-                if (opponent.BoardCards[i] == targetUnit)
+                if (opponent.BoardCards[i] == TargetUnit)
                 {
                     targetIndex = i;
                     break;
@@ -81,13 +81,13 @@ namespace LoomNetwork.CZB
                 return;
 
             // implement functionality for animations
-            switch (cardType)
+            switch (CardType)
             {
-                case Enumerators.CardType.HEAVY:
-                    unit.hasHeavy = true;
+                case Enumerators.CardType.Heavy:
+                    unit.HasHeavy = true;
                     break;
-                case Enumerators.CardType.FERAL:
-                    unit.hasFeral = true;
+                case Enumerators.CardType.Feral:
+                    unit.HasFeral = true;
                     break;
             }
         }

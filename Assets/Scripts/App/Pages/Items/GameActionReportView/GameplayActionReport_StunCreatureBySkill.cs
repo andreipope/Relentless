@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_StunCreatureBySkill : ReportViewBase
+    public class GameplayActionReportStunCreatureBySkill : ReportViewBase
     {
         private Player _callerPlayer;
 
@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB
 
         private GameObject _stunnedUnitPreviewObject, _skillOwnerObject;
 
-        public GameplayActionReport_StunCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportStunCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -20,10 +20,10 @@ namespace LoomNetwork.CZB
         {
             base.SetInfo();
 
-            _callerPlayer = gameAction.parameters[0] as Player;
-            _skillUsedOnUnit = gameAction.parameters[1] as BoardUnit;
+            _callerPlayer = GameAction.Parameters[0] as Player;
+            _skillUsedOnUnit = GameAction.Parameters[1] as BoardUnit;
 
-            previewImage.sprite = _skillUsedOnUnit.sprite;
+            PreviewImage.sprite = _skillUsedOnUnit.Sprite;
 
             _skillOwnerObject = CreatePlayerPreview(_callerPlayer, Vector3.zero);
             _stunnedUnitPreviewObject = CreateCardPreview(_skillUsedOnUnit.Card, Vector3.right * 6);

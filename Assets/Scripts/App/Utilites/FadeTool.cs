@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class FadeTool : MonoBehaviour
 {
-    public TextMeshPro[] texts;
+    public TextMeshPro[] Texts;
 
-    public SpriteRenderer[] sprites;
+    public SpriteRenderer[] Sprites;
 
-    public MeshRenderer[] meshRenderers;
+    public MeshRenderer[] MeshRenderers;
 
     public void FadeIn()
     {
@@ -22,17 +22,17 @@ public class FadeTool : MonoBehaviour
 
         for (int i = 0; i < turns; i++)
         {
-            foreach (TextMeshPro item in texts)
+            foreach (TextMeshPro item in Texts)
             {
                 item.color = FadeItem(size, item.color);
             }
 
-            foreach (SpriteRenderer item in sprites)
+            foreach (SpriteRenderer item in Sprites)
             {
                 item.color = FadeItem(size, item.color);
             }
 
-            foreach (MeshRenderer item in meshRenderers)
+            foreach (MeshRenderer item in MeshRenderers)
             {
                 item.material.color = FadeItem(size, item.material.color);
             }

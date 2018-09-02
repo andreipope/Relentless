@@ -6,26 +6,26 @@ using UnityEngine;
 
 public class ActionData
 {
-    public List<ActionItem> actions;
+    public List<ActionItem> Actions;
 
     public void ParseData()
     {
-        if (actions != null)
+        if (Actions != null)
         {
-            foreach (ActionItem action in actions)
+            foreach (ActionItem action in Actions)
             {
                 action.ParseData();
             }
         }
     }
 
-    public List<ActionItem> GetActions(Enumerators.AIActionType[] types)
+    public List<ActionItem> GetActions(Enumerators.AiActionType[] types)
     {
         List<ActionItem> allActions = new List<ActionItem>();
         ActionItem act = null;
-        foreach (Enumerators.AIActionType type in types)
+        foreach (Enumerators.AiActionType type in types)
         {
-            act = actions.Find(x => x.type == type);
+            act = Actions.Find(x => x.Type == type);
             if (act != null)
             {
                 allActions.Add(act);
@@ -41,21 +41,21 @@ public class ActionData
 
 public class ActionItem
 {
-    public string actionType;
+    public string ActionType;
 
-    public List<ActionState> states;
+    public List<ActionState> States;
 
     [JsonIgnore]
-    public Enumerators.AIActionType type;
+    public Enumerators.AiActionType Type;
 
     public void ParseData()
     {
-        if (actionType != null)
+        if (ActionType != null)
         {
-            type = Utilites.CastStringTuEnum<Enumerators.AIActionType>(actionType);
+            Type = Utilites.CastStringTuEnum<Enumerators.AiActionType>(ActionType);
         }
 
-        foreach (ActionState state in states)
+        foreach (ActionState state in States)
         {
             state.ParseData();
         }
@@ -64,20 +64,20 @@ public class ActionItem
 
 public class ActionState
 {
-    public int actionStateIndex;
+    public int ActionStateIndex;
 
-    public int cardId;
+    public int CardId;
 
-    public string targetType;
+    public string TargetType;
 
     [JsonIgnore]
-    public List<Enumerators.AbilityTargetType> priorityTargetTypes;
+    public List<Enumerators.AbilityTargetType> PriorityTargetTypes;
 
     public void ParseData()
     {
-        if (targetType != null)
+        if (TargetType != null)
         {
-            priorityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(targetType);
+            PriorityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(TargetType);
         }
     }
 }

@@ -6,19 +6,19 @@ namespace LoomNetwork.CZB
 {
     public class GainNumberOfLifeForEachDamageThisDealsAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public GainNumberOfLifeForEachDamageThisDealsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -37,10 +37,10 @@ namespace LoomNetwork.CZB
 
             int damageDeal = (int)info;
 
-            abilityUnitOwner.BuffedHP += value * damageDeal;
-            abilityUnitOwner.CurrentHP += value * damageDeal;
+            AbilityUnitOwner.BuffedHp += Value * damageDeal;
+            AbilityUnitOwner.CurrentHp += Value * damageDeal;
 
-            CreateVFX(abilityUnitOwner.transform.position, true);
+            CreateVfx(AbilityUnitOwner.Transform.position, true);
         }
 
         protected override void OnInputEndEventHandler()
@@ -52,7 +52,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
 
                 return;
 

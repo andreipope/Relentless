@@ -6,22 +6,22 @@ namespace LoomNetwork.CZB
 {
     public class UnitWeaponAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
-        public int damage;
+        public int Damage;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
-            damage = ability.damage;
+            Value = ability.Value;
+            Damage = ability.Damage;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Update()
@@ -38,12 +38,12 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (targetUnit != null)
+            if (TargetUnit != null)
             {
-                targetUnit.CurrentDamage += value;
-                targetUnit.BuffedDamage += value;
+                TargetUnit.CurrentDamage += Value;
+                TargetUnit.BuffedDamage += Value;
 
-                CreateVFX(targetUnit.transform.position, true, 5f);
+                CreateVfx(TargetUnit.Transform.position, true, 5f);
             }
         }
 
@@ -51,13 +51,13 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
                 Action();
 
-                if (targetUnit != null)
+                if (TargetUnit != null)
                 {
-                    targetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
+                    TargetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
         {
             base.OnEndTurnEventHandler();
 
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
 
                 return;
 
@@ -75,22 +75,22 @@ namespace LoomNetwork.CZB
 
         private void ActionEnd()
         {
-            if (targetUnit != null)
+            if (TargetUnit != null)
             {
-                _battleController.AttackUnitByAbility(targetUnit, abilityData, targetUnit, damage);
+                BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVFX(targetUnit.transform.position, true, 5f);
+                CreateVfx(TargetUnit.Transform.position, true, 5f);
             }
         }
 
         private void TargetUnitOnDieEventHandler()
         {
-            if (targetUnit != null)
+            if (TargetUnit != null)
             {
-                targetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
+                TargetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
             }
 
-            _abilitiesController.DeactivateAbility(activityId);
+            AbilitiesController.DeactivateAbility(ActivityId);
         }
     }
 }

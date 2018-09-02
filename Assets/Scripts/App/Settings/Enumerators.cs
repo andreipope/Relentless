@@ -4,788 +4,788 @@ namespace LoomNetwork.CZB.Common
     {
         public enum AbilityActivityType
         {
-            PASSIVE,
+            Passive,
 
-            ACTIVE
+            Active
         }
 
         public enum AbilityCallType
         {
-            TURN,
+            Turn,
 
-            ENTRY,
+            Entry,
 
-            END,
+            End,
 
-            ATTACK,
+            Attack,
 
-            DEATH,
+            Death,
 
-            PERMANENT,
+            Permanent,
 
-            GOT_DAMAGE,
+            GotDamage,
 
-            AT_DEFENCE,
+            AtDefence,
 
-            IN_HAND
+            InHand
         }
 
         public enum AbilityEffectType
         {
-            NONE,
+            None,
 
-            MASSIVE_WATER_WAVE,
+            MassiveWaterWave,
 
-            MASSIVE_FIRE,
+            MassiveFire,
 
-            MASSIVE_LIGHTNING,
+            MassiveLightning,
 
-            MASSIVE_TOXIC_ALL,
+            MassiveToxicAll,
 
-            TARGET_ROCK,
+            TargetRock,
 
-            TARGET_FIRE,
+            TargetFire,
 
-            TARGET_LIFE,
+            TargetLife,
 
-            TARGET_TOXIC,
+            TargetToxic,
 
-            TARGET_WATER,
+            TargetWater,
 
-            TARGET_ADJUSTMENTS_BOMB,
+            TargetAdjustmentsBomb,
 
-            STUN_FREEZES,
+            StunFreezes,
 
-            STUN_OR_DAMAGE_FREEZES,
+            StunOrDamageFreezes,
 
-            TARGET_ADJUSTMENTS_AIR,
+            TargetAdjustmentsAir,
 
-            HEAL_DIRECTLY,
+            HealDirectly,
 
-            HEAL
+            Heal
         }
 
         public enum AbilityTargetType
         {
-            NONE,
+            None,
 
-            PLAYER,
+            Player,
 
-            PLAYER_CARD,
+            PlayerCard,
 
-            PLAYER_ALL_CARDS,
+            PlayerAllCards,
 
-            OPPONENT,
+            Opponent,
 
-            OPPONENT_CARD,
+            OpponentCard,
 
-            OPPONENT_ALL_CARDS,
+            OpponentAllCards,
 
-            ALL_CARDS,
+            AllCards,
 
-            ALL
+            All
         }
 
         public enum AbilityType
         {
-            HEAL,
+            Heal,
 
-            MODIFICATOR_STATS,
+            ModificatorStats,
 
-            CHANGE_STAT,
+            ChangeStat,
 
-            STUN,
+            Stun,
 
-            STUN_OR_DAMAGE_ADJUSTMENTS,
+            StunOrDamageAdjustments,
 
-            SPURT,
+            Spurt,
 
-            ADD_GOO_VIAL,
+            AddGooVial,
 
-            ADD_GOO_CARRIER,
+            AddGooCarrier,
 
-            DOT,
+            Dot,
 
-            SUMMON,
+            Summon,
 
-            SPELL_ATTACK,
+            SpellAttack,
 
-            MASSIVE_DAMAGE,
+            MassiveDamage,
 
-            DAMAGE_TARGET_ADJUSTMENTS,
+            DamageTargetAdjustments,
 
-            DAMAGE_TARGET,
+            DamageTarget,
 
-            CARD_RETURN,
+            CardReturn,
 
-            WEAPON,
+            Weapon,
 
-            CHANGE_STAT_OF_CREATURES_BY_TYPE,
+            ChangeStatOfCreaturesByType,
 
-            ATTACK_NUMBER_OF_TIMES_PER_TURN,
+            AttackNumberOfTimesPerTurn,
 
-            DRAW_CARD,
+            DrawCard,
 
-            DEVOUR_ZOMBIES_AND_COMBINE_STATS,
+            DevourZombiesAndCombineStats,
 
-            DESTROY_UNIT_BY_TYPE,
+            DestroyUnitByType,
 
-            LOWER_COST_OF_CARD_IN_HAND,
+            LowerCostOfCardInHand,
 
-            OVERFLOW_GOO,
+            OverflowGoo,
 
-            LOSE_GOO,
+            LoseGoo,
 
-            DISABLE_NEXT_TURN_GOO,
+            DisableNextTurnGoo,
 
-            RAGE,
+            Rage,
 
-            FREEZE_UNITS,
+            FreezeUnits,
 
-            TAKE_DAMAGE_RANDOM_ENEMY,
+            TakeDamageRandomEnemy,
 
-            TAKE_CONTROL_ENEMY_UNIT,
+            TakeControlEnemyUnit,
 
-            GUARD,
+            Guard,
 
-            DESTROY_FROZEN_UNIT,
+            DestroyFrozenUnit,
 
-            USE_ALL_GOO_TO_INCREASE_STATS,
+            UseAllGooToIncreaseStats,
 
-            FIRST_UNIT_IN_PLAY,
+            FirstUnitInPlay,
 
-            ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS,
+            AllyUnitsOfTypeInPlayGetStats,
 
-            DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM,
+            DamageEnemyUnitsAndFreezeThem,
 
-            RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS,
+            ReturnUnitsOnBoardToOwnersDecks,
 
-            TAKE_UNIT_TYPE_TO_ADJACENT_ALLY_UNITS,
+            TakeUnitTypeToAdjacentAllyUnits,
 
-            ENEMY_THAT_ATTACKS_BECOME_FROZEN,
+            EnemyThatAttacksBecomeFrozen,
 
-            TAKE_UNIT_TYPE_TO_ALLY_UNIT,
+            TakeUnitTypeToAllyUnit,
 
-            REVIVE_DIED_UNITS_OF_TYPE_FROM_MATCH,
+            ReviveDiedUnitsOfTypeFromMatch,
 
-            CHANGE_STAT_UNTILL_END_OF_TURN,
+            ChangeStatUntillEndOfTurn,
 
-            ATTACK_OVERLORD,
+            AttackOverlord,
 
-            ADJACENT_UNITS_GET_HEAVY,
+            AdjacentUnitsGetHeavy,
 
-            FREEZE_NUMBER_OF_RANDOM_ALLY,
+            FreezeNumberOfRandomAlly,
 
-            ADD_CARD_BY_NAME_TO_HAND,
+            AddCardByNameToHand,
 
-            DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS,
+            DealDamageToThisAndAdjacentUnits,
 
-            SWING,
+            Swing,
 
-            TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN,
+            TakeDefenseIfOverlordHasLessDefenseThan,
 
-            GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS,
+            GainNumberOfLifeForEachDamageThisDeals,
 
-            ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK,
+            AdditionalDamageToHeavyInAttack,
 
-            UNIT_WEAPON,
+            UnitWeapon,
 
-            TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS,
+            TakeDamageAtEndOfTurnToThis,
 
-            DELAYED_LOSE_HEAVY_GAIN_ATTACK,
+            DelayedLoseHeavyGainAttack,
 
-            DELAYED_GAIN_ATTACK,
+            DelayedGainAttack,
 
-            REANIMATE_UNIT,
+            ReanimateUnit,
 
-            PRIORITY_ATTACK,
+            PriorityAttack,
 
-            DESTROY_TARGET_UNIT_AFTER_ATTACK,
+            DestroyTargetUnitAfterAttack,
 
-            COSTS_LESS_IF_CARD_TYPE_IN_HAND,
+            CostsLessIfCardTypeInHand,
 
-            RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS
+            ReturnUnitsOnBoardToOwnersHands
         }
 
         public enum ActionType
         {
-            ATTACK_PLAYER_BY_CREATURE,
+            AttackPlayerByCreature,
 
-            ATTACK_CREATURE_BY_CREATURE,
+            AttackCreatureByCreature,
 
-            ATTACK_CREATURE_BY_SKILL,
+            AttackCreatureBySkill,
 
-            ATTACK_PLAYER_BY_SKILL,
+            AttackPlayerBySkill,
 
-            HEAL_PLAYER_BY_SKILL,
+            HealPlayerBySkill,
 
-            HEAL_CREATURE_BY_SKILL,
+            HealCreatureBySkill,
 
-            ATTACK_CREATURE_BY_ABILITY,
+            AttackCreatureByAbility,
 
-            ATTACK_PLAYER_BY_ABILITY,
+            AttackPlayerByAbility,
 
-            HEAL_PLAYER_BY_ABILITY,
+            HealPlayerByAbility,
 
-            HEAL_CREATURE_BY_ABILITY,
+            HealCreatureByAbility,
 
-            PLAY_UNIT_CARD,
+            PlayUnitCard,
 
-            PLAY_SPELL_CARD,
+            PlaySpellCard,
 
-            STUN_CREATURE_BY_ABILITY,
+            StunCreatureByAbility,
 
-            STUN_UNIT_BY_SKILL,
+            StunUnitBySkill,
 
-            SUMMON_UNIT_CARD,
+            SummonUnitCard,
 
-            RETURN_TO_HAND_CARD_ABILITY,
+            ReturnToHandCardAbility,
 
-            RETURN_TO_HAND_CARD_SKILL,
+            ReturnToHandCardSkill,
 
-            DRAW_CARD_SKILL,
+            DrawCardSkill,
 
-            STUN_PLAYER_BY_SKILL,
+            StunPlayerBySkill,
 
-            REANIMATE_UNIT_BY_ABILITY
+            ReanimateUnitByAbility
         }
 
         public enum AffectObjectType
         {
-            NONE,
+            None,
 
-            PLAYER,
+            Player,
 
-            CARD,
+            Card,
 
-            CHARACTER
+            Character
         }
 
-        public enum AIActionType
+        public enum AiActionType
         {
-            TEST,
+            Test,
 
-            TEST2
+            Test2
         }
 
-        public enum AIType
+        public enum AiType
         {
-            BLITZ_AI,
+            BlitzAi,
 
-            DEFENSE_AI,
+            DefenseAi,
 
-            MIXED_AI,
+            MixedAi,
 
-            MIXED_BLITZ_AI,
+            MixedBlitzAi,
 
-            TIME_BLITZ_AI,
+            TimeBlitzAi,
 
-            MIXED_DEFENSE_AI
+            MixedDefenseAi
         }
 
         public enum AppState
         {
-            NONE,
+            None,
 
-            APP_INIT,
+            AppInit,
 
-            LOGIN,
+            Login,
 
-            MAIN_MENU,
+            MainMenu,
 
-            HERO_SELECTION,
+            HeroSelection,
 
-            DECK_SELECTION,
+            DeckSelection,
 
-            COLLECTION,
+            Collection,
 
-            SHOP,
+            Shop,
 
-            GAMEPLAY,
+            Gameplay,
 
-            DECK_EDITING,
+            DeckEditing,
 
-            PACK_OPENER,
+            PackOpener,
 
-            CREDITS
+            Credits
         }
 
         public enum AttackInfoType
         {
-            ANY,
+            Any,
 
-            ONLY_DIFFERENT
+            OnlyDifferent
         }
 
         public enum BuffActivityType
         {
-            ONE_TIME,
+            OneTime,
 
-            PERMANENT,
+            Permanent,
 
-            TILL_FIRST_DEFENSE_FROM_ATTACK,
+            TillFirstDefenseFromAttack,
 
-            TURN_BASED
+            TurnBased
         }
 
         public enum BuffType
         {
-            GUARD,
+            Guard,
 
-            DEFENCE,
+            Defence,
 
-            HEAVY,
+            Heavy,
 
-            WEAPON,
+            Weapon,
 
-            RUSH,
+            Rush,
 
-            ATTACK,
+            Attack,
 
-            FREEZE,
+            Freeze,
 
-            DAMAGE,
+            Damage,
 
-            HEAL_ALLY,
+            HealAlly,
 
-            DESTROY,
+            Destroy,
 
-            REANIMATE
+            Reanimate
         }
 
         public enum ButtonState
         {
-            ACTIVE,
+            Active,
 
-            DEFAULT
+            Default
         }
 
         public enum CacheDataType
         {
-            CARDS_LIBRARY_DATA,
+            CardsLibraryData,
 
-            HEROES_DATA,
+            HeroesData,
 
-            COLLECTION_DATA,
+            CollectionData,
 
-            DECKS_DATA,
+            DecksData,
 
-            DECKS_OPPONENT_DATA,
+            DecksOpponentData,
 
-            USER_LOCAL_DATA,
+            UserLocalData,
 
-            OPPONENT_ACTIONS_LIBRARY_DATA,
+            OpponentActionsLibraryData,
 
-            CREDITS_DATA,
+            CreditsData,
 
-            BUFFS_TOOLTIP_DATA
+            BuffsTooltipData
         }
 
         public enum CardKind
         {
-            CREATURE,
+            Creature,
 
-            SPELL
+            Spell
         }
 
         public enum CardPackType
         {
-            DEFAULT
+            Default
         }
 
         public enum CardRank
         {
-            MINION,
+            Minion,
 
-            OFFICER,
+            Officer,
 
-            COMMANDER,
+            Commander,
 
-            GENERAL
+            General
         }
 
         public enum CardSoundType
         {
-            NONE,
+            None,
 
-            ATTACK,
+            Attack,
 
-            DEATH,
+            Death,
 
-            PLAY
+            Play
         }
 
         public enum CardType
         {
-            WALKER,
+            Walker,
 
-            FERAL,
+            Feral,
 
-            HEAVY,
+            Heavy,
 
-            NONE
+            None
         }
 
         public enum CardZoneOnBoardType
         {
-            DECK,
+            Deck,
 
-            GRAVEYARD
+            Graveyard
         }
 
         public enum EffectActivateType
         {
-            PLAY_SKILL_EFFECT
+            PlaySkillEffect
         }
 
         public enum EndGameType
         {
-            WIN,
+            Win,
 
-            LOSE,
+            Lose,
 
-            CANCEL
+            Cancel
         }
 
         public enum FadeState
         {
-            DEFAULT,
+            Default,
 
-            FADED
+            Faded
         }
 
         public enum GameEndCondition
         {
-            LIFE,
+            Life,
 
-            TIME,
+            Time,
 
-            TURN
+            Turn
         }
 
         public enum InputType
         {
-            KEYBOARD = 0,
+            Keyboard = 0,
 
-            MOUSE,
+            Mouse,
 
-            TOUCH
+            Touch
         }
 
         public enum Language
         {
-            NONE,
+            None,
 
-            DE,
+            De,
 
-            EN,
+            En,
 
-            RU
+            Ru
         }
 
         public enum MatchType
         {
-            LOCAL,
+            Local,
 
-            PVP,
+            Pvp,
 
-            PVE
+            Pve
         }
 
         public enum MouseCode
         {
-            LEFT_MOUSE_BUTTON = 0,
+            LeftMouseButton = 0,
 
-            RIGHT_MOUSE_BUTTON,
+            RightMouseButton,
 
-            WHEEL_MOUSE,
+            WheelMouse,
 
-            OTHER
+            Other
         }
 
         public enum NotificationButtonState
         {
-            ACTIVE,
+            Active,
 
-            INACTIVE
+            Inactive
         }
 
         public enum NotificationType
         {
-            LOG,
+            Log,
 
-            ERROR,
+            Error,
 
-            WARNING,
+            Warning,
 
-            MESSAGE
+            Message
         }
 
         public enum OverlordSkill
         {
-            NONE,
+            None,
 
             // AIR
-            PUSH,
+            Push,
 
-            DRAW,
+            Draw,
 
-            WIND_SHIELD,
+            WindShield,
 
-            WIND_WALL,
+            WindWall,
 
-            RETREAT,
+            Retreat,
 
             // EARTH
-            HARDEN,
+            Harden,
 
-            STONE_SKIN,
+            StoneSkin,
 
-            FORTIFY,
+            Fortify,
 
-            PHALANX,
+            Phalanx,
 
-            FORTRESS,
+            Fortress,
 
             // FIRE
-            FIRE_BOLT,
+            FireBolt,
 
-            RABIES,
+            Rabies,
 
-            FIREBALL,
+            Fireball,
 
-            MASS_RABIES,
+            MassRabies,
 
-            METEOR_SHOWER,
+            MeteorShower,
 
             // LIFE
-            HEALING_TOUCH,
+            HealingTouch,
 
-            MEND,
+            Mend,
 
-            RESSURECT,
+            Ressurect,
 
-            ENHANCE,
+            Enhance,
 
-            REANIMATE,
+            Reanimate,
 
             // TOXIC
-            POISON_DART,
+            PoisonDart,
 
-            TOXIC_POWER,
+            ToxicPower,
 
-            BREAKOUT,
+            Breakout,
 
-            INFECT,
+            Infect,
 
-            EPIDEMIC,
+            Epidemic,
 
             // WATER
-            FREEZE,
+            Freeze,
 
-            ICE_BOLT,
+            IceBolt,
 
-            ICE_WALL,
+            IceWall,
 
-            SHATTER,
+            Shatter,
 
-            BLIZZARD
+            Blizzard
         }
 
         public enum ScreenOrientationMode
         {
-            PORTRAIT,
+            Portrait,
 
-            LANDSCAPE
+            Landscape
         }
 
         public enum SetType
         {
-            FIRE,
+            Fire,
 
-            WATER,
+            Water,
 
-            EARTH,
+            Earth,
 
-            AIR,
+            Air,
 
-            LIFE,
+            Life,
 
-            TOXIC,
+            Toxic,
 
-            ITEM,
+            Item,
 
-            OTHERS,
+            Others,
 
-            NONE
+            None
         }
 
         public enum SkillTargetType
         {
-            NONE,
+            None,
 
-            PLAYER,
+            Player,
 
-            PLAYER_CARD,
+            PlayerCard,
 
-            PLAYER_ALL_CARDS,
+            PlayerAllCards,
 
-            OPPONENT,
+            Opponent,
 
-            OPPONENT_CARD,
+            OpponentCard,
 
-            OPPONENT_ALL_CARDS,
+            OpponentAllCards,
 
-            ALL_CARDS
+            AllCards
         }
 
         public enum SkillType
         {
-            PRIMARY,
+            Primary,
 
-            SECONDARY
+            Secondary
         }
 
         public enum SoundType
         {
-            CLICK,
+            Click,
 
-            OTHER,
+            Other,
 
-            BACKGROUND,
+            Background,
 
-            BATTLEGROUND,
+            Battleground,
 
-            TUTORIAL,
+            Tutorial,
 
-            CARDS,
+            Cards,
 
-            END_TURN,
+            EndTurn,
 
-            OVERLORD_ABILITIES,
+            OverlordAbilities,
 
-            SPELLS,
+            Spells,
 
-            WALKER_ARRIVAL,
+            WalkerArrival,
 
-            FERAL_ARRIVAL,
+            FeralArrival,
 
-            HEAVY_ARRIVAL,
+            HeavyArrival,
 
-            FERAL_ATTACK,
+            FeralAttack,
 
-            HEAVY_ATTACK_1,
+            HeavyAttack1,
 
-            HEAVY_ATTACK_2,
+            HeavyAttack2,
 
-            WALKER_ATTACK_1,
+            WalkerAttack1,
 
-            WALKER_ATTACK_2,
+            WalkerAttack2,
 
-            HERO_DEATH,
+            HeroDeath,
 
-            LOGO_APPEAR,
+            LogoAppear,
 
-            CARD_BATTLEGROUND_TO_TRASH,
+            CardBattlegroundToTrash,
 
-            CARD_DECK_TO_HAND_MULTIPLE,
+            CardDeckToHandMultiple,
 
-            CARD_DECK_TO_HAND_SINGLE,
+            CardDeckToHandSingle,
 
-            CARD_FLY_HAND,
+            CardFlyHand,
 
-            CARD_FLY_HAND_TO_BATTLEGROUND,
+            CardFlyHandToBattleground,
 
-            CHANGE_SCREEN,
+            ChangeScreen,
 
-            DECKEDITING_ADD_CARD,
+            DeckeditingAddCard,
 
-            DECKEDITING_REMOVE_CARD,
+            DeckeditingRemoveCard,
 
-            LOST_POPUP,
+            LostPopup,
 
-            WON_POPUP,
+            WonPopup,
 
-            WON_REWARD_POPUP,
+            WonRewardPopup,
 
-            YOURTURN_POPUP,
+            YourturnPopup,
 
-            SHUTTERS_CLOSING,
+            ShuttersClosing,
 
-            SHUTTERS_OPEN,
+            ShuttersOpen,
 
-            GOO_OVERFLOW_FADE_IN,
+            GooOverflowFadeIn,
 
-            GOO_OVERFLOW_FADE_LOOP,
+            GooOverflowFadeLoop,
 
-            GOO_OVERFLOW_FADE_OUT
+            GooOverflowFadeOut
         }
 
         public enum SpreadsheetType
         {
-            TUTORIAL
+            Tutorial
         }
 
         public enum StatType
         {
-            HEALTH,
+            Health,
 
-            DAMAGE,
+            Damage,
 
-            NONE
+            None
         }
 
         public enum StunType
         {
-            NONE,
+            None,
 
-            FREEZE,
+            Freeze,
 
-            DISABLE
+            Disable
         }
 
         public enum TooltipObjectType
         {
-            RANK,
+            Rank,
 
-            ABILITY,
+            Ability,
 
-            UNIT_TYPE,
+            UnitType,
 
-            BUFF
+            Buff
         }
 
         public enum TutorialJanePoses
         {
-            NORMAL,
+            Normal,
 
-            THINKING,
+            Thinking,
 
-            POINTING,
+            Pointing,
 
-            THUMBSUP,
+            Thumbsup,
 
-            KISS
+            Kiss
         }
 
         public enum TutorialReportAction
         {
-            END_TURN,
+            EndTurn,
 
-            MOVE_CARD,
+            MoveCard,
 
-            ATTACK_CARD_CARD,
+            AttackCardCard,
 
-            ATTACK_CARD_HERO,
+            AttackCardHero,
 
-            USE_ABILITY
+            UseAbility
         }
 
         public enum UnitStatusType
         {
-            NONE,
+            None,
 
-            FROZEN
+            Frozen
         }
     }
 }

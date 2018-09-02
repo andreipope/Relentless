@@ -33,14 +33,14 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.ResetWholeGameplayScene();
 
-            _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
+            _sceneManager.ChangeScene(Enumerators.AppState.AppInit);
         }
 
         public void FindMatch(Enumerators.MatchType matchType)
         {
             switch (matchType)
             {
-                case Enumerators.MatchType.LOCAL:
+                case Enumerators.MatchType.Local:
                     CreateLocalMatch();
                     break;
                 default:
@@ -76,7 +76,7 @@ namespace LoomNetwork.CZB
             StartLoadMatch();
         }
 
-        private void CreatePVEMatch()
+        private void CreatePveMatch()
         {
             // todo write logic
             StartLoadMatch();
@@ -93,19 +93,19 @@ namespace LoomNetwork.CZB
             _uiManager.HideAllPages();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
 
-            _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
+            _sceneManager.ChangeScene(Enumerators.AppState.Gameplay);
         }
 
         private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state)
         {
-            if (state == Enumerators.AppState.GAMEPLAY)
+            if (state == Enumerators.AppState.Gameplay)
             {
-                _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+                _appStateManager.ChangeAppState(Enumerators.AppState.Gameplay);
 
                 _uiManager.HidePopup<LoadingGameplayPopup>();
 
                 _gameplayManager.StartGameplay();
-            } else if (state == Enumerators.AppState.APP_INIT)
+            } else if (state == Enumerators.AppState.AppInit)
             {
                 _appStateManager.ChangeAppState(_finishMatchAppState);
             }

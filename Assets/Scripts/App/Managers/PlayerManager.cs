@@ -12,12 +12,12 @@ namespace LoomNetwork.CZB
 
         public void ChangeGoo(int value)
         {
-            LocalUser.gooValue += value;
+            LocalUser.GooValue += value;
         }
 
         public int GetGoo()
         {
-            return LocalUser.gooValue;
+            return LocalUser.GooValue;
         }
 
         public void Dispose()

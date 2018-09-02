@@ -14,44 +14,36 @@ namespace LoomNetwork.CZB
 {
     public class BattlegroundController : IController
     {
-        public event Action<int> OnPlayerGraveyardUpdatedEvent;
+        public bool RearrangingTopBoard, IsPreviewActive;
 
-        public event Action<int> OnOpponentGraveyardUpdatedEvent;
+        public bool CardsZoomed = false;
 
-        public event Action OnTurnStartedEvent;
+        public Coroutine CreatePreviewCoroutine;
 
-        public event Action OnTurnEndeddEvent;
+        public GameObject CurrentBoardCard;
 
-        public bool _rearrangingTopBoard, isPreviewActive;
-
-        public bool cardsZoomed = false;
-
-        public Coroutine createPreviewCoroutine;
-
-        public GameObject currentBoardCard;
-
-        public int currentPreviewedCardId;
+        public int CurrentPreviewedCardId;
 
         // public int TurnDuration { get; private set; }
-        public int currentTurn;
+        public int CurrentTurn;
 
-        public bool gameFinished;
+        public bool GameFinished;
 
-        public List<BoardUnit> opponentBoardCards = new List<BoardUnit>();
+        public List<BoardUnit> OpponentBoardCards = new List<BoardUnit>();
 
-        public List<BoardUnit> opponentGraveyardCards = new List<BoardUnit>();
+        public List<BoardUnit> OpponentGraveyardCards = new List<BoardUnit>();
 
-        public List<GameObject> opponentHandCards = new List<GameObject>();
+        public List<GameObject> OpponentHandCards = new List<GameObject>();
 
-        public List<BoardUnit> playerBoardCards = new List<BoardUnit>();
+        public List<BoardUnit> PlayerBoardCards = new List<BoardUnit>();
 
-        public GameObject playerBoardObject, opponentBoardObject, playerGraveyardObject, opponentGraveyardObject;
+        public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
 
-        public List<BoardUnit> playerGraveyardCards = new List<BoardUnit>();
+        public List<BoardUnit> PlayerGraveyardCards = new List<BoardUnit>();
 
-        public List<BoardCard> playerHandCards = new List<BoardCard>();
+        public List<BoardCard> PlayerHandCards = new List<BoardCard>();
 
-        private AIController _aiController;
+        private AiController _aiController;
 
         private bool _battleDynamic;
 
@@ -81,7 +73,15 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private Sequence rearrangingRealTimeSequence;
+        private Sequence _rearrangingRealTimeSequence;
+
+        public event Action<int> OnPlayerGraveyardUpdatedEvent;
+
+        public event Action<int> OnOpponentGraveyardUpdatedEvent;
+
+        public event Action OnTurnStartedEvent;
+
+        public event Action OnTurnEndeddEvent;
 
         public void Init()
         {
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
-            _aiController = _gameplayManager.GetController<AIController>();
+            _aiController = _gameplayManager.GetController<AiController>();
 
             _ranksController = _gameplayManager.GetController<RanksController>();
 
@@ -117,12 +117,12 @@ namespace LoomNetwork.CZB
             {
                 CheckGameDynamic();
 
-                foreach (BoardUnit item in playerBoardCards)
+                foreach (BoardUnit item in PlayerBoardCards)
                 {
                     item.Update();
                 }
 
-                foreach (BoardUnit item in opponentBoardCards)
+                foreach (BoardUnit item in OpponentBoardCards)
                 {
                     item.Update();
                 }
@@ -131,19 +131,19 @@ namespace LoomNetwork.CZB
 
         public void ResetAll()
         {
-            if (createPreviewCoroutine != null)
+            if (CreatePreviewCoroutine != null)
             {
-                MainApp.Instance.StopCoroutine(createPreviewCoroutine);
+                MainApp.Instance.StopCoroutine(CreatePreviewCoroutine);
             }
 
-            createPreviewCoroutine = null;
+            CreatePreviewCoroutine = null;
 
-            if ((currentBoardCard != null) && currentBoardCard)
+            if ((CurrentBoardCard != null) && CurrentBoardCard)
             {
-                Object.Destroy(currentBoardCard);
+                Object.Destroy(CurrentBoardCard);
             }
 
-            currentBoardCard = null;
+            CurrentBoardCard = null;
 
             ClearBattleground();
         }
@@ -159,35 +159,35 @@ namespace LoomNetwork.CZB
                 DestroyCardPreview();
             }
 
-            bool isOpponentCard = cardToDestroy.ownerPlayer == _gameplayManager.CurrentPlayer?false:true;
+            bool isOpponentCard = cardToDestroy.OwnerPlayer == _gameplayManager.CurrentPlayer?false:true;
 
-            cardToDestroy.transform.position = new Vector3(cardToDestroy.transform.position.x, cardToDestroy.transform.position.y, cardToDestroy.transform.position.z + 0.2f);
+            cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x, cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
 
             _timerManager.AddTimer(
                 x =>
                 {
-                    cardToDestroy.transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
 
-                    string cardDeathSoundName = cardToDestroy.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_DEATH;
+                    string cardDeathSoundName = cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.KCardSoundDeath;
                     float soundLength = 0f;
 
-                    if (!cardToDestroy.ownerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    if (!cardToDestroy.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZOMBIE_DEATH_VO_DELAY_BEFORE_FADEOUT, Constants.ZOMBIES_SOUND_VOLUME, Enumerators.CardSoundType.DEATH);
-                        soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+                        _soundManager.PlaySound(Enumerators.SoundType.Cards, cardDeathSoundName, Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume, Enumerators.CardSoundType.Death);
+                        soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.Cards, cardDeathSoundName);
                     }
 
                     _timerManager.AddTimer(
                         t =>
                         {
-                            cardToDestroy.ownerPlayer.BoardCards.Remove(cardToDestroy);
-                            cardToDestroy.ownerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
-                            cardToDestroy.ownerPlayer.AddCardToGraveyard(cardToDestroy.Card);
+                            cardToDestroy.OwnerPlayer.BoardCards.Remove(cardToDestroy);
+                            cardToDestroy.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
+                            cardToDestroy.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Card);
 
                             // _ranksController.UpdateRanksBuffs(cardToDestroy.ownerPlayer);
                             cardToDestroy.ThrowOnDieEvent();
-                            cardToDestroy.transform.DOKill();
-                            Object.Destroy(cardToDestroy.gameObject);
+                            cardToDestroy.Transform.DOKill();
+                            Object.Destroy(cardToDestroy.GameObject);
 
                             _timerManager.AddTimer(
                                 f =>
@@ -218,7 +218,7 @@ namespace LoomNetwork.CZB
             // {
             if (!_battleDynamic)
             {
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
+                _soundManager.CrossfaidSound(Enumerators.SoundType.Battleground, null, true);
             }
 
             _battleDynamic = true;
@@ -239,28 +239,28 @@ namespace LoomNetwork.CZB
 
         public void ClearBattleground()
         {
-            playerHandCards.Clear();
-            opponentHandCards.Clear();
+            PlayerHandCards.Clear();
+            OpponentHandCards.Clear();
 
-            playerBoardCards.Clear();
-            opponentBoardCards.Clear();
+            PlayerBoardCards.Clear();
+            OpponentBoardCards.Clear();
 
-            playerGraveyardCards.Clear();
-            opponentGraveyardCards.Clear();
+            PlayerGraveyardCards.Clear();
+            OpponentGraveyardCards.Clear();
 
             _cardsInDestroy.Clear();
         }
 
         public void InitializeBattleground()
         {
-            currentTurn = Constants.FIRST_GAME_TURN_INDEX;
+            CurrentTurn = Constants.FirstGameTurnIndex;
 
-            gameFinished = false;
+            GameFinished = false;
 
             // _timerManager.StopTimer(RunTurnAsync);
             if (_gameplayManager.IsTutorial)
             {
-                _gameplayManager.OpponentPlayer.HP = 12;
+                _gameplayManager.OpponentPlayer.Hp = 12;
                 _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
                 _gameplayManager.OpponentPlayer.Goo = 10;
                 _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
@@ -272,12 +272,12 @@ namespace LoomNetwork.CZB
             _gameplayManager.CurrentPlayer.HP = 99;
 #endif
 
-            _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
+            _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
 
-            playerBoardObject = GameObject.Find("PlayerBoard");
-            opponentBoardObject = GameObject.Find("OpponentBoard");
-            playerGraveyardObject = GameObject.Find("GraveyardPlayer");
-            opponentGraveyardObject = GameObject.Find("GraveyardOpponent");
+            PlayerBoardObject = GameObject.Find("PlayerBoard");
+            OpponentBoardObject = GameObject.Find("OpponentBoard");
+            PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
+            OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
         }
 
         public void StartGameplayTurns()
@@ -297,8 +297,8 @@ namespace LoomNetwork.CZB
         public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
         {
             // _timerManager.StopTimer(RunTurnAsync);
-            gameFinished = true;
-            currentTurn = 0;
+            GameFinished = true;
+            CurrentTurn = 0;
 
             ClearBattleground();
         }
@@ -318,11 +318,11 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            currentTurn++;
+            CurrentTurn++;
 
-            _gameplayManager.CurrentTurnPlayer.turn++;
+            _gameplayManager.CurrentTurnPlayer.Turn++;
 
-            if (_dataManager.CachedUserLocalData.tutorial && !_tutorialManager.IsTutorial)
+            if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
             {
                 _tutorialManager.StartTutorial();
             }
@@ -338,9 +338,9 @@ namespace LoomNetwork.CZB
             {
                 List<BoardUnit> creatures = new List<BoardUnit>();
 
-                foreach (BoardUnit card in playerBoardCards)
+                foreach (BoardUnit card in PlayerBoardCards)
                 {
-                    if ((_playerController == null) || !card.gameObject)
+                    if ((_playerController == null) || !card.GameObject)
                     {
                         creatures.Add(card);
                         continue;
@@ -351,13 +351,13 @@ namespace LoomNetwork.CZB
 
                 foreach (BoardUnit item in creatures)
                 {
-                    playerBoardCards.Remove(item);
+                    PlayerBoardCards.Remove(item);
                 }
 
                 creatures.Clear();
                 creatures = null;
 
-                foreach (BoardUnit card in playerBoardCards)
+                foreach (BoardUnit card in PlayerBoardCards)
                 {
                     card.SetHighlightingEnabled(true);
                 }
@@ -365,17 +365,17 @@ namespace LoomNetwork.CZB
                 _uiManager.DrawPopup<YourTurnPopup>();
             } else
             {
-                foreach (BoardUnit card in opponentBoardCards)
+                foreach (BoardUnit card in OpponentBoardCards)
                 {
                     card.OnStartTurn();
                 }
 
-                foreach (BoardCard card in playerHandCards)
+                foreach (BoardCard card in PlayerHandCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
 
-                foreach (BoardUnit card in playerBoardCards)
+                foreach (BoardUnit card in PlayerBoardCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -399,13 +399,13 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
 
-                foreach (BoardUnit card in playerBoardCards)
+                foreach (BoardUnit card in PlayerBoardCards)
                 {
                     card.OnEndTurn();
                 }
             } else
             {
-                foreach (BoardUnit card in opponentBoardCards)
+                foreach (BoardUnit card in OpponentBoardCards)
                 {
                     card.OnEndTurn();
                 }
@@ -416,7 +416,7 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn()?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.EndTurn);
 
             OnTurnEndeddEvent?.Invoke();
         }
@@ -433,58 +433,58 @@ namespace LoomNetwork.CZB
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            Vector3 graveyardPos = playerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            BoardUnit boardCard = playerBoardCards.Find(x => x.Card == card);
+            Vector3 graveyardPos = PlayerGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            BoardUnit boardCard = PlayerBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
-                boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+                boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
 
-                playerBoardCards.Remove(boardCard);
-                playerGraveyardCards.Add(boardCard);
+                PlayerBoardCards.Remove(boardCard);
+                PlayerGraveyardCards.Add(boardCard);
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
 
-                Object.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+                Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
             }
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
-            Vector3 graveyardPos = opponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            BoardUnit boardCard = opponentBoardCards.Find(x => x.Card == card);
+            Vector3 graveyardPos = OpponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
+            BoardUnit boardCard = OpponentBoardCards.Find(x => x.Card == card);
             if (boardCard != null)
             {
-                if (boardCard.transform != null)
+                if (boardCard.Transform != null)
                 {
-                    boardCard.transform.localPosition = new Vector3(boardCard.transform.localPosition.x, boardCard.transform.localPosition.y, -0.2f);
+                    boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
                 }
 
-                opponentBoardCards.Remove(boardCard);
+                OpponentBoardCards.Remove(boardCard);
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                if (boardCard.gameObject != null)
+                if (boardCard.GameObject != null)
                 {
-                    boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-                    Object.Destroy(boardCard.gameObject.GetComponent<BoxCollider2D>());
+                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
+                    Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
 
-                Debug.Log("Destroy = " + boardCard.CurrentHP + "_" + boardCard.Card.libraryCard.name);
-            } else if ((_aiController.currentSpellCard != null) && (card == _aiController.currentSpellCard.WorkingCard))
+                Debug.Log("Destroy = " + boardCard.CurrentHp + "_" + boardCard.Card.LibraryCard.Name);
+            } else if ((_aiController.CurrentSpellCard != null) && (card == _aiController.CurrentSpellCard.WorkingCard))
             {
-                _aiController.currentSpellCard.SetHighlightingEnabled(false);
-                _aiController.currentSpellCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_BOARD_CARDS;
-                Object.Destroy(_aiController.currentSpellCard.gameObject.GetComponent<BoxCollider2D>());
+                _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
+                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
+                Object.Destroy(_aiController.CurrentSpellCard.GameObject.GetComponent<BoxCollider2D>());
                 Sequence sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
-                sequence.Append(_aiController.currentSpellCard.transform.DOMove(graveyardPos, 0.5f));
-                sequence.Append(_aiController.currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f));
+                sequence.Append(_aiController.CurrentSpellCard.Transform.DOMove(graveyardPos, 0.5f));
+                sequence.Append(_aiController.CurrentSpellCard.Transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f));
                 sequence.OnComplete(
                     () =>
                     {
-                        _aiController.currentSpellCard = null;
+                        _aiController.CurrentSpellCard = null;
                     });
             }
         }
@@ -495,10 +495,10 @@ namespace LoomNetwork.CZB
 
                 return;
 
-            if (rearrangingRealTimeSequence != null)
+            if (_rearrangingRealTimeSequence != null)
             {
-                rearrangingRealTimeSequence.Kill();
-                rearrangingRealTimeSequence = null;
+                _rearrangingRealTimeSequence.Kill();
+                _rearrangingRealTimeSequence = null;
             }
 
             float boardWidth = 0.0f;
@@ -514,7 +514,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             List<Vector2> newPositions = new List<Vector2>(cardsList.Count);
-            Vector3 pivot = playerBoardObject.transform.position;
+            Vector3 pivot = PlayerBoardObject.transform.position;
 
             for (int i = 0; i < cardsList.Count; i++)
             {
@@ -527,10 +527,10 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < cardsList.Count; i++)
             {
                 BoardUnit card = cardsList[i];
-                sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
-            rearrangingRealTimeSequence = sequence;
+            _rearrangingRealTimeSequence = sequence;
             sequence.OnComplete(
                 () =>
                 {
@@ -543,7 +543,7 @@ namespace LoomNetwork.CZB
 
         public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
         {
-            if (_rearrangingTopBoard)
+            if (RearrangingTopBoard)
             {
                 _timerManager.AddTimer(
                     x =>
@@ -563,7 +563,7 @@ namespace LoomNetwork.CZB
 
             List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
-            _rearrangingTopBoard = true;
+            RearrangingTopBoard = true;
 
             float boardWidth = 0.0f;
             float spacing = 0.2f;
@@ -579,7 +579,7 @@ namespace LoomNetwork.CZB
             boardWidth -= spacing;
 
             List<Vector2> newPositions = new List<Vector2>(opponentBoardCards.Count);
-            Vector3 pivot = opponentBoardObject.transform.position;
+            Vector3 pivot = OpponentBoardObject.transform.position;
 
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
@@ -592,7 +592,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
                 BoardUnit card = opponentBoardCards[i];
-                sequence.Insert(0, card.transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
             sequence.OnComplete(
@@ -607,7 +607,7 @@ namespace LoomNetwork.CZB
             _timerManager.AddTimer(
                 x =>
                 {
-                    _rearrangingTopBoard = false;
+                    RearrangingTopBoard = false;
                 },
                 null,
                 1.5f,
@@ -617,18 +617,18 @@ namespace LoomNetwork.CZB
         // rewrite
         public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
-            isPreviewActive = true;
+            IsPreviewActive = true;
 
             if (target is BoardCard)
             {
-                currentPreviewedCardId = (target as BoardCard).WorkingCard.instanceId;
+                CurrentPreviewedCardId = (target as BoardCard).WorkingCard.InstanceId;
             } else if (target is BoardUnit)
             {
                 _lastBoardUntilOnPreview = target as BoardUnit;
-                currentPreviewedCardId = (target as BoardUnit).Card.instanceId;
+                CurrentPreviewedCardId = (target as BoardUnit).Card.InstanceId;
             }
 
-            createPreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
+            CreatePreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
         }
 
         // rewrite
@@ -646,29 +646,29 @@ namespace LoomNetwork.CZB
                 card = (target as BoardUnit).Card;
             }
 
-            string cardSetName = _cardsController.GetSetOfCard(card.libraryCard);
+            string cardSetName = _cardsController.GetSetOfCard(card.LibraryCard);
 
             BoardCard boardCard = null;
-            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.Creature)
             {
-                currentBoardCard = Object.Instantiate(_cardsController.creatureCardViewPrefab);
-                boardCard = new UnitBoardCard(currentBoardCard);
-            } else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+                CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
+                boardCard = new UnitBoardCard(CurrentBoardCard);
+            } else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
             {
-                currentBoardCard = Object.Instantiate(_cardsController.spellCardViewPrefab);
-                boardCard = new SpellBoardCard(currentBoardCard);
+                CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                boardCard = new SpellBoardCard(CurrentBoardCard);
             }
 
             boardCard.Init(card);
             if (highlight)
             {
-                highlight = boardCard.CanBePlayed(card.owner) && boardCard.CanBeBuyed(card.owner);
+                highlight = boardCard.CanBePlayed(card.Owner) && boardCard.CanBeBuyed(card.Owner);
             }
 
             boardCard.SetHighlightingEnabled(highlight);
-            boardCard.isPreview = true;
+            boardCard.IsPreview = true;
 
-            InternalTools.SetLayerRecursively(boardCard.gameObject, 0);
+            InternalTools.SetLayerRecursively(boardCard.GameObject, 0);
 
             if (target is BoardUnit)
             {
@@ -680,8 +680,8 @@ namespace LoomNetwork.CZB
 
             Vector3 newPos = pos;
             newPos.y += 2.0f;
-            currentBoardCard.transform.position = newPos;
-            currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
+            CurrentBoardCard.transform.position = newPos;
+            CurrentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
             Vector3 sizeOfCard = Vector3.one;
 
@@ -693,38 +693,38 @@ namespace LoomNetwork.CZB
                 sizeOfCard = new Vector3(.4f, .4f, .4f);
             }
 
-            currentBoardCard.transform.localScale = sizeOfCard;
+            CurrentBoardCard.transform.localScale = sizeOfCard;
 
-            currentBoardCard.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_GAME_UI3;
-            currentBoardCard.layer = LayerMask.NameToLayer("Default");
-            currentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
+            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerGameUI3;
+            CurrentBoardCard.layer = LayerMask.NameToLayer("Default");
+            CurrentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
 
         // rewrite
         public void DestroyCardPreview()
         {
-            if (!isPreviewActive)
+            if (!IsPreviewActive)
 
                 return;
 
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
 
             MainApp.Instance.StartCoroutine(DestroyCardPreviewAsync());
-            if (createPreviewCoroutine != null)
+            if (CreatePreviewCoroutine != null)
             {
-                MainApp.Instance.StopCoroutine(createPreviewCoroutine);
+                MainApp.Instance.StopCoroutine(CreatePreviewCoroutine);
             }
 
-            isPreviewActive = false;
+            IsPreviewActive = false;
         }
 
         // rewrite
         public IEnumerator DestroyCardPreviewAsync()
         {
-            if (currentBoardCard != null)
+            if (CurrentBoardCard != null)
             {
                 _lastBoardUntilOnPreview = null;
-                GameObject oldCardPreview = currentBoardCard;
+                GameObject oldCardPreview = CurrentBoardCard;
                 foreach (SpriteRenderer renderer in oldCardPreview.GetComponentsInChildren<SpriteRenderer>())
                 {
                     renderer.DOFade(0.0f, 0.2f);
@@ -748,7 +748,7 @@ namespace LoomNetwork.CZB
             Vector3 pivot = new Vector3(6f, -7.5f, 0f);
             int twistPerCard = -5;
 
-            if (cardsZoomed)
+            if (CardsZoomed)
             {
                 spacing = -2.6f;
                 scaling = 0.31f;
@@ -756,43 +756,43 @@ namespace LoomNetwork.CZB
                 twistPerCard = -3;
             }
 
-            foreach (BoardCard card in playerHandCards)
+            foreach (BoardCard card in PlayerHandCards)
             {
                 handWidth += spacing;
             }
 
             handWidth -= spacing;
 
-            if (playerHandCards.Count == 1)
+            if (PlayerHandCards.Count == 1)
             {
                 twistPerCard = 0;
             }
 
-            int totalTwist = twistPerCard * playerHandCards.Count;
+            int totalTwist = twistPerCard * PlayerHandCards.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
             float scalingFactor = 0.04f;
             Vector3 moveToPosition = Vector3.zero;
 
-            for (int i = 0; i < playerHandCards.Count; i++)
+            for (int i = 0; i < PlayerHandCards.Count; i++)
             {
-                BoardCard card = playerHandCards[i];
+                BoardCard card = PlayerHandCards[i];
                 float twist = startTwist - (i * twistPerCard);
                 float nudge = Mathf.Abs(twist);
 
                 nudge *= scalingFactor;
-                moveToPosition = new Vector3(pivot.x - (handWidth / 2), pivot.y - nudge, (playerHandCards.Count - i) * 0.1f);
+                moveToPosition = new Vector3(pivot.x - (handWidth / 2), pivot.y - nudge, (PlayerHandCards.Count - i) * 0.1f);
 
                 if (isMove)
                 {
-                    card.isNewCard = false;
+                    card.IsNewCard = false;
                 }
 
                 card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist, Vector3.one * scaling);
 
-                pivot.x += handWidth / playerHandCards.Count;
+                pivot.x += handWidth / PlayerHandCards.Count;
 
-                card.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_HAND_CARDS;
-                card.gameObject.GetComponent<SortingGroup>().sortingOrder = i;
+                card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerHandCards;
+                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }
 
@@ -801,7 +801,7 @@ namespace LoomNetwork.CZB
             float handWidth = 0.0f;
             float spacing = -1.0f;
 
-            foreach (GameObject card in opponentHandCards)
+            foreach (GameObject card in OpponentHandCards)
             {
                 handWidth += spacing;
             }
@@ -811,20 +811,20 @@ namespace LoomNetwork.CZB
             Vector3 pivot = new Vector3(-3.2f, 8.5f, 0f);
             int twistPerCard = 5;
 
-            if (opponentHandCards.Count == 1)
+            if (OpponentHandCards.Count == 1)
             {
                 twistPerCard = 0;
             }
 
-            int totalTwist = twistPerCard * opponentHandCards.Count;
+            int totalTwist = twistPerCard * OpponentHandCards.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
             float scalingFactor = 0.04f;
             Vector3 movePosition = Vector3.zero;
             Vector3 rotatePosition = Vector3.zero;
 
-            for (int i = 0; i < opponentHandCards.Count; i++)
+            for (int i = 0; i < OpponentHandCards.Count; i++)
             {
-                GameObject card = opponentHandCards[i];
+                GameObject card = OpponentHandCards[i];
                 float twist = startTwist - (i * twistPerCard);
                 float nudge = Mathf.Abs(twist);
 
@@ -834,7 +834,7 @@ namespace LoomNetwork.CZB
 
                 if (isMove)
                 {
-                    if ((i == opponentHandCards.Count - 1) && isNewCard)
+                    if ((i == OpponentHandCards.Count - 1) && isNewCard)
                     {
                         card.transform.position = new Vector3(-8.2f, 5.7f, 0);
                         card.transform.eulerAngles = Vector3.forward * 90f;
@@ -848,7 +848,7 @@ namespace LoomNetwork.CZB
                     card.transform.rotation = Quaternion.Euler(rotatePosition);
                 }
 
-                pivot.x += handWidth / opponentHandCards.Count;
+                pivot.x += handWidth / OpponentHandCards.Count;
 
                 card.GetComponent<SortingGroup>().sortingOrder = i;
             }
@@ -856,11 +856,11 @@ namespace LoomNetwork.CZB
 
         public BoardUnit GetBoardUnitFromHisObject(GameObject unitObject)
         {
-            BoardUnit unit = playerBoardCards.Find(x => x.gameObject.Equals(unitObject));
+            BoardUnit unit = PlayerBoardCards.Find(x => x.GameObject.Equals(unitObject));
 
             if (unit == null)
             {
-                unit = opponentBoardCards.Find(x => x.gameObject.Equals(unitObject));
+                unit = OpponentBoardCards.Find(x => x.GameObject.Equals(unitObject));
             }
 
             return unit;
@@ -868,7 +868,7 @@ namespace LoomNetwork.CZB
 
         public BoardCard GetBoardCardFromHisObject(GameObject cardObject)
         {
-            BoardCard card = playerHandCards.Find(x => x.gameObject.Equals(cardObject));
+            BoardCard card = PlayerHandCards.Find(x => x.GameObject.Equals(cardObject));
 
             return card;
         }
@@ -888,13 +888,13 @@ namespace LoomNetwork.CZB
 
         public BoardUnit CreateBoardUnit(Player owner, WorkingCard card)
         {
-            GameObject _playerBoard = owner.IsLocalPlayer?playerBoardObject:opponentBoardObject;
+            GameObject playerBoard = owner.IsLocalPlayer?PlayerBoardObject:OpponentBoardObject;
 
-            BoardUnit boardUnit = new BoardUnit(_playerBoard.transform);
-            boardUnit.transform.tag = owner.IsLocalPlayer?Constants.TAG_PLAYER_OWNED:Constants.TAG_OPPONENT_OWNED;
-            boardUnit.transform.SetParent(_playerBoard.transform);
-            boardUnit.transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
-            boardUnit.ownerPlayer = owner;
+            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
+            boardUnit.Transform.tag = owner.IsLocalPlayer?Constants.KTagPlayerOwned:Constants.KTagOpponentOwned;
+            boardUnit.Transform.SetParent(playerBoard.transform);
+            boardUnit.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
+            boardUnit.OwnerPlayer = owner;
             boardUnit.SetObjectInfo(card);
 
             boardUnit.PlayArrivalAnimation();

@@ -6,19 +6,19 @@ namespace LoomNetwork.CZB
 {
     public class SwingAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public SwingAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
         }
 
         public override void Update()
@@ -38,9 +38,9 @@ namespace LoomNetwork.CZB
             BoardUnit unit = info as BoardUnit;
 
             int targetIndex = -1;
-            for (int i = 0; i < unit.ownerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < unit.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (unit.ownerPlayer.BoardCards[i] == unit)
+                if (unit.OwnerPlayer.BoardCards[i] == unit)
                 {
                     targetIndex = i;
                     break;
@@ -51,12 +51,12 @@ namespace LoomNetwork.CZB
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeDamageToUnit(unit.ownerPlayer.BoardCards[targetIndex - 1]);
+                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex - 1]);
                 }
 
-                if (targetIndex + 1 < unit.ownerPlayer.BoardCards.Count)
+                if (targetIndex + 1 < unit.OwnerPlayer.BoardCards.Count)
                 {
-                    TakeDamageToUnit(unit.ownerPlayer.BoardCards[targetIndex + 1]);
+                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
 
                 return;
 
@@ -77,8 +77,8 @@ namespace LoomNetwork.CZB
 
         private void TakeDamageToUnit(BoardUnit unit)
         {
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, unit);
-            CreateVFX(unit.transform.position, true, 5f);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            CreateVfx(unit.Transform.position, true, 5f);
         }
     }
 }

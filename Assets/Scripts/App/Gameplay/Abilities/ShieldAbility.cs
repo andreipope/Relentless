@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            abilityUnitOwner.BuffShield();
+            AbilityUnitOwner.BuffShield();
         }
 
         protected override void OnInputEndEventHandler()

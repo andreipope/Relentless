@@ -7,142 +7,142 @@ namespace LoomNetwork.CZB.Data
 {
     public class AbilityData
     {
-        public string buffType;
+        public string BuffType;
 
-        public string type;
+        public string Type;
 
-        public string activityType;
+        public string ActivityType;
 
-        public string callType;
+        public string CallType;
 
-        public string targetType;
+        public string TargetType;
 
-        public string statType;
+        public string StatType;
 
-        public string setType;
+        public string SetType;
 
-        public string effectType;
+        public string EffectType;
 
-        public string cardType;
+        public string CardType;
 
-        public string unitStatus;
+        public string UnitStatus;
 
-        public string unitType;
-
-        [JsonIgnore]
-        public Enumerators.AbilityType abilityType;
+        public string UnitType;
 
         [JsonIgnore]
-        public Enumerators.AbilityActivityType abilityActivityType;
+        public Enumerators.AbilityType AbilityType;
 
         [JsonIgnore]
-        public Enumerators.AbilityCallType abilityCallType;
+        public Enumerators.AbilityActivityType AbilityActivityType;
 
         [JsonIgnore]
-        public List<Enumerators.AbilityTargetType> abilityTargetTypes;
+        public Enumerators.AbilityCallType AbilityCallType;
 
         [JsonIgnore]
-        public Enumerators.StatType abilityStatType;
+        public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
 
         [JsonIgnore]
-        public Enumerators.SetType abilitySetType;
+        public Enumerators.StatType AbilityStatType;
 
         [JsonIgnore]
-        public Enumerators.AbilityEffectType abilityEffectType;
+        public Enumerators.SetType AbilitySetType;
 
         [JsonIgnore]
-        public Enumerators.AttackInfoType attackInfoType;
+        public Enumerators.AbilityEffectType AbilityEffectType;
 
         [JsonIgnore]
-        public Enumerators.CardType targetCardType;
+        public Enumerators.AttackInfoType AttackInfoType;
 
         [JsonIgnore]
-        public Enumerators.UnitStatusType targetUnitStatusType;
+        public Enumerators.CardType TargetCardType;
 
         [JsonIgnore]
-        public Enumerators.CardType targetUnitType;
+        public Enumerators.UnitStatusType TargetUnitStatusType;
 
-        public int value;
+        [JsonIgnore]
+        public Enumerators.CardType TargetUnitType;
 
-        public int damage;
+        public int Value;
 
-        public int health;
+        public int Damage;
 
-        public string attackInfo;
+        public int Health;
 
-        public string name;
+        public string AttackInfo;
 
-        public int turns;
+        public string Name;
 
-        public int count;
+        public int Turns;
 
-        public int delay;
+        public int Count;
+
+        public int Delay;
 
         public void ParseData()
         {
-            abilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(type);
-            abilityActivityType = Utilites.CastStringTuEnum<Enumerators.AbilityActivityType>(activityType);
-            abilityCallType = Utilites.CastStringTuEnum<Enumerators.AbilityCallType>(callType);
+            AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
+            AbilityActivityType = Utilites.CastStringTuEnum<Enumerators.AbilityActivityType>(ActivityType);
+            AbilityCallType = Utilites.CastStringTuEnum<Enumerators.AbilityCallType>(CallType);
 
-            if (!string.IsNullOrEmpty(targetType))
+            if (!string.IsNullOrEmpty(TargetType))
             {
-                abilityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(targetType);
+                AbilityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(TargetType);
             } else
             {
-                abilityTargetTypes = new List<Enumerators.AbilityTargetType>();
+                AbilityTargetTypes = new List<Enumerators.AbilityTargetType>();
             }
 
-            if (!string.IsNullOrEmpty(statType))
+            if (!string.IsNullOrEmpty(StatType))
             {
-                abilityStatType = Utilites.CastStringTuEnum<Enumerators.StatType>(statType);
+                AbilityStatType = Utilites.CastStringTuEnum<Enumerators.StatType>(StatType);
             } else
             {
-                abilityStatType = Enumerators.StatType.NONE;
+                AbilityStatType = Enumerators.StatType.None;
             }
 
-            if (!string.IsNullOrEmpty(setType))
+            if (!string.IsNullOrEmpty(SetType))
             {
-                abilitySetType = Utilites.CastStringTuEnum<Enumerators.SetType>(setType);
+                AbilitySetType = Utilites.CastStringTuEnum<Enumerators.SetType>(SetType);
             } else
             {
-                abilitySetType = Enumerators.SetType.NONE;
+                AbilitySetType = Enumerators.SetType.None;
             }
 
-            if (!string.IsNullOrEmpty(effectType))
+            if (!string.IsNullOrEmpty(EffectType))
             {
-                abilityEffectType = Utilites.CastStringTuEnum<Enumerators.AbilityEffectType>(effectType);
+                AbilityEffectType = Utilites.CastStringTuEnum<Enumerators.AbilityEffectType>(EffectType);
             } else
             {
-                abilityEffectType = Enumerators.AbilityEffectType.NONE;
+                AbilityEffectType = Enumerators.AbilityEffectType.None;
             }
 
-            if (!string.IsNullOrEmpty(attackInfo))
+            if (!string.IsNullOrEmpty(AttackInfo))
             {
-                attackInfoType = Utilites.CastStringTuEnum<Enumerators.AttackInfoType>(attackInfo);
+                AttackInfoType = Utilites.CastStringTuEnum<Enumerators.AttackInfoType>(AttackInfo);
             } else
             {
-                attackInfoType = Enumerators.AttackInfoType.ANY;
+                AttackInfoType = Enumerators.AttackInfoType.Any;
             }
 
-            if (!string.IsNullOrEmpty(cardType))
+            if (!string.IsNullOrEmpty(CardType))
             {
-                targetCardType = Utilites.CastStringTuEnum<Enumerators.CardType>(cardType);
+                TargetCardType = Utilites.CastStringTuEnum<Enumerators.CardType>(CardType);
             } else
             {
-                targetCardType = Enumerators.CardType.NONE;
+                TargetCardType = Enumerators.CardType.None;
             }
 
-            if (!string.IsNullOrEmpty(unitStatus))
+            if (!string.IsNullOrEmpty(UnitStatus))
             {
-                targetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(unitStatus);
+                TargetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(UnitStatus);
             } else
             {
-                targetUnitStatusType = Enumerators.UnitStatusType.NONE;
+                TargetUnitStatusType = Enumerators.UnitStatusType.None;
             }
 
-            if (!string.IsNullOrEmpty(unitType))
+            if (!string.IsNullOrEmpty(UnitType))
             {
-                targetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(unitType);
+                TargetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(UnitType);
             }
         }
     }

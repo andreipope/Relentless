@@ -5,22 +5,22 @@ namespace LoomNetwork.CZB
 {
     public class DelayedLoseHeavyGainAttackAbility : DelayedAbilityBase
     {
-        public int value;
+        public int Value;
 
         public DelayedLoseHeavyGainAttackAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            abilityUnitOwner.CurrentDamage += value;
-            abilityUnitOwner.BuffedDamage += value;
+            AbilityUnitOwner.CurrentDamage += Value;
+            AbilityUnitOwner.BuffedDamage += Value;
 
-            abilityUnitOwner.SetAsWalkerUnit();
+            AbilityUnitOwner.SetAsWalkerUnit();
         }
     }
 }

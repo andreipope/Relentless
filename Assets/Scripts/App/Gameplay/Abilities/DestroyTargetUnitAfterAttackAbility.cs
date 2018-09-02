@@ -31,14 +31,14 @@ namespace LoomNetwork.CZB
 
             BoardUnit unit = info as BoardUnit;
 
-            _battlegroundController.DestroyBoardUnit(unit);
+            BattlegroundController.DestroyBoardUnit(unit);
         }
 
         protected override void UnitOnAttackEventHandler(object from, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(from, damage, isAttacker);
 
-            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
 
                 return;
 

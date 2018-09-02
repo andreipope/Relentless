@@ -1,4 +1,4 @@
-﻿using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using UnityEngine;
 
@@ -6,28 +6,28 @@ namespace LoomNetwork.CZB
 {
     public class StunOrDamageAdjustmentsAbility : AbilityBase
     {
-        public Enumerators.StatType statType;
+        public Enumerators.StatType StatType;
 
-        public int value = 1;
+        public int Value = 1;
 
         public StunOrDamageAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            statType = ability.abilityStatType;
-            value = ability.value;
+            StatType = ability.AbilityStatType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                case Enumerators.AbilityEffectType.StunOrDamageFreezes:
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
         }
@@ -48,14 +48,14 @@ namespace LoomNetwork.CZB
 
             BoardUnit creature = info as BoardUnit;
 
-            CreateVFX(creature.transform.position);
+            CreateVfx(creature.Transform.position);
 
             BoardUnit leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            for (int i = 0; i < creature.ownerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < creature.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (creature.ownerPlayer.BoardCards[i] == creature)
+                if (creature.OwnerPlayer.BoardCards[i] == creature)
                 {
                     targetIndex = i;
                 }
@@ -65,12 +65,12 @@ namespace LoomNetwork.CZB
             {
                 if (targetIndex - 1 > -1)
                 {
-                    leftAdjustment = creature.ownerPlayer.BoardCards[targetIndex - 1];
+                    leftAdjustment = creature.OwnerPlayer.BoardCards[targetIndex - 1];
                 }
 
-                if (targetIndex + 1 < creature.ownerPlayer.BoardCards.Count)
+                if (targetIndex + 1 < creature.OwnerPlayer.BoardCards.Count)
                 {
-                    rightAdjastment = creature.ownerPlayer.BoardCards[targetIndex + 1];
+                    rightAdjastment = creature.OwnerPlayer.BoardCards[targetIndex + 1];
                 }
             }
 
@@ -78,10 +78,10 @@ namespace LoomNetwork.CZB
             {
                 if (leftAdjustment.IsStun)
                 {
-                    _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, leftAdjustment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
                 } else
                 {
-                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
+                    leftAdjustment.Stun(Enumerators.StunType.Freeze, 1);
                 }
 
                 // CreateVFX(leftAdjustment..transform.position);
@@ -91,10 +91,10 @@ namespace LoomNetwork.CZB
             {
                 if (rightAdjastment.IsStun)
                 {
-                    _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, rightAdjastment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
                 } else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
+                    rightAdjastment.Stun(Enumerators.StunType.Freeze, 1);
                 }
 
                 // CreateVFX(targetCreature.transform.position);
@@ -102,10 +102,10 @@ namespace LoomNetwork.CZB
 
             if (creature.IsStun)
             {
-                _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, creature);
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, creature);
             } else
             {
-                creature.Stun(Enumerators.StunType.FREEZE, 1);
+                creature.Stun(Enumerators.StunType.Freeze, 1);
             }
         }
 
@@ -113,9 +113,9 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (_isAbilityResolved)
+            if (IsAbilityResolved)
             {
-                Action(targetUnit);
+                Action(TargetUnit);
             }
         }
 

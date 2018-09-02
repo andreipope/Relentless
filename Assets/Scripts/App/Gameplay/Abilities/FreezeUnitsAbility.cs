@@ -6,23 +6,23 @@ namespace LoomNetwork.CZB
 {
     public class FreezeUnitsAbility : AbilityBase
     {
-        public int value;
+        public int Value;
 
         public FreezeUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
 
                 return;
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
 
             Action();
         }
@@ -41,12 +41,12 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            Player opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
 
             foreach (BoardUnit unit in opponent.BoardCards)
             {
-                unit.Stun(Enumerators.StunType.FREEZE, value);
-                CreateVFX(unit.transform.position, true, 5f);
+                unit.Stun(Enumerators.StunType.Freeze, Value);
+                CreateVfx(unit.Transform.position, true, 5f);
             }
         }
 

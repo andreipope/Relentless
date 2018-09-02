@@ -7,22 +7,22 @@ using UnityEngine.UI;
 
 public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public bool _interactable = true;
+    public UnityEvent OnClickEvent;
 
-    public UnityEvent onClickEvent;
-
-    public bool isHovered = true;
+    public bool IsHovered = true;
 
     [SerializeField]
-    protected Image button;
+    protected Image Button;
 
     [SerializeField]
-    protected Image onHoverOverlay;
+    protected Image OnHoverOverlay;
 
     [SerializeField]
-    protected Image onClickOverlay;
+    protected Image OnClickOverlay;
 
-    public bool interactable
+    private bool _interactable = true;
+
+    public bool Interactable
     {
         get => _interactable;
         set
@@ -32,35 +32,35 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
             // Debug.Log("_interactable = "+ _interactable);
             if (!_interactable)
             {
-                onHoverOverlay.DOKill();
-                onClickOverlay.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.3f);
-                onClickOverlay.DOFade(0.0f, 0.3f);
-                button.DOFade(0.5f, 0.3f);
+                OnHoverOverlay.DOKill();
+                OnClickOverlay.DOKill();
+                OnHoverOverlay.DOFade(0.0f, 0.3f);
+                OnClickOverlay.DOFade(0.0f, 0.3f);
+                Button.DOFade(0.5f, 0.3f);
 
-                if (button == null)
+                if (Button == null)
 
                     return;
 
-                DoFadeForChildren(button, 0.5f, 0.3f);
-                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
-                DoFadeForChildren(onClickOverlay, 0, 0.3f);
+                DoFadeForChildren(Button, 0.5f, 0.3f);
+                DoFadeForChildren(OnHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(OnClickOverlay, 0, 0.3f);
             } else
             {
-                onHoverOverlay.DOKill();
-                onClickOverlay.DOKill();
-                button.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.3f);
-                onClickOverlay.DOFade(0.0f, 0.3f);
-                button.DOFade(1f, 0.3f);
+                OnHoverOverlay.DOKill();
+                OnClickOverlay.DOKill();
+                Button.DOKill();
+                OnHoverOverlay.DOFade(0.0f, 0.3f);
+                OnClickOverlay.DOFade(0.0f, 0.3f);
+                Button.DOFade(1f, 0.3f);
 
-                if (button == null)
+                if (Button == null)
 
                     return;
 
-                DoFadeForChildren(button, 1f, 0.3f);
-                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
-                DoFadeForChildren(onClickOverlay, 0, 0.3f);
+                DoFadeForChildren(Button, 1f, 0.3f);
+                DoFadeForChildren(OnHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(OnClickOverlay, 0, 0.3f);
             }
         }
     }
@@ -68,48 +68,48 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerDown(PointerEventData eventData)
     {
         // Debug.Log("OnPointerDown");
-        if (_interactable)
+        if (Interactable)
         {
-            if (isHovered)
+            if (IsHovered)
             {
-                onHoverOverlay.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.25f);
+                OnHoverOverlay.DOKill();
+                OnHoverOverlay.DOFade(0.0f, 0.25f);
             }
 
-            onClickOverlay.DOKill();
-            onClickOverlay.DOFade(1.0f, 0.2f);
+            OnClickOverlay.DOKill();
+            OnClickOverlay.DOFade(1.0f, 0.2f);
 
-            if (button == null)
+            if (Button == null)
 
                 return;
 
-            DoFadeForChildren(button, 0f, 0.25f);
-            if (isHovered)
+            DoFadeForChildren(Button, 0f, 0.25f);
+            if (IsHovered)
             {
-                DoFadeForChildren(onHoverOverlay, 0, 0.25f);
+                DoFadeForChildren(OnHoverOverlay, 0, 0.25f);
             }
 
-            DoFadeForChildren(onClickOverlay, 1, 0.25f);
+            DoFadeForChildren(OnClickOverlay, 1, 0.25f);
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         // Debug.Log("OnPointerEnter");
-        if (_interactable)
+        if (Interactable)
         {
-            onHoverOverlay.DOKill();
-            onHoverOverlay.DOFade(1.0f, 0.5f);
+            OnHoverOverlay.DOKill();
+            OnHoverOverlay.DOFade(1.0f, 0.5f);
 
-            if (button == null)
+            if (Button == null)
 
                 return;
 
-            DoFadeForChildren(button, 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
+            DoFadeForChildren(Button, 0f, 0.25f);
+            DoFadeForChildren(OnHoverOverlay, 1, 0.25f);
             if (!Input.GetMouseButton(0))
             {
-                DoFadeForChildren(onClickOverlay, 0, 0.25f);
+                DoFadeForChildren(OnClickOverlay, 0, 0.25f);
             }
         }
     }
@@ -117,20 +117,20 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerExit(PointerEventData eventData)
     {
         // Debug.Log("OnPointerExit");
-        if (_interactable)
+        if (Interactable)
         {
-            onHoverOverlay.DOKill();
-            onHoverOverlay.DOFade(0.0f, 0.25f);
+            OnHoverOverlay.DOKill();
+            OnHoverOverlay.DOFade(0.0f, 0.25f);
 
-            if (button == null)
+            if (Button == null)
 
                 return;
 
-            DoFadeForChildren(button, 1f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 0, 0.25f);
+            DoFadeForChildren(Button, 1f, 0.25f);
+            DoFadeForChildren(OnHoverOverlay, 0, 0.25f);
             if (!Input.GetMouseButton(0))
             {
-                DoFadeForChildren(onClickOverlay, 0, 0.25f);
+                DoFadeForChildren(OnClickOverlay, 0, 0.25f);
             }
         }
     }
@@ -138,19 +138,19 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerUp(PointerEventData eventData)
     {
         // Debug.Log("OnPointerUp");
-        if (_interactable)
+        if (Interactable)
         {
-            onClickOverlay.DOKill();
-            onClickOverlay.DOFade(0.0f, 0.25f);
-            onClickEvent.Invoke();
+            OnClickOverlay.DOKill();
+            OnClickOverlay.DOFade(0.0f, 0.25f);
+            OnClickEvent.Invoke();
 
-            if (button == null)
+            if (Button == null)
 
                 return;
 
-            DoFadeForChildren(button, 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
-            DoFadeForChildren(onClickOverlay, 0, 0.25f);
+            DoFadeForChildren(Button, 0f, 0.25f);
+            DoFadeForChildren(OnHoverOverlay, 1, 0.25f);
+            DoFadeForChildren(OnClickOverlay, 0, 0.25f);
         }
     }
 
