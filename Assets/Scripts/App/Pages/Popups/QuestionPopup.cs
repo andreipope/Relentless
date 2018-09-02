@@ -1,6 +1,3 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
 using System;
 using LoomNetwork.CZB.Common;
 using TMPro;

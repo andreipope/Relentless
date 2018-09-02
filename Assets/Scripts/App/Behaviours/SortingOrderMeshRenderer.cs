@@ -1,7 +1,4 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 public class SortingOrderMeshRenderer : MonoBehaviour

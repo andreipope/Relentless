@@ -1,7 +1,4 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-using LoomNetwork.CZB.Common;
+﻿using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB

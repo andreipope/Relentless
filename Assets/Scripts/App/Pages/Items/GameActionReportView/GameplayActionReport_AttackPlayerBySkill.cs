@@ -1,7 +1,4 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-using LoomNetwork.CZB.Data;
+﻿using LoomNetwork.CZB.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
