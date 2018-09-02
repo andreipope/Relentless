@@ -69,10 +69,6 @@ namespace LoomNetwork.CZB
 
         public BetaConfig BetaConfig { get; set; }
 
-        public int CurrentDeckInd { get; set; }
-
-        public int CurrentAIDeckInd { get; }
-
         public long CachedDecksLastModificationTimestamp
         {
             get => _decksDataWithTimestamp.LastModificationTimestamp;
@@ -384,7 +380,6 @@ namespace LoomNetwork.CZB
                     // if (File.Exists(_cacheDataPathes[type]))
                     // CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
 
-                    // TODO: add code to sync local and remote decks
                     DecksData localDecksData = null, remoteDecksData = null;
                     long localDecksDataTimestamp = 0, remoteDecksDataTimestamp = 0;
                     if (File.Exists(_cacheDataPathes[type]))

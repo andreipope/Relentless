@@ -7,6 +7,12 @@ namespace LoomNetwork.CZB
 {
     public class FeralArrivalAnimation
     {
+        public Action<FeralArrivalAnimation> OnAnimationCompleted;
+
+        public GameObject selfObject;
+
+        public SpriteRenderer picture;
+
         private readonly ILoadObjectsManager _loader;
 
         private readonly Dictionary<object[], Action<object[]>> _onCompleteActions;
@@ -14,12 +20,6 @@ namespace LoomNetwork.CZB
         private readonly float _animationLength = 4.0f;
 
         private readonly Vector3 _offset = new Vector3(0.1f, 0.5f, 0f);
-
-        public Action<FeralArrivalAnimation> OnAnimationCompleted;
-
-        public GameObject selfObject;
-
-        public SpriteRenderer picture;
 
         public FeralArrivalAnimation(Sprite sprite, Transform parent)
         {

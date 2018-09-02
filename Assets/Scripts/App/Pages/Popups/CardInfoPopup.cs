@@ -8,13 +8,13 @@ namespace LoomNetwork.CZB
 {
     public class CardInfoPopup : IUIPopup
     {
-        private readonly bool disableMelt = true;
-
         public Transform cardTransform;
 
         public CollectionCardData _cardData;
 
         public bool blockedClosing = false;
+
+        private readonly bool disableMelt = true;
 
         private ILoadObjectsManager _loadObjectsManager;
 

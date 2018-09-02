@@ -7,10 +7,6 @@ namespace LoomNetwork.CZB
 {
     public class UnitBoardCard : BoardCard
     {
-        public event Action<int, int> HealthChangedEvent;
-
-        public event Action<int, int> DamageChangedEvent;
-
         public int initialHealth, initialDamage;
 
         protected TextMeshPro attackText;
@@ -28,6 +24,10 @@ namespace LoomNetwork.CZB
             defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
             typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
+
+        public event Action<int, int> HealthChangedEvent;
+
+        public event Action<int, int> DamageChangedEvent;
 
         public int Health
         {

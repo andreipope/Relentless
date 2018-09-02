@@ -34,9 +34,9 @@ namespace LoomNetwork.CZB
 
         private Enumerators.AppState _previouseState2;
 
-        public Enumerators.AppState AppState { get; set; }
-
         public bool IsAppPaused { get; private set; }
+
+        public Enumerators.AppState AppState { get; set; }
 
         public void ChangeAppState(Enumerators.AppState stateTo)
         {

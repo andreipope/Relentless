@@ -8,7 +8,11 @@ namespace LoomNetwork.CZB.Data
     {
         public static CollectionCardData FromProtobuf(this CardCollection cardCollection)
         {
-            return new CollectionCardData { amount = (int)cardCollection.Amount, cardName = cardCollection.CardName };
+            return new CollectionCardData
+            {
+                amount = (int)cardCollection.Amount,
+                cardName = cardCollection.CardName
+            };
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
@@ -54,7 +58,11 @@ namespace LoomNetwork.CZB.Data
                 return null;
             }
 
-            return new CardViewInfo { position = cardViewInfo.Position.FromProtobuf(), scale = cardViewInfo.Scale.FromProtobuf() };
+            return new CardViewInfo
+            {
+                position = cardViewInfo.Position.FromProtobuf(),
+                scale = cardViewInfo.Scale.FromProtobuf()
+            };
         }
 
         public static Card FromProtobuf(this Protobuf.Card card)
@@ -85,7 +93,11 @@ namespace LoomNetwork.CZB.Data
 
         public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
         {
-            return new CardSet { name = !string.IsNullOrEmpty(cardSet.Name)?cardSet.Name:"none", cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList() };
+            return new CardSet
+            {
+                name = !string.IsNullOrEmpty(cardSet.Name)?cardSet.Name:"none",
+                cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
+            };
         }
     }
 }

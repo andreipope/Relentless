@@ -9,16 +9,6 @@ namespace LoomNetwork.CZB
 {
     internal class CardInfoPopupHandler : IUIElement
     {
-        public event Action StateChanging;
-
-        public event Action StateChanged;
-
-        public event Action Closing;
-
-        public event Action Opening;
-
-        public event Action<BoardCard> PreviewCardInstantiated;
-
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -32,6 +22,16 @@ namespace LoomNetwork.CZB
         private BoardCard _selectedCollectionCard;
 
         private bool _blockedClosing;
+
+        public event Action StateChanging;
+
+        public event Action StateChanged;
+
+        public event Action Closing;
+
+        public event Action Opening;
+
+        public event Action<BoardCard> PreviewCardInstantiated;
 
         public bool IsStateChanging { get; private set; }
 

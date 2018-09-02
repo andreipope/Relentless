@@ -105,10 +105,6 @@ namespace LoomNetwork.CZB
 
     public class Timer
     {
-        private readonly float _time;
-
-        private readonly bool _loop;
-
         public Action<object[]> _handler;
 
         public object[] parameters;
@@ -116,6 +112,10 @@ namespace LoomNetwork.CZB
         public bool finished;
 
         public int index;
+
+        private readonly float _time;
+
+        private readonly bool _loop;
 
         private float _currentTime;
 

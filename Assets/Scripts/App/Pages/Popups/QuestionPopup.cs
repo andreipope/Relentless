@@ -9,8 +9,6 @@ namespace LoomNetwork.CZB
 {
     public class QuestionPopup : IUIPopup
     {
-        public event Action<bool> ConfirmationEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -25,6 +23,8 @@ namespace LoomNetwork.CZB
             _buttonYes, _buttonNo;
 
         private TextMeshProUGUI _buttonText;
+
+        public event Action<bool> ConfirmationEvent;
 
         public GameObject Self { get; private set; }
 

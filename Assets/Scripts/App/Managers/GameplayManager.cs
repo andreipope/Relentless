@@ -8,16 +8,6 @@ namespace LoomNetwork.CZB
 {
     public class GameplayManager : IService, IGameplayManager
     {
-        public event Action OnGameStartedEvent;
-
-        public event Action OnGameInitializedEvent;
-
-        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
-
-        public event Action OnTurnStartedEvent;
-
-        public event Action OnTurnEndedEvent;
-
         private IDataManager _dataManager;
 
         private IMatchManager _matchManager;
@@ -32,6 +22,22 @@ namespace LoomNetwork.CZB
 
         private List<IController> _controllers;
 
+        public int TurnDuration { get; set; }
+
+        public int CurrentTurn { get; set; }
+
+        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
+
+        public event Action OnGameStartedEvent;
+
+        public event Action OnGameInitializedEvent;
+
+        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
+
+        public event Action OnTurnStartedEvent;
+
+        public event Action OnTurnEndedEvent;
+
         public int PlayerDeckId { get; set; }
 
         public int OpponentDeckId { get; set; }
@@ -44,10 +50,6 @@ namespace LoomNetwork.CZB
 
         public bool IsPrepairingEnded { get; set; }
 
-        public int TurnDuration { get; set; }
-
-        public int CurrentTurn { get; set; }
-
         public int TutorialStep { get; set; }
 
         public Player CurrentTurnPlayer { get; set; }
@@ -55,8 +57,6 @@ namespace LoomNetwork.CZB
         public Player CurrentPlayer { get; set; }
 
         public Player OpponentPlayer { get; set; }
-
-        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
         public T GetController<T>()
             where T : IController

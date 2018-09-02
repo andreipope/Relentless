@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
 {
-    private readonly float _defaultArrowScale = 6.25f;
-
     public Action onTargetSelected;
 
     public List<Enumerators.SkillTargetType> targetsType = new List<Enumerators.SkillTargetType>();
@@ -27,6 +25,7 @@ public class BoardArrow : MonoBehaviour
     protected bool startedDrag;
 
     protected BoardUnit boardCreature;
+    private readonly float _defaultArrowScale = 6.25f;
 
     private GameObject _selfObject;
 

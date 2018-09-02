@@ -7,6 +7,12 @@ namespace LoomNetwork.CZB
 {
     public class WalkerArrivalAnimation
     {
+        public Action<WalkerArrivalAnimation> OnAnimationCompleted;
+
+        public GameObject selfObject;
+
+        public SpriteRenderer picture;
+
         private readonly ILoadObjectsManager _loader;
 
         private readonly Dictionary<object[], Action<object[]>> _onCompleteActions;
@@ -14,12 +20,6 @@ namespace LoomNetwork.CZB
         private readonly float _animationLength = 2.5f;
 
         private readonly Vector3 _offset = new Vector3(0.1f, 0.9f, 0f);
-
-        public Action<WalkerArrivalAnimation> OnAnimationCompleted;
-
-        public GameObject selfObject;
-
-        public SpriteRenderer picture;
 
         public WalkerArrivalAnimation(Sprite sprite, Transform parent)
         {

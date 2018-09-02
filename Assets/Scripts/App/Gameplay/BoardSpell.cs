@@ -6,10 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class BoardSpell
     {
-        public event Action SpellOnUsedEvent;
-
-        private readonly OnBehaviourHandler _eventHandler;
-
         public GameObject gameObject;
 
         public Transform transform;
@@ -17,6 +13,8 @@ namespace LoomNetwork.CZB
         public BoardArrow targetingArrow;
 
         public WorkingCard Card;
+
+        private readonly OnBehaviourHandler _eventHandler;
 
         public BoardSpell(GameObject obj, WorkingCard card)
         {
@@ -29,6 +27,8 @@ namespace LoomNetwork.CZB
 
             _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
         }
+
+        public event Action SpellOnUsedEvent;
 
         private void OnDestroyEventHandler(GameObject obj)
         {

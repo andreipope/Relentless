@@ -13,8 +13,7 @@ namespace LoomNetwork.CZB
             if (sprite == null)
                 throw new ArgumentNullException(nameof(sprite));
 
-            SpriteMeshData spriteMeshData;
-            if (!spriteMeshDataMap.TryGetValue(sprite, out spriteMeshData))
+            if (!spriteMeshDataMap.TryGetValue(sprite, out SpriteMeshData spriteMeshData))
             {
                 spriteMeshData = new SpriteMeshData();
                 spriteMeshData.SpriteInstanceId = sprite.GetInstanceID();

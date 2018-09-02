@@ -24,12 +24,6 @@ namespace LoomNetwork.CZB
 
         private GameObject _targettingArrowPrefab;
 
-        public int CurrentStep { get; private set; }
-
-        public bool IsTutorial { get; private set; }
-
-        public bool IsBubbleShow { get; set; }
-
         public void Dispose()
         {
         }
@@ -86,6 +80,12 @@ namespace LoomNetwork.CZB
         public void Update()
         {
         }
+
+        public int CurrentStep { get; private set; }
+
+        public bool IsTutorial { get; private set; }
+
+        public bool IsBubbleShow { get; set; }
 
         public void StartTutorial()
         {
@@ -354,7 +354,14 @@ namespace LoomNetwork.CZB
             isArrowEnabled = false;
         }
 
-        public TutorialStep(ref int index, Enumerators.TutorialJanePoses pose, string description, bool focusing, bool isArrowEnabled, Vector3 startPosition, Vector3 targetPosition)
+        public TutorialStep(
+            ref int index,
+            Enumerators.TutorialJanePoses pose,
+            string description,
+            bool focusing,
+            bool isArrowEnabled,
+            Vector3 startPosition,
+            Vector3 targetPosition)
         {
             _index = index;
 

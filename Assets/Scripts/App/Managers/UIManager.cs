@@ -11,16 +11,6 @@ namespace LoomNetwork.CZB
 
         public List<IUIElement> Pages { get; private set; }
 
-        public IUIElement CurrentPage { get; set; }
-
-        public CanvasScaler CanvasScaler { get; set; }
-
-        public GameObject Canvas { get; set; }
-
-        public GameObject Canvas2 { get; set; }
-
-        public GameObject Canvas3 { get; set; }
-
         public void Dispose()
         {
             foreach (IUIElement page in Pages)
@@ -95,6 +85,16 @@ namespace LoomNetwork.CZB
                 popup.Update();
             }
         }
+
+        public IUIElement CurrentPage { get; set; }
+
+        public CanvasScaler CanvasScaler { get; set; }
+
+        public GameObject Canvas { get; set; }
+
+        public GameObject Canvas2 { get; set; }
+
+        public GameObject Canvas3 { get; set; }
 
         public void HideAllPages()
         {

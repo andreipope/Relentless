@@ -7,6 +7,8 @@ namespace LoomNetwork.CZB
 {
     public class ReportPanelItem
     {
+        public GameObject playedCardPrefab;
+
         private readonly ILoadObjectsManager _loadObjectsManager;
 
         private readonly IGameplayManager _gameplayManager;
@@ -18,8 +20,6 @@ namespace LoomNetwork.CZB
         private readonly VerticalLayoutGroup _reportGroup;
 
         private readonly List<ReportViewBase> _allReports;
-
-        public GameObject playedCardPrefab;
 
         private ITimerManager _timerManager;
 

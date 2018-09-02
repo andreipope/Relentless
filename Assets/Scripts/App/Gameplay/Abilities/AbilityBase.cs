@@ -9,12 +9,6 @@ namespace LoomNetwork.CZB
 {
     public class AbilityBase
     {
-        protected event Action PermanentInputEndEvent;
-
-        private readonly Player playerAvatar;
-
-        private readonly Player opponenentAvatar;
-
         public ulong activityId;
 
         public Enumerators.AbilityActivityType abilityActivityType;
@@ -91,6 +85,10 @@ namespace LoomNetwork.CZB
 
         protected List<ulong> _particleIds;
 
+        private readonly Player playerAvatar;
+
+        private readonly Player opponenentAvatar;
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -121,6 +119,8 @@ namespace LoomNetwork.CZB
 
             _particleIds = new List<ulong>();
         }
+
+        protected event Action PermanentInputEndEvent;
 
         public AbilityBoardArrow TargettingArrow => _targettingArrow;
 

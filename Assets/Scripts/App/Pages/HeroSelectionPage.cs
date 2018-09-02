@@ -230,8 +230,6 @@ namespace LoomNetwork.CZB
 
         public class OverlordObject
         {
-            public event Action<OverlordObject> OverlordObjectSelectedEvent;
-
             private readonly ILoadObjectsManager _loadObjectsManager;
 
             private readonly Image _highlightImage;
@@ -284,6 +282,8 @@ namespace LoomNetwork.CZB
 
                 Deselect(false, true);
             }
+
+            public event Action<OverlordObject> OverlordObjectSelectedEvent;
 
             public GameObject SelfObject { get; }
 

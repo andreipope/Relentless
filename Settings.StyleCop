@@ -1,4 +1,175 @@
 <StyleCopSettings Version="105">
+  <Parsers>
+    <Parser ParserId="StyleCop.CSharp.CsParser">
+      <ParserSettings>
+        <CollectionProperty Name="GeneratedFileFilters">
+          <Value>[^a-z ]ABDataSource.cs</Value>
+          <Value>[^a-z ]ABDataSourceProvider.cs</Value>
+          <Value>[^a-z ]AssetDatabaseABDataSource.cs</Value>
+          <Value>[^a-z ]ABModel.cs</Value>
+          <Value>[^a-z ]ABModelAssetInfo.cs</Value>
+          <Value>[^a-z ]ABModelBundleInfo.cs</Value>
+          <Value>[^a-z ]AssetBundleInspectTab.cs</Value>
+          <Value>[^a-z ]AssetBundleRecord.cs</Value>
+          <Value>[^a-z ]InspectSingleBundle.cs</Value>
+          <Value>[^a-z ]InspectTreeView.cs</Value>
+          <Value>[^a-z ]AssetBundleBrowserMain.cs</Value>
+          <Value>[^a-z ]AssetBundleBuildTab.cs</Value>
+          <Value>[^a-z ]AssetBundleManageTab.cs</Value>
+          <Value>[^a-z ]AssetBundleTree.cs</Value>
+          <Value>[^a-z ]AssetListTree.cs</Value>
+          <Value>[^a-z ]BundleDetailList.cs</Value>
+          <Value>[^a-z ]MessageList.cs</Value>
+          <Value>[^a-z ]MessageSystem.cs</Value>
+          <Value>[^a-z ]AsyncCoroutineRunner.cs</Value>
+          <Value>[^a-z ]SyncContextUtil.cs</Value>
+          <Value>[^a-z ]Awaiters.cs</Value>
+          <Value>[^a-z ]AwaitExtensions.cs</Value>
+          <Value>[^a-z ]IEnumeratorAwaitExtensions.cs</Value>
+          <Value>[^a-z ]TaskExtensions.cs</Value>
+          <Value>[^a-z ]UnityHttpClient.cs</Value>
+          <Value>[^a-z ]WaitForBackgroundThread.cs</Value>
+          <Value>[^a-z ]WaitForUpdate.cs</Value>
+          <Value>[^a-z ]WebRequestUtils.cs</Value>
+          <Value>[^a-z ]APITester.cs</Value>
+          <Value>[^a-z ]BaseCounterData.cs</Value>
+          <Value>[^a-z ]UpdatebleCounterData.cs</Value>
+          <Value>[^a-z ]DeviceInfoCounterData.cs</Value>
+          <Value>[^a-z ]FPSCounterData.cs</Value>
+          <Value>[^a-z ]MemoryCounterData.cs</Value>
+          <Value>[^a-z ]AFPSCounterEditor.cs</Value>
+          <Value>[^a-z ]AFPSRenderRecorderEditor.cs</Value>
+          <Value>[^a-z ]EditorUIUtils.cs</Value>
+          <Value>[^a-z ]FPSLevel.cs</Value>
+          <Value>[^a-z ]OperationMode.cs</Value>
+          <Value>[^a-z ]DrawableLabel.cs</Value>
+          <Value>[^a-z ]LabelAnchor.cs</Value>
+          <Value>[^a-z ]LabelEffect.cs</Value>
+          <Value>[^a-z ]AFPSRenderRecorder.cs</Value>
+          <Value>[^a-z ]CachedNumbers.cs</Value>
+          <Value>[^a-z ]UIUtils.cs</Value>
+          <Value>[^a-z ]AFPSCounter.cs</Value>
+          <Value>[^a-z ]DOTweenModuleAudio.cs</Value>
+          <Value>[^a-z ]DOTweenModulePhysics.cs</Value>
+          <Value>[^a-z ]DOTweenModulePhysics2D.cs</Value>
+          <Value>[^a-z ]DOTweenModuleSprite.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUI.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUnityVersion.cs</Value>
+          <Value>[^a-z ]DOTweenModuleUtils.cs</Value>
+          <Value>[^a-z ]AdvertiserOptInAttribute.cs</Value>
+          <Value>[^a-z ]RangedTooltipAttribute.cs</Value>
+          <Value>[^a-z ]TooltipAttribute.cs</Value>
+          <Value>[^a-z ]PostBuildTriggerGA.cs</Value>
+          <Value>[^a-z ]AppViewHitBuilder.cs</Value>
+          <Value>[^a-z ]EventHitBuilder.cs</Value>
+          <Value>[^a-z ]ExceptionHitBuilder.cs</Value>
+          <Value>[^a-z ]HitBuilder.cs</Value>
+          <Value>[^a-z ]ItemHitBuilder.cs</Value>
+          <Value>[^a-z ]SocialHitBuilder.cs</Value>
+          <Value>[^a-z ]TimingHitBuilder.cs</Value>
+          <Value>[^a-z ]TransactionHitBuilder.cs</Value>
+          <Value>[^a-z ]Field.cs</Value>
+          <Value>[^a-z ]Fields.cs</Value>
+          <Value>[^a-z ]GAIHandler.cs</Value>
+          <Value>[^a-z ]GoogleAnalyticsAndroidV4.cs</Value>
+          <Value>[^a-z ]GoogleAnalyticsiOSV3.cs</Value>
+          <Value>[^a-z ]GoogleAnalyticsMPV3.cs</Value>
+          <Value>[^a-z ]GoogleAnalyticsV4.cs</Value>
+          <Value>[^a-z ]LoomDemo.cs</Value>
+          <Value>[^a-z ]Sample.cs</Value>
+          <Value>[^a-z ]LoomQuickStartSample.cs</Value>
+          <Value>[^a-z ]CheckProject.cs</Value>
+          <Value>[^a-z ]AddressMapper.cs</Value>
+          <Value>[^a-z ]Evm.cs</Value>
+          <Value>[^a-z ]Loom.cs</Value>
+          <Value>[^a-z ]PlasmaCash.cs</Value>
+          <Value>[^a-z ]TransferGateway.cs</Value>
+          <Value>[^a-z ]AssetTransferException.cs</Value>
+          <Value>[^a-z ]EvmException.cs</Value>
+          <Value>[^a-z ]InvalidTxNonceException.cs</Value>
+          <Value>[^a-z ]LoomException.cs</Value>
+          <Value>[^a-z ]RpcClientException.cs</Value>
+          <Value>[^a-z ]TxCommitException.cs</Value>
+          <Value>[^a-z ]BaseRpcClient.cs</Value>
+          <Value>[^a-z ]HttpRpcClient.cs</Value>
+          <Value>[^a-z ]JsonRpcModels.cs</Value>
+          <Value>[^a-z ]RawChainEventArgs.cs</Value>
+          <Value>[^a-z ]WebSocketProxyLoggerOutputFactory.cs</Value>
+          <Value>[^a-z ]WebSocketRpcClient.cs</Value>
+          <Value>[^a-z ]NonceTxMiddleware.cs</Value>
+          <Value>[^a-z ]SignedTxMiddleware.cs</Value>
+          <Value>[^a-z ]WebSocket.cs</Value>
+          <Value>[^a-z ]WebSocketRpcClient.cs</Value>
+          <Value>[^a-z ]Address.cs</Value>
+          <Value>[^a-z ]AddressJsonConverter.cs</Value>
+          <Value>[^a-z ]AssetTransfer.cs</Value>
+          <Value>[^a-z ]ChainEventArgs.cs</Value>
+          <Value>[^a-z ]Contract.cs</Value>
+          <Value>[^a-z ]ContractBase.cs</Value>
+          <Value>[^a-z ]CryptoUtils.cs</Value>
+          <Value>[^a-z ]DAppChainClient.cs</Value>
+          <Value>[^a-z ]EvmChainEventArgs.cs</Value>
+          <Value>[^a-z ]EvmContract.cs</Value>
+          <Value>[^a-z ]IChainEventArgs.cs</Value>
+          <Value>[^a-z ]ILogProducer.cs</Value>
+          <Value>[^a-z ]IRpcClient.cs</Value>
+          <Value>[^a-z ]ITxMiddlewareHandler.cs</Value>
+          <Value>[^a-z ]JsonRpcModels.cs</Value>
+          <Value>[^a-z ]LoomCryptoSignature.cs</Value>
+          <Value>[^a-z ]NullLogger.cs</Value>
+          <Value>[^a-z ]RpcClientFactory.cs</Value>
+          <Value>[^a-z ]RpcConnectionState.cs</Value>
+          <Value>[^a-z ]TxMiddleware.cs</Value>
+          <Value>[^a-z ]AsyncCoroutineRunner.cs</Value>
+          <Value>[^a-z ]SyncContextUtil.cs</Value>
+          <Value>[^a-z ]IEnumeratorAwaitExtensions.cs</Value>
+          <Value>[^a-z ]CommandSecurityPopup.cs</Value>
+          <Value>[^a-z ]ConsoleCommandSecurity.cs</Value>
+          <Value>[^a-z ]ExampleCommands.cs</Value>
+          <Value>[^a-z ]SecureCommandHandlerAttribute.cs</Value>
+          <Value>[^a-z ]AdvancedCommandHandlerDemo.cs</Value>
+          <Value>[^a-z ]AttachToScreenEdge.cs</Value>
+          <Value>[^a-z ]BallGameController.cs</Value>
+          <Value>[^a-z ]BallGameGameOverUI.cs</Value>
+          <Value>[^a-z ]BallGameGeneralCommandHandlers.cs</Value>
+          <Value>[^a-z ]BallGameHUD.cs</Value>
+          <Value>[^a-z ]BallgameSaveSystem.cs</Value>
+          <Value>[^a-z ]BallSpawner.cs</Value>
+          <Value>[^a-z ]ConsoleOutputTest.cs</Value>
+          <Value>[^a-z ]DemoBall.cs</Value>
+          <Value>[^a-z ]DemoController.cs</Value>
+          <Value>[^a-z ]AutomaticInstantiator.cs</Value>
+          <Value>[^a-z ]BuildPostProcessor.cs</Value>
+          <Value>[^a-z ]DebugConsoleEditorSettings.cs</Value>
+          <Value>[^a-z ]DebugConsoleInspector.cs</Value>
+          <Value>[^a-z ]DetectUpgrade.cs</Value>
+          <Value>[^a-z ]NativeMethods.cs</Value>
+          <Value>[^a-z ]ReUniterSelectionHistoryTracker.cs</Value>
+          <Value>[^a-z ]ReUniterWindow.cs</Value>
+          <Value>[^a-z ]MenuItems.cs</Value>
+          <Value>[^a-z ]IStyleCopIgnoreUtilityView.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtility.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityData.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityDirectoryView.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityFileTreeView.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityFileView.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityPath.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityPrefs.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityWindow.cs</Value>
+          <Value>[^a-z ]StyleCopIgnoreUtilityXMLTool.cs</Value>
+          <Value>[^a-z ]Zb.cs</Value>
+          <Value>[^a-z ]Animators.Generated.cs</Value>
+          <Value>[^a-z ]Input.Generated.cs</Value>
+          <Value>[^a-z ]LayerMask.Generated.cs</Value>
+          <Value>[^a-z ]Layers.Generated.cs</Value>
+          <Value>[^a-z ]Resources.Generated.cs</Value>
+          <Value>[^a-z ]Scenes.Generated.cs</Value>
+          <Value>[^a-z ]SortingLayers.Generated.cs</Value>
+          <Value>[^a-z ]Tags.Generated.cs</Value>
+        </CollectionProperty>
+      </ParserSettings>
+    </Parser>
+  </Parsers>
   <Analyzers>
     <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
       <Rules>
@@ -255,176 +426,50 @@
       </Rules>
       <AnalyzerSettings />
     </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
+      <Rules>
+        <Rule Name="UsingDirectivesMustBePlacedWithinNamespace">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+        <Rule Name="StaticElementsMustAppearBeforeInstanceElements">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+        <Rule Name="UsingDirectivesMustBeOrderedAlphabeticallyByNamespace">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+        <Rule Name="UsingAliasDirectivesMustBeOrderedAlphabeticallyByAliasName">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+      </Rules>
+      <AnalyzerSettings />
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
+      <Rules>
+        <Rule Name="CurlyBracketsMustNotBeOmitted">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+      </Rules>
+      <AnalyzerSettings />
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
+      <Rules>
+        <Rule Name="FieldsMustBePrivate">
+          <RuleSettings>
+            <BooleanProperty Name="Enabled">False</BooleanProperty>
+          </RuleSettings>
+        </Rule>
+      </Rules>
+      <AnalyzerSettings />
+    </Analyzer>
   </Analyzers>
-  <Parsers>
-    <Parser ParserId="StyleCop.CSharp.CsParser">
-      <ParserSettings>
-        <CollectionProperty Name="GeneratedFileFilters">
-          <Value>[^a-z ]ABDataSource.cs</Value>
-          <Value>[^a-z ]ABDataSourceProvider.cs</Value>
-          <Value>[^a-z ]AssetDatabaseABDataSource.cs</Value>
-          <Value>[^a-z ]ABModel.cs</Value>
-          <Value>[^a-z ]ABModelAssetInfo.cs</Value>
-          <Value>[^a-z ]ABModelBundleInfo.cs</Value>
-          <Value>[^a-z ]AssetBundleInspectTab.cs</Value>
-          <Value>[^a-z ]AssetBundleRecord.cs</Value>
-          <Value>[^a-z ]InspectSingleBundle.cs</Value>
-          <Value>[^a-z ]InspectTreeView.cs</Value>
-          <Value>[^a-z ]AssetBundleBrowserMain.cs</Value>
-          <Value>[^a-z ]AssetBundleBuildTab.cs</Value>
-          <Value>[^a-z ]AssetBundleManageTab.cs</Value>
-          <Value>[^a-z ]AssetBundleTree.cs</Value>
-          <Value>[^a-z ]AssetListTree.cs</Value>
-          <Value>[^a-z ]BundleDetailList.cs</Value>
-          <Value>[^a-z ]MessageList.cs</Value>
-          <Value>[^a-z ]MessageSystem.cs</Value>
-          <Value>[^a-z ]AsyncCoroutineRunner.cs</Value>
-          <Value>[^a-z ]SyncContextUtil.cs</Value>
-          <Value>[^a-z ]Awaiters.cs</Value>
-          <Value>[^a-z ]AwaitExtensions.cs</Value>
-          <Value>[^a-z ]IEnumeratorAwaitExtensions.cs</Value>
-          <Value>[^a-z ]TaskExtensions.cs</Value>
-          <Value>[^a-z ]UnityHttpClient.cs</Value>
-          <Value>[^a-z ]WaitForBackgroundThread.cs</Value>
-          <Value>[^a-z ]WaitForUpdate.cs</Value>
-          <Value>[^a-z ]WebRequestUtils.cs</Value>
-          <Value>[^a-z ]APITester.cs</Value>
-          <Value>[^a-z ]BaseCounterData.cs</Value>
-          <Value>[^a-z ]UpdatebleCounterData.cs</Value>
-          <Value>[^a-z ]DeviceInfoCounterData.cs</Value>
-          <Value>[^a-z ]FPSCounterData.cs</Value>
-          <Value>[^a-z ]MemoryCounterData.cs</Value>
-          <Value>[^a-z ]AFPSCounterEditor.cs</Value>
-          <Value>[^a-z ]AFPSRenderRecorderEditor.cs</Value>
-          <Value>[^a-z ]EditorUIUtils.cs</Value>
-          <Value>[^a-z ]FPSLevel.cs</Value>
-          <Value>[^a-z ]OperationMode.cs</Value>
-          <Value>[^a-z ]DrawableLabel.cs</Value>
-          <Value>[^a-z ]LabelAnchor.cs</Value>
-          <Value>[^a-z ]LabelEffect.cs</Value>
-          <Value>[^a-z ]AFPSRenderRecorder.cs</Value>
-          <Value>[^a-z ]CachedNumbers.cs</Value>
-          <Value>[^a-z ]UIUtils.cs</Value>
-          <Value>[^a-z ]AFPSCounter.cs</Value>
-          <Value>[^a-z ]DOTweenModuleAudio.cs</Value>
-          <Value>[^a-z ]DOTweenModulePhysics.cs</Value>
-          <Value>[^a-z ]DOTweenModulePhysics2D.cs</Value>
-          <Value>[^a-z ]DOTweenModuleSprite.cs</Value>
-          <Value>[^a-z ]DOTweenModuleUI.cs</Value>
-          <Value>[^a-z ]DOTweenModuleUnityVersion.cs</Value>
-          <Value>[^a-z ]DOTweenModuleUtils.cs</Value>
-          <Value>[^a-z ]AdvertiserOptInAttribute.cs</Value>
-          <Value>[^a-z ]RangedTooltipAttribute.cs</Value>
-          <Value>[^a-z ]TooltipAttribute.cs</Value>
-          <Value>[^a-z ]PostBuildTriggerGA.cs</Value>
-          <Value>[^a-z ]AppViewHitBuilder.cs</Value>
-          <Value>[^a-z ]EventHitBuilder.cs</Value>
-          <Value>[^a-z ]ExceptionHitBuilder.cs</Value>
-          <Value>[^a-z ]HitBuilder.cs</Value>
-          <Value>[^a-z ]ItemHitBuilder.cs</Value>
-          <Value>[^a-z ]SocialHitBuilder.cs</Value>
-          <Value>[^a-z ]TimingHitBuilder.cs</Value>
-          <Value>[^a-z ]TransactionHitBuilder.cs</Value>
-          <Value>[^a-z ]Field.cs</Value>
-          <Value>[^a-z ]Fields.cs</Value>
-          <Value>[^a-z ]GAIHandler.cs</Value>
-          <Value>[^a-z ]GoogleAnalyticsAndroidV4.cs</Value>
-          <Value>[^a-z ]GoogleAnalyticsiOSV3.cs</Value>
-          <Value>[^a-z ]GoogleAnalyticsMPV3.cs</Value>
-          <Value>[^a-z ]GoogleAnalyticsV4.cs</Value>
-          <Value>[^a-z ]LoomDemo.cs</Value>
-          <Value>[^a-z ]Sample.cs</Value>
-          <Value>[^a-z ]LoomQuickStartSample.cs</Value>
-          <Value>[^a-z ]CheckProject.cs</Value>
-          <Value>[^a-z ]AddressMapper.cs</Value>
-          <Value>[^a-z ]Evm.cs</Value>
-          <Value>[^a-z ]Loom.cs</Value>
-          <Value>[^a-z ]PlasmaCash.cs</Value>
-          <Value>[^a-z ]TransferGateway.cs</Value>
-          <Value>[^a-z ]AssetTransferException.cs</Value>
-          <Value>[^a-z ]EvmException.cs</Value>
-          <Value>[^a-z ]InvalidTxNonceException.cs</Value>
-          <Value>[^a-z ]LoomException.cs</Value>
-          <Value>[^a-z ]RpcClientException.cs</Value>
-          <Value>[^a-z ]TxCommitException.cs</Value>
-          <Value>[^a-z ]BaseRpcClient.cs</Value>
-          <Value>[^a-z ]HttpRpcClient.cs</Value>
-          <Value>[^a-z ]JsonRpcModels.cs</Value>
-          <Value>[^a-z ]RawChainEventArgs.cs</Value>
-          <Value>[^a-z ]WebSocketProxyLoggerOutputFactory.cs</Value>
-          <Value>[^a-z ]WebSocketRpcClient.cs</Value>
-          <Value>[^a-z ]NonceTxMiddleware.cs</Value>
-          <Value>[^a-z ]SignedTxMiddleware.cs</Value>
-          <Value>[^a-z ]WebSocket.cs</Value>
-          <Value>[^a-z ]WebSocketRpcClient.cs</Value>
-          <Value>[^a-z ]Address.cs</Value>
-          <Value>[^a-z ]AddressJsonConverter.cs</Value>
-          <Value>[^a-z ]AssetTransfer.cs</Value>
-          <Value>[^a-z ]ChainEventArgs.cs</Value>
-          <Value>[^a-z ]Contract.cs</Value>
-          <Value>[^a-z ]ContractBase.cs</Value>
-          <Value>[^a-z ]CryptoUtils.cs</Value>
-          <Value>[^a-z ]DAppChainClient.cs</Value>
-          <Value>[^a-z ]EvmChainEventArgs.cs</Value>
-          <Value>[^a-z ]EvmContract.cs</Value>
-          <Value>[^a-z ]IChainEventArgs.cs</Value>
-          <Value>[^a-z ]ILogProducer.cs</Value>
-          <Value>[^a-z ]IRpcClient.cs</Value>
-          <Value>[^a-z ]ITxMiddlewareHandler.cs</Value>
-          <Value>[^a-z ]JsonRpcModels.cs</Value>
-          <Value>[^a-z ]LoomCryptoSignature.cs</Value>
-          <Value>[^a-z ]NullLogger.cs</Value>
-          <Value>[^a-z ]RpcClientFactory.cs</Value>
-          <Value>[^a-z ]RpcConnectionState.cs</Value>
-          <Value>[^a-z ]TxMiddleware.cs</Value>
-          <Value>[^a-z ]AsyncCoroutineRunner.cs</Value>
-          <Value>[^a-z ]SyncContextUtil.cs</Value>
-          <Value>[^a-z ]IEnumeratorAwaitExtensions.cs</Value>
-          <Value>[^a-z ]CommandSecurityPopup.cs</Value>
-          <Value>[^a-z ]ConsoleCommandSecurity.cs</Value>
-          <Value>[^a-z ]ExampleCommands.cs</Value>
-          <Value>[^a-z ]SecureCommandHandlerAttribute.cs</Value>
-          <Value>[^a-z ]AdvancedCommandHandlerDemo.cs</Value>
-          <Value>[^a-z ]AttachToScreenEdge.cs</Value>
-          <Value>[^a-z ]BallGameController.cs</Value>
-          <Value>[^a-z ]BallGameGameOverUI.cs</Value>
-          <Value>[^a-z ]BallGameGeneralCommandHandlers.cs</Value>
-          <Value>[^a-z ]BallGameHUD.cs</Value>
-          <Value>[^a-z ]BallgameSaveSystem.cs</Value>
-          <Value>[^a-z ]BallSpawner.cs</Value>
-          <Value>[^a-z ]ConsoleOutputTest.cs</Value>
-          <Value>[^a-z ]DemoBall.cs</Value>
-          <Value>[^a-z ]DemoController.cs</Value>
-          <Value>[^a-z ]AutomaticInstantiator.cs</Value>
-          <Value>[^a-z ]BuildPostProcessor.cs</Value>
-          <Value>[^a-z ]DebugConsoleEditorSettings.cs</Value>
-          <Value>[^a-z ]DebugConsoleInspector.cs</Value>
-          <Value>[^a-z ]DetectUpgrade.cs</Value>
-          <Value>[^a-z ]NativeMethods.cs</Value>
-          <Value>[^a-z ]ReUniterSelectionHistoryTracker.cs</Value>
-          <Value>[^a-z ]ReUniterWindow.cs</Value>
-          <Value>[^a-z ]MenuItems.cs</Value>
-          <Value>[^a-z ]IStyleCopIgnoreUtilityView.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtility.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityData.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityDirectoryView.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityFileTreeView.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityFileView.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityPath.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityPrefs.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityWindow.cs</Value>
-          <Value>[^a-z ]StyleCopIgnoreUtilityXMLTool.cs</Value>
-          <Value>[^a-z ]Zb.cs</Value>
-          <Value>[^a-z ]Animators.Generated.cs</Value>
-          <Value>[^a-z ]Input.Generated.cs</Value>
-          <Value>[^a-z ]LayerMask.Generated.cs</Value>
-          <Value>[^a-z ]Layers.Generated.cs</Value>
-          <Value>[^a-z ]Resources.Generated.cs</Value>
-          <Value>[^a-z ]Scenes.Generated.cs</Value>
-          <Value>[^a-z ]SortingLayers.Generated.cs</Value>
-          <Value>[^a-z ]Tags.Generated.cs</Value>
-        </CollectionProperty>
-      </ParserSettings>
-    </Parser>
-  </Parsers>
 </StyleCopSettings>

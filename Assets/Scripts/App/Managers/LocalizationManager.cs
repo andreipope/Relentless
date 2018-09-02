@@ -7,11 +7,11 @@ namespace LoomNetwork.CZB
 {
     public class LocalizationManager : IService, ILocalizationManager
     {
-        public event Action<Enumerators.Language> LanguageWasChangedEvent;
-
         private readonly Enumerators.Language _defaultLanguage = Enumerators.Language.EN;
 
         private IDataManager _dataManager;
+
+        public event Action<Enumerators.Language> LanguageWasChangedEvent;
 
         public Dictionary<SystemLanguage, Enumerators.Language> SupportedLanguages { get; private set; }
 

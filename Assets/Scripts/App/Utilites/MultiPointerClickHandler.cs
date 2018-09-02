@@ -7,15 +7,15 @@ namespace LoomNetwork.CZB
     [Serializable]
     public class MultiPointerClickHandler : MonoBehaviour, IPointerClickHandler
     {
-        public event Action SingleClickReceived;
-
-        public event Action DoubleClickReceived;
-
         public float DoubleClickDelay = 0.3f;
 
         private float _lastClickTime;
 
         private int _clickCount;
+
+        public event Action SingleClickReceived;
+
+        public event Action DoubleClickReceived;
 
         public void OnPointerClick(PointerEventData eventData)
         {

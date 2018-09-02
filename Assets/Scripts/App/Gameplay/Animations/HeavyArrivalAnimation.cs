@@ -7,6 +7,12 @@ namespace LoomNetwork.CZB
 {
     public class HeavyArrivalAnimation
     {
+        public Action<HeavyArrivalAnimation> OnAnimationCompleted;
+
+        public GameObject selfObject;
+
+        public SpriteRenderer picture;
+
         private readonly ILoadObjectsManager _loader;
 
         private readonly Dictionary<object[], Action<object[]>> _onCompleteActions;
@@ -14,12 +20,6 @@ namespace LoomNetwork.CZB
         private readonly float _animationLength = 3.14f;
 
         private readonly Vector3 _offset = new Vector3(0.019f, 0.066f, 0f);
-
-        public Action<HeavyArrivalAnimation> OnAnimationCompleted;
-
-        public GameObject selfObject;
-
-        public SpriteRenderer picture;
 
         public HeavyArrivalAnimation(Sprite sprite, Transform parent)
         {

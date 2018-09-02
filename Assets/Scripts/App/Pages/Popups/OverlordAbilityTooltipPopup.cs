@@ -9,19 +9,16 @@ namespace LoomNetwork.CZB
 {
     public class OverlordAbilityTooltipPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
-        private ILoadObjectsManager _loadObjectsManager;
-
-        private IUIManager _uiManager;
-
-        private IDataManager _dataManager;
-
-        private Image _abilityIconImage;
-
-        private TextMeshProUGUI _abilityNameText;
+        public Action OnHidePopupEvent;
 
         private TextMeshProUGUI _abilityDescriptionText;
+
+        private Image _abilityIconImage;
+        private TextMeshProUGUI _abilityNameText;
+
+        private IDataManager _dataManager;
+        private ILoadObjectsManager _loadObjectsManager;
+        private IUIManager _uiManager;
 
         public GameObject Self { get; private set; }
 

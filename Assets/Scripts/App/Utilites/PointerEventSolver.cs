@@ -6,12 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class PointerEventSolver
     {
-        public event Action OnClickEvent;
-
-        public event Action OnDragStartedEvent;
-
-        public event Action OnEndEvent;
-
         private float _pressTimer;
 
         private float _dragDelta;
@@ -24,6 +18,12 @@ namespace LoomNetwork.CZB
         {
             _dragDelta = Constants.POINTER_MIN_DRAG_DELTA;
         }
+
+        public event Action OnClickEvent;
+
+        public event Action OnDragStartedEvent;
+
+        public event Action OnEndEvent;
 
         public bool IsPushed { get; private set; }
 

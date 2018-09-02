@@ -23,10 +23,6 @@ namespace LoomNetwork.CZB
 
         private QueuedSoundElement _currentActiveQueuedSoundElement;
 
-        public bool SfxMuted { get; set; }
-
-        public bool MusicMuted { get; set; }
-
         public void Dispose()
         {
         }
@@ -105,6 +101,10 @@ namespace LoomNetwork.CZB
             // }
         }
 
+        public bool SfxMuted { get; set; }
+
+        public bool MusicMuted { get; set; }
+
         public float GetSoundLength(Enumerators.SoundType soundType, string namePattern)
         {
             SoundTypeList soundTypeList = _gameSounds.Find(x => x.soundType == soundType);
@@ -172,7 +172,15 @@ namespace LoomNetwork.CZB
             FadeSound(soundContainer, true, volumeStep, oldContainers[0].audioSource.volume);
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, int priority = 128, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
+        public void PlaySound(
+            Enumerators.SoundType soundType,
+            int priority = 128,
+            float volume = -1f,
+            Transform parent = null,
+            bool isLoop = false,
+            bool isPlaylist = false,
+            bool dropOldBackgroundMusic = false,
+            bool isInQueue = false)
         {
             if (dropOldBackgroundMusic)
             {
@@ -345,7 +353,16 @@ namespace LoomNetwork.CZB
                 targetTime);
         }
 
-        private SoundContainer CreateSound(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
+        private SoundContainer CreateSound(
+            Enumerators.SoundType soundType,
+            float volume = -1f,
+            Transform parent = null,
+            bool isLoop = false,
+            bool isPlaylist = false,
+            int clipIndex = 0,
+            string clipTitle = "",
+            bool isInQueue = false,
+            string tag = "")
         {
             // if (isInQueue)
             // {
@@ -358,7 +375,16 @@ namespace LoomNetwork.CZB
             return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
         }
 
-        private SoundContainer DoSoundContainer(Enumerators.SoundType soundType, float volume = -1f, Transform parent = null, bool isLoop = false, bool isPlaylist = false, int clipIndex = 0, string clipTitle = "", bool isInQueue = false, string tag = "")
+        private SoundContainer DoSoundContainer(
+            Enumerators.SoundType soundType,
+            float volume = -1f,
+            Transform parent = null,
+            bool isLoop = false,
+            bool isPlaylist = false,
+            int clipIndex = 0,
+            string clipTitle = "",
+            bool isInQueue = false,
+            string tag = "")
         {
             SoundParam soundParam = new SoundParam();
             SoundContainer container = new SoundContainer();

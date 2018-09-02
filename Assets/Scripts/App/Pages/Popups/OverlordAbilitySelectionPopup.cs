@@ -163,8 +163,6 @@ namespace LoomNetwork.CZB
 
         private class AbilityInstance : IDisposable
         {
-            public event Action<AbilityInstance> SelectionChanged;
-
             public readonly GameObject SelfObject;
 
             private readonly ILoadObjectsManager _loadObjectsManager;
@@ -200,6 +198,8 @@ namespace LoomNetwork.CZB
 
                 UpdateUIState();
             }
+
+            public event Action<AbilityInstance> SelectionChanged;
 
             public bool IsSelected
             {

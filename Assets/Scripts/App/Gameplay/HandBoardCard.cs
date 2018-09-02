@@ -6,18 +6,6 @@ using UnityEngine.Rendering;
 
 public class HandBoardCard
 {
-    private readonly IGameplayManager _gameplayManager;
-
-    private readonly ISoundManager _soundManager;
-
-    private readonly ITutorialManager _tutorialManager;
-
-    private readonly PlayerController _playerController;
-
-    private readonly CardsController _cardsController;
-
-    private readonly OnBehaviourHandler _behaviourHandler;
-
     public Player ownerPlayer;
 
     public GameObject boardZone;
@@ -31,6 +19,18 @@ public class HandBoardCard
     protected Vector3 initialPos;
 
     protected Vector3 initialRotation;
+
+    private readonly IGameplayManager _gameplayManager;
+
+    private readonly ISoundManager _soundManager;
+
+    private readonly ITutorialManager _tutorialManager;
+
+    private readonly PlayerController _playerController;
+
+    private readonly CardsController _cardsController;
+
+    private readonly OnBehaviourHandler _behaviourHandler;
 
     private bool _isHandCard = true;
 
