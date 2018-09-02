@@ -1,20 +1,20 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class DelayedAbilityBase : AbilityBase
     {
-        protected int _delayedTurnsLeft = 0;
+        public int delay;
 
-        public int delay = 0;
+        protected int _delayedTurnsLeft;
 
-        public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             delay = ability.delay;
             _delayedTurnsLeft = delay;
@@ -37,6 +37,11 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -47,11 +52,11 @@ namespace LoomNetwork.CZB
             base.OnEndTurnEventHandler();
 
             if (abilityCallType != Enumerators.AbilityCallType.END)
-                return;
+            
+return;
 
-         //   if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-           //     return;
-
+            // if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
+            // return;
             CountDelay();
         }
 
@@ -60,7 +65,8 @@ namespace LoomNetwork.CZB
             base.OnStartTurnEventHandler();
 
             if (abilityCallType != Enumerators.AbilityCallType.TURN)
-                return;
+            
+return;
 
             CountDelay();
         }
@@ -75,11 +81,6 @@ namespace LoomNetwork.CZB
             }
 
             _delayedTurnsLeft--;
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
         }
     }
 }

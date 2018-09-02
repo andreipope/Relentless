@@ -1,25 +1,25 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using UnityEngine;
-using TMPro;
-using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Data;
 using System;
 using LoomNetwork.CZB.Common;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
     public class GameplayActionReport_PlaySpellCard : ReportViewBase
     {
         private Player _callerPlayer;
+
         private BoardCard _playedCard;
 
         private GameObject _playedCardPreviewObject;
 
-        public GameplayActionReport_PlaySpellCard(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public GameplayActionReport_PlaySpellCard(GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
@@ -31,7 +31,7 @@ namespace LoomNetwork.CZB
             {
                 _playedCard = gameAction.parameters[1] as BoardCard;
 
-                var rarity = Enum.GetName(typeof(Enumerators.CardRank), _playedCard.WorkingCard.libraryCard.cardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), _playedCard.WorkingCard.libraryCard.cardRank);
                 string cardSetName = cardsController.GetSetOfCard(_playedCard.WorkingCard.libraryCard);
                 previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), _playedCard.WorkingCard.libraryCard.picture.ToLower()));
 
@@ -53,6 +53,5 @@ namespace LoomNetwork.CZB
         {
             base.Dispose();
         }
-
     }
 }

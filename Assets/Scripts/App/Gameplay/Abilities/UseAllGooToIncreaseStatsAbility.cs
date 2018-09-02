@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,7 +10,8 @@ namespace LoomNetwork.CZB
     {
         public int value;
 
-        public UseAllGooToIncreaseStatsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public UseAllGooToIncreaseStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -21,7 +21,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -36,22 +37,13 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             if (playerCallerOfAbility.Goo == 0)
-                return;
+            
+return;
 
             int increaseOn = 0;
 
@@ -64,6 +56,16 @@ namespace LoomNetwork.CZB
             abilityUnitOwner.CurrentDamage += increaseOn;
 
             playerCallerOfAbility.Goo = 0;
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+        }
+
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        {
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

@@ -1,18 +1,13 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoomNetwork.CZB.Helpers
 {
     public struct IntVector2
     {
-        public int x,
-                   y;
+        public int x, y;
 
         public IntVector2(int x, int y)
         {
@@ -29,11 +24,10 @@ namespace LoomNetwork.CZB.Helpers
     public struct FloatVector3
     {
         public static FloatVector3 one = new FloatVector3(1, 1, 1);
+
         public static FloatVector3 zero = new FloatVector3(0, 0, 0);
 
-        public float x,
-                     y,
-                     z;
+        public float x, y, z;
 
         public FloatVector3(float x, float y, float z)
         {
@@ -44,9 +38,9 @@ namespace LoomNetwork.CZB.Helpers
 
         public FloatVector3(float general)
         {
-            this.x = general;
-            this.y = general;
-            this.z = general;
+            x = general;
+            y = general;
+            z = general;
         }
 
         public override string ToString()
@@ -57,17 +51,15 @@ namespace LoomNetwork.CZB.Helpers
 
     public class MathLib
     {
-
         public static Vector3 FloatVector3ToVector3(FloatVector3 vector)
         {
             return new Vector3(vector.x, vector.y, vector.z);
         }
 
-
         public static float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)
         {
             Vector2 diference = vec2 - vec1;
-            float sign = (vec2.x > vec1.x) ? -1.0f : 1.0f;
+            float sign = vec2.x > vec1.x?-1.0f:1.0f;
             return (180 + Vector2.Angle(Vector2.up, diference)) * sign;
         }
     }

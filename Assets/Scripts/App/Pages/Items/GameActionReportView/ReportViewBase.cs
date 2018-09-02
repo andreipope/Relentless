@@ -1,15 +1,12 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using UnityEngine;
-using UnityEngine.UI;
 using LoomNetwork.CZB.Common;
 using TMPro;
-using UnityEngine.Rendering;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Data;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace LoomNetwork.CZB
 {
@@ -18,8 +15,11 @@ namespace LoomNetwork.CZB
         public GameObject selfObject;
 
         protected ILoadObjectsManager loadObjectsManager;
+
         protected IGameplayManager gameplayManager;
+
         protected CardsController cardsController;
+
         protected ActionsQueueController actionsQueueController;
 
         protected Image previewImage;
@@ -27,14 +27,18 @@ namespace LoomNetwork.CZB
         protected GameActionReport gameAction;
 
         protected GameObject playerAvatarPreviewPrefab;
+
         protected GameObject attackingHealthPrefab;
 
         protected GameObject attackingPictureObject;
+
         protected GameObject healPictureObject;
 
         private GameObject reportActionPreviewPanel;
 
-        public ReportViewBase() { }
+        public ReportViewBase()
+        {
+        }
 
         public ReportViewBase(GameObject prefab, Transform parent, GameActionReport gameAction)
         {
@@ -44,11 +48,11 @@ namespace LoomNetwork.CZB
             cardsController = gameplayManager.GetController<CardsController>();
 
             this.gameAction = gameAction;
-            selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
-			selfObject.transform.SetSiblingIndex (0);
+            selfObject = Object.Instantiate(prefab, parent, false);
+            selfObject.transform.SetSiblingIndex(0);
             previewImage = selfObject.transform.Find("Image").GetComponent<Image>();
 
-            var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
+            OnBehaviourHandler behaviour = selfObject.GetComponent<OnBehaviourHandler>();
             behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
             behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
 
@@ -60,22 +64,6 @@ namespace LoomNetwork.CZB
 
         public virtual void SetInfo()
         {
-
-        }
-
-        private void CreatePreviewPanel()
-        {
-            reportActionPreviewPanel = MonoBehaviour.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));//new GameObject(gameAction.actionType.ToString());
-            reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
-            reportActionPreviewPanel.SetActive(false);
-
-            attackingPictureObject = reportActionPreviewPanel.transform.Find("PictureAttack").gameObject;
-            attackingPictureObject.SetActive(false);
-
-            healPictureObject = reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
-            healPictureObject.SetActive(false);
-
-            SetInfo();
         }
 
         public virtual void OnPointerExitEventHandler(PointerEventData obj)
@@ -96,13 +84,11 @@ namespace LoomNetwork.CZB
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = Object.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
-
-            }
-            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            } else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = Object.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);
             }
 
@@ -120,11 +106,11 @@ namespace LoomNetwork.CZB
 
         public GameObject CreatePlayerPreview(Player player, Vector3 pos)
         {
-            GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
-            var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            var heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement.ToString() + "_EXP");
+            GameObject avatar = Object.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
+            SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
+            Sprite heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement + "_EXP");
             sprite.sprite = heroSprite;
-            var hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             hpText.text = player.HP.ToString();
             avatar.transform.localPosition = pos;
             avatar.transform.localScale = Vector3.one * 1.6f;
@@ -133,14 +119,15 @@ namespace LoomNetwork.CZB
 
             return avatar;
         }
-        //todo improve
+
+        // todo improve
         public GameObject CreateSkillPreview(Player player)
         {
-            GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
-            var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            var heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement.ToString() + "_EXP");
+            GameObject avatar = Object.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
+            SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
+            Sprite heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement + "_EXP");
             sprite.sprite = heroSprite;
-            var hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             hpText.text = player.HP.ToString();
             avatar.transform.localPosition = new Vector3(5f, 0, 0);
             avatar.transform.localScale = Vector3.one * 1.6f;
@@ -149,7 +136,8 @@ namespace LoomNetwork.CZB
 
             return avatar;
         }
-        //todo improve
+
+        // todo improve
         public GameObject CreateAbilityPreview(WorkingCard card, Vector3 pos)
         {
             BoardCard boardCard = null;
@@ -158,13 +146,11 @@ namespace LoomNetwork.CZB
 
             if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = Object.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
-
-            }
-            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
+            } else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
+                currentBoardCard = Object.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);
             }
 
@@ -182,8 +168,23 @@ namespace LoomNetwork.CZB
 
         public virtual void Dispose()
         {
-            MonoBehaviour.Destroy(reportActionPreviewPanel);
-            MonoBehaviour.Destroy(selfObject);
+            Object.Destroy(reportActionPreviewPanel);
+            Object.Destroy(selfObject);
+        }
+
+        private void CreatePreviewPanel()
+        {
+            reportActionPreviewPanel = Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView")); // new GameObject(gameAction.actionType.ToString());
+            reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
+            reportActionPreviewPanel.SetActive(false);
+
+            attackingPictureObject = reportActionPreviewPanel.transform.Find("PictureAttack").gameObject;
+            attackingPictureObject.SetActive(false);
+
+            healPictureObject = reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
+            healPictureObject.SetActive(false);
+
+            SetInfo();
         }
     }
 }

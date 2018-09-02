@@ -1,20 +1,13 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
 using Loom.Newtonsoft.Json;
-using Loom.Newtonsoft.Json.Converters;
-using Loom.Newtonsoft.Json.Serialization;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Protobuf;
-using LoomNetwork.Internal;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using Contract = Loom.Client.Contract;
-using Random = System.Random;
 using Deck = LoomNetwork.CZB.Data.Deck;
 using ProtobufDeck = LoomNetwork.CZB.Protobuf.Deck;
 
@@ -25,28 +18,37 @@ namespace LoomNetwork.CZB.BackendCommunication
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public event ContractCreatedEventHandler ContractCreated;
-        
+
+        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
+        {
+            AuthBackendHost = authBackendHost;
+            ReaderHost = readerHost;
+            WriterHost = writerHost;
+
+            Debug.Log($"Using auth backend {AuthBackendHost}");
+            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
+        }
+
         public string ReaderHost { get; set; }
 
         public string WriterHost { get; set; }
 
         public string AuthBackendHost { get; set; }
-        
+
         public Contract Contract { get; private set; }
 
-        public bool IsConnected =>
-            Contract != null &&
-            Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
-            Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
+        public bool IsConnected => (Contract != null) && (Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected) && (Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected);
 
-        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
+        public void Init()
         {
-            AuthBackendHost = authBackendHost;
-            ReaderHost = readerHost; 
-            WriterHost = writerHost;
-            
-            Debug.Log($"Using auth backend {AuthBackendHost}");
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
+        }
+
+        public void Update()
+        {
+        }
+
+        public void Dispose()
+        {
         }
 
         public async Task CreateContract(byte[] privateKey)
@@ -54,24 +56,13 @@ namespace LoomNetwork.CZB.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            IRpcClient writer = RpcClientFactory.Configure()
-                .WithLogger(Debug.unityLogger)
-                .WithWebSocket(WriterHost)
-                .Create();
+            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(WriterHost).Create();
 
-            IRpcClient reader = RpcClientFactory.Configure()
-                .WithLogger(Debug.unityLogger)
-                .WithWebSocket(ReaderHost)
-                .Create();
+            IRpcClient reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost).Create();
 
-            DAppChainClient client = new DAppChainClient(writer, reader)
-                { Logger = Debug.unityLogger };
-            
-            client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
-            {
-                new NonceTxMiddleware(publicKey, client),
-                new SignedTxMiddleware(privateKey)
-            });
+            DAppChainClient client = new DAppChainClient(writer, reader) { Logger = Debug.unityLogger };
+
+            client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[] { new NonceTxMiddleware(publicKey, client), new SignedTxMiddleware(privateKey) });
 
             client.AutoReconnect = false;
 
@@ -89,8 +80,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<GetCollectionResponse> GetCardCollection(string userId)
         {
-            GetCollectionRequest request = new GetCollectionRequest
-                { UserId = userId };
+            GetCollectionRequest request = new GetCollectionRequest { UserId = userId };
 
             return await Contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
         }
@@ -113,8 +103,11 @@ namespace LoomNetwork.CZB.BackendCommunication
         #region Deck Management
 
         private const string GetDeckDataMethod = "ListDecks";
+
         private const string DeleteDeckMethod = "DeleteDeck";
+
         private const string AddDeckMethod = "CreateDeck";
+
         private const string EditDeckMethod = "EditDeck";
 
         public async Task<ListDecksResponse> GetDecks(string userId)
@@ -126,12 +119,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task DeleteDeck(string userId, long deckId, long lastModificationTimestamp)
         {
-            DeleteDeckRequest request = new DeleteDeckRequest
-            {
-                UserId = userId,
-                DeckId = deckId,
-                LastModificationTimestamp = lastModificationTimestamp
-            };
+            DeleteDeckRequest request = new DeleteDeckRequest { UserId = userId, DeckId = deckId, LastModificationTimestamp = lastModificationTimestamp };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
         }
@@ -149,26 +137,12 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             for (int i = 0; i < deck.cards.Count; i++)
             {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.cards[i].cardName,
-                    Amount = deck.cards[i].amount
-                };
+                CardCollection cardInCollection = new CardCollection { CardName = deck.cards[i].cardName, Amount = deck.cards[i].amount };
                 Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
                 cards.Add(cardInCollection);
             }
 
-            CreateDeckRequest request = new CreateDeckRequest
-            {
-                UserId = userId,
-                Deck = new ProtobufDeck
-                {
-                    Name = deck.name,
-                    HeroId = deck.heroId,
-                    Cards = { cards }
-                },
-                LastModificationTimestamp = lastModificationTimestamp
-            };
+            CreateDeckRequest request = new CreateDeckRequest { UserId = userId, Deck = new ProtobufDeck { Name = deck.name, HeroId = deck.heroId, Cards = { cards } }, LastModificationTimestamp = lastModificationTimestamp };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
@@ -180,27 +154,12 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             for (int i = 0; i < deck.cards.Count; i++)
             {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.cards[i].cardName,
-                    Amount = deck.cards[i].amount
-                };
+                CardCollection cardInCollection = new CardCollection { CardName = deck.cards[i].cardName, Amount = deck.cards[i].amount };
                 Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
                 cards.Add(cardInCollection);
             }
 
-            EditDeckRequest request = new EditDeckRequest
-            {
-                UserId = userId,
-                Deck = new ProtobufDeck
-                {
-                    Id = deck.id,
-                    Name = deck.name,
-                    HeroId = deck.heroId,
-                    Cards = { cards }
-                },
-                LastModificationTimestamp = lastModificationTimestamp
-            };
+            EditDeckRequest request = new EditDeckRequest { UserId = userId, Deck = new ProtobufDeck { Id = deck.id, Name = deck.name, HeroId = deck.heroId, Cards = { cards } }, LastModificationTimestamp = lastModificationTimestamp };
             return request;
         }
 
@@ -212,10 +171,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task<ListHeroesResponse> GetHeroesList(string userId)
         {
-            ListHeroesRequest request = new ListHeroesRequest
-            {
-                UserId = userId
-            };
+            ListHeroesRequest request = new ListHeroesRequest { UserId = userId };
 
             return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
         }
@@ -228,9 +184,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public async Task SignUp(string userId)
         {
-            UpsertAccountRequest req = new UpsertAccountRequest {
-                UserId = userId
-            };
+            UpsertAccountRequest req = new UpsertAccountRequest { UserId = userId };
 
             await Contract.CallAsync(CreateAccountMethod, req);
         }
@@ -239,23 +193,22 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         #region Turn Logs
 
-        private const string UploadActionLogMethod = "UploadHistory"; //just a random method for now
+        private const string UploadActionLogMethod = "UploadHistory"; // just a random method for now
 
         public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
         {
             string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
-            Dictionary<string, object> actionLogModelJsonDictionary =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
-            actionLogModelJson =
-                JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)], Formatting.Indented);
+            Dictionary<string, object> actionLogModelJsonDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
+            actionLogModelJson = JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)], Formatting.Indented);
             Debug.Log("Logging action: \n" + actionLogModelJson);
             await Task.Delay(1000);
-            /*var req = new UpsertAccountRequest {
-                UserId = userId,
-                //we'll also put all our collected strings in the HistoryData List
-            };*/
 
-            //await Contract.CallAsync(CreateAccountMethod, req);
+            /*var req = new UpsertAccountRequest {
+                            UserId = userId,
+                            //we'll also put all our collected strings in the HistoryData List
+                        };*/
+
+            // await Contract.CallAsync(CreateAccountMethod, req);
         }
 
         #endregion
@@ -263,6 +216,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         #region Auth
 
         private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+
         private const string AuthBetaConfigEndPoint = "/user/beta/config";
 
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
@@ -271,8 +225,10 @@ namespace LoomNetwork.CZB.BackendCommunication
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
+            {
                 throw new Exception($"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
-            
+            }
+
             BetaKeyValidationResponse betaKeyValidationResponse = httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
             return betaKeyValidationResponse.IsValid;
         }
@@ -283,13 +239,15 @@ namespace LoomNetwork.CZB.BackendCommunication
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
+            {
                 throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
-            
+            }
+
             BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
-                httpResponseMessage.ReadToEnd(), 
+                httpResponseMessage.ReadToEnd(),
+
                 // FIXME: backend should return valid version numbers at all times
-                new VersionConverterWithFallback(Version.Parse(Constants.CURRENT_VERSION_BASE))
-                );
+                new VersionConverterWithFallback(Version.Parse(Constants.CURRENT_VERSION_BASE)));
             return betaConfig;
         }
 
@@ -300,21 +258,5 @@ namespace LoomNetwork.CZB.BackendCommunication
         }
 
         #endregion
-
-        public void Init()
-        {
-
-        }
-
-        public void Update()
-        {
-
-        }
-
-        public void Dispose()
-        {
-
-        }
     }
-
 }

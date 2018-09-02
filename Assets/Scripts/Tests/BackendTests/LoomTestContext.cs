@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
@@ -9,17 +9,13 @@ using NUnit.Framework;
 public static class LoomTestContext
 {
     public static BackendFacade BackendFacade;
+
     public static BackendDataControlMediator BackendDataControlMediator;
 
     public static void TestSetUp(string userId = "Loom")
     {
         BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
-        BackendFacade = 
-            new BackendFacade(
-                backendEndpoint.AuthHost,
-                backendEndpoint.ReaderHost,
-                backendEndpoint.WriterHost
-            );
+        BackendFacade = new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost, backendEndpoint.WriterHost);
         BackendDataControlMediator.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
 
@@ -46,10 +42,9 @@ public static class LoomTestContext
             await func();
         } catch (Exception)
         {
-            return;
-        }
 
-        throw new AssertionException("Expected an exception");
+            throw new AssertionException("Expected an exception");
+        }
     }
 
     public static string CreateUniqueUserId(string userId)
@@ -59,42 +54,49 @@ public static class LoomTestContext
 
     private static IEnumerator AsyncTest(Func<Task> action, Action preAction)
     {
-        return
-            TaskAsIEnumerator(Task.Run(() =>
-            {
-                try
+        return TaskAsIEnumerator(
+            Task.Run(
+                () =>
                 {
-                    preAction?.Invoke();
-                    action().Wait();
-                } catch (AggregateException e)
-                {
-                    ExceptionDispatchInfo.Capture(e.InnerException).Throw();
-                }
-            }));
+                    try
+                    {
+                        preAction?.Invoke();
+                        action().Wait();
+                    } catch (AggregateException e)
+                    {
+                        ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+                    }
+                }));
     }
 
     private static async Task EnsureContract()
     {
-        if (BackendFacade.Contract != null && BackendFacade.IsConnected)
-            return;
+        if ((BackendFacade.Contract != null) && BackendFacade.IsConnected)
+        
+return;
 
         await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
+
         /*LoomTestContext.LoomManager.UserDataModel = new LoomUserDataModel("LoomTest" + Random.value, CryptoUtils.GeneratePrivateKey());
-        try
-        {
-            await LoomTestContext.LoomManager.SignUp(LoomTestContext.LoomManager.UserDataModel.UserId);
-        } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
-        {
-            // Ignore
-        }*/
+                try
+                {
+                    await LoomTestContext.LoomManager.SignUp(LoomTestContext.LoomManager.UserDataModel.UserId);
+                } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
+                {
+                    // Ignore
+                }*/
     }
 
     private static IEnumerator TaskAsIEnumerator(Task task)
     {
         while (!task.IsCompleted)
+        {
             yield return null;
+        }
 
         if (task.IsFaulted)
+        {
             throw task.Exception;
+        }
     }
 }

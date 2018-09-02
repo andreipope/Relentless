@@ -1,19 +1,20 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class UnitWeaponAbility : AbilityBase
     {
-        public int value = 0;
-        public int damage = 0;
+        public int value;
 
-        public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int damage;
+
+        public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
             damage = ability.damage;
@@ -24,7 +25,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
         }
 
         public override void Update()
@@ -37,16 +37,31 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            if (targetUnit != null)
+            {
+                targetUnit.CurrentDamage += value;
+                targetUnit.BuffedDamage += value;
+
+                CreateVFX(targetUnit.transform.position, true, 5f);
+            }
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
 
-            if(_isAbilityResolved)
+            if (_isAbilityResolved)
             {
                 Action();
 
                 if (targetUnit != null)
+                {
                     targetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
+                }
             }
         }
 
@@ -55,22 +70,10 @@ namespace LoomNetwork.CZB
             base.OnEndTurnEventHandler();
 
             if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-                return;
+            
+return;
 
             ActionEnd();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            if(targetUnit != null)
-            {
-                targetUnit.CurrentDamage += value;
-                targetUnit.BuffedDamage += value;
-
-                CreateVFX(targetUnit.transform.position, true, 5f);
-            }
         }
 
         private void ActionEnd()
@@ -86,7 +89,9 @@ namespace LoomNetwork.CZB
         private void TargetUnitOnDieEventHandler()
         {
             if (targetUnit != null)
+            {
                 targetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
+            }
 
             _abilitiesController.DeactivateAbility(activityId);
         }

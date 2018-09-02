@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.Build;
 
 namespace LoomNetwork.CZB
@@ -7,7 +6,7 @@ namespace LoomNetwork.CZB
     public class UpdatePlayerSettingsVersions : IPreprocessBuild
     {
         public int callbackOrder { get; } = 2;
-        
+
         public void OnPreprocessBuild(BuildTarget target, string path)
         {
 #if UNITY_CLOUD_BUILD

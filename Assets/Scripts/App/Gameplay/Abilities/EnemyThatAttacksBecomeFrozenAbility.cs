@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,7 +10,8 @@ namespace LoomNetwork.CZB
     {
         public int value = 1;
 
-        public EnemyThatAttacksBecomeFrozenAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public EnemyThatAttacksBecomeFrozenAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
         }
 
@@ -45,10 +45,13 @@ namespace LoomNetwork.CZB
             base.UnitGotDamageEventHandler(from);
 
             if (abilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
-                return;
+            
+return;
 
-            if(from is BoardUnit)
+            if (from is BoardUnit)
+            {
                 (from as BoardUnit).Stun(Enumerators.StunType.FREEZE, value);
+            }
         }
     }
 }

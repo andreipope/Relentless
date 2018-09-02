@@ -1,11 +1,9 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -13,9 +11,10 @@ namespace LoomNetwork.CZB
     {
         public int value = 1;
 
-        public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
+            value = ability.value;
         }
 
         public override void Activate()
@@ -25,18 +24,12 @@ namespace LoomNetwork.CZB
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
         }
 
-        public override void Update() { }
-
-        public override void Dispose() { }
-
-        protected override void OnInputEndEventHandler()
+        public override void Update()
         {
-            base.OnInputEndEventHandler();
+        }
 
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
+        public override void Dispose()
+        {
         }
 
         public override void Action(object info = null)
@@ -53,31 +46,39 @@ namespace LoomNetwork.CZB
 
             CreateVFX(unitPosition, true, 3f, true);
 
-            _timerManager.AddTimer((x) =>
-            {
-                // STEP 1 - REMOVE UNIT FROM BOARD
-                unitOwner.BoardCards.Remove(targetUnit);
-
-                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
-                targetUnit.Die(true);
-                MonoBehaviour.Destroy(targetUnit.gameObject);
-
-                // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                unitOwner.RemoveCardFromBoard(returningCard);
-
-                // STEP 4 - RETURN CARD TO HAND
-                _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-                // STEP 4 - REARRANGE HANDS
-                _gameplayManager.RearrangeHands();
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+            _timerManager.AddTimer(
+                x =>
                 {
-                playerCallerOfAbility,
-                abilityData,
-                targetUnit
-                }));
-            }, null, 2f);
+                    // STEP 1 - REMOVE UNIT FROM BOARD
+                    unitOwner.BoardCards.Remove(targetUnit);
+
+                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
+                    targetUnit.Die(true);
+                    Object.Destroy(targetUnit.gameObject);
+
+                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                    unitOwner.RemoveCardFromBoard(returningCard);
+
+                    // STEP 4 - RETURN CARD TO HAND
+                    _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                    // STEP 4 - REARRANGE HANDS
+                    _gameplayManager.RearrangeHands();
+
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { playerCallerOfAbility, abilityData, targetUnit }));
+                },
+                null,
+                2f);
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+
+            if (_isAbilityResolved)
+            {
+                Action();
+            }
         }
     }
 }

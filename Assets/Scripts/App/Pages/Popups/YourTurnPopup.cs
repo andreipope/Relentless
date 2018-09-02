@@ -1,36 +1,24 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
 using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
-using UnityEngine.Networking;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.Internal;
 using DG.Tweening;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Gameplay;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class YourTurnPopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
         public static Action OnHidePopupEvent;
 
         private ILoadObjectsManager _loadObjectsManager;
-        private IUIManager _uiManager;
-        private GameObject _selfPage;
 
+        private IUIManager _uiManager;
+
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
@@ -40,7 +28,6 @@ namespace LoomNetwork.CZB
             Hide();
         }
 
-
         public void Dispose()
         {
             GameClient.Get<ITimerManager>().StopTimer(HideDelay);
@@ -49,15 +36,16 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             OnHidePopupEvent?.Invoke();
-			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+            GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
-            if (_selfPage == null)
-                return;
+            if (Self == null)
+            
+return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
-		}
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
+        }
 
         public void SetMainPriority()
         {
@@ -65,31 +53,29 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YourTurnPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YourTurnPopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.YOURTURN_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            _selfPage.transform.localScale = Vector3.zero;
-            _selfPage.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
+            Self.transform.localScale = Vector3.zero;
+            Self.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
             GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 4f, false);
         }
 
         public void Show(object data)
         {
             Show();
+        }
 
+        public void Update()
+        {
         }
 
         private void HideDelay(object[] param)
         {
             Hide();
-        }
-
-        public void Update()
-        {
-
         }
     }
 }

@@ -1,28 +1,23 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class StunAbility : AbilityBase
     {
         public Enumerators.StatType statType;
+
         public int value = 1;
 
-
-        public StunAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public StunAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.value = ability.value;
+            statType = ability.abilityStatType;
+            value = ability.value;
         }
 
         public override void Activate()
@@ -38,7 +33,6 @@ namespace LoomNetwork.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
-            
         }
 
         public override void Update()
@@ -59,19 +53,17 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if (abilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
-                return;
-            if(info is BoardUnit)
-            {
-                var creature = info as BoardUnit;
-                creature.Stun(Enumerators.StunType.FREEZE, value);
-				CreateVFX(creature.transform.position);
+            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            
+return;
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
-                {
-                    abilityUnitOwner,
-                    creature
-                }));
+            if (info is BoardUnit)
+            {
+                BoardUnit creature = info as BoardUnit;
+                creature.Stun(Enumerators.StunType.FREEZE, value);
+                CreateVFX(creature.transform.position);
+
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[] { abilityUnitOwner, creature }));
             }
         }
     }

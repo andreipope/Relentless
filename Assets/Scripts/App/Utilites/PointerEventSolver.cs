@@ -1,38 +1,40 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-using UnityEngine;
 using System;
 using LoomNetwork.CZB.Common;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class PointerEventSolver
     {
         public event Action OnClickEvent;
+
         public event Action OnDragStartedEvent;
+
         public event Action OnEndEvent;
 
         private float _pressTimer;
+
         private float _dragDelta;
 
         private bool _isResolved;
 
         private Vector3 _initialPointerPosition;
 
-        public bool IsPushed { get; private set; }
-
-
         public PointerEventSolver()
         {
             _dragDelta = Constants.POINTER_MIN_DRAG_DELTA;
         }
 
+        public bool IsPushed { get; private set; }
+
         public void PushPointer(float delta = -1)
         {
             if (IsPushed)
-                return;
+            
+return;
 
             IsPushed = true;
             _isResolved = false;
@@ -41,20 +43,22 @@ namespace LoomNetwork.CZB
             _pressTimer = 0f;
 
             if (delta >= 0)
+            {
                 _dragDelta = delta;
+            }
         }
 
         public void Update()
         {
             if (!IsPushed || _isResolved)
-                return;
+            
+return;
 
             if (Mathf.Abs((_initialPointerPosition - Input.mousePosition).magnitude) > _dragDelta)
             {
                 _isResolved = true;
                 OnDragStartedEvent?.Invoke();
-            }
-            else
+            } else
             {
                 _pressTimer += Time.unscaledDeltaTime;
 
@@ -69,10 +73,13 @@ namespace LoomNetwork.CZB
         public void PopPointer()
         {
             if (!IsPushed)
-                return;
+            
+return;
 
             if (!_isResolved)
+            {
                 OnClickEvent?.Invoke();
+            }
 
             IsPushed = false;
             _isResolved = false;

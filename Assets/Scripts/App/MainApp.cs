@@ -1,36 +1,31 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
 using System;
+using System.Threading;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
     public class MainApp : MonoBehaviour
     {
-        public static int MainThreadId;
-
         public delegate void MainAppDelegate(object param);
+
         public event MainAppDelegate OnLevelWasLoadedEvent;
 
         public event Action LateUpdateEvent;
+
         public event Action FixedUpdateEvent;
 
-        private static MainApp _Instance;
-        public static MainApp Instance
-        {
-            get { return _Instance; }
-            private set { _Instance = value; }
-        }
+        public static int MainThreadId;
+
+        public static MainApp Instance { get; private set; }
 
         private void Awake()
         {
-            if(Instance != null)
+            if (Instance != null)
             {
                 Destroy(gameObject);
                 return;
@@ -39,8 +34,7 @@ namespace LoomNetwork.CZB
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-
-            MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
         private void Start()
@@ -49,27 +43,17 @@ namespace LoomNetwork.CZB
             {
                 GameClient.Instance.InitServices();
 
-                if (Constants.DEV_MODE)
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
-                    GameClient.Get<IDataManager>().StartLoadCache();
-                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.DECK_SELECTION);
-                }
-                else
-                    GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.APP_INIT);
+#if DEV_MODE
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
+                GameClient.Get<IDataManager>().StartLoadCache();
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+#endif
+
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-                
-                var deviceType = "Editor";
-                #if UNITY_ANDROID
-                deviceType = "Android";
-                #elif UNITY_IOS
-                deviceType = "iOS";
-                #elif UNITY_STANDALONE_OSX
-                deviceType = "MacOS";
-                #elif UNITY_STANDALONE_WIN
-                deviceType = "Window";
-                #endif
+
+                string deviceType = "Editor";
                 GameClient.Get<IAnalyticsManager>().StartSession();
             }
         }
@@ -77,7 +61,9 @@ namespace LoomNetwork.CZB
         private void Update()
         {
             if (Instance == this)
+            {
                 GameClient.Instance.Update();
+            }
         }
 
         private void LateUpdate()
@@ -85,7 +71,9 @@ namespace LoomNetwork.CZB
             if (Instance == this)
             {
                 if (LateUpdateEvent != null)
+                {
                     LateUpdateEvent();
+                }
             }
         }
 
@@ -94,23 +82,28 @@ namespace LoomNetwork.CZB
             if (Instance == this)
             {
                 if (FixedUpdateEvent != null)
+                {
                     FixedUpdateEvent();
+                }
             }
         }
 
         private void OnDestroy()
         {
             if (Instance == this)
+            {
                 GameClient.Instance.Dispose();
+            }
         }
-
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (Instance == this)
             {
                 if (OnLevelWasLoadedEvent != null)
+                {
                     OnLevelWasLoadedEvent(arg0.buildIndex);
+                }
             }
         }
     }

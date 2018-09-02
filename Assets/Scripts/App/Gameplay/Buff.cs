@@ -1,8 +1,6 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
@@ -12,10 +10,10 @@ namespace LoomNetwork.CZB
         public bool rankingBuff;
 
         public Enumerators.CardRank cardRank;
+
         public Enumerators.BuffType buffType;
+
         public object[] parameters;
-
-
 
         public Buff(Enumerators.BuffType type, object[] param, Enumerators.CardRank rank)
         {

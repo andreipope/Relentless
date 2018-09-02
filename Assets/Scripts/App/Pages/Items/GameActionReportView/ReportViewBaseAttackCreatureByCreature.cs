@@ -1,26 +1,24 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
     public class ReportViewBaseAttackCreatureByCreature : ReportViewBase
     {
-        private BoardUnit _attackingCreature,
-                              _attackedCreature;
+        private BoardUnit _attackingCreature, _attackedCreature;
 
-        private int _attackingDamage,
-                    _attackedDamage;
+        private int _attackingDamage, _attackedDamage;
 
-        private GameObject _attackingCreatureObj,
-                           _attackedCreatureObj;
+        private GameObject _attackingCreatureObj, _attackedCreatureObj;
 
-        public ReportViewBaseAttackCreatureByCreature(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public ReportViewBaseAttackCreatureByCreature(GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
@@ -31,7 +29,6 @@ namespace LoomNetwork.CZB
             _attackedCreature = gameAction.parameters[2] as BoardUnit;
             _attackedDamage = (int)gameAction.parameters[3];
 
-
             previewImage.sprite = _attackingCreature.sprite;
             _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
             _attackedCreatureObj = CreateCardPreview(_attackedCreature.Card, Vector3.right * 6);
@@ -40,7 +37,7 @@ namespace LoomNetwork.CZB
 
             GameObject attackViewPlayer = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);
-            var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            TextMeshPro damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_attackingDamage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up * 3;
 
@@ -48,10 +45,9 @@ namespace LoomNetwork.CZB
             {
                 GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
                 attackViewCreature.SetActive(true);
-                var damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
+                TextMeshPro damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
                 damageTextCreature.text = (-_attackedDamage).ToString();
                 attackViewCreature.transform.localPosition = -Vector3.up * 3;
-
             }
         }
 
@@ -69,6 +65,5 @@ namespace LoomNetwork.CZB
         {
             base.Dispose();
         }
-
     }
 }

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,10 +10,11 @@ namespace LoomNetwork.CZB
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
         public int health;
+
         public int damage;
 
-
-        public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             health = ability.health;
             damage = ability.damage;
@@ -25,7 +25,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -38,6 +39,35 @@ namespace LoomNetwork.CZB
         public override void Dispose()
         {
             base.Dispose();
+        }
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            Player opponent = GetOpponentOverlord();
+
+            foreach (BoardUnit unit in opponent.BoardCards)
+            {
+                if (damage != 0)
+                {
+                    unit.DamageDebuffUntillEndOfTurn += damage;
+                    int buffresult = unit.CurrentDamage + damage;
+
+                    if (buffresult < 0)
+                    {
+                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
+                    }
+
+                    unit.CurrentDamage += damage;
+                }
+
+                if (health != 0)
+                {
+                    unit.HPDebuffUntillEndOfTurn += health;
+                    unit.CurrentHP += health;
+                }
+            }
         }
 
         protected override void OnInputEndEventHandler()
@@ -54,15 +84,16 @@ namespace LoomNetwork.CZB
         {
             base.OnEndTurnEventHandler();
 
-            var opponent = GetOpponentOverlord();
+            Player opponent = GetOpponentOverlord();
 
-            foreach (var unit in opponent.BoardCards)
+            foreach (BoardUnit unit in opponent.BoardCards)
             {
                 if (unit.DamageDebuffUntillEndOfTurn != 0)
                 {
                     unit.CurrentDamage += Mathf.Abs(unit.DamageDebuffUntillEndOfTurn);
                     unit.DamageDebuffUntillEndOfTurn = 0;
                 }
+
                 if (unit.HPDebuffUntillEndOfTurn != 0)
                 {
                     unit.CurrentHP += Mathf.Abs(unit.HPDebuffUntillEndOfTurn);
@@ -71,32 +102,6 @@ namespace LoomNetwork.CZB
             }
 
             _abilitiesController.DeactivateAbility(activityId);
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            var opponent = GetOpponentOverlord();
-
-            foreach(var unit in opponent.BoardCards)
-            {
-                if(damage != 0)
-                {
-                    unit.DamageDebuffUntillEndOfTurn += damage;
-                    var buffresult = unit.CurrentDamage + damage;
-
-                    if (buffresult < 0)
-                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
-                    unit.CurrentDamage += damage;
-                }
-
-                if (health != 0)
-                {
-                    unit.HPDebuffUntillEndOfTurn += health;
-                    unit.CurrentHP += health;
-                }
-            }
         }
     }
 }

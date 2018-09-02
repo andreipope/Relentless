@@ -1,60 +1,60 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-using UnityEngine;
-using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using TMPro;
 using LoomNetwork.CZB.Gameplay;
+using TMPro;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class BoardSkill
     {
-        private ILoadObjectsManager _loadObjectsManager;
-        private IGameplayManager _gameplayManager;
-        private ITutorialManager _tutorialManager;
+        private readonly ILoadObjectsManager _loadObjectsManager;
 
-        private PlayerController _playerController;
-        private BattleController _battleController;
-        private BattlegroundController _battlegroundController;
-        private SkillsController _skillsController;
-        private VFXController _vfxController;
+        private readonly IGameplayManager _gameplayManager;
 
-        private SpriteRenderer _glowObjectSprite;
-        private TMPro.TextMeshPro _cooldownText;
+        private readonly ITutorialManager _tutorialManager;
 
-        private GameObject fightTargetingArrowPrefab;
+        private readonly PlayerController _playerController;
 
-        private int _cooldown;
-        private int _initialCooldown;
+        private readonly SkillsController _skillsController;
 
-        private bool _usedInThisTurn = false;
+        private readonly SpriteRenderer _glowObjectSprite;
 
-        private OnBehaviourHandler _behaviourHandler;
+        private readonly TextMeshPro _cooldownText;
 
-        private Animator _shutterAnimator;
+        private readonly GameObject fightTargetingArrowPrefab;
 
-        private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
+        private readonly int _initialCooldown;
 
-        private PointerEventSolver _pointerEventSolver;
+        private readonly Animator _shutterAnimator;
 
+        private readonly PointerEventSolver _pointerEventSolver;
 
         public BoardArrow abilitiesTargetingArrow;
+
         public BattleBoardArrow fightTargetingArrow;
 
         public GameObject selfObject;
 
-
         public Player owner;
+
         public HeroSkill skill;
 
-        public bool IsSkillReady { get { return _cooldown == 0; } }
+        private BattleController _battleController;
 
-        public bool IsUsing { get; private set; }
+        private BattlegroundController _battlegroundController;
 
-        public bool IsPrimary { get; private set; }
+        private VFXController _vfxController;
+
+        private int _cooldown;
+
+        private bool _usedInThisTurn;
+
+        private OnBehaviourHandler _behaviourHandler;
+
+        private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
 
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
@@ -79,10 +79,9 @@ namespace LoomNetwork.CZB
             _glowObjectSprite = selfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
 
-            _cooldownText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TMPro.TextMeshPro>();
+            _cooldownText = selfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-
-            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            string name = isPrimary?"1stShutters":"2ndtShutters";
             _shutterAnimator = selfObject.transform.parent.transform.Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
             _shutterAnimator.enabled = false;
             _shutterAnimator.StopPlayback();
@@ -90,13 +89,11 @@ namespace LoomNetwork.CZB
             owner.OnStartTurnEvent += OnStartTurnEventHandler;
             owner.OnEndTurnEvent += OnEndTurnEventHandler;
 
-            _behaviourHandler = this.selfObject.GetComponent<OnBehaviourHandler>();
-
-            //_behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
-            //   _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
-
-          //  if (owner.IsLocalPlayer)
+            _behaviourHandler = selfObject.GetComponent<OnBehaviourHandler>();
             {
+                // _behaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2D;
+                // _behaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2D;
+                // if (owner.IsLocalPlayer)
                 _pointerEventSolver = new PointerEventSolver();
                 _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
                 _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;
@@ -108,87 +105,11 @@ namespace LoomNetwork.CZB
             fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
-        private void PointerEventSolver_OnDragStartedEventHandler()
-        {
-            if (skill.skillTargetTypes.Count > 0)
-            {
-                if (owner.IsLocalPlayer)
-                    StartDoSkill();
-            }
-            else DrawAbilityTooltip();
-        }
+        public bool IsSkillReady => _cooldown == 0;
 
-        private void PointerEventSolver_OnClickEventHandler()
-        {
-            if (skill.skillTargetTypes.Count > 0)
-                DrawAbilityTooltip();
-            else
-            {
-                if (!_usedInThisTurn && owner.IsLocalPlayer)
-                {
-                        StartDoSkill();
-                }
-                else DrawAbilityTooltip();
-            }
-        }
+        public bool IsUsing { get; private set; }
 
-        private void PointerEventSolver_OnEndEventHandler()
-        {
-            if (owner.IsLocalPlayer)
-                EndDoSkill();
-        }
-
-        private void OnStartTurnEventHandler()
-        {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
-                return;
-
-            if (owner.IsStunned)
-            {
-                BlockSkill();
-            }
-            else
-            {
-                if (IsSkillReady)
-                    SetHighlightingEnabled(true);
-            }
-
-            _cooldownText.text = _cooldown.ToString();
-        }
-
-        private void OnEndTurnEventHandler()
-        {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
-                return;
-
-            SetHighlightingEnabled(false);
-#if UNITY_EDITOR
-            if (Constants.DEV_MODE)
-                _cooldown = 0;
-            else
-            {
-#endif
-                if(!_usedInThisTurn)
-                    _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
-
-#if UNITY_EDITOR
-            }
-#endif
-
-            _usedInThisTurn = false;
-
-            //rewrite
-            CancelTargetingArrows();
-        }
-
-        private void SetHighlightingEnabled(bool isActive)
-        {
-            _glowObjectSprite.gameObject.SetActive(isActive);
-
-            _shutterAnimator.enabled = isActive ? true : false;
-            _shutterAnimator.speed = isActive ? 1 : -1;
-            _shutterAnimator.StartPlayback();
-        }
+        public bool IsPrimary { get; }
 
         public void CancelTargetingArrows()
         {
@@ -204,90 +125,69 @@ namespace LoomNetwork.CZB
             SetHighlightingEnabled(false);
         }
 
-        //public void OnTriggerEnter2D(Collider2D collider)
-        //{
-        //    if (collider.transform.parent != null)
-        //    {
-        //        var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        //        if (targetingArrow != null)
-        //        {
-        //            targetingArrow.OnCardSelected(null);
-        //        }
-        //    }
-        //}
+        // public void OnTriggerEnter2D(Collider2D collider)
+        // {
+        // if (collider.transform.parent != null)
+        // {
+        // var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        // if (targetingArrow != null)
+        // {
+        // targetingArrow.OnCardSelected(null);
+        // }
+        // }
+        // }
 
-        //public void OnTriggerExit2D(Collider2D collider)
-        //{
-        //    if (collider.transform.parent != null)
-        //    {
-        //        var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        //        if (targetingArrow != null)
-        //        {
-        //            targetingArrow.OnCardUnselected(null);
-        //        }
-        //    }
-        //}
-
+        // public void OnTriggerExit2D(Collider2D collider)
+        // {
+        // if (collider.transform.parent != null)
+        // {
+        // var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+        // if (targetingArrow != null)
+        // {
+        // targetingArrow.OnCardUnselected(null);
+        // }
+        // }
+        // }
         public void StartDoSkill()
         {
             if (!IsSkillCanUsed())
-                return;
+            
+return;
 
             if (owner.IsLocalPlayer)
             {
                 if (skill.skillTargetTypes.Count > 0)
                 {
-                    fightTargetingArrow = MonoBehaviour.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
-                    fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner ? _gameplayManager.OpponentPlayer.BoardCards : _gameplayManager.CurrentPlayer.BoardCards;
+                    fightTargetingArrow = Object.Instantiate(fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
+                    fightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == owner?_gameplayManager.OpponentPlayer.BoardCards:_gameplayManager.CurrentPlayer.BoardCards;
                     fightTargetingArrow.targetsType = skill.skillTargetTypes;
                     fightTargetingArrow.elementType = skill.elementTargetTypes;
 
-                    //if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
-                        fightTargetingArrow.ignoreHeavy = true;
+                    // if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
+                    fightTargetingArrow.ignoreHeavy = true;
 
-                        fightTargetingArrow.Begin(selfObject.transform.position);
+                    fightTargetingArrow.Begin(selfObject.transform.position);
 
                     if (_tutorialManager.IsTutorial)
+                    {
                         _tutorialManager.DeactivateSelectTarget();
+                    }
                 }
             }
 
             IsUsing = true;
         }
-   
 
         public void EndDoSkill()
         {
             if (!IsSkillCanUsed() || !IsUsing)
-                return;
+            
+return;
 
             DoOnUpSkillAction();
 
             IsUsing = false;
         }
-
-        private void DoOnUpSkillAction()
-        {
-            if (owner.IsLocalPlayer && _tutorialManager.IsTutorial)
-                _tutorialManager.ActivateSelectTarget();
-
-            if (skill.skillTargetTypes.Count == 0)
-                _skillsController.DoSkillAction(this, owner);
-            else
-            {
-                if (owner.IsLocalPlayer)
-                {
-                    if (fightTargetingArrow != null)
-                    {
-                        _skillsController.DoSkillAction(this);
-                        _playerController.IsCardSelected = false;
-                    }
-                }
-                else
-                    _skillsController.DoSkillAction(this);
-            }
-        }
-
 
         public void UseSkill(object target)
         {
@@ -302,32 +202,20 @@ namespace LoomNetwork.CZB
             selfObject.SetActive(false);
         }
 
-        private bool IsSkillCanUsed()
-        {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
-                return true;
-
-            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != owner || _usedInThisTurn || _tutorialManager.IsTutorial)
-                return false;
-
-            return true;
-        }
-
-
         public void Update()
         {
             if (!_gameplayManager.IsGameplayReady())
-                return;
-
-            //if (owner.IsLocalPlayer)
+            
+return;
             {
+                // if (owner.IsLocalPlayer)
                 _pointerEventSolver.Update();
 
-                if(Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0))
                 {
                     if (_currentOverlordAbilityInfoObject != null)
                     {
-                         GameClient.Get<ICameraManager>().FadeOut(level: 1);
+                        GameClient.Get<ICameraManager>().FadeOut(level: 1);
 
                         _currentOverlordAbilityInfoObject.Dispose();
                         _currentOverlordAbilityInfoObject = null;
@@ -339,7 +227,8 @@ namespace LoomNetwork.CZB
         public void OnMouseDownEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-                return;
+            
+return;
 
             _pointerEventSolver.PushPointer();
         }
@@ -347,18 +236,151 @@ namespace LoomNetwork.CZB
         public void OnMouseUpEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-                return;
+            
+return;
 
-            _pointerEventSolver.PopPointer(); 
+            _pointerEventSolver.PopPointer();
+        }
+
+        private void PointerEventSolver_OnDragStartedEventHandler()
+        {
+            if (skill.skillTargetTypes.Count > 0)
+            {
+                if (owner.IsLocalPlayer)
+                {
+                    StartDoSkill();
+                }
+            } else
+            {
+                DrawAbilityTooltip();
+            }
+        }
+
+        private void PointerEventSolver_OnClickEventHandler()
+        {
+            if (skill.skillTargetTypes.Count > 0)
+            {
+                DrawAbilityTooltip();
+            } else
+            {
+                if (!_usedInThisTurn && owner.IsLocalPlayer)
+                {
+                    StartDoSkill();
+                } else
+                {
+                    DrawAbilityTooltip();
+                }
+            }
+        }
+
+        private void PointerEventSolver_OnEndEventHandler()
+        {
+            if (owner.IsLocalPlayer)
+            {
+                EndDoSkill();
+            }
+        }
+
+        private void OnStartTurnEventHandler()
+        {
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            
+return;
+
+            if (owner.IsStunned)
+            {
+                BlockSkill();
+            } else
+            {
+                if (IsSkillReady)
+                {
+                    SetHighlightingEnabled(true);
+                }
+            }
+
+            _cooldownText.text = _cooldown.ToString();
+        }
+
+        private void OnEndTurnEventHandler()
+        {
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
+            
+return;
+
+            SetHighlightingEnabled(false);
+#if DEV_MODE
+            _cooldown = 0;
+#endif
+            if (!_usedInThisTurn)
+            {
+                _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
+            }
+
+            _usedInThisTurn = false;
+
+            // rewrite
+            CancelTargetingArrows();
+        }
+
+        private void SetHighlightingEnabled(bool isActive)
+        {
+            _glowObjectSprite.gameObject.SetActive(isActive);
+
+            _shutterAnimator.enabled = isActive?true:false;
+            _shutterAnimator.speed = isActive?1:-1;
+            _shutterAnimator.StartPlayback();
+        }
+
+        private void DoOnUpSkillAction()
+        {
+            if (owner.IsLocalPlayer && _tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ActivateSelectTarget();
+            }
+
+            if (skill.skillTargetTypes.Count == 0)
+            {
+                _skillsController.DoSkillAction(this, owner);
+            } else
+            {
+                if (owner.IsLocalPlayer)
+                {
+                    if (fightTargetingArrow != null)
+                    {
+                        _skillsController.DoSkillAction(this);
+                        _playerController.IsCardSelected = false;
+                    }
+                } else
+                {
+                    _skillsController.DoSkillAction(this);
+                }
+            }
+        }
+
+        private bool IsSkillCanUsed()
+        {
+            if (_tutorialManager.IsTutorial && (_tutorialManager.CurrentStep == 32))
+            {
+                return true;
+            }
+
+            if (!IsSkillReady || (_gameplayManager.CurrentTurnPlayer != owner) || _usedInThisTurn || _tutorialManager.IsTutorial)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void DrawAbilityTooltip()
         {
             if (_gameplayManager.IsTutorial)
-                return;
+            
+return;
 
             if (_currentOverlordAbilityInfoObject != null)
-                return;
+            
+return;
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
@@ -366,37 +388,44 @@ namespace LoomNetwork.CZB
 
             if (owner.IsLocalPlayer)
             {
-                if (IsPrimary) position = new Vector3(4f, 0.5f, 0);
-                else position = new Vector3(-4f, 0.5f, 0);
-            }
-            else
+                if (IsPrimary)
+                {
+                    position = new Vector3(4f, 0.5f, 0);
+                } else
+                {
+                    position = new Vector3(-4f, 0.5f, 0);
+                }
+            } else
             {
-                if (IsPrimary) position = new Vector3(4f, -1.15f, 0);
-                else position = new Vector3(-4f, -1.15f, 0);
+                if (IsPrimary)
+                {
+                    position = new Vector3(4f, -1.15f, 0);
+                } else
+                {
+                    position = new Vector3(-4f, -1.15f, 0);
+                }
             }
 
             _currentOverlordAbilityInfoObject = new OverlordAbilityInfoObject(skill, selfObject.transform, position);
         }
 
-
         public class OverlordAbilityInfoObject
         {
-            private ILoadObjectsManager _loadObjectsManager;
+            private readonly ILoadObjectsManager _loadObjectsManager;
 
-            private GameObject _selfObject;
+            private readonly GameObject _selfObject;
 
-            private SpriteRenderer _buffIconPicture;
+            private readonly SpriteRenderer _buffIconPicture;
 
-            private TextMeshPro _callTypeText,
-                                _descriptionText;
+            private readonly TextMeshPro _callTypeText;
 
-            public Transform transform { get { return _selfObject.transform; } }
+            private readonly TextMeshPro _descriptionText;
 
             public OverlordAbilityInfoObject(HeroSkill skill, Transform parent, Vector3 position)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
+                _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
 
                 transform.localPosition = position;
 
@@ -411,9 +440,11 @@ namespace LoomNetwork.CZB
                 _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.iconPath.Replace(" ", string.Empty));
             }
 
+            public Transform transform => _selfObject.transform;
+
             public void Dispose()
             {
-                MonoBehaviour.Destroy(_selfObject);
+                Object.Destroy(_selfObject);
             }
         }
     }

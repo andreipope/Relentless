@@ -1,10 +1,9 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -12,9 +11,10 @@ namespace LoomNetwork.CZB
     {
         public int value = 1;
 
-        public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
+            value = ability.value;
         }
 
         public override void Activate()
@@ -34,16 +34,6 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnEndTurnEventHandler()
-        {
-            base.OnEndTurnEventHandler();
-
-            if (abilityCallType != Enumerators.AbilityCallType.END)
-                return;
-
-            Action();
-        }
-
         public override void Action(object param = null)
         {
             base.Action(param);
@@ -61,12 +51,28 @@ namespace LoomNetwork.CZB
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
+                {
                     TakeDamageToUnit(playerCallerOfAbility.BoardCards[targetIndex - 1]);
+                }
+
                 if (targetIndex + 1 < playerCallerOfAbility.BoardCards.Count)
+                {
                     TakeDamageToUnit(playerCallerOfAbility.BoardCards[targetIndex + 1]);
+                }
             }
 
             TakeDamageToUnit(abilityUnitOwner);
+        }
+
+        protected override void OnEndTurnEventHandler()
+        {
+            base.OnEndTurnEventHandler();
+
+            if (abilityCallType != Enumerators.AbilityCallType.END)
+            
+return;
+
+            Action();
         }
 
         private void TakeDamageToUnit(BoardUnit unit)

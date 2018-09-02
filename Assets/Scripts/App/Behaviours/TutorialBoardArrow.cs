@@ -1,10 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -14,12 +10,6 @@ namespace LoomNetwork.CZB
         public bool isEnabled;
 
         private Vector3 _targetPosition;
-
-        private void Awake()
-        {
-            Init();
-        }
-
 
         public void UpdateTargetPosition(Vector3 position)
         {
@@ -41,17 +31,21 @@ namespace LoomNetwork.CZB
 
         protected override void Update()
         {
-            //base.Update();
-            if(isEnabled)
+            // base.Update();
+            if (isEnabled)
             {
                 UpdateLength(_targetPosition);
             }
+        }
+
+        private void Awake()
+        {
+            Init();
         }
 
         private void UpdateVisibility()
         {
             gameObject.SetActive(isEnabled);
         }
-
     }
 }

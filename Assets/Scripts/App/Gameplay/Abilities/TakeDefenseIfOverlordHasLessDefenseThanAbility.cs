@@ -1,23 +1,23 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class TakeDefenseIfOverlordHasLessDefenseThanAbility : AbilityBase
     {
         public int value;
+
         public int health;
 
-        public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
-            this.health = ability.health;
+            value = ability.value;
+            health = ability.health;
         }
 
         public override void Activate()
@@ -27,7 +27,8 @@ namespace LoomNetwork.CZB
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -41,12 +42,12 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if(playerCallerOfAbility.HP <= health)
+            if (playerCallerOfAbility.HP <= health)
             {
                 abilityUnitOwner.BuffedHP += value;
                 abilityUnitOwner.CurrentHP += value;
 
-               // CreateVFX(abilityUnitOwner.transform.position, true, 5f);
+                // CreateVFX(abilityUnitOwner.transform.position, true, 5f);
             }
         }
     }

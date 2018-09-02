@@ -1,20 +1,20 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Helpers;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int value = 0;
+        public int value;
 
-        public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -24,7 +24,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
@@ -39,16 +40,6 @@ namespace LoomNetwork.CZB
         public override void Dispose()
         {
             base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
@@ -66,15 +57,24 @@ namespace LoomNetwork.CZB
             {
                 if (allies[i] is Player)
                 {
-                    _battleController.AttackPlayerByAbility(GetCaller(), abilityData, (allies[i] as Player));
+                    _battleController.AttackPlayerByAbility(GetCaller(), abilityData, allies[i] as Player);
                     CreateVFX((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
-                }
-                else if (allies[i] is BoardUnit)
+                } else if (allies[i] is BoardUnit)
                 {
-                    _battleController.AttackUnitByAbility(GetCaller(), abilityData, (allies[i] as BoardUnit));
+                    _battleController.AttackUnitByAbility(GetCaller(), abilityData, allies[i] as BoardUnit);
                     CreateVFX((allies[i] as BoardUnit).transform.position, true, 5f);
                 }
             }
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+        }
+
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        {
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
     }
 }

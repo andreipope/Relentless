@@ -1,14 +1,12 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.Internal;
 using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -16,77 +14,85 @@ namespace LoomNetwork.CZB
     {
         protected event Action PermanentInputEndEvent;
 
-        protected AbilitiesController _abilitiesController;
-        protected ParticlesController _particlesController;
-        protected BattleController _battleController;
-        protected ActionsQueueController _actionsQueueController;
-        protected BattlegroundController _battlegroundController;
-        protected CardsController _cardsController;
-        protected RanksController _ranksController;
+        private readonly Player playerAvatar;
 
-        protected ILoadObjectsManager _loadObjectsManager;
-        protected IGameplayManager _gameplayManager;
-        protected IDataManager _dataManager;
-        protected ITimerManager _timerManager;
-        protected ISoundManager _soundManager;
-
-        protected AbilityBoardArrow _targettingArrow;
-        protected GameObject _vfxObject;
-
-        protected bool _isAbilityResolved;
-
-        protected Action OnObjectSelectedByTargettingArrowCallback;
-        protected Action OnObjectSelectFailedByTargettingArrowCallback;
+        private readonly Player opponenentAvatar;
 
         public ulong activityId;
-        
+
         public Enumerators.AbilityActivityType abilityActivityType;
+
         public Enumerators.AbilityCallType abilityCallType;
+
         public Enumerators.AbilityType abilityType;
+
         public Enumerators.AffectObjectType affectObjectType;
+
         public Enumerators.AbilityEffectType abilityEffectType;
 
         public Enumerators.CardType targetCardType = Enumerators.CardType.NONE;
+
         public Enumerators.UnitStatusType targetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
         public List<Enumerators.AbilityTargetType> abilityTargetTypes;
 
         public Enumerators.CardKind cardKind;
 
-        public Data.Card cardOwnerOfAbility;
+        public Card cardOwnerOfAbility;
+
         public WorkingCard mainWorkingCard;
 
         public BoardUnit abilityUnitOwner;
+
         public Player playerCallerOfAbility;
+
         public BoardSpell boardSpell;
+
         public BoardCard boardCard;
 
         public BoardUnit targetUnit;
+
         public Player targetPlayer;
+
         public Player selectedPlayer;
 
-        private Player playerAvatar;
-        private Player opponenentAvatar;
+        protected AbilitiesController _abilitiesController;
+
+        protected ParticlesController _particlesController;
+
+        protected BattleController _battleController;
+
+        protected ActionsQueueController _actionsQueueController;
+
+        protected BattlegroundController _battlegroundController;
+
+        protected CardsController _cardsController;
+
+        protected RanksController _ranksController;
+
+        protected ILoadObjectsManager _loadObjectsManager;
+
+        protected IGameplayManager _gameplayManager;
+
+        protected IDataManager _dataManager;
+
+        protected ITimerManager _timerManager;
+
+        protected ISoundManager _soundManager;
+
+        protected AbilityBoardArrow _targettingArrow;
+
+        protected GameObject _vfxObject;
+
+        protected bool _isAbilityResolved;
+
+        protected Action OnObjectSelectedByTargettingArrowCallback;
+
+        protected Action OnObjectSelectFailedByTargettingArrowCallback;
 
         protected AbilityData abilityData;
 
         protected List<ulong> _particleIds;
-
-        public AbilityBoardArrow TargettingArrow
-        {
-            get
-            {
-                return _targettingArrow;
-            }
-        }
-
-        public AbilityData AbilityData
-        {
-            get
-            {
-                return abilityData;
-            }
-        }
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
@@ -106,11 +112,11 @@ namespace LoomNetwork.CZB
 
             abilityData = ability;
             this.cardKind = cardKind;
-            this.abilityType = ability.abilityType;
-            this.abilityActivityType = ability.abilityActivityType;
-            this.abilityCallType = ability.abilityCallType;
-            this.abilityTargetTypes = ability.abilityTargetTypes;
-            this.abilityEffectType = ability.abilityEffectType;
+            abilityType = ability.abilityType;
+            abilityActivityType = ability.abilityActivityType;
+            abilityCallType = ability.abilityCallType;
+            abilityTargetTypes = ability.abilityTargetTypes;
+            abilityEffectType = ability.abilityEffectType;
             playerAvatar = _gameplayManager.CurrentPlayer;
             opponenentAvatar = _gameplayManager.OpponentPlayer;
 
@@ -119,24 +125,31 @@ namespace LoomNetwork.CZB
             _particleIds = new List<ulong>();
         }
 
+        public AbilityBoardArrow TargettingArrow => _targettingArrow;
+
+        public AbilityData AbilityData => abilityData;
+
         public void ActivateSelectTarget(List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            _targettingArrow = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
+            _targettingArrow = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
             _targettingArrow.possibleTargets = abilityTargetTypes;
             _targettingArrow.selfBoardCreature = abilityUnitOwner;
             _targettingArrow.targetUnitType = targetCardType;
             _targettingArrow.targetUnitStatusType = targetUnitStatusType;
-            
 
-            if (this.cardKind == Enumerators.CardKind.CREATURE)
+            if (cardKind == Enumerators.CardKind.CREATURE)
+            {
                 _targettingArrow.Begin(abilityUnitOwner.transform.position);
-            else if (this.cardKind == Enumerators.CardKind.SPELL)
-                _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position);//(boardSpell.transform.position);
-            else
+            } else if (cardKind == Enumerators.CardKind.SPELL)
+            {
+                _targettingArrow.Begin(selectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
+            } else
+            {
                 _targettingArrow.Begin(playerCallerOfAbility.AvatarObject.transform.position);
+            }
 
             _targettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
             _targettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
@@ -172,7 +185,7 @@ namespace LoomNetwork.CZB
             playerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             playerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if (this.cardKind == Enumerators.CardKind.CREATURE && abilityUnitOwner != null)
+            if ((cardKind == Enumerators.CardKind.CREATURE) && (abilityUnitOwner != null))
             {
                 abilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
                 abilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
@@ -181,16 +194,20 @@ namespace LoomNetwork.CZB
 
                 if (abilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
-                    //  boardCreature.Card.ConnectAbility((uint)abilityType);
+                    // boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
-            }
-            else if (this.cardKind == Enumerators.CardKind.SPELL && boardSpell != null)
+            } else if ((cardKind == Enumerators.CardKind.SPELL) && (boardSpell != null))
+            {
                 boardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
+            }
 
             if (playerCallerOfAbility.IsLocalPlayer)
+            {
                 selectedPlayer = playerAvatar;
-            else
+            } else
+            {
                 selectedPlayer = opponenentAvatar;
+            }
         }
 
         public virtual void Update()
@@ -204,6 +221,47 @@ namespace LoomNetwork.CZB
 
             DeactivateSelectTarget();
             ClearParticles();
+        }
+
+        public virtual void SelectedTargetAction(bool callInputEndBefore = false)
+        {
+            if (callInputEndBefore)
+            {
+                PermanentInputEndEvent?.Invoke();
+                return;
+            }
+
+            if (targetUnit != null)
+            {
+                affectObjectType = Enumerators.AffectObjectType.CHARACTER;
+            } else if (targetPlayer != null)
+            {
+                affectObjectType = Enumerators.AffectObjectType.PLAYER;
+            } else
+            {
+                affectObjectType = Enumerators.AffectObjectType.NONE;
+            }
+
+            if (affectObjectType != Enumerators.AffectObjectType.NONE)
+            {
+                _isAbilityResolved = true;
+
+                if (affectObjectType == Enumerators.AffectObjectType.CHARACTER)
+                {
+                    // targetCreature.Card.ConnectAbility((uint)abilityType);
+                }
+
+                OnObjectSelectedByTargettingArrowCallback?.Invoke();
+                OnObjectSelectedByTargettingArrowCallback = null;
+            } else
+            {
+                OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
+                OnObjectSelectFailedByTargettingArrowCallback = null;
+            }
+        }
+
+        public virtual void Action(object info = null)
+        {
         }
 
         protected virtual void OnCardSelectedEventHandler(BoardUnit obj)
@@ -221,7 +279,7 @@ namespace LoomNetwork.CZB
         protected virtual void OnPlayerSelectedHandler(Player obj)
         {
             targetPlayer = obj;
-                
+
             targetUnit = null;
         }
 
@@ -230,22 +288,27 @@ namespace LoomNetwork.CZB
             targetPlayer = null;
         }
 
-        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false) //todo make it async
+        protected virtual void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
+            // todo make it async
             if (_vfxObject != null)
             {
-                _vfxObject = MonoBehaviour.Instantiate(_vfxObject);
+                _vfxObject = Object.Instantiate(_vfxObject);
 
-                if(!justPosition)
+                if (!justPosition)
+                {
                     _vfxObject.transform.position = (pos - Constants.VFX_OFFSET) + Vector3.forward;
-                else
+                } else
+                {
                     _vfxObject.transform.position = pos;
-
+                }
 
                 ulong id = _particlesController.RegisterParticleSystem(_vfxObject, autoDestroy, duration);
-                
+
                 if (!autoDestroy)
+                {
                     _particleIds.Add(id);
+                }
             }
         }
 
@@ -263,118 +326,81 @@ namespace LoomNetwork.CZB
             DeactivateSelectTarget();
         }
 
-        public virtual void SelectedTargetAction(bool callInputEndBefore = false)
-        {
-            if (callInputEndBefore)
-            {
-                PermanentInputEndEvent?.Invoke();
-                return;
-            }
-
-            if (targetUnit != null)
-                affectObjectType = Enumerators.AffectObjectType.CHARACTER;
-            else if (targetPlayer != null)
-                affectObjectType = Enumerators.AffectObjectType.PLAYER;
-            else
-                affectObjectType = Enumerators.AffectObjectType.NONE;
-
-            if (affectObjectType != Enumerators.AffectObjectType.NONE)
-            {
-                _isAbilityResolved = true;
-
-                if (affectObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                   // targetCreature.Card.ConnectAbility((uint)abilityType);
-                }
-
-                OnObjectSelectedByTargettingArrowCallback?.Invoke();
-                OnObjectSelectedByTargettingArrowCallback = null;
-            }
-            else
-            {
-                OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
-                OnObjectSelectFailedByTargettingArrowCallback = null;
-            }
-        }
-
-        public virtual void Action(object info = null)
-        {
-
-        }
-
         protected virtual void OnEndTurnEventHandler()
         {
             if (_targettingArrow != null)
+            {
                 OnInputEndEventHandler();
+            }
         }
 
         protected virtual void OnStartTurnEventHandler()
         {
-         
         }
 
         protected virtual void UnitOnDieEventHandler()
         {
-            //  if(targetCreature != null)
-            //    targetCreature.Card.DisconnectAbility((uint)abilityType);
-
+            // if(targetCreature != null)
+            // targetCreature.Card.DisconnectAbility((uint)abilityType);
             abilityUnitOwner.UnitOnDieEvent -= UnitOnDieEventHandler;
             abilityUnitOwner.UnitHPChangedEvent -= UnitHPChangedEventHandler;
             abilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
-            
+
             _abilitiesController.DeactivateAbility(activityId);
             Dispose();
         }
 
-		protected virtual void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-		{
-			
-		}
+        protected virtual void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        {
+        }
 
         protected virtual void UnitHPChangedEventHandler()
         {
-
         }
 
         protected virtual void UnitGotDamageEventHandler(object from)
         {
-
-        } 
+        }
 
         protected void SpellOnUsedEventHandler()
         {
             boardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
-           // _abilitiesController.DeactivateAbility(activityId);
+
+            // _abilitiesController.DeactivateAbility(activityId);
         }
 
         protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)
         {
             if (isDirectly)
+            {
                 DestroyParticle(null);
-            else
+            } else
+            {
                 GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time, false);
-        }
-
-
-        private void DestroyParticle(object[] param)
-        {
-            MonoBehaviour.Destroy(_vfxObject);
+            }
         }
 
         protected void ClearParticles()
         {
-            foreach (var id in _particleIds)
+            foreach (ulong id in _particleIds)
+            {
                 _particlesController.DestoryParticle(id);
+            }
         }
 
         protected object GetCaller()
         {
-            return abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+            return abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
         }
 
         protected Player GetOpponentOverlord()
         {
-            return playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            return playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+        }
+
+        private void DestroyParticle(object[] param)
+        {
+            Object.Destroy(_vfxObject);
         }
     }
 }

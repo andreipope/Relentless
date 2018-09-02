@@ -1,36 +1,28 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB
 {
     public class ActionsQueueController : IController
     {
         public event Action<GameActionReport> GotNewActionReportEvent;
+
         public event Action<List<GameActionReport>> ActionsReportsUpdatedEvent;
 
         private Queue<GameAction<object>> _actionsToDo;
-        private List<GameActionReport> _actionsReports;
 
         private GameAction<object> _actionInProgress;
 
-        public List<GameActionReport> ActionsReports
-        {
-            get
-            {
-                return _actionsReports;
-            }
-        }
+        public List<GameActionReport> ActionsReports { get; private set; }
 
         public void Init()
         {
             _actionsToDo = new Queue<GameAction<object>>();
-            _actionsReports = new List<GameActionReport>();
+            ActionsReports = new List<GameActionReport>();
             _actionInProgress = null;
         }
 
@@ -46,11 +38,11 @@ namespace LoomNetwork.CZB
         {
             StopAllActions();
 
-            _actionsReports.Clear();
+            ActionsReports.Clear();
         }
 
         /// <summary>
-        /// AddNewActionInToQueue
+        ///     AddNewActionInToQueue
         /// </summary>
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
@@ -61,8 +53,10 @@ namespace LoomNetwork.CZB
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Enqueue(gameAction);
 
-            if (_actionInProgress == null && _actionsToDo.Count < 2)
+            if ((_actionInProgress == null) && (_actionsToDo.Count < 2))
+            {
                 TryCallNewActionFromQueue();
+            }
         }
 
         public void StopAllActions()
@@ -71,7 +65,7 @@ namespace LoomNetwork.CZB
             _actionInProgress = null;
         }
 
-        //todo improve I guess
+        // todo improve I guess
         public GameActionReport FormatGameActionReport(Enumerators.ActionType actionType, object[] parameters)
         {
             GameActionReport actionReport = new GameActionReport(actionType, parameters);
@@ -83,9 +77,9 @@ namespace LoomNetwork.CZB
         {
             if (report != null)
             {
-                _actionsReports.Add(report);
+                ActionsReports.Add(report);
                 GotNewActionReportEvent?.Invoke(report);
-                ActionsReportsUpdatedEvent?.Invoke(_actionsReports);
+                ActionsReportsUpdatedEvent?.Invoke(ActionsReports);
             }
         }
 
@@ -102,8 +96,10 @@ namespace LoomNetwork.CZB
             {
                 _actionInProgress = _actionsToDo.Dequeue();
                 _actionInProgress.DoAction();
+            } else
+            {
+                _actionInProgress = null;
             }
-            else _actionInProgress = null;
         }
     }
 
@@ -111,13 +107,15 @@ namespace LoomNetwork.CZB
     {
         public event Action<GameAction<T>> OnActionDoneEvent;
 
-        private ITimerManager _timerManager;
-
-        private bool _actionDone = false;
+        private readonly ITimerManager _timerManager;
 
         public Action<T, Action> action;
+
         public T parameter;
+
         public GameActionReport report;
+
+        private bool _actionDone;
 
         public GameAction(Action<T, Action> action, T parameter, GameActionReport report)
         {
@@ -133,11 +131,12 @@ namespace LoomNetwork.CZB
             try
             {
                 action?.Invoke(parameter, ActionDoneCallback);
-            }
-            catch(Exception ex)
+            } catch (Exception ex)
             {
-                if(!_actionDone)
-                ActionDoneCallback();
+                if (!_actionDone)
+                {
+                    ActionDoneCallback();
+                }
             }
         }
 
@@ -145,17 +144,21 @@ namespace LoomNetwork.CZB
         {
             _actionDone = true;
 
-            //small delay between actions
-            _timerManager.AddTimer((x) =>
-            {
-                OnActionDoneEvent?.Invoke(this);
-            }, null, Constants.DELAY_BETWEEN_GAMEPLAY_ACTIONS);
+            // small delay between actions
+            _timerManager.AddTimer(
+                x =>
+                {
+                    OnActionDoneEvent?.Invoke(this);
+                },
+                null,
+                Constants.DELAY_BETWEEN_GAMEPLAY_ACTIONS);
         }
     }
 
     public class GameActionReport
     {
         public Enumerators.ActionType actionType;
+
         public object[] parameters;
 
         public GameActionReport(Enumerators.ActionType actionType, object[] parameters)

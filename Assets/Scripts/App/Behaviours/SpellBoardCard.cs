@@ -1,17 +1,15 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using LoomNetwork.CZB.Data;
 using UnityEngine;
-using TMPro;
-using System;
 
 namespace LoomNetwork.CZB
 {
     public class SpellBoardCard : BoardCard
     {
-
-        public SpellBoardCard(GameObject selfObject) : base(selfObject)
+        public SpellBoardCard(GameObject selfObject)
+            : base(selfObject)
         {
         }
 
@@ -20,7 +18,7 @@ namespace LoomNetwork.CZB
             base.Init(card);
         }
 
-        public override void Init(Data.Card card, int amount = 0)
+        public override void Init(Card card, int amount = 0)
         {
             base.Init(card, amount);
         }

@@ -1,17 +1,16 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class DestroyUnitByTypeAbility : AbilityBase
     {
-        public DestroyUnitByTypeAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DestroyUnitByTypeAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             targetCardType = ability.targetCardType;
         }
@@ -33,6 +32,13 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            _battlegroundController.DestroyBoardUnit(targetUnit);
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -41,13 +47,6 @@ namespace LoomNetwork.CZB
             {
                 Action();
             }
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            _battlegroundController.DestroyBoardUnit(targetUnit);
         }
     }
 }

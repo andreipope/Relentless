@@ -1,21 +1,21 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class CostsLessIfCardTypeInHandAbility : AbilityBase
     {
+        public Enumerators.SetType setType;
+
+        public int value;
+
         private int _changedCostOn = 0;
 
-        public Enumerators.SetType setType;
-        public int value = 0;
-
-        public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             setType = ability.abilitySetType;
             value = ability.value;
@@ -26,29 +26,19 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.IN_HAND)
-                return;
+            
+return;
 
             playerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
             playerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
 
-            _timerManager.AddTimer((x) =>
-            {
-                Action();
-            }, null, 0.5f);
-        }
-
-        private void CardPlayedEventHandler(WorkingCard card)
-        {
-            if (!card.Equals(mainWorkingCard))
-                return;
-
-            playerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
-            playerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
-        }
-
-        private void HandChangedEventHandler(int obj)
-        {
-            Action();
+            _timerManager.AddTimer(
+                x =>
+                {
+                    Action();
+                },
+                null,
+                0.5f);
         }
 
         public override void Update()
@@ -66,15 +56,30 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             if (!playerCallerOfAbility.CardsInHand.Contains(mainWorkingCard))
-                return;
+            
+return;
 
-            int gooCost = playerCallerOfAbility.CardsInHand.FindAll(x => x.libraryCard.cardSetType == setType && x != mainWorkingCard).Count * value;
+            int gooCost = playerCallerOfAbility.CardsInHand.FindAll(x => (x.libraryCard.cardSetType == setType) && (x != mainWorkingCard)).Count * value;
 
-            //gooCost = _changedCostOn;
+            // gooCost = _changedCostOn;
 
-            //_changedCostOn = gooCost;
-
+            // _changedCostOn = gooCost;
             _cardsController.SetGooCostOfCardInHand(playerCallerOfAbility, mainWorkingCard, mainWorkingCard.realCost + gooCost, boardCard);
+        }
+
+        private void CardPlayedEventHandler(WorkingCard card)
+        {
+            if (!card.Equals(mainWorkingCard))
+            
+return;
+
+            playerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
+            playerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
+        }
+
+        private void HandChangedEventHandler(int obj)
+        {
+            Action();
         }
     }
 }

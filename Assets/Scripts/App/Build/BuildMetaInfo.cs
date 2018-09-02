@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using UnityEngine;
 
@@ -9,25 +7,32 @@ namespace LoomNetwork.CZB
     public class BuildMetaInfo : ScriptableObject
     {
         public const string ResourcesPath = "BuildMetaInfo";
-        
+
+        private static BuildMetaInfo _instance;
+
         public string GitBranchName = "";
+
         public string GitCommitHash = "";
+
         public string BuildDateTime = "";
+
         public int BuildDayOfYear = 0;
+
         public int CloudBuildBuildNumber;
+
         public string CloudBuildTargetName = "";
 
         public string ShortVersionName => DisplayVersionName;
 
         public string DisplayVersionName => Constants.CURRENT_VERSION_BASE + "." + BuildDayOfYear;
-        
+
         public string FullVersionName
         {
             get
             {
                 string text = DisplayVersionName;
 
-                if (!String.IsNullOrEmpty(GitCommitHash))
+                if (!string.IsNullOrEmpty(GitCommitHash))
                 {
 #if UNITY_CLOUD_BUILD
                     text += $" ({GitCommitHash})";
@@ -35,6 +40,7 @@ namespace LoomNetwork.CZB
                     text += $" ({GitCommitHash}/{GitBranchName})";
 #endif
                 }
+
                 return text;
             }
         }
@@ -47,27 +53,24 @@ namespace LoomNetwork.CZB
                 return new Version(baseVersion.Major, baseVersion.Minor, baseVersion.Build, BuildDayOfYear);
             }
         }
-        
-        public bool CheckBackendVersionMatch(Version backendVersion)
-        {
-            Version localVersion = Version;
-            return
-                localVersion.Major == backendVersion.Major &&
-                localVersion.Minor == backendVersion.Minor &&
-                localVersion.Build == backendVersion.Build;
-        }
-        
-        private static BuildMetaInfo _instance;
 
         public static BuildMetaInfo Instance
         {
             get
             {
                 if (!_instance)
+                {
                     _instance = Resources.Load<BuildMetaInfo>(ResourcesPath);
-                
+                }
+
                 return _instance;
             }
+        }
+
+        public bool CheckBackendVersionMatch(Version backendVersion)
+        {
+            Version localVersion = Version;
+            return (localVersion.Major == backendVersion.Major) && (localVersion.Minor == backendVersion.Minor) && (localVersion.Build == backendVersion.Build);
         }
     }
 }

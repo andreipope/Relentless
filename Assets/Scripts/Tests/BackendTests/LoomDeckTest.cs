@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Loom.Client;
-using LoomNetwork.CZB.Protobuf;
-using LoomNetwork.CZB.Data;
 using Loom.Newtonsoft.Json;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Protobuf;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Deck = LoomNetwork.CZB.Data.Deck;
-using Random = UnityEngine.Random;
 
 public class LoomDeckTest
 {
@@ -30,225 +24,213 @@ public class LoomDeckTest
     [UnityTest]
     public IEnumerator GetDeck()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
-            
-            ListDecksResponse listDecksResponse = 
-                await LoomTestContext.BackendFacade.GetDecks(user);
-            Assert.IsNotNull(listDecksResponse);
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            var decksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
-            Assert.IsNotNull(decksData);
-            Assert.AreEqual(1, decksData.decks.Count);
-            Assert.AreEqual("Default", decksData.decks[0].name);
-        });
+                ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                Assert.IsNotNull(listDecksResponse);
+
+                DecksData decksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
+                Assert.IsNotNull(decksData);
+                Assert.AreEqual(1, decksData.decks.Count);
+                Assert.AreEqual("Default", decksData.decks[0].name);
+            });
     }
 
     [UnityTest]
     public IEnumerator GetDeck_Empty_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
-            Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks(string.Empty));
-        });
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
+                Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks(string.Empty));
+            });
     }
 
     [UnityTest]
     public IEnumerator GetDeck_Wrong_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks("GauravIsGreatWorkingInLoom"));
-        });
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks("GauravIsGreatWorkingInLoom"));
+            });
     }
 
     [UnityTest]
     public IEnumerator GetDeck_User_Have_No_Deck()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_NoDecks");
-            await LoomTestContext.BackendFacade.SignUp(user);
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_NoDecks");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            ListDecksResponse listDecksResponse = null;
-            Assert.IsNull(listDecksResponse);
+                ListDecksResponse listDecksResponse = null;
+                Assert.IsNull(listDecksResponse);
 
-            listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
-            Assert.IsNotNull(listDecksResponse);
+                listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                Assert.IsNotNull(listDecksResponse);
 
-            await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
 
-            var newListDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
-            Assert.IsNull(newListDecksResponse);
-        });
+                ListDecksResponse newListDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                Assert.IsNull(newListDecksResponse);
+            });
     }
 
     [UnityTest]
     public IEnumerator AddDeck()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
-
-            var deck = new Deck
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                heroId = 0,
-                name = "Gaurav"
-            };
-            //deck.AddCard(0);
-            //deck.AddCard(1);
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
-        });
+                Deck deck = new Deck { heroId = 0, name = "Gaurav" };
+
+                // deck.AddCard(0);
+                // deck.AddCard(1);
+                await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+            });
     }
 
     [UnityTest]
     public IEnumerator AddDeck_Wrong_User_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
-            var deck = new Deck
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                heroId = 0,
-                name = "Gaurav"
-            };
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
+                Deck deck = new Deck { heroId = 0, name = "Gaurav" };
 
-            await LoomTestContext.AssertThrowsAsync(async () =>
-            {
-                await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
+                    {
+                        await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                    });
             });
-        });
     }
 
     [UnityTest]
     public IEnumerator AddDeck_Wrong_Deck_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
-
-            var deck = new Deck
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                heroId = 0,
-                name = "Gaurav",
-                cards = new List<DeckCardData>
-                {
-                    new DeckCardData
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                Deck deck = new Deck { heroId = 0, name = "Gaurav", cards = new List<DeckCardData> { new DeckCardData { amount = 100500, cardName = "Izze" } } };
+
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
                     {
-                        amount = 100500,
-                        cardName = "Izze"
-                    }
-                }
-            };
-
-            await LoomTestContext.AssertThrowsAsync(async () =>
-            {
-                await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                        await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                    });
             });
-        });
     }
 
     [UnityTest]
     public IEnumerator EditDeck()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            var deck = new Deck
-                { name = "Default" };
-            //deck.AddCard(0);
-            //deck.AddCard(1);
+                Deck deck = new Deck { name = "Default" };
 
-            await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
-        });
+                // deck.AddCard(0);
+                // deck.AddCard(1);
+                await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+            });
     }
 
     [UnityTest]
     public IEnumerator EditDeck_Wrong_User_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
-            var deck = new Deck
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                heroId = 0,
-                name = "Gaurav"
-            };
-            
-            await LoomTestContext.AssertThrowsAsync(async () =>
-            {
-                await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
+                Deck deck = new Deck { heroId = 0, name = "Gaurav" };
+
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
+                    {
+                        await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                    });
             });
-        });
     }
 
     [UnityTest]
     public IEnumerator EditDeck_Wrong_Deck_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            var deck = new Deck
-            {
-                id = 123,
-                heroId = 0,
-                name = "GauravRandomDeck"
-            };
-            await LoomTestContext.AssertThrowsAsync(async () =>
-            {
-                await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                Deck deck = new Deck { id = 123, heroId = 0, name = "GauravRandomDeck" };
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
+                    {
+                        await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                    });
             });
-        });
     }
 
     [UnityTest]
     public IEnumerator DeleteDeck()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");
-            await LoomTestContext.BackendFacade.SignUp(user);
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
 
-            await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
-        });
+                await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+            });
     }
 
     [UnityTest]
     public IEnumerator DeleteDeck_Wrong_User_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_User");
-            await LoomTestContext.AssertThrowsAsync(async () =>
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_User");
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
+                    {
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                    });
             });
-        });
     }
 
     [UnityTest]
     public IEnumerator DeleteDeck_Wrong_Deck_Request()
     {
-        return LoomTestContext.ContractAsyncTest(async () =>
-        {
-            var user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_Deck");
-            await LoomTestContext.BackendFacade.SignUp(user);
-
-            await LoomTestContext.AssertThrowsAsync(async () =>
+        return LoomTestContext.ContractAsyncTest(
+            async () =>
             {
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 123, 0);
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck_wrong_Deck");
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                await LoomTestContext.AssertThrowsAsync(
+                    async () =>
+                    {
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, 123, 0);
+                    });
             });
-        });
     }
 }

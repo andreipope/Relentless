@@ -1,17 +1,16 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class ReturnUnitsOnBoardToOwnersHandsAbility : AbilityBase
     {
-        public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
         }
 
@@ -20,7 +19,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -35,6 +35,22 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            List<BoardUnit> units = new List<BoardUnit>();
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+
+            foreach (BoardUnit unit in units)
+            {
+                ReturnBoardUnitToHand(unit);
+            }
+
+            units.Clear();
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -45,33 +61,13 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
-
-            foreach (var unit in units)
-                ReturnBoardUnitToHand(unit);
-
-
-            units.Clear();
-        }
-
         private void ReturnBoardUnitToHand(BoardUnit unit)
         {
             CreateVFX(unit.transform.position, true, 3f, true);
 
             _cardsController.ReturnCardToHand(playerCallerOfAbility, unit);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-            {
-                playerCallerOfAbility,
-                abilityData,
-                unit
-            }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { playerCallerOfAbility, abilityData, unit }));
         }
     }
 }

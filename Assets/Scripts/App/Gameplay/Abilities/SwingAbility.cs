@@ -1,18 +1,18 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class SwingAbility : AbilityBase
     {
-        public int value = 0;
+        public int value;
 
-        public SwingAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public SwingAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -34,23 +34,11 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-
-            if (abilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
-                return;
-
-            if (info is BoardUnit)
-                Action(info);
-        }
-    
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            var unit = info as BoardUnit;
+            BoardUnit unit = info as BoardUnit;
 
             int targetIndex = -1;
             for (int i = 0; i < unit.ownerPlayer.BoardCards.Count; i++)
@@ -65,9 +53,28 @@ namespace LoomNetwork.CZB
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
+                {
                     TakeDamageToUnit(unit.ownerPlayer.BoardCards[targetIndex - 1]);
+                }
+
                 if (targetIndex + 1 < unit.ownerPlayer.BoardCards.Count)
+                {
                     TakeDamageToUnit(unit.ownerPlayer.BoardCards[targetIndex + 1]);
+                }
+            }
+        }
+
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        {
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
+
+            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            
+return;
+
+            if (info is BoardUnit)
+            {
+                Action(info);
             }
         }
 

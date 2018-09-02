@@ -9,15 +9,18 @@ using Object = UnityEngine.Object;
 public class AnalyticsManager : IAnalyticsManager, IService
 {
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
+
     private GoogleAnalyticsV4 _googleAnalytics;
+
     private int _startedMatchCounter;
+
     private int _finishedMatchCounter;
-    
+
     public void StartSession()
     {
         AnalyticsEvent.GameStart();
         _googleAnalytics.StartSession();
-        
+
         int matchesInPreviousSittingKey = PlayerPrefs.GetInt(MatchesInPreviousSittingKey, -1);
         if (matchesInPreviousSittingKey != -1)
         {
@@ -38,13 +41,9 @@ public class AnalyticsManager : IAnalyticsManager, IService
     {
         Debug.Log("=== Log Event = " + eventAction);
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
-        AnalyticsEvent.Custom(eventAction, new Dictionary<string, object>
-        {
-            { "label", eventLabel },
-            { "value", value}
-        });
+        AnalyticsEvent.Custom(eventAction, new Dictionary<string, object> { { "label", eventLabel }, { "value", value } });
     }
-    
+
     public void NotifyStartedMatch()
     {
         _startedMatchCounter++;
@@ -58,27 +57,29 @@ public class AnalyticsManager : IAnalyticsManager, IService
         LogEvent("MatchFinished", "", _finishedMatchCounter);
     }
 
+    void IAnalyticsManager.Dispose()
+    {
+        if (_googleAnalytics == null)
+        
+return;
+
+        _googleAnalytics.Dispose();
+    }
+
     public void Init()
     {
         _googleAnalytics = Object.FindObjectOfType<GoogleAnalyticsV4>();
         if (_googleAnalytics == null)
+        {
             throw new Exception("GoogleAnalyticsV4 object not found");
+        }
     }
 
     public void Update()
     {
     }
 
-    void IAnalyticsManager.Dispose()
-    {
-        if (_googleAnalytics == null)
-            return;
-        
-        _googleAnalytics.Dispose();
-    }
-
     void IService.Dispose()
     {
-        
     }
 }

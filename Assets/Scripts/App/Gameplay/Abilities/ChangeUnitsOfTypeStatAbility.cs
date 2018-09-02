@@ -1,7 +1,7 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
@@ -12,15 +12,17 @@ namespace LoomNetwork.CZB
     public class ChangeUnitsOfTypeStatAbility : AbilityBase
     {
         public Enumerators.SetType setType;
+
         public Enumerators.StatType statType;
+
         public int value = 1;
 
-
-        public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.setType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.setType);
-            this.value = ability.value;
+            statType = ability.abilityStatType;
+            setType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.setType);
+            value = ability.value;
         }
 
         public override void Activate()
@@ -37,7 +39,8 @@ namespace LoomNetwork.CZB
             }
 
             if (abilityCallType != Enumerators.AbilityCallType.PERMANENT)
-                return;
+            
+return;
 
             Action();
         }
@@ -54,12 +57,14 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
-            var unitsOnBoard = playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType.Equals(setType));
+            List<BoardUnit> unitsOnBoard = playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType.Equals(setType));
 
-            foreach (var unit in unitsOnBoard)
+            foreach (BoardUnit unit in unitsOnBoard)
             {
                 if (unit.Equals(abilityUnitOwner))
+                {
                     continue;
+                }
 
                 switch (statType)
                 {
@@ -71,7 +76,6 @@ namespace LoomNetwork.CZB
                         unit.BuffedHP += value;
                         unit.CurrentHP += value;
                         break;
-                    default: break;
                 }
 
                 CreateVFX(unit.transform.position, true);

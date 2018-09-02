@@ -1,11 +1,7 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace LoomNetwork.CZB.Data
 {
@@ -22,6 +18,7 @@ namespace LoomNetwork.CZB.Data
     public class CreditsInfo
     {
         public string subsectionType;
+
         public List<CreditItem> credits;
 
         public CreditsInfo()
@@ -33,8 +30,7 @@ namespace LoomNetwork.CZB.Data
     public class CreditItem
     {
         public string FullName;
-        public string Post;
 
-        public CreditItem() { }
+        public string Post;
     }
 }

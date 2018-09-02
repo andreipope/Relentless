@@ -1,33 +1,38 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-using System;
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
-using TMPro;
-using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
     public class CreditsPage : IUIElement
     {
         private IUIManager _uiManager;
+
         private ILoadObjectsManager _loadObjectsManager;
+
         private ILocalizationManager _localizationManager;
+
         private IAppStateManager _stateManager;
+
         private ISoundManager _soundManager;
+
         private IDataManager _dataManager;
 
         private GameObject _selfPage;
 
         private Button _buttonBack;
+
         private ButtonShiftingContent _buttonThanks;
 
-        private GameObject _creditListItemPrefab,
-                           _creditSubsectionListItemPrefab;
+        private GameObject _creditListItemPrefab, _creditSubsectionListItemPrefab;
+
         private ScrollRect _creditsListScroll;
+
         private List<CreditView> _credits;
 
         private Transform _panelCreditsList;
@@ -50,7 +55,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(_isActive)
+            if (_isActive)
             {
                 _creditsListScroll.verticalNormalizedPosition -= Time.deltaTime / 70;
             }
@@ -58,7 +63,7 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
@@ -81,16 +86,16 @@ namespace LoomNetwork.CZB
             _isActive = false;
 
             if (_selfPage == null)
-                return;
+            
+return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
+            _selfPage.SetActive(false);
+            Object.Destroy(_selfPage);
             _selfPage = null;
         }
 
         public void Dispose()
         {
-
         }
 
         private void FillCredits()
@@ -100,13 +105,17 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < _dataManager.CachedCreditsData.creditsInfo.Count; i++)
             {
                 if (i > 0)
+                {
                     section = new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].subsectionType);
+                }
+
                 for (int j = 0; j < _dataManager.CachedCreditsData.creditsInfo[i].credits.Count; j++)
                 {
                     credit = new CreditView(_creditListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].FullName, _dataManager.CachedCreditsData.creditsInfo[i].credits[j].Post);
                     _credits.Add(credit);
                 }
             }
+
             _buttonThanks.transform.parent.SetAsLastSibling();
         }
 
@@ -117,29 +126,34 @@ namespace LoomNetwork.CZB
 
         private void BackButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
     }
 
     public class CreditView
     {
         public GameObject selfObject;
+
         public TextMeshProUGUI fullNameText;
+
         public TextMeshProUGUI postText;
 
-        public CreditView() { }
+        public CreditView()
+        {
+        }
 
         public CreditView(GameObject prefab, Transform parent, string name, string post)
         {
-            selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
+            selfObject = Object.Instantiate(prefab, parent, false);
             fullNameText = selfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
             postText = selfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
             fullNameText.text = name;
-            if (String.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 fullNameText.gameObject.SetActive(false);
             }
+
             postText.text = post;
         }
     }
@@ -147,13 +161,16 @@ namespace LoomNetwork.CZB
     public class CreditSubSectionView
     {
         public GameObject selfObject;
+
         public TextMeshProUGUI sectionText;
 
-        public CreditSubSectionView() { }
+        public CreditSubSectionView()
+        {
+        }
 
         public CreditSubSectionView(GameObject prefab, Transform parent, string section)
         {
-            selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
+            selfObject = Object.Instantiate(prefab, parent, false);
             sectionText = selfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();
             sectionText.text = section;
         }

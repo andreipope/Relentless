@@ -1,16 +1,16 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
 
 namespace LoomNetwork.CZB
 {
     public class ReturnUnitsOnBoardToOwnersDecksAbility : AbilityBase
     {
-        public ReturnUnitsOnBoardToOwnersDecksAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReturnUnitsOnBoardToOwnersDecksAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
         }
 
@@ -19,7 +19,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -34,6 +35,22 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            List<BoardUnit> units = new List<BoardUnit>();
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+
+            foreach (BoardUnit unit in units)
+            {
+                ReturnBoardUnitToDeck(unit);
+            }
+
+            units.Clear();
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -44,28 +61,13 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
-
-            foreach (var unit in units)
-                ReturnBoardUnitToDeck(unit);
-
-
-            units.Clear();
-        }
-
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
-            if ((abilityUnitOwner != null && unit == abilityUnitOwner) || unit == null)
-                return;
+            if (((abilityUnitOwner != null) && (unit == abilityUnitOwner)) || (unit == null))
+            
+return;
 
             // implement animation
-
             unit.ownerPlayer.AddCardToDeck(new WorkingCard(unit.Card.libraryCard.Clone(), unit.ownerPlayer));
             unit.MoveUnitFromBoardToDeck();
         }

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -9,9 +8,10 @@ namespace LoomNetwork.CZB
 {
     public class DisableNextTurnGooAbility : AbilityBase
     {
-        public int value = 0;
+        public int value;
 
-        public DisableNextTurnGooAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DisableNextTurnGooAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -21,7 +21,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -36,16 +37,16 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
             playerCallerOfAbility.currentGooModificator += value;
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
         }
     }
 }

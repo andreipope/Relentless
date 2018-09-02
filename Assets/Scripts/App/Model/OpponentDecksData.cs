@@ -1,13 +1,9 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
 using Loom.Newtonsoft.Json;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
 
 namespace LoomNetwork.CZB.Data
@@ -16,47 +12,46 @@ namespace LoomNetwork.CZB.Data
     {
         public List<OpponentDeck> decks;
 
-        public OpponentDecksData()
-        {
-
-        }
-
         public void ParseData()
         {
-			if (decks != null) {
-				foreach (var deck in decks) {
-					deck.ParseData ();
-				}
-			}
+            if (decks != null)
+            {
+                foreach (OpponentDeck deck in decks)
+                {
+                    deck.ParseData();
+                }
+            }
         }
     }
 
     public class OpponentDeck
     {
         public int id;
+
         public int heroId;
+
         public string type;
+
         public string actions;
+
         public List<DeckCardData> cards;
 
         [JsonIgnore]
         public List<Enumerators.AIActionType> opponentActions;
-
-        public OpponentDeck()
-        {
-        }
 
         public void ParseData()
         {
             opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
         }
 
-
         public int GetNumCards()
         {
             int amount = 0;
-            foreach (var card in cards)
+            foreach (DeckCardData card in cards)
+            {
                 amount += card.amount;
+            }
+
             return amount;
         }
     }

@@ -1,8 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +17,6 @@ namespace LoomNetwork.CZB
 
         public SpriteRenderer spriteRenderer;
 
-
         private void Start()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -28,7 +25,7 @@ namespace LoomNetwork.CZB
 
         private IEnumerator Animate()
         {
-            var delay = new WaitForSeconds(Time.fixedDeltaTime / speed);
+            WaitForSeconds delay = new WaitForSeconds(Time.fixedDeltaTime / speed);
 
             while (true)
             {

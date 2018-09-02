@@ -1,14 +1,10 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System;
-using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
@@ -16,23 +12,31 @@ namespace LoomNetwork.CZB
     {
         public int value = 1;
 
-        public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
+            value = ability.value;
         }
 
         public override void Activate()
         {
             base.Activate();
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-				return;
+            
+return;
+
             Action();
-            //_vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
+
+            // _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
         }
 
-        public override void Update() { }
+        public override void Update()
+        {
+        }
 
-        public override void Dispose() { }
+        public override void Dispose()
+        {
+        }
 
         protected override void OnInputEndEventHandler()
         {
@@ -42,65 +46,18 @@ namespace LoomNetwork.CZB
         protected override void UnitOnDieEventHandler()
         {
             base.UnitOnDieEventHandler();
-			if (abilityCallType != Enumerators.AbilityCallType.DEATH)
-				return;
+            if (abilityCallType != Enumerators.AbilityCallType.DEATH)
+            
+return;
+
             Debug.Log("CreatureOnDieEventHandler");
             Action();
         }
 
-        private void Action()
-        {
-            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
-
-            Player opponent = playerCallerOfAbility == _gameplayManager.CurrentPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-            foreach (var target in abilityTargetTypes)
-            {
-                switch (target)
-                {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:                       
-                        //BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
-                        //player.BoardCards.CopyTo(creatures);
-                        foreach (var cardOpponent in opponent.BoardCards)
-                        {
-                            _battleController.AttackUnitByAbility(caller, abilityData, cardOpponent);
-                        }
-                        CreateVFX(Vector3.up * 1.5f);
-                        //Array.Clear(creatures, 0, creatures.Length);
-                        //creatures = null;
-                        break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        //RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
-                        //playerCallerOfAbility.boardZone.cards.CopyTo(cards);
-                        //foreach (var cardPlayer in cards)
-                        //{
-                        //    playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
-                        //    CreateVFX(cardPlayer.transform.position);
-                        //}
-                        //Array.Clear(cards, 0, cards.Length);
-                        //cards = null;
-                        foreach (var cardPlayer in playerCallerOfAbility.BoardCards)
-                        {
-                            _battleController.AttackUnitByAbility(caller, abilityData, cardPlayer);
-                            CreateVFX(cardPlayer.transform.position);
-                        }
-                        break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        _battleController.AttackPlayerByAbility(caller, abilityData, opponent);
-                        //CreateVFX(targetCreature.transform.position);
-                        break;
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        _battleController.AttackPlayerByAbility(caller, abilityData, playerCallerOfAbility);
-                        //CreateVFX(targetCreature.transform.position);
-                        break;
-                    default: break;
-                }
-            }
-        }
-
         protected override void CreateVFX(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
-            int playerPos = playerCallerOfAbility.IsLocalPlayer ? 1 : -1;
-            
+            int playerPos = playerCallerOfAbility.IsLocalPlayer?1:-1;
+
             switch (abilityEffectType)
             {
                 case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
@@ -117,14 +74,68 @@ namespace LoomNetwork.CZB
                     _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
                     pos = Vector3.zero;
                     break;
-                default:
-                    break;
             }
+
             pos = Utilites.CastVFXPosition(pos * playerPos);
 
             ClearParticles();
 
             base.CreateVFX(pos, true, 5f);
+        }
+
+        private void Action()
+        {
+            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
+
+            Player opponent = playerCallerOfAbility == _gameplayManager.CurrentPlayer?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            foreach (Enumerators.AbilityTargetType target in abilityTargetTypes)
+            {
+                switch (target)
+                {
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+
+                        // BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
+                        // player.BoardCards.CopyTo(creatures);
+                        foreach (BoardUnit cardOpponent in opponent.BoardCards)
+                        {
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardOpponent);
+                        }
+
+                        CreateVFX(Vector3.up * 1.5f);
+
+                        // Array.Clear(creatures, 0, creatures.Length);
+                        // creatures = null;
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+
+                        // RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
+                        // playerCallerOfAbility.boardZone.cards.CopyTo(cards);
+                        // foreach (var cardPlayer in cards)
+                        // {
+                        // playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
+                        // CreateVFX(cardPlayer.transform.position);
+                        // }
+                        // Array.Clear(cards, 0, cards.Length);
+                        // cards = null;
+                        foreach (BoardUnit cardPlayer in playerCallerOfAbility.BoardCards)
+                        {
+                            _battleController.AttackUnitByAbility(caller, abilityData, cardPlayer);
+                            CreateVFX(cardPlayer.transform.position);
+                        }
+
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        _battleController.AttackPlayerByAbility(caller, abilityData, opponent);
+
+                        // CreateVFX(targetCreature.transform.position);
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER:
+                        _battleController.AttackPlayerByAbility(caller, abilityData, playerCallerOfAbility);
+
+                        // CreateVFX(targetCreature.transform.position);
+                        break;
+                }
+            }
         }
     }
 }

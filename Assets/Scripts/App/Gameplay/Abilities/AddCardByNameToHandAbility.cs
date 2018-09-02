@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,7 +10,8 @@ namespace LoomNetwork.CZB
     {
         public string name;
 
-        public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             name = ability.name;
         }
@@ -21,7 +21,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -36,17 +37,19 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if((name != "Corrupted Goo" && name != "Tainted Goo") || (name == "Corrupted Goo" || name == "Tainted Goo") && (cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement))
+            if (((name != "Corrupted Goo") && (name != "Tainted Goo")) || (((name == "Corrupted Goo") || (name == "Tainted Goo")) && (cardOwnerOfAbility.cardSetType == playerCallerOfAbility.SelfHero.heroElement)))
+            {
                 _cardsController.CreateNewCardByNameAndAddToHand(playerCallerOfAbility, name);
+            }
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
         }
     }
 }

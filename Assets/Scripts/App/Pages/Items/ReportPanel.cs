@@ -1,38 +1,36 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
-using DG.Tweening;
-using TMPro;
-using System;
-using System.Linq;
-using UnityEngine.Rendering;
 
 namespace LoomNetwork.CZB
 {
     public class ReportPanelItem
     {
-        private ILoadObjectsManager _loadObjectsManager;
-        private IGameplayManager _gameplayManager;
-        private ITimerManager _timerManager;
+        private readonly ILoadObjectsManager _loadObjectsManager;
 
-        private CardsController cardsController;
-        private ActionsQueueController _actionsQueueController;
+        private readonly IGameplayManager _gameplayManager;
 
-        private GameObject selfPanel;
-        private VerticalLayoutGroup _reportGroup;
+        private readonly ActionsQueueController _actionsQueueController;
+
+        private readonly GameObject selfPanel;
+
+        private readonly VerticalLayoutGroup _reportGroup;
+
+        private readonly List<ReportViewBase> _allReports;
 
         public GameObject playedCardPrefab;
 
-        private List<ReportViewBase> _allReports;
+        private ITimerManager _timerManager;
 
-        public ReportPanelItem() { }
+        private CardsController cardsController;
+
+        public ReportPanelItem()
+        {
+        }
 
         public ReportPanelItem(GameObject gameObject)
         {
@@ -62,8 +60,11 @@ namespace LoomNetwork.CZB
 
         public void Clear()
         {
-            foreach (var item in _allReports)
+            foreach (ReportViewBase item in _allReports)
+            {
                 item.Dispose();
+            }
+
             _allReports.Clear();
 
             _reportGroup.padding.top = 0;
@@ -119,11 +120,12 @@ namespace LoomNetwork.CZB
                 case Enumerators.ActionType.SUMMON_UNIT_CARD:
                     reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);
                     break;
-                default:
-                    break;
             }
+
             if (reportView != null)
+            {
                 _allReports.Add(reportView);
+            }
         }
     }
 }

@@ -1,31 +1,29 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.Newtonsoft.Json;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB.Data
 {
-    public class DecksData {
+    public class DecksData
+    {
         public List<Deck> decks;
 
         public DecksData()
         {
-           decks = new List<Deck>();
+            decks = new List<Deck>();
         }
     }
 
     public class Deck
     {
         public long id;
+
         public int heroId;
+
         public string name;
+
         public List<DeckCardData> cards;
 
         public Deck()
@@ -36,7 +34,7 @@ namespace LoomNetwork.CZB.Data
         public void AddCard(string cardId)
         {
             bool wasAdded = false;
-            foreach (var card in cards)
+            foreach (DeckCardData card in cards)
             {
                 if (card.cardName == cardId)
                 {
@@ -44,6 +42,7 @@ namespace LoomNetwork.CZB.Data
                     wasAdded = true;
                 }
             }
+
             if (!wasAdded)
             {
                 DeckCardData cardData = new DeckCardData();
@@ -55,12 +54,12 @@ namespace LoomNetwork.CZB.Data
 
         public void RemoveCard(string cardId)
         {
-            foreach (var card in cards)
+            foreach (DeckCardData card in cards)
             {
                 if (card.cardName == cardId)
                 {
                     card.amount--;
-                    if(card.amount < 1)
+                    if (card.amount < 1)
                     {
                         cards.Remove(card);
                         break;
@@ -72,19 +71,17 @@ namespace LoomNetwork.CZB.Data
         public int GetNumCards()
         {
             int amount = 0;
-            foreach (var card in cards)
+            foreach (DeckCardData card in cards)
+            {
                 amount += card.amount;
+            }
+
             return amount;
         }
 
-        public Deck Clone() {
-            Deck deck = new Deck
-            {
-                id = id,
-                heroId = heroId,
-                name = name,
-                cards = cards.Select(c => c.Clone()).ToList()
-            };
+        public Deck Clone()
+        {
+            Deck deck = new Deck { id = id, heroId = heroId, name = name, cards = cards.Select(c => c.Clone()).ToList() };
             return deck;
         }
     }
@@ -92,18 +89,12 @@ namespace LoomNetwork.CZB.Data
     public class DeckCardData
     {
         public string cardName;
+
         public int amount;
 
-        public DeckCardData()
+        public DeckCardData Clone()
         {
-        }
-
-        public DeckCardData Clone() {
-            DeckCardData deckCardData = new DeckCardData
-            {
-                cardName = cardName,
-                amount = amount
-            };
+            DeckCardData deckCardData = new DeckCardData { cardName = cardName, amount = amount };
             return deckCardData;
         }
     }

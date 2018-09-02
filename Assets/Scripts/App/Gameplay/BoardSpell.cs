@@ -1,10 +1,9 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -12,9 +11,10 @@ namespace LoomNetwork.CZB
     {
         public event Action SpellOnUsedEvent;
 
-        private OnBehaviourHandler _eventHandler;
+        private readonly OnBehaviourHandler _eventHandler;
 
         public GameObject gameObject;
+
         public Transform transform;
 
         public BoardArrow targetingArrow;
@@ -37,7 +37,7 @@ namespace LoomNetwork.CZB
         {
             if (targetingArrow != null)
             {
-                MonoBehaviour.Destroy(targetingArrow.gameObject);
+                Object.Destroy(targetingArrow.gameObject);
                 targetingArrow = null;
             }
 

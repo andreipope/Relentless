@@ -1,7 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,25 +9,31 @@ namespace LoomNetwork.CZB
 {
     public class SkillsController : IController
     {
+        public BoardSkill opponentPrimarySkill, opponentSecondarySkill;
+
         private ILoadObjectsManager _loadObjectsManager;
+
         private IGameplayManager _gameplayManager;
+
         private ITutorialManager _tutorialManager;
+
         private IUIManager _uiManager;
+
         private ITimerManager _timerManager;
+
         private ISoundManager _soundManager;
 
         private VFXController _vfxController;
+
         private BattleController _battleController;
+
         private ActionsQueueController _actionsQueueController;
+
         private CardsController _cardsController;
 
-        private BoardSkill _playerPrimarySkill,
-                           _playerSecondarySkill;
+        private BoardSkill _playerPrimarySkill, _playerSecondarySkill;
 
-        public BoardSkill opponentPrimarySkill,
-                          opponentSecondarySkill;
-
-        private bool _skillsInitialized = false;
+        private bool _skillsInitialized;
 
         public void Dispose()
         {
@@ -54,7 +58,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if(_skillsInitialized)
+            if (_skillsInitialized)
             {
                 _playerPrimarySkill.Update();
                 _playerSecondarySkill.Update();
@@ -69,8 +73,7 @@ namespace LoomNetwork.CZB
 
         public void InitializeSkills()
         {
-            var rootPage = _uiManager.GetPage<GameplayPage>();
-
+            GameplayPage rootPage = _uiManager.GetPage<GameplayPage>();
 
             rootPage.playerPrimarySkillHandler.OnMouseDownEvent += PrimarySkillHandlerOnMouseDownEventHandler;
             rootPage.playerPrimarySkillHandler.OnMouseUpEvent += PrimarySkillHandlerOnMouseUpEventHandler;
@@ -84,30 +87,32 @@ namespace LoomNetwork.CZB
             rootPage.opponentSecondarySkillHandler.OnMouseDownEvent += OpponentSecondarySkillHandlerOnMouseDownEventHandler;
             rootPage.opponentSecondarySkillHandler.OnMouseUpEvent += OpponentSecondarySkillHandlerOnMouseUpEventHandler;
 
-
             int primary = _gameplayManager.CurrentPlayer.SelfHero.primarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.secondarySkill;
 
-            if (primary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count && secondary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count)
+            if ((primary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count) && (secondary < _gameplayManager.CurrentPlayer.SelfHero.skills.Count))
+            {
                 SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.skills[primary], _gameplayManager.CurrentPlayer.SelfHero.skills[secondary]);
+            }
 
             primary = _gameplayManager.OpponentPlayer.SelfHero.primarySkill;
             secondary = _gameplayManager.OpponentPlayer.SelfHero.secondarySkill;
 
-            if (primary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count && secondary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count)
+            if ((primary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count) && (secondary < _gameplayManager.OpponentPlayer.SelfHero.skills.Count))
+            {
                 SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.skills[primary], _gameplayManager.OpponentPlayer.SelfHero.skills[secondary]);
+            }
 
             _skillsInitialized = true;
         }
 
         public void DisableSkillsContent(Player player)
         {
-            if(player.IsLocalPlayer)
+            if (player.IsLocalPlayer)
             {
                 _playerPrimarySkill.Hide();
                 _playerSecondarySkill.Hide();
-            }
-            else
+            } else
             {
                 opponentPrimarySkill.Hide();
                 opponentSecondarySkill.Hide();
@@ -120,66 +125,11 @@ namespace LoomNetwork.CZB
             {
                 _playerPrimarySkill.BlockSkill();
                 _playerSecondarySkill.BlockSkill();
-            }
-            else
+            } else
             {
                 opponentPrimarySkill.BlockSkill();
                 opponentSecondarySkill.BlockSkill();
             }
-        }
-
-
-        private void _gameplayManager_OnGameEndedEvent(Enumerators.EndGameType obj)
-        {
-            _skillsInitialized = false;
-        }
-
-        private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
-        {
-            if(_playerPrimarySkill != null)
-            _playerPrimarySkill.OnMouseDownEventHandler();
-        }
-
-        private void PrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
-        {
-            if (_playerPrimarySkill != null)
-                _playerPrimarySkill.OnMouseUpEventHandler();
-        }
-
-        private void SecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
-        {
-            if (_playerSecondarySkill != null)
-                _playerSecondarySkill.OnMouseDownEventHandler();
-        }
-
-        private void SecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
-        {
-            if (_playerSecondarySkill != null)
-                _playerSecondarySkill.OnMouseUpEventHandler();
-        }
-
-        private void OpponentPrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
-        {
-            if (opponentPrimarySkill != null)
-                opponentPrimarySkill.OnMouseDownEventHandler();
-        }
-
-        private void OpponentPrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
-        {
-            if (opponentPrimarySkill != null)
-                opponentPrimarySkill.OnMouseUpEventHandler();
-        }
-
-        private void OpponentSecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
-        {
-            if (opponentSecondarySkill != null)
-                opponentSecondarySkill.OnMouseDownEventHandler();
-        }
-
-        private void OpponentSecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
-        {
-            if (opponentSecondarySkill != null)
-                opponentSecondarySkill.OnMouseUpEventHandler();
         }
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
@@ -194,34 +144,11 @@ namespace LoomNetwork.CZB
             opponentSecondarySkill = new BoardSkill(rootPage.opponentSecondarySkillHandler.gameObject, _gameplayManager.OpponentPlayer, secondary, false);
         }
 
-        private void SkillParticleActionCompleted(object target)
-        {
-            //switch (skillType)
-            //{
-            //    case Enumerators.SetType.WATER:
-            //        FreezeAction(target);
-            //        break;
-            //    case Enumerators.SetType.TOXIC:
-            //        ToxicDamageAction(target);
-            //        break;
-            //    case Enumerators.SetType.FIRE:
-            //        FireDamageAction(target);
-            //        break;
-            //    case Enumerators.SetType.LIFE:
-            //        HealAnyAction(target);
-            //        break;
-            //    case Enumerators.SetType.AIR:
-            //        //   CardReturnAction(target);
-            //        break;
-            //    default:
-            //        break;
-            //}
-        }
-
         public void DoSkillAction(BoardSkill skill, object target = null)
         {
             if (skill == null)
-                return;
+            
+return;
 
             if (skill.IsUsing)
             {
@@ -229,40 +156,143 @@ namespace LoomNetwork.CZB
                 {
                     if (skill.fightTargetingArrow.selectedPlayer != null)
                     {
-                        var targetPlayer = skill.fightTargetingArrow.selectedPlayer;
+                        Player targetPlayer = skill.fightTargetingArrow.selectedPlayer;
 
-                        _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, targetPlayer, (x) =>
-                        {
-                            skill.UseSkill(targetPlayer);
-                            DoActionByType(skill, targetPlayer);
-                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                        });
-                    }
-                    else if (skill.fightTargetingArrow.selectedCard != null)
+                        _vfxController.CreateSkillVFX(
+                            GetVFXPrefabBySkill(skill),
+                            skill.selfObject.transform.position,
+                            targetPlayer,
+                            x =>
+                            {
+                                skill.UseSkill(targetPlayer);
+                                DoActionByType(skill, targetPlayer);
+                                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                            });
+                    } else if (skill.fightTargetingArrow.selectedCard != null)
                     {
-                        var targetUnit = skill.fightTargetingArrow.selectedCard;
+                        BoardUnit targetUnit = skill.fightTargetingArrow.selectedCard;
 
-                        _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, targetUnit, (x) =>
-                        {
-                            DoActionByType(skill, targetUnit);
-                            skill.UseSkill(targetUnit);
-                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                        });  
+                        _vfxController.CreateSkillVFX(
+                            GetVFXPrefabBySkill(skill),
+                            skill.selfObject.transform.position,
+                            targetUnit,
+                            x =>
+                            {
+                                DoActionByType(skill, targetUnit);
+                                skill.UseSkill(targetUnit);
+                                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                            });
                     }
 
                     skill.CancelTargetingArrows();
                     skill.fightTargetingArrow = null;
-                }
-                else if(target != null)
+                } else if (target != null)
                 {
-                    _vfxController.CreateSkillVFX(GetVFXPrefabBySkill(skill), skill.selfObject.transform.position, target, (x) =>
-                    {
-                        DoActionByType(skill, target);
-                        skill.UseSkill(target);
-                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                    });   
+                    _vfxController.CreateSkillVFX(
+                        GetVFXPrefabBySkill(skill),
+                        skill.selfObject.transform.position,
+                        target,
+                        x =>
+                        {
+                            DoActionByType(skill, target);
+                            skill.UseSkill(target);
+                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                        });
                 }
             }
+        }
+
+        private void _gameplayManager_OnGameEndedEvent(Enumerators.EndGameType obj)
+        {
+            _skillsInitialized = false;
+        }
+
+        private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (_playerPrimarySkill != null)
+            {
+                _playerPrimarySkill.OnMouseDownEventHandler();
+            }
+        }
+
+        private void PrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (_playerPrimarySkill != null)
+            {
+                _playerPrimarySkill.OnMouseUpEventHandler();
+            }
+        }
+
+        private void SecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (_playerSecondarySkill != null)
+            {
+                _playerSecondarySkill.OnMouseDownEventHandler();
+            }
+        }
+
+        private void SecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (_playerSecondarySkill != null)
+            {
+                _playerSecondarySkill.OnMouseUpEventHandler();
+            }
+        }
+
+        private void OpponentPrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (opponentPrimarySkill != null)
+            {
+                opponentPrimarySkill.OnMouseDownEventHandler();
+            }
+        }
+
+        private void OpponentPrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (opponentPrimarySkill != null)
+            {
+                opponentPrimarySkill.OnMouseUpEventHandler();
+            }
+        }
+
+        private void OpponentSecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        {
+            if (opponentSecondarySkill != null)
+            {
+                opponentSecondarySkill.OnMouseDownEventHandler();
+            }
+        }
+
+        private void OpponentSecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        {
+            if (opponentSecondarySkill != null)
+            {
+                opponentSecondarySkill.OnMouseUpEventHandler();
+            }
+        }
+
+        private void SkillParticleActionCompleted(object target)
+        {
+            // switch (skillType)
+            // {
+            // case Enumerators.SetType.WATER:
+            // FreezeAction(target);
+            // break;
+            // case Enumerators.SetType.TOXIC:
+            // ToxicDamageAction(target);
+            // break;
+            // case Enumerators.SetType.FIRE:
+            // FireDamageAction(target);
+            // break;
+            // case Enumerators.SetType.LIFE:
+            // HealAnyAction(target);
+            // break;
+            // case Enumerators.SetType.AIR:
+            // //   CardReturnAction(target);
+            // break;
+            // default:
+            // break;
+            // }
         }
 
         private GameObject GetVFXPrefabBySkill(BoardSkill skill)
@@ -303,7 +333,7 @@ namespace LoomNetwork.CZB
 
         private void DoActionByType(BoardSkill skill, object target)
         {
-            switch(skill.skill.overlordSkill)
+            switch (skill.skill.overlordSkill)
             {
                 case Enumerators.OverlordSkill.FREEZE:
                     FreezeAction(skill.owner, skill, skill.skill, target);
@@ -324,7 +354,7 @@ namespace LoomNetwork.CZB
                     MendAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.FIRE_BOLT:
-                     FireBoltAction(skill.owner, skill, skill.skill, target);
+                    FireBoltAction(skill.owner, skill, skill.skill, target);
                     break;
                 case Enumerators.OverlordSkill.RABIES:
                     RabiesAction(skill.owner, skill, skill.skill, target);
@@ -341,7 +371,6 @@ namespace LoomNetwork.CZB
                 case Enumerators.OverlordSkill.DRAW:
                     DrawAction(skill.owner, skill, skill.skill, target);
                     break;
-                default: break;
             }
         }
 
@@ -351,34 +380,24 @@ namespace LoomNetwork.CZB
         {
             if (target is BoardUnit)
             {
-                var unit = target as BoardUnit;
+                BoardUnit unit = target as BoardUnit;
                 unit.Stun(Enumerators.StunType.FREEZE, skill.value);
 
                 _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
 
                 _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.title.Trim().ToLower().ToLower(), Constants.OVERLORD_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
-                {
-                    owner,
-                    unit
-                }));
-            }
-            else if (target is Player)
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[] { owner, unit }));
+            } else if (target is Player)
             {
-                var player = target as Player;
+                Player player = target as Player;
 
                 player.Stun(Enumerators.StunType.FREEZE, skill.value);
 
                 _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
                 _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.title.Trim().ToLower() + "_Impact", Constants.OVERLORD_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
 
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
-                {
-                    owner,
-                    player
-                }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[] { owner, player }));
             }
         }
 
@@ -400,16 +419,15 @@ namespace LoomNetwork.CZB
         {
             if (target is Player)
             {
-                var player = target as Player;
+                Player player = target as Player;
 
                 _battleController.HealPlayerBySkill(owner, skill, player);
 
                 _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
                 _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.title.Trim().ToLower(), Constants.OVERLORD_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
-            }
-            else
+            } else
             {
-                var unit = target as BoardUnit;
+                BoardUnit unit = target as BoardUnit;
 
                 _battleController.HealUnitBySkill(owner, skill, unit);
 
@@ -422,7 +440,7 @@ namespace LoomNetwork.CZB
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
-            //TODO: remove this empty gameobject logic
+            // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;
             transform.position = owner.AvatarObject.transform.position;
             transform.position -= Vector3.up * 3.3f;
@@ -434,26 +452,24 @@ namespace LoomNetwork.CZB
         {
             if (target is Player)
             {
-                var player = target as Player;
-                //TODO additional damage to heros
+                Player player = target as Player;
 
+                // TODO additional damage to heros
                 _battleController.AttackPlayerBySkill(owner, skill, player);
-            }
-            else
+            } else
             {
-                var creature = target as BoardUnit;
-                var attackModifier = 0;
+                BoardUnit creature = target as BoardUnit;
+                int attackModifier = 0;
 
-              //  if (creature.Card.libraryCard.cardSetType == setType)
-               //     attackModifier = 1;
-
+                // if (creature.Card.libraryCard.cardSetType == setType)
+                // attackModifier = 1;
                 _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
             }
         }
-        
+
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            BoardUnit targetUnit = (target as BoardUnit);
+            BoardUnit targetUnit = target as BoardUnit;
             Player unitOwner = targetUnit.ownerPlayer;
             WorkingCard returningCard = targetUnit.Card;
 
@@ -466,36 +482,32 @@ namespace LoomNetwork.CZB
 
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.title.Trim().ToLower(), Constants.OVERLORD_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
 
-            _timerManager.AddTimer((x) =>
-            {
-
-                // STEP 1 - REMOVE UNIT FROM BOARD
-                unitOwner.BoardCards.Remove(targetUnit);
-
-                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE;
-                targetUnit.Die(true);
-                MonoBehaviour.Destroy(targetUnit.gameObject);
-
-                // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                unitOwner.RemoveCardFromBoard(returningCard);
-
-                // STEP 4 - RETURN CARD TO HAND
-                _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-                // STEP 4 - REARRANGE HANDS
-                _gameplayManager.RearrangeHands();
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
+            _timerManager.AddTimer(
+                x =>
                 {
-                owner,
-                skill,
-                targetUnit
-                }));
+                    // STEP 1 - REMOVE UNIT FROM BOARD
+                    unitOwner.BoardCards.Remove(targetUnit);
 
-                //_gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
-            }, null, 2f);
+                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE;
+                    targetUnit.Die(true);
+                    Object.Destroy(targetUnit.gameObject);
+
+                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                    unitOwner.RemoveCardFromBoard(returningCard);
+
+                    // STEP 4 - RETURN CARD TO HAND
+                    _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                    // STEP 4 - REARRANGE HANDS
+                    _gameplayManager.RearrangeHands();
+
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[] { owner, skill, targetUnit }));
+
+                    // _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
+                },
+                null,
+                2f);
         }
-
 
         private void DrawAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
@@ -504,25 +516,19 @@ namespace LoomNetwork.CZB
             _vfxController.CreateVFX(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"), owner);
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.title.Trim().ToLower(), Constants.OVERLORD_ABILITY_SOUND_VOLUME, Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.DRAW_CARD_SKILL, new object[]
-            {
-                owner,
-                skill
-            }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.DRAW_CARD_SKILL, new object[] { owner, skill }));
         }
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if ((target != null) && target is BoardUnit)
             {
-
                 BoardUnit unit = target as BoardUnit;
 
+                unit.BuffedHP += skill.value;
+                unit.CurrentHP += skill.value;
 
-                    unit.BuffedHP += skill.value;
-                    unit.CurrentHP += skill.value;
-
-                //TODO: remove this empty gameobject logic
+                // TODO: remove this empty gameobject logic
                 Transform transform = new GameObject().transform;
                 transform.position = unit.transform.position;
                 transform.position -= Vector3.up * 3.3f;
@@ -534,7 +540,7 @@ namespace LoomNetwork.CZB
 
         private void RabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if ((target != null) && target is BoardUnit)
             {
                 BoardUnit unit = target as BoardUnit;
 
@@ -547,9 +553,8 @@ namespace LoomNetwork.CZB
 
         private void ToxicPowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if ((target != null) && target is BoardUnit)
             {
-
                 BoardUnit unit = target as BoardUnit;
 
                 _battleController.AttackUnitBySkill(owner, skill, unit, 0);
@@ -563,9 +568,8 @@ namespace LoomNetwork.CZB
 
         private void IceBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if ((target != null) && target is BoardUnit)
             {
-
                 BoardUnit unit = target as BoardUnit;
 
                 _battleController.AttackUnitBySkill(owner, skill, unit, 0);
@@ -583,7 +587,8 @@ namespace LoomNetwork.CZB
         private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             owner.HP = Mathf.Clamp(owner.HP + skill.value, 0, owner.MaxCurrentHP);
-            //TODO: remove this empty gameobject logic
+
+            // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;
             transform.position = owner.AvatarObject.transform.position;
             transform.position += Vector3.up * 2;

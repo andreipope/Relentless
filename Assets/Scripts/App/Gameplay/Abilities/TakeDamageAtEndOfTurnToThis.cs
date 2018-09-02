@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -10,9 +9,10 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageAtEndOfTurnToThis : AbilityBase
     {
-        public int value = 0;
+        public int value;
 
-        public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             value = ability.value;
         }
@@ -34,6 +34,14 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner);
+            CreateVFX(abilityUnitOwner.transform.position, true, 5f);
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -44,20 +52,14 @@ namespace LoomNetwork.CZB
             base.OnEndTurnEventHandler();
 
             if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-                return;
+            
+return;
 
             if (abilityCallType != Enumerators.AbilityCallType.END)
-                return;
+            
+return;
 
             Action();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner);
-            CreateVFX(abilityUnitOwner.transform.position, true, 5f);
         }
     }
 }

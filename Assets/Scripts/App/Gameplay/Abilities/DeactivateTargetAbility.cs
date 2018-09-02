@@ -1,23 +1,20 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System;
-using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class DeactivateTargetAbility : AbilityBase
     {
-        private int _turnsLength;
-
         public int value = 1;
 
-        public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1) : base(cardKind, ability)
+        private int _turnsLength;
+
+        public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1)
+            : base(cardKind, ability)
         {
             this.value = value;
         }
@@ -27,71 +24,17 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-            _turnsLength = (int)(value);
+            _turnsLength = value;
         }
 
-        public override void Update() { }
-
-        public override void Dispose() { }
-
-        protected override void OnInputEndEventHandler()
+        public override void Update()
         {
-            base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
         }
-        protected override void OnEndTurnEventHandler()
+
+        public override void Dispose()
         {
-            base.OnEndTurnEventHandler();
-
-            _turnsLength--;
-
-            if (_turnsLength <= 0)
-            {
-                if (this.cardKind == Enumerators.CardKind.CREATURE)
-                {
-                    // targetCreature.Card.DisconnectAbility((uint)abilityType);
-                    UnitOnDieEventHandler();
-                }
-                else if (this.cardKind == Enumerators.CardKind.SPELL)
-                {
-                    SpellOnUsedEventHandler();
-
-                    _abilitiesController.DeactivateAbility(activityId);
-                }
-            }
         }
 
-
-        protected override void OnStartTurnEventHandler()
-        {
-            base.OnStartTurnEventHandler();
-
-            if (_turnsLength > 0)
-            {
-                if (targetUnit != null)
-                {
-                    targetUnit.Card.IsPlayable = false;
-                    targetUnit.SetHighlightingEnabled(false);
-                }
-                else
-                {
-                    if (this.cardKind == Enumerators.CardKind.CREATURE)
-                    {
-                        UnitOnDieEventHandler();
-                    }
-                    else if (this.cardKind == Enumerators.CardKind.SPELL)
-                    {
-
-                        SpellOnUsedEventHandler();
-                        _abilitiesController.DeactivateAbility(activityId);
-                    }
-                }
-            }
-        }
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -105,7 +48,61 @@ namespace LoomNetwork.CZB
 
                     CreateVFX(targetUnit.transform.position);
                     break;
-                default: break;
+            }
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+
+            if (_isAbilityResolved)
+            {
+                Action();
+            }
+        }
+
+        protected override void OnEndTurnEventHandler()
+        {
+            base.OnEndTurnEventHandler();
+
+            _turnsLength--;
+
+            if (_turnsLength <= 0)
+            {
+                if (cardKind == Enumerators.CardKind.CREATURE)
+                {
+                    // targetCreature.Card.DisconnectAbility((uint)abilityType);
+                    UnitOnDieEventHandler();
+                } else if (cardKind == Enumerators.CardKind.SPELL)
+                {
+                    SpellOnUsedEventHandler();
+
+                    _abilitiesController.DeactivateAbility(activityId);
+                }
+            }
+        }
+
+        protected override void OnStartTurnEventHandler()
+        {
+            base.OnStartTurnEventHandler();
+
+            if (_turnsLength > 0)
+            {
+                if (targetUnit != null)
+                {
+                    targetUnit.Card.IsPlayable = false;
+                    targetUnit.SetHighlightingEnabled(false);
+                } else
+                {
+                    if (cardKind == Enumerators.CardKind.CREATURE)
+                    {
+                        UnitOnDieEventHandler();
+                    } else if (cardKind == Enumerators.CardKind.SPELL)
+                    {
+                        SpellOnUsedEventHandler();
+                        _abilitiesController.DeactivateAbility(activityId);
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
-
 
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -11,7 +10,8 @@ namespace LoomNetwork.CZB
     {
         public Enumerators.CardType cardType;
 
-        public TakeUnitTypeToAdjacentAllyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeUnitTypeToAdjacentAllyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             cardType = ability.targetCardType;
         }
@@ -21,7 +21,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -36,22 +37,12 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            var opponent = GetOpponentOverlord();
-            var caller = abilityUnitOwner != null ? (object)abilityUnitOwner : (object)boardSpell;
+            Player opponent = GetOpponentOverlord();
+            object caller = abilityUnitOwner != null?abilityUnitOwner:(object)boardSpell;
 
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
@@ -66,19 +57,35 @@ namespace LoomNetwork.CZB
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
+                {
                     TakeTypeToUnit(opponent.BoardCards[targetIndex - 1]);
+                }
+
                 if (targetIndex + 1 < opponent.BoardCards.Count)
+                {
                     TakeTypeToUnit(opponent.BoardCards[targetIndex + 1]);
+                }
             }
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+        }
+
+        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        {
+            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         private void TakeTypeToUnit(BoardUnit unit)
         {
             if (unit == null)
-                return;
+            
+return;
 
             // implement functionality for animations
-            switch(cardType)
+            switch (cardType)
             {
                 case Enumerators.CardType.HEAVY:
                     unit.hasHeavy = true;

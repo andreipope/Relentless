@@ -1,32 +1,27 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
 using System;
-using UnityEngine;
+using LoomNetwork.CZB.Common;
 using TMPro;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class ConfirmationPopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
         private ILoadObjectsManager _loadObjectsManager;
+
         private IUIManager _uiManager;
-        private GameObject _selfPage;
 
         private TextMeshProUGUI _text;
 
-        private ButtonShiftingContent _cancelButton,
-                                      _confirmButton;
+        private ButtonShiftingContent _cancelButton, _confirmButton;
 
         private Action _callback;
+
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
@@ -34,21 +29,20 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
         }
 
-
         public void Dispose()
         {
         }
 
         public void Hide()
         {
-            //Time.timeScale = 1;
+            // Time.timeScale = 1;
+            if (Self == null)
+            
+return;
 
-            if (_selfPage == null)
-                return;
-
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
         }
 
         public void SetMainPriority()
@@ -57,35 +51,35 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _cancelButton = _selfPage.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
-            _confirmButton = _selfPage.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
+            _cancelButton = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
+            _confirmButton = Self.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
 
             _confirmButton.onClick.AddListener(ConfirmButtonOnClickHandler);
             _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
-            _text = _selfPage.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
-            //Time.timeScale = 0;
+            _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
+
+            // Time.timeScale = 0;
         }
 
         public void Show(object data)
         {
             Show();
 
-            //_text.text = (string)data;
+            // _text.text = (string)data;
             _callback = (Action)data;
         }
 
         public void Update()
         {
-
         }
 
         private void ConfirmButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             _callback?.Invoke();
             _callback = null;
             Hide();
@@ -93,7 +87,7 @@ namespace LoomNetwork.CZB
 
         private void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
             Hide();
         }
     }

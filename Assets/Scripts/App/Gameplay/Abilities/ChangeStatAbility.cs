@@ -1,29 +1,25 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class ChangeStatAbility : AbilityBase
     {
         public Enumerators.SetType setType;
+
         public Enumerators.StatType statType;
+
         public int value = 1;
 
-
-        public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.value = ability.value;
+            statType = ability.abilityStatType;
+            value = ability.value;
         }
 
         public override void Activate()
@@ -51,9 +47,10 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if (abilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
-                return;
+            if ((abilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
             
+return;
+
             switch (statType)
             {
                 case Enumerators.StatType.HEALTH:
@@ -64,11 +61,9 @@ namespace LoomNetwork.CZB
                     abilityUnitOwner.BuffedDamage += value;
                     abilityUnitOwner.CurrentDamage += value;
                     break;
-                default:
-                    break;
             }
 
-            //_ranksController.UpdateRanksBuffs();
+            // _ranksController.UpdateRanksBuffs();
         }
     }
 }

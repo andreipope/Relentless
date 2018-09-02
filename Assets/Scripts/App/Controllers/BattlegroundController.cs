@@ -1,20 +1,20 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Gameplay;
+using LoomNetwork.CZB.Helpers;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
+
 namespace LoomNetwork.CZB
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using DG.Tweening;
-    using LoomNetwork.CZB.Common;
-    using LoomNetwork.CZB.Gameplay;
-    using LoomNetwork.CZB.Helpers;
-    using TMPro;
-    using UnityEngine;
-    using UnityEngine.Rendering;
-    using Object = UnityEngine.Object;
-
     public class BattlegroundController : IController
     {
         public event Action<int> OnPlayerGraveyardUpdatedEvent;
@@ -154,9 +154,8 @@ namespace LoomNetwork.CZB
         public void KillBoardCard(BoardUnit cardToDestroy)
         {
             if (cardToDestroy == null)
-            {
-                return;
-            }
+            
+return;
 
             if ((_lastBoardUntilOnPreview != null) && (cardToDestroy == _lastBoardUntilOnPreview))
             {
@@ -271,15 +270,10 @@ namespace LoomNetwork.CZB
                 _gameplayManager.CurrentPlayer.Goo = 7;
             }
 
-            if (Constants.DEV_MODE)
-            {
-                _gameplayManager.OpponentPlayer.HP = 99;
-            }
-
-            if (Constants.DEV_MODE)
-            {
-                _gameplayManager.CurrentPlayer.HP = 99;
-            }
+#if DEV_MODE
+            _gameplayManager.OpponentPlayer.HP = 99;
+            _gameplayManager.CurrentPlayer.HP = 99;
+#endif
 
             _playerManager.OpponentGraveyardCards = opponentGraveyardCards;
 
@@ -324,9 +318,8 @@ namespace LoomNetwork.CZB
         public void StartTurn()
         {
             if (_gameplayManager.GameEnded)
-            {
-                return;
-            }
+            
+return;
 
             currentTurn++;
 
@@ -402,9 +395,8 @@ namespace LoomNetwork.CZB
         public void EndTurn()
         {
             if (_gameplayManager.GameEnded)
-            {
-                return;
-            }
+            
+return;
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
@@ -503,9 +495,8 @@ namespace LoomNetwork.CZB
         public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnit> cardsList, Action onComplete = null)
         {
             if (_gameplayManager.GameEnded)
-            {
-                return;
-            }
+            
+return;
 
             if (rearrangingRealTimeSequence != null)
             {
@@ -570,9 +561,8 @@ namespace LoomNetwork.CZB
             }
 
             if (_gameplayManager.GameEnded)
-            {
-                return;
-            }
+            
+return;
 
             List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
@@ -717,9 +707,8 @@ namespace LoomNetwork.CZB
         public void DestroyCardPreview()
         {
             if (!isPreviewActive)
-            {
-                return;
-            }
+            
+return;
 
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
 

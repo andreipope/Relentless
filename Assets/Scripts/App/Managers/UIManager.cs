@@ -1,11 +1,8 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
-using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,54 +10,62 @@ namespace LoomNetwork.CZB
 {
     public class UIManager : IService, IUIManager
     {
-        public List<IUIElement> Pages { get { return _uiPages; } }
-
-        private List<IUIElement> _uiPages;
         private List<IUIPopup> _uiPopups;
+
+        public List<IUIElement> Pages { get; private set; }
 
         public IUIElement CurrentPage { get; set; }
 
         public CanvasScaler CanvasScaler { get; set; }
-		public GameObject Canvas { get; set; }
-		public GameObject Canvas2 { get; set; }
-		public GameObject Canvas3 { get; set; }
+
+        public GameObject Canvas { get; set; }
+
+        public GameObject Canvas2 { get; set; }
+
+        public GameObject Canvas3 { get; set; }
 
         public void Dispose()
         {
-            foreach (var page in _uiPages)
+            foreach (IUIElement page in Pages)
+            {
                 page.Dispose();
+            }
 
-            foreach (var popup in _uiPopups)
+            foreach (IUIPopup popup in _uiPopups)
+            {
                 popup.Dispose();
+            }
         }
 
         public void Init()
         {
-			Canvas = GameObject.Find("Canvas1");
-			Canvas2 = GameObject.Find("Canvas2");
-			Canvas3 = GameObject.Find("Canvas3");
+            Canvas = GameObject.Find("Canvas1");
+            Canvas2 = GameObject.Find("Canvas2");
+            Canvas3 = GameObject.Find("Canvas3");
             CanvasScaler = Canvas.GetComponent<CanvasScaler>();
 
-            _uiPages = new List<IUIElement>();
-			_uiPages.Add(new LoadingPage());
-			_uiPages.Add(new MainMenuPage());
-			_uiPages.Add(new HeroSelectionPage());
-			_uiPages.Add(new HordeSelectionPage());
-            _uiPages.Add(new CollectionPage());
-            _uiPages.Add(new DeckEditingPage());
-            _uiPages.Add(new ShopPage());
-            _uiPages.Add(new GameplayPage());
-            _uiPages.Add(new PackOpenerPage());
-            _uiPages.Add(new CreditsPage());
+            Pages = new List<IUIElement>();
+            Pages.Add(new LoadingPage());
+            Pages.Add(new MainMenuPage());
+            Pages.Add(new HeroSelectionPage());
+            Pages.Add(new HordeSelectionPage());
+            Pages.Add(new CollectionPage());
+            Pages.Add(new DeckEditingPage());
+            Pages.Add(new ShopPage());
+            Pages.Add(new GameplayPage());
+            Pages.Add(new PackOpenerPage());
+            Pages.Add(new CreditsPage());
 
-            foreach (var page in _uiPages)
+            foreach (IUIElement page in Pages)
+            {
                 page.Init();
+            }
 
             _uiPopups = new List<IUIPopup>();
-			_uiPopups.Add(new CardInfoPopup());
+            _uiPopups.Add(new CardInfoPopup());
             _uiPopups.Add(new DesintigrateCardPopup());
-			_uiPopups.Add(new WarningPopup());
-			_uiPopups.Add(new QuestionPopup());
+            _uiPopups.Add(new WarningPopup());
+            _uiPopups.Add(new QuestionPopup());
             _uiPopups.Add(new TutorialPopup());
             _uiPopups.Add(new PreparingForBattlePopup());
             _uiPopups.Add(new YouLosePopup());
@@ -69,46 +74,54 @@ namespace LoomNetwork.CZB
             _uiPopups.Add(new ConfirmationPopup());
             _uiPopups.Add(new LoadingGameplayPopup());
             _uiPopups.Add(new PlayerOrderPopup());
-            _uiPopups.Add(new TermsPopup ());
-			_uiPopups.Add(new LoginPopup ());
-			_uiPopups.Add(new ConnectionPopup());
+            _uiPopups.Add(new TermsPopup());
+            _uiPopups.Add(new LoginPopup());
+            _uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
 
-            foreach (var popup in _uiPopups)
+            foreach (IUIPopup popup in _uiPopups)
+            {
                 popup.Init();
+            }
         }
 
         public void Update()
         {
-            foreach (var page in _uiPages)
+            foreach (IUIElement page in Pages)
+            {
                 page.Update();
+            }
 
-            foreach (var popup in _uiPopups)
+            foreach (IUIPopup popup in _uiPopups)
+            {
                 popup.Update();
+            }
         }
 
         public void HideAllPages()
         {
-            foreach (var _page in _uiPages)
+            foreach (IUIElement _page in Pages)
             {
                 _page.Hide();
             }
         }
 
-        public void SetPage<T>(bool hideAll = false) where T : IUIElement
+        public void SetPage<T>(bool hideAll = false)
+            where T : IUIElement
         {
             if (hideAll)
             {
                 HideAllPages();
-            }
-            else
+            } else
             {
                 if (CurrentPage != null)
+                {
                     CurrentPage.Hide();
+                }
             }
 
-            foreach (var _page in _uiPages)
+            foreach (IUIElement _page in Pages)
             {
                 if (_page is T)
                 {
@@ -116,14 +129,16 @@ namespace LoomNetwork.CZB
                     break;
                 }
             }
+
             CurrentPage.Show();
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
         }
 
-        public void DrawPopup<T>(object message = null, bool setMainPriority = false) where T : IUIPopup
+        public void DrawPopup<T>(object message = null, bool setMainPriority = false)
+            where T : IUIPopup
         {
             IUIPopup popup = null;
-            foreach (var _popup in _uiPopups)
+            foreach (IUIPopup _popup in _uiPopups)
             {
                 if (_popup is T)
                 {
@@ -133,17 +148,23 @@ namespace LoomNetwork.CZB
             }
 
             if (setMainPriority)
+            {
                 popup.SetMainPriority();
+            }
 
             if (message == null)
+            {
                 popup.Show();
-            else
+            } else
+            {
                 popup.Show(message);
+            }
         }
 
-        public void HidePopup<T>() where T : IUIPopup
+        public void HidePopup<T>()
+            where T : IUIPopup
         {
-            foreach (var _popup in _uiPopups)
+            foreach (IUIPopup _popup in _uiPopups)
             {
                 if (_popup is T)
                 {
@@ -153,10 +174,11 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public T GetPopup<T>() where T : IUIPopup
+        public T GetPopup<T>()
+            where T : IUIPopup
         {
             IUIPopup popup = null;
-            foreach (var _popup in _uiPopups)
+            foreach (IUIPopup _popup in _uiPopups)
             {
                 if (_popup is T)
                 {
@@ -168,10 +190,11 @@ namespace LoomNetwork.CZB
             return (T)popup;
         }
 
-        public T GetPage<T>() where T : IUIElement
+        public T GetPage<T>()
+            where T : IUIElement
         {
             IUIElement page = null;
-            foreach (var _page in _uiPages)
+            foreach (IUIElement _page in Pages)
             {
                 if (_page is T)
                 {

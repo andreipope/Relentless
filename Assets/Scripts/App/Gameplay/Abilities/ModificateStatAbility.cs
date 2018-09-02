@@ -1,25 +1,26 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class ModificateStatAbility : AbilityBase
     {
         public Enumerators.SetType setType;
+
         public Enumerators.StatType statType;
+
         public int value = 1;
 
-
-        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.setType = ability.abilitySetType;
-            this.statType = ability.abilityStatType;
-            this.value = ability.value;
+            setType = ability.abilitySetType;
+            statType = ability.abilityStatType;
+            value = ability.value;
         }
 
         public override void Activate()
@@ -39,15 +40,6 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
-        }
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -55,25 +47,34 @@ namespace LoomNetwork.CZB
             switch (affectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
+                {
+                    if ((targetUnit.Card.libraryCard.cardSetType == setType) || (setType == Enumerators.SetType.NONE))
                     {
-                        if (targetUnit.Card.libraryCard.cardSetType == setType || setType == Enumerators.SetType.NONE)
+                        if (statType == Enumerators.StatType.DAMAGE)
                         {
-                            if (statType == Enumerators.StatType.DAMAGE)
-                            {
-                                targetUnit.BuffedDamage += value;
-                                targetUnit.CurrentDamage += value;
-                            }
-                            else if (statType == Enumerators.StatType.HEALTH)
-                            {
-                                targetUnit.BuffedHP += value;
-                                targetUnit.CurrentHP += value;
-                            }
-
-                            CreateVFX(targetUnit.transform.position);
+                            targetUnit.BuffedDamage += value;
+                            targetUnit.CurrentDamage += value;
+                        } else if (statType == Enumerators.StatType.HEALTH)
+                        {
+                            targetUnit.BuffedHP += value;
+                            targetUnit.CurrentHP += value;
                         }
+
+                        CreateVFX(targetUnit.transform.position);
                     }
+                }
+
                     break;
-                default: break;
+            }
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
+
+            if (_isAbilityResolved)
+            {
+                Action();
             }
         }
     }

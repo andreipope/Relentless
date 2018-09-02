@@ -1,27 +1,23 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class HeroWeaponAbility : AbilityBase
     {
         public int health = 1;
+
         public int damage = 1;
 
-        public HeroWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public HeroWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.health = ability.health;
-            this.damage = ability.damage;
+            health = ability.health;
+            damage = ability.damage;
         }
 
         public override void Activate()
@@ -42,14 +38,14 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
+        }
+
+        protected override void OnInputEndEventHandler()
+        {
+            base.OnInputEndEventHandler();
         }
     }
 }

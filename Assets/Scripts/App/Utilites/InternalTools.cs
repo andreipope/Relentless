@@ -1,37 +1,38 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using System;
-using System.Collections;
-using System.Reflection;
-using LoomNetwork.CZB.Common;
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+using Random = System.Random;
 
 namespace LoomNetwork.CZB.Helpers
 {
     public class InternalTools
     {
-        private static string LINE_BREAK = "%n%";
+        private static readonly string LINE_BREAK = "%n%";
 
-        public static void FixVerticalLayoutGroupFitting(UnityEngine.Object value)
+        public static void FixVerticalLayoutGroupFitting(Object value)
         {
             VerticalLayoutGroup group = null;
 
             if (value is VerticalLayoutGroup)
+            {
                 group = value as VerticalLayoutGroup;
-            else if (value is GameObject)
+            } else if (value is GameObject)
+            {
                 group = (value as GameObject).GetComponent<VerticalLayoutGroup>();
-            else if (value is Transform)
+            } else if (value is Transform)
+            {
                 group = (value as Transform).GetComponent<VerticalLayoutGroup>();
-
+            }
 
             if (group == null)
-                return;
+            
+return;
 
             group.enabled = false;
             Canvas.ForceUpdateCanvases();
@@ -46,7 +47,6 @@ namespace LoomNetwork.CZB.Helpers
             return origin.AddSeconds(timestamp);
         }
 
-
         // InternalTools.CallPhoneNumber("+############");
         public static void CallPhoneNumber(string phone)
         {
@@ -56,38 +56,49 @@ namespace LoomNetwork.CZB.Helpers
         public static string ReplaceLineBreaks(string data)
         {
             if (data == null)
+            {
                 return "";
+            }
 
             return data.Replace(LINE_BREAK, "\n");
         }
 
         public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
         {
-            if(!parentIgnored)
+            if (!parentIgnored)
+            {
                 parent.layer = layer;
+            }
+
             bool ignored = false;
             for (int i = 0; i < parent.transform.childCount; i++)
             {
-                if(ignoreNames != null)
+                if (ignoreNames != null)
+                {
                     ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
+                }
 
-                if (!ignored && !parentIgnored || ignoreNames == null)
+                if ((!ignored && !parentIgnored) || (ignoreNames == null))
+                {
                     parent.transform.GetChild(i).gameObject.layer = layer;
+                }
 
                 if (parent.transform.GetChild(i).childCount > 0)
+                {
                     SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames, ignored);
+                }
             }
         }
 
         public static void ShakeList<T>(ref List<T> list)
         {
-            var rnd = new System.Random();
+            Random rnd = new Random();
             list = list.OrderBy(item => rnd.Next()).ToList();
         }
 
         public static List<T> ShakeList<T>(List<T> list)
         {
-            var rnd = new System.Random();
+            Random rnd = new Random();
             return list.OrderBy(item => rnd.Next()).ToList();
         }
 
@@ -95,13 +106,13 @@ namespace LoomNetwork.CZB.Helpers
         {
             int count = root.childCount;
 
-            float width = spacing * count - 1;
+            float width = (spacing * count) - 1;
 
-            var pivot = new Vector3(offset, 0, 0);
+            Vector3 pivot = new Vector3(offset, 0, 0);
 
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
+                root.GetChild(i).localPosition = new Vector3(pivot.x - (width / 2f), 0, 0);
                 pivot.x += width / count;
             }
         }
@@ -109,30 +120,34 @@ namespace LoomNetwork.CZB.Helpers
         public static void GroupVerticalObjects(Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
         {
             int count = root.childCount;
-            float halfHeightOffset = (height + spacing);
+            float halfHeightOffset = height + spacing;
 
-            float startPos = centerOffset + ((count - 1) * halfHeightOffset / 2f);
+            float startPos = centerOffset + (((count - 1) * halfHeightOffset) / 2f);
 
-            for (var i = 0; i < count; i++)
-                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, (startPos - (halfHeightOffset * i)), root.GetChild(i).localPosition.z);
+            for (int i = 0; i < count; i++)
+            {
+                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, startPos - (halfHeightOffset * i), root.GetChild(i).localPosition.z);
+            }
         }
-
 
         public static List<object> GetRandomElementsFromList(List<object> root, int count)
         {
             List<object> list = new List<object>();
 
             if (root.Count < count)
+            {
                 list.AddRange(root);
-            else
+            } else
             {
                 object element = null;
                 for (int i = 0; i < count; i++)
                 {
                     element = ShakeList(root).First(x => !list.Contains(x));
 
-                    if (element != null && element != default(List<object>))
+                    if ((element != null) && (element != default(List<object>)))
+                    {
                         list.Add(element);
+                    }
                 }
             }
 

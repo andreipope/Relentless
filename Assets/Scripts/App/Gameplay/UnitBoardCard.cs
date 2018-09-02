@@ -1,9 +1,8 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-using LoomNetwork.CZB.Common;
 using System;
+using LoomNetwork.CZB.Data;
 using TMPro;
 using UnityEngine;
 
@@ -12,24 +11,30 @@ namespace LoomNetwork.CZB
     public class UnitBoardCard : BoardCard
     {
         public event Action<int, int> HealthChangedEvent;
+
         public event Action<int, int> DamageChangedEvent;
 
+        public int initialHealth, initialDamage;
+
         protected TextMeshPro attackText;
+
         protected SpriteRenderer typeSprite;
+
         protected TextMeshPro defenseText;
 
-        private int _hp,
-                    _damage;
+        private int _hp, _damage;
 
-        public int initialHealth,
-                   initialDamage;
+        public UnitBoardCard(GameObject selfObject)
+            : base(selfObject)
+        {
+            attackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
+            typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
+        }
 
         public int Health
         {
-            get
-            {
-                return _hp;
-            }
+            get => _hp;
             set
             {
                 int oldHP = _hp;
@@ -40,23 +45,13 @@ namespace LoomNetwork.CZB
 
         public int Damage
         {
-            get
-            {
-                return _damage;
-            }
+            get => _damage;
             set
             {
                 int _oldDamage = _damage;
                 _damage = Mathf.Clamp(value, 0, int.MaxValue);
                 DamageChangedEvent?.Invoke(_oldDamage, _damage);
             }
-        }
-
-        public UnitBoardCard(GameObject selfObject) : base(selfObject)
-        {
-            attackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
-            typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
         public override void Init(WorkingCard card)
@@ -72,13 +67,19 @@ namespace LoomNetwork.CZB
             attackText.text = Damage.ToString();
             defenseText.text = Health.ToString();
 
-            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
 
-            DamageChangedEvent += (oldValue, newValue) => { attackText.text = newValue.ToString(); };
-            HealthChangedEvent += (oldValue, newValue) => { defenseText.text = newValue.ToString(); };
+            DamageChangedEvent += (oldValue, newValue) =>
+            {
+                attackText.text = newValue.ToString();
+            };
+            HealthChangedEvent += (oldValue, newValue) =>
+            {
+                defenseText.text = newValue.ToString();
+            };
         }
 
-        public override void Init(Data.Card card, int amount = 0)
+        public override void Init(Card card, int amount = 0)
         {
             base.Init(card, amount);
 

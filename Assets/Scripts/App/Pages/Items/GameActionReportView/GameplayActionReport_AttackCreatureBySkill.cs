@@ -1,26 +1,29 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using UnityEngine;
-using TMPro;
-using UnityEngine.EventSystems;
 using LoomNetwork.CZB.Data;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
     public class GameplayActionReport_AttackCreatureBySkill : ReportViewBase
     {
         private Player _callerPlayer;
+
         private HeroSkill _usedSkill;
+
         private int _skillValue;
+
         private BoardUnit _skillUsedOnUnit;
 
-        private GameObject _attackedCreatureObj,
-                           _attackingPlayerObj;
+        private GameObject _attackedCreatureObj, _attackingPlayerObj;
 
-        public GameplayActionReport_AttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public GameplayActionReport_AttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
@@ -31,7 +34,7 @@ namespace LoomNetwork.CZB
             _skillValue = (int)gameAction.parameters[2];
             _skillUsedOnUnit = gameAction.parameters[3] as BoardUnit;
 
-            previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.heroElement.ToString() + "_EXP");
+            previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.heroElement + "_EXP");
 
             attackingPictureObject.SetActive(true);
 
@@ -40,7 +43,7 @@ namespace LoomNetwork.CZB
 
             GameObject cardView = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             cardView.SetActive(true);
-            var damageText = cardView.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            TextMeshPro damageText = cardView.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_skillValue).ToString();
             cardView.transform.localPosition = -Vector3.up * 3;
         }
@@ -59,6 +62,5 @@ namespace LoomNetwork.CZB
         {
             base.Dispose();
         }
-
     }
 }

@@ -1,8 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -10,19 +8,8 @@ namespace LoomNetwork.CZB
     public class OpponentBoardArrow : BattleBoardArrow
     {
         private Vector3 _targetPosition = Vector3.zero;
+
         private object _target;
-
-        private void Awake()
-        {
-            Init();
-            SetInverse();
-        }
-
-
-        protected override void Update()
-        {
-            UpdateLength(_targetPosition, false);
-        }
 
         public void SetTarget(object target)
         {
@@ -32,8 +19,7 @@ namespace LoomNetwork.CZB
             {
                 _targetPosition = (_target as Player).AvatarObject.transform.position;
                 (_target as Player).SetGlowStatus(true);
-            }
-            else if (_target is BoardUnit)
+            } else if (_target is BoardUnit)
             {
                 _targetPosition = (_target as BoardUnit).transform.position;
                 (_target as BoardUnit).SetSelectedUnit(true);
@@ -50,12 +36,26 @@ namespace LoomNetwork.CZB
             if (_target != null)
             {
                 if (_target is Player)
+                {
                     (_target as Player).SetGlowStatus(false);
-                else if (_target is BoardUnit)
+                } else if (_target is BoardUnit)
+                {
                     (_target as BoardUnit).SetSelectedUnit(false);
+                }
 
                 _target = null;
             }
+        }
+
+        protected override void Update()
+        {
+            UpdateLength(_targetPosition, false);
+        }
+
+        private void Awake()
+        {
+            Init();
+            SetInverse();
         }
     }
 }

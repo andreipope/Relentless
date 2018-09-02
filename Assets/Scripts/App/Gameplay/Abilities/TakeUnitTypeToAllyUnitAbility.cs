@@ -1,12 +1,11 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
+// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
+using System.Collections.Generic;
+using System.Linq;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 namespace LoomNetwork.CZB
 {
@@ -14,7 +13,8 @@ namespace LoomNetwork.CZB
     {
         public Enumerators.CardType unitType;
 
-        public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             unitType = ability.targetUnitType;
         }
@@ -24,7 +24,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            
+return;
 
             Action();
         }
@@ -39,6 +40,21 @@ namespace LoomNetwork.CZB
             base.Dispose();
         }
 
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            List<BoardUnit> allies = new List<BoardUnit>();
+
+            allies = playerCallerOfAbility.BoardCards.Where(unit => (unit != abilityUnitOwner) && !unit.hasFeral && (unit.numTurnsOnBoard == 0)).ToList();
+
+            if (allies.Count > 0)
+            {
+                int random = Random.Range(0, allies.Count);
+                TakeTypeToUnit(allies[random]);
+            }
+        }
+
         protected override void OnInputEndEventHandler()
         {
             base.OnInputEndEventHandler();
@@ -47,7 +63,8 @@ namespace LoomNetwork.CZB
         private void TakeTypeToUnit(BoardUnit unit)
         {
             if (unit == null)
-                return;
+            
+return;
 
             switch (unitType)
             {
@@ -57,21 +74,6 @@ namespace LoomNetwork.CZB
                 case Enumerators.CardType.FERAL:
                     unit.SetAsFeralUnit();
                     break;
-            }
-        }
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            List<BoardUnit> allies = new List<BoardUnit>();
-
-            allies = playerCallerOfAbility.BoardCards.Where((unit) => unit != abilityUnitOwner && 
-                              !unit.hasFeral && unit.numTurnsOnBoard == 0).ToList();
-
-            if (allies.Count > 0)
-            {
-                int random = Random.Range(0, allies.Count);
-                TakeTypeToUnit(allies[random]);
             }
         }
     }

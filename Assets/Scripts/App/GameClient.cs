@@ -8,28 +8,14 @@ namespace LoomNetwork.CZB
 {
     public class GameClient : ServiceLocatorBase
     {
-        private static object _sync = new object();
+        private static readonly object _sync = new object();
 
         private static GameClient _Instance;
-        public static GameClient Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                {
-                    lock (_sync)
-                    {
-                        _Instance = new GameClient();
-                    }
-                }
-                return _Instance;
-            }
-        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameClient"/> class.
+        ///     Initializes a new instance of the <see cref="GameClient" /> class.
         /// </summary>
-        internal GameClient() : base()
+        internal GameClient()
         {
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
             BackendPurpose backend = BackendPurpose.Local;
@@ -47,7 +33,7 @@ namespace LoomNetwork.CZB
             AddService<IDataManager>(new DataManager());
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
-            AddService<ICameraManager>(new CameraManager()); 
+            AddService<ICameraManager>(new CameraManager());
             AddService<IPlayerManager>(new PlayerManager());
             AddService<ISoundManager>(new SoundManager());
             AddService<INavigationManager>(new NavigationManager());
@@ -57,14 +43,26 @@ namespace LoomNetwork.CZB
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<BackendFacade>(new BackendFacade(
-                backendEndpoint.AuthHost,
-                backendEndpoint.ReaderHost,
-                backendEndpoint.WriterHost
-                ));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost, backendEndpoint.WriterHost));
             AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
+        }
+
+        public static GameClient Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                {
+                    lock (_sync)
+                    {
+                        _Instance = new GameClient();
+                    }
+                }
+
+                return _Instance;
+            }
         }
 
         public static T Get<T>()

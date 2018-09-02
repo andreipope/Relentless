@@ -4,14 +4,16 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
-public class SortingOrderMeshRenderer : MonoBehaviour {
+public class SortingOrderMeshRenderer : MonoBehaviour
+{
+    [SerializeField]
+    private readonly string _sortingLayer = "";
 
     [SerializeField]
-    private string _sortingLayer = "";
-    [SerializeField]
-    private int _orderInLayer = 0;
+    private readonly int _orderInLayer = 0;
 
-    void Start () {
+    private void Start()
+    {
         gameObject.GetComponent<Renderer>().sortingLayerName = _sortingLayer;
         gameObject.GetComponent<Renderer>().sortingOrder = _orderInLayer;
     }

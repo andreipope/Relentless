@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
@@ -9,7 +8,8 @@ namespace LoomNetwork.CZB
 {
     public class DestroyFrozenZombieAbility : AbilityBase
     {
-        public DestroyFrozenZombieAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DestroyFrozenZombieAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
             targetUnitStatusType = ability.targetUnitStatusType;
         }
@@ -33,7 +33,7 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if(_isAbilityResolved)
+            if (_isAbilityResolved)
             {
                 targetUnit.Die();
             }

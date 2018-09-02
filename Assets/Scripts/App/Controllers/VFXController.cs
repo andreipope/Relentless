@@ -1,27 +1,30 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
-using System;
 using TMPro;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class VFXController : IController
     {
         private ISoundManager _soundManager;
+
         private ITimerManager _timerManager;
+
         private ILoadObjectsManager _loadObjectsManager;
+
         private IGameplayManager _gameplayManager;
 
         private ParticlesController _particlesController;
 
         public Sprite FeralFrame { get; set; }
+
         public Sprite HeavyFrame { get; set; }
 
         public void Init()
@@ -58,95 +61,105 @@ namespace LoomNetwork.CZB
             if (type == Enumerators.CardType.FERAL)
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
-                effect = GameObject.Instantiate(vfxPrefab);
+                effect = Object.Instantiate(vfxPrefab);
                 effect.transform.position = target - offset;
                 _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
-                if (damage > 3 && damage < 7)
+                if ((damage > 3) && (damage < 7))
                 {
-                    _timerManager.AddTimer((a) =>
-                    {
-                        effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target - offset;
-                        effect.transform.localScale = new Vector3(-1, 1, 1);
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-
-                    }, null, 0.5f, false);
+                    _timerManager.AddTimer(
+                        a =>
+                        {
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target - offset;
+                            effect.transform.localScale = new Vector3(-1, 1, 1);
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+                        },
+                        null,
+                        0.5f,
+                        false);
                 }
+
                 if (damage > 6)
                 {
-                    _timerManager.AddTimer((a) =>
-                    {
-                        effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target - Vector3.right - offset;
-                        effect.transform.eulerAngles = Vector3.forward * 90;
+                    _timerManager.AddTimer(
+                        a =>
+                        {
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target - Vector3.right - offset;
+                            effect.transform.eulerAngles = Vector3.forward * 90;
 
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                    }, null, 1.0f, false);
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+                        },
+                        null,
+                        1.0f,
+                        false);
                 }
-                //GameClient.Get<ITimerManager>().AddTimer((a) =>
-                //{
-                //    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                //}, null, 0.75f, false);
-            }
-            else if (type == Enumerators.CardType.HEAVY)
+
+                // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                // {
+                // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                // }, null, 0.75f, false);
+            } else if (type == Enumerators.CardType.HEAVY)
             {
-                var soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
-                var prefabName = "Prefabs/VFX/HeavyAttackVFX";
+                Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
+                string prefabName = "Prefabs/VFX/HeavyAttackVFX";
                 if (damage > 4)
                 {
                     prefabName = "Prefabs/VFX/HeavyAttack2VFX";
                     soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
                 }
+
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
-                effect = GameObject.Instantiate(vfxPrefab);
+                effect = Object.Instantiate(vfxPrefab);
                 effect.transform.position = target;
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
                 _soundManager.PlaySound(soundType, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+
                 /* GameClient.Get<ITimerManager>().AddTimer((a) =>
-                     {
-                     }, null, 0.75f, false);*/
-            }
-            else
+                                     {
+                                     }, null, 0.75f, false);*/
+            } else
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
-                effect = GameObject.Instantiate(vfxPrefab);
+                effect = Object.Instantiate(vfxPrefab);
                 effect.transform.position = target - offset;
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
                 if (damage > 4)
                 {
-                    _timerManager.AddTimer((a) =>
-                    {
-                        effect = GameObject.Instantiate(vfxPrefab);
-                        effect.transform.position = target - offset;
+                    _timerManager.AddTimer(
+                        a =>
+                        {
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target - offset;
 
-                        effect.transform.localScale = new Vector3(-1, 1, 1);
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+                            effect.transform.localScale = new Vector3(-1, 1, 1);
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+                        },
+                        null,
+                        0.5f,
+                        false);
 
-
-                    }, null, 0.5f, false);
-                    //  GameClient.Get<ITimerManager>().AddTimer((a) =>
-                    //  {
+                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    // {
                     _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+
+                    // }, null, 0.75f, false);
+                } else
+                {
+                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    // {
+                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+
                     // }, null, 0.75f, false);
                 }
-                else
-                {
-                    //    GameClient.Get<ITimerManager>().AddTimer((a) =>
-                    //   {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                    //     }, null, 0.75f, false);
-                }
             }
-
         }
 
         public void CreateVFX(Enumerators.SetType setType, Vector3 position, bool autoDestroy = true, float delay = 3f)
@@ -173,32 +186,33 @@ namespace LoomNetwork.CZB
                 case Enumerators.SetType.AIR:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
                     break;
-                default:
-                    break;
             }
 
-            var particle = MonoBehaviour.Instantiate(prefab);
+            GameObject particle = Object.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-
         public void CreateVFX(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
             if (prefab == null)
-                return;
+            
+return;
 
             Vector3 position = Vector3.zero;
 
-
             if (target is BoardUnit)
+            {
                 position = (target as BoardUnit).transform.position;
-            else if (target is Player)
+            } else if (target is Player)
+            {
                 position = (target as Player).AvatarObject.transform.position;
-            else if (target is Transform)
+            } else if (target is Transform)
+            {
                 position = (target as Transform).transform.position;
+            }
 
-         var particle = MonoBehaviour.Instantiate(prefab);
+            GameObject particle = Object.Instantiate(prefab);
             particle.transform.position = Utilites.CastVFXPosition(position + Vector3.forward);
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
@@ -206,30 +220,36 @@ namespace LoomNetwork.CZB
         public void CreateSkillVFX(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
         {
             if (target == null)
-                return;
+            
+return;
 
-            var particleSystem = MonoBehaviour.Instantiate(prefab);
+            GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVFXPosition(from + Vector3.forward);
 
             if (target is Player)
             {
-                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(() =>
-                {
-                    callbackComplete(target);
+                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(
+                    () =>
+                    {
+                        callbackComplete(target);
 
-                    if (particleSystem != null)
-                        MonoBehaviour.Destroy(particleSystem);
-                });
-            }
-            else if (target is BoardUnit)
+                        if (particleSystem != null)
+                        {
+                            Object.Destroy(particleSystem);
+                        }
+                    });
+            } else if (target is BoardUnit)
             {
-                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as BoardUnit).transform.position), .5f).OnComplete(() =>
-                {
-                    callbackComplete(target);
+                particleSystem.transform.DOMove(Utilites.CastVFXPosition((target as BoardUnit).transform.position), .5f).OnComplete(
+                    () =>
+                    {
+                        callbackComplete(target);
 
-                    if (particleSystem != null)
-                        MonoBehaviour.Destroy(particleSystem);
-                });
+                        if (particleSystem != null)
+                        {
+                            Object.Destroy(particleSystem);
+                        }
+                    });
             }
         }
 
@@ -238,16 +258,19 @@ namespace LoomNetwork.CZB
             Transform target = null;
 
             if (onObject is BoardUnit)
+            {
                 target = (onObject as BoardUnit).transform;
-            else if (onObject is Player)
+            } else if (onObject is Player)
+            {
                 target = (onObject as Player).AvatarObject.transform;
+            }
 
-            var effect = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));
+            GameObject effect = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));
             effect.transform.Find("Text_Info").GetComponent<TextMeshPro>().text = count.ToString();
             effect.transform.SetParent(target, false);
             effect.transform.localPosition = Vector3.zero;
 
-            MonoBehaviour.Destroy(effect, 2.5f);
+            Object.Destroy(effect, 2.5f);
         }
     }
 }

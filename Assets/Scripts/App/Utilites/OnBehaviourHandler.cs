@@ -1,8 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,19 +10,45 @@ namespace LoomNetwork.CZB
     public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public event Action<GameObject> OnMouseUpEvent;
+
         public event Action<GameObject> OnMouseDownEvent;
+
         public event Action<Collider2D> OnTriggerEnter2DEvent;
+
         public event Action<Collider2D> OnTriggerExit2DEvent;
+
         public event Action<Collider> OnTriggerEnterEvent;
+
         public event Action<Collider> OnTriggerExitEvent;
+
         public event Action<GameObject> OnDestroyEvent;
+
         public event Action<PointerEventData> OnPointerEnterEvent;
+
         public event Action<PointerEventData> OnPointerExitEvent;
+
         public event Action<GameObject> OnUpdateEvent;
+
         public event Action<PointerEventData, GameObject> OnDragEvent;
+
         public event Action<PointerEventData, GameObject> OnBeginDragEvent;
+
         public event Action<PointerEventData, GameObject> OnEndDragEvent;
 
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            OnBeginDragEvent?.Invoke(eventData, gameObject);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            OnDragEvent?.Invoke(eventData, gameObject);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            OnEndDragEvent?.Invoke(eventData, gameObject);
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -34,21 +58,6 @@ namespace LoomNetwork.CZB
         public void OnPointerExit(PointerEventData eventData)
         {
             OnPointerExitEvent?.Invoke(eventData);
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            OnDragEvent?.Invoke(eventData, gameObject);
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            OnBeginDragEvent?.Invoke(eventData, gameObject);
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            OnEndDragEvent?.Invoke(eventData, gameObject);
         }
 
         private void Update()

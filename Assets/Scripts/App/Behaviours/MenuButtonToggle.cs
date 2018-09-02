@@ -1,54 +1,36 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
+using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using DG.Tweening;
-using System;
-
 public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public bool isToggleEnabled = false;
-
-    [Serializable]
-    public class MenuButtonToggleEvent : UnityEvent<bool>
-    { }
-
-
-
-    [SerializeField]
-    protected Image onHoverOverlayToggleDisabled,
-                    onClickOverlayToggleDisabled,
-                    onHoverOverlayToggleEnabled,
-                    onClickOverlayToggleEnabled,
-                    buttonEnabled,
-                    buttonDisabled;
-
-
+    public bool isToggleEnabled;
 
     public MenuButtonToggleEvent onValueChangedEvent = new MenuButtonToggleEvent();
 
-    private void Awake()
-    {
- 
-    }
+    [SerializeField]
+    protected Image onHoverOverlayToggleDisabled, onClickOverlayToggleDisabled, onHoverOverlayToggleEnabled, onClickOverlayToggleEnabled, buttonEnabled, buttonDisabled;
 
-    private void Start()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if(isToggleEnabled)
+        if (isToggleEnabled)
         {
-            buttonEnabled.enabled = true;
-            buttonDisabled.enabled = false;
-        }
-        else
+            onHoverOverlayToggleEnabled.DOKill();
+            onHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
+            onClickOverlayToggleEnabled.DOKill();
+            onClickOverlayToggleEnabled.DOFade(1.0f, 0.2f);
+        } else
         {
-            buttonEnabled.enabled = false;
-            buttonDisabled.enabled = true;
+            onHoverOverlayToggleDisabled.DOKill();
+            onHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
+            onClickOverlayToggleDisabled.DOKill();
+            onClickOverlayToggleDisabled.DOFade(1.0f, 0.2f);
         }
     }
 
@@ -58,9 +40,7 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             onHoverOverlayToggleEnabled.DOKill();
             onHoverOverlayToggleEnabled.DOFade(1.0f, 0.5f);
-
-        }
-        else
+        } else
         {
             onHoverOverlayToggleDisabled.DOKill();
             onHoverOverlayToggleDisabled.DOFade(1.0f, 0.5f);
@@ -73,29 +53,10 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             onHoverOverlayToggleEnabled.DOKill();
             onHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
-        }
-        else
+        } else
         {
             onHoverOverlayToggleDisabled.DOKill();
             onHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
-        }
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (isToggleEnabled)
-        {
-            onHoverOverlayToggleEnabled.DOKill();
-            onHoverOverlayToggleEnabled.DOFade(0.0f, 0.25f);
-            onClickOverlayToggleEnabled.DOKill();
-            onClickOverlayToggleEnabled.DOFade(1.0f, 0.2f);
-        }
-        else
-        {
-            onHoverOverlayToggleDisabled.DOKill();
-            onHoverOverlayToggleDisabled.DOFade(0.0f, 0.25f);
-            onClickOverlayToggleDisabled.DOKill();
-            onClickOverlayToggleDisabled.DOFade(1.0f, 0.2f);
         }
     }
 
@@ -113,8 +74,7 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             onHoverOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
             onClickOverlayToggleDisabled.color = new Color(1, 1, 1, 0);
-        }
-        else
+        } else
         {
             onHoverOverlayToggleDisabled.enabled = false;
             onClickOverlayToggleDisabled.enabled = false;
@@ -131,13 +91,36 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         isToggleEnabled = !isToggleEnabled;
 
         if (onValueChangedEvent != null)
+        {
             onValueChangedEvent.Invoke(isToggleEnabled);
+        }
     }
-
 
     public void SetStatus(bool status)
     {
         isToggleEnabled = !status;
         OnPointerUp(null);
+    }
+
+    private void Awake()
+    {
+    }
+
+    private void Start()
+    {
+        if (isToggleEnabled)
+        {
+            buttonEnabled.enabled = true;
+            buttonDisabled.enabled = false;
+        } else
+        {
+            buttonEnabled.enabled = false;
+            buttonDisabled.enabled = true;
+        }
+    }
+
+    [Serializable]
+    public class MenuButtonToggleEvent : UnityEvent<bool>
+    {
     }
 }

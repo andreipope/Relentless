@@ -1,6 +1,6 @@
-﻿#if !UNITY_CLOUD_BUILD
+﻿using System.Collections.Generic;
 
-using System.Collections.Generic;
+#if !UNITY_CLOUD_BUILD
 
 namespace UnityEngine.CloudBuild
 {

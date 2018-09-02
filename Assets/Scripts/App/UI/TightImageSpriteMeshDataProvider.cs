@@ -11,7 +11,9 @@ namespace LoomNetwork.CZB
         public static SpriteMeshData GetSpriteMeshData(Sprite sprite)
         {
             if (sprite == null)
+            {
                 throw new ArgumentNullException(nameof(sprite));
+            }
 
             SpriteMeshData spriteMeshData;
             if (!spriteMeshDataMap.TryGetValue(sprite, out spriteMeshData))
@@ -23,14 +25,18 @@ namespace LoomNetwork.CZB
                 spriteMeshData.Vertices = sprite.vertices;
                 spriteMeshDataMap.Add(sprite, spriteMeshData);
             }
+
             return spriteMeshData;
         }
-        
+
         public class SpriteMeshData
         {
             public int SpriteInstanceId;
+
             public ushort[] Triangles;
+
             public Vector2[] UV;
+
             public Vector2[] Vertices;
         }
     }

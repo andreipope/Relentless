@@ -1,8 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
 using LoomNetwork.CZB.Common;
 
 namespace LoomNetwork.CZB.Data
@@ -10,10 +8,14 @@ namespace LoomNetwork.CZB.Data
     public class UserLocalData
     {
         public Enumerators.Language appLanguage;
+
         public bool tutorial = true;
+
         public int lastSelectedDeckId;
-		public bool agreedTerms = false;
-        public bool openedFirstPack = false;
+
+        public bool agreedTerms = false;
+
+        public bool openedFirstPack;
 
         public UserLocalData()
         {

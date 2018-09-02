@@ -1,11 +1,9 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -14,10 +12,9 @@ namespace LoomNetwork.CZB
     {
         event Action<Enumerators.Language> LanguageWasChangedEvent;
 
-
         Dictionary<SystemLanguage, Enumerators.Language> SupportedLanguages { get; }
-        Enumerators.Language CurrentLanguage { get; }
 
+        Enumerators.Language CurrentLanguage { get; }
 
         void ApplyLocalization();
 

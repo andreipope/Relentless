@@ -1,16 +1,13 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-
-
-using System.Collections;
-using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using Loom.Newtonsoft.Json;
 using System;
-using LoomNetwork.Internal;
+using System.Collections.Generic;
 using System.Linq;
+using Loom.Newtonsoft.Json;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.Internal;
+using UnityEngine;
 
 namespace LoomNetwork.CZB.Data
 {
@@ -26,13 +23,12 @@ namespace LoomNetwork.CZB.Data
             get
             {
                 if (_allCards == null)
+                {
                     FillAllCards();
-                return _allCards;
-        }
-        }
+                }
 
-        public CardsLibraryData()
-        {
+                return _allCards;
+            }
         }
 
         public Card GetCard(int id)
@@ -55,65 +51,76 @@ namespace LoomNetwork.CZB.Data
             bool removeCardsWithoutGraphics = false;
 
             // remove cards without iamges
-            var cardsToRemoveFromSet = new List<Card>();
+            List<Card> cardsToRemoveFromSet = new List<Card>();
 
             _allCards = new List<Card>();
             int id = 0;
             if (sets != null)
             {
-                foreach (var set in sets)
+                foreach (CardSet set in sets)
                 {
-                    foreach (var card in set.cards)
+                    foreach (Card card in set.cards)
                     {
                         if (removeCardsWithoutGraphics)
                         {
-							// remove cards without iamges
-                            if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<UnityEngine.Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}",
-                                                      set.name.ToLower(),
-                                                      card.rank.ToLower(),
-                                                      card.picture.ToLower())) == null)
+                            // remove cards without iamges
+                            if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", set.name.ToLower(), card.rank.ToLower(), card.picture.ToLower())) == null)
                             {
                                 cardsToRemoveFromSet.Add(card);
-								continue;
-							}
-						}
+                                continue;
+                            }
+                        }
 
-                        card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
+                        card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); // todo improve this shit!
 
-						if (card.kind != null)
+                        if (card.kind != null)
+                        {
                             card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
-						if (card.rank != null)
-                            card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
-						if (card.type != null)
-                            card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
+                        }
 
-						foreach (var ability in card.abilities)
+                        if (card.rank != null)
+                        {
+                            card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
+                        }
+
+                        if (card.type != null)
+                        {
+                            card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
+                        }
+
+                        foreach (AbilityData ability in card.abilities)
+                        {
                             ability.ParseData();
+                        }
+
                         _allCards.Add(card);
 
-						if (card.cardSetType != Enumerators.SetType.OTHERS)
-							card.id = id;
+                        if (card.cardSetType != Enumerators.SetType.OTHERS)
+                        {
+                            card.id = id;
+                        }
 
-						id++;
-					}
-				}
-			}
-
+                        id++;
+                    }
+                }
+            }
 
             if (removeCardsWithoutGraphics)
             {
                 // remove cards without iamges
-                foreach (var card in cardsToRemoveFromSet)
+                foreach (Card card in cardsToRemoveFromSet)
                 {
-                    foreach (var set in sets)
+                    foreach (CardSet set in sets)
                     {
                         if (set.cards.Contains(card))
+                        {
                             set.cards.Remove(card);
+                        }
                     }
                 }
+
                 cardsToRemoveFromSet.Clear();
             }
-
 
             SortCardsByRank();
         }
@@ -121,16 +128,21 @@ namespace LoomNetwork.CZB.Data
         public void SortCardsByRank()
         {
             if (_allCards != null)
+            {
                 _allCards = _allCards.OrderBy(x => (int)x.cardRank).ToList();
+            }
 
-            foreach (var set in sets)
+            foreach (CardSet set in sets)
+            {
                 set.cards = set.cards.OrderBy(x => (int)x.cardRank).ToList();
-    }
+            }
+        }
     }
 
     public class CardSet
     {
         public string name;
+
         public List<Card> cards;
 
         public override string ToString()
@@ -138,6 +150,4 @@ namespace LoomNetwork.CZB.Data
             return $"({nameof(name)}: {name}, {cards.Count} cards)";
         }
     }
-
-    
 }

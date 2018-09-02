@@ -6,7 +6,8 @@ namespace LoomNetwork.CZB.Editor
     [CustomEditor(typeof(ButtonShiftingContent))]
     public class ButtonShiftingContentEditor : ButtonEditor
     {
-        public override void OnInspectorGUI() {
+        public override void OnInspectorGUI()
+        {
             base.OnInspectorGUI();
 
             serializedObject.Update();

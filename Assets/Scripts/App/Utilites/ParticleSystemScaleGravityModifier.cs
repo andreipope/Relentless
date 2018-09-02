@@ -1,8 +1,6 @@
 // Copyright (c) 2018 - Loom Network. All rights reserved.
 // https://loomx.io/
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -11,7 +9,9 @@ namespace LoomNetwork.CZB
     public class ParticleSystemScaleGravityModifier : MonoBehaviour
     {
         public bool Is2D = true;
+
         private ParticleSystem _particleSystem;
+
         private float _initialGravityModifierMultiplier;
 
         private void Start()
@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
         private void Update()
         {
             Vector3 lossyScale = transform.lossyScale;
-            float scale = Is2D ? ((Vector2) lossyScale).magnitude : lossyScale.magnitude;
+            float scale = Is2D?((Vector2)lossyScale).magnitude:lossyScale.magnitude;
             ParticleSystem.MainModule mainModule = _particleSystem.main;
             mainModule.gravityModifierMultiplier = _initialGravityModifierMultiplier * scale;
         }
