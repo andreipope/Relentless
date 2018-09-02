@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
             try
             {
                 Action?.Invoke(Parameter, ActionDoneCallback);
-            } catch (Exception ex)
+            } catch (Exception)
             {
                 if (!_actionDone)
                 {

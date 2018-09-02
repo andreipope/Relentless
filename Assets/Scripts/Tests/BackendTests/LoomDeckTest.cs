@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using Loom.Newtonsoft.Json;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Protobuf;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 using Deck = LoomNetwork.CZB.Data.Deck;

@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
-using Loom.Newtonsoft.Json;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace LoomNetwork.CZB.BackendCommunication

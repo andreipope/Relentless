@@ -1,5 +1,5 @@
-﻿using System;
-using Loom.Newtonsoft.Json;
+using System;
+using Newtonsoft.Json;
 
 namespace LoomNetwork.CZB.BackendCommunication
 {

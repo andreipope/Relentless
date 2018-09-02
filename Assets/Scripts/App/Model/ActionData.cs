@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Loom.Newtonsoft.Json;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.Internal;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class ActionData

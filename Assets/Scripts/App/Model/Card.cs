@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Loom.Newtonsoft.Json;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Helpers;
+using Newtonsoft.Json;
 
 namespace LoomNetwork.CZB.Data
 {

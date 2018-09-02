@@ -182,7 +182,7 @@ namespace LoomNetwork.CZB
             try
             {
                 await DoAiBrain(_aiBrainCancellationTokenSource.Token);
-            } catch (OperationCanceledException e)
+            } catch (OperationCanceledException)
             {
                 Debug.Log("brain canceled!");
             }

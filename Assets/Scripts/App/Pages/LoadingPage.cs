@@ -302,7 +302,7 @@ namespace LoomNetwork.CZB
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
                 dataManager.StartLoadCache();
-            } catch (Exception e)
+            } catch (Exception)
             {
                 OpenAlertDialog("Not Able to Create Account..");
             }

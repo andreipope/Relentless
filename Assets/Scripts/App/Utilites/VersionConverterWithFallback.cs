@@ -1,6 +1,6 @@
-﻿using System;
-using Loom.Newtonsoft.Json;
-using Loom.Newtonsoft.Json.Converters;
+using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace LoomNetwork.CZB
 {
@@ -18,7 +18,7 @@ namespace LoomNetwork.CZB
             try
             {
                 return base.ReadJson(reader, objectType, existingValue, serializer);
-            } catch (JsonSerializationException e)
+            } catch (JsonSerializationException)
             {
                 return FallbackVersion;
             }

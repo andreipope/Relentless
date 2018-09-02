@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityAsyncAwaitUtil;
 using UnityEngine;
 using UnityEngine.Networking;

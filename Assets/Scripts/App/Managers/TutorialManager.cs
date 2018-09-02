@@ -40,23 +40,23 @@ namespace LoomNetwork.CZB
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, true));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thinking, _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thinking, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0))); // card vs player
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, true));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thinking, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
@@ -65,12 +65,12 @@ namespace LoomNetwork.CZB
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Pointing, _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Thumbsup, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
+            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.ThumbsUp, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Normal, _contentManager.TutorialInfo[i].Description, false));
             _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.Kiss, _contentManager.TutorialInfo[i].Description, false));
 
