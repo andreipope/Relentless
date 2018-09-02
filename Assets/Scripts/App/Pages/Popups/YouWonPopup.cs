@@ -56,7 +56,6 @@ namespace LoomNetwork.CZB
             GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

@@ -437,7 +437,6 @@ namespace LoomNetwork.CZB
         public void SetFirstHand(bool isTutorial = false)
         {
             if (isTutorial)
-
                 return;
 
             for (int i = 0; i < Constants.DefaultCardsInHandAtStartGame; i++)

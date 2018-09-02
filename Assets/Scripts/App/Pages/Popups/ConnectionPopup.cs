@@ -45,7 +45,6 @@ namespace LoomNetwork.CZB
             ConnectFunc = null;
 
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

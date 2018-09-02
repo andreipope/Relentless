@@ -264,7 +264,6 @@ namespace LoomNetwork.CZB
         public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation, Vector3 scale)
         {
             if (IsPreview)
-
                 return;
 
             PositionOnHand = position;
@@ -297,7 +296,6 @@ namespace LoomNetwork.CZB
         public virtual void SetDefaultAnimation(int id)
         {
             if (IsPreview)
-
                 return;
 
             CardAnimator.enabled = true;
@@ -370,7 +368,6 @@ namespace LoomNetwork.CZB
         public void ReturnCardToDeck()
         {
             if (!CardsController.CardDistribution)
-
                 return;
 
             CardsController.ReturnCardToDeck(
@@ -618,7 +615,6 @@ namespace LoomNetwork.CZB
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.Spell)
-
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -732,7 +728,6 @@ namespace LoomNetwork.CZB
         protected virtual void UpdatePositionOnHand()
         {
             if (IsPreview)
-
                 return;
 
             Transform.DOScale(ScaleOnHand, 0.5f);
@@ -768,7 +763,6 @@ namespace LoomNetwork.CZB
         private void UpdateCardsStatusEventHandler(Player player)
         {
             if (IsPreview)
-
                 return;
 
             if (CanBePlayed(player) && CanBeBuyed(player))
@@ -791,7 +785,6 @@ namespace LoomNetwork.CZB
         private void OnMouseDownEventHandler(GameObject obj)
         {
             if (!CardsController.CardDistribution)
-
                 return;
 
             CardShouldBeChanged = !CardShouldBeChanged;

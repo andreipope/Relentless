@@ -67,7 +67,6 @@ namespace LoomNetwork.CZB
             base.OnEndTurnEventHandler();
 
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-
                 return;
 
             ActionEnd();

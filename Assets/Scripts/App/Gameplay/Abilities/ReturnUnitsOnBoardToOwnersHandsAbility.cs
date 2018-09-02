@@ -16,7 +16,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();

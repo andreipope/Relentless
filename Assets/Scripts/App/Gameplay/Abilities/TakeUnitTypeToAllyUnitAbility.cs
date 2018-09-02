@@ -21,7 +21,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();
@@ -60,7 +59,6 @@ namespace LoomNetwork.CZB
         private void TakeTypeToUnit(BoardUnit unit)
         {
             if (unit == null)
-
                 return;
 
             switch (UnitType)

@@ -151,7 +151,6 @@ namespace LoomNetwork.CZB
         public void KillBoardCard(BoardUnit cardToDestroy)
         {
             if (cardToDestroy == null)
-
                 return;
 
             if ((_lastBoardUntilOnPreview != null) && (cardToDestroy == _lastBoardUntilOnPreview))
@@ -316,7 +315,6 @@ namespace LoomNetwork.CZB
         public void StartTurn()
         {
             if (_gameplayManager.GameEnded)
-
                 return;
 
             CurrentTurn++;
@@ -394,7 +392,6 @@ namespace LoomNetwork.CZB
         public void EndTurn()
         {
             if (_gameplayManager.GameEnded)
-
                 return;
 
             if (_gameplayManager.IsLocalPlayerTurn())
@@ -496,7 +493,6 @@ namespace LoomNetwork.CZB
         public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnit> cardsList, Action onComplete = null)
         {
             if (_gameplayManager.GameEnded)
-
                 return;
 
             if (_rearrangingRealTimeSequence != null)
@@ -538,10 +534,7 @@ namespace LoomNetwork.CZB
             sequence.OnComplete(
                 () =>
                 {
-                    if (onComplete != null)
-                    {
-                        onComplete();
-                    }
+                    onComplete?.Invoke();
                 });
         }
 
@@ -557,12 +550,10 @@ namespace LoomNetwork.CZB
                     null,
                     .1f,
                     false);
-
                 return;
             }
 
             if (_gameplayManager.GameEnded)
-
                 return;
 
             List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
@@ -602,10 +593,7 @@ namespace LoomNetwork.CZB
             sequence.OnComplete(
                 () =>
                 {
-                    if (onComplete != null)
-                    {
-                        onComplete();
-                    }
+                    onComplete?.Invoke();
                 });
 
             _timerManager.AddTimer(
@@ -713,7 +701,6 @@ namespace LoomNetwork.CZB
         public void DestroyCardPreview()
         {
             if (!IsPreviewActive)
-
                 return;
 
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
@@ -885,10 +872,7 @@ namespace LoomNetwork.CZB
 
         public void DestroyBoardUnit(BoardUnit unit)
         {
-            if (unit != null)
-            {
-                unit.Die();
-            }
+            unit?.Die();
         }
 
         public void TakeControlUnit(Player to, BoardUnit unit)

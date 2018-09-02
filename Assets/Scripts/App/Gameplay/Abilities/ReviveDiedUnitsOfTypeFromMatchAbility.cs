@@ -19,7 +19,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();
@@ -69,7 +68,6 @@ namespace LoomNetwork.CZB
             Player playerOwner = workingCard.Owner;
 
             if (playerOwner.BoardCards.Count >= Constants.MaxBoardUnits)
-
                 return;
 
             Card libraryCard = workingCard.LibraryCard.Clone();

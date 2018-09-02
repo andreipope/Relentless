@@ -317,20 +317,6 @@ namespace LoomNetwork.CZB.Common
             Pve
         }
 
-        public enum MouseCode
-        {
-            LeftMouseButton = 0,
-            RightMouseButton,
-            WheelMouse,
-            Other
-        }
-
-        public enum NotificationButtonState
-        {
-            Active,
-            Inactive
-        }
-
         public enum NotificationType
         {
             Log,
@@ -384,12 +370,6 @@ namespace LoomNetwork.CZB.Common
             IceWall,
             Shatter,
             Blizzard
-        }
-
-        public enum ScreenOrientationMode
-        {
-            Portrait,
-            Landscape
         }
 
         public enum SetType

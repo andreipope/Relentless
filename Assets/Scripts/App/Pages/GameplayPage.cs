@@ -105,7 +105,6 @@ namespace LoomNetwork.CZB
             _isPlayerInited = false;
 
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);
@@ -283,10 +282,7 @@ namespace LoomNetwork.CZB
             // ClearGraveyard();
             SetEndTurnButtonStatus(true);
 
-            if (_reportGameActionsPanel != null)
-            {
-                _reportGameActionsPanel.Clear();
-            }
+            _reportGameActionsPanel?.Clear();
         }
 
         // public void ClearGraveyard()
@@ -384,7 +380,6 @@ namespace LoomNetwork.CZB
         private void OnPlayerDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _playerCardDeckCountText.text = index.ToString();
@@ -406,7 +401,6 @@ namespace LoomNetwork.CZB
         private void OnPlayerGraveyardUpdatedEventHandler(int index)
         {
             if (!_isPlayerInited)
-
                 return;
 
             if (index == 0)
@@ -437,7 +431,6 @@ namespace LoomNetwork.CZB
         private void OnOpponentDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _opponentCardDeckCountText.text = index.ToString();
@@ -459,7 +452,6 @@ namespace LoomNetwork.CZB
         private void OnOpponentGraveyardUpdatedEventHandler(int index)
         {
             if (!_isPlayerInited)
-
                 return;
 
             if (index == 0)
@@ -490,7 +482,6 @@ namespace LoomNetwork.CZB
         private void OnPlayerHpChanged(int health)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _playerHealthText.text = health.ToString();
@@ -508,7 +499,6 @@ namespace LoomNetwork.CZB
         private void OnPlayerGooChanged(int goo)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _playerManaBar.SetGoo(goo);
@@ -517,7 +507,6 @@ namespace LoomNetwork.CZB
         private void OnPlayerVialGooChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _playerManaBar.SetVialGoo(currentTurnGoo);
@@ -526,7 +515,6 @@ namespace LoomNetwork.CZB
         private void OnOpponentHpChanged(int health)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _opponentHealthText.text = health.ToString();
@@ -544,7 +532,6 @@ namespace LoomNetwork.CZB
         private void OnOpponentGooChanged(int goo)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _opponentManaBar.SetGoo(goo);
@@ -553,7 +540,6 @@ namespace LoomNetwork.CZB
         private void OnOpponentVialGooChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
-
                 return;
 
             _opponentManaBar.SetVialGoo(currentTurnGoo);

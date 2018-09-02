@@ -120,7 +120,6 @@ namespace LoomNetwork.CZB
         public void EndCardDistribution()
         {
             if (!CardDistribution)
-
                 return;
 
             _gameplayManager.IsPrepairingEnded = true;
@@ -249,7 +248,6 @@ namespace LoomNetwork.CZB
                     player.DamageByNoMoreCardsInDeck++;
                     player.Hp -= player.DamageByNoMoreCardsInDeck;
                     _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
-
                     return;
                 }
 
@@ -257,7 +255,6 @@ namespace LoomNetwork.CZB
             }
 
             if (CheckIsMoreThanMaxCards(card, player))
-
                 return;
 
             player.RemoveCardFromDeck(card);
@@ -273,7 +270,6 @@ namespace LoomNetwork.CZB
                     otherPlayer.DamageByNoMoreCardsInDeck++;
                     otherPlayer.Hp -= otherPlayer.DamageByNoMoreCardsInDeck;
                     _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
-
                     return;
                 }
 
@@ -283,7 +279,6 @@ namespace LoomNetwork.CZB
             otherPlayer.RemoveCardFromDeck(card);
 
             if (CheckIsMoreThanMaxCards(card, player))
-
                 return;
 
             if (player.Equals(otherPlayer))
@@ -737,7 +732,6 @@ namespace LoomNetwork.CZB
         public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
             if (CheckIsMoreThanMaxCards(workingCard, player))
-
                 return;
 
             GameObject cardObject = player.AddCardToHand(workingCard, true);
@@ -757,7 +751,6 @@ namespace LoomNetwork.CZB
             }
 
             if (card == null)
-
                 return;
 
             if (player.IsLocalPlayer)
@@ -809,7 +802,6 @@ namespace LoomNetwork.CZB
             WorkingCard workingCard = new WorkingCard(card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
-
                 return;
 
             if (player.IsLocalPlayer)

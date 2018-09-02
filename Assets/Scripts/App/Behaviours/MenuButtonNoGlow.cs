@@ -39,7 +39,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 Button.DOFade(0.5f, 0.3f);
 
                 if (Button == null)
-
                     return;
 
                 DoFadeForChildren(Button, 0.5f, 0.3f);
@@ -56,7 +55,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 Button.DOFade(1f, 0.3f);
 
                 if (Button == null)
-
                     return;
 
                 DoFadeForChildren(Button, 1f, 0.3f);
@@ -81,7 +79,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
             OnClickOverlay.DOFade(1.0f, 0.2f);
 
             if (Button == null)
-
                 return;
 
             DoFadeForChildren(Button, 0f, 0.25f);
@@ -103,7 +100,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
             OnHoverOverlay.DOFade(1.0f, 0.5f);
 
             if (Button == null)
-
                 return;
 
             DoFadeForChildren(Button, 0f, 0.25f);
@@ -124,7 +120,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
             OnHoverOverlay.DOFade(0.0f, 0.25f);
 
             if (Button == null)
-
                 return;
 
             DoFadeForChildren(Button, 1f, 0.25f);
@@ -146,7 +141,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
             OnClickEvent.Invoke();
 
             if (Button == null)
-
                 return;
 
             DoFadeForChildren(Button, 0f, 0.25f);

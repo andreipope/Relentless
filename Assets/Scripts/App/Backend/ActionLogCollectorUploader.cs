@@ -77,7 +77,6 @@ namespace LoomNetwork.CZB.BackendCommunication
                 IsOpponent = isOpponent;
 
                 if (!_dataManager.BetaConfig.SaveTurnData)
-
                     return;
 
                 Player.OnEndTurnEvent += OnEndTurnEventHandler;
@@ -183,7 +182,6 @@ namespace LoomNetwork.CZB.BackendCommunication
             private async Task UploadActionLogModel(ActionLogModel model)
             {
                 if (!_backendFacade.IsConnected)
-
                     return;
 
                 await _backendFacade.UploadActionLog(_backendDataControlMediator.UserDataModel.UserId, model);

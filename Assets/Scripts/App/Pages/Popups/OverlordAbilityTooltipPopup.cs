@@ -56,7 +56,6 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

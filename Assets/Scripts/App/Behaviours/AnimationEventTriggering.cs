@@ -9,10 +9,7 @@ namespace LoomNetwork.CZB
 
         public void AnimationEvent(string animationName)
         {
-            if (OnAnimationEvent != null)
-            {
-                OnAnimationEvent(animationName);
-            }
+            OnAnimationEvent?.Invoke(animationName);
         }
     }
 }

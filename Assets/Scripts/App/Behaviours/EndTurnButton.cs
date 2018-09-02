@@ -46,7 +46,6 @@ public class EndTurnButton : MonoBehaviour
     private void OnMouseExit()
     {
         if (!_active)
-
             return;
 
         _hovering = false;
@@ -57,7 +56,6 @@ public class EndTurnButton : MonoBehaviour
     private void OnMouseDown()
     {
         if (!_active)
-
             return;
 
         _thisRenderer.sprite = _pressedSprite;
@@ -69,7 +67,6 @@ public class EndTurnButton : MonoBehaviour
     private void OnMouseUp()
     {
         if (GameClient.Get<ITutorialManager>().IsTutorial && (GameClient.Get<ITutorialManager>().CurrentStep != 10) && (GameClient.Get<ITutorialManager>().CurrentStep != 16) && (GameClient.Get<ITutorialManager>().CurrentStep != 21))
-
             return;
 
         if (_active && _hovering)

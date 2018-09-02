@@ -194,7 +194,6 @@ namespace LoomNetwork.CZB
             ResetBoardCards();
 
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);

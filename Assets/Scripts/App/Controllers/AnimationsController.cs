@@ -95,19 +95,13 @@ namespace LoomNetwork.CZB
                         () =>
                         {
                             // Debug.LogError(originalPos + " <- " + target.transform.position);
-                            if (onCompleteCallback != null)
-                            {
-                                onCompleteCallback();
-                            }
+                            onCompleteCallback?.Invoke();
 
                             sortingGroup.sortingOrder = oldSortingOrder;
                             sortingGroup.sortingLayerName = oldsortingLayerName;
                         });
 
-                    if (onHitCallback != null)
-                    {
-                        onHitCallback();
-                    }
+                    onHitCallback?.Invoke();
                 });
         }
 

@@ -43,7 +43,6 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             if (!_gameplayManager.IsGameplayReady())
-
                 return;
 
             HandleInput();
@@ -129,7 +128,6 @@ namespace LoomNetwork.CZB
             if (collider.name.Equals(Constants.KPlayerBoard) || collider.name.Equals(Constants.KOpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
-
                 return;
             }
 

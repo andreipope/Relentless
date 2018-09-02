@@ -193,7 +193,6 @@ namespace LoomNetwork.CZB
         private void OnEndTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer))
-
                 return;
 
             _aiBrainCancellationTokenSource.Cancel();
@@ -369,7 +368,6 @@ namespace LoomNetwork.CZB
             // return;
             bool wasAction = false;
             if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
-
                 return;
 
             if (_skillsController.OpponentPrimarySkill.IsSkillReady)

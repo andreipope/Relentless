@@ -35,7 +35,6 @@ namespace LoomNetwork.CZB
         private void OnCameraPreRender(Camera camera)
         {
             if (camera != _camera)
-
                 return;
 
             UpdateBox();

@@ -40,7 +40,6 @@ namespace LoomNetwork.CZB
         public override void OnCardSelected(BoardUnit unit)
         {
             if (unit.CurrentHp <= 0)
-
                 return;
 
             if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.PlayerCard) && unit.GameObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.OpponentCard) && unit.GameObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
@@ -51,16 +50,10 @@ namespace LoomNetwork.CZB
                     {
                         if (SelfBoardCreature != unit)
                         {
-                            if (SelectedCard != null)
-                            {
-                                SelectedCard.SetSelectedUnit(false);
-                            }
+                            SelectedCard?.SetSelectedUnit(false);
 
                             SelectedCard = unit;
-                            if (SelectedPlayer != null)
-                            {
-                                SelectedPlayer.SetGlowStatus(false);
-                            }
+                            SelectedPlayer?.SetGlowStatus(false);
 
                             SelectedPlayer = null;
                             CreateTarget(unit.Transform.position);
@@ -89,16 +82,12 @@ namespace LoomNetwork.CZB
         public override void OnPlayerSelected(Player player)
         {
             if (player.Hp <= 0)
-
                 return;
 
             if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.Player) && player.AvatarObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.Opponent) && player.AvatarObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
             {
                 SelectedPlayer = player;
-                if (SelectedCard != null)
-                {
-                    SelectedCard.SetSelectedUnit(false);
-                }
+                SelectedCard?.SetSelectedUnit(false);
 
                 SelectedCard = null;
                 CreateTarget(player.AvatarObject.transform.position);
@@ -111,10 +100,7 @@ namespace LoomNetwork.CZB
         {
             if (SelectedPlayer == player)
             {
-                if (SelectedCard != null)
-                {
-                    SelectedCard.SetSelectedUnit(false);
-                }
+                SelectedCard?.SetSelectedUnit(false);
 
                 SelectedCard = null;
 

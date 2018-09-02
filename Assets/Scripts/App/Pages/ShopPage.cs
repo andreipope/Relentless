@@ -124,7 +124,6 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);
@@ -194,7 +193,6 @@ namespace LoomNetwork.CZB
         private void ChooseItemHandler(int id)
         {
             if (_currentPackId == id)
-
                 return;
 
             Vector3 pos;

@@ -30,7 +30,6 @@ namespace LoomNetwork.CZB.Helpers
             }
 
             if (group == null)
-
                 return;
 
             group.enabled = false;

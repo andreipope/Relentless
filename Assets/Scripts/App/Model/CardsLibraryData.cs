@@ -124,10 +124,7 @@ namespace LoomNetwork.CZB.Data
 
         public void SortCardsByRank()
         {
-            if (_allCards != null)
-            {
-                _allCards = _allCards.OrderBy(x => (int)x.CardRank).ToList();
-            }
+            _allCards = _allCards?.OrderBy(x => (int)x.CardRank).ToList();
 
             foreach (CardSet set in Sets)
             {

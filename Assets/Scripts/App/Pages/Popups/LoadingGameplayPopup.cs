@@ -35,7 +35,6 @@ namespace LoomNetwork.CZB
             OnHidePopupEvent?.Invoke();
 
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);
@@ -65,7 +64,6 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             if (Self == null)
-
                 return;
 
             _progressBar.fillAmount = Mathf.Max(_progressBar.fillAmount, _sceneManager.SceneLoadingProgress / 100f);

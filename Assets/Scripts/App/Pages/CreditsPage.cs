@@ -83,7 +83,6 @@ namespace LoomNetwork.CZB
             _isActive = false;
 
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);

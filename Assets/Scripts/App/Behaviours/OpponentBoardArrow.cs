@@ -37,9 +37,9 @@ namespace LoomNetwork.CZB
                 {
                     (_target as Player).SetGlowStatus(false);
                 }
-                else if (_target is BoardUnit)
+                else
                 {
-                    (_target as BoardUnit).SetSelectedUnit(false);
+                    (_target as BoardUnit)?.SetSelectedUnit(false);
                 }
 
                 _target = null;

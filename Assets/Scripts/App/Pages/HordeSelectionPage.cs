@@ -134,7 +134,6 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);
@@ -285,7 +284,6 @@ namespace LoomNetwork.CZB
         private void CenterTheSelectedDeck()
         {
             if (_hordeDecks.Count < 1)
-
                 return;
 
             _scrolledDeck = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
@@ -309,10 +307,7 @@ namespace LoomNetwork.CZB
 
         private void SwitchOverlordObject(int direction)
         {
-            bool isChanged = false;
-
             if (_hordeDecks.Count < 1)
-
                 return;
 
             int oldIndex = _scrolledDeck;
@@ -424,7 +419,6 @@ namespace LoomNetwork.CZB
             public void Select()
             {
                 if (IsSelected)
-
                     return;
 
                 _buttonSelect.gameObject.SetActive(false);
@@ -435,7 +429,6 @@ namespace LoomNetwork.CZB
             public void Deselect()
             {
                 if (!IsSelected)
-
                     return;
 
                 _buttonSelect.gameObject.SetActive(true);
@@ -523,7 +516,6 @@ namespace LoomNetwork.CZB
         private void NewHordeDeckButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-
                 return;
 
             _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
@@ -536,7 +528,6 @@ namespace LoomNetwork.CZB
         private void DeleteButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-
                 return;
 
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
@@ -553,7 +544,6 @@ namespace LoomNetwork.CZB
         private void EditButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-
                 return;
 
             if (_selectedDeckId != -1)
@@ -570,7 +560,6 @@ namespace LoomNetwork.CZB
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmDeleteDeckEventHandler;
 
             if (!status)
-
                 return;
 
             HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);

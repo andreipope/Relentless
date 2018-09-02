@@ -40,7 +40,6 @@ namespace LoomNetwork.CZB
                 cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
             }*/
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

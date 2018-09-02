@@ -71,7 +71,6 @@ namespace LoomNetwork.CZB
         {
             base.OnValidate();
             if (ShiftedChild == null)
-
                 return;
 
             if (!ShiftedChild.IsChildOf(transform))

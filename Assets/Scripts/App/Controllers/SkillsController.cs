@@ -146,7 +146,6 @@ namespace LoomNetwork.CZB
         public void DoSkillAction(BoardSkill skill, object target = null)
         {
             if (skill == null)
-
                 return;
 
             if (skill.IsUsing)
@@ -210,66 +209,42 @@ namespace LoomNetwork.CZB
 
         private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
-            if (_playerPrimarySkill != null)
-            {
-                _playerPrimarySkill.OnMouseDownEventHandler();
-            }
+            _playerPrimarySkill?.OnMouseDownEventHandler();
         }
 
         private void PrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
-            if (_playerPrimarySkill != null)
-            {
-                _playerPrimarySkill.OnMouseUpEventHandler();
-            }
+            _playerPrimarySkill?.OnMouseUpEventHandler();
         }
 
         private void SecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
-            if (_playerSecondarySkill != null)
-            {
-                _playerSecondarySkill.OnMouseDownEventHandler();
-            }
+            _playerSecondarySkill?.OnMouseDownEventHandler();
         }
 
         private void SecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
-            if (_playerSecondarySkill != null)
-            {
-                _playerSecondarySkill.OnMouseUpEventHandler();
-            }
+            _playerSecondarySkill?.OnMouseUpEventHandler();
         }
 
         private void OpponentPrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
-            if (OpponentPrimarySkill != null)
-            {
-                OpponentPrimarySkill.OnMouseDownEventHandler();
-            }
+            OpponentPrimarySkill?.OnMouseDownEventHandler();
         }
 
         private void OpponentPrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
-            if (OpponentPrimarySkill != null)
-            {
-                OpponentPrimarySkill.OnMouseUpEventHandler();
-            }
+            OpponentPrimarySkill?.OnMouseUpEventHandler();
         }
 
         private void OpponentSecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
         {
-            if (OpponentSecondarySkill != null)
-            {
-                OpponentSecondarySkill.OnMouseDownEventHandler();
-            }
+            OpponentSecondarySkill?.OnMouseDownEventHandler();
         }
 
         private void OpponentSecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
         {
-            if (OpponentSecondarySkill != null)
-            {
-                OpponentSecondarySkill.OnMouseUpEventHandler();
-            }
+            OpponentSecondarySkill?.OnMouseUpEventHandler();
         }
 
         private void SkillParticleActionCompleted(object target)

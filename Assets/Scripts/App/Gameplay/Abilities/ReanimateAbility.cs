@@ -31,7 +31,6 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             if (AbilityUnitOwner.IsReanimated)
-
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
@@ -62,7 +61,6 @@ namespace LoomNetwork.CZB
             base.UnitOnDieEventHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Death)
-
                 return;
 
             Action();

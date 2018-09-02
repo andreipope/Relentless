@@ -84,11 +84,9 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             if (!_gameplayManager.GameStarted || _gameplayManager.GameEnded)
-
                 return;
 
             if (_tutorialManager.IsTutorial && (_tutorialManager.CurrentStep != 8) && (_tutorialManager.CurrentStep != 17) && (_tutorialManager.CurrentStep != 19) && (_tutorialManager.CurrentStep != 27))
-
                 return;
 
             _pointerEventSolver.Update();

@@ -59,7 +59,6 @@ namespace LoomNetwork.CZB
             _opponentSecondTurnObject.SetActive(false);
 
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

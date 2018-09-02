@@ -34,7 +34,6 @@ namespace LoomNetwork.CZB
         {
             // Time.timeScale = 1;
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

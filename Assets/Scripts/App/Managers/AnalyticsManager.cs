@@ -66,7 +66,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
     void IAnalyticsManager.Dispose()
     {
         if (_googleAnalytics == null)
-
             return;
 
         _googleAnalytics.Dispose();

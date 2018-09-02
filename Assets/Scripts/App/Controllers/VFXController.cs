@@ -196,7 +196,6 @@ namespace LoomNetwork.CZB
         public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
             if (prefab == null)
-
                 return;
 
             Vector3 position = Vector3.zero;
@@ -222,7 +221,6 @@ namespace LoomNetwork.CZB
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
         {
             if (target == null)
-
                 return;
 
             GameObject particleSystem = Object.Instantiate(prefab);

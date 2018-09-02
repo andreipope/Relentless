@@ -113,10 +113,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                if (CurrentPage != null)
-                {
-                    CurrentPage.Hide();
-                }
+                CurrentPage?.Hide();
             }
 
             foreach (IUIElement page in Pages)

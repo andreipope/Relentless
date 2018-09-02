@@ -279,7 +279,6 @@ namespace LoomNetwork.CZB
             Dispose();
 
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);
@@ -535,7 +534,6 @@ namespace LoomNetwork.CZB
         public void AddCardToDeck(DeckBuilderCard sender, Card card)
         {
             if (_currentDeck == null)
-
                 return;
 
             if (_against[_dataManager.CachedHeroesData.HeroesParsed[_currentHeroId].HeroElement] == card.CardSetType)
@@ -972,7 +970,6 @@ namespace LoomNetwork.CZB
         private void BoardCardOnBeginDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
-
                 return;
 
             _draggingObject = Object.Instantiate(onOnject);
@@ -990,7 +987,6 @@ namespace LoomNetwork.CZB
         private void BoardCardOnEndDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-
                 return;
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -1018,7 +1014,6 @@ namespace LoomNetwork.CZB
         private void BoardCardOnDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-
                 return;
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -1031,7 +1026,6 @@ namespace LoomNetwork.CZB
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             if (type == _currentSet)
-
                 return;
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);

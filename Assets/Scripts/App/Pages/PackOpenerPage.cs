@@ -123,7 +123,6 @@ namespace LoomNetwork.CZB
             Dispose();
 
             if (_selfPage == null)
-
                 return;
 
             _selfPage.SetActive(false);
@@ -350,7 +349,6 @@ namespace LoomNetwork.CZB
         private void OnPackOpenVFXAnimationEventHandler(string name)
         {
             if (_packOpenVfx == null)
-
                 return;
 
             if (name == "EndPackOpen")
@@ -364,7 +362,6 @@ namespace LoomNetwork.CZB
             GameObject go = card.GameObject;
 
             if (!go.transform.Find("Back").gameObject.activeSelf)
-
                 return;
 
             Vector3 rotation = go.transform.eulerAngles;

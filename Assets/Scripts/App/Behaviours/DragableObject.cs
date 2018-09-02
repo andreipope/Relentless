@@ -19,12 +19,10 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (Locked)
-
             return;
 
         Canvas canvas = FindInParents<Canvas>(gameObject);
         if (canvas == null)
-
             return;
 
         _mDraggingIcon = Instantiate(gameObject);
@@ -50,7 +48,6 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void OnDrag(PointerEventData data)
     {
         if (Locked)
-
             return;
 
         if (_mDraggingIcon != null)
@@ -62,13 +59,9 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void OnEndDrag(PointerEventData eventData)
     {
         if (Locked)
-
             return;
 
-        if (OnItemEndDrag != null)
-        {
-            OnItemEndDrag(_mDraggingIcon);
-        }
+        OnItemEndDrag?.Invoke(_mDraggingIcon);
 
         // if (m_DraggingIcon != null)
         // Destroy(m_DraggingIcon);
@@ -102,7 +95,6 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private void SetDraggedPosition(PointerEventData data)
     {
         if (Locked)
-
             return;
 
         if (DragOnSurfaces && (data.pointerEnter != null) && (data.pointerEnter.transform as RectTransform != null))

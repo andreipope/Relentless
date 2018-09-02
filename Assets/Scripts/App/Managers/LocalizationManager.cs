@@ -46,7 +46,6 @@ namespace LoomNetwork.CZB
         public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
         {
             if ((language == CurrentLanguage) && !forceUpdate)
-
                 return;
 
             string languageCode = language.ToString().ToLower();
@@ -55,10 +54,7 @@ namespace LoomNetwork.CZB
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
 
-            if (LanguageWasChangedEvent != null)
-            {
-                LanguageWasChangedEvent(CurrentLanguage);
-            }
+            LanguageWasChangedEvent?.Invoke(CurrentLanguage);
         }
 
         public string GetUITranslation(string key)

@@ -28,7 +28,6 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();
@@ -71,7 +70,6 @@ namespace LoomNetwork.CZB
             base.OnStartTurnEventHandler();
 
             if ((AbilityCallType != Enumerators.AbilityCallType.Turn) || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-
                 return;
 
             Action();
@@ -80,7 +78,6 @@ namespace LoomNetwork.CZB
         private void SpawnMinion(Player owner)
         {
             if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
-
                 return;
 
             Card libraryCard = DataManager.CachedCardsLibraryData.GetCardFromName(Name).Clone();

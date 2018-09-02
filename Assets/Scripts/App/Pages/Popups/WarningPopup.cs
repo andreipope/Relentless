@@ -37,7 +37,6 @@ namespace LoomNetwork.CZB
             OnHidePopupEvent?.Invoke();
 
             if (Self == null)
-
                 return;
 
             Self.SetActive(false);

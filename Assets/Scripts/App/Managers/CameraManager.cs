@@ -41,7 +41,6 @@ namespace LoomNetwork.CZB.Gameplay
         public void FadeOut(Action callback = null, int level = 0, bool immediately = false)
         {
             if (!_fadeImageGroups[level].gameObject.activeInHierarchy)
-
                 return;
 
             if (immediately)
@@ -52,7 +51,6 @@ namespace LoomNetwork.CZB.Gameplay
             }
 
             if (_timerManager == null)
-
                 return;
 
             PrepareFading(false, level);
@@ -122,10 +120,7 @@ namespace LoomNetwork.CZB.Gameplay
                 IsFading = false;
                 _timerManager.StopTimer(Fade);
 
-                if (callback != null)
-                {
-                    callback();
-                }
+                callback?.Invoke();
             }
         }
     }

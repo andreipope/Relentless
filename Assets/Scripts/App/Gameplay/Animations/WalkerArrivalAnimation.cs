@@ -39,18 +39,12 @@ namespace LoomNetwork.CZB
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    if (OnAnimationCompleted != null)
-                    {
-                        OnAnimationCompleted(this);
-                    }
+                    OnAnimationCompleted?.Invoke(this);
 
                     Dispose();
                     foreach (KeyValuePair<object[], Action<object[]>> call in _onCompleteActions)
                     {
-                        if (call.Value != null)
-                        {
-                            call.Value(call.Key);
-                        }
+                        call.Value?.Invoke(call.Key);
                     }
 
                     _onCompleteActions.Clear();

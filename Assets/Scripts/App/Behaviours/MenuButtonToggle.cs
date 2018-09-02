@@ -91,10 +91,7 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         IsToggleEnabled = !IsToggleEnabled;
 
-        if (OnValueChangedEvent != null)
-        {
-            OnValueChangedEvent.Invoke(IsToggleEnabled);
-        }
+        OnValueChangedEvent?.Invoke(IsToggleEnabled);
     }
 
     public void SetStatus(bool status)

@@ -24,7 +24,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");

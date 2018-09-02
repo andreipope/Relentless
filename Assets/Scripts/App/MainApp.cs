@@ -67,10 +67,7 @@ namespace LoomNetwork.CZB
         {
             if (Instance == this)
             {
-                if (LateUpdateEvent != null)
-                {
-                    LateUpdateEvent();
-                }
+                LateUpdateEvent?.Invoke();
             }
         }
 
@@ -78,10 +75,7 @@ namespace LoomNetwork.CZB
         {
             if (Instance == this)
             {
-                if (FixedUpdateEvent != null)
-                {
-                    FixedUpdateEvent();
-                }
+                FixedUpdateEvent?.Invoke();
             }
         }
 
@@ -97,10 +91,7 @@ namespace LoomNetwork.CZB
         {
             if (Instance == this)
             {
-                if (OnLevelWasLoadedEvent != null)
-                {
-                    OnLevelWasLoadedEvent(arg0.buildIndex);
-                }
+                OnLevelWasLoadedEvent?.Invoke(arg0.buildIndex);
             }
         }
     }

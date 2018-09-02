@@ -108,9 +108,9 @@ namespace LoomNetwork.CZB
                     _activeAbilities.Remove(item);
                 }
 
-                if ((item != null) && (item.Ability != null))
+                if ((item != null))
                 {
-                    item.Ability.Dispose();
+                    item.Ability?.Dispose();
                 }
             }
         }
@@ -433,7 +433,6 @@ namespace LoomNetwork.CZB
                     onCompleteCallback?.Invoke();
 
                     ResolveAllAbilitiesOnUnit(boardObject);
-
                     return;
                 }
 
@@ -741,12 +740,9 @@ namespace LoomNetwork.CZB
 
         private void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
         {
-            if (boardObject != null)
+            if (boardObject is BoardUnit)
             {
-                if (boardObject is BoardUnit)
-                {
-                    (boardObject as BoardUnit).IsAllAbilitiesResolvedAtStart = status;
-                }
+                (boardObject as BoardUnit).IsAllAbilitiesResolvedAtStart = status;
             }
         }
 
@@ -789,7 +785,6 @@ namespace LoomNetwork.CZB
             else
             {
                 if (activeAbility == null)
-
                     return;
 
                 if (target is BoardUnit)

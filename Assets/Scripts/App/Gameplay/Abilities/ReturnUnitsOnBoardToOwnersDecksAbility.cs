@@ -16,7 +16,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();
@@ -61,7 +60,6 @@ namespace LoomNetwork.CZB
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
             if (((AbilityUnitOwner != null) && (unit == AbilityUnitOwner)) || (unit == null))
-
                 return;
 
             // implement animation

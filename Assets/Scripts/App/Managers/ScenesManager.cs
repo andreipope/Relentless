@@ -29,7 +29,6 @@ namespace LoomNetwork.CZB
         public void ChangeScene(Enumerators.AppState appState)
         {
             if ((appState == Enumerators.AppState.None) || (CurrentAppStateScene == appState))
-
                 return;
 
             IsLoadedScene = false;
@@ -81,10 +80,7 @@ namespace LoomNetwork.CZB
             IsLoadedScene = true;
             SceneLoadingProgress = 0;
 
-            if (SceneForAppStateWasLoadedEvent != null)
-            {
-                SceneForAppStateWasLoadedEvent(CurrentAppStateScene);
-            }
+            SceneForAppStateWasLoadedEvent?.Invoke(CurrentAppStateScene);
         }
 
         private IEnumerator LoadLevelAsync(string levelName)

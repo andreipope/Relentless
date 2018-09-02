@@ -152,26 +152,17 @@ namespace LoomNetwork.CZB
 
         public void ThrowOnInputUpEvent()
         {
-            if (OnInputUpEvent != null)
-            {
-                OnInputUpEvent();
-            }
+            OnInputUpEvent?.Invoke();
         }
 
         public void ThrowOnInputDownEvent()
         {
-            if (OnInputDownEvent != null)
-            {
-                OnInputDownEvent();
-            }
+            OnInputDownEvent?.Invoke();
         }
 
         public void ThrowOnInputEvent()
         {
-            if (OnInputEvent != null)
-            {
-                OnInputEvent();
-            }
+            OnInputEvent?.Invoke();
         }
     }
 }

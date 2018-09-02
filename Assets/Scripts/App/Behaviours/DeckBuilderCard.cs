@@ -18,10 +18,7 @@ namespace LoomNetwork.CZB
 
         public void OnScroll(PointerEventData eventData)
         {
-            if (Scene != null)
-            {
-                Scene.ScrollCardList(IsHordeItem, eventData.scrollDelta);
-            }
+            Scene?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
         }
 
         private void Awake()

@@ -53,7 +53,6 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
             if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
-
                 return;
 
             Action(damage);

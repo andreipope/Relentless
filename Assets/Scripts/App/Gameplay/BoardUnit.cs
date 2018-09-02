@@ -329,7 +329,6 @@ namespace LoomNetwork.CZB
         public void BuffUnit(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-
                 return;
 
             BuffsOnUnit.Add(type);
@@ -338,7 +337,6 @@ namespace LoomNetwork.CZB
         public void RemoveBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-
                 return;
 
             BuffsOnUnit.Remove(type);
@@ -347,7 +345,6 @@ namespace LoomNetwork.CZB
         public void ClearBuffs()
         {
             if (!_readyForBuffs)
-
                 return;
 
             int damageToDelete = 0;
@@ -405,7 +402,6 @@ namespace LoomNetwork.CZB
         public void ApplyBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-
                 return;
 
             // foreach (var buff in _buffsOnUnit)
@@ -492,7 +488,6 @@ namespace LoomNetwork.CZB
         public void SetAsHeavyUnit(bool buff = false)
         {
             if (HasHeavy)
-
                 return;
 
             // if (!buff)
@@ -509,7 +504,6 @@ namespace LoomNetwork.CZB
         public void SetAsWalkerUnit(bool buff = false)
         {
             if (!HasHeavy && !HasFeral && !HasBuffHeavy)
-
                 return;
 
             // if (!buff)
@@ -526,7 +520,6 @@ namespace LoomNetwork.CZB
         public void SetAsFeralUnit(bool buff = false)
         {
             if (HasFeral)
-
                 return;
 
             // if (!buff)
@@ -889,7 +882,6 @@ namespace LoomNetwork.CZB
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
-
                 return;
 
             SetHighlightingEnabled(true);
@@ -904,7 +896,6 @@ namespace LoomNetwork.CZB
                 {
                     _tutorialManager.ActivateSelectTarget();
                 }
-
                 return;
             }
 
@@ -1144,7 +1135,6 @@ namespace LoomNetwork.CZB
         private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
         {
             if ((text == null) || !text)
-
                 return;
 
             text.text = stat.ToString();
@@ -1215,7 +1205,6 @@ namespace LoomNetwork.CZB
 
             // Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 18))
-
                 return;
 
             if ((OwnerPlayer != null) && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())

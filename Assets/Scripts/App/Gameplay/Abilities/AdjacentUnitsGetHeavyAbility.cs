@@ -15,7 +15,6 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (AbilityCallType != Enumerators.AbilityCallType.Entry)
-
                 return;
 
             Action();
@@ -71,11 +70,7 @@ namespace LoomNetwork.CZB
 
         private void TakeHeavyToUnit(BoardUnit unit)
         {
-            if (unit == null)
-
-                return;
-
-            unit.SetAsHeavyUnit();
+            unit?.SetAsHeavyUnit();
         }
     }
 }

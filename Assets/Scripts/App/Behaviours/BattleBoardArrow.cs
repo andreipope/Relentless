@@ -16,7 +16,6 @@ namespace LoomNetwork.CZB
         public void End(BoardUnit creature)
         {
             if (!StartedDrag)
-
                 return;
 
             StartedDrag = false;
@@ -28,19 +27,15 @@ namespace LoomNetwork.CZB
         public override void OnCardSelected(BoardUnit unit)
         {
             if (GameplayManager.IsTutorial && ((GameplayManager.TutorialStep == 19) || (GameplayManager.TutorialStep == 27) || (GameplayManager.TutorialStep == 32)))
-
                 return;
 
             if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(unit))
-
                 return;
 
             if (unit.CurrentHp <= 0)
-
                 return;
 
             if ((ElementType.Count > 0) && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
-
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.AllCards) || (TargetsType.Contains(Enumerators.SkillTargetType.PlayerCard) && unit.Transform.CompareTag("PlayerOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.OpponentCard) && unit.Transform.CompareTag("OpponentOwned")))
@@ -48,16 +43,10 @@ namespace LoomNetwork.CZB
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || IgnoreHeavy)
                 {
-                    if (SelectedCard != null)
-                    {
-                        SelectedCard.SetSelectedUnit(false);
-                    }
+                    SelectedCard?.SetSelectedUnit(false);
 
                     SelectedCard = unit;
-                    if (SelectedPlayer != null)
-                    {
-                        SelectedPlayer.SetGlowStatus(false);
-                    }
+                    SelectedPlayer?.SetGlowStatus(false);
 
                     SelectedPlayer = null;
                     SelectedCard.SetSelectedUnit(true);
@@ -80,19 +69,15 @@ namespace LoomNetwork.CZB
         public override void OnPlayerSelected(Player player)
         {
             if (GameplayManager.IsTutorial && (GameplayManager.TutorialStep != 19) && (GameplayManager.TutorialStep != 28) && (GameplayManager.TutorialStep != 32))
-
                 return;
 
             if (player.Hp <= 0)
-
                 return;
 
             if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(player))
-
                 return;
 
             if ((Owner != null) && !Owner.HasFeral && Owner.HasBuffRush)
-
                 return;
 
             if ((TargetsType.Contains(Enumerators.SkillTargetType.Opponent) && player.AvatarObject.CompareTag("OpponentOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.Player) && player.AvatarObject.CompareTag("PlayerOwned")))
@@ -103,10 +88,7 @@ namespace LoomNetwork.CZB
                     SelectedPlayer = player;
 
                     SelectedPlayer.SetGlowStatus(true);
-                    if (SelectedCard != null)
-                    {
-                        SelectedCard.SetSelectedUnit(false);
-                    }
+                    SelectedCard?.SetSelectedUnit(false);
 
                     SelectedCard = null;
                     CreateTarget(player.AvatarObject.transform.position);
@@ -118,10 +100,7 @@ namespace LoomNetwork.CZB
         {
             if (SelectedPlayer == player)
             {
-                if (SelectedCard != null)
-                {
-                    SelectedCard.SetSelectedUnit(false);
-                }
+                SelectedCard?.SetSelectedUnit(false);
 
                 SelectedCard = null;
 

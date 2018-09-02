@@ -148,7 +148,6 @@ namespace LoomNetwork.CZB
         public void StartDoSkill()
         {
             if (!IsSkillCanUsed())
-
                 return;
 
             if (Owner.IsLocalPlayer)
@@ -178,7 +177,6 @@ namespace LoomNetwork.CZB
         public void EndDoSkill()
         {
             if (!IsSkillCanUsed() || !IsUsing)
-
                 return;
 
             DoOnUpSkillAction();
@@ -202,7 +200,6 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             if (!_gameplayManager.IsGameplayReady())
-
                 return;
             {
                 // if (owner.IsLocalPlayer)
@@ -224,7 +221,6 @@ namespace LoomNetwork.CZB
         public void OnMouseDownEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-
                 return;
 
             _pointerEventSolver.PushPointer();
@@ -233,7 +229,6 @@ namespace LoomNetwork.CZB
         public void OnMouseUpEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-
                 return;
 
             _pointerEventSolver.PopPointer();
@@ -284,7 +279,6 @@ namespace LoomNetwork.CZB
         private void OnStartTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
-
                 return;
 
             if (Owner.IsStunned)
@@ -305,7 +299,6 @@ namespace LoomNetwork.CZB
         private void OnEndTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
-
                 return;
 
             SetHighlightingEnabled(false);
@@ -378,11 +371,9 @@ namespace LoomNetwork.CZB
         private void DrawAbilityTooltip()
         {
             if (_gameplayManager.IsTutorial)
-
                 return;
 
             if (_currentOverlordAbilityInfoObject != null)
-
                 return;
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);

@@ -66,7 +66,6 @@ namespace LoomNetwork.CZB
             base.OnEndTurnEventHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.End)
-
                 return;
 
             Action();
