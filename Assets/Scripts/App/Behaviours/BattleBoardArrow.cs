@@ -19,6 +19,7 @@ namespace LoomNetwork.CZB
         public void End(BoardUnit creature)
         {
             if (!startedDrag)
+
                 return;
 
             startedDrag = false;
@@ -30,17 +31,20 @@ namespace LoomNetwork.CZB
         public override void OnCardSelected(BoardUnit unit)
         {
             if (_gameplayManager.IsTutorial && ((_gameplayManager.TutorialStep == 19) || (_gameplayManager.TutorialStep == 27) || (_gameplayManager.TutorialStep == 32)))
+
                 return;
 
             if ((ignoreBoardObjectsList != null) && ignoreBoardObjectsList.Contains(unit))
+
                 return;
 
             if (unit.CurrentHP <= 0)
+
                 return;
 
             if ((elementType.Count > 0) && !elementType.Contains(unit.Card.libraryCard.cardSetType))
-            
-return;
+
+                return;
 
             if (targetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) || (targetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) && unit.transform.CompareTag("PlayerOwned")) || (targetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) && unit.transform.CompareTag("OpponentOwned")))
             {
@@ -79,20 +83,20 @@ return;
         public override void OnPlayerSelected(Player player)
         {
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep != 19) && (_gameplayManager.TutorialStep != 28) && (_gameplayManager.TutorialStep != 32))
-            
-return;
+
+                return;
 
             if (player.HP <= 0)
-            
-return;
+
+                return;
 
             if ((ignoreBoardObjectsList != null) && ignoreBoardObjectsList.Contains(player))
-            
-return;
+
+                return;
 
             if ((owner != null) && !owner.hasFeral && owner.HasBuffRush)
-            
-return;
+
+                return;
 
             if ((targetsType.Contains(Enumerators.SkillTargetType.OPPONENT) && player.AvatarObject.CompareTag("OpponentOwned")) || (targetsType.Contains(Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned")))
             {

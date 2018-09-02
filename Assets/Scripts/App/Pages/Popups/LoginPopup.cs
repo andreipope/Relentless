@@ -66,8 +66,8 @@ namespace LoomNetwork.CZB
             OnHidePopupEvent?.Invoke();
 
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -146,17 +146,15 @@ return;
                 {
                     isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
                     if (!isBetaKeyValid)
-                    {
                         throw new Exception("Tester key not registered");
-                    }
 
                     UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
-                                                  {
-                                                      // HACK
-                                                      IsValid = true
+                    {
+                        // HACK
+                        IsValid = true
 
-                                                      // IsValid = false
-                                                  };
+                        // IsValid = false
+                    };
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
                     await _backendDataControlMediator.LoginAndLoadData();
 

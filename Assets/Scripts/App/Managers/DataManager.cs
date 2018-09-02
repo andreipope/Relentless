@@ -86,9 +86,7 @@ namespace LoomNetwork.CZB
         {
             BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
             if (BetaConfig == null)
-            {
                 throw new Exception("BetaConfig == null");
-            }
         }
 
         public async Task StartLoadCache()

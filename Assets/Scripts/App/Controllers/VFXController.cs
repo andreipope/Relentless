@@ -196,8 +196,8 @@ namespace LoomNetwork.CZB
         public void CreateVFX(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
             if (prefab == null)
-            
-return;
+
+                return;
 
             Vector3 position = Vector3.zero;
 
@@ -220,8 +220,8 @@ return;
         public void CreateSkillVFX(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
         {
             if (target == null)
-            
-return;
+
+                return;
 
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVFXPosition(from + Vector3.forward);

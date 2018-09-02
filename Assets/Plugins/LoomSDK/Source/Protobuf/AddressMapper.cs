@@ -187,9 +187,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperMapping other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.from_ != null) {
         if (from_ == null) {
           from_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -314,9 +313,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperInitRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -487,9 +485,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperAddIdentityMappingRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.from_ != null) {
         if (from_ == null) {
           from_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -669,9 +666,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperAddContractMappingRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.from_ != null) {
         if (from_ == null) {
           from_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -799,9 +795,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperRemoveMappingRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -921,9 +916,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperGetMappingRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.from_ != null) {
         if (from_ == null) {
           from_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -1080,9 +1074,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddressMapperGetMappingResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.from_ != null) {
         if (from_ == null) {
           from_ = new global::Loom.Client.Internal.Protobuf.Address();

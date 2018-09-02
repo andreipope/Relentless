@@ -208,9 +208,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayContractMappingConfirmed other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.foreignContract_ != null) {
         if (foreignContract_ == null) {
           foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -456,9 +455,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayTokenWithdrawalSigned other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
           tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -748,9 +746,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceipt other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
           tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -957,9 +954,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawERC721Request other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.tokenId_ != null) {
         if (tokenId_ == null) {
           tokenId_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
@@ -1105,9 +1101,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceiptRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.owner_ != null) {
         if (owner_ == null) {
           owner_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -1240,9 +1235,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceiptResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.receipt_ != null) {
         if (receipt_ == null) {
           receipt_ = new global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt();
@@ -1426,9 +1420,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayConfirmWithdrawalReceiptRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
           tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -1650,9 +1643,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayAddContractMappingRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.foreignContract_ != null) {
         if (foreignContract_ == null) {
           foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();

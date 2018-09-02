@@ -24,27 +24,27 @@ namespace LoomNetwork.CZB.Data
         public static AbilityData FromProtobuf(this Ability ability)
         {
             return new AbilityData
-                   {
-                       buffType = ability.BuffType,
-                       type = ability.Type,
-                       activityType = ability.ActivityType,
-                       callType = ability.CallType,
-                       targetType = ability.TargetType,
-                       statType = ability.StatType,
-                       setType = ability.SetType,
-                       effectType = ability.EffectType,
-                       cardType = ability.CardType,
-                       unitStatus = ability.UnitStatus,
-                       unitType = ability.UnitType,
-                       value = ability.Value,
-                       damage = ability.Damage,
-                       health = ability.Health,
-                       attackInfo = ability.AttackInfo,
-                       name = ability.Name,
-                       turns = ability.Turns,
-                       count = ability.Count,
-                       delay = ability.Delay
-                   };
+            {
+                buffType = ability.BuffType,
+                type = ability.Type,
+                activityType = ability.ActivityType,
+                callType = ability.CallType,
+                targetType = ability.TargetType,
+                statType = ability.StatType,
+                setType = ability.SetType,
+                effectType = ability.EffectType,
+                cardType = ability.CardType,
+                unitStatus = ability.UnitStatus,
+                unitType = ability.UnitType,
+                value = ability.Value,
+                damage = ability.Damage,
+                health = ability.Health,
+                attackInfo = ability.AttackInfo,
+                name = ability.Name,
+                turns = ability.Turns,
+                count = ability.Count,
+                delay = ability.Delay
+            };
         }
 
         public static CardViewInfo FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
@@ -60,22 +60,22 @@ namespace LoomNetwork.CZB.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card
-                   {
-                       id = (int)card.Id,
-                       kind = card.Kind,
-                       name = card.Name,
-                       cost = card.Cost,
-                       description = card.Description,
-                       flavorText = card.FlavorText,
-                       picture = card.Picture,
-                       damage = card.Damage,
-                       health = card.Health,
-                       rank = card.Rank,
-                       type = card.Type,
-                       frame = card.Frame,
-                       abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
-                       cardViewInfo = card.CardViewInfo.FromProtobuf()
-                   };
+            {
+                id = (int)card.Id,
+                kind = card.Kind,
+                name = card.Name,
+                cost = card.Cost,
+                description = card.Description,
+                flavorText = card.FlavorText,
+                picture = card.Picture,
+                damage = card.Damage,
+                health = card.Health,
+                rank = card.Rank,
+                type = card.Type,
+                frame = card.Frame,
+                abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
+                cardViewInfo = card.CardViewInfo.FromProtobuf()
+            };
         }
 
         public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)

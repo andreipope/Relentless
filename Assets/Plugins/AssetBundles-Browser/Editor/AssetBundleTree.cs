@@ -138,9 +138,8 @@ namespace AssetBundleBrowser
 
         protected override void ContextClickedItem(int id)
         {
-            if (AssetBundleModel.Model.DataSource.IsReadOnly ()) {
-                return;
-            }
+            if (AssetBundleModel.Model.DataSource.IsReadOnly ()) 
+return;
 
             m_ContextOnItem = true;
             List<AssetBundleModel.BundleTreeItem> selectedNodes = new List<AssetBundleModel.BundleTreeItem>();

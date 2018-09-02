@@ -78,8 +78,8 @@ namespace LoomNetwork.CZB
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
         {
             if (GameEnded)
-            
-return;
+
+                return;
 
             GameEnded = true;
 

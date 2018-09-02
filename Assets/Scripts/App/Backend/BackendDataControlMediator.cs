@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -66,9 +66,7 @@ namespace LoomNetwork.CZB.BackendCommunication
         public bool SetUserDataModel(UserDataModel userDataModel)
         {
             if (userDataModel == null)
-            {
                 throw new ArgumentNullException(nameof(userDataModel));
-            }
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
             if (Constants.DATA_ENCRYPTION_ENABLED)

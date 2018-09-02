@@ -33,8 +33,8 @@ namespace LoomNetwork.CZB
         public void PushPointer(float delta = -1)
         {
             if (IsPushed)
-            
-return;
+
+                return;
 
             IsPushed = true;
             _isResolved = false;
@@ -51,8 +51,8 @@ return;
         public void Update()
         {
             if (!IsPushed || _isResolved)
-            
-return;
+
+                return;
 
             if (Mathf.Abs((_initialPointerPosition - Input.mousePosition).magnitude) > _dragDelta)
             {
@@ -73,8 +73,8 @@ return;
         public void PopPointer()
         {
             if (!IsPushed)
-            
-return;
+
+                return;
 
             if (!_isResolved)
             {

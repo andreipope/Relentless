@@ -108,8 +108,8 @@ namespace LoomNetwork.CZB
             _isPlayerInited = false;
 
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             _reportGameActionsPanel.Dispose();
@@ -387,8 +387,8 @@ return;
         private void OnPlayerDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _playerCardDeckCountText.text = index.ToString();
 
@@ -408,8 +408,8 @@ return;
         private void OnPlayerGraveyardUpdatedEventHandler(int index)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             if (index == 0)
             {
@@ -437,8 +437,8 @@ return;
         private void OnOpponentDeckChangedEventHandler(int index)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _opponentCardDeckCountText.text = index.ToString();
 
@@ -458,8 +458,8 @@ return;
         private void OnOpponentGraveyardUpdatedEventHandler(int index)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             if (index == 0)
             {
@@ -487,8 +487,8 @@ return;
         private void OnPlayerHPChanged(int health)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _playerHealthText.text = health.ToString();
 
@@ -504,8 +504,8 @@ return;
         private void OnPlayerGooChanged(int goo)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _playerManaBar.SetGoo(goo);
         }
@@ -513,8 +513,8 @@ return;
         private void OnPlayerVialGooChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _playerManaBar.SetVialGoo(currentTurnGoo);
         }
@@ -522,8 +522,8 @@ return;
         private void OnOpponentHPChanged(int health)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _opponentHealthText.text = health.ToString();
 
@@ -539,8 +539,8 @@ return;
         private void OnOpponentGooChanged(int goo)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _opponentManaBar.SetGoo(goo);
         }
@@ -548,8 +548,8 @@ return;
         private void OnOpponentVialGooChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
-            
-return;
+
+                return;
 
             _opponentManaBar.SetVialGoo(currentTurnGoo);
         }

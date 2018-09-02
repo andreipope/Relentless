@@ -44,8 +44,8 @@ namespace LoomNetwork.CZB
         public void ChangeAppState(Enumerators.AppState stateTo)
         {
             if (AppState == stateTo)
-            
-return;
+
+                return;
 
             switch (stateTo)
             {

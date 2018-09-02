@@ -147,8 +147,8 @@ namespace LoomNetwork.CZB
         public void DoSkillAction(BoardSkill skill, object target = null)
         {
             if (skill == null)
-            
-return;
+
+                return;
 
             if (skill.IsUsing)
             {

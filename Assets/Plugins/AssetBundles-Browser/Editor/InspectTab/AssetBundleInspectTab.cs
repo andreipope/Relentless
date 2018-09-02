@@ -503,9 +503,8 @@ namespace AssetBundleBrowser
         {
             AssetBundleRecord record = this.GetLoadedBundleRecordByName(bundleName);
             if (null == record)
-            {
-                return;
-            }
+            
+return;
 
             record.bundle.Unload(true);
             m_loadedAssetBundles.Remove(bundleName);

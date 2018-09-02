@@ -42,7 +42,6 @@ public static class LoomTestContext
             await func();
         } catch (Exception)
         {
-
             throw new AssertionException("Expected an exception");
         }
     }
@@ -72,8 +71,8 @@ public static class LoomTestContext
     private static async Task EnsureContract()
     {
         if ((BackendFacade.Contract != null) && BackendFacade.IsConnected)
-        
-return;
+
+            return;
 
         await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
 
@@ -95,8 +94,6 @@ return;
         }
 
         if (task.IsFaulted)
-        {
             throw task.Exception;
-        }
     }
 }

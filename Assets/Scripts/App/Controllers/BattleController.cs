@@ -260,24 +260,24 @@ namespace LoomNetwork.CZB
         private void FillStrongersAndWeakers()
         {
             _strongerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
-                                 {
-                                     { Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC },
-                                     { Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE },
-                                     { Enumerators.SetType.LIFE, Enumerators.SetType.EARTH },
-                                     { Enumerators.SetType.EARTH, Enumerators.SetType.AIR },
-                                     { Enumerators.SetType.AIR, Enumerators.SetType.WATER },
-                                     { Enumerators.SetType.WATER, Enumerators.SetType.FIRE }
-                                 };
+            {
+                { Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.AIR },
+                { Enumerators.SetType.AIR, Enumerators.SetType.WATER },
+                { Enumerators.SetType.WATER, Enumerators.SetType.FIRE }
+            };
 
             _weakerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
-                               {
-                                   { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
-                                   { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
-                                   { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
-                                   { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
-                                   { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
-                                   { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
-                               };
+            {
+                { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
+            };
         }
 
         private int GetStrongersAndWeakersModifier(Enumerators.SetType attackerElement, Enumerators.SetType defenderElement)

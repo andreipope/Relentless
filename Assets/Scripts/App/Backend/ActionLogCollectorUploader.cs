@@ -77,6 +77,7 @@ namespace LoomNetwork.CZB.BackendCommunication
                 IsOpponent = isOpponent;
 
                 if (!_dataManager.BetaConfig.SaveTurnData)
+
                     return;
 
                 Player.OnEndTurnEvent += OnEndTurnEventHandler;
@@ -182,6 +183,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             private async Task UploadActionLogModel(ActionLogModel model)
             {
                 if (!_backendFacade.IsConnected)
+
                     return;
 
                 await _backendFacade.UploadActionLog(_backendDataControlMediator.UserDataModel.UserId, model);
@@ -190,14 +192,14 @@ namespace LoomNetwork.CZB.BackendCommunication
             private object WorkingCardToSimpleRepresentation(WorkingCard card)
             {
                 return new
-                       {
-                           card.instanceId,
-                           card.cardId,
-                           card.libraryCard.name,
-                           card.health,
-                           card.damage,
-                           type = card.type.ToString()
-                       };
+                {
+                    card.instanceId,
+                    card.cardId,
+                    card.libraryCard.name,
+                    card.health,
+                    card.damage,
+                    type = card.type.ToString()
+                };
             }
         }
     }

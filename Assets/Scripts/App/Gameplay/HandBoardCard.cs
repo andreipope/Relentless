@@ -73,8 +73,8 @@ public class HandBoardCard
     public void OnUpdateEventHandler(GameObject obj)
     {
         if (!enabled)
-        
-return;
+
+            return;
 
         if (startedDrag)
         {
@@ -102,8 +102,8 @@ return;
     public void OnSelected()
     {
         if (!enabled)
-        
-return;
+
+            return;
 
         if (_playerController.IsActive && cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected && enabled)
         {
@@ -132,12 +132,12 @@ return;
     public void OnMouseUp(GameObject obj)
     {
         if (!enabled)
-        
-return;
+
+            return;
 
         if (!startedDrag)
-        
-return;
+
+            return;
 
         _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 

@@ -86,8 +86,8 @@ namespace LoomNetwork.CZB
             _isActive = false;
 
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);

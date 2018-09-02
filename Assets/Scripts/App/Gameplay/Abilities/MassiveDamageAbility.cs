@@ -22,8 +22,8 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             Action();
 
@@ -47,8 +47,8 @@ return;
         {
             base.UnitOnDieEventHandler();
             if (abilityCallType != Enumerators.AbilityCallType.DEATH)
-            
-return;
+
+                return;
 
             Debug.Log("CreatureOnDieEventHandler");
             Action();

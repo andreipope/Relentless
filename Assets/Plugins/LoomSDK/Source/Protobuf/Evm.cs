@@ -257,9 +257,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthFilterEnvelope other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       switch (other.MessageCase) {
         case MessageOneofCase.EthBlockHashList:
           if (EthBlockHashList == null) {
@@ -421,9 +420,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthBlockHashList other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       ethBlockHash_.Add(other.ethBlockHash_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -542,9 +540,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthTxHashList other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       ethTxHash_.Add(other.ethTxHash_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -663,9 +660,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EventDataList other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       events_.Add(other.events_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -931,9 +927,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EventData other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       topics_.Add(other.topics_);
       if (other.caller_ != null) {
         if (caller_ == null) {
@@ -1113,9 +1108,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TxReceiptList other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       txReceipts_.Add(other.txReceipts_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1423,9 +1417,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EvmTxReceipt other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.TransactionIndex != 0) {
         TransactionIndex = other.TransactionIndex;
       }
@@ -1856,9 +1849,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EvmTxObject other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Hash.Length != 0) {
         Hash = other.Hash;
       }
@@ -2478,9 +2470,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthBlockInfo other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Number != 0L) {
         Number = other.Number;
       }
@@ -2723,9 +2714,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthFilterLogList other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       ethBlockLogs_.Add(other.ethBlockLogs_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3012,9 +3002,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EthFilterLog other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Removed != false) {
         Removed = other.Removed;
       }

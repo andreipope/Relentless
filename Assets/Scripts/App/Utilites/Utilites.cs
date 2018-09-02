@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEditor;
@@ -209,9 +208,7 @@ namespace LoomNetwork.Internal
             buildPlayerOptions.targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
             BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
             if (buildReport.summary.result != BuildResult.Succeeded)
-            {
                 throw new Exception("build failed");
-            }
         }
 
         private static void BuildAssetBundles(BuildTarget buildTarget)

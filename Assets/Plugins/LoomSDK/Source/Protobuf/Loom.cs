@@ -225,9 +225,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(SignedTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Inner.Length != 0) {
         Inner = other.Inner;
       }
@@ -389,9 +388,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(NonceTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Inner.Length != 0) {
         Inner = other.Inner;
       }
@@ -525,9 +523,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(BigUInt other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Value.Length != 0) {
         Value = other.Value;
       }
@@ -675,9 +672,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Address other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.ChainId.Length != 0) {
         ChainId = other.ChainId;
       }
@@ -832,9 +828,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Transaction other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Id != 0) {
         Id = other.Id;
       }
@@ -1010,9 +1005,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(MessageTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.to_ != null) {
         if (to_ == null) {
           to_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -1207,9 +1201,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DeployTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.VmType != 0) {
         VmType = other.VmType;
       }
@@ -1371,9 +1364,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DeployResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.contract_ != null) {
         if (contract_ == null) {
           contract_ = new global::Loom.Client.Internal.Protobuf.Address();
@@ -1534,9 +1526,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DeployResponseData other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.TxHash.Length != 0) {
         TxHash = other.TxHash;
       }
@@ -1691,9 +1682,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CallTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.VmType != 0) {
         VmType = other.VmType;
       }
@@ -1848,9 +1838,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(PluginCode other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
@@ -2026,9 +2015,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Request other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.ContentType != 0) {
         ContentType = other.ContentType;
       }
@@ -2190,9 +2178,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Response other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.ContentType != 0) {
         ContentType = other.ContentType;
       }
@@ -2347,9 +2334,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ContractMethodCall other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Method.Length != 0) {
         Method = other.Method;
       }

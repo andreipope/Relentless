@@ -39,8 +39,8 @@ namespace LoomNetwork.CZB
             }
 
             if (abilityCallType != Enumerators.AbilityCallType.PERMANENT)
-            
-return;
+
+                return;
 
             Action();
         }

@@ -45,8 +45,8 @@ namespace LoomNetwork.CZB
             base.UnitGotDamageEventHandler(from);
 
             if (abilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
-            
-return;
+
+                return;
 
             if (from is BoardUnit)
             {

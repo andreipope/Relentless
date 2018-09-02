@@ -64,8 +64,8 @@ namespace LoomNetwork.CZB
         public async void Update()
         {
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT))
             {
@@ -182,8 +182,8 @@ return;
         public void Hide()
         {
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);

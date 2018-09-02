@@ -48,8 +48,8 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -109,8 +109,8 @@ return;
         private void ClosePopup()
         {
             if (blockedClosing)
-            
-return;
+
+                return;
 
             Hide();
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SFX_SOUND_VOLUME, false, false, true);

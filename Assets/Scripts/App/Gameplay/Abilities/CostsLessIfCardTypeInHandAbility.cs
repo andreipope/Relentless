@@ -26,8 +26,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.IN_HAND)
-            
-return;
+
+                return;
 
             playerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
             playerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
@@ -56,8 +56,8 @@ return;
             base.Action(info);
 
             if (!playerCallerOfAbility.CardsInHand.Contains(mainWorkingCard))
-            
-return;
+
+                return;
 
             int gooCost = playerCallerOfAbility.CardsInHand.FindAll(x => (x.libraryCard.cardSetType == setType) && (x != mainWorkingCard)).Count * value;
 
@@ -70,8 +70,8 @@ return;
         private void CardPlayedEventHandler(WorkingCard card)
         {
             if (!card.Equals(mainWorkingCard))
-            
-return;
+
+                return;
 
             playerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
             playerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;

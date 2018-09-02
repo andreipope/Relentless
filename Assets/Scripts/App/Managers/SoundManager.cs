@@ -129,8 +129,8 @@ namespace LoomNetwork.CZB
             foreach (SoundContainer item in _soundContainers)
             {
                 if (cardSoundType.ToString().Equals(item.tag))
-                
-return;
+
+                    return;
             }
 
             CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
@@ -141,8 +141,8 @@ return;
             foreach (SoundContainer item in _soundContainers)
             {
                 if (cardSoundType.ToString().Equals(item.tag))
-                
-return;
+
+                    return;
             }
 
             SoundContainer thisSoundContainer = CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());

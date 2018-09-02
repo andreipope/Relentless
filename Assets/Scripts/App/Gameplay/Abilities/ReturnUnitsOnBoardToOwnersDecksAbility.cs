@@ -19,8 +19,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             Action();
         }
@@ -64,8 +64,8 @@ return;
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
             if (((abilityUnitOwner != null) && (unit == abilityUnitOwner)) || (unit == null))
-            
-return;
+
+                return;
 
             // implement animation
             unit.ownerPlayer.AddCardToDeck(new WorkingCard(unit.Card.libraryCard.Clone(), unit.ownerPlayer));

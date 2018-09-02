@@ -34,8 +34,8 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             if (abilityUnitOwner.IsReanimated)
-            
-return;
+
+                return;
 
             Player owner = abilityUnitOwner.ownerPlayer;
             Card libraryCard = abilityUnitOwner.Card.libraryCard.Clone();
@@ -64,8 +64,8 @@ return;
             base.UnitOnDieEventHandler();
 
             if (abilityCallType != Enumerators.AbilityCallType.DEATH)
-            
-return;
+
+                return;
 
             Action();
         }

@@ -42,8 +42,8 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 button.DOFade(0.5f, 0.3f);
 
                 if (button == null)
-                
-return;
+
+                    return;
 
                 DoFadeForChildren(button, 0.5f, 0.3f);
                 DoFadeForChildren(onHoverOverlay, 0, 0.3f);
@@ -58,8 +58,8 @@ return;
                 button.DOFade(1f, 0.3f);
 
                 if (button == null)
-                
-return;
+
+                    return;
 
                 DoFadeForChildren(button, 1f, 0.3f);
                 DoFadeForChildren(onHoverOverlay, 0, 0.3f);
@@ -83,8 +83,8 @@ return;
             onClickOverlay.DOFade(1.0f, 0.2f);
 
             if (button == null)
-            
-return;
+
+                return;
 
             DoFadeForChildren(button, 0f, 0.25f);
             if (isHovered)
@@ -105,8 +105,8 @@ return;
             onHoverOverlay.DOFade(1.0f, 0.5f);
 
             if (button == null)
-            
-return;
+
+                return;
 
             DoFadeForChildren(button, 0f, 0.25f);
             DoFadeForChildren(onHoverOverlay, 1, 0.25f);
@@ -126,8 +126,8 @@ return;
             onHoverOverlay.DOFade(0.0f, 0.25f);
 
             if (button == null)
-            
-return;
+
+                return;
 
             DoFadeForChildren(button, 1f, 0.25f);
             DoFadeForChildren(onHoverOverlay, 0, 0.25f);
@@ -148,8 +148,8 @@ return;
             onClickEvent.Invoke();
 
             if (button == null)
-            
-return;
+
+                return;
 
             DoFadeForChildren(button, 0f, 0.25f);
             DoFadeForChildren(onHoverOverlay, 1, 0.25f);

@@ -7,35 +7,35 @@ namespace LoomNetwork.CZB.BackendCommunication
     public static class BackendEndpointsContainer
     {
         public static readonly Dictionary<BackendPurpose, BackendEndpoint> Endpoints = new Dictionary<BackendPurpose, BackendEndpoint>
-                                                                                       {
-                                                                                           { BackendPurpose.Local, new BackendEndpoint("http://stage.loom.games", "ws://127.0.0.1:9999/queryws", "ws://127.0.0.1:46657/websocket") },
-                                                                                           {
-                                                                                               BackendPurpose.Production, new BackendEndpoint(
-                                                                                                   "http://loom.games",
+        {
+            { BackendPurpose.Local, new BackendEndpoint("http://stage.loom.games", "ws://127.0.0.1:9999/queryws", "ws://127.0.0.1:46657/websocket") },
+            {
+                BackendPurpose.Production, new BackendEndpoint(
+                    "http://loom.games",
 
-                                                                                                   // FIXME
+                    // FIXME
 #if USE_GAMECHAIN_1_FOR_PRODUCTION
-                                                                                                   "ws://gamechain-2.dappchains.com:9999/queryws",
-                                                                                                   "ws://gamechain-2.dappchains.com:46657/websocket"
+                    "ws://gamechain-2.dappchains.com:9999/queryws",
+                    "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
-                                                                                               )
-                                                                                           },
-                                                                                           {
-                                                                                               BackendPurpose.Staging, new BackendEndpoint(
-                                                                                                   "http://stage.loom.games",
+                )
+            },
+            {
+                BackendPurpose.Staging, new BackendEndpoint(
+                    "http://stage.loom.games",
 #if USE_GAMECHAIN_1_FOR_PRODUCTION
-                                                                                                   "ws://gamechain-2.dappchains.com:9999/queryws",
-                                                                                                   "ws://gamechain-2.dappchains.com:46657/websocket"
+                    "ws://gamechain-2.dappchains.com:9999/queryws",
+                    "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
-                                                                                               )
-                                                                                           }
-                                                                                       };
+                )
+            }
+        };
 
         public class BackendEndpoint
         {

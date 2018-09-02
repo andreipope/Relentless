@@ -21,8 +21,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             Action();
         }
@@ -42,8 +42,8 @@ return;
             base.Action(info);
 
             if (playerCallerOfAbility.Goo == 0)
-            
-return;
+
+                return;
 
             int increaseOn = 0;
 

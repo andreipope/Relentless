@@ -435,8 +435,8 @@ namespace LoomNetwork.CZB
         public void SetFirstHand(bool isTutorial = false)
         {
             if (isTutorial)
-            
-return;
+
+                return;
 
             for (int i = 0; i < Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME; i++)
             {
@@ -522,7 +522,7 @@ return;
 
         private void PlayerHPChangedEventHandler(int now)
         {
-            if (now <= 0 && !_isDead)
+            if ((now <= 0) && !_isDead)
             {
                 PlayerDie();
 

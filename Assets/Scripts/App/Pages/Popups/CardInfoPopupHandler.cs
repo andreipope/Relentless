@@ -138,8 +138,8 @@ namespace LoomNetwork.CZB
         private void Close()
         {
             if (_blockedClosing)
-            
-return;
+
+                return;
 
             SetIsStateChanging(true);
 
@@ -166,8 +166,8 @@ return;
         private void SetIsStateChanging(bool isStartedStateChange)
         {
             if (IsStateChanging == isStartedStateChange)
-            
-return;
+
+                return;
 
             IsStateChanging = isStartedStateChange;
             if (isStartedStateChange)

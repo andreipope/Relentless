@@ -43,8 +43,8 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             if (!_gameplayManager.IsGameplayReady())
-            
-return;
+
+                return;
 
             HandleInput();
         }

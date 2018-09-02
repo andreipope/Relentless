@@ -77,9 +77,8 @@ namespace Loom.Client.Unity.WebGL.Internal
         {
             var currentState = this.webSocket.State;
             if ((currentState == WebSocket.WebSocketState.Closed) || (currentState == WebSocket.WebSocketState.Closing))
-            {
-                return;
-            }
+            
+return;
             var tcs = new TaskCompletionSource<object>();
 
             Action<string> closedHandler = (err) =>

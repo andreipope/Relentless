@@ -32,6 +32,7 @@ namespace LoomNetwork.CZB
         public void ChangeScene(Enumerators.AppState appState)
         {
             if ((appState == Enumerators.AppState.NONE) || (CurrentAppStateScene == appState))
+
                 return;
 
             IsLoadedScene = false;

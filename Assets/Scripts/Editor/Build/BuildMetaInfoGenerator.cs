@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -40,9 +40,7 @@ namespace LoomNetwork.CZB
             {
                 ExecuteCommand("git", "rev-parse --abbrev-ref HEAD", out output, out exitCode, timeout: 20000);
                 if (exitCode != 0)
-                {
                     throw new Exception("exitCode != 0");
-                }
 
                 buildMetaInfo.GitBranchName = output;
             } catch (Exception e)
@@ -55,9 +53,7 @@ namespace LoomNetwork.CZB
             {
                 ExecuteCommand("git", "log --pretty=format:%h -n 1", out output, out exitCode, timeout: 20000);
                 if (exitCode != 0)
-                {
                     throw new Exception("exitCode != 0");
-                }
 
                 buildMetaInfo.GitCommitHash = output;
             } catch (Exception e)
@@ -106,18 +102,18 @@ namespace LoomNetwork.CZB
         private static void ExecuteCommand(string fileName, string arguments, out string output, out int exitCode, string standardInput = null, Encoding standardInputEncoding = null, int timeout = 5000)
         {
             Process program = new Process
-                              {
-                                  StartInfo =
-                                  {
-                                      FileName = fileName,
-                                      Arguments = arguments,
-                                      UseShellExecute = false,
-                                      RedirectStandardOutput = true,
-                                      RedirectStandardInput = standardInput != null,
-                                      CreateNoWindow = true,
-                                      StandardOutputEncoding = Encoding.UTF8
-                                  }
-                              };
+            {
+                StartInfo =
+                {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = standardInput != null,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                }
+            };
             program.Start();
             if (standardInput != null)
             {

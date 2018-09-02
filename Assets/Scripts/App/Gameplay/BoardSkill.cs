@@ -151,8 +151,8 @@ namespace LoomNetwork.CZB
         public void StartDoSkill()
         {
             if (!IsSkillCanUsed())
-            
-return;
+
+                return;
 
             if (owner.IsLocalPlayer)
             {
@@ -181,8 +181,8 @@ return;
         public void EndDoSkill()
         {
             if (!IsSkillCanUsed() || !IsUsing)
-            
-return;
+
+                return;
 
             DoOnUpSkillAction();
 
@@ -205,8 +205,8 @@ return;
         public void Update()
         {
             if (!_gameplayManager.IsGameplayReady())
-            
-return;
+
+                return;
             {
                 // if (owner.IsLocalPlayer)
                 _pointerEventSolver.Update();
@@ -227,8 +227,8 @@ return;
         public void OnMouseDownEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-            
-return;
+
+                return;
 
             _pointerEventSolver.PushPointer();
         }
@@ -236,8 +236,8 @@ return;
         public void OnMouseUpEventHandler()
         {
             if (!_gameplayManager.IsGameplayReady())
-            
-return;
+
+                return;
 
             _pointerEventSolver.PopPointer();
         }
@@ -284,8 +284,8 @@ return;
         private void OnStartTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
-            
-return;
+
+                return;
 
             if (owner.IsStunned)
             {
@@ -304,8 +304,8 @@ return;
         private void OnEndTurnEventHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(owner))
-            
-return;
+
+                return;
 
             SetHighlightingEnabled(false);
 #if DEV_MODE
@@ -375,12 +375,12 @@ return;
         private void DrawAbilityTooltip()
         {
             if (_gameplayManager.IsTutorial)
-            
-return;
+
+                return;
 
             if (_currentOverlordAbilityInfoObject != null)
-            
-return;
+
+                return;
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 

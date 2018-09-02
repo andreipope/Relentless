@@ -70,8 +70,8 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -226,8 +226,8 @@ return;
                 set
                 {
                     if (_skill == value)
-                    
-return;
+
+                        return;
 
                     _skill = value;
                     UpdateUIState();

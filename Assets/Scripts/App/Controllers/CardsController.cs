@@ -122,8 +122,8 @@ namespace LoomNetwork.CZB
         public void EndCardDistribution()
         {
             if (!CardDistribution)
-            
-return;
+
+                return;
 
             _gameplayManager.IsPrepairingEnded = true;
 
@@ -258,8 +258,8 @@ return;
             }
 
             if (CheckIsMoreThanMaxCards(card, player))
-            
-return;
+
+                return;
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
@@ -284,8 +284,8 @@ return;
             otherPlayer.RemoveCardFromDeck(card);
 
             if (CheckIsMoreThanMaxCards(card, player))
-            
-return;
+
+                return;
 
             if (player.Equals(otherPlayer))
             {
@@ -730,8 +730,8 @@ return;
         public void ReturnToHandBoardUnit(WorkingCard workingCard, Player player, Vector3 cardPosition)
         {
             if (CheckIsMoreThanMaxCards(workingCard, player))
-            
-return;
+
+                return;
 
             GameObject cardObject = player.AddCardToHand(workingCard, true);
             cardObject.transform.position = cardPosition;
@@ -750,8 +750,8 @@ return;
             }
 
             if (card == null)
-            
-return;
+
+                return;
 
             if (player.IsLocalPlayer)
             {
@@ -800,8 +800,8 @@ return;
             WorkingCard workingCard = new WorkingCard(card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
-            
-return;
+
+                return;
 
             if (player.IsLocalPlayer)
             {

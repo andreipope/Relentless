@@ -87,8 +87,8 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
@@ -302,8 +302,8 @@ return;
             public void Select(bool animateTransition = true)
             {
                 if (IsSelected)
-                
-return;
+
+                    return;
 
                 IsSelected = true;
 
@@ -323,8 +323,8 @@ return;
             public void Deselect(bool animateTransition = true, bool force = false)
             {
                 if (!IsSelected && !force)
-                
-return;
+
+                    return;
 
                 IsSelected = false;
 

@@ -27,8 +27,8 @@ namespace LoomNetwork.CZB
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             Action();
         }

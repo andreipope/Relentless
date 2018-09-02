@@ -32,13 +32,13 @@ namespace LoomNetwork.CZB
             lock (_sync)
             {
                 InputEvent item = new InputEvent
-                                  {
-                                      code = inputCode,
-                                      OnInputEvent = onInput,
-                                      OnInputDownEvent = onInputDown,
-                                      OnInputUpEvent = onInputUp,
-                                      type = type
-                                  };
+                {
+                    code = inputCode,
+                    OnInputEvent = onInput,
+                    OnInputDownEvent = onInputDown,
+                    OnInputUpEvent = onInputUp,
+                    type = type
+                };
 
                 item.index = _customFreeIndex++;
 

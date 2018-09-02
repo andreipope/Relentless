@@ -284,9 +284,8 @@ public void DispatchHits() {
 
   public void LogScreen(AppViewHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging screen.");
     }
@@ -312,9 +311,8 @@ public void DispatchHits() {
 
   public void LogEvent(EventHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging event.");
     }
@@ -347,9 +345,8 @@ public void DispatchHits() {
 
   public void LogTransaction(TransactionHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging transaction.");
     }
@@ -383,9 +380,8 @@ public void DispatchHits() {
 
   public void LogItem(ItemHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging item.");
     }
@@ -408,9 +404,8 @@ public void DispatchHits() {
 
   public void LogException(ExceptionHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging exception.");
     }
@@ -435,9 +430,8 @@ public void DispatchHits() {
 
   public void LogSocial(SocialHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging social.");
     }
@@ -463,9 +457,8 @@ public void DispatchHits() {
 
   public void LogTiming(TimingHitBuilder builder) {
     InitializeTracker();
-    if (builder.Validate() == null) {
-      return;
-    }
+    if (builder.Validate() == null) 
+return;
     if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
       Debug.Log("Logging timing.");
     }

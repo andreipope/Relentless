@@ -31,8 +31,8 @@ namespace LoomNetwork.CZB.Helpers
             }
 
             if (group == null)
-            
-return;
+
+                return;
 
             group.enabled = false;
             Canvas.ForceUpdateCanvases();

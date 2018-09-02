@@ -48,8 +48,8 @@ namespace LoomNetwork.CZB
             ConnectFunc = null;
 
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);

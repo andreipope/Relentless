@@ -284,9 +284,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(PlasmaBlock other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.uid_ != null) {
         if (uid_ == null) {
           uid_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
@@ -647,9 +646,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(PlasmaTx other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Slot != 0UL) {
         Slot = other.Slot;
       }
@@ -835,9 +833,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetCurrentBlockRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -957,9 +954,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetCurrentBlockResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.blockHeight_ != null) {
         if (blockHeight_ == null) {
           blockHeight_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
@@ -1092,9 +1088,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetBlockRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.blockHeight_ != null) {
         if (blockHeight_ == null) {
           blockHeight_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
@@ -1227,9 +1222,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetBlockResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.block_ != null) {
         if (block_ == null) {
           block_ = new global::Loom.Client.Internal.Protobuf.PlasmaBlock();
@@ -1344,9 +1338,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(SubmitBlockToMainnetRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1469,9 +1462,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(SubmitBlockToMainnetResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.MerkleHash.Length != 0) {
         MerkleHash = other.MerkleHash;
       }
@@ -1598,9 +1590,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(PlasmaTxRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.plasmatx_ != null) {
         if (plasmatx_ == null) {
           plasmatx_ = new global::Loom.Client.Internal.Protobuf.PlasmaTx();
@@ -1712,9 +1703,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(PlasmaTxResponse other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1930,9 +1920,8 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DepositRequest other) {
-      if (other == null) {
-        return;
-      }
+      if (other == null) 
+return;
       if (other.Slot != 0UL) {
         Slot = other.Slot;
       }

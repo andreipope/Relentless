@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,9 +11,7 @@ namespace LoomNetwork.CZB
         public static SpriteMeshData GetSpriteMeshData(Sprite sprite)
         {
             if (sprite == null)
-            {
                 throw new ArgumentNullException(nameof(sprite));
-            }
 
             SpriteMeshData spriteMeshData;
             if (!spriteMeshDataMap.TryGetValue(sprite, out spriteMeshData))

@@ -22,13 +22,13 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (locked)
-        
-return;
+
+            return;
 
         Canvas canvas = FindInParents<Canvas>(gameObject);
         if (canvas == null)
-        
-return;
+
+            return;
 
         m_DraggingIcon = Instantiate(gameObject);
         m_DraggingIcon.transform.Find("Amount").gameObject.SetActive(false);
@@ -52,8 +52,8 @@ return;
     public void OnDrag(PointerEventData data)
     {
         if (locked)
-        
-return;
+
+            return;
 
         if (m_DraggingIcon != null)
         {
@@ -64,8 +64,8 @@ return;
     public void OnEndDrag(PointerEventData eventData)
     {
         if (locked)
-        
-return;
+
+            return;
 
         if (OnItemEndDrag != null)
         {
@@ -104,8 +104,8 @@ return;
     private void SetDraggedPosition(PointerEventData data)
     {
         if (locked)
-        
-return;
+
+            return;
 
         if (dragOnSurfaces && (data.pointerEnter != null) && (data.pointerEnter.transform as RectTransform != null))
         {

@@ -137,8 +137,8 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
@@ -243,7 +243,7 @@ return;
         private void BattleButtonUpdate()
         {
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || _hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE)
+            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE))
             {
                 _battleButton.interactable = false;
                 _battleButtonWarning.gameObject.SetActive(true);
@@ -287,8 +287,8 @@ return;
         private void CenterTheSelectedDeck()
         {
             if (_hordeDecks.Count < 1)
-            
-return;
+
+                return;
 
             _scrolledDeck = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
 
@@ -313,8 +313,8 @@ return;
             bool isChanged = false;
 
             if (_hordeDecks.Count < 1)
-            
-return;
+
+                return;
 
             int oldIndex = _scrolledDeck;
             _scrolledDeck += direction;
@@ -425,8 +425,8 @@ return;
             public void Select()
             {
                 if (IsSelected)
-                
-return;
+
+                    return;
 
                 _buttonSelect.gameObject.SetActive(false);
 
@@ -436,8 +436,8 @@ return;
             public void Deselect()
             {
                 if (!IsSelected)
-                
-return;
+
+                    return;
 
                 _buttonSelect.gameObject.SetActive(true);
 
@@ -477,7 +477,7 @@ return;
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || _hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE)
+            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MIN_DECK_SIZE))
             {
                 _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MIN_DECK_SIZE + " cards.");
             }
@@ -524,8 +524,8 @@ return;
         private void NewHordeDeckButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-            
-return;
+
+                return;
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
 
@@ -537,8 +537,8 @@ return;
         private void DeleteButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-            
-return;
+
+                return;
 
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
             if (deck != null)
@@ -554,8 +554,8 @@ return;
         private void EditButtonOnClickHandler()
         {
             if (ShowConnectionLostPopupIfNeeded())
-            
-return;
+
+                return;
 
             if (_selectedDeckId != -1)
             {
@@ -571,8 +571,8 @@ return;
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmDeleteDeckEventHandler;
 
             if (!status)
-            
-return;
+
+                return;
 
             HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.id == _selectedDeckId);
             if (deckToDelete != null)

@@ -43,8 +43,8 @@ namespace LoomNetwork.CZB
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
             if (!isAttacker)
-            
-return;
+
+                return;
 
             _numberOfAttacksWas++;
 

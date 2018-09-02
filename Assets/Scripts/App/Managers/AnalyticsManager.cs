@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Common;
@@ -60,8 +60,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
     void IAnalyticsManager.Dispose()
     {
         if (_googleAnalytics == null)
-        
-return;
+
+            return;
 
         _googleAnalytics.Dispose();
     }
@@ -70,9 +70,7 @@ return;
     {
         _googleAnalytics = Object.FindObjectOfType<GoogleAnalyticsV4>();
         if (_googleAnalytics == null)
-        {
             throw new Exception("GoogleAnalyticsV4 object not found");
-        }
     }
 
     public void Update()

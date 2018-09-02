@@ -37,8 +37,8 @@ namespace LoomNetwork.CZB
         {
             // Time.timeScale = 1;
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);

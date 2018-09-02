@@ -754,8 +754,8 @@ namespace LoomNetwork.CZB
             } else
             {
                 if (activeAbility == null)
-                
-return;
+
+                    return;
 
                 if (target is BoardUnit)
                 {

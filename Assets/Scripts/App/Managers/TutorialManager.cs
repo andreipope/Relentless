@@ -137,8 +137,8 @@ namespace LoomNetwork.CZB
         public void NextButtonClickHandler()
         {
             if (!IsTutorial)
-            
-return;
+
+                return;
 
             if ((CurrentStep == 0) || (CurrentStep == 1) || (CurrentStep == 2) || (CurrentStep == 3) || (CurrentStep == 4) || (CurrentStep == 5) || (CurrentStep == 6) || (CurrentStep == 7) || (CurrentStep == 9) || (CurrentStep == 14) || (CurrentStep == 15) || (CurrentStep == 18) || (CurrentStep == 20) || (CurrentStep == 22) || (CurrentStep == 24) || (CurrentStep == 25) || (CurrentStep == 26) || (CurrentStep == 29) || (CurrentStep == 30) || (CurrentStep == 31) || (CurrentStep == 33) || (CurrentStep == 34) || (CurrentStep == 35) || (CurrentStep == 36) || (CurrentStep == 37))
             {
@@ -215,8 +215,8 @@ return;
         public void NextStep()
         {
             if (!IsBubbleShow)
-            
-return;
+
+                return;
 
             if (CurrentStep >= _steps.Count - 1)
             {

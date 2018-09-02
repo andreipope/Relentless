@@ -18,8 +18,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             Action();
         }
@@ -75,8 +75,8 @@ return;
         private void TakeHeavyToUnit(BoardUnit unit)
         {
             if (unit == null)
-            
-return;
+
+                return;
 
             unit.SetAsHeavyUnit();
         }

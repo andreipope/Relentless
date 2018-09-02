@@ -38,8 +38,8 @@ namespace LoomNetwork.CZB
             OnHidePopupEvent?.Invoke();
 
             if (Self == null)
-            
-return;
+
+                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -68,8 +68,8 @@ return;
         public void Update()
         {
             if (Self == null)
-            
-return;
+
+                return;
 
             _progressBar.fillAmount = Mathf.Max(_progressBar.fillAmount, _sceneManager.SceneLoadingProgress / 100f);
 

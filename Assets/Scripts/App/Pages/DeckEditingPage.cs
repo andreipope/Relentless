@@ -23,14 +23,14 @@ namespace LoomNetwork.CZB
         private const int CARDS_PER_PAGE = 5;
 
         private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>
-                                                                                         {
-                                                                                             { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
-                                                                                             { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
-                                                                                             { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
-                                                                                             { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
-                                                                                             { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
-                                                                                             { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
-                                                                                         };
+        {
+            { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
+            { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
+            { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
+            { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
+            { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
+            { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
+        };
 
         private IUIManager _uiManager;
 
@@ -281,8 +281,8 @@ namespace LoomNetwork.CZB
             Dispose();
 
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
@@ -532,8 +532,8 @@ return;
         public void AddCardToDeck(DeckBuilderCard sender, Card card)
         {
             if (_currentDeck == null)
-            
-return;
+
+                return;
 
             if (_against[_dataManager.CachedHeroesData.Heroes[_currentHeroId].heroElement] == card.cardSetType)
             {
@@ -963,8 +963,8 @@ return;
         private void BoardCardOnBeginDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
-            
-return;
+
+                return;
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
@@ -981,8 +981,8 @@ return;
         private void BoardCardOnEndDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            
-return;
+
+                return;
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1009,8 +1009,8 @@ return;
         private void BoardCardOnDragEventHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            
-return;
+
+                return;
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             position.z = _draggingObject.transform.position.z;
@@ -1022,8 +1022,8 @@ return;
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
             if (type == _currentSet)
-            
-return;
+
+                return;
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SFX_SOUND_VOLUME, false, false, true);
 

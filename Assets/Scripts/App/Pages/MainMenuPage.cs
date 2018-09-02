@@ -156,8 +156,8 @@ namespace LoomNetwork.CZB
             }
 
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
@@ -176,8 +176,8 @@ return;
         private void UpdateConnectionStateUI()
         {
             if (_selfPage == null)
-            
-return;
+
+                return;
 
             _connectionStatusText.text = _backendFacade.IsConnected?"<color=green>Online</color>":"<color=red>Offline</color>";
 

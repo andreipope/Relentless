@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -225,9 +225,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
-            {
                 throw new Exception($"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
-            }
 
             BetaKeyValidationResponse betaKeyValidationResponse = httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
             return betaKeyValidationResponse.IsValid;
@@ -239,9 +237,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
-            {
                 throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
-            }
 
             BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
                 httpResponseMessage.ReadToEnd(),

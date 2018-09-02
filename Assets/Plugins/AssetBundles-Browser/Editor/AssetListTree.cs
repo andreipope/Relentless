@@ -304,9 +304,8 @@ namespace AssetBundleBrowser
 
         protected override void ContextClickedItem(int id)
         {
-            if (AssetBundleModel.Model.DataSource.IsReadOnly ()) {
-                return;
-            }
+            if (AssetBundleModel.Model.DataSource.IsReadOnly ()) 
+return;
 
             List<AssetBundleModel.AssetTreeItem> selectedNodes = new List<AssetBundleModel.AssetTreeItem>();
             foreach(var nodeID in GetSelection())

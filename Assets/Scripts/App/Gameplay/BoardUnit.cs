@@ -332,8 +332,8 @@ namespace LoomNetwork.CZB
         public void BuffUnit(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-            
-return;
+
+                return;
 
             BuffsOnUnit.Add(type);
         }
@@ -341,8 +341,8 @@ return;
         public void RemoveBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-            
-return;
+
+                return;
 
             BuffsOnUnit.Remove(type);
         }
@@ -350,8 +350,8 @@ return;
         public void ClearBuffs()
         {
             if (!_readyForBuffs)
-            
-return;
+
+                return;
 
             int damageToDelete = 0;
             int attackToDelete = 0;
@@ -408,8 +408,8 @@ return;
         public void ApplyBuff(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
-            
-return;
+
+                return;
 
             // foreach (var buff in _buffsOnUnit)
             // {
@@ -494,8 +494,8 @@ return;
         public void SetAsHeavyUnit(bool buff = false)
         {
             if (hasHeavy)
-            
-return;
+
+                return;
 
             // if (!buff)
             // {
@@ -511,8 +511,8 @@ return;
         public void SetAsWalkerUnit(bool buff = false)
         {
             if (!hasHeavy && !hasFeral && !HasBuffHeavy)
-            
-return;
+
+                return;
 
             // if (!buff)
             // {
@@ -528,8 +528,8 @@ return;
         public void SetAsFeralUnit(bool buff = false)
         {
             if (hasFeral)
-            
-return;
+
+                return;
 
             // if (!buff)
             // {
@@ -889,8 +889,8 @@ return;
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
-            
-return;
+
+                return;
 
             SetHighlightingEnabled(true);
             IsPlayable = true;
@@ -1140,8 +1140,8 @@ return;
         private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
         {
             if ((text == null) || !text)
-            
-return;
+
+                return;
 
             text.text = stat.ToString();
 
@@ -1209,8 +1209,8 @@ return;
 
             // Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
             if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 18))
-            
-return;
+
+                return;
 
             if ((ownerPlayer != null) && ownerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
             {

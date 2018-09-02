@@ -23,8 +23,8 @@ namespace LoomNetwork.CZB
             base.Activate();
 
             if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
-            
-return;
+
+                return;
 
             _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
@@ -65,8 +65,8 @@ return;
         private void DevourTargetZombie(BoardUnit unit)
         {
             if (unit.Equals(abilityUnitOwner))
-            
-return;
+
+                return;
 
             int health = unit.initialHP;
             int damage = unit.initialDamage;
