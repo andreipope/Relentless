@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
 
             foreach (BoardUnit unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Card.LibraryCard.CardSetType.Equals(SetType) && (unit != AbilityUnitOwner))
+                if (unit.Card.LibraryCard.CardSetType.Equals(SetType) && unit != AbilityUnitOwner)
                 {
                     unit.BuffedDamage += Damage;
                     unit.CurrentDamage += Damage;

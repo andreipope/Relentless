@@ -136,12 +136,12 @@ namespace LoomNetwork.CZB
             if (!IsTutorial)
                 return;
 
-            if ((CurrentStep == 0) || (CurrentStep == 1) || (CurrentStep == 2) || (CurrentStep == 3) || (CurrentStep == 4) || (CurrentStep == 5) || (CurrentStep == 6) || (CurrentStep == 7) || (CurrentStep == 9) || (CurrentStep == 14) || (CurrentStep == 15) || (CurrentStep == 18) || (CurrentStep == 20) || (CurrentStep == 22) || (CurrentStep == 24) || (CurrentStep == 25) || (CurrentStep == 26) || (CurrentStep == 29) || (CurrentStep == 30) || (CurrentStep == 31) || (CurrentStep == 33) || (CurrentStep == 34) || (CurrentStep == 35) || (CurrentStep == 36) || (CurrentStep == 37))
+            if (CurrentStep == 0 || CurrentStep == 1 || CurrentStep == 2 || CurrentStep == 3 || CurrentStep == 4 || CurrentStep == 5 || CurrentStep == 6 || CurrentStep == 7 || CurrentStep == 9 || CurrentStep == 14 || CurrentStep == 15 || CurrentStep == 18 || CurrentStep == 20 || CurrentStep == 22 || CurrentStep == 24 || CurrentStep == 25 || CurrentStep == 26 || CurrentStep == 29 || CurrentStep == 30 || CurrentStep == 31 || CurrentStep == 33 || CurrentStep == 34 || CurrentStep == 35 || CurrentStep == 36 || CurrentStep == 37)
             {
                 NextStep();
             }
 
-            if ((CurrentStep == 11) && Paused)
+            if (CurrentStep == 11 && Paused)
             {
                 NextStep();
             }
@@ -154,28 +154,28 @@ namespace LoomNetwork.CZB
                 switch (action)
                 {
                     case Enumerators.TutorialReportAction.MOVE_CARD:
-                        if ((CurrentStep == 8) || (CurrentStep == 27))
+                        if (CurrentStep == 8 || CurrentStep == 27)
                         {
                             NextStep();
                         }
 
                         break;
                     case Enumerators.TutorialReportAction.END_TURN:
-                        if ((CurrentStep == 10) || (CurrentStep == 12) || (CurrentStep == 16) || (CurrentStep == 17) || (CurrentStep == 21))
+                        if (CurrentStep == 10 || CurrentStep == 12 || CurrentStep == 16 || CurrentStep == 17 || CurrentStep == 21)
                         {
                             NextStep();
                         }
 
                         break;
                     case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-                        if ((CurrentStep == 13) || (CurrentStep == 23))
+                        if (CurrentStep == 13 || CurrentStep == 23)
                         {
                             NextStep();
                         }
 
                         break;
                     case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                        if ((CurrentStep == 19) || (CurrentStep == 28))
+                        if (CurrentStep == 19 || CurrentStep == 28)
                         {
                             NextStep();
                         }
@@ -285,7 +285,7 @@ namespace LoomNetwork.CZB
                 }
 
                 _popup.ShowTutorialFocus(CurrentStep);
-                if ((CurrentStep == 5) || (CurrentStep == 9) || (CurrentStep == 14))
+                if (CurrentStep == 5 || CurrentStep == 9 || CurrentStep == 14)
                 {
                     _popup.ShowNextButton();
                 }
@@ -297,7 +297,7 @@ namespace LoomNetwork.CZB
                 {
                     _popup.ShowQuestion();
                 }
-                else if ((CurrentStep != 12) && (CurrentStep != 17))
+                else if (CurrentStep != 12 && CurrentStep != 17)
                 {
                     _popup.ShowNextButton();
                 }

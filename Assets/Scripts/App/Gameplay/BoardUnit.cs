@@ -791,7 +791,7 @@ namespace LoomNetwork.CZB
                 UnitStatus = Enumerators.UnitStatusType.NONE;
             }
 
-            if ((OwnerPlayer != null) && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (OwnerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
             {
                 if (CurrentDamage > 0)
                 {
@@ -817,7 +817,7 @@ namespace LoomNetwork.CZB
 
             if (status)
             {
-                GameObject.transform.localScale = _initialScale + (Vector3.one * 0.1f);
+                GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
             }
             else
             {
@@ -971,7 +971,7 @@ namespace LoomNetwork.CZB
 
                                 _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
-                                if (TakeFreezeToAttacked && (targetCard.CurrentHp > 0))
+                                if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
                                 {
                                     targetCard.Stun(Enumerators.StunType.FREEZE, 1);
                                 }
@@ -998,7 +998,7 @@ namespace LoomNetwork.CZB
 
         public bool UnitCanBeUsable()
         {
-            if ((CurrentHp <= 0) || (CurrentDamage <= 0) || IsStun)
+            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun)
             {
                 return false;
             }
@@ -1117,7 +1117,7 @@ namespace LoomNetwork.CZB
 
         private void CheckOnDie()
         {
-            if ((CurrentHp <= 0) && !_dead)
+            if (CurrentHp <= 0 && !_dead)
             {
                 if (IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 {
@@ -1128,7 +1128,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
         {
-            if ((text == null) || !text)
+            if (text == null || !text)
                 return;
 
             text.text = stat.ToString();
@@ -1137,7 +1137,7 @@ namespace LoomNetwork.CZB
             {
                 text.color = Color.green;
             }
-            else if ((stat < initialStat) || (stat < maxCurrentStat))
+            else if (stat < initialStat || stat < maxCurrentStat)
             {
                 text.color = Color.red;
             }
@@ -1198,10 +1198,10 @@ namespace LoomNetwork.CZB
             // return;
 
             // Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
-            if (_gameplayManager.IsTutorial && (_gameplayManager.TutorialStep == 18))
+            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
                 return;
 
-            if ((OwnerPlayer != null) && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
+            if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
             {
                 _fightTargetingArrow = Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                 _fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
@@ -1236,7 +1236,7 @@ namespace LoomNetwork.CZB
 
         private void OnMouseUp(GameObject obj)
         {
-            if ((OwnerPlayer != null) && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
+            if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
             {
                 if (_fightTargetingArrow != null)
                 {

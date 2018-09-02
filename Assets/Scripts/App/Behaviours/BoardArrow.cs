@@ -86,7 +86,7 @@ public class BoardArrow : MonoBehaviour
 
         _targetPosition = target;
 
-        float angle = (Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg) - 90.5f;
+        float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
 
         // float rootObjectsOffset = 21f;
         float scaleX = 1f;

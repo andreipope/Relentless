@@ -163,7 +163,7 @@ namespace LoomNetwork.CZB
         private void BuyButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            if ((_currentPackId >= _costs.Length) || (_currentPackId < 0))
+            if (_currentPackId >= _costs.Length || _currentPackId < 0)
             {
                 Debug.LogError("No pack chosen");
                 return;
@@ -185,7 +185,7 @@ namespace LoomNetwork.CZB
                 packItem.SetActive(true);
 
                 Sequence animationSequence = DOTween.Sequence();
-                animationSequence.AppendInterval((_amount[_currentPackId] * 0.1f) - (0.1f * i));
+                animationSequence.AppendInterval(_amount[_currentPackId] * 0.1f - 0.1f * i);
                 animationSequence.Append(packItem.transform.DOMove(Vector3.up * -10, .3f));
             }
         }

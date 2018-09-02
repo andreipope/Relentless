@@ -19,7 +19,7 @@
 		private float renderTime;
 
 #if UNITY_EDITOR
-		private bool editorWarningFired = false;
+		private bool editorWarningFired;
 
 		private void OnValidate()
 		{

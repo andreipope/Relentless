@@ -138,7 +138,7 @@ namespace LoomNetwork.CZB
 
             CreatePreviewCoroutine = null;
 
-            if ((CurrentBoardCard != null) && CurrentBoardCard)
+            if (CurrentBoardCard != null && CurrentBoardCard)
             {
                 Object.Destroy(CurrentBoardCard);
             }
@@ -153,7 +153,7 @@ namespace LoomNetwork.CZB
             if (cardToDestroy == null)
                 return;
 
-            if ((_lastBoardUntilOnPreview != null) && (cardToDestroy == _lastBoardUntilOnPreview))
+            if (_lastBoardUntilOnPreview != null && cardToDestroy == _lastBoardUntilOnPreview)
             {
                 DestroyCardPreview();
             }
@@ -339,7 +339,7 @@ namespace LoomNetwork.CZB
 
                 foreach (BoardUnit card in PlayerBoardCards)
                 {
-                    if ((_playerController == null) || !card.GameObject)
+                    if (_playerController == null || !card.GameObject)
                     {
                         creatures.Add(card);
                         continue;
@@ -473,7 +473,7 @@ namespace LoomNetwork.CZB
 
                 Debug.Log("Destroy = " + boardCard.CurrentHp + "_" + boardCard.Card.LibraryCard.Name);
             }
-            else if ((_aiController.CurrentSpellCard != null) && (card == _aiController.CurrentSpellCard.WorkingCard))
+            else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
                 _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
@@ -519,7 +519,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < cardsList.Count; i++)
             {
                 BoardUnit card = cardsList[i];
-                newPositions.Add(new Vector2((pivot.x - (boardWidth / 2)) + (cardWidth / 2), pivot.y - 1.7f));
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
                 pivot.x += boardWidth / cardsList.Count;
             }
 
@@ -579,7 +579,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
                 BoardUnit card = opponentBoardCards[i];
-                newPositions.Add(new Vector2((pivot.x - (boardWidth / 2)) + (cardWidth / 2), pivot.y + 0.0f));
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
                 pivot.x += boardWidth / opponentBoardCards.Count;
             }
 
@@ -611,14 +611,15 @@ namespace LoomNetwork.CZB
         {
             IsPreviewActive = true;
 
-            if (target is BoardCard)
+            switch (target)
             {
-                CurrentPreviewedCardId = (target as BoardCard).WorkingCard.InstanceId;
-            }
-            else if (target is BoardUnit)
-            {
-                _lastBoardUntilOnPreview = target as BoardUnit;
-                CurrentPreviewedCardId = (target as BoardUnit).Card.InstanceId;
+                case BoardCard card:
+                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
+                    break;
+                case BoardUnit unit:
+                    _lastBoardUntilOnPreview = unit;
+                    CurrentPreviewedCardId = unit.Card.InstanceId;
+                    break;
             }
 
             CreatePreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
@@ -631,27 +632,31 @@ namespace LoomNetwork.CZB
 
             WorkingCard card = null;
 
-            if (target is BoardCard)
+            switch (target)
             {
-                card = (target as BoardCard).WorkingCard;
-            }
-            else if (target is BoardUnit)
-            {
-                card = (target as BoardUnit).Card;
+                case BoardCard card1:
+                    card = card1.WorkingCard;
+                    break;
+                case BoardUnit unit:
+                    card = unit.Card;
+                    break;
             }
 
             string cardSetName = _cardsController.GetSetOfCard(card.LibraryCard);
 
             BoardCard boardCard = null;
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                boardCard = new UnitBoardCard(CurrentBoardCard);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
-                boardCard = new SpellBoardCard(CurrentBoardCard);
+                case Enumerators.CardKind.CREATURE:
+                    CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
+                    boardCard = new UnitBoardCard(CurrentBoardCard);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    boardCard = new SpellBoardCard(CurrentBoardCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);
@@ -665,13 +670,14 @@ namespace LoomNetwork.CZB
 
             InternalTools.SetLayerRecursively(boardCard.GameObject, 0);
 
-            if (target is BoardUnit)
+            switch (target)
             {
-                boardCard.DrawTooltipInfoOfUnit(target as BoardUnit);
-            }
-            else if (target is BoardCard)
-            {
-                boardCard.DrawTooltipInfoOfCard(target as BoardCard);
+                case BoardUnit boardUnit:
+                    boardCard.DrawTooltipInfoOfUnit(boardUnit);
+                    break;
+                case BoardCard tooltipCard:
+                    tooltipCard.DrawTooltipInfoOfCard(tooltipCard);
+                    break;
             }
 
             Vector3 newPos = pos;
@@ -765,11 +771,11 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < PlayerHandCards.Count; i++)
             {
                 BoardCard card = PlayerHandCards[i];
-                float twist = startTwist - (i * twistPerCard);
+                float twist = startTwist - i * twistPerCard;
                 float nudge = Mathf.Abs(twist);
 
                 nudge *= scalingFactor;
-                moveToPosition = new Vector3(pivot.x - (handWidth / 2), pivot.y - nudge, (PlayerHandCards.Count - i) * 0.1f);
+                moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (PlayerHandCards.Count - i) * 0.1f);
 
                 if (isMove)
                 {
@@ -814,16 +820,16 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
                 GameObject card = OpponentHandCards[i];
-                float twist = startTwist - (i * twistPerCard);
+                float twist = startTwist - i * twistPerCard;
                 float nudge = Mathf.Abs(twist);
 
                 nudge *= scalingFactor;
-                movePosition = new Vector2(pivot.x - (handWidth / 2), pivot.y);
+                movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
                 rotatePosition = new Vector3(0, 0, twist);
 
                 if (isMove)
                 {
-                    if ((i == OpponentHandCards.Count - 1) && isNewCard)
+                    if (i == OpponentHandCards.Count - 1 && isNewCard)
                     {
                         card.transform.position = new Vector3(-8.2f, 5.7f, 0);
                         card.transform.eulerAngles = Vector3.forward * 90f;

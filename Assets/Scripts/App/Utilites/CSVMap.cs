@@ -142,7 +142,7 @@ namespace LoomNetwork.CZB.Helpers
 
                         Type colType = templateInfo.FieldType;
 
-                        if ((colType != null) && (c[i] != null) && (c[i].Length > 0))
+                        if (colType != null && c[i] != null && c[i].Length > 0)
                         {
                             if (colType == typeof(Vector3))
                             {

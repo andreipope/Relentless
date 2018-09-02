@@ -413,7 +413,7 @@ namespace LoomNetwork.CZB
                         Debug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
                     }
 
-                    if ((localDecksData != null) && (remoteDecksData != null))
+                    if (localDecksData != null && remoteDecksData != null)
                     {
                         if (remoteDecksDataTimestamp == localDecksDataTimestamp)
                         {

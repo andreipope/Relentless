@@ -26,7 +26,7 @@ namespace LoomNetwork.CZB
 
         public void ChangeScene(Enumerators.AppState appState)
         {
-            if ((appState == Enumerators.AppState.NONE) || (CurrentAppStateScene == appState))
+            if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState)
                 return;
 
             IsLoadedScene = false;
@@ -57,7 +57,7 @@ namespace LoomNetwork.CZB
         {
             if (IsAutoSceneSwitcher)
             {
-                if ((CurrentAppStateScene != _appStateManager.AppState) && !_isLoadingStarted)
+                if (CurrentAppStateScene != _appStateManager.AppState && !_isLoadingStarted)
                 {
                     ChangeScene(_appStateManager.AppState);
                 }
@@ -83,7 +83,7 @@ namespace LoomNetwork.CZB
                 delayTime = 0;
             }
 
-            while (!asyncOperation.isDone || (delayTime > 0))
+            while (!asyncOperation.isDone || delayTime > 0)
             {
                 delayTime -= Time.deltaTime;
                 SceneLoadingProgress = Mathf.RoundToInt(asyncOperation.progress * 100f);

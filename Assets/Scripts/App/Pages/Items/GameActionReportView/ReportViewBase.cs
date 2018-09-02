@@ -1,9 +1,11 @@
+using System;
 using LoomNetwork.CZB.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -79,15 +81,18 @@ namespace LoomNetwork.CZB
             GameObject currentBoardCard = null;
             string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
-                boardCard = new UnitBoardCard(currentBoardCard);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
-                boardCard = new SpellBoardCard(currentBoardCard);
+                case Enumerators.CardKind.CREATURE:
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    boardCard = new UnitBoardCard(currentBoardCard);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    boardCard = new SpellBoardCard(currentBoardCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);
@@ -142,15 +147,18 @@ namespace LoomNetwork.CZB
             GameObject currentBoardCard = null;
             string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
-                boardCard = new UnitBoardCard(currentBoardCard);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
-                boardCard = new SpellBoardCard(currentBoardCard);
+                case Enumerators.CardKind.CREATURE:
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    boardCard = new UnitBoardCard(currentBoardCard);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    boardCard = new SpellBoardCard(currentBoardCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);

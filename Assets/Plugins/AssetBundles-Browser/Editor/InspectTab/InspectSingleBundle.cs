@@ -11,15 +11,15 @@ namespace AssetBundleBrowser
 
         internal SingleBundleInspector() { }
 
-        private Editor m_Editor = null;
+        private Editor m_Editor;
 
         private Rect m_Position;
 
         [SerializeField]
         private Vector2 m_ScrollPosition;
 
-        private AssetBundleInspectTab m_assetBundleInspectTab = null;
-        private AssetBundleInspectTab.InspectTabData m_inspectTabData = null;
+        private AssetBundleInspectTab m_assetBundleInspectTab;
+        private AssetBundleInspectTab.InspectTabData m_inspectTabData;
 
         internal void SetBundle(AssetBundle bundle, string path = "", AssetBundleInspectTab.InspectTabData inspectTabData = null, AssetBundleInspectTab assetBundleInspectTab = null)
         {
@@ -79,8 +79,8 @@ namespace AssetBundleBrowser
     [CustomEditor(typeof(AssetBundle))]
     internal class AssetBundleEditor : Editor
     {
-        internal bool pathFoldout = false;
-        internal bool advancedFoldout = false;
+        internal bool pathFoldout;
+        internal bool advancedFoldout;
         public override void OnInspectorGUI()
         {
             AssetBundle bundle = target as AssetBundle;

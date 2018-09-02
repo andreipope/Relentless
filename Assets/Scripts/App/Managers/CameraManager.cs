@@ -6,13 +6,11 @@ namespace LoomNetwork.CZB.Gameplay
 {
     public class CameraManager : IService, ICameraManager
     {
-        private readonly float _fadeSpeed = 10f;
+        private const float FadeSpeed = 10f;
 
-        private readonly float _fadeThreshold = 0.01f;
+        private const float FadeThreshold = 0.01f;
 
-        private readonly float _fadeDelay = 0.01f;
-
-        private IUIManager _uiManager;
+        private const float FadeDelay = 0.01f;
 
         private ITimerManager _timerManager;
 
@@ -28,14 +26,14 @@ namespace LoomNetwork.CZB.Gameplay
         {
             _fadeGoalValue = 1f;
             PrepareFading(true, level, isLastSibling);
-            _timerManager.AddTimer(Fade, new object[] { true, callback, level }, _fadeDelay, true);
+            _timerManager.AddTimer(Fade, new object[] { true, callback, level }, FadeDelay, true);
         }
 
         public void FadeIn(float fadeValue, int level = 0, bool isLastSibling = true)
         {
             _fadeGoalValue = fadeValue;
             PrepareFading(true, level, isLastSibling);
-            _timerManager.AddTimer(Fade, new object[] { true, null, level }, _fadeDelay, true);
+            _timerManager.AddTimer(Fade, new object[] { true, null, level }, FadeDelay, true);
         }
 
         public void FadeOut(Action callback = null, int level = 0, bool immediately = false)
@@ -54,7 +52,7 @@ namespace LoomNetwork.CZB.Gameplay
                 return;
 
             PrepareFading(false, level);
-            _timerManager.AddTimer(Fade, new object[] { false, callback, level }, _fadeDelay, true);
+            _timerManager.AddTimer(Fade, new object[] { false, callback, level }, FadeDelay, true);
         }
 
         public void Dispose()
@@ -63,7 +61,6 @@ namespace LoomNetwork.CZB.Gameplay
 
         public void Init()
         {
-            _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _fadeImageGroups = new CanvasGroup[3];
 
@@ -102,12 +99,12 @@ namespace LoomNetwork.CZB.Gameplay
             int level = (int)param[2];
             Action callback = param[1] == null?null:(Action)param[1];
 
-            float speed = Time.deltaTime * _fadeSpeed;
+            float speed = Time.deltaTime * FadeSpeed;
             float to = fadeIn?_fadeGoalValue:0f;
 
             _fadeImageGroups[level].alpha = Mathf.Lerp(_fadeImageGroups[level].alpha, to, speed);
 
-            if (Mathf.Abs(_fadeImageGroups[level].alpha - to) < _fadeThreshold)
+            if (Mathf.Abs(_fadeImageGroups[level].alpha - to) < FadeThreshold)
             {
                 CurrentFadeState = fadeIn?Enumerators.FadeState.FADED:Enumerators.FadeState.DEFAULT;
 

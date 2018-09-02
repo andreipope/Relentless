@@ -166,7 +166,7 @@ namespace AssetBundleBrowser.AssetBundleModel
         protected bool m_Dirty;
         internal BundleNameData m_Name;
         protected MessageSystem.MessageState m_BundleMessages = new MessageSystem.MessageState();
-        protected MessageSystem.Message m_CachedHighMessage = null;
+        protected MessageSystem.Message m_CachedHighMessage;
 
         internal BundleInfo(string name, BundleFolderInfo parent)
         {

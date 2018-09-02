@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
         {
             base.OnInputEndEventHandler();
 
-            if (IsAbilityResolved && (Value > 0))
+            if (IsAbilityResolved && Value > 0)
             {
                 DevourTargetZombie(TargetUnit);
             }

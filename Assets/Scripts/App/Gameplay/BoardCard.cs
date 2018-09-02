@@ -354,7 +354,7 @@ namespace LoomNetwork.CZB
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            if ((GlowSprite != null) && GlowSprite)
+            if (GlowSprite != null && GlowSprite)
             {
                 GlowSprite.enabled = enabled;
             }
@@ -459,8 +459,8 @@ namespace LoomNetwork.CZB
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
-            float offset = 0f;
-            float spacing = -6.75f;
+            const float offset = 0f;
+            const float spacing = -6.75f;
 
             BuffOnCardInfoObject buff = null;
 
@@ -485,7 +485,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            if ((unit.InitialUnitType != Enumerators.CardType.WALKER) && (unit.InitialUnitType != Enumerators.CardType.NONE))
+            if (unit.InitialUnitType != Enumerators.CardType.WALKER && unit.InitialUnitType != Enumerators.CardType.NONE)
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
                 if (buffInfo != null)
@@ -532,7 +532,7 @@ namespace LoomNetwork.CZB
                     continue;
                 }
 
-                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + (spacing * i));
+                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + spacing * i);
 
                 BuffOnCardInfoObjects.Add(buff);
             }
@@ -600,7 +600,7 @@ namespace LoomNetwork.CZB
                     continue;
                 }
 
-                buff = new BuffOnCardInfoObject(buffs[i], parent, offset + (spacing * i));
+                buff = new BuffOnCardInfoObject(buffs[i], parent, offset + spacing * i);
 
                 BuffOnCardInfoObjects.Add(buff);
             }
@@ -619,8 +619,8 @@ namespace LoomNetwork.CZB
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
-            float offset = 0f;
-            float spacing = -6.75f;
+            const float offset = 0f;
+            const float spacing = -6.75f;
 
             BuffOnCardInfoObject buff = null;
 
@@ -645,7 +645,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            if ((boardCard.WorkingCard.Type != Enumerators.CardType.WALKER) && (boardCard.WorkingCard.Type != Enumerators.CardType.NONE))
+            if (boardCard.WorkingCard.Type != Enumerators.CardType.WALKER && boardCard.WorkingCard.Type != Enumerators.CardType.NONE)
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(boardCard.WorkingCard.Type.ToString());
                 if (buffInfo != null)
@@ -692,7 +692,7 @@ namespace LoomNetwork.CZB
                     continue;
                 }
 
-                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + (spacing * i));
+                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + spacing * i);
 
                 BuffOnCardInfoObjects.Add(buff);
             }

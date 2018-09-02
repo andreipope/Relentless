@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB
             if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
-            int gooCost = PlayerCallerOfAbility.CardsInHand.FindAll(x => (x.LibraryCard.CardSetType == SetType) && (x != MainWorkingCard)).Count * Value;
+            int gooCost = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType && x != MainWorkingCard).Count * Value;
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard, MainWorkingCard.RealCost + gooCost, BoardCard);
         }
 

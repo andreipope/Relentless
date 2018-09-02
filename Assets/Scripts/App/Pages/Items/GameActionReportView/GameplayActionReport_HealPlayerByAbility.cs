@@ -32,17 +32,19 @@ namespace LoomNetwork.CZB
             _abilityValue = (int)GameAction.Parameters[2];
             _abilityUsedOnPlayer = GameAction.Parameters[3] as Player;
 
-            if (_abilityOwner is BoardUnit)
+            switch (_abilityOwner)
             {
-                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
-                _healCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
-            }
-            else if (_abilityOwner is BoardSpell)
-            {
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
-                string cardSetName = CardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.LibraryCard);
-                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.LibraryCard.Picture.ToLower()));
-                _healCreatureObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
+                case BoardUnit unit:
+                    PreviewImage.sprite = unit.Sprite;
+                    _healCreatureObj = CreateCardPreview(unit.Card, Vector3.zero);
+                    break;
+                case BoardSpell spell: {
+                    string rarity = Enum.GetName(typeof(Enumerators.CardRank), spell.Card.LibraryCard.CardRank);
+                    string cardSetName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                    PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), spell.Card.LibraryCard.Picture.ToLower()));
+                    _healCreatureObj = CreateCardPreview(spell.Card, Vector3.zero);
+                    break;
+                }
             }
 
             HealPictureObject.SetActive(true);

@@ -29,7 +29,7 @@ namespace LoomNetwork.CZB
 
         public void UpdateRanksByElements(List<BoardUnit> units, Card card)
         {
-            List<BoardUnit> filter = units.Where(unit => (unit.Card.LibraryCard.CardSetType == card.CardSetType) && ((int)unit.Card.LibraryCard.CardRank < (int)card.CardRank)).ToList();
+            List<BoardUnit> filter = units.Where(unit => unit.Card.LibraryCard.CardSetType == card.CardSetType && (int)unit.Card.LibraryCard.CardRank < (int)card.CardRank).ToList();
             if (filter.Count > 0)
             {
                 DoRankUpgrades(filter, card.CardSetType, card.CardRank);

@@ -33,7 +33,7 @@ namespace LoomNetwork.CZB
                         break;
                     }
 
-                    if ((i < _timers.Count) && (i > -1))
+                    if (i < _timers.Count && i > -1)
                     {
                         if (_timers[i] != null)
                         {

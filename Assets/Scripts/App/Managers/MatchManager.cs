@@ -96,19 +96,19 @@ namespace LoomNetwork.CZB
             _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
         }
 
-        private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state)
-        {
-            if (state == Enumerators.AppState.GAMEPLAY)
+        private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state) {
+            switch (state)
             {
-                _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+                case Enumerators.AppState.GAMEPLAY:
+                    _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
-                _uiManager.HidePopup<LoadingGameplayPopup>();
+                    _uiManager.HidePopup<LoadingGameplayPopup>();
 
-                _gameplayManager.StartGameplay();
-            }
-            else if (state == Enumerators.AppState.APP_INIT)
-            {
-                _appStateManager.ChangeAppState(_finishMatchAppState);
+                    _gameplayManager.StartGameplay();
+                    break;
+                case Enumerators.AppState.APP_INIT:
+                    _appStateManager.ChangeAppState(_finishMatchAppState);
+                    break;
             }
         }
     }

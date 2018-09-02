@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
 
         public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
         {
-            if ((language == CurrentLanguage) && !forceUpdate)
+            if (language == CurrentLanguage && !forceUpdate)
                 return;
 
             string languageCode = language.ToString().ToLower();

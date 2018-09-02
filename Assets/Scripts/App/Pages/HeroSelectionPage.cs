@@ -93,7 +93,7 @@ namespace LoomNetwork.CZB {
         }
 
         private bool SetSelectedHeroIndexAndUpdateScrollPosition(int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false) {
-            if (!force && (heroIndex == _selectedHeroIndex))
+            if (!force && heroIndex == _selectedHeroIndex)
             {
                 return false;
             }

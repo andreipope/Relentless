@@ -43,7 +43,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public bool LoadUserDataModel(bool force = false)
         {
-            if ((UserDataModel != null) && !force)
+            if (UserDataModel != null && !force)
             {
                 return true;
             }

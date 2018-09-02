@@ -22,7 +22,7 @@ namespace LoomNetwork.CZB {
         
         private const string _tsInternal = "1.3.2-Unity5";
         
-        public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> LoomCopyright {
+        public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> SpriteSharpDatabase {
             get {
                 return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[0]));
             }
@@ -35,7 +35,7 @@ namespace LoomNetwork.CZB {
         }
         
         private static global::System.Collections.Generic.IList<global::TypeSafe.IResource> @__ts_internal_resources = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.IResource>(new global::TypeSafe.IResource[] {
-                    new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("LoomCopyright", "LoomCopyright"),
+                    new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("SpriteSharpDatabase", "SpriteSharpDatabase"),
                     new global::TypeSafe.Resource<global::DG.Tweening.Core.DOTweenSettings>("DOTweenSettings", "DOTweenSettings")});
         
         public sealed class Images {

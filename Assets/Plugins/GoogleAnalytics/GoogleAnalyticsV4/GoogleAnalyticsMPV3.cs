@@ -44,8 +44,8 @@ public class GoogleAnalyticsMPV3 {
   private string url;
   private float timeStarted;
   private Dictionary<Field, object> trackerValues = new Dictionary<Field, object>();
-  private bool startSessionOnNextHit = false;
-  private bool endSessionOnNextHit = false;
+  private bool startSessionOnNextHit;
+  private bool endSessionOnNextHit;
   private bool trackingCodeSet = true;
 
   public void InitializeTracker() {

@@ -31,14 +31,14 @@ namespace AssetBundleBrowser.AssetBundleModel
         private static Dictionary<string, AssetInfo> s_GlobalAssetList = new Dictionary<string, AssetInfo>();
         private static Dictionary<string, HashSet<string>> s_DependencyTracker = new Dictionary<string, HashSet<string>>();
 
-        private static bool s_InErrorState = false;
+        private static bool s_InErrorState;
         const string k_DefaultEmptyMessage = "Drag assets here or right-click to begin creating bundles.";
         const string k_ProblemEmptyMessage = "There was a problem parsing the list of bundles. See console.";
         private static string s_EmptyMessageString;
 
-        static private Texture2D s_folderIcon = null;
-        static private Texture2D s_bundleIcon = null;
-        static private Texture2D s_sceneIcon = null;
+        static private Texture2D s_folderIcon;
+        static private Texture2D s_bundleIcon;
+        static private Texture2D s_sceneIcon;
 
         /// <summary>
         /// If using a custom source of asset bundles, you can implement your own ABDataSource and set it here as the active

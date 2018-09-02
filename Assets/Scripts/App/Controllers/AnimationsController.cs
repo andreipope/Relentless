@@ -57,11 +57,11 @@ namespace LoomNetwork.CZB
 
             if (isCreatureAttacker)
             {
-                partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.6f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.6f);
             }
             else
             {
-                partWay = Vector3.Lerp(originalPos + (Vector3.back * 5f), target.transform.position + (Vector3.back * 5f), 0.7f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
             }
 
             // Debug.LogError(originalPos + " -> " + target.transform.position);
@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB
                 Transform shieldObject = source.transform.Find("Other/Shield");
                 Vector3 originalShieldPosition = shieldObject.transform.position;
 
-                Vector3 partWayShield = Vector3.Lerp(originalShieldPosition + (Vector3.forward * 5f), target.transform.position + (Vector3.forward * 5f), 0.6f);
+                Vector3 partWayShield = Vector3.Lerp(originalShieldPosition + Vector3.forward * 5f, target.transform.position + Vector3.forward * 5f, 0.6f);
 
                 shieldObject.transform.DOMove(partWayShield, 0.1f).SetEase(Ease.InSine).OnComplete(
                     () =>

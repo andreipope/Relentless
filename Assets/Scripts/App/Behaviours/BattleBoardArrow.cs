@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB
 
         public BoardUnit Owner;
 
-        public bool IgnoreHeavy = false;
+        public bool IgnoreHeavy;
 
         public void End(BoardUnit creature)
         {
@@ -26,22 +26,22 @@ namespace LoomNetwork.CZB
 
         public override void OnCardSelected(BoardUnit unit)
         {
-            if (GameplayManager.IsTutorial && ((GameplayManager.TutorialStep == 19) || (GameplayManager.TutorialStep == 27) || (GameplayManager.TutorialStep == 32)))
+            if (GameplayManager.IsTutorial && (GameplayManager.TutorialStep == 19 || GameplayManager.TutorialStep == 27 || GameplayManager.TutorialStep == 32))
                 return;
 
-            if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(unit))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))
                 return;
 
             if (unit.CurrentHp <= 0)
                 return;
 
-            if ((ElementType.Count > 0) && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
                 return;
 
-            if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) || (TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) && unit.Transform.CompareTag("PlayerOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) && unit.Transform.CompareTag("OpponentOwned")))
+            if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) || TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) && unit.Transform.CompareTag("PlayerOwned") || TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) && unit.Transform.CompareTag("OpponentOwned"))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || IgnoreHeavy)
+                if (!opponentHasProvoke || opponentHasProvoke && unit.IsHeavyUnit() || IgnoreHeavy)
                 {
                     SelectedCard?.SetSelectedUnit(false);
 
@@ -68,19 +68,19 @@ namespace LoomNetwork.CZB
 
         public override void OnPlayerSelected(Player player)
         {
-            if (GameplayManager.IsTutorial && (GameplayManager.TutorialStep != 19) && (GameplayManager.TutorialStep != 28) && (GameplayManager.TutorialStep != 32))
+            if (GameplayManager.IsTutorial && GameplayManager.TutorialStep != 19 && GameplayManager.TutorialStep != 28 && GameplayManager.TutorialStep != 32)
                 return;
 
             if (player.Hp <= 0)
                 return;
 
-            if ((IgnoreBoardObjectsList != null) && IgnoreBoardObjectsList.Contains(player))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))
                 return;
 
-            if ((Owner != null) && !Owner.HasFeral && Owner.HasBuffRush)
+            if (Owner != null && !Owner.HasFeral && Owner.HasBuffRush)
                 return;
 
-            if ((TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) && player.AvatarObject.CompareTag("OpponentOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned")))
+            if (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) && player.AvatarObject.CompareTag("OpponentOwned") || TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned"))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || IgnoreHeavy)

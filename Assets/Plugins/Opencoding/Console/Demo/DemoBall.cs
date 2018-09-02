@@ -9,7 +9,7 @@ namespace Opencoding.Console.Demo
 {
 	class DemoBall : MonoBehaviour
 	{
-		private BallGameController _ballGameController = null;
+		private BallGameController _ballGameController;
 
 		[SerializeField] private Color[] _ballColors;
 

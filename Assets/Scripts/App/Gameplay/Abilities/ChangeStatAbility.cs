@@ -44,7 +44,7 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if ((AbilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
             switch (StatType)

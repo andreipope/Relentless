@@ -6,11 +6,11 @@ namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
-        private readonly bool _disableShop = true;
+        private const bool DisableShop = true;
 
-        private readonly bool _disablePacks = true;
+        private const bool DisablePacks = true;
 
-        private readonly float _backButtonResetDelay = 0.5f;
+        private const float BackButtonResetDelay = 0.5f;
 
         private IUIManager _uiManager;
 
@@ -88,7 +88,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AppState.SHOP:
                 {
-                    if (!_disableShop)
+                    if (!DisableShop)
                     {
                         _uiManager.SetPage<ShopPage>();
                     }
@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                 {
-                    if (!_disablePacks)
+                    if (!DisablePacks)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                     }
@@ -213,7 +213,7 @@ namespace LoomNetwork.CZB
             {
                 _backButtonTimer += Time.deltaTime;
 
-                if (_backButtonTimer >= _backButtonResetDelay)
+                if (_backButtonTimer >= BackButtonResetDelay)
                 {
                     _backButtonTimer = 0f;
                     _backButtonClicksCount = 0;

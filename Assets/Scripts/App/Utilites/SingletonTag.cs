@@ -9,7 +9,10 @@ namespace LoomNetwork.CZB
         private void Start()
         {
             string tag = gameObject.tag;
-            SingletonTag existingSingleton = FindObjectsOfType<SingletonTag>().FirstOrDefault(singletonTag => (singletonTag != this) && singletonTag.gameObject.CompareTag(tag));
+            SingletonTag existingSingleton =
+                FindObjectsOfType<SingletonTag>()
+                    .FirstOrDefault(singletonTag => singletonTag != this && singletonTag.gameObject.CompareTag(tag));
+
             if (existingSingleton != null)
             {
                 gameObject.SetActive(false);

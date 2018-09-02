@@ -15,11 +15,11 @@ namespace LoomNetwork.CZB
         internal GameClient()
         {
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
-            BackendPurpose backend = BackendPurpose.Local;
+            const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
-            BackendPurpose backend = BackendPurpose.Production;
+            const BackendPurpose backend = BackendPurpose.Production;
 #else
-            BackendPurpose backend = BackendPurpose.Staging;
+            const BackendPurpose backend = BackendPurpose.Staging;
 #endif
 
             BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.KEndpoints[backend];

@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Enqueue(gameAction);
 
-            if ((_actionInProgress == null) && (_actionsToDo.Count < 2))
+            if (_actionInProgress == null && _actionsToDo.Count < 2)
             {
                 TryCallNewActionFromQueue();
             }

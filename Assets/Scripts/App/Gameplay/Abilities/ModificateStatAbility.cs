@@ -45,7 +45,7 @@ namespace LoomNetwork.CZB
             {
                 case Enumerators.AffectObjectType.CHARACTER:
                 {
-                    if ((TargetUnit.Card.LibraryCard.CardSetType == SetType) || (SetType == Enumerators.SetType.NONE))
+                    if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
                         if (StatType == Enumerators.StatType.DAMAGE)
                         {

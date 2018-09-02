@@ -12,7 +12,7 @@ namespace Opencoding.Demo.CommandSecurity
 		private readonly CommandHandler _commandToExecute;
 		private readonly string[] _parameters;
 		private string _enteredPassword = "";
-		private float _incorrectPasswordEnteredTimeout = 0;
+		private float _incorrectPasswordEnteredTimeout;
 		private GUISkin _skin;
 		private float _screenScaleFactor;
 

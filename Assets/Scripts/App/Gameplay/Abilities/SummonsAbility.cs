@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if ((AbilityCallType != Enumerators.AbilityCallType.TURN) || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             Action();

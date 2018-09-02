@@ -16,7 +16,7 @@ namespace LoomNetwork.CZB
                 switch (type)
                 {
                     case Type.Simple:
-                        if (overrideSprite.packed && (overrideSprite.packingMode == SpritePackingMode.Rectangle))
+                        if (overrideSprite.packed && overrideSprite.packingMode == SpritePackingMode.Rectangle)
                         {
                             base.OnPopulateMesh(toFill);
                         }
@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB
             Rect r = GetPixelAdjustedRect();
 
             // Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
-            if (shouldPreserveAspect && (size.sqrMagnitude > 0.0f))
+            if (shouldPreserveAspect && size.sqrMagnitude > 0.0f)
             {
                 float spriteRatio = size.x / size.y;
                 float rectRatio = r.width / r.height;

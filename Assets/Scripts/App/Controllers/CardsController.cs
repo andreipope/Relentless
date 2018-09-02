@@ -211,9 +211,9 @@ namespace LoomNetwork.CZB
             int count = player.CardsPreparingToHand.Count;
 
             float handWidth = 0.0f;
-            float spacing = -5f;
+            const float spacing = -5f;
 
-            handWidth += (spacing * count) - 1;
+            handWidth += spacing * count - 1;
 
             Vector3 pivot = new Vector3(-3f, 0, 0);
 
@@ -221,7 +221,7 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < count; i++)
             {
-                moveToPosition = new Vector3(pivot.x - (handWidth / 2f), 0, 0);
+                moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
                 player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f, false);
                 player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
 
@@ -510,7 +510,7 @@ namespace LoomNetwork.CZB
                     }
                 }
 
-                if ((player.BoardCards.Count > 0) && (_indexOfCard != newIndexOfCard))
+                if (player.BoardCards.Count > 0 && _indexOfCard != newIndexOfCard)
                 {
                     _indexOfCard = newIndexOfCard;
 
@@ -564,93 +564,98 @@ namespace LoomNetwork.CZB
                 // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
                 player.ThrowPlayCardEvent(card.WorkingCard);
 
-                if (libraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                switch (libraryCard.CardKind)
                 {
-                    int indexOfCard = 0;
-                    float newCreatureCardPosition = card.Transform.position.x;
+                    case Enumerators.CardKind.CREATURE: {
+                        int indexOfCard = 0;
+                        float newCreatureCardPosition = card.Transform.position.x;
 
-                    // set correct position on board depends from card view position
-                    for (int i = 0; i < player.BoardCards.Count; i++)
-                    {
-                        if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
+                        // set correct position on board depends from card view position
+                        for (int i = 0; i < player.BoardCards.Count; i++)
                         {
-                            indexOfCard = i + 1;
+                            if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
+                            {
+                                indexOfCard = i + 1;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
+
+                        BoardUnit boardUnit = new BoardUnit(_playerBoard.transform);
+                        boardUnit.Transform.tag = SRTags.PlayerOwned;
+                        boardUnit.Transform.parent = _playerBoard.transform;
+                        boardUnit.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+                        boardUnit.OwnerPlayer = card.WorkingCard.Owner;
+                        boardUnit.SetObjectInfo(card.WorkingCard);
+
+                        _battlegroundController.PlayerHandCards.Remove(card);
+                        _battlegroundController.PlayerBoardCards.Add(boardUnit);
+                        player.AddCardToBoard(card.WorkingCard);
+                        player.RemoveCardFromHand(card.WorkingCard);
+
+                        player.BoardCards.Insert(indexOfCard, boardUnit);
+
+                        // _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
+                        _timerManager.AddTimer(
+                            creat =>
+                            {
+                                card.WorkingCard.Owner.GraveyardCardsCount++;
+                            },
+                            null,
+                            1f);
+
+                        // Destroy(card.gameObject);
+                        card.RemoveCardParticle.Play();
+
+                        _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnit.OwnerPlayer, boardUnit }));
+
+                        UpdateCardsStatusEvent?.Invoke(player);
+
+                        Sequence animationSequence = DOTween.Sequence();
+                        animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                        animationSequence.OnComplete(
+                            () =>
+                            {
+                                RemoveCard(new object[] { card });
+
+                                _timerManager.AddTimer(
+                                    param =>
+                                    {
+                                        boardUnit.PlayArrivalAnimation();
+                                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
+                                            _gameplayManager.CurrentPlayer.BoardCards,
+                                            () =>
+                                            {
+                                                _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
+                                            });
+                                    },
+                                    null,
+                                    0.1f,
+                                    false);
+                            });
+
+                        player.Goo -= card.ManaCost;
+                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                        break;
                     }
+                    case Enumerators.CardKind.SPELL: {
+                        player.CardsInHand.Remove(card.WorkingCard);
+                        _battlegroundController.PlayerHandCards.Remove(card);
+                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                    BoardUnit boardUnit = new BoardUnit(_playerBoard.transform);
-                    boardUnit.Transform.tag = SRTags.PlayerOwned;
-                    boardUnit.Transform.parent = _playerBoard.transform;
-                    boardUnit.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                    boardUnit.OwnerPlayer = card.WorkingCard.Owner;
-                    boardUnit.SetObjectInfo(card.WorkingCard);
+                        card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+                        card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                    _battlegroundController.PlayerHandCards.Remove(card);
-                    _battlegroundController.PlayerBoardCards.Add(boardUnit);
-                    player.AddCardToBoard(card.WorkingCard);
-                    player.RemoveCardFromHand(card.WorkingCard);
+                        BoardSpell boardSpell = new BoardSpell(card.GameObject, card.WorkingCard);
+                        boardSpell.Transform.position = Vector3.zero;
 
-                    player.BoardCards.Insert(indexOfCard, boardUnit);
-
-                    // _ranksController.UpdateRanksBuffs(player, boardUnit.Card.libraryCard.cardRank);
-                    _timerManager.AddTimer(
-                        creat =>
-                        {
-                            card.WorkingCard.Owner.GraveyardCardsCount++;
-                        },
-                        null,
-                        1f);
-
-                    // Destroy(card.gameObject);
-                    card.RemoveCardParticle.Play();
-
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnit.OwnerPlayer, boardUnit }));
-
-                    UpdateCardsStatusEvent?.Invoke(player);
-
-                    Sequence animationSequence = DOTween.Sequence();
-                    animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                    animationSequence.OnComplete(
-                        () =>
-                        {
-                            RemoveCard(new object[] { card });
-
-                            _timerManager.AddTimer(
-                                param =>
-                                {
-                                    boardUnit.PlayArrivalAnimation();
-                                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
-                                        _gameplayManager.CurrentPlayer.BoardCards,
-                                        () =>
-                                        {
-                                            _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.CREATURE, boardUnit, CallCardPlay, true, null);
-                                        });
-                                },
-                                null,
-                                0.1f,
-                                false);
-                        });
-
-                    player.Goo -= card.ManaCost;
-                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                }
-                else if (libraryCard.CardKind == Enumerators.CardKind.SPELL)
-                {
-                    player.CardsInHand.Remove(card.WorkingCard);
-                    _battlegroundController.PlayerHandCards.Remove(card);
-                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
-                    card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
-                    card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                    BoardSpell boardSpell = new BoardSpell(card.GameObject, card.WorkingCard);
-                    boardSpell.Transform.position = Vector3.zero;
-
-                    _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                        _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard, Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             else
@@ -710,15 +715,18 @@ namespace LoomNetwork.CZB
         {
             GameObject go = null;
             BoardCard boardCard = null;
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
-                boardCard = new UnitBoardCard(go);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard"));
-                boardCard = new SpellBoardCard(go);
+                case Enumerators.CardKind.CREATURE:
+                    go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
+                    boardCard = new UnitBoardCard(go);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    go = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard"));
+                    boardCard = new SpellBoardCard(go);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);
@@ -745,7 +753,7 @@ namespace LoomNetwork.CZB
 
         public void LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
         {
-            if ((card == null) && (player.CardsInHand.Count > 0))
+            if (card == null && player.CardsInHand.Count > 0)
             {
                 card = player.CardsInHand[Random.Range(0, player.CardsInHand.Count)];
             }
@@ -910,15 +918,18 @@ namespace LoomNetwork.CZB
             string cardSetName = GetSetOfCard(card.LibraryCard);
             GameObject go = null;
             BoardCard boardCard = null;
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                go = Object.Instantiate(CreatureCardViewPrefab);
-                boardCard = new UnitBoardCard(go);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                go = Object.Instantiate(SpellCardViewPrefab);
-                boardCard = new SpellBoardCard(go);
+                case Enumerators.CardKind.CREATURE:
+                    go = Object.Instantiate(CreatureCardViewPrefab);
+                    boardCard = new UnitBoardCard(go);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    go = Object.Instantiate(SpellCardViewPrefab);
+                    boardCard = new SpellBoardCard(go);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);

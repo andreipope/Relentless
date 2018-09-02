@@ -55,9 +55,9 @@ namespace LoomNetwork.CZB
         public void Update()
         {
             IsInteractable = false;
-            if ((_uiManager.GetPopup<CardInfoPopup>().Self == null) && (_uiManager.GetPopup<DesintigrateCardPopup>().Self == null) && (_uiManager.GetPopup<WarningPopup>().Self == null))
+            if (_uiManager.GetPopup<CardInfoPopup>().Self == null && _uiManager.GetPopup<DesintigrateCardPopup>().Self == null && _uiManager.GetPopup<WarningPopup>().Self == null)
             {
-                if (!IsStateChanging && (_previewCard != null))
+                if (!IsStateChanging && _previewCard != null)
                 {
                     Close();
                 }
@@ -89,7 +89,7 @@ namespace LoomNetwork.CZB
             SetIsStateChanging(true);
             _selectedCollectionCard = card;
 
-            if ((_previewCard != null) && (_previewCard.GameObject != null))
+            if (_previewCard != null && _previewCard.GameObject != null)
             {
                 Object.DestroyImmediate(_previewCard.GameObject);
             }

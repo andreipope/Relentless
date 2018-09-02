@@ -52,21 +52,20 @@ namespace LoomNetwork.CZB
         private Card GenerateNewCard()
         {
             Enumerators.CardRank rarity = (Enumerators.CardRank)IsChanceFit(0);
-            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item => (item.CardRank == rarity) && (item.CardSetType != Enumerators.SetType.OTHERS));
+            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item => item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS);
             Card card = cards[Random.Range(0, cards.Count)].Clone();
             return card;
         }
 
-        private int IsChanceFit(int rarity)
-        {
-            int random = Random.Range(0, 100);
-            if (random > 90)
+        private int IsChanceFit(int rarity) {
+            while (true)
             {
-                rarity++;
-                return IsChanceFit(rarity);
-            }
+                int random = Random.Range(0, 100);
+                if (random <= 90)
+                    return rarity;
 
-            return rarity;
+                rarity++;
+            }
         }
 
         // TEMPORARY OR SPECIAL

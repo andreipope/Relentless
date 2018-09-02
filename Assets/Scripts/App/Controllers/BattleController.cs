@@ -46,7 +46,7 @@ namespace LoomNetwork.CZB
         {
             int damageAttacking = attackingUnit.CurrentDamage;
 
-            if ((attackingUnit != null) && (attackedPlayer != null))
+            if (attackingUnit != null && attackedPlayer != null)
             {
                 attackedPlayer.Hp -= damageAttacking;
             }
@@ -65,7 +65,7 @@ namespace LoomNetwork.CZB
             int damageAttacked = 0;
             int damageAttacking = 0;
 
-            if ((attackingUnit != null) && (attackedUnit != null))
+            if (attackingUnit != null && attackedUnit != null)
             {
                 int additionalDamageAttacker = _abilitiesController.GetStatModificatorByAbility(attackingUnit, attackedUnit, true);
                 int additionalDamageAttacked = _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit, false);
@@ -75,7 +75,7 @@ namespace LoomNetwork.CZB
                 // additionalDamageAttacked += GetStrongersAndWeakersModifier(attackedUnit.Card.libraryCard.cardSetType, attackingUnit.Card.libraryCard.cardSetType);
                 damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
-                if ((damageAttacking > 0) && attackedUnit.HasBuffShield)
+                if (damageAttacking > 0 && attackedUnit.HasBuffShield)
                 {
                     damageAttacking = 0;
                     attackedUnit.UseShieldFromBuff();
@@ -89,11 +89,11 @@ namespace LoomNetwork.CZB
                 attackedUnit.ThrowEventGotDamage(attackingUnit);
                 attackingUnit.ThrowOnAttackEvent(attackedUnit, damageAttacking, true);
 
-                if (((attackedUnit.CurrentHp > 0) && attackingUnit.AttackAsFirst) || !attackingUnit.AttackAsFirst)
+                if (attackedUnit.CurrentHp > 0 && attackingUnit.AttackAsFirst || !attackingUnit.AttackAsFirst)
                 {
                     damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
 
-                    if ((damageAttacked > 0) && attackingUnit.HasBuffShield)
+                    if (damageAttacked > 0 && attackingUnit.HasBuffShield)
                     {
                         damageAttacked = 0;
                         attackingUnit.UseShieldFromBuff();
@@ -121,7 +121,7 @@ namespace LoomNetwork.CZB
 
             if (attackedUnit != null)
             {
-                if ((damage > 0) && attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnit.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();
@@ -196,7 +196,7 @@ namespace LoomNetwork.CZB
 
             if (attackedUnit != null)
             {
-                if ((damage > 0) && attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnit.HasBuffShield)
                 {
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();

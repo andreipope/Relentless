@@ -12,10 +12,10 @@ namespace Opencoding.Demo.CommandSecurity
 	/// </summary>
 	public class ConsoleCommandSecurity : MonoBehaviour
 	{
-		private bool _authenticated = false;
+		private bool _authenticated;
 		private CommandSecurityPopup _commandSecurityPopup;
 		public const string PASSWORD = "password"; // You might want something slightly more secure!
-		public bool _SavePassword = false; // If this is set, the password is saved in PlayerPrefs.
+		public bool _SavePassword; // If this is set, the password is saved in PlayerPrefs.
  
 		private void Awake()
 		{

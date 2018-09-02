@@ -45,11 +45,6 @@ namespace LoomNetwork.CZB.Data
 
         public void FillAllCards()
         {
-            bool removeCardsWithoutGraphics = false;
-
-            // remove cards without iamges
-            List<Card> cardsToRemoveFromSet = new List<Card>();
-
             _allCards = new List<Card>();
             int id = 0;
             if (Sets != null)
@@ -58,16 +53,6 @@ namespace LoomNetwork.CZB.Data
                 {
                     foreach (Card card in set.Cards)
                     {
-                        if (removeCardsWithoutGraphics)
-                        {
-                            // remove cards without iamges
-                            if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", set.Name.ToLower(), card.Rank.ToLower(), card.Picture.ToLower())) == null)
-                            {
-                                cardsToRemoveFromSet.Add(card);
-                                continue;
-                            }
-                        }
-
                         card.CardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.Name.ToUpper()); // todo improve this shit!
 
                         if (card.Kind != null)
@@ -100,23 +85,6 @@ namespace LoomNetwork.CZB.Data
                         id++;
                     }
                 }
-            }
-
-            if (removeCardsWithoutGraphics)
-            {
-                // remove cards without iamges
-                foreach (Card card in cardsToRemoveFromSet)
-                {
-                    foreach (CardSet set in Sets)
-                    {
-                        if (set.Cards.Contains(card))
-                        {
-                            set.Cards.Remove(card);
-                        }
-                    }
-                }
-
-                cardsToRemoveFromSet.Clear();
             }
 
             SortCardsByRank();

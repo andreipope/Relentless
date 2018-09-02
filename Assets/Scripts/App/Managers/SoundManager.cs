@@ -257,7 +257,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                container = _soundContainers.Find(x => (x.SoundType == soundType) && (x.GetHashCode() == id));
+                container = _soundContainers.Find(x => x.SoundType == soundType && x.GetHashCode() == id);
             }
 
             if (container != null)
@@ -276,7 +276,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                container = _soundContainers.Find(x => (x.SoundParameters.AudioClips == clips) && (x.GetHashCode() == id));
+                container = _soundContainers.Find(x => x.SoundParameters.AudioClips == clips && x.GetHashCode() == id);
             }
 
             if (container != null)
@@ -321,20 +321,20 @@ namespace LoomNetwork.CZB
                     bool stop = false;
                     foreach (SoundContainer container in soundcontainers)
                     {
-                        if ((container == null) || (container.AudioSource == null))
+                        if (container == null || container.AudioSource == null)
                         {
                             break;
                         }
 
                         container.AudioSource.volume += volumeStep * (isIn?1:-1);
 
-                        if ((container.AudioSource.volume == 0) && !isIn)
+                        if (container.AudioSource.volume == 0 && !isIn)
                         {
                             container.AudioSource.Stop();
                             container.ForceClose = true;
                             stop = true;
                         }
-                        else if (isIn && (container.AudioSource.volume >= targetVolume))
+                        else if (isIn && container.AudioSource.volume >= targetVolume)
                         {
                             container.AudioSource.volume = targetVolume;
                             stop = true;

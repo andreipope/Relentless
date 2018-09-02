@@ -59,7 +59,7 @@ namespace LoomNetwork.CZB
 
         private void ReturnBoardUnitToDeck(BoardUnit unit)
         {
-            if (((AbilityUnitOwner != null) && (unit == AbilityUnitOwner)) || (unit == null))
+            if (AbilityUnitOwner != null && unit == AbilityUnitOwner || unit == null)
                 return;
 
             // implement animation

@@ -280,7 +280,7 @@ namespace LoomNetwork.CZB
                 Goo = GooOnCurrentTurn + CurrentGooModificator;
                 CurrentGooModificator = 0;
 
-                if ((_turnsLeftToFreeFromStun > 0) && IsStunned)
+                if (_turnsLeftToFreeFromStun > 0 && IsStunned)
                 {
                     _turnsLeftToFreeFromStun--;
 
@@ -525,7 +525,7 @@ namespace LoomNetwork.CZB
 
         private void PlayerHPChangedEventHandler(int now)
         {
-            if ((now <= 0) && !_isDead)
+            if (now <= 0 && !_isDead)
             {
                 PlayerDie();
 

@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if ((_selfPage != null) && _selfPage.activeInHierarchy)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
                 UpdateNumCardsText();
 
@@ -387,15 +387,18 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject go = null;
-            if (card.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.CardKind)
             {
-                go = Object.Instantiate(_cardCreaturePrefab);
-                boardCard = new UnitBoardCard(go);
-            }
-            else if (card.CardKind == Enumerators.CardKind.SPELL)
-            {
-                go = Object.Instantiate(_cardSpellPrefab);
-                boardCard = new SpellBoardCard(go);
+                case Enumerators.CardKind.CREATURE:
+                    go = Object.Instantiate(_cardCreaturePrefab);
+                    boardCard = new UnitBoardCard(go);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    go = Object.Instantiate(_cardSpellPrefab);
+                    boardCard = new SpellBoardCard(go);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             int amount = _collectionData.GetCardData(card.Name).Amount;
@@ -553,16 +556,15 @@ namespace LoomNetwork.CZB
 
             uint maxCopies = GetMaxCopiesValue(card);
 
-            if ((existingCards != null) && (existingCards.Amount == maxCopies))
+            if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " + card.CardRank.ToString().ToLower() + " card in your deck.");
                 return;
             }
 
-            uint maxDeckSize = Constants.DeckMaxSize;
-            if (_currentDeck.GetNumCards() == maxDeckSize)
+            if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + maxDeckSize + " cards.");
+                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + Constants.DeckMaxSize + " cards.");
                 return;
             }
 
@@ -691,7 +693,7 @@ namespace LoomNetwork.CZB
 
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
-                if ((_currentDeckId != deck.Id) && deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                if (_currentDeckId != deck.Id && deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 {
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
                     return;
@@ -920,7 +922,7 @@ namespace LoomNetwork.CZB
         {
             for (int i = 0; i < _createdHordeCards.Count; i++)
             {
-                if ((i + 1 > _currentHordePage * CardsPerPage) && (i + 1 < ((_currentHordePage + 1) * CardsPerPage) + 1))
+                if (i + 1 > _currentHordePage * CardsPerPage && i + 1 < (_currentHordePage + 1) * CardsPerPage + 1)
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
                 }

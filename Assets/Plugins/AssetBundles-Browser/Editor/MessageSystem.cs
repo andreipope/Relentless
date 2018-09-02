@@ -10,10 +10,10 @@ namespace AssetBundleBrowser
 {
     internal class MessageSystem
     {
-        private static Texture2D s_ErrorIcon = null;
-        private static Texture2D s_WarningIcon = null;
-        private static Texture2D s_InfoIcon = null;
-        private static Dictionary<MessageFlag, Message> s_MessageLookup = null;
+        private static Texture2D s_ErrorIcon;
+        private static Texture2D s_WarningIcon;
+        private static Texture2D s_InfoIcon;
+        private static Dictionary<MessageFlag, Message> s_MessageLookup;
 
         [Flags]
         internal enum MessageFlag

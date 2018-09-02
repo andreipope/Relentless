@@ -46,9 +46,9 @@ namespace LoomNetwork.CZB
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if ((TargetUnitType == Enumerators.CardType.NONE) || (unit.InitialUnitType == TargetUnitType))
+                if (TargetUnitType == Enumerators.CardType.NONE || unit.InitialUnitType == TargetUnitType)
                 {
-                    if ((TargetUnitStatusType == Enumerators.UnitStatusType.NONE) || (unit.UnitStatus == TargetUnitStatusType))
+                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE || unit.UnitStatus == TargetUnitStatusType)
                     {
                         if (SelfBoardCreature != unit)
                         {
@@ -86,7 +86,7 @@ namespace LoomNetwork.CZB
             if (player.Hp <= 0)
                 return;
 
-            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(SRTags.PlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(SRTags.OpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(SRTags.PlayerOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(SRTags.OpponentOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);

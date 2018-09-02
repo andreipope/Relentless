@@ -12,7 +12,7 @@ namespace LoomNetwork.CZB
 
         public bool IsActive;
 
-        public bool IsHordeItem = false;
+        public bool IsHordeItem;
 
         private MultiPointerClickHandler _multiPointerClickHandler;
 

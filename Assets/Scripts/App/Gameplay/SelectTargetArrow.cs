@@ -4,7 +4,7 @@ namespace LoomNetwork.CZB
 {
     public class SelectTargetArrow : MonoBehaviour
     {
-        private readonly float _defaultArrowScale = 6.25f;
+        private const float DefaultArrowScale = 6.25f;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -31,12 +31,12 @@ namespace LoomNetwork.CZB
 
             _targetObjectsGroup.transform.position = target;
 
-            float angle = (Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg) - 90;
+            float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90;
 
             _arrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
             _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + 21f);
 
-            float scale = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
+            float scale = Vector3.Distance(_fromPosition, target) / DefaultArrowScale;
 
             _arrowObject.transform.localScale = new Vector3(1, scale, 1);
         }

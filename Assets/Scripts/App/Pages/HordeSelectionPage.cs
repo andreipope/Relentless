@@ -239,7 +239,7 @@ namespace LoomNetwork.CZB
         private void BattleButtonUpdate()
         {
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize))
+            if (_hordeDecks.Count == 0 || _selectedDeckId == -1 || _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize)
             {
                 _battleButton.interactable = false;
                 _battleButtonWarning.gameObject.SetActive(true);
@@ -297,7 +297,7 @@ namespace LoomNetwork.CZB
                 _scrolledDeck--;
             }
 
-            _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - (HordeItemSpace * _scrolledDeck), 420, 0);
+            _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
         }
 
         private void OpenAlertDialog(string msg)
@@ -325,7 +325,7 @@ namespace LoomNetwork.CZB
 
             if (oldIndex != _scrolledDeck)
             {
-                _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - (HordeItemSpace * _scrolledDeck), 420, 0);
+                _containerOfDecks.transform.localPosition = new Vector3(KHordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
             }
         }
 
@@ -469,7 +469,7 @@ namespace LoomNetwork.CZB
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
 #if !DEV_MODE
-            if ((_hordeDecks.Count == 0) || (_selectedDeckId == -1) || (_hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize))
+            if (_hordeDecks.Count == 0 || _selectedDeckId == -1 || _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize)
             {
                 _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
             }

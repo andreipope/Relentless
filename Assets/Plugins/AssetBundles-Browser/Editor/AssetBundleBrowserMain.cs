@@ -10,7 +10,7 @@ namespace AssetBundleBrowser
     public class AssetBundleBrowserMain : EditorWindow, IHasCustomMenu, ISerializationCallbackReceiver
     {
 
-        private static AssetBundleBrowserMain s_instance = null;
+        private static AssetBundleBrowserMain s_instance;
         internal static AssetBundleBrowserMain instance
         {
             get
@@ -58,8 +58,8 @@ namespace AssetBundleBrowser
         }
 
         [SerializeField]
-        internal bool multiDataSource = false;
-        List<AssetBundleDataSource.ABDataSource> m_DataSourceList = null;
+        internal bool multiDataSource;
+        List<AssetBundleDataSource.ABDataSource> m_DataSourceList;
         public virtual void AddItemsToMenu(GenericMenu menu)
         {
             if(menu != null)

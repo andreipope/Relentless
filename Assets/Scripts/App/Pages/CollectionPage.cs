@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
@@ -5,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -68,7 +70,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if ((_selfPage != null) && _selfPage.activeInHierarchy)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
                 _cardInfoPopupHandler.Update();
                 if (_cardInfoPopupHandler.IsInteractable)
@@ -294,15 +296,18 @@ namespace LoomNetwork.CZB
 
                 GameObject go = null;
                 BoardCard boardCard = null;
-                if (card.CardKind == Enumerators.CardKind.CREATURE)
+                switch (card.CardKind)
                 {
-                    go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
-                }
-                else if (card.CardKind == Enumerators.CardKind.SPELL)
-                {
-                    go = Object.Instantiate(CardSpellPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    case Enumerators.CardKind.CREATURE:
+                        go = Object.Instantiate(CardCreaturePrefab);
+                        boardCard = new UnitBoardCard(go);
+                        break;
+                    case Enumerators.CardKind.SPELL:
+                        go = Object.Instantiate(CardSpellPrefab);
+                        boardCard = new SpellBoardCard(go);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 int amount = cardData.Amount;

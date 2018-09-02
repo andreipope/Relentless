@@ -37,7 +37,7 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public Contract Contract { get; private set; }
 
-        public bool IsConnected => (Contract != null) && (Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected) && (Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected);
+        public bool IsConnected => Contract != null && Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected && Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
         public void Init()
         {

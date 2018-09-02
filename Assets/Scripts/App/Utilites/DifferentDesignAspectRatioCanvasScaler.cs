@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
             // resolution is always the desktops resolution since its part of the display API,
             // so we use the standard none multiple display method. (case 741751)
             int displayIndex = _mCanvas2.targetDisplay;
-            if ((displayIndex > 0) && (displayIndex < Display.displays.Length))
+            if (displayIndex > 0 && displayIndex < Display.displays.Length)
             {
                 Display disp = Display.displays[displayIndex];
                 screenSize = new Vector2(disp.renderingWidth, disp.renderingHeight);

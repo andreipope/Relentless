@@ -16,7 +16,7 @@ namespace LoomNetwork.CZB
     {
         public BoardCard CurrentSpellCard;
 
-        private readonly int _minTurnForAttack = 0;
+        private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
 
@@ -207,7 +207,7 @@ namespace LoomNetwork.CZB
             cancellationToken.ThrowIfCancellationRequested();
             await PlayCardsFromHand(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
-            if (_tutorialManager.IsTutorial && (_tutorialManager.CurrentStep == 11))
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
             {
                 (_tutorialManager as TutorialManager).Paused = true;
             }
@@ -315,7 +315,7 @@ namespace LoomNetwork.CZB
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if (((totalValue >= _gameplayManager.CurrentPlayer.Hp) || (_aiType == Enumerators.AiType.BLITZ_AI) || (_aiType == Enumerators.AiType.TIME_BLITZ_AI)) && !_tutorialManager.IsTutorial)
+            if ((totalValue >= _gameplayManager.CurrentPlayer.Hp || _aiType == Enumerators.AiType.BLITZ_AI || _aiType == Enumerators.AiType.TIME_BLITZ_AI) && !_tutorialManager.IsTutorial)
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {
@@ -337,7 +337,7 @@ namespace LoomNetwork.CZB
                     {
                         if (UnitCanBeUsable(unit))
                         {
-                            if ((GetPlayerAttackingValue() > GetOpponentAttackingValue()) && !_tutorialManager.IsTutorial)
+                            if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                             {
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
@@ -404,7 +404,7 @@ namespace LoomNetwork.CZB
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return (card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo) && (_gameplayManager.OpponentPlayer.Turn > _minTurnForAttack);
+            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo && _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;
 #endif
@@ -439,7 +439,7 @@ namespace LoomNetwork.CZB
         {
             bool needTargetForAbility = false;
 
-            if ((card.LibraryCard.Abilities != null) && (card.LibraryCard.Abilities.Count > 0))
+            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
             {
                 needTargetForAbility = card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
             }
@@ -451,125 +451,131 @@ namespace LoomNetwork.CZB
                 target = GetAbilityTarget(card);
             }
 
-            if ((card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE) && (_battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits))
+            switch (card.LibraryCard.CardKind)
             {
-                // if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
-                // if (target.Count == 0)
-                // return false;
-                _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                _gameplayManager.OpponentPlayer.AddCardToBoard(card);
-
-                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
-
-                _cardsController.DrawCardInfo(card);
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                if (((target != null) && needTargetForAbility) || !needTargetForAbility)
-                {
+                case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits:
+                    // if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
+                    // if (target.Count == 0)
+                    // return false;
                     _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                     _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 
                     _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
+
                     _cardsController.DrawCardInfo(card);
+                    break;
+                case Enumerators.CardKind.SPELL: {
+                    if (target != null && needTargetForAbility || !needTargetForAbility)
+                    {
+                        _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
+                        _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+
+                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, PlayCardCompleteHandler);
+                        _cardsController.DrawCardInfo(card);
+                    }
+
+                    break;
                 }
             }
 
             _gameplayManager.OpponentPlayer.Goo -= card.LibraryCard.Cost;
         }
 
-        private void PlayCardCompleteHandler(WorkingCard card, object target)
-        {
+        private void PlayCardCompleteHandler(WorkingCard card, object target) {
             WorkingCard workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                BoardUnit boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
-                GameObject boardCreature = boardUnitElement.GameObject;
-                boardCreature.tag = SRTags.OpponentOwned;
-                boardCreature.transform.position = Vector3.zero;
-                boardUnitElement.OwnerPlayer = card.Owner;
+                case Enumerators.CardKind.CREATURE: {
+                    BoardUnit boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
+                    GameObject boardCreature = boardUnitElement.GameObject;
+                    boardCreature.tag = SRTags.OpponentOwned;
+                    boardCreature.transform.position = Vector3.zero;
+                    boardUnitElement.OwnerPlayer = card.Owner;
 
-                boardUnitElement.SetObjectInfo(workingCard);
-                _battlegroundController.OpponentBoardCards.Add(boardUnitElement);
+                    boardUnitElement.SetObjectInfo(workingCard);
+                    _battlegroundController.OpponentBoardCards.Add(boardUnitElement);
 
-                boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
+                    boardCreature.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
-                // PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-                _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitElement);
+                    // PlayArrivalAnimation(boardCreature, libraryCard.cardType);
+                    _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitElement);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnitElement.OwnerPlayer, boardUnitElement }));
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnitElement.OwnerPlayer, boardUnitElement }));
 
-                boardUnitElement.PlayArrivalAnimation();
+                    boardUnitElement.PlayArrivalAnimation();
 
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
-                    () =>
-                    {
-                        bool createTargetArrow = false;
-
-                        if ((card.LibraryCard.Abilities != null) && (card.LibraryCard.Abilities.Count > 0))
-                        {
-                            createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.LibraryCard.Abilities[0]);
-                        }
-
-                        if (target != null)
-                        {
-                            CreateOpponentTarget(
-                                createTargetArrow,
-                                false,
-                                boardCreature.gameObject,
-                                target,
-                                () =>
-                                {
-                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target);
-                                });
-                        }
-                        else
-                        {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null);
-                        }
-                    });
-
-                // Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
-
-                // _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
-            {
-                GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
-                spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
-
-                CurrentSpellCard = new SpellBoardCard(spellCard);
-
-                CurrentSpellCard.Init(workingCard);
-                CurrentSpellCard.SetHighlightingEnabled(false);
-
-                BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
-
-                spellCard.gameObject.SetActive(false);
-
-                bool createTargetArrow = false;
-
-                if ((card.LibraryCard.Abilities != null) && (card.LibraryCard.Abilities.Count > 0))
-                {
-                    createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.LibraryCard.Abilities[0]);
-                }
-
-                if (target != null)
-                {
-                    CreateOpponentTarget(
-                        createTargetArrow,
-                        false,
-                        _gameplayManager.OpponentPlayer.AvatarObject,
-                        target,
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
+                            bool createTargetArrow = false;
+
+                            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                            {
+                                createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.LibraryCard.Abilities[0]);
+                            }
+
+                            if (target != null)
+                            {
+                                CreateOpponentTarget(
+                                    createTargetArrow,
+                                    false,
+                                    boardCreature.gameObject,
+                                    target,
+                                    () =>
+                                    {
+                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target);
+                                    });
+                            }
+                            else
+                            {
+                                _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null);
+                            }
                         });
+
+                    // Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
+
+                    // _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                    break;
                 }
-                else
-                {
-                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null);
+                case Enumerators.CardKind.SPELL: {
+                    GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
+
+                    CurrentSpellCard = new SpellBoardCard(spellCard);
+
+                    CurrentSpellCard.Init(workingCard);
+                    CurrentSpellCard.SetHighlightingEnabled(false);
+
+                    BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
+
+                    spellCard.gameObject.SetActive(false);
+
+                    bool createTargetArrow = false;
+
+                    if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                    {
+                        createTargetArrow = _abilitiesController.IsAbilityCanActivateTargetAtStart(card.LibraryCard.Abilities[0]);
+                    }
+
+                    if (target != null)
+                    {
+                        CreateOpponentTarget(
+                            createTargetArrow,
+                            false,
+                            _gameplayManager.OpponentPlayer.AvatarObject,
+                            target,
+                            () =>
+                            {
+                                _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
+                            });
+                    }
+                    else
+                    {
+                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null);
+                    }
+
+                    break;
                 }
             }
         }
@@ -591,7 +597,7 @@ namespace LoomNetwork.CZB
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
                         {
-                            if ((_gameplayManager.CurrentPlayer.BoardCards.Count > 1) || ((ability.AbilityType == Enumerators.AbilityType.CARD_RETURN) && (_gameplayManager.CurrentPlayer.BoardCards.Count > 0)))
+                            if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 || ability.AbilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.CurrentPlayer.BoardCards.Count > 0)
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -601,7 +607,7 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                         {
-                            if ((_gameplayManager.OpponentPlayer.BoardCards.Count > 1) || (libraryCard.CardKind == Enumerators.CardKind.SPELL) || ((ability.AbilityType == Enumerators.AbilityType.CARD_RETURN) && (_gameplayManager.OpponentPlayer.BoardCards.Count > 0)))
+                            if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 || libraryCard.CardKind == Enumerators.CardKind.SPELL || ability.AbilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.OpponentPlayer.BoardCards.Count > 0)
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -786,7 +792,7 @@ namespace LoomNetwork.CZB
                     target = targets[UnityEngine.Random.Range(0, targets.Count)];
                 }
 
-                if (checkPlayerAlso && (target == null) && ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (checkPlayerAlso && target == null && ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
                     target = _gameplayManager.CurrentPlayer;
 
@@ -827,7 +833,7 @@ namespace LoomNetwork.CZB
             int power = 0;
             foreach (BoardUnit creature in _gameplayManager.OpponentPlayer.BoardCards)
             {
-                if ((creature.CurrentHp > 0) && ((creature.NumTurnsOnBoard >= 1) || creature.IsFeralUnit()))
+                if (creature.CurrentHp > 0 && (creature.NumTurnsOnBoard >= 1 || creature.IsFeralUnit()))
                 {
                     power += creature.CurrentDamage;
                 }
@@ -890,7 +896,7 @@ namespace LoomNetwork.CZB
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.Find(x => (x.CardId == item.Id) && !sortedList.Contains(x)));
+                sortedList.Add(list.Find(x => x.CardId == item.Id && !sortedList.Contains(x)));
             }
 
             list.Clear();
@@ -915,11 +921,11 @@ namespace LoomNetwork.CZB
 
             if (!lowHp)
             {
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => (x.CurrentHp > 0) && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
             }
             else
             {
-                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => (x.CurrentHp < x.MaxCurrentHp) && !_attackedUnitTargets.Contains(x));
+                eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHp < x.MaxCurrentHp && !_attackedUnitTargets.Contains(x));
             }
 
             if (unitsToIgnore != null)
@@ -942,7 +948,7 @@ namespace LoomNetwork.CZB
             if (eligibleUnits.Count > 0)
             {
                 List<BoardUnit> heavyUnits = eligibleUnits.FindAll(x => x.IsHeavyUnit());
-                if ((heavyUnits != null) && (heavyUnits.Count >= 1))
+                if (heavyUnits != null && heavyUnits.Count >= 1)
                 {
                     return heavyUnits[_random.Next(0, heavyUnits.Count)];
                 }
@@ -955,7 +961,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetRandomOpponentUnit(List<BoardUnit> unitsToIgnore = null)
         {
-            List<BoardUnit> eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => (x.CurrentHp > 0) && !_attackedUnitTargets.Contains(x));
+            List<BoardUnit> eligibleCreatures = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
 
             if (unitsToIgnore != null)
             {
@@ -977,7 +983,7 @@ namespace LoomNetwork.CZB
             if (eligibleCreatures.Count > 0)
             {
                 List<BoardUnit> provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit());
-                return (provokeCreatures != null) && (provokeCreatures.Count >= 1);
+                return provokeCreatures != null && provokeCreatures.Count >= 1;
             }
 
             return false;
@@ -1026,7 +1032,7 @@ namespace LoomNetwork.CZB
                     break;
                 case Enumerators.OverlordSkill.RABIES:
                 {
-                    _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => ((skill.Skill.ElementTargetTypes.Count > 0) && !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType)) || (x.NumTurnsOnBoard > 0) || x.HasFeral);
+                    _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => skill.Skill.ElementTargetTypes.Count > 0 && !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType) || x.NumTurnsOnBoard > 0 || x.HasFeral);
                     BoardUnit unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
 
                     if (unit != null)

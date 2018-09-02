@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            if ((ParticleObject != null) && ParticleObject)
+            if (ParticleObject != null && ParticleObject)
             {
                 Object.Destroy(ParticleObject);
             }

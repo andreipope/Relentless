@@ -12,45 +12,6 @@ namespace LoomNetwork.CZB.Helpers
     {
         private static readonly string LineBreak = "%n%";
 
-        public static void FixVerticalLayoutGroupFitting(Object value)
-        {
-            VerticalLayoutGroup group = null;
-
-            if (value is VerticalLayoutGroup)
-            {
-                group = value as VerticalLayoutGroup;
-            }
-            else if (value is GameObject)
-            {
-                group = (value as GameObject).GetComponent<VerticalLayoutGroup>();
-            }
-            else if (value is Transform)
-            {
-                group = (value as Transform).GetComponent<VerticalLayoutGroup>();
-            }
-
-            if (group == null)
-                return;
-
-            group.enabled = false;
-            Canvas.ForceUpdateCanvases();
-            group.SetLayoutVertical();
-            group.CalculateLayoutInputVertical();
-            group.enabled = true;
-        }
-
-        public static DateTime ConvertFromUnixTimestamp(double timestamp)
-        {
-            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            return origin.AddSeconds(timestamp);
-        }
-
-        // InternalTools.CallPhoneNumber("+############");
-        public static void CallPhoneNumber(string phone)
-        {
-            Application.OpenURL("tel://" + phone);
-        }
-
         public static string ReplaceLineBreaks(string data)
         {
             if (data == null)
@@ -76,7 +37,7 @@ namespace LoomNetwork.CZB.Helpers
                     ignored = ignoreNames.Contains(parent.transform.GetChild(i).gameObject.name);
                 }
 
-                if ((!ignored && !parentIgnored) || (ignoreNames == null))
+                if (!ignored && !parentIgnored || ignoreNames == null)
                 {
                     parent.transform.GetChild(i).gameObject.layer = layer;
                 }
@@ -104,13 +65,13 @@ namespace LoomNetwork.CZB.Helpers
         {
             int count = root.childCount;
 
-            float width = (spacing * count) - 1;
+            float width = spacing * count - 1;
 
             Vector3 pivot = new Vector3(offset, 0, 0);
 
             for (int i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - (width / 2f), 0, 0);
+                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
                 pivot.x += width / count;
             }
         }
@@ -120,11 +81,11 @@ namespace LoomNetwork.CZB.Helpers
             int count = root.childCount;
             float halfHeightOffset = height + spacing;
 
-            float startPos = centerOffset + (((count - 1) * halfHeightOffset) / 2f);
+            float startPos = centerOffset + (count - 1) * halfHeightOffset / 2f;
 
             for (int i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, startPos - (halfHeightOffset * i), root.GetChild(i).localPosition.z);
+                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, startPos - halfHeightOffset * i, root.GetChild(i).localPosition.z);
             }
         }
 
@@ -143,7 +104,7 @@ namespace LoomNetwork.CZB.Helpers
                 {
                     element = ShakeList(root).First(x => !list.Contains(x));
 
-                    if ((element != null) && (element != default(List<object>)))
+                    if (element != null && element != default(List<object>))
                     {
                         list.Add(element);
                     }

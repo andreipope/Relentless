@@ -141,7 +141,7 @@ public class HandBoardCard
         _playerController.IsCardSelected = false;
 
         bool playable = true;
-        if (_canceledPlay || !CardView.CanBeBuyed(OwnerPlayer) || ((CardView.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.CREATURE) && (OwnerPlayer.BoardCards.Count >= Constants.MaxBoardUnits)))
+        if (_canceledPlay || !CardView.CanBeBuyed(OwnerPlayer) || CardView.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.CREATURE && OwnerPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
         {
             playable = false;
         }

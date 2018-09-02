@@ -152,10 +152,10 @@ namespace LoomNetwork.CZB
 
         private void DoAnimationOfWhoseTurn()
         {
-            int turnsCount = 23;
-            float rotateTime = 0.125f;
-            float rotateAngle = 90f;
-            RotateMode mode = RotateMode.Fast;
+            const int turnsCount = 23;
+            const float rotateTime = 0.125f;
+            const float rotateAngle = 90f;
+            const RotateMode mode = RotateMode.Fast;
 
             _playerCardBackObject.SetActive(true);
             _playerCardFrontObject.SetActive(false);
@@ -186,7 +186,7 @@ namespace LoomNetwork.CZB
                 sequenceOpponent.AppendCallback(
                     () =>
                     {
-                        if (((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45) && (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45)) || ((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45) && (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45)))
+                        if (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45 || Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
                         {
                             CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index, ref startWithSecondOpponent);
                         }
@@ -204,7 +204,7 @@ namespace LoomNetwork.CZB
                 sequence.AppendCallback(
                     () =>
                     {
-                        if (((Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45) && (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45)) || ((Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45) && (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)))
+                        if (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45 || Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
                         {
                             CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
                         }

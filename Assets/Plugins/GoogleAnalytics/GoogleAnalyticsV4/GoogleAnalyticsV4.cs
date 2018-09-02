@@ -31,8 +31,8 @@ using System.Collections.Generic;
   custom dimensions to the hit.
 */
 public class GoogleAnalyticsV4 : MonoBehaviour {
-  private string uncaughtExceptionStackTrace = null;
-  private bool initialized = false;
+  private string uncaughtExceptionStackTrace;
+  private bool initialized;
 
   public enum DebugMode {
     ERROR,
@@ -69,16 +69,16 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
   public DebugMode logLevel = DebugMode.WARNING;
 
   [Tooltip("If checked, the IP address of the sender will be anonymized.")]
-  public bool anonymizeIP = false;
+  public bool anonymizeIP;
 
   [Tooltip("Automatically report uncaught exceptions.")]
-  public bool UncaughtExceptionReporting = false;
+  public bool UncaughtExceptionReporting;
 
   [Tooltip("Automatically send a launch event when the game starts up.")]
-  public bool sendLaunchEvent = false;
+  public bool sendLaunchEvent;
 
   [Tooltip("If checked, hits will not be dispatched. Use for testing.")]
-  public bool dryRun = false;
+  public bool dryRun;
 
   // TODO: Create conditional textbox attribute
   [Tooltip("The amount of time in seconds your application can stay in" +
@@ -87,9 +87,9 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
   public int sessionTimeout = 1800;
 
   [AdvertiserOptIn()]
-  public bool enableAdId = false;
+  public bool enableAdId;
 
-  public static GoogleAnalyticsV4 instance = null;
+  public static GoogleAnalyticsV4 instance;
 
   [HideInInspector]
   public readonly static string currencySymbol = "USD";

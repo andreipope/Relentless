@@ -22,7 +22,7 @@ using System;
 public class ExceptionHitBuilder : HitBuilder<ExceptionHitBuilder> {
 
   private string exceptionDescription  = "";
-  private bool fatal = false;
+  private bool fatal;
 
   public string GetExceptionDescription(){
     return exceptionDescription;

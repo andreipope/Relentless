@@ -55,109 +55,113 @@ namespace LoomNetwork.CZB
             target = Utilites.CastVfxPosition(target);
             Vector3 offset = Vector3.forward * 1;
 
-            if (type == Enumerators.CardType.FERAL)
+            switch (type)
             {
-                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
-                effect = Object.Instantiate(vfxPrefab);
-                effect.transform.position = target - offset;
-                _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume, false, false, true);
+                case Enumerators.CardType.FERAL: {
+                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
+                    effect = Object.Instantiate(vfxPrefab);
+                    effect.transform.position = target - offset;
+                    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume, false, false, true);
 
-                _particlesController.RegisterParticleSystem(effect, true, 5f);
+                    _particlesController.RegisterParticleSystem(effect, true, 5f);
 
-                if ((damage > 3) && (damage < 7))
-                {
-                    _timerManager.AddTimer(
-                        a =>
-                        {
-                            effect = Object.Instantiate(vfxPrefab);
-                            effect.transform.position = target - offset;
-                            effect.transform.localScale = new Vector3(-1, 1, 1);
-                            _particlesController.RegisterParticleSystem(effect, true, 5f);
-                        },
-                        null,
-                        0.5f,
-                        false);
+                    if (damage > 3 && damage < 7)
+                    {
+                        _timerManager.AddTimer(
+                            a =>
+                            {
+                                effect = Object.Instantiate(vfxPrefab);
+                                effect.transform.position = target - offset;
+                                effect.transform.localScale = new Vector3(-1, 1, 1);
+                                _particlesController.RegisterParticleSystem(effect, true, 5f);
+                            },
+                            null,
+                            0.5f,
+                            false);
+                    }
+
+                    if (damage > 6)
+                    {
+                        _timerManager.AddTimer(
+                            a =>
+                            {
+                                effect = Object.Instantiate(vfxPrefab);
+                                effect.transform.position = target - Vector3.right - offset;
+                                effect.transform.eulerAngles = Vector3.forward * 90;
+
+                                _particlesController.RegisterParticleSystem(effect, true, 5f);
+                            },
+                            null,
+                            1.0f,
+                            false);
+                    }
+
+                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    // {
+                    // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
+                    // }, null, 0.75f, false);
+                    break;
                 }
+                case Enumerators.CardType.HEAVY: {
+                    Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
+                    string prefabName = "Prefabs/VFX/HeavyAttackVFX";
+                    if (damage > 4)
+                    {
+                        prefabName = "Prefabs/VFX/HeavyAttack2VFX";
+                        soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                    }
 
-                if (damage > 6)
-                {
-                    _timerManager.AddTimer(
-                        a =>
-                        {
-                            effect = Object.Instantiate(vfxPrefab);
-                            effect.transform.position = target - Vector3.right - offset;
-                            effect.transform.eulerAngles = Vector3.forward * 90;
+                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
+                    effect = Object.Instantiate(vfxPrefab);
+                    effect.transform.position = target;
 
-                            _particlesController.RegisterParticleSystem(effect, true, 5f);
-                        },
-                        null,
-                        1.0f,
-                        false);
-                }
+                    _particlesController.RegisterParticleSystem(effect, true, 5f);
 
-                // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                // {
-                // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                // }, null, 0.75f, false);
-            }
-            else if (type == Enumerators.CardType.HEAVY)
-            {
-                Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
-                string prefabName = "Prefabs/VFX/HeavyAttackVFX";
-                if (damage > 4)
-                {
-                    prefabName = "Prefabs/VFX/HeavyAttack2VFX";
-                    soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
-                }
+                    _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
 
-                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
-                effect = Object.Instantiate(vfxPrefab);
-                effect.transform.position = target;
-
-                _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
-
-                /* GameClient.Get<ITimerManager>().AddTimer((a) =>
+                    /* GameClient.Get<ITimerManager>().AddTimer((a) =>
                                      {
                                      }, null, 0.75f, false);*/
-            }
-            else
-            {
-                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
-                effect = Object.Instantiate(vfxPrefab);
-                effect.transform.position = target - offset;
-
-                _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                if (damage > 4)
-                {
-                    _timerManager.AddTimer(
-                        a =>
-                        {
-                            effect = Object.Instantiate(vfxPrefab);
-                            effect.transform.position = target - offset;
-
-                            effect.transform.localScale = new Vector3(-1, 1, 1);
-                            _particlesController.RegisterParticleSystem(effect, true, 5f);
-                        },
-                        null,
-                        0.5f,
-                        false);
-
-                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                    // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CreatureAttackSoundVolume, false, false, true);
-
-                    // }, null, 0.75f, false);
+                    break;
                 }
-                else
-                {
-                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                    // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CreatureAttackSoundVolume, false, false, true);
+                default: {
+                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
+                    effect = Object.Instantiate(vfxPrefab);
+                    effect.transform.position = target - offset;
 
-                    // }, null, 0.75f, false);
+                    _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                    if (damage > 4)
+                    {
+                        _timerManager.AddTimer(
+                            a =>
+                            {
+                                effect = Object.Instantiate(vfxPrefab);
+                                effect.transform.position = target - offset;
+
+                                effect.transform.localScale = new Vector3(-1, 1, 1);
+                                _particlesController.RegisterParticleSystem(effect, true, 5f);
+                            },
+                            null,
+                            0.5f,
+                            false);
+
+                        // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                        // {
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CreatureAttackSoundVolume, false, false, true);
+
+                        // }, null, 0.75f, false);
+                    }
+                    else
+                    {
+                        // GameClient.Get<ITimerManager>().AddTimer((a) =>
+                        // {
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CreatureAttackSoundVolume, false, false, true);
+
+                        // }, null, 0.75f, false);
+                    }
+
+                    break;
                 }
             }
         }
@@ -200,17 +204,17 @@ namespace LoomNetwork.CZB
 
             Vector3 position = Vector3.zero;
 
-            if (target is BoardUnit)
+            switch (target)
             {
-                position = (target as BoardUnit).Transform.position;
-            }
-            else if (target is Player)
-            {
-                position = (target as Player).AvatarObject.transform.position;
-            }
-            else if (target is Transform)
-            {
-                position = (target as Transform).transform.position;
+                case BoardUnit unit:
+                    position = unit.Transform.position;
+                    break;
+                case Player player:
+                    position = player.AvatarObject.transform.position;
+                    break;
+                case Transform transform:
+                    position = transform.transform.position;
+                    break;
             }
 
             GameObject particle = Object.Instantiate(prefab);
@@ -226,31 +230,32 @@ namespace LoomNetwork.CZB
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
-            if (target is Player)
+            switch (target)
             {
-                particleSystem.transform.DOMove(Utilites.CastVfxPosition((target as Player).AvatarObject.transform.position), .5f).OnComplete(
-                    () =>
-                    {
-                        callbackComplete(target);
-
-                        if (particleSystem != null)
+                case Player player:
+                    particleSystem.transform.DOMove(Utilites.CastVfxPosition(player.AvatarObject.transform.position), .5f).OnComplete(
+                        () =>
                         {
-                            Object.Destroy(particleSystem);
-                        }
-                    });
-            }
-            else if (target is BoardUnit)
-            {
-                particleSystem.transform.DOMove(Utilites.CastVfxPosition((target as BoardUnit).Transform.position), .5f).OnComplete(
-                    () =>
-                    {
-                        callbackComplete(target);
+                            callbackComplete(target);
 
-                        if (particleSystem != null)
+                            if (particleSystem != null)
+                            {
+                                Object.Destroy(particleSystem);
+                            }
+                        });
+                    break;
+                case BoardUnit unit:
+                    particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
+                        () =>
                         {
-                            Object.Destroy(particleSystem);
-                        }
-                    });
+                            callbackComplete(target);
+
+                            if (particleSystem != null)
+                            {
+                                Object.Destroy(particleSystem);
+                            }
+                        });
+                    break;
             }
         }
 
@@ -258,13 +263,14 @@ namespace LoomNetwork.CZB
         {
             Transform target = null;
 
-            if (onObject is BoardUnit)
+            switch (onObject)
             {
-                target = (onObject as BoardUnit).Transform;
-            }
-            else if (onObject is Player)
-            {
-                target = (onObject as Player).AvatarObject.transform;
+                case BoardUnit unit:
+                    target = unit.Transform;
+                    break;
+                case Player _:
+                    target = ((Player) onObject).AvatarObject.transform;
+                    break;
             }
 
             GameObject effect = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));

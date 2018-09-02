@@ -239,7 +239,7 @@ namespace LoomNetwork.CZB
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                         {
-                            if ((localPlayer.BoardCards.Count > 1) || (kind == Enumerators.CardKind.SPELL))
+                            if (localPlayer.BoardCards.Count > 1 || kind == Enumerators.CardKind.SPELL)
                             {
                                 available = true;
                             }
@@ -305,22 +305,23 @@ namespace LoomNetwork.CZB
 
             foreach (Enumerators.AbilityTargetType target in ability.AbilityTargetTypes)
             {
-                if (target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                switch (target)
                 {
-                    List<BoardUnit> units = player.BoardCards.FindAll(x => (x.InitialUnitType == ability.TargetCardType) && (x.UnitStatus == ability.TargetUnitStatusType));
+                    case Enumerators.AbilityTargetType.PLAYER_CARD: {
+                        List<BoardUnit> units =
+                            player.BoardCards.FindAll(x => x.InitialUnitType == ability.TargetCardType && x.UnitStatus == ability.TargetUnitStatusType);
+                        if (units.Count > 0)
+                            return true;
 
-                    if (units.Count > 0)
-                    {
-                        return true;
+                        break;
                     }
-                }
-                else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
-                {
-                    List<BoardUnit> units = opponent.BoardCards.FindAll(x => (x.InitialUnitType == ability.TargetCardType) && (x.UnitStatus == ability.TargetUnitStatusType));
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD: {
+                        List<BoardUnit> units =
+                            opponent.BoardCards.FindAll(x => x.InitialUnitType == ability.TargetCardType && x.UnitStatus == ability.TargetUnitStatusType);
+                        if (units.Count > 0)
+                            return true;
 
-                    if (units.Count > 0)
-                    {
-                        return true;
+                        break;
                     }
                 }
             }
@@ -340,22 +341,23 @@ namespace LoomNetwork.CZB
 
             foreach (Enumerators.AbilityTargetType target in ability.AbilityTargetTypes)
             {
-                if (target.Equals(Enumerators.AbilityTargetType.PLAYER_CARD))
+                switch (target)
                 {
-                    List<BoardUnit> units = player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                    case Enumerators.AbilityTargetType.PLAYER_CARD: {
+                        List<BoardUnit> units = player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
-                    if (units.Count > 0)
-                    {
-                        return true;
+                        if (units.Count > 0)
+                            return true;
+
+                        break;
                     }
-                }
-                else if (target.Equals(Enumerators.AbilityTargetType.OPPONENT_CARD))
-                {
-                    List<BoardUnit> units = opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD: {
+                        List<BoardUnit> units = opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
-                    if (units.Count > 0)
-                    {
-                        return true;
+                        if (units.Count > 0)
+                            return true;
+
+                        break;
                     }
                 }
             }
@@ -379,7 +381,7 @@ namespace LoomNetwork.CZB
 
             Vector3 postionOfCardView = Vector3.zero;
 
-            if ((card != null) && (card.GameObject != null))
+            if (card != null && card.GameObject != null)
             {
                 postionOfCardView = card.Transform.position;
             }
@@ -416,7 +418,7 @@ namespace LoomNetwork.CZB
 
             if (kind == Enumerators.CardKind.SPELL)
             {
-                if ((handCard != null) && isPlayer)
+                if (handCard != null && isPlayer)
                 {
                     handCard.GameObject.SetActive(false);
                 }
@@ -426,7 +428,7 @@ namespace LoomNetwork.CZB
             {
                 AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
 
-                if (((ability.TargetCardType != Enumerators.CardType.NONE) && !HasSpecialUnitOnBoard(workingCard, ability)) || ((ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE) && !HasSpecialUnitStatusOnBoard(workingCard, ability)))
+                if (ability.TargetCardType != Enumerators.CardType.NONE && !HasSpecialUnitOnBoard(workingCard, ability) || ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE && !HasSpecialUnitStatusOnBoard(workingCard, ability))
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
@@ -445,7 +447,7 @@ namespace LoomNetwork.CZB
                         activeAbility.Ability.ActivateSelectTarget(
                             callback: () =>
                             {
-                                if ((kind == Enumerators.CardKind.SPELL) && isPlayer)
+                                if (kind == Enumerators.CardKind.SPELL && isPlayer)
                                 {
                                     card.WorkingCard.Owner.Goo -= card.ManaCost;
                                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
@@ -477,7 +479,7 @@ namespace LoomNetwork.CZB
                             },
                             failedCallback: () =>
                             {
-                                if ((kind == Enumerators.CardKind.SPELL) && isPlayer)
+                                if (kind == Enumerators.CardKind.SPELL && isPlayer)
                                 {
                                     handCard.GameObject.SetActive(true);
                                     handCard.ResetToHandAnimation();
@@ -506,13 +508,14 @@ namespace LoomNetwork.CZB
                     }
                     else
                     {
-                        if (target is BoardUnit)
+                        switch (target)
                         {
-                            activeAbility.Ability.TargetUnit = target as BoardUnit;
-                        }
-                        else if (target is Player)
-                        {
-                            activeAbility.Ability.TargetPlayer = target as Player;
+                            case BoardUnit unit:
+                                activeAbility.Ability.TargetUnit = unit;
+                                break;
+                            case Player player:
+                                activeAbility.Ability.TargetPlayer = player;
+                                break;
                         }
 
                         activeAbility.Ability.SelectedTargetAction(true);
@@ -787,13 +790,14 @@ namespace LoomNetwork.CZB
                 if (activeAbility == null)
                     return;
 
-                if (target is BoardUnit)
+                switch (target)
                 {
-                    activeAbility.Ability.TargetUnit = target as BoardUnit;
-                }
-                else if (target is Player)
-                {
-                    activeAbility.Ability.TargetPlayer = target as Player;
+                    case BoardUnit unit:
+                        activeAbility.Ability.TargetUnit = unit;
+                        break;
+                    case Player player:
+                        activeAbility.Ability.TargetPlayer = player;
+                        break;
                 }
 
                 activeAbility.Ability.SelectedTargetAction(true);

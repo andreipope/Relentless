@@ -87,7 +87,7 @@ namespace LoomNetwork.CZB
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
-            if ((primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count) && (secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count))
+            if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count && secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
                 SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.Skills[primary], _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
             }
@@ -95,7 +95,7 @@ namespace LoomNetwork.CZB
             primary = _gameplayManager.OpponentPlayer.SelfHero.PrimarySkill;
             secondary = _gameplayManager.OpponentPlayer.SelfHero.SecondarySkill;
 
-            if ((primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count) && (secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count))
+            if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count && secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
             {
                 SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.Skills[primary], _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
             }
@@ -148,57 +148,57 @@ namespace LoomNetwork.CZB
             if (skill == null)
                 return;
 
-            if (skill.IsUsing)
+            if (!skill.IsUsing)
+                return;
+
+            if (skill.FightTargetingArrow != null)
             {
-                if (skill.FightTargetingArrow != null)
+                if (skill.FightTargetingArrow.SelectedPlayer != null)
                 {
-                    if (skill.FightTargetingArrow.SelectedPlayer != null)
-                    {
-                        Player targetPlayer = skill.FightTargetingArrow.SelectedPlayer;
+                    Player targetPlayer = skill.FightTargetingArrow.SelectedPlayer;
 
-                        _vfxController.CreateSkillVfx(
-                            GetVfxPrefabBySkill(skill),
-                            skill.SelfObject.transform.position,
-                            targetPlayer,
-                            x =>
-                            {
-                                skill.UseSkill(targetPlayer);
-                                DoActionByType(skill, targetPlayer);
-                                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                            });
-                    }
-                    else if (skill.FightTargetingArrow.SelectedCard != null)
-                    {
-                        BoardUnit targetUnit = skill.FightTargetingArrow.SelectedCard;
-
-                        _vfxController.CreateSkillVfx(
-                            GetVfxPrefabBySkill(skill),
-                            skill.SelfObject.transform.position,
-                            targetUnit,
-                            x =>
-                            {
-                                DoActionByType(skill, targetUnit);
-                                skill.UseSkill(targetUnit);
-                                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-                            });
-                    }
-
-                    skill.CancelTargetingArrows();
-                    skill.FightTargetingArrow = null;
-                }
-                else if (target != null)
-                {
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
-                        target,
+                        targetPlayer,
                         x =>
                         {
-                            DoActionByType(skill, target);
-                            skill.UseSkill(target);
+                            skill.UseSkill(targetPlayer);
+                            DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
                 }
+                else if (skill.FightTargetingArrow.SelectedCard != null)
+                {
+                    BoardUnit targetUnit = skill.FightTargetingArrow.SelectedCard;
+
+                    _vfxController.CreateSkillVfx(
+                        GetVfxPrefabBySkill(skill),
+                        skill.SelfObject.transform.position,
+                        targetUnit,
+                        x =>
+                        {
+                            DoActionByType(skill, targetUnit);
+                            skill.UseSkill(targetUnit);
+                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                        });
+                }
+
+                skill.CancelTargetingArrows();
+                skill.FightTargetingArrow = null;
+            }
+            else if (target != null)
+            {
+                _vfxController.CreateSkillVfx(
+                    GetVfxPrefabBySkill(skill),
+                    skill.SelfObject.transform.position,
+                    target,
+                    x =>
+                    {
+                        DoActionByType(skill, target);
+                        skill.UseSkill(target);
+                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+                    });
             }
         }
 
@@ -352,29 +352,26 @@ namespace LoomNetwork.CZB
 
         #region actions
 
-        private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
-        {
-            if (target is BoardUnit)
+        private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target) {
+            switch (target)
             {
-                BoardUnit unit = target as BoardUnit;
-                unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
+                case BoardUnit unit:
+                    unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
+                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
 
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[] { owner, unit }));
-            }
-            else if (target is Player)
-            {
-                Player player = target as Player;
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[] { owner, unit }));
+                    break;
+                case Player player:
+                    player.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
-                player.Stun(Enumerators.StunType.FREEZE, skill.Value);
+                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
+                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[] { owner, player }));
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[] { owner, player }));
+                    break;
             }
         }
 
@@ -506,7 +503,7 @@ namespace LoomNetwork.CZB
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if ((target != null) && target is BoardUnit)
+            if (target != null && target is BoardUnit)
             {
                 BoardUnit unit = target as BoardUnit;
 
@@ -525,7 +522,7 @@ namespace LoomNetwork.CZB
 
         private void RabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if ((target != null) && target is BoardUnit)
+            if (target != null && target is BoardUnit)
             {
                 BoardUnit unit = target as BoardUnit;
 
@@ -538,7 +535,7 @@ namespace LoomNetwork.CZB
 
         private void ToxicPowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if ((target != null) && target is BoardUnit)
+            if (target != null && target is BoardUnit)
             {
                 BoardUnit unit = target as BoardUnit;
 
@@ -553,7 +550,7 @@ namespace LoomNetwork.CZB
 
         private void IceBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if ((target != null) && target is BoardUnit)
+            if (target != null && target is BoardUnit)
             {
                 BoardUnit unit = target as BoardUnit;
 

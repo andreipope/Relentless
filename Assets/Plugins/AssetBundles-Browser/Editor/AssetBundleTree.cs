@@ -11,7 +11,7 @@ namespace AssetBundleBrowser
     internal class AssetBundleTree : TreeView
     { 
         AssetBundleManageTab m_Controller;
-        private bool m_ContextOnItem = false;
+        private bool m_ContextOnItem;
         List<UnityEngine.Object> m_EmptyObjectList = new List<UnityEngine.Object>();
 
         internal AssetBundleTree(TreeViewState state, AssetBundleManageTab ctrl) : base(state)
@@ -359,10 +359,10 @@ return;
 
         class DragAndDropData
         {
-            internal bool hasBundleFolder = false;
-            internal bool hasScene = false;
-            internal bool hasNonScene = false;
-            internal bool hasVariantChild = false;
+            internal bool hasBundleFolder;
+            internal bool hasScene;
+            internal bool hasNonScene;
+            internal bool hasVariantChild;
             internal List<AssetBundleModel.BundleInfo> draggedNodes;
             internal AssetBundleModel.BundleTreeItem targetNode;
             internal DragAndDropArgs args;
@@ -554,8 +554,8 @@ return;
             return visualMode;
         }
 
-        private string[] dragToNewSpacePaths = null;
-        private AssetBundleModel.BundleFolderInfo dragToNewSpaceRoot = null;
+        private string[] dragToNewSpacePaths;
+        private AssetBundleModel.BundleFolderInfo dragToNewSpaceRoot;
         private void DragPathsAsOneBundle()
         {
             var newBundle = AssetBundleModel.Model.CreateEmptyBundle(dragToNewSpaceRoot);

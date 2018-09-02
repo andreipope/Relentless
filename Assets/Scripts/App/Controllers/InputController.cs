@@ -19,8 +19,6 @@ namespace LoomNetwork.CZB
 
         public Action NoObjectsSelectedEvent;
 
-        private readonly int _unitsLayerMask = 9;
-
         private IGameplayManager _gameplayManager;
 
         private Camera _raysCamera;
@@ -60,11 +58,11 @@ namespace LoomNetwork.CZB
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
-                            CastRay(touch.position, _unitsLayerMask);
+                            CastRay(touch.position, SRLayerMask.Default);
                             break;
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                            CastRay(touch.position, _unitsLayerMask, true);
+                            CastRay(touch.position, SRLayerMask.Default, true);
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
@@ -82,11 +80,11 @@ namespace LoomNetwork.CZB
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    CastRay(Input.mousePosition, _unitsLayerMask);
+                    CastRay(Input.mousePosition, SRLayerMask.Default);
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    CastRay(Input.mousePosition, _unitsLayerMask, true);
+                    CastRay(Input.mousePosition, SRLayerMask.Default, true);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {

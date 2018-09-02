@@ -120,7 +120,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if ((_selfPage == null) || !_selfPage.activeSelf)
+            if (_selfPage == null || !_selfPage.activeSelf)
             {
             }
         }
@@ -262,7 +262,7 @@ namespace LoomNetwork.CZB
         public void SetPlayerDeckCards(int cards)
         {
             _playerCardDeckCountText.text = cards.ToString();
-            if ((cards == 0) && _playerDeckStatusTexture.gameObject.activeInHierarchy)
+            if (cards == 0 && _playerDeckStatusTexture.gameObject.activeInHierarchy)
             {
                 _playerDeckStatusTexture.gameObject.SetActive(false);
             }
@@ -271,7 +271,7 @@ namespace LoomNetwork.CZB
         public void SetOpponentDeckCards(int cards)
         {
             _opponentCardDeckCountText.text = cards.ToString();
-            if ((cards == 0) && _opponentDeckStatusTexture.gameObject.activeInHierarchy)
+            if (cards == 0 && _opponentDeckStatusTexture.gameObject.activeInHierarchy)
             {
                 _opponentDeckStatusTexture.gameObject.SetActive(false);
             }
@@ -307,7 +307,7 @@ namespace LoomNetwork.CZB
 
         private int GetPercentFromMaxDeck(int index)
         {
-            return (100 * index) / (int)Constants.DeckMaxSize;
+            return 100 * index / (int)Constants.DeckMaxSize;
         }
 
         private class CardInGraveyard

@@ -291,7 +291,7 @@ namespace LoomNetwork.Internal
             foreach (string directory in Directory.GetDirectories(startLocation))
             {
                 ProcessDirectory(directory);
-                if ((Directory.GetFiles(directory).Length == 0) && (Directory.GetDirectories(directory).Length == 0))
+                if (Directory.GetFiles(directory).Length == 0 && Directory.GetDirectories(directory).Length == 0)
                 {
                     Directory.Delete(directory);
                     File.Delete(directory + ".meta");

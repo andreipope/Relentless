@@ -12,15 +12,16 @@ namespace LoomNetwork.CZB
         {
             _target = target;
 
-            if (_target is Player)
+            switch (_target)
             {
-                _targetPosition = (_target as Player).AvatarObject.transform.position;
-                (_target as Player).SetGlowStatus(true);
-            }
-            else if (_target is BoardUnit)
-            {
-                _targetPosition = (_target as BoardUnit).Transform.position;
-                (_target as BoardUnit).SetSelectedUnit(true);
+                case Player player:
+                    _targetPosition = player.AvatarObject.transform.position;
+                    player.SetGlowStatus(true);
+                    break;
+                case BoardUnit unit:
+                    _targetPosition = unit.Transform.position;
+                    unit.SetSelectedUnit(true);
+                    break;
             }
 
             _targetPosition.z = 0;

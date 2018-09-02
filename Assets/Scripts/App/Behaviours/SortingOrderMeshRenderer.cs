@@ -4,10 +4,10 @@ using UnityEngine;
 public class SortingOrderMeshRenderer : MonoBehaviour
 {
     [SerializeField]
-    private readonly string _sortingLayer = "";
+    private string _sortingLayer = "";
 
     [SerializeField]
-    private readonly int _orderInLayer = 0;
+    private int _orderInLayer;
 
     private void Start()
     {

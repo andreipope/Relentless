@@ -19,7 +19,7 @@ namespace LoomNetwork.CZB
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if ((_clickCount == 0) || (Time.unscaledTime - _lastClickTime < DoubleClickDelay))
+            if (_clickCount == 0 || Time.unscaledTime - _lastClickTime < DoubleClickDelay)
             {
                 _clickCount++;
                 _lastClickTime = Time.unscaledTime;
@@ -41,7 +41,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if ((_clickCount == 1) && (Time.unscaledTime > _lastClickTime + DoubleClickDelay))
+            if (_clickCount == 1 && Time.unscaledTime > _lastClickTime + DoubleClickDelay)
             {
                 SingleClickReceived?.Invoke();
                 _clickCount = 0;

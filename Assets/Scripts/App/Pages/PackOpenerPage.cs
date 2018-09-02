@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
@@ -8,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
@@ -66,7 +68,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if ((_selfPage != null) && _selfPage.activeInHierarchy)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
                 if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
                 {
@@ -220,7 +222,7 @@ namespace LoomNetwork.CZB
             foreach (Transform cardObj in _cardsContainer)
             {
                 Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(cardObj.DOMove(_centerPos - (Vector3.up * 9), .3f));
+                animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
                 animationSequence5.OnComplete(
                     () =>
                     {
@@ -313,13 +315,16 @@ namespace LoomNetwork.CZB
                 string cardSetName = _cardsController.GetSetOfCard(card);
 
                 GameObject go = null;
-                if (card.CardKind == Enumerators.CardKind.CREATURE)
+                switch (card.CardKind)
                 {
-                    go = Object.Instantiate(_cardCreaturePrefab);
-                }
-                else if (card.CardKind == Enumerators.CardKind.SPELL)
-                {
-                    go = Object.Instantiate(_cardSpellPrefab);
+                    case Enumerators.CardKind.CREATURE:
+                        go = Object.Instantiate(_cardCreaturePrefab);
+                        break;
+                    case Enumerators.CardKind.SPELL:
+                        go = Object.Instantiate(_cardSpellPrefab);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 go.transform.SetParent(_cardsContainer);
@@ -412,7 +417,7 @@ namespace LoomNetwork.CZB
         {
             if (_cardsContainer != null)
             {
-                if ((_cardsContainer.transform.childCount == 0) && !_lock)
+                if (_cardsContainer.transform.childCount == 0 && !_lock)
                 {
                     _playerManager.LocalUser.PacksCount--;
                     int packsCount = _playerManager.LocalUser.PacksCount > 99?99:_playerManager.LocalUser.PacksCount;

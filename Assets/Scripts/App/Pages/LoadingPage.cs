@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
 
-            if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT))
+            if (_selfPage.activeInHierarchy && GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT)
             {
                 if (!_isLoaded)
                 {

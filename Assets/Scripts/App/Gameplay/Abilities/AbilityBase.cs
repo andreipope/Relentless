@@ -180,7 +180,7 @@ namespace LoomNetwork.CZB
             PlayerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             PlayerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if ((CardKind == Enumerators.CardKind.CREATURE) && (AbilityUnitOwner != null))
+            if (CardKind == Enumerators.CardKind.CREATURE && AbilityUnitOwner != null)
             {
                 AbilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
                 AbilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
@@ -192,7 +192,7 @@ namespace LoomNetwork.CZB
                     // boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
             }
-            else if ((CardKind == Enumerators.CardKind.SPELL) && (BoardSpell != null))
+            else if (CardKind == Enumerators.CardKind.SPELL && BoardSpell != null)
             {
                 BoardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
             }
@@ -297,7 +297,7 @@ namespace LoomNetwork.CZB
 
                 if (!justPosition)
                 {
-                    VfxObject.transform.position = (pos - Constants.VfxOffset) + Vector3.forward;
+                    VfxObject.transform.position = pos - Constants.VfxOffset + Vector3.forward;
                 }
                 else
                 {

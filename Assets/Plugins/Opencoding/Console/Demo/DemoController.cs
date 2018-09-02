@@ -13,7 +13,7 @@ namespace Opencoding.Console.Demo
 		[SerializeField]
 		private GameObject _sphere;
 
-		private int _numberOfBallsCreated = 0;
+		private int _numberOfBallsCreated;
 
 		private bool _isConsoleVisible;
 

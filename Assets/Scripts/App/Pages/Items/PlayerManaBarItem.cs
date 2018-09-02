@@ -112,13 +112,13 @@ namespace LoomNetwork.CZB
 
         private void UpdateGooOVerflow()
         {
-            if ((_currentValue > _maxValue) && !_isInOverflow)
+            if (_currentValue > _maxValue && !_isInOverflow)
             {
                 CreateOverflow();
 
                 _isInOverflow = true;
             }
-            else if ((_currentValue <= _maxValue) && _isInOverflow)
+            else if (_currentValue <= _maxValue && _isInOverflow)
             {
                 DestroyOverflow();
 
@@ -137,7 +137,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateGooMeter()
         {
-            int targetRotation = 90 - (MeterArrowStep * _currentValue);
+            int targetRotation = 90 - MeterArrowStep * _currentValue;
             if (targetRotation < -90)
             {
                 targetRotation = -90;

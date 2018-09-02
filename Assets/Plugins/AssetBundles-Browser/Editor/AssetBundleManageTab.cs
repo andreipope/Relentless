@@ -24,9 +24,9 @@ namespace AssetBundleBrowser
         AssetListTree m_AssetList;
         MessageList m_MessageList;
         BundleDetailList m_DetailsList;
-        bool m_ResizingHorizontalSplitter = false;
-        bool m_ResizingVerticalSplitterRight = false;
-        bool m_ResizingVerticalSplitterLeft = false;
+        bool m_ResizingHorizontalSplitter;
+        bool m_ResizingVerticalSplitterRight;
+        bool m_ResizingVerticalSplitterLeft;
         Rect m_HorizontalSplitterRect, m_VerticalSplitterRectRight, m_VerticalSplitterRectLeft;
         [SerializeField]
         float m_HorizontalSplitterPercent;
@@ -35,11 +35,11 @@ namespace AssetBundleBrowser
         [SerializeField]
         float m_VerticalSplitterPercentLeft;
         const float k_SplitterWidth = 3f;
-        private static float s_UpdateDelay = 0f;
+        private static float s_UpdateDelay;
 
         SearchField m_searchField;
 
-        EditorWindow m_Parent = null;
+        EditorWindow m_Parent;
 
         internal AssetBundleManageTab()
         {

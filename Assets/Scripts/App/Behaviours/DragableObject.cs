@@ -83,7 +83,7 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
 
         Transform t = go.transform.parent;
-        while ((t != null) && (comp == null))
+        while (t != null && comp == null)
         {
             comp = t.gameObject.GetComponent<T>();
             t = t.parent;
@@ -97,7 +97,7 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (Locked)
             return;
 
-        if (DragOnSurfaces && (data.pointerEnter != null) && (data.pointerEnter.transform as RectTransform != null))
+        if (DragOnSurfaces && data.pointerEnter != null && data.pointerEnter.transform as RectTransform != null)
         {
             _mDraggingPlane = data.pointerEnter.transform as RectTransform;
         }

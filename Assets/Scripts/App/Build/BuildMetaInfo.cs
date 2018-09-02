@@ -16,7 +16,7 @@ namespace LoomNetwork.CZB
 
         public string BuildDateTime = "";
 
-        public int BuildDayOfYear = 0;
+        public int BuildDayOfYear;
 
         public int CloudBuildBuildNumber;
 
@@ -70,7 +70,7 @@ namespace LoomNetwork.CZB
         public bool CheckBackendVersionMatch(Version backendVersion)
         {
             Version localVersion = Version;
-            return (localVersion.Major == backendVersion.Major) && (localVersion.Minor == backendVersion.Minor) && (localVersion.Build == backendVersion.Build);
+            return localVersion.Major == backendVersion.Major && localVersion.Minor == backendVersion.Minor && localVersion.Build == backendVersion.Build;
         }
     }
 }

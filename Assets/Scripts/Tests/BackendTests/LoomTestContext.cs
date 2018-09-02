@@ -70,7 +70,7 @@ public static class LoomTestContext
 
     private static async Task EnsureContract()
     {
-        if ((BackendFacade.Contract != null) && BackendFacade.IsConnected)
+        if (BackendFacade.Contract != null && BackendFacade.IsConnected)
             return;
 
         await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
@@ -93,6 +93,7 @@ public static class LoomTestContext
         }
 
         if (task.IsFaulted)
+            // ReSharper disable once PossibleNullReferenceException
             throw task.Exception;
     }
 }

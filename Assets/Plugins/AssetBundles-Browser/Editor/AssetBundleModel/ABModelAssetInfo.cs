@@ -213,7 +213,7 @@ namespace AssetBundleBrowser.AssetBundleModel
             return EditorUtility.FormatBytes(fileSize);
         }
 
-        List<AssetInfo> m_dependencies = null;
+        List<AssetInfo> m_dependencies;
         internal List<AssetInfo> GetDependencies()
         {
             //TODO - not sure this refreshes enough. need to build tests around that.
