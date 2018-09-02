@@ -9,8 +9,6 @@ namespace LoomNetwork.CZB.BackendCommunication
     {
         private IGameplayManager _gameplayManager;
 
-        private IDataManager _dataManager;
-
         private IAnalyticsManager _analyticsManager;
 
         private PlayerEventListener _playerEventListener;
@@ -20,7 +18,6 @@ namespace LoomNetwork.CZB.BackendCommunication
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
-            _dataManager = GameClient.Get<IDataManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _gameplayManager.OnGameInitializedEvent += GameplayManagerOnGameInitializedEvent;
@@ -65,18 +62,16 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
-            private readonly IDataManager _dataManager;
-
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-                _dataManager = GameClient.Get<IDataManager>();
+                IDataManager dataManager = GameClient.Get<IDataManager>();
 
                 Player = player;
                 IsOpponent = isOpponent;
 
-                if (!_dataManager.BetaConfig.SaveTurnData)
+                if (!dataManager.BetaConfig.SaveTurnData)
                     return;
 
                 Player.OnEndTurnEvent += OnEndTurnEventHandler;

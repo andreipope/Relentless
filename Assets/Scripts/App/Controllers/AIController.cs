@@ -218,7 +218,7 @@ namespace LoomNetwork.CZB
                 await UsePlayerSkills(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.Fire)
+                if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
                 {
                     await UseUnitsOnBoard(cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
@@ -315,7 +315,7 @@ namespace LoomNetwork.CZB
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if (((totalValue >= _gameplayManager.CurrentPlayer.Hp) || (_aiType == Enumerators.AiType.BlitzAi) || (_aiType == Enumerators.AiType.TimeBlitzAi)) && !_tutorialManager.IsTutorial)
+            if (((totalValue >= _gameplayManager.CurrentPlayer.Hp) || (_aiType == Enumerators.AiType.BLITZ_AI) || (_aiType == Enumerators.AiType.TIME_BLITZ_AI)) && !_tutorialManager.IsTutorial)
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {
@@ -421,7 +421,7 @@ namespace LoomNetwork.CZB
             {
                 foreach (AbilityData ability in card.LibraryCard.Abilities)
                 {
-                    if (ability.AbilityType == Enumerators.AbilityType.AttackOverlord)
+                    if (ability.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         // smart enough HP to use goo carriers
                         if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Hp)
@@ -451,7 +451,7 @@ namespace LoomNetwork.CZB
                 target = GetAbilityTarget(card);
             }
 
-            if ((card.LibraryCard.CardKind == Enumerators.CardKind.Creature) && (_battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits))
+            if ((card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE) && (_battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits))
             {
                 // if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
                 // if (target.Count == 0)
@@ -463,7 +463,7 @@ namespace LoomNetwork.CZB
 
                 _cardsController.DrawCardInfo(card);
             }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
             {
                 if (((target != null) && needTargetForAbility) || !needTargetForAbility)
                 {
@@ -482,11 +482,11 @@ namespace LoomNetwork.CZB
         {
             WorkingCard workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.Creature)
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
                 BoardUnit boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
                 GameObject boardCreature = boardUnitElement.GameObject;
-                boardCreature.tag = Constants.KTagOpponentOwned;
+                boardCreature.tag = SRTags.OpponentOwned;
                 boardCreature.transform.position = Vector3.zero;
                 boardUnitElement.OwnerPlayer = card.Owner;
 
@@ -498,7 +498,7 @@ namespace LoomNetwork.CZB
                 // PlayArrivalAnimation(boardCreature, libraryCard.cardType);
                 _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitElement);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PlayUnitCard, new object[] { boardUnitElement.OwnerPlayer, boardUnitElement }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_UNIT_CARD, new object[] { boardUnitElement.OwnerPlayer, boardUnitElement }));
 
                 boardUnitElement.PlayArrivalAnimation();
 
@@ -521,12 +521,12 @@ namespace LoomNetwork.CZB
                                 target,
                                 () =>
                                 {
-                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Creature, boardUnitElement, null, false, null, target);
+                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target);
                                 });
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Creature, boardUnitElement, null, false, null);
+                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null);
                         }
                     });
 
@@ -534,7 +534,7 @@ namespace LoomNetwork.CZB
 
                 // _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
             {
                 GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
                 spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
@@ -564,12 +564,12 @@ namespace LoomNetwork.CZB
                         target,
                         () =>
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Spell, boardSpell, null, false, null, target);
+                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
                         });
                 }
                 else
                 {
-                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.Spell, boardSpell, null, false, null);
+                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null);
                 }
             }
         }
@@ -589,9 +589,9 @@ namespace LoomNetwork.CZB
                 {
                     switch (item)
                     {
-                        case Enumerators.AbilityTargetType.OpponentCard:
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
                         {
-                            if ((_gameplayManager.CurrentPlayer.BoardCards.Count > 1) || ((ability.AbilityType == Enumerators.AbilityType.CardReturn) && (_gameplayManager.CurrentPlayer.BoardCards.Count > 0)))
+                            if ((_gameplayManager.CurrentPlayer.BoardCards.Count > 1) || ((ability.AbilityType == Enumerators.AbilityType.CARD_RETURN) && (_gameplayManager.CurrentPlayer.BoardCards.Count > 0)))
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -599,9 +599,9 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityTargetType.PlayerCard:
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
                         {
-                            if ((_gameplayManager.OpponentPlayer.BoardCards.Count > 1) || (libraryCard.CardKind == Enumerators.CardKind.Spell) || ((ability.AbilityType == Enumerators.AbilityType.CardReturn) && (_gameplayManager.OpponentPlayer.BoardCards.Count > 0)))
+                            if ((_gameplayManager.OpponentPlayer.BoardCards.Count > 1) || (libraryCard.CardKind == Enumerators.CardKind.SPELL) || ((ability.AbilityType == Enumerators.AbilityType.CARD_RETURN) && (_gameplayManager.OpponentPlayer.BoardCards.Count > 0)))
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
@@ -609,9 +609,9 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityTargetType.Player:
-                        case Enumerators.AbilityTargetType.Opponent:
-                        case Enumerators.AbilityTargetType.All:
+                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.AbilityTargetType.ALL:
                         {
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
@@ -628,13 +628,13 @@ namespace LoomNetwork.CZB
                 {
                     switch (ability.AbilityType)
                     {
-                        case Enumerators.AbilityType.AddGooVial:
+                        case Enumerators.AbilityType.ADD_GOO_VIAL:
                         {
                             target = _gameplayManager.OpponentPlayer;
                         }
 
                             break;
-                        case Enumerators.AbilityType.CardReturn:
+                        case Enumerators.AbilityType.CARD_RETURN:
                         {
                             if (!AddRandomTargetUnit(true, ref target, false, true))
                             {
@@ -643,13 +643,13 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityType.DamageTarget:
+                        case Enumerators.AbilityType.DAMAGE_TARGET:
                         {
                             CheckAndAddTargets(ability, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.DamageTargetAdjustments:
+                        case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                         {
                             if (!AddRandomTargetUnit(true, ref target))
                             {
@@ -658,13 +658,13 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityType.MassiveDamage:
+                        case Enumerators.AbilityType.MASSIVE_DAMAGE:
                         {
                             AddRandomTargetUnit(true, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.ModificatorStats:
+                        case Enumerators.AbilityType.MODIFICATOR_STATS:
                         {
                             if (ability.Value > 0)
                             {
@@ -677,19 +677,19 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityType.Stun:
+                        case Enumerators.AbilityType.STUN:
                         {
                             CheckAndAddTargets(ability, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.StunOrDamageAdjustments:
+                        case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
                         {
                             CheckAndAddTargets(ability, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.ChangeStat:
+                        case Enumerators.AbilityType.CHANGE_STAT:
                         {
                             if (ability.Value > 0)
                             {
@@ -702,30 +702,30 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityType.Summon:
+                        case Enumerators.AbilityType.SUMMON:
                         {
                         }
 
                             break;
-                        case Enumerators.AbilityType.Weapon:
+                        case Enumerators.AbilityType.WEAPON:
                         {
                             target = _gameplayManager.CurrentPlayer;
                         }
 
                             break;
-                        case Enumerators.AbilityType.Spurt:
+                        case Enumerators.AbilityType.SPURT:
                         {
                             AddRandomTargetUnit(true, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.SpellAttack:
+                        case Enumerators.AbilityType.SPELL_ATTACK:
                         {
                             CheckAndAddTargets(ability, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.Heal:
+                        case Enumerators.AbilityType.HEAL:
                         {
                             List<BoardUnit> units = GetUnitsWithLowHp();
 
@@ -740,13 +740,13 @@ namespace LoomNetwork.CZB
                         }
 
                             break;
-                        case Enumerators.AbilityType.Dot:
+                        case Enumerators.AbilityType.DOT:
                         {
                             CheckAndAddTargets(ability, ref target);
                         }
 
                             break;
-                        case Enumerators.AbilityType.DestroyUnitByType:
+                        case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
                         {
                             GetTargetByType(ability, ref target, false);
                         }
@@ -765,11 +765,11 @@ namespace LoomNetwork.CZB
 
         private void CheckAndAddTargets(AbilityData ability, ref object target)
         {
-            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OpponentCard))
+            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.Opponent))
+            else if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -777,7 +777,7 @@ namespace LoomNetwork.CZB
 
         private void GetTargetByType(AbilityData ability, ref object target, bool checkPlayerAlso)
         {
-            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OpponentCard))
+            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
                 List<BoardUnit> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -786,7 +786,7 @@ namespace LoomNetwork.CZB
                     target = targets[UnityEngine.Random.Range(0, targets.Count)];
                 }
 
-                if (checkPlayerAlso && (target == null) && ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PlayerCard))
+                if (checkPlayerAlso && (target == null) && ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
                     target = _gameplayManager.CurrentPlayer;
 
@@ -807,30 +807,19 @@ namespace LoomNetwork.CZB
 
         private bool AddRandomTargetUnit(bool opponent, ref object target, bool lowHp = false, bool addAttackIgnore = false)
         {
-            BoardUnit boardUnit = null;
+            BoardUnit boardUnit = opponent ? GetRandomOpponentUnit() : GetRandomUnit(lowHp);
+            if (boardUnit == null)
+                return false;
 
-            if (opponent)
+            target = boardUnit;
+
+            if (addAttackIgnore)
             {
-                boardUnit = GetRandomOpponentUnit();
-            }
-            else
-            {
-                boardUnit = GetRandomUnit(lowHp);
-            }
-
-            if (boardUnit != null)
-            {
-                target = boardUnit;
-
-                if (addAttackIgnore)
-                {
-                    _attackedUnitTargets.Add(boardUnit);
-                }
-
-                return true;
+                _attackedUnitTargets.Add(boardUnit);
             }
 
-            return false;
+            return true;
+
         }
 
         private int GetPlayerAttackingValue()
@@ -884,7 +873,7 @@ namespace LoomNetwork.CZB
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            List<WorkingCard> list = _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.Creature);
+            List<WorkingCard> list = _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             List<Card> cards = new List<Card>();
 
@@ -912,7 +901,7 @@ namespace LoomNetwork.CZB
 
         private List<WorkingCard> GetSpellCardsInHand()
         {
-            return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.Spell);
+            return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
         }
 
         private List<BoardUnit> GetUnitsOnBoard()
@@ -998,24 +987,24 @@ namespace LoomNetwork.CZB
         {
             object target = null;
 
-            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
+            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
 
             switch (skill.Skill.OverlordSkill)
             {
-                case Enumerators.OverlordSkill.Harden:
-                case Enumerators.OverlordSkill.StoneSkin:
-                case Enumerators.OverlordSkill.Draw:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.DRAW:
                 {
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
+                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
                     target = _gameplayManager.OpponentPlayer;
                 }
 
                     break;
-                case Enumerators.OverlordSkill.HealingTouch:
-                case Enumerators.OverlordSkill.Mend:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                case Enumerators.OverlordSkill.MEND:
                 {
                     target = _gameplayManager.OpponentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
+                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
                     if (_gameplayManager.OpponentPlayer.Hp > 13)
                     {
@@ -1029,13 +1018,13 @@ namespace LoomNetwork.CZB
                         if (units.Count > 0)
                         {
                             target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                     }
                 }
 
                     break;
-                case Enumerators.OverlordSkill.Rabies:
+                case Enumerators.OverlordSkill.RABIES:
                 {
                     _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => ((skill.Skill.ElementTargetTypes.Count > 0) && !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType)) || (x.NumTurnsOnBoard > 0) || x.HasFeral);
                     BoardUnit unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
@@ -1043,31 +1032,31 @@ namespace LoomNetwork.CZB
                     if (unit != null)
                     {
                         target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
                 }
 
                     break;
-                case Enumerators.OverlordSkill.PoisonDart:
-                case Enumerators.OverlordSkill.ToxicPower:
-                case Enumerators.OverlordSkill.IceBolt:
-                case Enumerators.OverlordSkill.Freeze:
-                case Enumerators.OverlordSkill.FireBolt:
+                case Enumerators.OverlordSkill.POISON_DART:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                case Enumerators.OverlordSkill.FREEZE:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                 {
                     target = _gameplayManager.CurrentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
+                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
                     BoardUnit unit = GetRandomOpponentUnit();
 
                     if (unit != null)
                     {
                         target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
                 }
 
                     break;
-                case Enumerators.OverlordSkill.Push:
+                case Enumerators.OverlordSkill.PUSH:
                 {
                     if (skill.Skill.ElementTargetTypes.Count > 0)
                     {
@@ -1082,7 +1071,7 @@ namespace LoomNetwork.CZB
 
                         _unitsToIgnoreThisTurn.Add(target as BoardUnit);
 
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
                     else
                     {
@@ -1094,7 +1083,7 @@ namespace LoomNetwork.CZB
 
                             _unitsToIgnoreThisTurn.Add(target as BoardUnit);
 
-                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
                         {
@@ -1110,7 +1099,7 @@ namespace LoomNetwork.CZB
             // if (selectedObjectType != Enumerators.AffectObjectType.NONE)
             skill.StartDoSkill();
 
-            if (selectedObjectType == Enumerators.AffectObjectType.Player)
+            if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
             {
                 skill.FightTargetingArrow = CreateOpponentTarget(
                     true,

@@ -205,44 +205,44 @@ namespace LoomNetwork.CZB
 
         private void OnClickPlay()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
                 _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.Local);
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
             }
             else
             {
-                _stateManager.ChangeAppState(Enumerators.AppState.DeckSelection);
+                _stateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
             }
         }
 
         private void TutorialButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = true;
             GameClient.Get<IGameplayManager>().IsTutorial = true;
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.Local);
+            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
         }
 
         private void OnClickCollection()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.Collection);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
         }
 
         private void BuyButtonHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.Shop);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.Credits);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.CREDITS);
         }
 
         private void QuitButtonOnClickHandler()
@@ -257,8 +257,8 @@ namespace LoomNetwork.CZB
 
         private void OpenButtonHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.PackOpener);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
         private async void ReconnectButtonOnClickHandler()
@@ -306,12 +306,12 @@ namespace LoomNetwork.CZB
         {
             _dataManager.DeleteData();
             _backendDataControlMediator.UserDataModel = null;
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.AppInit);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
         }
 
         private void OnValueChangedEventMusic(bool value)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             // _soundManager.SetMusicVolume(value ? Constants.BACKGROUND_SOUND_VOLUME : 0);
             _soundManager.SetMusicMuted(!value);
@@ -319,7 +319,7 @@ namespace LoomNetwork.CZB
 
         private void OnValueChangedEventSfx(bool value)
         {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             // _soundManager.SetSoundVolume(value ? Constants.SFX_SOUND_VOLUME : 0);
             _soundManager.SetSoundMuted(!value);

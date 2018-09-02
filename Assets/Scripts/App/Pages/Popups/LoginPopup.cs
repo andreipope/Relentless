@@ -116,7 +116,7 @@ namespace LoomNetwork.CZB
 
         private async void PressedBetaHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             string betaKey = _betaKeyInputField.text.Trim();
             bool isBetaKeyValid = betaKey.Length == 12;
@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
 
         private void SuccessfulLogin()
         {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
             Hide();
         }
 
@@ -231,11 +231,8 @@ namespace LoomNetwork.CZB
         private enum LoginState
         {
             BetaKeyRequest,
-
             BetaKeyValidationFailed,
-
             BetaKeyValidateAndLogin,
-
             RemoteVersionMismatch
         }
     }

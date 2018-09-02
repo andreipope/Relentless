@@ -211,14 +211,14 @@ namespace LoomNetwork.CZB
 
                         if (index == turnsCount - 1)
                         {
-                            _soundManager.StopPlaying(Enumerators.SoundType.CardDeckToHandSingle);
+                            _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
                         }
                     });
             }
 
             sequence.Play();
 
-            _soundManager.PlaySound(Enumerators.SoundType.CardDeckToHandSingle, Constants.SfxSoundVolume, true, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true, false, false);
         }
 
         private void CheckPlayerObjects(ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)

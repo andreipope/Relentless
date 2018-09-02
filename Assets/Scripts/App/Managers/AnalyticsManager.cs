@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 public class AnalyticsManager : IAnalyticsManager, IService
 {
-    private const string KMatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
+    private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
 
     private GoogleAnalyticsV4 _googleAnalytics;
 
@@ -21,10 +21,10 @@ public class AnalyticsManager : IAnalyticsManager, IService
         AnalyticsEvent.GameStart();
         _googleAnalytics.StartSession();
 
-        int matchesInPreviousSittingKey = PlayerPrefs.GetInt(KMatchesInPreviousSittingKey, -1);
+        int matchesInPreviousSittingKey = PlayerPrefs.GetInt(MatchesInPreviousSittingKey, -1);
         if (matchesInPreviousSittingKey != -1)
         {
-            PlayerPrefs.DeleteKey(KMatchesInPreviousSittingKey);
+            PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
             Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
         }
@@ -54,7 +54,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     {
         _startedMatchCounter++;
         LogEvent("MatchStarted", "", _startedMatchCounter);
-        PlayerPrefs.SetInt(KMatchesInPreviousSittingKey, _startedMatchCounter);
+        PlayerPrefs.SetInt(MatchesInPreviousSittingKey, _startedMatchCounter);
     }
 
     public void NotifyFinishedMatch(Enumerators.EndGameType endGameType)

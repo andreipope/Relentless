@@ -11,13 +11,13 @@ namespace LoomNetwork.CZB.BackendCommunication
 {
     public class BackendDataControlMediator : IService
     {
-        private const string KUserDataFileName = "UserLoginData.json";
+        private const string UserDataFileName = "UserLoginData.json";
 
         private IDataManager _dataManager;
 
         private BackendFacade _backendFacade;
 
-        protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, KUserDataFileName);
+        protected string UserDataFilePath => Path.Combine(Application.persistentDataPath, UserDataFileName);
 
         public UserDataModel UserDataModel { get; set; }
 
@@ -54,9 +54,10 @@ namespace LoomNetwork.CZB.BackendCommunication
             }
 
             string modelJson = File.ReadAllText(UserDataFilePath);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (Constants.DataEncryptionEnabled)
             {
-                modelJson = Utilites.Decrypt(modelJson, Constants.KPrivateEncryptionKeyForApp);
+                modelJson = Utilites.Decrypt(modelJson, Constants.PrivateEncryptionKeyForApp);
             }
 
             UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
@@ -69,9 +70,10 @@ namespace LoomNetwork.CZB.BackendCommunication
                 throw new ArgumentNullException(nameof(userDataModel));
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (Constants.DataEncryptionEnabled)
             {
-                modelJson = Utilites.Encrypt(modelJson, Constants.KPrivateEncryptionKeyForApp);
+                modelJson = Utilites.Encrypt(modelJson, Constants.PrivateEncryptionKeyForApp);
             }
 
             File.WriteAllText(UserDataFilePath, modelJson);

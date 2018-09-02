@@ -79,12 +79,12 @@ namespace LoomNetwork.CZB
             GameObject currentBoardCard = null;
             string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.Creature)
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
                 currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
             }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
             {
                 currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);
@@ -142,12 +142,12 @@ namespace LoomNetwork.CZB
             GameObject currentBoardCard = null;
             string cardSetName = CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.Creature)
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
                 currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new UnitBoardCard(currentBoardCard);
             }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
             {
                 currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
                 boardCard = new SpellBoardCard(currentBoardCard);

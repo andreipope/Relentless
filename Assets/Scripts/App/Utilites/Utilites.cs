@@ -199,11 +199,13 @@ namespace LoomNetwork.Internal
                     break;
             }
 
-            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-            buildPlayerOptions.scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray();
-            buildPlayerOptions.locationPathName = outputPath;
-            buildPlayerOptions.target = buildTarget;
-            buildPlayerOptions.targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
+            {
+                scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray(),
+                locationPathName = outputPath,
+                target = buildTarget,
+                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget)
+            };
             BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
             if (buildReport.summary.result != BuildResult.Succeeded)
                 throw new Exception("build failed");

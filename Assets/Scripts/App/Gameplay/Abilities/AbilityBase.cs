@@ -21,9 +21,9 @@ namespace LoomNetwork.CZB
 
         public Enumerators.AbilityEffectType AbilityEffectType;
 
-        public Enumerators.CardType TargetCardType = Enumerators.CardType.None;
+        public Enumerators.CardType TargetCardType = Enumerators.CardType.NONE;
 
-        public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.None;
+        public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
         public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
 
@@ -133,11 +133,11 @@ namespace LoomNetwork.CZB
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
 
-            if (CardKind == Enumerators.CardKind.Creature)
+            if (CardKind == Enumerators.CardKind.CREATURE)
             {
                 TargettingArrow.Begin(AbilityUnitOwner.Transform.position);
             }
-            else if (CardKind == Enumerators.CardKind.Spell)
+            else if (CardKind == Enumerators.CardKind.SPELL)
             {
                 TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
             }
@@ -180,19 +180,19 @@ namespace LoomNetwork.CZB
             PlayerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
             PlayerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
 
-            if ((CardKind == Enumerators.CardKind.Creature) && (AbilityUnitOwner != null))
+            if ((CardKind == Enumerators.CardKind.CREATURE) && (AbilityUnitOwner != null))
             {
                 AbilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
                 AbilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
                 AbilityUnitOwner.UnitHpChangedEvent += UnitHPChangedEventHandler;
                 AbilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
 
-                if (AbilityActivityType == Enumerators.AbilityActivityType.Passive)
+                if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
                     // boardCreature.Card.ConnectAbility((uint)abilityType);
                 }
             }
-            else if ((CardKind == Enumerators.CardKind.Spell) && (BoardSpell != null))
+            else if ((CardKind == Enumerators.CardKind.SPELL) && (BoardSpell != null))
             {
                 BoardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
             }
@@ -230,22 +230,22 @@ namespace LoomNetwork.CZB
 
             if (TargetUnit != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.Character;
+                AffectObjectType = Enumerators.AffectObjectType.CHARACTER;
             }
             else if (TargetPlayer != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.Player;
+                AffectObjectType = Enumerators.AffectObjectType.PLAYER;
             }
             else
             {
-                AffectObjectType = Enumerators.AffectObjectType.None;
+                AffectObjectType = Enumerators.AffectObjectType.NONE;
             }
 
-            if (AffectObjectType != Enumerators.AffectObjectType.None)
+            if (AffectObjectType != Enumerators.AffectObjectType.NONE)
             {
                 IsAbilityResolved = true;
 
-                if (AffectObjectType == Enumerators.AffectObjectType.Character)
+                if (AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
                 {
                     // targetCreature.Card.ConnectAbility((uint)abilityType);
                 }

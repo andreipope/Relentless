@@ -8,8 +8,6 @@ namespace LoomNetwork.CZB
 {
     public interface IDataManager
     {
-        event Action OnLoadCacheCompletedEvent;
-
         UserLocalData CachedUserLocalData { get; set; }
 
         CardsLibraryData CachedCardsLibraryData { get; set; }

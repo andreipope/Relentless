@@ -11,9 +11,9 @@ namespace LoomNetwork.CZB
 {
     public class OverlordAbilitySelectionPopup : IUIPopup
     {
-        private const int KAbilityListSize = 5;
+        private const int AbilityListSize = 5;
 
-        private const int KMaxSelectedAbilities = 2;
+        private const int MaxSelectedAbilities = 2;
 
         public static Action OnHidePopupEvent;
 
@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
 
             _abilities.Clear();
 
-            for (int i = 0; i < KAbilityListSize; i++)
+            for (int i = 0; i < AbilityListSize; i++)
             {
                 AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
                 abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
@@ -122,7 +122,7 @@ namespace LoomNetwork.CZB
 
         public void ContinueButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             OnHidePopupEvent?.Invoke();
 
@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
 
         public void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
@@ -141,7 +141,7 @@ namespace LoomNetwork.CZB
             _heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
             _heroImage.SetNativeSize();
 
-            for (int i = 0; i < KAbilityListSize; i++)
+            for (int i = 0; i < AbilityListSize; i++)
             {
                 HeroSkill skill = null;
                 if (i < heroData.Skills.Count)

@@ -4,19 +4,20 @@ using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.CloudBuild;
 using Debug = UnityEngine.Debug;
 
 namespace LoomNetwork.CZB
 {
-    public class BuildMetaInfoGenerator : IPreprocessBuild
+    public class BuildMetaInfoGenerator : IPreprocessBuildWithReport
     {
-        private const string KBuildMetaInfoPath = "Assets/Resources/" + BuildMetaInfo.KResourcesPath + ".asset";
+        private const string BuildMetaInfoPath = "Assets/Resources/" + BuildMetaInfo.ResourcesPath + ".asset";
 
         public int callbackOrder { get; }
 
-        public void OnPreprocessBuild(BuildTarget target, string path)
+        public void OnPreprocessBuild(BuildReport report)
         {
             PreBuildInternal();
         }
@@ -94,7 +95,7 @@ namespace LoomNetwork.CZB
             }
 
             instance = ScriptableObject.CreateInstance<BuildMetaInfo>();
-            AssetDatabase.CreateAsset(instance, KBuildMetaInfoPath);
+            AssetDatabase.CreateAsset(instance, BuildMetaInfoPath);
 
             return instance;
         }

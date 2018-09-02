@@ -30,8 +30,6 @@ namespace LoomNetwork.CZB
 
         private BoardArrowController _boardArrowController;
 
-        private bool _handCardPreviewTimerStarted;
-
         private bool _startedOnClickDelay;
 
         private bool _isPreviewHandCard;
@@ -258,7 +256,7 @@ namespace LoomNetwork.CZB
                         BoardCard topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
                         if ((topmostBoardCard != null) && !topmostBoardCard.IsPreview)
                         {
-                            float delta = Application.isMobilePlatform?Constants.KPointerMinDragDelta * 2f:Constants.KPointerMinDragDeltaMobile;
+                            float delta = Application.isMobilePlatform?Constants.PointerMinDragDelta * 2f:Constants.PointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -277,7 +275,7 @@ namespace LoomNetwork.CZB
                         BoardUnit selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if ((selectedBoardUnit != null) && (!_battlegroundController.IsPreviewActive || (selectedBoardUnit.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId)))
                         {
-                            float delta = Application.isMobilePlatform?Constants.KPointerMinDragDelta * 2f:Constants.KPointerMinDragDeltaMobile;
+                            float delta = Application.isMobilePlatform?Constants.PointerMinDragDelta * 2f:Constants.PointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -396,7 +394,6 @@ namespace LoomNetwork.CZB
         private void StopHandTimer()
         {
             GameClient.Get<ITimerManager>().StopTimer(HandCardPreview);
-            _handCardPreviewTimerStarted = false;
         }
 
         private void SetStatusZoomingFalse(object[] param)

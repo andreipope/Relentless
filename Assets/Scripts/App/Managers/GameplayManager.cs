@@ -79,18 +79,18 @@ namespace LoomNetwork.CZB
 
             GameEnded = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.Background, 128, Constants.BackgroundSoundVolume, null, true, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
 
-            if (endGameType != Enumerators.EndGameType.Cancel)
+            if (endGameType != Enumerators.EndGameType.CANCEL)
             {
                 _timerManager.AddTimer(
                     x =>
                     {
-                        if (endGameType == Enumerators.EndGameType.Win)
+                        if (endGameType == Enumerators.EndGameType.WIN)
                         {
                             _uiManager.DrawPopup<YouWonPopup>();
                         }
-                        else if (endGameType == Enumerators.EndGameType.Lose)
+                        else if (endGameType == Enumerators.EndGameType.LOSE)
                         {
                             _uiManager.DrawPopup<YouLosePopup>();
                         }
@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB
                     timer);
             }
 
-            _soundManager.CrossfaidSound(Enumerators.SoundType.Background, null, true);
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
 
             StopGameplay();
 
@@ -192,21 +192,23 @@ namespace LoomNetwork.CZB
 
         private void InitControllers()
         {
-            _controllers = new List<IController>();
-            _controllers.Add(new VfxController());
-            _controllers.Add(new ParticlesController());
-            _controllers.Add(new AbilitiesController());
-            _controllers.Add(new ActionsQueueController());
-            _controllers.Add(new PlayerController());
-            _controllers.Add(new AiController());
-            _controllers.Add(new CardsController());
-            _controllers.Add(new BattlegroundController());
-            _controllers.Add(new AnimationsController());
-            _controllers.Add(new BattleController());
-            _controllers.Add(new BoardArrowController());
-            _controllers.Add(new SkillsController());
-            _controllers.Add(new RanksController());
-            _controllers.Add(new InputController());
+            _controllers = new List<IController>
+            {
+                new VfxController(),
+                new ParticlesController(),
+                new AbilitiesController(),
+                new ActionsQueueController(),
+                new PlayerController(),
+                new AiController(),
+                new CardsController(),
+                new BattlegroundController(),
+                new AnimationsController(),
+                new BattleController(),
+                new BoardArrowController(),
+                new SkillsController(),
+                new RanksController(),
+                new InputController()
+            };
 
             foreach (IController controller in _controllers)
             {
@@ -219,7 +221,7 @@ namespace LoomNetwork.CZB
             // initialize players
             GetController<PlayerController>().InitializePlayer();
 
-            if (_matchManager.MatchType == Enumerators.MatchType.Local)
+            if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
             {
                 GetController<AiController>().InitializePlayer();
             }

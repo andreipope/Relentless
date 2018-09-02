@@ -52,22 +52,22 @@ namespace LoomNetwork.CZB
         {
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TargetRock:
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
-                case Enumerators.AbilityEffectType.TargetFire:
+                case Enumerators.AbilityEffectType.TARGET_FIRE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
-                case Enumerators.AbilityEffectType.TargetLife:
+                case Enumerators.AbilityEffectType.TARGET_LIFE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
                     break;
-                case Enumerators.AbilityEffectType.TargetToxic:
+                case Enumerators.AbilityEffectType.TARGET_TOXIC:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
 
             // base.CreateVFX(pos);
-            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.Character?TargetUnit.Transform.position:TargetPlayer.AvatarObject.transform.position;
+            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER?TargetUnit.Transform.position:TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
             VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitOwner.Transform.position);
@@ -87,12 +87,12 @@ namespace LoomNetwork.CZB
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.Player:
+                case Enumerators.AffectObjectType.PLAYER:
 
                     // if (targetPlayer.id == playerCallerOfAbility.id)
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.Character:
+                case Enumerators.AffectObjectType.CHARACTER:
 
                     // playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
@@ -105,16 +105,16 @@ namespace LoomNetwork.CZB
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TargetRock:
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TargetFire:
+                case Enumerators.AbilityEffectType.TARGET_FIRE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TargetLife:
+                case Enumerators.AbilityEffectType.TARGET_LIFE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
-                case Enumerators.AbilityEffectType.TargetToxic:
+                case Enumerators.AbilityEffectType.TARGET_TOXIC:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
             }

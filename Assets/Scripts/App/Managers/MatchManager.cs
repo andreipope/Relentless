@@ -33,14 +33,14 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.ResetWholeGameplayScene();
 
-            _sceneManager.ChangeScene(Enumerators.AppState.AppInit);
+            _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
         public void FindMatch(Enumerators.MatchType matchType)
         {
             switch (matchType)
             {
-                case Enumerators.MatchType.Local:
+                case Enumerators.MatchType.LOCAL:
                     CreateLocalMatch();
                     break;
                 default:
@@ -93,20 +93,20 @@ namespace LoomNetwork.CZB
             _uiManager.HideAllPages();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
 
-            _sceneManager.ChangeScene(Enumerators.AppState.Gameplay);
+            _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
         }
 
         private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state)
         {
-            if (state == Enumerators.AppState.Gameplay)
+            if (state == Enumerators.AppState.GAMEPLAY)
             {
-                _appStateManager.ChangeAppState(Enumerators.AppState.Gameplay);
+                _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
                 _uiManager.HidePopup<LoadingGameplayPopup>();
 
                 _gameplayManager.StartGameplay();
             }
-            else if (state == Enumerators.AppState.AppInit)
+            else if (state == Enumerators.AppState.APP_INIT)
             {
                 _appStateManager.ChangeAppState(_finishMatchAppState);
             }

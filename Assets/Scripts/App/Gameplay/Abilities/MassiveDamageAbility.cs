@@ -18,7 +18,7 @@ namespace LoomNetwork.CZB
         public override void Activate()
         {
             base.Activate();
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -42,7 +42,7 @@ namespace LoomNetwork.CZB
         protected override void UnitOnDieEventHandler()
         {
             base.UnitOnDieEventHandler();
-            if (AbilityCallType != Enumerators.AbilityCallType.Death)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
             Debug.Log("CreatureOnDieEventHandler");
@@ -55,17 +55,17 @@ namespace LoomNetwork.CZB
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.MassiveWaterWave:
+                case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
                     break;
-                case Enumerators.AbilityEffectType.MassiveFire:
+                case Enumerators.AbilityEffectType.MASSIVE_FIRE:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellMassiveFireVFX");
                     break;
-                case Enumerators.AbilityEffectType.MassiveLightning:
+                case Enumerators.AbilityEffectType.MASSIVE_LIGHTNING:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/LightningVFX");
                     pos = Vector3.up * 0.5f;
                     break;
-                case Enumerators.AbilityEffectType.MassiveToxicAll:
+                case Enumerators.AbilityEffectType.MASSIVE_TOXIC_ALL:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
                     pos = Vector3.zero;
                     break;
@@ -87,7 +87,7 @@ namespace LoomNetwork.CZB
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OpponentAllCards:
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 
                         // BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
                         // player.BoardCards.CopyTo(creatures);
@@ -101,7 +101,7 @@ namespace LoomNetwork.CZB
                         // Array.Clear(creatures, 0, creatures.Length);
                         // creatures = null;
                         break;
-                    case Enumerators.AbilityTargetType.PlayerAllCards:
+                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
 
                         // RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
                         // playerCallerOfAbility.boardZone.cards.CopyTo(cards);
@@ -119,12 +119,12 @@ namespace LoomNetwork.CZB
                         }
 
                         break;
-                    case Enumerators.AbilityTargetType.Opponent:
+                    case Enumerators.AbilityTargetType.OPPONENT:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
 
                         // CreateVFX(targetCreature.transform.position);
                         break;
-                    case Enumerators.AbilityTargetType.Player:
+                    case Enumerators.AbilityTargetType.PLAYER:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
 
                         // CreateVFX(targetCreature.transform.position);

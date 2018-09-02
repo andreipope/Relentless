@@ -87,7 +87,7 @@ namespace LoomNetwork.CZB
 
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WonPopup, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
             Self.SetActive(true);
 
@@ -174,11 +174,11 @@ namespace LoomNetwork.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DeckSelection);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
-            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HeroesData);
+            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
             _uiManager.HidePopup<YouWonPopup>();
         }

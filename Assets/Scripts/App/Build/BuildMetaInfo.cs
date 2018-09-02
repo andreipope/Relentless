@@ -6,7 +6,7 @@ namespace LoomNetwork.CZB
 {
     public class BuildMetaInfo : ScriptableObject
     {
-        public const string KResourcesPath = "BuildMetaInfo";
+        public const string ResourcesPath = "BuildMetaInfo";
 
         private static BuildMetaInfo _instance;
 
@@ -24,7 +24,7 @@ namespace LoomNetwork.CZB
 
         public string ShortVersionName => DisplayVersionName;
 
-        public string DisplayVersionName => Constants.KCurrentVersionBase + "." + BuildDayOfYear;
+        public string DisplayVersionName => Constants.CurrentVersionBase + "." + BuildDayOfYear;
 
         public string FullVersionName
         {
@@ -49,7 +49,7 @@ namespace LoomNetwork.CZB
         {
             get
             {
-                Version baseVersion = Version.Parse(Constants.KCurrentVersionBase);
+                Version baseVersion = Version.Parse(Constants.CurrentVersionBase);
                 return new Version(baseVersion.Major, baseVersion.Minor, baseVersion.Build, BuildDayOfYear);
             }
         }
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
             {
                 if (!_instance)
                 {
-                    _instance = Resources.Load<BuildMetaInfo>(KResourcesPath);
+                    _instance = Resources.Load<BuildMetaInfo>(ResourcesPath);
                 }
 
                 return _instance;

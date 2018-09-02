@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
@@ -57,12 +57,12 @@ namespace LoomNetwork.CZB
             {
                 if (allies[i] is Player)
                 {
-                    (allies[i] as Player).Stun(Enumerators.StunType.Freeze, Turns);
+                    (allies[i] as Player).Stun(Enumerators.StunType.FREEZE, Turns);
                     CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f);
                 }
                 else if (allies[i] is BoardUnit)
                 {
-                    (allies[i] as BoardUnit).Stun(Enumerators.StunType.Freeze, Turns);
+                    (allies[i] as BoardUnit).Stun(Enumerators.StunType.FREEZE, Turns);
                     CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
                 }
             }

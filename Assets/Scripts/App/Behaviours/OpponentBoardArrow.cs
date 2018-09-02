@@ -29,7 +29,7 @@ namespace LoomNetwork.CZB
             CreateTarget(_targetPosition);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (_target != null)
             {
@@ -44,6 +44,7 @@ namespace LoomNetwork.CZB
 
                 _target = null;
             }
+            base.Dispose();
         }
 
         protected override void Update()

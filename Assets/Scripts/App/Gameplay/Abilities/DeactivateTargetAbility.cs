@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.Character:
+                case Enumerators.AffectObjectType.CHARACTER:
 
                     TargetUnit.Card.IsPlayable = false;
                     TargetUnit.SetHighlightingEnabled(false);
@@ -66,12 +66,12 @@ namespace LoomNetwork.CZB
 
             if (_turnsLength <= 0)
             {
-                if (CardKind == Enumerators.CardKind.Creature)
+                if (CardKind == Enumerators.CardKind.CREATURE)
                 {
                     // targetCreature.Card.DisconnectAbility((uint)abilityType);
                     UnitOnDieEventHandler();
                 }
-                else if (CardKind == Enumerators.CardKind.Spell)
+                else if (CardKind == Enumerators.CardKind.SPELL)
                 {
                     SpellOnUsedEventHandler();
 
@@ -93,11 +93,11 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
-                    if (CardKind == Enumerators.CardKind.Creature)
+                    if (CardKind == Enumerators.CardKind.CREATURE)
                     {
                         UnitOnDieEventHandler();
                     }
-                    else if (CardKind == Enumerators.CardKind.Spell)
+                    else if (CardKind == Enumerators.CardKind.SPELL)
                     {
                         SpellOnUsedEventHandler();
                         AbilitiesController.DeactivateAbility(ActivityId);

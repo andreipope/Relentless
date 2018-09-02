@@ -45,16 +45,16 @@ namespace LoomNetwork.CZB
 
             switch (stateTo)
             {
-                case Enumerators.AppState.AppInit:
+                case Enumerators.AppState.APP_INIT:
                 {
                     _uiManager.SetPage<LoadingPage>();
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Background, 128, Constants.BackgroundSoundVolume, null, true, false, true);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
                 }
 
                     break;
-                case Enumerators.AppState.Login:
+                case Enumerators.AppState.LOGIN:
                     break;
-                case Enumerators.AppState.MainMenu:
+                case Enumerators.AppState.MAIN_MENU:
                 {
                     // GameObject.Find("MainApp/Camera").SetActive(true);
                     // GameObject.Find("MainApp/Camera2").SetActive(true);
@@ -62,31 +62,31 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.HeroSelection:
+                case Enumerators.AppState.HERO_SELECTION:
                 {
                     _uiManager.SetPage<HeroSelectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.DeckSelection:
+                case Enumerators.AppState.DECK_SELECTION:
                 {
                     _uiManager.SetPage<HordeSelectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.Collection:
+                case Enumerators.AppState.COLLECTION:
                 {
                     _uiManager.SetPage<CollectionPage>();
                 }
 
                     break;
-                case Enumerators.AppState.DeckEditing:
+                case Enumerators.AppState.DECK_EDITING:
                 {
                     _uiManager.SetPage<DeckEditingPage>();
                 }
 
                     break;
-                case Enumerators.AppState.Shop:
+                case Enumerators.AppState.SHOP:
                 {
                     if (!_disableShop)
                     {
@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.PackOpener:
+                case Enumerators.AppState.PACK_OPENER:
                 {
                     if (!_disablePacks)
                     {
@@ -114,7 +114,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.Gameplay:
+                case Enumerators.AppState.GAMEPLAY:
                 {
                     _uiManager.SetPage<GameplayPage>();
 
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.AppState.Credits:
+                case Enumerators.AppState.CREDITS:
                 {
                     _uiManager.SetPage<CreditsPage>();
                 }
@@ -145,13 +145,13 @@ namespace LoomNetwork.CZB
                     throw new NotImplementedException("Not Implemented " + stateTo + " state!");
             }
 
-            if (AppState != Enumerators.AppState.Shop)
+            if (AppState != Enumerators.AppState.SHOP)
             {
                 _previouseState = AppState;
             }
             else
             {
-                _previouseState = Enumerators.AppState.MainMenu;
+                _previouseState = Enumerators.AppState.MAIN_MENU;
             }
 
             AppState = stateTo;

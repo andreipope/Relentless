@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
             int oldSortingOrder = sortingGroup.sortingOrder;
             string oldsortingLayerName = sortingGroup.sortingLayerName;
 
-            sortingGroup.sortingLayerName = Constants.KLayerBoardCards;
+            sortingGroup.sortingLayerName = Constants.LayerBoardCards;
             sortingGroup.sortingOrder = 1000;
 
             Vector3 partWay = Vector3.zero;

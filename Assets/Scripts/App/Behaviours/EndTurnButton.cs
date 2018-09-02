@@ -3,19 +3,28 @@ using LoomNetwork.CZB.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 public class EndTurnButton : MonoBehaviour
 {
     [SerializeField]
+    [FormerlySerializedAs("textPressedPosition")]
     private readonly Vector3 _textPressedPosition = new Vector3(0, -0.12f, 0);
 
     [SerializeField]
+    [FormerlySerializedAs("textDefaultPosition")]
     private readonly Vector3 _textDefaultPosition = new Vector3(0, -0.00f, 0);
 
     [SerializeField]
-    private Sprite _defaultSprite, _pressedSprite;
+    [FormerlySerializedAs("defaultSprite")]
+    private Sprite _defaultSprite;
 
     [SerializeField]
+    [FormerlySerializedAs("pressedSprite")]
+    private Sprite _pressedSprite;
+
+    [SerializeField]
+    [FormerlySerializedAs("buttonText")]
     private TextMeshPro _buttonText;
 
     private bool _hovering;
@@ -60,7 +69,7 @@ public class EndTurnButton : MonoBehaviour
 
         _thisRenderer.sprite = _pressedSprite;
         _buttonText.transform.localPosition = _textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.EndTurn, 128, Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128, Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown

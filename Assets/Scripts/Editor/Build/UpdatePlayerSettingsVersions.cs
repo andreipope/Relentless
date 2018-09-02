@@ -1,13 +1,14 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 
 namespace LoomNetwork.CZB
 {
-    public class UpdatePlayerSettingsVersions : IPreprocessBuild
+    public class UpdatePlayerSettingsVersions : IPreprocessBuildWithReport
     {
         public int callbackOrder { get; } = 2;
 
-        public void OnPreprocessBuild(BuildTarget target, string path)
+        public void OnPreprocessBuild(BuildReport report)
         {
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;

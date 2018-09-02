@@ -167,13 +167,13 @@ namespace LoomNetwork.CZB
                 {
                     cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
 
-                    string cardDeathSoundName = cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.KCardSoundDeath;
+                    string cardDeathSoundName = cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
                     if (!cardToDestroy.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.Cards, cardDeathSoundName, Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume, Enumerators.CardSoundType.Death);
-                        soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.Cards, cardDeathSoundName);
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume, Enumerators.CardSoundType.DEATH);
+                        soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
                     }
 
                     _timerManager.AddTimer(
@@ -217,7 +217,7 @@ namespace LoomNetwork.CZB
             // {
             if (!_battleDynamic)
             {
-                _soundManager.CrossfaidSound(Enumerators.SoundType.Battleground, null, true);
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BATTLEGROUND, null, true);
             }
 
             _battleDynamic = true;
@@ -416,7 +416,7 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn()?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.EndTurn);
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 
             OnTurnEndeddEvent?.Invoke();
         }
@@ -444,7 +444,7 @@ namespace LoomNetwork.CZB
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
 
                 Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
             }
@@ -467,7 +467,7 @@ namespace LoomNetwork.CZB
                 boardCard.StopSleepingParticles();
                 if (boardCard.GameObject != null)
                 {
-                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
+                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
 
@@ -476,7 +476,7 @@ namespace LoomNetwork.CZB
             else if ((_aiController.CurrentSpellCard != null) && (card == _aiController.CurrentSpellCard.WorkingCard))
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
-                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerBoardCards;
+                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
                 Object.Destroy(_aiController.CurrentSpellCard.GameObject.GetComponent<BoxCollider2D>());
                 Sequence sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
@@ -643,12 +643,12 @@ namespace LoomNetwork.CZB
             string cardSetName = _cardsController.GetSetOfCard(card.LibraryCard);
 
             BoardCard boardCard = null;
-            if (card.LibraryCard.CardKind == Enumerators.CardKind.Creature)
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
                 CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                 boardCard = new UnitBoardCard(CurrentBoardCard);
             }
-            else if (card.LibraryCard.CardKind == Enumerators.CardKind.Spell)
+            else if (card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
             {
                 CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
                 boardCard = new SpellBoardCard(CurrentBoardCard);
@@ -681,18 +681,11 @@ namespace LoomNetwork.CZB
 
             Vector3 sizeOfCard = Vector3.one;
 
-            if (!InternalTools.IsTabletScreen())
-            {
-                sizeOfCard = new Vector3(.8f, .8f, .8f);
-            }
-            else
-            {
-                sizeOfCard = new Vector3(.4f, .4f, .4f);
-            }
+            sizeOfCard = !InternalTools.IsTabletScreen() ? new Vector3(.8f, .8f, .8f) : new Vector3(.4f, .4f, .4f);
 
             CurrentBoardCard.transform.localScale = sizeOfCard;
 
-            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerGameUI3;
+            CurrentBoardCard.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI3;
             CurrentBoardCard.layer = LayerMask.NameToLayer("Default");
             CurrentBoardCard.transform.DOMoveY(newPos.y + 1.0f, 0.1f);
         }
@@ -787,7 +780,7 @@ namespace LoomNetwork.CZB
 
                 pivot.x += handWidth / PlayerHandCards.Count;
 
-                card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerHandCards;
+                card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerHandCards;
                 card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }
@@ -885,7 +878,7 @@ namespace LoomNetwork.CZB
             GameObject playerBoard = owner.IsLocalPlayer?PlayerBoardObject:OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?Constants.KTagPlayerOwned:Constants.KTagOpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
             boardUnit.Transform.SetParent(playerBoard.transform);
             boardUnit.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
             boardUnit.OwnerPlayer = owner;

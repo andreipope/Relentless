@@ -53,14 +53,14 @@ namespace LoomNetwork.CZB
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.ReanimateUnitByAbility, new object[] { owner, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[] { owner, unit }));
         }
 
         protected override void UnitOnDieEventHandler()
         {
             base.UnitOnDieEventHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Death)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
             Action();
@@ -71,7 +71,7 @@ namespace LoomNetwork.CZB
             GameObject playerBoard = owner.IsLocalPlayer?BattlegroundController.PlayerBoardObject:BattlegroundController.OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?Constants.KTagPlayerOwned:Constants.KTagOpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
             boardUnit.Transform.parent = playerBoard.transform;
             boardUnit.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
             boardUnit.OwnerPlayer = owner;

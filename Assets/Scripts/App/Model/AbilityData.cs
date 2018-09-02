@@ -99,7 +99,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                AbilityStatType = Enumerators.StatType.None;
+                AbilityStatType = Enumerators.StatType.NONE;
             }
 
             if (!string.IsNullOrEmpty(SetType))
@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                AbilitySetType = Enumerators.SetType.None;
+                AbilitySetType = Enumerators.SetType.NONE;
             }
 
             if (!string.IsNullOrEmpty(EffectType))
@@ -117,7 +117,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                AbilityEffectType = Enumerators.AbilityEffectType.None;
+                AbilityEffectType = Enumerators.AbilityEffectType.NONE;
             }
 
             if (!string.IsNullOrEmpty(AttackInfo))
@@ -126,7 +126,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                AttackInfoType = Enumerators.AttackInfoType.Any;
+                AttackInfoType = Enumerators.AttackInfoType.ANY;
             }
 
             if (!string.IsNullOrEmpty(CardType))
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                TargetCardType = Enumerators.CardType.None;
+                TargetCardType = Enumerators.CardType.NONE;
             }
 
             if (!string.IsNullOrEmpty(UnitStatus))
@@ -144,7 +144,7 @@ namespace LoomNetwork.CZB.Data
             }
             else
             {
-                TargetUnitStatusType = Enumerators.UnitStatusType.None;
+                TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
             }
 
             if (!string.IsNullOrEmpty(UnitType))

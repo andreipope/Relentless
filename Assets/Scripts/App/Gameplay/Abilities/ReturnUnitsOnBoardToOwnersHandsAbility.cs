@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -63,7 +63,7 @@ namespace LoomNetwork.CZB
 
             CardsController.ReturnCardToHand(PlayerCallerOfAbility, unit);
 
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.ReturnToHandCardAbility, new object[] { PlayerCallerOfAbility, AbilityData, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { PlayerCallerOfAbility, AbilityData, unit }));
         }
     }
 }

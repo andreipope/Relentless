@@ -48,7 +48,7 @@ namespace LoomNetwork.CZB
         {
             base.OnEndTurnEventHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.End)
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
             // if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Turn)
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
                 return;
 
             CountDelay();

@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -82,10 +82,10 @@ namespace LoomNetwork.CZB
             // implement functionality for animations
             switch (CardType)
             {
-                case Enumerators.CardType.Heavy:
+                case Enumerators.CardType.HEAVY:
                     unit.HasHeavy = true;
                     break;
-                case Enumerators.CardType.Feral:
+                case Enumerators.CardType.FERAL:
                     unit.HasFeral = true;
                     break;
             }

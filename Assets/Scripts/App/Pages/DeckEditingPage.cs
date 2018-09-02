@@ -17,16 +17,16 @@ namespace LoomNetwork.CZB
 {
     public class DeckEditingPage : IUIElement
     {
-        private const int KCardsPerPage = 5;
+        private const int CardsPerPage = 5;
 
         private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _against = new Dictionary<Enumerators.SetType, Enumerators.SetType>
         {
-            { Enumerators.SetType.Fire, Enumerators.SetType.Water },
-            { Enumerators.SetType.Toxic, Enumerators.SetType.Fire },
-            { Enumerators.SetType.Life, Enumerators.SetType.Toxic },
-            { Enumerators.SetType.Earth, Enumerators.SetType.Life },
-            { Enumerators.SetType.Air, Enumerators.SetType.Earth },
-            { Enumerators.SetType.Water, Enumerators.SetType.Air }
+            { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
+            { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
+            { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
+            { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
+            { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
+            { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
         };
 
         private IUIManager _uiManager;
@@ -181,7 +181,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Air);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR);
                     }
                 });
             _lifeToggle.onValueChanged.AddListener(
@@ -189,7 +189,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Life);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE);
                     }
                 });
             _waterToggle.onValueChanged.AddListener(
@@ -197,7 +197,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Water);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER);
                     }
                 });
             _toxicTogggle.onValueChanged.AddListener(
@@ -205,7 +205,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Toxic);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC);
                     }
                 });
             _fireToggle.onValueChanged.AddListener(
@@ -213,7 +213,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Fire);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE);
                     }
                 });
             _earthToggle.onValueChanged.AddListener(
@@ -221,7 +221,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Earth);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH);
                     }
                 });
             _itemsToggle.onValueChanged.AddListener(
@@ -229,7 +229,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Item);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM);
                     }
                 });
 
@@ -346,8 +346,8 @@ namespace LoomNetwork.CZB
             List<Card> cards = set.Cards;
 
             // _currentSetName = set.name;
-            int startIndex = page * KCardsPerPage;
-            int endIndex = Mathf.Min(startIndex + KCardsPerPage, cards.Count);
+            int startIndex = page * CardsPerPage;
+            int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
             ResetArmyCards();
 
@@ -387,12 +387,12 @@ namespace LoomNetwork.CZB
         {
             BoardCard boardCard = null;
             GameObject go = null;
-            if (card.CardKind == Enumerators.CardKind.Creature)
+            if (card.CardKind == Enumerators.CardKind.CREATURE)
             {
                 go = Object.Instantiate(_cardCreaturePrefab);
                 boardCard = new UnitBoardCard(go);
             }
-            else if (card.CardKind == Enumerators.CardKind.Spell)
+            else if (card.CardKind == Enumerators.CardKind.SPELL)
             {
                 go = Object.Instantiate(_cardSpellPrefab);
                 boardCard = new SpellBoardCard(go);
@@ -404,7 +404,7 @@ namespace LoomNetwork.CZB
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
             boardCard.Transform.localScale = Vector3.one * 0.3f;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerGameUI1;
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
 
             boardCard.Transform.SetParent(_uiManager.Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
@@ -473,7 +473,7 @@ namespace LoomNetwork.CZB
 
         public void RemoveCardFromDeck(DeckBuilderCard sender, Card card)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DeckeditingRemoveCard, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SfxSoundVolume, false, false, true);
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
             collectionCardData.Amount++;
             UpdateCardAmount(card.Name, collectionCardData.Amount);
@@ -487,7 +487,7 @@ namespace LoomNetwork.CZB
                 int setIndex, cardIndex;
                 GetSetAndIndexForCard(boardCard.LibraryCard, out setIndex, out cardIndex);
                 _currentSet = SetTypeUtility.GetCardSetType(_dataManager, setIndex);
-                _currentElementPage = cardIndex / KCardsPerPage;
+                _currentElementPage = cardIndex / CardsPerPage;
                 UpdateCardsPage();
 
                 Vector3 senderPosition = sender.transform.position;
@@ -552,7 +552,6 @@ namespace LoomNetwork.CZB
             DeckCardData existingCards = _currentDeck.Cards.Find(x => x.CardName == card.Name);
 
             uint maxCopies = GetMaxCopiesValue(card);
-            string cardRarity = "You cannot have more than ";
 
             if ((existingCards != null) && (existingCards.Amount == maxCopies))
             {
@@ -581,7 +580,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DeckeditingAddCard, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD, Constants.SfxSoundVolume, false, false, true);
             collectionCardData.Amount--;
             UpdateCardAmount(card.Name, collectionCardData.Amount);
 
@@ -643,16 +642,16 @@ namespace LoomNetwork.CZB
 
             switch (rank)
             {
-                case Enumerators.CardRank.Minion:
+                case Enumerators.CardRank.MINION:
                     maxCopies = Constants.CardMinionMaxCopies;
                     break;
-                case Enumerators.CardRank.Officer:
+                case Enumerators.CardRank.OFFICER:
                     maxCopies = Constants.CardOfficerMaxCopies;
                     break;
-                case Enumerators.CardRank.Commander:
+                case Enumerators.CardRank.COMMANDER:
                     maxCopies = Constants.CardCommanderMaxCopies;
                     break;
-                case Enumerators.CardRank.General:
+                case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CardGeneralMaxCopies;
                     break;
             }
@@ -767,9 +766,9 @@ namespace LoomNetwork.CZB
             if (success)
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.DecksData);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.UserLocalData);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DeckSelection);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
             }
         }
 
@@ -849,7 +848,7 @@ namespace LoomNetwork.CZB
 
         private void OpenAlertDialog(string msg)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
             foreach (BoardCard card in _createdArmyCards)
             {
                 card.GameObject.GetComponent<DeckBuilderCard>().IsActive = false;
@@ -902,7 +901,7 @@ namespace LoomNetwork.CZB
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count / (float)KCardsPerPage);
+            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count / (float)CardsPerPage);
         }
 
         private void UpdateTopDeck()
@@ -914,14 +913,14 @@ namespace LoomNetwork.CZB
 
         private void UpdateHordePagesCount()
         {
-            _numHordePages = Mathf.CeilToInt((float)_createdHordeCards.Count / KCardsPerPage);
+            _numHordePages = Mathf.CeilToInt((float)_createdHordeCards.Count / CardsPerPage);
         }
 
         private void CalculateVisibility()
         {
             for (int i = 0; i < _createdHordeCards.Count; i++)
             {
-                if ((i + 1 > _currentHordePage * KCardsPerPage) && (i + 1 < ((_currentHordePage + 1) * KCardsPerPage) + 1))
+                if ((i + 1 > _currentHordePage * CardsPerPage) && (i + 1 < ((_currentHordePage + 1) * CardsPerPage) + 1))
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
                 }
@@ -944,7 +943,7 @@ namespace LoomNetwork.CZB
             animatedCard.GameObject.GetComponent<SortingGroup>().sortingOrder++;
 
             int foundItemIndex = targetRowCards.FindIndex(c => c.LibraryCard.Id == targetLibraryCard.Id);
-            setPageIndexAction(foundItemIndex / KCardsPerPage);
+            setPageIndexAction(foundItemIndex / CardsPerPage);
 
             BoardCard targetCard = targetRowCards.First(card => card.LibraryCard.Id == targetLibraryCard.Id);
             Vector3 animatedCardDestination = targetCard.Transform.position;
@@ -1028,7 +1027,7 @@ namespace LoomNetwork.CZB
             if (type == _currentSet)
                 return;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
 
             _currentSet = type;
             _currentElementPage = 0;
@@ -1037,7 +1036,7 @@ namespace LoomNetwork.CZB
 
         private void BackButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmQuitEventHandler;
             _uiManager.DrawPopup<QuestionPopup>(new object[] { "Would you like to save the current horde?", true });
         }
@@ -1050,19 +1049,19 @@ namespace LoomNetwork.CZB
                 OnDoneButtonPressed();
             }
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DeckSelection);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
         }
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Shop);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void ArmyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Collection);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
         }
 
         // private void OpenButtonHandler()
@@ -1072,26 +1071,26 @@ namespace LoomNetwork.CZB
         // }
         private void SaveButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             OnDoneButtonPressed();
         }
 
         private void ArmyArrowLeftButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(-1);
         }
 
         private void ArmyArrowRightButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(1);
         }
 
         private void HordeArrowLeftButtonHandler()
         {
             MoveHordeToLeft();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void MoveHordeToLeft()
@@ -1108,7 +1107,7 @@ namespace LoomNetwork.CZB
         private void HordeArrowRightButtonHandler()
         {
             MoveHordeToRight();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void MoveHordeToRight()

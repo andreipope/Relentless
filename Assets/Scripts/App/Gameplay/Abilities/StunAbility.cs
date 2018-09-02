@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.StunFreezes:
+                case Enumerators.AbilityEffectType.STUN_FREEZES:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
@@ -50,16 +50,16 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
                 return;
 
             if (info is BoardUnit)
             {
                 BoardUnit creature = info as BoardUnit;
-                creature.Stun(Enumerators.StunType.Freeze, Value);
+                creature.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(creature.Transform.position);
 
-                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.StunCreatureByAbility, new object[] { AbilityUnitOwner, creature }));
+                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[] { AbilityUnitOwner, creature }));
             }
         }
     }

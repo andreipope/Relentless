@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TargetAdjustmentsAir:
+                case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
@@ -132,7 +132,7 @@ namespace LoomNetwork.CZB
                               //    CreateAndMoveParticle(() => playerCallerOfAbility.FightPlayerBySkill(value), targetPlayer.transform.position);
                               CreateAndMoveParticle(() => _battleController.AttackPlayerByAbility(caller, abilityData, targetPlayer), targetPlayer.AvatarObject.transform.position);
                               break; */
-                    case Enumerators.AffectObjectType.Character:
+                    case Enumerators.AffectObjectType.CHARACTER:
                         Action(TargetUnit);
                         CreateAndMoveParticle(
                             () =>
@@ -150,7 +150,7 @@ namespace LoomNetwork.CZB
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
 
-            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
                 return;
 
             Action(info);
@@ -158,8 +158,8 @@ namespace LoomNetwork.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = CardKind == Enumerators.CardKind.Creature?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
-            if (AbilityCallType != Enumerators.AbilityCallType.Attack)
+            Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 // CreateVFX(cardCaller.transform.position);
                 GameObject particleMain = Object.Instantiate(VfxObject);
@@ -168,7 +168,7 @@ namespace LoomNetwork.CZB
                     () =>
                     {
                         callback();
-                        if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsBomb)
+                        if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                         {
                             DestroyParticle(particleMain, true);
                             GameObject prefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
@@ -176,9 +176,9 @@ namespace LoomNetwork.CZB
                             particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
                             ParticlesController.RegisterParticleSystem(particle, true);
 
-                            SoundManager.PlaySound(Enumerators.SoundType.Spells, "NailBomb", Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.None);
+                            SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb", Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
                         }
-                        else if (AbilityEffectType == Enumerators.AbilityEffectType.TargetAdjustmentsAir)
+                        else if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
                         {
                             // one particle
                             ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;

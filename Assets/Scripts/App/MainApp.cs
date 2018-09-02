@@ -46,11 +46,10 @@ namespace LoomNetwork.CZB
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
 #endif
 
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.AppInit);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
-                string deviceType = "Editor";
                 GameClient.Get<IAnalyticsManager>().StartSession();
             }
         }

@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
             _currentEventSystem = EventSystem.current;
             _inputManager = GameClient.Get<IInputManager>();
 
-            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Keyboard, (int)KeyCode.Tab, null, OnInputDownTabButton, null);
+            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Tab, null, OnInputDownTabButton, null);
         }
 
         public void Update()

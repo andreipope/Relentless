@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
             _buttonOk = Self.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LostPopup, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
@@ -86,9 +86,9 @@ namespace LoomNetwork.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DeckSelection);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 
             _uiManager.HidePopup<YouLosePopup>();
         }

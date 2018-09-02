@@ -27,8 +27,6 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> _selectedUnitsList;
 
-        private int _playersLayerMask = 9;
-
         public void Dispose()
         {
         }
@@ -125,7 +123,7 @@ namespace LoomNetwork.CZB
 
         private void CheckColliders(Collider2D collider, bool permanent = false)
         {
-            if (collider.name.Equals(Constants.KPlayerBoard) || collider.name.Equals(Constants.KOpponentBoard))
+            if (collider.name.Equals(Constants.PlayerBoard) || collider.name.Equals(Constants.OpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
                 return;

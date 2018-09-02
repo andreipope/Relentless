@@ -9,15 +9,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
-{
-    public class HeroSelectionPage : IUIElement
-    {
-        private const float KScrollAnimationDuration = 0.5f;
+namespace LoomNetwork.CZB {
+    public class HeroSelectionPage : IUIElement {
+        private const float ScrollAnimationDuration = 0.5f;
 
-        private const int KLoopStartFakeHeroCount = 1;
+        private const int LoopStartFakeHeroCount = 1;
 
-        private const int KLoopEndFakeHeroCount = 2;
+        private const int LoopEndFakeHeroCount = 2;
 
         private IUIManager _uiManager;
 
@@ -47,8 +45,7 @@ namespace LoomNetwork.CZB
 
         private Sequence _heroSelectScrollSequence;
 
-        public void Init()
-        {
+        public void Init() {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
@@ -56,12 +53,10 @@ namespace LoomNetwork.CZB
             _appStateManager = GameClient.Get<IAppStateManager>();
         }
 
-        public void Update()
-        {
+        public void Update() {
         }
 
-        public void Show()
-        {
+        public void Show() {
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"), _uiManager.Canvas.transform, false);
 
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
@@ -81,8 +76,7 @@ namespace LoomNetwork.CZB
             SetSelectedHeroIndexAndUpdateScrollPosition(0, false, force: true);
         }
 
-        public void Hide()
-        {
+        public void Hide() {
             if (_selfPage == null)
                 return;
 
@@ -94,13 +88,11 @@ namespace LoomNetwork.CZB
             ResetOverlordObjects();*/
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             _heroSelectScrollSequence?.Kill();
         }
 
-        private bool SetSelectedHeroIndexAndUpdateScrollPosition(int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
-        {
+        private bool SetSelectedHeroIndexAndUpdateScrollPosition(int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false) {
             if (!force && (heroIndex == _selectedHeroIndex))
             {
                 return false;
@@ -113,9 +105,14 @@ namespace LoomNetwork.CZB
             if (animateTransition)
             {
                 _heroSelectScrollSequence = DOTween.Sequence();
-                _heroSelectScrollSequence.Append(DOTween.To(() => overlordContainerRectTransform.anchoredPosition, v => overlordContainerRectTransform.anchoredPosition = v, CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex), KScrollAnimationDuration)).AppendCallback(() => _heroSelectScrollSequence = null);
-            }
-            else
+                _heroSelectScrollSequence.Append(
+                        DOTween.To(
+                            () => overlordContainerRectTransform.anchoredPosition,
+                            v => overlordContainerRectTransform.anchoredPosition = v,
+                            CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex),
+                            ScrollAnimationDuration))
+                    .AppendCallback(() => _heroSelectScrollSequence = null);
+            } else
             {
                 overlordContainerRectTransform.anchoredPosition = CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex);
             }
@@ -128,14 +125,13 @@ namespace LoomNetwork.CZB
             return true;
         }
 
-        private void FillOverlordObjects()
-        {
+        private void FillOverlordObjects() {
             ResetOverlordObjects();
 
             _overlordObjects = new List<OverlordObject>();
             _loopFakeOverlordObjects = new List<OverlordObject>();
 
-            for (int i = KLoopStartFakeHeroCount - 1; i >= 0; i--)
+            for (int i = LoopStartFakeHeroCount - 1; i >= 0; i--)
             {
                 int index = _dataManager.CachedHeroesData.Heroes.Count - i - 1;
                 Hero hero = _dataManager.CachedHeroesData.Heroes[index];
@@ -153,7 +149,7 @@ namespace LoomNetwork.CZB
                 _overlordObjects.Add(current);
             }
 
-            for (int i = 0; i < KLoopEndFakeHeroCount; i++)
+            for (int i = 0; i < LoopEndFakeHeroCount; i++)
             {
                 Hero hero = _dataManager.CachedHeroesData.Heroes[i];
                 OverlordObject current = new OverlordObject(_overlordsContainer.GetComponent<RectTransform>(), _rightContentObject, hero);
@@ -164,15 +160,13 @@ namespace LoomNetwork.CZB
             _overlordObjects[0].Select(false);
         }
 
-        private void OverlordObjectSelectedEventHandler(OverlordObject overlordObject)
-        {
+        private void OverlordObjectSelectedEventHandler(OverlordObject overlordObject) {
             foreach (OverlordObject item in _overlordObjects)
             {
                 if (!item.Equals(overlordObject))
                 {
                     item.Deselect();
-                }
-                else
+                } else
                 {
                     item.Select();
                 }
@@ -181,8 +175,7 @@ namespace LoomNetwork.CZB
             _currentOverlordObject = overlordObject;
         }
 
-        private void SwitchOverlordObject(int direction)
-        {
+        private void SwitchOverlordObject(int direction) {
             int newIndex = _selectedHeroIndex;
             newIndex += direction;
 
@@ -190,27 +183,23 @@ namespace LoomNetwork.CZB
             {
                 SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false);
                 SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true);
-                _loopFakeOverlordObjects[KLoopStartFakeHeroCount].Deselect(force: true);
-            }
-            else if (newIndex >= _overlordObjects.Count)
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(force: true);
+            } else if (newIndex >= _overlordObjects.Count)
             {
                 SetSelectedHeroIndexAndUpdateScrollPosition(-1, false, false);
                 SetSelectedHeroIndexAndUpdateScrollPosition(0, true);
-                _loopFakeOverlordObjects[KLoopStartFakeHeroCount - 1].Deselect(force: true);
-            }
-            else
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(force: true);
+            } else
             {
                 SetSelectedHeroIndexAndUpdateScrollPosition(newIndex, true);
             }
         }
 
-        private Vector2 CalculateOverlordContainerShiftForHeroIndex(int heroIndex)
-        {
-            return Vector2.left * (heroIndex + KLoopStartFakeHeroCount) * _overlordsContainer.spacing;
+        private Vector2 CalculateOverlordContainerShiftForHeroIndex(int heroIndex) {
+            return Vector2.left * (heroIndex + LoopStartFakeHeroCount) * _overlordsContainer.spacing;
         }
 
-        private void ResetOverlordObjects()
-        {
+        private void ResetOverlordObjects() {
             if (_overlordObjects != null)
             {
                 foreach (OverlordObject item in _overlordObjects)
@@ -231,8 +220,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public class OverlordObject
-        {
+        public class OverlordObject {
             private readonly ILoadObjectsManager _loadObjectsManager;
 
             private readonly Image _highlightImage;
@@ -257,8 +245,7 @@ namespace LoomNetwork.CZB
 
             private Sequence _stateChangeSequence;
 
-            public OverlordObject(Transform parent, GameObject informationPanelObject, Hero hero)
-            {
+            public OverlordObject(Transform parent, GameObject informationPanelObject, Hero hero) {
                 SelfHero = hero;
 
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -294,13 +281,11 @@ namespace LoomNetwork.CZB
 
             public bool IsSelected { get; private set; }
 
-            public void Dispose()
-            {
+            public void Dispose() {
                 Object.Destroy(SelfObject);
             }
 
-            public void Select(bool animateTransition = true)
-            {
+            public void Select(bool animateTransition = true) {
                 if (IsSelected)
                     return;
 
@@ -319,8 +304,7 @@ namespace LoomNetwork.CZB
                 OverlordObjectSelectedEvent?.Invoke(this);
             }
 
-            public void Deselect(bool animateTransition = true, bool force = false)
-            {
+            public void Deselect(bool animateTransition = true, bool force = false) {
                 if (!IsSelected && !force)
                     return;
 
@@ -331,23 +315,21 @@ namespace LoomNetwork.CZB
                 SetUIActiveState(false, animateTransition, force);
             }
 
-            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha)
-            {
-                float duration = animateTransition?KScrollAnimationDuration:0f;
-                float targetAlpha = active?1f:0f;
+            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha) {
+                float duration = animateTransition ? ScrollAnimationDuration : 0f;
+                float targetAlpha = active ? 1f : 0f;
 
                 _stateChangeSequence?.Kill();
                 _stateChangeSequence = DOTween.Sequence();
 
-                Action<Image, bool> applyAnimation = (image, invert) =>
-                {
+                Action<Image, bool> applyAnimation = (image, invert) => {
                     image.gameObject.SetActive(true);
                     if (forceResetAlpha)
                     {
-                        image.color = image.color.SetAlpha(invert?targetAlpha:1f - targetAlpha);
+                        image.color = image.color.SetAlpha(invert ? targetAlpha : 1f - targetAlpha);
                     }
 
-                    _stateChangeSequence.Insert(0f, image.DOColor(image.color.SetAlpha(invert?1f - targetAlpha:targetAlpha), duration).OnComplete(() => image.gameObject.SetActive(invert?!active:active)));
+                    _stateChangeSequence.Insert(0f, image.DOColor(image.color.SetAlpha(invert ? 1f - targetAlpha : targetAlpha), duration).OnComplete(() => image.gameObject.SetActive(invert ? !active : active)));
                 };
 
                 applyAnimation(_overlordPicture, false);
@@ -359,39 +341,35 @@ namespace LoomNetwork.CZB
 
         #region Buttons Handlers
 
-        private void BackButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.DeckSelection);
+        private void BackButtonOnClickHandler() {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
         }
 
-        private void ContinueButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+        private void ContinueButtonOnClickHandler() {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             OverlordAbilitySelectionPopup.OnHidePopupEvent += AbilityPopupClosedEvent;
             _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_currentOverlordObject.SelfHero);
         }
 
-        private void AbilityPopupClosedEvent()
-        {
+        private void AbilityPopupClosedEvent() {
             OverlordAbilitySelectionPopup.OnHidePopupEvent -= AbilityPopupClosedEvent;
             _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
-            _appStateManager.ChangeAppState(Enumerators.AppState.DeckEditing);
+            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }
 
-        private void LeftArrowButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+        private void LeftArrowButtonOnClickHandler() {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(-1);
         }
 
-        private void RightArrowButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+        private void RightArrowButtonOnClickHandler() {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(1);
         }
 
         #endregion
+
     }
 }

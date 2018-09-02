@@ -55,9 +55,9 @@ namespace LoomNetwork.CZB
 
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.AttackCardHero);
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackPlayerByCreature, new object[] { attackingUnit, attackedPlayer }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_CREATURE, new object[] { attackingUnit, attackedPlayer }));
         }
 
         public void AttackUnitByUnit(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
@@ -109,9 +109,9 @@ namespace LoomNetwork.CZB
                     attackedUnit.ThrowOnAttackEvent(attackingUnit, damageAttacked, false);
                 }
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackCreatureByCreature, new object[] { attackingUnit, damageAttacking, attackedUnit, damageAttacked }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE, new object[] { attackingUnit, damageAttacking, attackedUnit, damageAttacked }));
 
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.AttackCardCard);
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             }
         }
 
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB
                 // attackedUnit.ThrowEventGotDamage(attackingPlayer);
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackCreatureBySkill, new object[] { attackingPlayer, skill, damage, attackedUnit }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL, new object[] { attackingPlayer, skill, damage, attackedUnit }));
         }
 
         public void AttackPlayerBySkill(Player attackingPlayer, HeroSkill skill, Player attackedPlayer)
@@ -148,7 +148,7 @@ namespace LoomNetwork.CZB
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackPlayerBySkill, new object[] { attackingPlayer, skill, attackedPlayer }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL, new object[] { attackingPlayer, skill, attackedPlayer }));
             }
         }
 
@@ -159,7 +159,7 @@ namespace LoomNetwork.CZB
                 // if(healingPlayer.SelfHero.heroElement == Enumerators.SetType.EARTH)
                 healedPlayer.Hp += skill.Value;
 
-                if (skill.OverlordSkill != Enumerators.OverlordSkill.Harden)
+                if (skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN)
                 {
                     if (healingPlayer.Hp > Constants.DefaultPlayerHp)
                     {
@@ -168,7 +168,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HealPlayerBySkill, new object[] { healedPlayer, skill, healedPlayer }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_SKILL, new object[] { healedPlayer, skill, healedPlayer }));
         }
 
         public void HealUnitBySkill(Player healingPlayer, HeroSkill skill, BoardUnit healedCreature)
@@ -182,7 +182,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HealCreatureBySkill, new object[] { healingPlayer, skill, healedCreature }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_SKILL, new object[] { healingPlayer, skill, healedCreature }));
         }
 
         public void AttackUnitByAbility(object attacker, AbilityData ability, BoardUnit attackedUnit, int damageOverride = -1)
@@ -208,7 +208,7 @@ namespace LoomNetwork.CZB
                 // attackedUnit.ThrowEventGotDamage(attacker);
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackCreatureByAbility, new[] { attacker, ability, damage, attackedUnit }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY, new[] { attacker, ability, damage, attackedUnit }));
             }
         }
 
@@ -222,7 +222,7 @@ namespace LoomNetwork.CZB
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.AttackPlayerByAbility, new[] { attacker, ability, ability.Value, attackedPlayer }));
+                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY, new[] { attacker, ability, ability.Value, attackedPlayer }));
             }
         }
 
@@ -237,7 +237,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HealPlayerByAbility, new[] { healler, ability, ability.Value, healedPlayer }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY, new[] { healler, ability, ability.Value, healedPlayer }));
         }
 
         public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
@@ -251,29 +251,29 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HealCreatureByAbility, new[] { healler, ability, ability.Value, healedCreature }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY, new[] { healler, ability, ability.Value, healedCreature }));
         }
 
         private void FillStrongersAndWeakers()
         {
             _strongerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
             {
-                { Enumerators.SetType.Fire, Enumerators.SetType.Toxic },
-                { Enumerators.SetType.Toxic, Enumerators.SetType.Life },
-                { Enumerators.SetType.Life, Enumerators.SetType.Earth },
-                { Enumerators.SetType.Earth, Enumerators.SetType.Air },
-                { Enumerators.SetType.Air, Enumerators.SetType.Water },
-                { Enumerators.SetType.Water, Enumerators.SetType.Fire }
+                { Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.AIR },
+                { Enumerators.SetType.AIR, Enumerators.SetType.WATER },
+                { Enumerators.SetType.WATER, Enumerators.SetType.FIRE }
             };
 
             _weakerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
             {
-                { Enumerators.SetType.Fire, Enumerators.SetType.Water },
-                { Enumerators.SetType.Toxic, Enumerators.SetType.Fire },
-                { Enumerators.SetType.Life, Enumerators.SetType.Toxic },
-                { Enumerators.SetType.Earth, Enumerators.SetType.Life },
-                { Enumerators.SetType.Air, Enumerators.SetType.Earth },
-                { Enumerators.SetType.Water, Enumerators.SetType.Air }
+                { Enumerators.SetType.FIRE, Enumerators.SetType.WATER },
+                { Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE },
+                { Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC },
+                { Enumerators.SetType.EARTH, Enumerators.SetType.LIFE },
+                { Enumerators.SetType.AIR, Enumerators.SetType.EARTH },
+                { Enumerators.SetType.WATER, Enumerators.SetType.AIR }
             };
         }
 

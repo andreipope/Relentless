@@ -22,7 +22,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
@@ -48,11 +48,11 @@ namespace LoomNetwork.CZB
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.Opponent:
+                    case Enumerators.AbilityTargetType.OPPONENT:
                         GetOpponentOverlord().Hp -= Value;
                         CreateVfx(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
                         break;
-                    case Enumerators.AbilityTargetType.Player:
+                    case Enumerators.AbilityTargetType.PLAYER:
                         PlayerCallerOfAbility.Hp -= Value;
                         CreateVfx(PlayerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
                         break;

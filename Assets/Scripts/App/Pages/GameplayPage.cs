@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
             OpponentDeck randomOpponentDeck = _dataManager.CachedOpponentDecksData.Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
             _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
 
-            int heroId = Constants.KTutorialPlayerHeroId; // TUTORIAL
+            int heroId = Constants.TutorialPlayerHeroId; // TUTORIAL
 
             if (!_gameplayManager.IsTutorial)
             {
@@ -560,15 +560,15 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.HidePopup<YourTurnPopup>();
 
-                _gameplayManager.EndGame(Enumerators.EndGameType.Cancel);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MainMenu);
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
-                _soundManager.StopPlaying(Enumerators.SoundType.Tutorial);
-                _soundManager.CrossfaidSound(Enumerators.SoundType.Background, null, true);
+                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
-            _soundManager.PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void KeepButtonOnClickHandler()

@@ -23,7 +23,7 @@ namespace LoomNetwork.CZB
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.StunOrDamageFreezes:
+                case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
@@ -82,7 +82,7 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
-                    leftAdjustment.Stun(Enumerators.StunType.Freeze, 1);
+                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
                 // CreateVFX(leftAdjustment..transform.position);
@@ -96,7 +96,7 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.Freeze, 1);
+                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
                 // CreateVFX(targetCreature.transform.position);
@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                creature.Stun(Enumerators.StunType.Freeze, 1);
+                creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
         }
 

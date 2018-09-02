@@ -42,7 +42,7 @@ public class BoardArrow : MonoBehaviour
     {
         if (StartedDrag)
         {
-            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.KPointerMinDragDelta)
+            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.PointerMinDragDelta)
             {
                 return true;
             }
@@ -120,7 +120,7 @@ public class BoardArrow : MonoBehaviour
     {
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         InputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
         InputController.UnitSelectingEvent -= UnitSelectingEventHandler;

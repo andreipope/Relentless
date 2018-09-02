@@ -125,13 +125,13 @@ namespace LoomNetwork.CZB
 
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.KVersionFileResolution))
+                if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VersionFileResolution))
                 {
                     file.Delete();
                 }
             }
 
-            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.KVersionFileResolution))
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
             {
             }
 
@@ -148,58 +148,58 @@ namespace LoomNetwork.CZB
 
             switch (type)
             {
-                case Enumerators.CacheDataType.UserLocalData:
+                case Enumerators.CacheDataType.USER_LOCAL_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedUserLocalData));
                 }
 
                     break;
 
-                case Enumerators.CacheDataType.CardsLibraryData:
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCardsLibraryData));
                 }
 
                     break;
-                case Enumerators.CacheDataType.HeroesData:
+                case Enumerators.CacheDataType.HEROES_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedHeroesData));
                 }
 
                     break;
 
-                case Enumerators.CacheDataType.CollectionData:
+                case Enumerators.CacheDataType.COLLECTION_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCollectionData));
                 }
 
                     break;
-                case Enumerators.CacheDataType.DecksData:
+                case Enumerators.CacheDataType.DECKS_DATA:
                 {
                     _decksDataWithTimestamp.DecksData = CachedDecksData;
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(_decksDataWithTimestamp));
                 }
 
                     break;
-                case Enumerators.CacheDataType.DecksOpponentData:
+                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedOpponentDecksData));
                 }
 
                     break;
-                case Enumerators.CacheDataType.OpponentActionsLibraryData:
+                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedActionsLibraryData));
                 }
 
                     break;
-                case Enumerators.CacheDataType.CreditsData:
+                case Enumerators.CacheDataType.CREDITS_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
                 }
 
                     break;
-                case Enumerators.CacheDataType.BuffsTooltipData:
+                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                 {
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
                 }
@@ -267,16 +267,16 @@ namespace LoomNetwork.CZB
 
             switch (rank)
             {
-                case Enumerators.CardRank.Minion:
+                case Enumerators.CardRank.MINION:
                     maxCopies = Constants.CardMinionMaxCopies;
                     break;
-                case Enumerators.CardRank.Officer:
+                case Enumerators.CardRank.OFFICER:
                     maxCopies = Constants.CardOfficerMaxCopies;
                     break;
-                case Enumerators.CardRank.Commander:
+                case Enumerators.CardRank.COMMANDER:
                     maxCopies = Constants.CardCommanderMaxCopies;
                     break;
-                case Enumerators.CardRank.General:
+                case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CardGeneralMaxCopies;
                     break;
             }
@@ -290,7 +290,7 @@ namespace LoomNetwork.CZB
             bool versionMatch = false;
             foreach (FileInfo file in files)
             {
-                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.KVersionFileResolution)
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
                 {
                     versionMatch = true;
                 }
@@ -306,7 +306,7 @@ namespace LoomNetwork.CZB
         {
             switch (type)
             {
-                case Enumerators.CacheDataType.CardsLibraryData:
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                 {
                     // if (File.Exists(_cacheDataPathes[type]))
                     // CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
@@ -326,7 +326,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.HeroesData:
+                case Enumerators.CacheDataType.HEROES_DATA:
                 {
                     // if (File.Exists(_cacheDataPathes[type]))
                     // CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
@@ -346,7 +346,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.UserLocalData:
+                case Enumerators.CacheDataType.USER_LOCAL_DATA:
                 {
                     if (File.Exists(_cacheDataPathes[type]))
                     {
@@ -355,7 +355,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.CollectionData:
+                case Enumerators.CacheDataType.COLLECTION_DATA:
                 {
                     // if (File.Exists(_cacheDataPathes[type]))
                     // CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
@@ -375,7 +375,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.DecksData:
+                case Enumerators.CacheDataType.DECKS_DATA:
                 {
                     // if (File.Exists(_cacheDataPathes[type]))
                     // CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
@@ -466,7 +466,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.DecksOpponentData:
+                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
                 {
                     if (File.Exists(_cacheDataPathes[type]))
                     {
@@ -475,7 +475,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.OpponentActionsLibraryData:
+                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
                 {
                     if (File.Exists(_cacheDataPathes[type]))
                     {
@@ -484,7 +484,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.CreditsData:
+                case Enumerators.CacheDataType.CREDITS_DATA:
                 {
                     if (File.Exists(_cacheDataPathes[type]))
                     {
@@ -493,7 +493,7 @@ namespace LoomNetwork.CZB
                 }
 
                     break;
-                case Enumerators.CacheDataType.BuffsTooltipData:
+                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                 {
                     if (File.Exists(_cacheDataPathes[type]))
                     {
@@ -507,7 +507,7 @@ namespace LoomNetwork.CZB
 
         private void CheckFirstLaunch()
         {
-            if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.KLocalCardsLibraryDataFilePath)))
+            if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LocalCardsLibraryDataFilePath)))
             {
                 CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
                 CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
@@ -529,23 +529,25 @@ namespace LoomNetwork.CZB
 
         private void FillCacheDataPathes()
         {
-            _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>();
-            _cacheDataPathes.Add(Enumerators.CacheDataType.UserLocalData, Path.Combine(Application.persistentDataPath, Constants.KLocalUserDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.CardsLibraryData, Path.Combine(Application.persistentDataPath, Constants.KLocalCardsLibraryDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.HeroesData, Path.Combine(Application.persistentDataPath, Constants.KLocalHeroesDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.CollectionData, Path.Combine(Application.persistentDataPath, Constants.KLocalCollectionDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.DecksData, Path.Combine(Application.persistentDataPath, Constants.KLocalDecksDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.DecksOpponentData, Path.Combine(Application.persistentDataPath, Constants.KLocalOpponentDecksDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.OpponentActionsLibraryData, Path.Combine(Application.persistentDataPath, Constants.KLocalOpponentActionsLibraryDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.CreditsData, Path.Combine(Application.persistentDataPath, Constants.KLocalCreditsDataFilePath));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.BuffsTooltipData, Path.Combine(Application.persistentDataPath, Constants.KLocalBuffsTooltipDataFilePath));
+            _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>
+            {
+                { Enumerators.CacheDataType.USER_LOCAL_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalUserDataFilePath) },
+                { Enumerators.CacheDataType.CARDS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalCardsLibraryDataFilePath) },
+                { Enumerators.CacheDataType.HEROES_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalHeroesDataFilePath) },
+                { Enumerators.CacheDataType.COLLECTION_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalCollectionDataFilePath) },
+                { Enumerators.CacheDataType.DECKS_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalDecksDataFilePath) },
+                { Enumerators.CacheDataType.DECKS_OPPONENT_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalOpponentDecksDataFilePath) },
+                { Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalOpponentActionsLibraryDataFilePath) },
+                { Enumerators.CacheDataType.CREDITS_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalCreditsDataFilePath) },
+                { Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath) }
+            };
         }
 
         private T DeserializeObjectFromPath<T>(string path)
         {
             if (Constants.DataEncryptionEnabled)
             {
-                return JsonConvert.DeserializeObject<T>(Utilites.Decrypt(File.ReadAllText(path), Constants.KPrivateEncryptionKeyForApp));
+                return JsonConvert.DeserializeObject<T>(Utilites.Decrypt(File.ReadAllText(path), Constants.PrivateEncryptionKeyForApp));
             }
 
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
@@ -555,7 +557,7 @@ namespace LoomNetwork.CZB
         {
             if (Constants.DataEncryptionEnabled)
             {
-                return Utilites.Encrypt(JsonConvert.SerializeObject(obj, Formatting.Indented), Constants.KPrivateEncryptionKeyForApp);
+                return Utilites.Encrypt(JsonConvert.SerializeObject(obj, Formatting.Indented), Constants.PrivateEncryptionKeyForApp);
             }
 
             return JsonConvert.SerializeObject(obj, Formatting.Indented);

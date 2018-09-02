@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -100,7 +99,7 @@ namespace LoomNetwork.CZB
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;
 
-            _previewCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerGameUI2;
+            _previewCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI2;
 
             PreviewCardInstantiated?.Invoke(_previewCard);
 

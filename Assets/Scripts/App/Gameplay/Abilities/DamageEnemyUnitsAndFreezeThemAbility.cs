@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -43,7 +43,7 @@ namespace LoomNetwork.CZB
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OpponentAllCards:
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 
                         foreach (BoardUnit unit in opponent.BoardCards)
                         {
@@ -52,14 +52,14 @@ namespace LoomNetwork.CZB
 
                         foreach (BoardUnit unit in opponent.BoardCards)
                         {
-                            unit.Stun(Enumerators.StunType.Freeze, Value);
+                            unit.Stun(Enumerators.StunType.FREEZE, Value);
                         }
 
                         break;
 
-                    case Enumerators.AbilityTargetType.Opponent:
+                    case Enumerators.AbilityTargetType.OPPONENT:
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
-                        opponent.Stun(Enumerators.StunType.Freeze, Value);
+                        opponent.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
                 }
             }

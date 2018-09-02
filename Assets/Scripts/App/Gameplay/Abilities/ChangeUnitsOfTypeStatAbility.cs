@@ -28,14 +28,14 @@ namespace LoomNetwork.CZB
 
             switch (StatType)
             {
-                case Enumerators.StatType.Health:
-                case Enumerators.StatType.Damage:
+                case Enumerators.StatType.HEALTH:
+                case Enumerators.StatType.DAMAGE:
                 default:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
             }
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Permanent)
+            if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;
 
             Action();
@@ -64,11 +64,11 @@ namespace LoomNetwork.CZB
 
                 switch (StatType)
                 {
-                    case Enumerators.StatType.Damage:
+                    case Enumerators.StatType.DAMAGE:
                         unit.BuffedDamage += Value;
                         unit.CurrentDamage += Value;
                         break;
-                    case Enumerators.StatType.Health:
+                    case Enumerators.StatType.HEALTH:
                         unit.BuffedHp += Value;
                         unit.CurrentHp += Value;
                         break;

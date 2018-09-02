@@ -94,7 +94,7 @@ namespace LoomNetwork.CZB
 
         private void ConfirmationButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             ConfirmationEvent?.Invoke(true);
 

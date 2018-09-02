@@ -17,7 +17,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -36,15 +36,15 @@ namespace LoomNetwork.CZB
         public override void Action(object info = null)
         {
             base.Action(info);
-            if ((SetType == Enumerators.SetType.None) || ((SetType != Enumerators.SetType.None) && (PlayerCallerOfAbility.BoardCards.FindAll(x => (x.Card.LibraryCard.CardSetType == SetType) && (x != AbilityUnitOwner)).Count > 0)))
+            if ((SetType == Enumerators.SetType.NONE) || ((SetType != Enumerators.SetType.NONE) && (PlayerCallerOfAbility.BoardCards.FindAll(x => (x.Card.LibraryCard.CardSetType == SetType) && (x != AbilityUnitOwner)).Count > 0)))
             {
                 if (AbilityTargetTypes.Count > 0)
                 {
-                    if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.Player)
+                    if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.PLAYER)
                     {
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
                     }
-                    else if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.Opponent)
+                    else if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.OPPONENT)
                     {
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer);
                     }

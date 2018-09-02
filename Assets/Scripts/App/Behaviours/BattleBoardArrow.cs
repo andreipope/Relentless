@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
             if ((ElementType.Count > 0) && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
                 return;
 
-            if (TargetsType.Contains(Enumerators.SkillTargetType.AllCards) || (TargetsType.Contains(Enumerators.SkillTargetType.PlayerCard) && unit.Transform.CompareTag("PlayerOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.OpponentCard) && unit.Transform.CompareTag("OpponentOwned")))
+            if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) || (TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) && unit.Transform.CompareTag("PlayerOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) && unit.Transform.CompareTag("OpponentOwned")))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || (opponentHasProvoke && unit.IsHeavyUnit()) || IgnoreHeavy)
@@ -80,7 +80,7 @@ namespace LoomNetwork.CZB
             if ((Owner != null) && !Owner.HasFeral && Owner.HasBuffRush)
                 return;
 
-            if ((TargetsType.Contains(Enumerators.SkillTargetType.Opponent) && player.AvatarObject.CompareTag("OpponentOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.Player) && player.AvatarObject.CompareTag("PlayerOwned")))
+            if ((TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) && player.AvatarObject.CompareTag("OpponentOwned")) || (TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) && player.AvatarObject.CompareTag("PlayerOwned")))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || IgnoreHeavy)

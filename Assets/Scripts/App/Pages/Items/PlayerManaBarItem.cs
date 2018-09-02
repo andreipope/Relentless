@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
 {
     public class PlayerManaBarItem
     {
-        private const int KMeterArrowStep = 12;
+        private const int MeterArrowStep = 12;
 
         private readonly GameObject _selfObject;
 
@@ -137,7 +137,7 @@ namespace LoomNetwork.CZB
 
         private void UpdateGooMeter()
         {
-            int targetRotation = 90 - (KMeterArrowStep * _currentValue);
+            int targetRotation = 90 - (MeterArrowStep * _currentValue);
             if (targetRotation < -90)
             {
                 targetRotation = -90;
@@ -161,14 +161,14 @@ namespace LoomNetwork.CZB
 
             _selfObject.SetActive(false);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeIn, Constants.BattlegroundEffectsSoundVolume);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN, Constants.BattlegroundEffectsSoundVolume);
 
-            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GooOverflowFadeIn));
+            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN));
         }
 
         private void PlayOverflowLoopDelay(object[] param)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeLoop, Constants.BattlegroundEffectsSoundVolume, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP, Constants.BattlegroundEffectsSoundVolume, true);
         }
 
         private void DestroyOverflow()
@@ -181,16 +181,16 @@ namespace LoomNetwork.CZB
 
             StopOverfowSounds();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GooOverflowFadeOut, Constants.BattlegroundEffectsSoundVolume);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT, Constants.BattlegroundEffectsSoundVolume);
         }
 
         private void StopOverfowSounds()
         {
             GameClient.Get<ITimerManager>().StopTimer(PlayOverflowLoopDelay);
 
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeIn);
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeLoop);
-            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GooOverflowFadeOut);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP);
+            GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT);
         }
 
         private void OnGameEndedEventHandler(Enumerators.EndGameType obj)

@@ -118,7 +118,7 @@ namespace LoomNetwork.CZB
                 }
                 else
                 {
-                    heroId = Constants.KTutorialPlayerHeroId;
+                    heroId = Constants.TutorialPlayerHeroId;
                 }
             }
             else
@@ -479,11 +479,11 @@ namespace LoomNetwork.CZB
 
             _skillsController.DisableSkillsContent(this);
 
-            _soundManager.PlaySound(Enumerators.SoundType.HeroDeath, Constants.HeroDeathSoundVolume, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume, false, false);
 
             if (!_gameplayManager.IsTutorial)
             {
-                _gameplayManager.EndGame(IsLocalPlayer?Enumerators.EndGameType.Lose:Enumerators.EndGameType.Win);
+                _gameplayManager.EndGame(IsLocalPlayer?Enumerators.EndGameType.LOSE:Enumerators.EndGameType.WIN);
             }
         }
 
@@ -499,8 +499,8 @@ namespace LoomNetwork.CZB
             IsStunned = true;
             _turnsLeftToFreeFromStun = turnsCount;
 
-            _skillsController.BlockSkill(this, Enumerators.SkillType.Primary);
-            _skillsController.BlockSkill(this, Enumerators.SkillType.Secondary);
+            _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
+            _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
         }
 
         public void ThrowPlayCardEvent(WorkingCard card)

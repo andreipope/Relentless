@@ -122,8 +122,8 @@ namespace LoomNetwork.CZB
 
         private void BackButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
     }
 

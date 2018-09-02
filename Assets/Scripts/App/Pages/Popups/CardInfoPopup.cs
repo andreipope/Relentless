@@ -71,7 +71,7 @@ namespace LoomNetwork.CZB
             _description = Self.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
             _amountAward = Self.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void Show(object data)
@@ -109,12 +109,12 @@ namespace LoomNetwork.CZB
                 return;
 
             Hide();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DeckeditingRemoveCard, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             int amount = CardData.Amount;
 
             if (!_disableMelt)

@@ -9,8 +9,6 @@ namespace LoomNetwork.CZB
 
         public int Value;
 
-        private int _changedCostOn = 0;
-
         public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -22,7 +20,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.InHand)
+            if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
             PlayerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
@@ -37,28 +35,13 @@ namespace LoomNetwork.CZB
                 0.5f);
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
-
             if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
             int gooCost = PlayerCallerOfAbility.CardsInHand.FindAll(x => (x.LibraryCard.CardSetType == SetType) && (x != MainWorkingCard)).Count * Value;
-
-            // gooCost = _changedCostOn;
-
-            // _changedCostOn = gooCost;
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard, MainWorkingCard.RealCost + gooCost, BoardCard);
         }
 

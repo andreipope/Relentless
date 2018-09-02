@@ -43,8 +43,6 @@ namespace LoomNetwork.CZB
 
         private Button _signUpButton, _loginButton;
 
-        private int _a = 0;
-
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -63,7 +61,7 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
 
-            if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.AppInit))
+            if (_selfPage.activeInHierarchy && (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.APP_INIT))
             {
                 if (!_isLoaded)
                 {
@@ -115,7 +113,7 @@ namespace LoomNetwork.CZB
 
                                     if (success)
                                     {
-                                        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
+                                        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
                                     }
                                 };
                                 _uiManager.DrawPopup<ConnectionPopup>();
@@ -134,7 +132,7 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LogoAppear, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume, false, false, true);
 
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
@@ -194,9 +192,9 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void OnLoginButtonPressed()
+        public async void OnLoginButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             string usernameText = _usernameInputField.text;
             string passwordText = _passwordInputField.text;
 
@@ -216,8 +214,8 @@ namespace LoomNetwork.CZB
             }*/
             _backendDataControlMediator.UserDataModel.UserId = usernameText;
             IDataManager dataManager = GameClient.Get<IDataManager>();
-            dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
-            dataManager.StartLoadCache();
+            await dataManager.StartLoadCache();
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
             // GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
             /*ClientAPI.Login(usernameText, passwordText,
@@ -272,7 +270,7 @@ namespace LoomNetwork.CZB
 
         private async void OnSignupButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             // parentScene.OpenPopup<PopupSignup>("PopupSignup", popup =>{});
             // OpenAlertDialog("Will be available on full version");
@@ -298,17 +296,12 @@ namespace LoomNetwork.CZB
                 // OpenAlertDialog("Account Created Successfully");
                 // TODO : Removed code loading data manager
                 IDataManager dataManager = GameClient.Get<IDataManager>();
-                dataManager.OnLoadCacheCompletedEvent += OnLoadCacheComplete;
-                dataManager.StartLoadCache();
+                await dataManager.StartLoadCache();
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
             } catch (Exception)
             {
                 OpenAlertDialog("Not Able to Create Account..");
             }
-        }
-
-        private void OnLoadCacheComplete()
-        {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
         }
 
         private void OpenAlertDialog(string msg)

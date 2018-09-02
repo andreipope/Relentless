@@ -27,7 +27,7 @@ namespace LoomNetwork.CZB
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
@@ -46,14 +46,14 @@ namespace LoomNetwork.CZB
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.Opponent:
+                    case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
                             SpawnMinion(GetOpponentOverlord());
                         }
 
                         break;
-                    case Enumerators.AbilityTargetType.Player:
+                    case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
                             SpawnMinion(PlayerCallerOfAbility);
@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
         {
             base.OnStartTurnEventHandler();
 
-            if ((AbilityCallType != Enumerators.AbilityCallType.Turn) || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if ((AbilityCallType != Enumerators.AbilityCallType.TURN) || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             Action();
@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.SummonUnitCard, new object[] { owner, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.SUMMON_UNIT_CARD, new object[] { owner, unit }));
         }
 
         private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
@@ -108,7 +108,7 @@ namespace LoomNetwork.CZB
             GameObject playerBoard = owner.IsLocalPlayer?BattlegroundController.PlayerBoardObject:BattlegroundController.OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?Constants.KTagPlayerOwned:Constants.KTagOpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
             boardUnit.Transform.parent = playerBoard.transform;
             boardUnit.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
             boardUnit.OwnerPlayer = owner;

@@ -34,10 +34,9 @@ namespace LoomNetwork.CZB
                     OnInputEvent = onInput,
                     OnInputDownEvent = onInputDown,
                     OnInputUpEvent = onInputUp,
-                    Type = type
+                    Type = type,
+                    Index = _customFreeIndex++
                 };
-
-                item.Index = _customFreeIndex++;
 
                 _inputHandlers.Add(item);
 
@@ -93,7 +92,7 @@ namespace LoomNetwork.CZB
 
                 switch (item.Type)
                 {
-                    case Enumerators.InputType.Mouse:
+                    case Enumerators.InputType.MOUSE:
                     {
                         if (Input.GetMouseButton(item.Code))
                         {
@@ -112,7 +111,7 @@ namespace LoomNetwork.CZB
                     }
 
                         break;
-                    case Enumerators.InputType.Keyboard:
+                    case Enumerators.InputType.KEYBOARD:
                     {
                         if (Input.GetKey((KeyCode)item.Code))
                         {

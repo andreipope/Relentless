@@ -55,12 +55,12 @@ namespace LoomNetwork.CZB
             target = Utilites.CastVfxPosition(target);
             Vector3 offset = Vector3.forward * 1;
 
-            if (type == Enumerators.CardType.Feral)
+            if (type == Enumerators.CardType.FERAL)
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                 effect = Object.Instantiate(vfxPrefab);
                 effect.transform.position = target - offset;
-                _soundManager.PlaySound(Enumerators.SoundType.FeralAttack, Constants.CreatureAttackSoundVolume, false, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume, false, false, true);
 
                 _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -100,14 +100,14 @@ namespace LoomNetwork.CZB
                 // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
                 // }, null, 0.75f, false);
             }
-            else if (type == Enumerators.CardType.Heavy)
+            else if (type == Enumerators.CardType.HEAVY)
             {
-                Enumerators.SoundType soundType = Enumerators.SoundType.HeavyAttack1;
+                Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
                 string prefabName = "Prefabs/VFX/HeavyAttackVFX";
                 if (damage > 4)
                 {
                     prefabName = "Prefabs/VFX/HeavyAttack2VFX";
-                    soundType = Enumerators.SoundType.HeavyAttack2;
+                    soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
                 }
 
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
@@ -147,7 +147,7 @@ namespace LoomNetwork.CZB
 
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
                     // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WalkerAttack2, Constants.CreatureAttackSoundVolume, false, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CreatureAttackSoundVolume, false, false, true);
 
                     // }, null, 0.75f, false);
                 }
@@ -155,7 +155,7 @@ namespace LoomNetwork.CZB
                 {
                     // GameClient.Get<ITimerManager>().AddTimer((a) =>
                     // {
-                    _soundManager.PlaySound(Enumerators.SoundType.WalkerAttack1, Constants.CreatureAttackSoundVolume, false, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CreatureAttackSoundVolume, false, false, true);
 
                     // }, null, 0.75f, false);
                 }
@@ -168,22 +168,22 @@ namespace LoomNetwork.CZB
 
             switch (setType)
             {
-                case Enumerators.SetType.Water:
+                case Enumerators.SetType.WATER:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
-                case Enumerators.SetType.Toxic:
+                case Enumerators.SetType.TOXIC:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
                     break;
-                case Enumerators.SetType.Fire:
+                case Enumerators.SetType.FIRE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
                     break;
-                case Enumerators.SetType.Life:
+                case Enumerators.SetType.LIFE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
-                case Enumerators.SetType.Earth:
+                case Enumerators.SetType.EARTH:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
                     break;
-                case Enumerators.SetType.Air:
+                case Enumerators.SetType.AIR:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
                     break;
             }

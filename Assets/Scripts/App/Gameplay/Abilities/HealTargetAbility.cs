@@ -40,10 +40,10 @@ namespace LoomNetwork.CZB
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.Player:
+                case Enumerators.AffectObjectType.PLAYER:
                     BattleController.HealPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.Character:
+                case Enumerators.AffectObjectType.CHARACTER:
                     BattleController.HealUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
             }
@@ -62,9 +62,9 @@ namespace LoomNetwork.CZB
         private void CreateAndMoveParticle(Action callback, Vector3 target)
         {
             target = Utilites.CastVfxPosition(target);
-            if (AbilityEffectType == Enumerators.AbilityEffectType.Heal)
+            if (AbilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
-                Vector3 startPosition = CardKind == Enumerators.CardKind.Creature?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+                Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVfx(startPosition);
@@ -78,7 +78,7 @@ namespace LoomNetwork.CZB
                         callback();
                     });
             }
-            else if (AbilityEffectType == Enumerators.AbilityEffectType.HealDirectly)
+            else if (AbilityEffectType == Enumerators.AbilityEffectType.HEAL_DIRECTLY)
             {
                 CreateVfx(target, true);
                 callback();

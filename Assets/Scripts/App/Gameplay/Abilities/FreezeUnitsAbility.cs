@@ -18,7 +18,7 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.Entry)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
@@ -44,7 +44,7 @@ namespace LoomNetwork.CZB
 
             foreach (BoardUnit unit in opponent.BoardCards)
             {
-                unit.Stun(Enumerators.StunType.Freeze, Value);
+                unit.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(unit.Transform.position, true, 5f);
             }
         }

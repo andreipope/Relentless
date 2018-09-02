@@ -41,10 +41,10 @@ namespace LoomNetwork.CZB
         {
             base.UnitGotDamageEventHandler(from);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.AtDefence)
+            if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;
 
-            (@from as BoardUnit)?.Stun(Enumerators.StunType.Freeze, Value);
+            (from as BoardUnit)?.Stun(Enumerators.StunType.FREEZE, Value);
         }
     }
 }

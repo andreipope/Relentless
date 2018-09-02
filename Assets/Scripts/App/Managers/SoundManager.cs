@@ -21,8 +21,6 @@ namespace LoomNetwork.CZB
 
         private Queue<QueuedSoundElement> _queuedSoundElements;
 
-        private QueuedSoundElement _currentActiveQueuedSoundElement;
-
         public void Dispose()
         {
         }
@@ -39,8 +37,6 @@ namespace LoomNetwork.CZB
             _soundContainers = new List<SoundContainer>();
             _containersToRemove = new List<SoundContainer>();
             _queuedSoundElements = new Queue<QueuedSoundElement>();
-
-            _currentActiveQueuedSoundElement = null;
 
             InitializeSounds();
         }
@@ -121,7 +117,7 @@ namespace LoomNetwork.CZB
             return soundTypeList.AudioTypeClips.Count > 0?soundTypeList.AudioTypeClips[0].length:0f;
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.None)
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
             foreach (SoundContainer item in _soundContainers)
             {
@@ -132,7 +128,7 @@ namespace LoomNetwork.CZB
             CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.None)
+        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
             foreach (SoundContainer item in _soundContainers)
             {
@@ -393,8 +389,8 @@ namespace LoomNetwork.CZB
 
             switch (soundType)
             {
-                case Enumerators.SoundType.Background:
-                case Enumerators.SoundType.Battleground:
+                case Enumerators.SoundType.BACKGROUND:
+                case Enumerators.SoundType.BATTLEGROUND:
                     soundParam.IsBackground = true;
                     break;
                 default:
@@ -477,10 +473,10 @@ namespace LoomNetwork.CZB
 
             switch (soundType)
             {
-                case Enumerators.SoundType.Tutorial:
-                case Enumerators.SoundType.Cards:
-                case Enumerators.SoundType.OverlordAbilities:
-                case Enumerators.SoundType.Spells:
+                case Enumerators.SoundType.TUTORIAL:
+                case Enumerators.SoundType.CARDS:
+                case Enumerators.SoundType.OVERLORD_ABILITIES:
+                case Enumerators.SoundType.SPELLS:
                     pathToSoundsLibrary = "Sounds/" + soundType.ToString().Replace("_", string.Empty);
                     list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
                     break;

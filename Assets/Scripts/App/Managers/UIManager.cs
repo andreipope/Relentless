@@ -126,7 +126,7 @@ namespace LoomNetwork.CZB
             }
 
             CurrentPage.Show();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void DrawPopup<T>(object message = null, bool setMainPriority = false)

@@ -44,16 +44,16 @@ namespace LoomNetwork.CZB
         protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
         {
             base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if ((AbilityCallType != Enumerators.AbilityCallType.Attack) || !isAttacker)
+            if ((AbilityCallType != Enumerators.AbilityCallType.ATTACK) || !isAttacker)
                 return;
 
             switch (StatType)
             {
-                case Enumerators.StatType.Health:
+                case Enumerators.StatType.HEALTH:
                     AbilityUnitOwner.BuffedHp += Value;
                     AbilityUnitOwner.CurrentHp += Value;
                     break;
-                case Enumerators.StatType.Damage:
+                case Enumerators.StatType.DAMAGE:
                     AbilityUnitOwner.BuffedDamage += Value;
                     AbilityUnitOwner.CurrentDamage += Value;
                     break;

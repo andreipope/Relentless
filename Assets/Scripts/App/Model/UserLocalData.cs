@@ -21,7 +21,7 @@ namespace LoomNetwork.CZB.Data
 
         public void Reset()
         {
-            AppLanguage = Enumerators.Language.None;
+            AppLanguage = Enumerators.Language.NONE;
             LastSelectedDeckId = -1;
             OpenedFirstPack = false;
         }

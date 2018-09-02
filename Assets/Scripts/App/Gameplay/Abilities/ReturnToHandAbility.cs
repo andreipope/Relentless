@@ -62,7 +62,7 @@ namespace LoomNetwork.CZB
                     // STEP 4 - REARRANGE HANDS
                     GameplayManager.RearrangeHands();
 
-                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.ReturnToHandCardAbility, new object[] { PlayerCallerOfAbility, AbilityData, TargetUnit }));
+                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { PlayerCallerOfAbility, AbilityData, TargetUnit }));
                 },
                 null,
                 2f);

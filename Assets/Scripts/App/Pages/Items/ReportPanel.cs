@@ -72,49 +72,49 @@ namespace LoomNetwork.CZB
             ReportViewBase reportView = null;
             switch (report.ActionType)
             {
-                case Enumerators.ActionType.AttackPlayerByCreature:
+                case Enumerators.ActionType.ATTACK_PLAYER_BY_CREATURE:
                     reportView = new ReportViewBaseAttackPlayerByCreature(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.AttackCreatureByCreature:
+                case Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE:
                     reportView = new ReportViewBaseAttackCreatureByCreature(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.AttackCreatureBySkill:
+                case Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL:
                     reportView = new GameplayActionReportAttackCreatureBySkill(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.AttackPlayerBySkill:
+                case Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL:
                     reportView = new GameplayActionReportAttackPlayerBySkill(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.HealPlayerBySkill:
+                case Enumerators.ActionType.HEAL_PLAYER_BY_SKILL:
                     reportView = new GameplayActionReportHealPlayerBySkill(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.HealCreatureBySkill:
+                case Enumerators.ActionType.HEAL_CREATURE_BY_SKILL:
                     reportView = new GameplayActionReportHealCreatureBySkill(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.AttackCreatureByAbility:
+                case Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY:
                     reportView = new GameplayActionReportAttackCreatureByAbility(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.AttackPlayerByAbility:
+                case Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY:
                     reportView = new GameplayActionReportAttackPlayerByAbility(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.HealPlayerByAbility:
+                case Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY:
                     reportView = new GameplayActionReportHealPlayerByAbility(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.HealCreatureByAbility:
+                case Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY:
                     reportView = new GameplayActionReportHealCreatureByAbility(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.PlayUnitCard:
+                case Enumerators.ActionType.PLAY_UNIT_CARD:
                     reportView = new GameplayActionReportPlayUnitCard(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.PlaySpellCard:
+                case Enumerators.ActionType.PLAY_SPELL_CARD:
                     reportView = new GameplayActionReportPlaySpellCard(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.StunCreatureByAbility:
+                case Enumerators.ActionType.STUN_CREATURE_BY_ABILITY:
                     reportView = new GameplayActionReportStunCreatureByAbility(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.StunUnitBySkill:
+                case Enumerators.ActionType.STUN_UNIT_BY_SKILL:
                     reportView = new GameplayActionReportStunCreatureBySkill(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
-                case Enumerators.ActionType.SummonUnitCard:
+                case Enumerators.ActionType.SUMMON_UNIT_CARD:
                     reportView = new GameplayActionReportPlayUnitCard(PlayedCardPrefab, _selfPanel.transform, report);
                     break;
             }

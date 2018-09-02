@@ -234,7 +234,7 @@ namespace LoomNetwork.CZB
             }
 
             _packsObject.GetComponent<DragableObject>().Locked = _lock;
-            _dataManager.SaveCache(Enumerators.CacheDataType.CollectionData);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
             _cardsTurned = 0;
         }
 
@@ -292,13 +292,13 @@ namespace LoomNetwork.CZB
 
         private void PackItemAnimationComplete()
         {
-            CardPack cardPack = new CardPack(Enumerators.CardPackType.Default);
+            CardPack cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
 
             if (!_dataManager.CachedUserLocalData.OpenedFirstPack)
             {
                 _activatedTemporaryPack = true;
                 _dataManager.CachedUserLocalData.OpenedFirstPack = true;
-                _dataManager.SaveCache(Enumerators.CacheDataType.UserLocalData);
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             }
 
             List<Card> cardsInPack = cardPack.OpenPack(_activatedTemporaryPack);
@@ -313,11 +313,11 @@ namespace LoomNetwork.CZB
                 string cardSetName = _cardsController.GetSetOfCard(card);
 
                 GameObject go = null;
-                if (card.CardKind == Enumerators.CardKind.Creature)
+                if (card.CardKind == Enumerators.CardKind.CREATURE)
                 {
                     go = Object.Instantiate(_cardCreaturePrefab);
                 }
-                else if (card.CardKind == Enumerators.CardKind.Spell)
+                else if (card.CardKind == Enumerators.CardKind.SPELL)
                 {
                     go = Object.Instantiate(_cardSpellPrefab);
                 }
@@ -332,7 +332,7 @@ namespace LoomNetwork.CZB
                 boardCard.Init(card);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.Transform.position = _centerPos;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerDefault;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.Default.id;
                 boardCard.GameObject.GetComponent<SortingGroup>().sortingOrder = 1;
 
                 Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
@@ -386,7 +386,7 @@ namespace LoomNetwork.CZB
 
         private void BackButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();
             if (_cardsContainer != null)
             {
@@ -398,14 +398,14 @@ namespace LoomNetwork.CZB
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Shop);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void CollectionButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Collection);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
         }
 
         private void PackOpenButtonHandler(GameObject go)

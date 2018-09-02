@@ -129,7 +129,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Air);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR);
                     }
                 });
             _lifeToggle.onValueChanged.AddListener(
@@ -137,7 +137,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Life);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE);
                     }
                 });
             _waterToggle.onValueChanged.AddListener(
@@ -145,7 +145,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Water);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER);
                     }
                 });
             _toxicTogggle.onValueChanged.AddListener(
@@ -153,7 +153,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Toxic);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC);
                     }
                 });
             _fireToggle.onValueChanged.AddListener(
@@ -161,7 +161,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Fire);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE);
                     }
                 });
             _earthToggle.onValueChanged.AddListener(
@@ -169,7 +169,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Earth);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH);
                     }
                 });
             _itemsToggle.onValueChanged.AddListener(
@@ -177,7 +177,7 @@ namespace LoomNetwork.CZB
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.Item);
+                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM);
                     }
                 });
 
@@ -215,7 +215,7 @@ namespace LoomNetwork.CZB
 
         public void MoveCardsPage(int direction)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
             CalculateNumberOfPages();
 
             _currentElementPage += direction;
@@ -294,12 +294,12 @@ namespace LoomNetwork.CZB
 
                 GameObject go = null;
                 BoardCard boardCard = null;
-                if (card.CardKind == Enumerators.CardKind.Creature)
+                if (card.CardKind == Enumerators.CardKind.CREATURE)
                 {
                     go = Object.Instantiate(CardCreaturePrefab);
                     boardCard = new UnitBoardCard(go);
                 }
-                else if (card.CardKind == Enumerators.CardKind.Spell)
+                else if (card.CardKind == Enumerators.CardKind.SPELL)
                 {
                     go = Object.Instantiate(CardSpellPrefab);
                     boardCard = new SpellBoardCard(go);
@@ -310,7 +310,7 @@ namespace LoomNetwork.CZB
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.Transform.position = CardPositions[i % CardPositions.Count].position;
                 boardCard.Transform.localScale = Vector3.one * 0.32f;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.KLayerGameUI1;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
 
                 _createdBoardCards.Add(boardCard);
             }
@@ -385,7 +385,7 @@ namespace LoomNetwork.CZB
 
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.ChangeScreen, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
             _currentSet = type;
             LoadCards(0, type);
         }
@@ -402,31 +402,31 @@ namespace LoomNetwork.CZB
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.Shop);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void OpenButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PackOpener);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
         private void BackButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MainMenu);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
 
         private void ArrowLeftButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(-1);
         }
 
         private void ArrowRightButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.Click, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(1);
         }
 

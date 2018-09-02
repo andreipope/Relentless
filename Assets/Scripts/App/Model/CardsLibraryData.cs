@@ -92,7 +92,7 @@ namespace LoomNetwork.CZB.Data
 
                         _allCards.Add(card);
 
-                        if (card.CardSetType != Enumerators.SetType.Others)
+                        if (card.CardSetType != Enumerators.SetType.OTHERS)
                         {
                             card.Id = id;
                         }

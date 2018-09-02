@@ -3,6 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
@@ -12,7 +13,28 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public MenuButtonToggleEvent OnValueChangedEvent = new MenuButtonToggleEvent();
 
     [SerializeField]
-    protected Image OnHoverOverlayToggleDisabled, OnClickOverlayToggleDisabled, OnHoverOverlayToggleEnabled, OnClickOverlayToggleEnabled, ButtonEnabled, ButtonDisabled;
+    [FormerlySerializedAs("onHoverOverlayToggleDisabled")]
+    protected Image OnHoverOverlayToggleDisabled;
+
+    [SerializeField]
+    [FormerlySerializedAs("ClickOverlayToggleDisabled")]
+    protected Image OnClickOverlayToggleDisabled;
+
+    [SerializeField]
+    [FormerlySerializedAs("onHoverOverlayToggleEnabled")]
+    protected Image OnHoverOverlayToggleEnabled;
+
+    [SerializeField]
+    [FormerlySerializedAs("onClickOverlayToggleEnabled")]
+    protected Image OnClickOverlayToggleEnabled;
+
+    [SerializeField]
+    [FormerlySerializedAs("buttonEnabled")]
+    protected Image ButtonEnabled;
+
+    [SerializeField]
+    [FormerlySerializedAs("buttonDisabled")]
+    protected Image ButtonDisabled;
 
     public void OnPointerDown(PointerEventData eventData)
     {

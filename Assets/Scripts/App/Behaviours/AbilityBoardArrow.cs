@@ -23,8 +23,6 @@ namespace LoomNetwork.CZB
 
         private int _onEscapeInputIndex;
 
-        private bool _isAbilitySecondTouchActivated = false;
-
         public event Action<BoardUnit> OnCardSelectedEvent;
 
         public event Action<BoardUnit> OnCardUnselectedevent;
@@ -42,11 +40,15 @@ namespace LoomNetwork.CZB
             if (unit.CurrentHp <= 0)
                 return;
 
-            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.PlayerCard) && unit.GameObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.OpponentCard) && unit.GameObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
+            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
+                unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
+                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) &&
+                unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
+                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if ((TargetUnitType == Enumerators.CardType.None) || (unit.InitialUnitType == TargetUnitType))
+                if ((TargetUnitType == Enumerators.CardType.NONE) || (unit.InitialUnitType == TargetUnitType))
                 {
-                    if ((TargetUnitStatusType == Enumerators.UnitStatusType.None) || (unit.UnitStatus == TargetUnitStatusType))
+                    if ((TargetUnitStatusType == Enumerators.UnitStatusType.NONE) || (unit.UnitStatus == TargetUnitStatusType))
                     {
                         if (SelfBoardCreature != unit)
                         {
@@ -84,7 +86,7 @@ namespace LoomNetwork.CZB
             if (player.Hp <= 0)
                 return;
 
-            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.Player) && player.AvatarObject.CompareTag(Constants.KTagPlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.Opponent) && player.AvatarObject.CompareTag(Constants.KTagOpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.All))
+            if ((PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(SRTags.PlayerOwned)) || (PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(SRTags.OpponentOwned)) || PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);
@@ -122,9 +124,9 @@ namespace LoomNetwork.CZB
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Mouse, 0, OnMouseButtonUpHandler, null, null);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Mouse, 1, OnRightMouseButtonUpHandler, null, null);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.Keyboard, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
+                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler, null, null);
+                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler, null, null);
+                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler, null);
                 },
                 null,
                 Time.fixedDeltaTime);

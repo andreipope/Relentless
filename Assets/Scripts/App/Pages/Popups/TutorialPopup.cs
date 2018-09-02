@@ -179,12 +179,12 @@ namespace LoomNetwork.CZB
 
         private void SkipButtonOnClickHandler()
         {
-            _tutorialManager.SkipTutorial(Enumerators.AppState.DeckSelection);
+            _tutorialManager.SkipTutorial(Enumerators.AppState.DECK_SELECTION);
         }
 
         private void BackButtonOnClickHandler()
         {
-            _tutorialManager.SkipTutorial(Enumerators.AppState.MainMenu);
+            _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }
 }

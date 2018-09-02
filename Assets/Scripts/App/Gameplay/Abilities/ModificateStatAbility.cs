@@ -43,16 +43,16 @@ namespace LoomNetwork.CZB
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.Character:
+                case Enumerators.AffectObjectType.CHARACTER:
                 {
-                    if ((TargetUnit.Card.LibraryCard.CardSetType == SetType) || (SetType == Enumerators.SetType.None))
+                    if ((TargetUnit.Card.LibraryCard.CardSetType == SetType) || (SetType == Enumerators.SetType.NONE))
                     {
-                        if (StatType == Enumerators.StatType.Damage)
+                        if (StatType == Enumerators.StatType.DAMAGE)
                         {
                             TargetUnit.BuffedDamage += Value;
                             TargetUnit.CurrentDamage += Value;
                         }
-                        else if (StatType == Enumerators.StatType.Health)
+                        else if (StatType == Enumerators.StatType.HEALTH)
                         {
                             TargetUnit.BuffedHp += Value;
                             TargetUnit.CurrentHp += Value;
