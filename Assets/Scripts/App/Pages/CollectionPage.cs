@@ -276,18 +276,14 @@ namespace LoomNetwork.CZB
             for (int i = startIndex; i < endIndex; i++)
             {
                 if (i >= cards.Count)
-                {
                     break;
-                }
 
                 Card card = cards[i];
                 CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)
-                {
                     continue;
-                }
 
                 GameObject go = null;
                 BoardCard boardCard = null;
@@ -357,14 +353,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
             {
                 GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                if (i == (int)_currentSet)
-                {
-                    c.SetActive(true);
-                }
-                else
-                {
-                    c.SetActive(false);
-                }
+                c.SetActive(i == (int)_currentSet);
             }
         }
 

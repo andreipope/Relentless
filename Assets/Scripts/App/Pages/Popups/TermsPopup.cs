@@ -9,8 +9,6 @@ namespace LoomNetwork.CZB
 {
     public class TermsPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -38,8 +36,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-
             if (Self == null)
                 return;
 

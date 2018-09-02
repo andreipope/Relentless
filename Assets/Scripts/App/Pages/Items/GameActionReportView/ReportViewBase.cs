@@ -52,8 +52,8 @@ namespace LoomNetwork.CZB
             PreviewImage = SelfObject.transform.Find("Image").GetComponent<Image>();
 
             OnBehaviourHandler behaviour = SelfObject.GetComponent<OnBehaviourHandler>();
-            behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
-            behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
+            behaviour.PointerEntered += PointerEnteredHandler;
+            behaviour.PointerExited += PointerExitedHandler;
 
             PlayerAvatarPreviewPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
             AttackingHealthPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
@@ -65,12 +65,12 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public virtual void OnPointerExitEventHandler(PointerEventData obj)
+        public virtual void PointerExitedHandler(PointerEventData obj)
         {
             _reportActionPreviewPanel.SetActive(false);
         }
 
-        public virtual void OnPointerEnterEventHandler(PointerEventData obj)
+        public virtual void PointerEnteredHandler(PointerEventData obj)
         {
             _reportActionPreviewPanel.SetActive(true);
         }
@@ -181,7 +181,8 @@ namespace LoomNetwork.CZB
 
         private void CreatePreviewPanel()
         {
-            _reportActionPreviewPanel = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView")); // new GameObject(gameAction.actionType.ToString());
+            _reportActionPreviewPanel =
+                Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));
             _reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
             _reportActionPreviewPanel.SetActive(false);
 

@@ -1,15 +1,17 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace LoomNetwork.CZB
 {
     public class AnimationEventTriggering : MonoBehaviour
     {
-        public Action<string> OnAnimationEvent;
+        [FormerlySerializedAs("OnAnimationEvent")]
+        public Action<string> AnimationEventTriggered;
 
         public void AnimationEvent(string animationName)
         {
-            OnAnimationEvent?.Invoke(animationName);
+            AnimationEventTriggered?.Invoke(animationName);
         }
     }
 }

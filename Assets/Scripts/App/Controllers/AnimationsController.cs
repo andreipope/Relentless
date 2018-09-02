@@ -64,7 +64,6 @@ namespace LoomNetwork.CZB
                 partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
             }
 
-            // Debug.LogError(originalPos + " -> " + target.transform.position);
             if (isCreatureAttacker)
             {
                 Transform shieldObject = source.transform.Find("Other/Shield");
@@ -85,16 +84,13 @@ namespace LoomNetwork.CZB
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
-                    // Debug.LogError(originalPos + " =? " + target.transform.position);
                     DOTween.Sequence().Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f)).Append(target.GetComponent<Image>().DOColor(Color.white, 0.25f)).Play();
 
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
 
-                    // target.transform.DOPunchPosition(new Vector3(0, 1, 0), 0.5f);
                     source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
-                            // Debug.LogError(originalPos + " <- " + target.transform.position);
                             onCompleteCallback?.Invoke();
 
                             sortingGroup.sortingOrder = oldSortingOrder;

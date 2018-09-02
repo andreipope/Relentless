@@ -32,7 +32,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            // Time.timeScale = 1;
             if (Self == null)
                 return;
 
@@ -62,8 +61,6 @@ namespace LoomNetwork.CZB
         public void Show(object data)
         {
             Show();
-
-            // _text.text = (string)data;
             _callback = (Action)data;
         }
 

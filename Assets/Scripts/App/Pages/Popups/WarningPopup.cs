@@ -8,7 +8,7 @@ namespace LoomNetwork.CZB
 {
     public class WarningPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
+        public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -16,12 +16,10 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI _text;
 
-        // private MenuButton _button;
         private ButtonShiftingContent _gotItButton;
 
         public GameObject Self { get; private set; }
 
-        // private TextMeshProUGUI _buttonText;
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -34,7 +32,7 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
+            PopupHiding?.Invoke();
 
             if (Self == null)
                 return;
@@ -53,10 +51,7 @@ namespace LoomNetwork.CZB
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            // _button = _selfPage.transform.Find("Button").GetComponent<MenuButton>();
             _gotItButton = Self.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
-
-            // _button.onClickEvent.AddListener(Hide);
             _gotItButton.onClick.AddListener(CloseButtonHandler);
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();

@@ -76,8 +76,8 @@ namespace LoomNetwork.CZB
             SpellCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
             OpponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
 
-            _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
-            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.GameStarted += GameStartedHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
 
             _indexOfCard = -1;
         }
@@ -120,7 +120,7 @@ namespace LoomNetwork.CZB
             if (!CardDistribution)
                 return;
 
-            _gameplayManager.IsPrepairingEnded = true;
+            _gameplayManager.IsPreparingEnded = true;
 
             GameClient.Get<ICameraManager>().FadeOut(immediately: true);
 
@@ -840,12 +840,12 @@ namespace LoomNetwork.CZB
                 2f);
         }
 
-        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             CardDistribution = false;
         }
 
-        private void OnGameStartedEventHandler()
+        private void GameStartedHandler()
         {
             _cardInstanceId = 0;
 

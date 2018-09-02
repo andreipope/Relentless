@@ -11,7 +11,7 @@ namespace LoomNetwork.CZB
 {
     public class YouLosePopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
+        public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -23,7 +23,6 @@ namespace LoomNetwork.CZB
 
         public GameObject Self { get; private set; }
 
-        // private TextMeshProUGUI _nameHeroText;
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -36,7 +35,7 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
+            PopupHiding?.Invoke();
             GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
             if (Self == null)
@@ -58,7 +57,6 @@ namespace LoomNetwork.CZB
 
             _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
 
-            // _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
             _buttonOk = Self.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
@@ -70,9 +68,6 @@ namespace LoomNetwork.CZB
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.HeroesParsed[heroId];
             string heroName = currentPlayerHero.Element.ToLower();
             _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
-
-            // heroName = Utilites.FirstCharToUpper(heroName);
-            // _nameHeroText.text = heroName + " Hero";
         }
 
         public void Show(object data)

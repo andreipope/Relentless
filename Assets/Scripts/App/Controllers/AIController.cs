@@ -60,8 +60,8 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
 
-            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
-            _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
+            _gameplayManager.GameStarted += GameStartedHandler;
         }
 
         public void Dispose()
@@ -104,8 +104,6 @@ namespace LoomNetwork.CZB
                     for (int i = 0; i < card.Amount; i++)
                     {
                         playerDeck.Add(card.CardName);
-
-                        // playerDeck.Add("Tainted Goo");
                     }
                 }
             }
@@ -114,8 +112,8 @@ namespace LoomNetwork.CZB
 
             _battlegroundController.UpdatePositionOfCardsInOpponentHand();
 
-            _gameplayManager.OpponentPlayer.OnStartTurnEvent += OnStartTurnEventHandler;
-            _gameplayManager.OpponentPlayer.OnEndTurnEvent += OnEndTurnEventHandler;
+            _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
+            _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
         }
 
         private void SetAiTypeByDeck()
@@ -124,12 +122,12 @@ namespace LoomNetwork.CZB
             _aiType = (Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type);
         }
 
-        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             _aiBrainCancellationTokenSource?.Cancel();
         }
 
-        private void OnGameStartedEventHandler()
+        private void GameStartedHandler()
         {
             if (!_gameplayManager.IsTutorial)
             {
@@ -137,9 +135,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private async void OnStartTurnEventHandler()
+        private async void TurnStartedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer) || !_gameplayManager.GameStarted)
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer) || !_gameplayManager.IsGameStarted)
             {
                 _aiBrainCancellationTokenSource?.Cancel();
                 return;
@@ -159,7 +157,7 @@ namespace LoomNetwork.CZB
             Debug.Log("brain finished");
         }
 
-        private void OnEndTurnEventHandler()
+        private void TurnEndedHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer))
                 return;
@@ -218,9 +216,6 @@ namespace LoomNetwork.CZB
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
-
-                // if (Constants.DEV_MODE)
-                // break;
             }
 
             foreach (WorkingCard card in GetSpellCardsInHand())
@@ -232,9 +227,6 @@ namespace LoomNetwork.CZB
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
-
-                // if (Constants.DEV_MODE)
-                // break;
             }
 
             if (wasAction)
@@ -247,7 +239,6 @@ namespace LoomNetwork.CZB
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
-            // return;
             List<BoardUnit> unitsOnBoard = new List<BoardUnit>();
             List<BoardUnit> alreadyUsedUnits = new List<BoardUnit>();
 
@@ -334,7 +325,6 @@ namespace LoomNetwork.CZB
         // ai step 3
         private async Task UsePlayerSkills(CancellationToken cancellationToken)
         {
-            // return;
             bool wasAction = false;
             if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
@@ -423,9 +413,6 @@ namespace LoomNetwork.CZB
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits:
-                    // if (libraryCard.abilities.Find(x => x.abilityType == Enumerators.AbilityType.CARD_RETURN) != null)
-                    // if (target.Count == 0)
-                    // return false;
                     _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                     _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 
@@ -501,10 +488,6 @@ namespace LoomNetwork.CZB
                                 _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null);
                             }
                         });
-
-                    // Debug.Log("UpdatePositionOfBoardUnitsOfOpponent");
-
-                    // _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
                     break;
                 }
                 case Enumerators.CardKind.SPELL: {
@@ -1071,7 +1054,6 @@ namespace LoomNetwork.CZB
                 default: return;
             }
 
-            // if (selectedObjectType != Enumerators.AffectObjectType.NONE)
             skill.StartDoSkill();
 
             if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)

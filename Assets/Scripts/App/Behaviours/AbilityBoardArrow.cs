@@ -23,17 +23,17 @@ namespace LoomNetwork.CZB
 
         private int _onEscapeInputIndex;
 
-        public event Action<BoardUnit> OnCardSelectedEvent;
+        public event Action<BoardUnit> CardSelected;
 
-        public event Action<BoardUnit> OnCardUnselectedevent;
+        public event Action<BoardUnit> CardUnselected;
 
-        public event Action<Player> OnPlayerSelectedEvent;
+        public event Action<Player> PlayerSelected;
 
-        public event Action<Player> OnPlayerUnselectedEvent;
+        public event Action<Player> PlayerUnselected;
 
-        public event Action OnInputEndEvent;
+        public event Action InputEnded;
 
-        public event Action OnInputCancelEvent;
+        public event Action InputCanceled;
 
         public override void OnCardSelected(BoardUnit unit)
         {
@@ -60,7 +60,7 @@ namespace LoomNetwork.CZB
                             SelectedPlayer = null;
                             SelectedCard.SetSelectedUnit(true);
 
-                            OnCardSelectedEvent?.Invoke(unit);
+                            CardSelected?.Invoke(unit);
                         }
                     }
                 }
@@ -72,7 +72,7 @@ namespace LoomNetwork.CZB
             if (SelectedCard == creature)
             {
                 SelectedCard.SetSelectedUnit(false);
-                OnCardUnselectedevent?.Invoke(creature);
+                CardUnselected?.Invoke(creature);
             }
 
             SelectedCard = null;
@@ -90,7 +90,7 @@ namespace LoomNetwork.CZB
 
                 SelectedCard = null;
                 SelectedPlayer.SetGlowStatus(true);
-                OnPlayerSelectedEvent?.Invoke(player);
+                PlayerSelected?.Invoke(player);
             }
         }
 
@@ -102,7 +102,7 @@ namespace LoomNetwork.CZB
                 SelectedCard = null;
                 SelectedPlayer.SetGlowStatus(false);
 
-                OnPlayerUnselectedEvent?.Invoke(player);
+                PlayerUnselected?.Invoke(player);
             }
 
             SelectedPlayer = null;
@@ -139,7 +139,7 @@ namespace LoomNetwork.CZB
             if (StartedDrag)
             {
                 StartedDrag = false;
-                OnInputEndEvent?.Invoke();
+                InputEnded?.Invoke();
             }
         }
 
@@ -148,7 +148,7 @@ namespace LoomNetwork.CZB
             if (StartedDrag)
             {
                 StartedDrag = false;
-                OnInputCancelEvent?.Invoke();
+                InputCanceled?.Invoke();
             }
         }
     }

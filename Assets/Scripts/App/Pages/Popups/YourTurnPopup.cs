@@ -9,8 +9,6 @@ namespace LoomNetwork.CZB
 {
     public class YourTurnPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -32,7 +30,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
             GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
             if (Self == null)

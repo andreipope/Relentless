@@ -12,9 +12,9 @@ namespace LoomNetwork.CZB
         {
         }
 
-        protected override void UnitGotDamageEventHandler(object from)
+        protected override void UnitDamagedHandler(object from)
         {
-            base.UnitGotDamageEventHandler(from);
+            base.UnitDamagedHandler(from);
 
             if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;

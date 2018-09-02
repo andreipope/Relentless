@@ -18,8 +18,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                     "ws://gamechain-2.dappchains.com:9999/queryws",
                     "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket"
+                    "ws://gamechain-2.dappchains.com:9999/queryws",
+                    "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
                 )
             },
@@ -30,8 +30,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                     "ws://gamechain-2.dappchains.com:9999/queryws",
                     "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket"
+                    "ws://gamechain-2.dappchains.com:9999/queryws",
+                    "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
                 )
             }

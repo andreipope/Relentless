@@ -37,8 +37,6 @@ namespace LoomNetwork.CZB
             {
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;
-
-                // CreateVFX(abilityUnitOwner.transform.position, true, 5f);
             }
         }
     }

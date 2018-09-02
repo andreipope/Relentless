@@ -349,12 +349,12 @@ namespace LoomNetwork.CZB {
         private void ContinueButtonOnClickHandler() {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            OverlordAbilitySelectionPopup.OnHidePopupEvent += AbilityPopupClosedEvent;
+            _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
             _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_currentOverlordObject.SelfHero);
         }
 
         private void AbilityPopupClosedEvent() {
-            OverlordAbilitySelectionPopup.OnHidePopupEvent -= AbilityPopupClosedEvent;
+            _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
             _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
             _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }

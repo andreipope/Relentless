@@ -17,14 +17,11 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI _text;
 
-        // private MenuButton _button1,
-        // _button2;
-        private ButtonShiftingContent // _closeButton,
-            _buttonYes, _buttonNo;
+        private ButtonShiftingContent _buttonYes, _buttonNo;
 
         private TextMeshProUGUI _buttonText;
 
-        public event Action<bool> ConfirmationEvent;
+        public event Action<bool> ConfirmationReceived;
 
         public GameObject Self { get; private set; }
 
@@ -61,9 +58,6 @@ namespace LoomNetwork.CZB
             _buttonNo = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
             _backButton = Self.transform.Find("Button_Back").GetComponent<Button>();
 
-            // _closeButton = _selfPage.transform.Find("CloseButton").GetComponent<MenuButtonNoGlow>();
-
-            // _closeButton.onClickEvent.AddListener(Hide);
             _buttonYes.onClick.AddListener(ConfirmationButtonHandler);
             _buttonNo.onClick.AddListener(NoButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonHandler);
@@ -96,20 +90,20 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            ConfirmationEvent?.Invoke(true);
+            ConfirmationReceived?.Invoke(true);
 
             Hide();
         }
 
         private void NoButtonOnClickHandler()
         {
-            ConfirmationEvent?.Invoke(false);
+            ConfirmationReceived?.Invoke(false);
             _uiManager.HidePopup<QuestionPopup>();
         }
 
         private void BackButtonHandler()
         {
-            ConfirmationEvent = null;
+            ConfirmationReceived = null;
             Hide();
         }
     }

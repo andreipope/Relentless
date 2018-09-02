@@ -15,9 +15,9 @@ namespace LoomNetwork.CZB
             Value = ability.Value;
         }
 
-        protected override void UnitHPChangedEventHandler()
+        protected override void UnitHpChangedHandler()
         {
-            base.UnitHPChangedEventHandler();
+            base.UnitHpChangedHandler();
 
             if (!_wasChanged)
             {

@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
 
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
-            GameClient.Get<IGameplayManager>().OnGameEndedEvent += OnGameEndedEventHandler;
+            GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
 
         public void SetGoo(int gooValue)
@@ -144,8 +144,6 @@ namespace LoomNetwork.CZB
             }
 
             _arrowObject.transform.DORotate(Vector3.forward * targetRotation, 1f);
-
-            // _arrowObject.transform.localEulerAngles = Vector3.forward * (90 - _meterArrowStep);
         }
 
         private void CreateOverflow()
@@ -193,14 +191,14 @@ namespace LoomNetwork.CZB
             GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT);
         }
 
-        private void OnGameEndedEventHandler(Enumerators.EndGameType obj)
+        private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             StopOverfowSounds();
             _gooMeterObject.SetActive(false);
 
             _isInOverflow = false;
 
-            GameClient.Get<IGameplayManager>().OnGameEndedEvent -= OnGameEndedEventHandler;
+            GameClient.Get<IGameplayManager>().GameEnded -= GameEndedHandler;
         }
 
         public struct GooBottleItem

@@ -71,7 +71,6 @@ namespace LoomNetwork.CZB
 
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
 
-            // _selfPage.transform.SetParent(GameObject.Find("CanvasTutorial").transform, false);
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _bubbleObject = Self.transform.Find("Description").gameObject;
@@ -140,8 +139,6 @@ namespace LoomNetwork.CZB
         public void ShowTutorialFocus(int step)
         {
             HideTutorialFocus();
-
-            // _focusObjects[step].SetActive(true);
             Self.transform.Find("FocusObjects/Step_" + step).gameObject.SetActive(true);
         }
 
@@ -157,8 +154,6 @@ namespace LoomNetwork.CZB
 
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
-
-            // _skipButton.gameObject.SetActive(false);
         }
 
         public void ShowNextButton()
@@ -169,8 +164,6 @@ namespace LoomNetwork.CZB
         public void ShowQuestion()
         {
             _playButton.gameObject.SetActive(true);
-
-            // _skipButton.gameObject.SetActive(true);
         }
 
         private void SkipButtonOnClickHandler()

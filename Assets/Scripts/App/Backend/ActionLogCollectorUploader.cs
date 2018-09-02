@@ -20,8 +20,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
-            _gameplayManager.OnGameInitializedEvent += GameplayManagerOnGameInitializedEvent;
-            _gameplayManager.OnGameEndedEvent += GameplayManagerOnGameEndedEvent;
+            _gameplayManager.GameInitialized += GameplayManagerGameInitialized;
+            _gameplayManager.GameEnded += GameplayManagerGameEnded;
         }
 
         public void Update()
@@ -34,7 +34,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             _opponentEventListener?.Dispose();
         }
 
-        private void GameplayManagerOnGameEndedEvent(Enumerators.EndGameType obj)
+        private void GameplayManagerGameEnded(Enumerators.EndGameType obj)
         {
             _playerEventListener?.OnGameEndedEventHandler(obj);
             _playerEventListener?.Dispose();
@@ -43,7 +43,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             _analyticsManager.NotifyFinishedMatch(obj);
         }
 
-        private void GameplayManagerOnGameInitializedEvent()
+        private void GameplayManagerGameInitialized()
         {
             _playerEventListener?.Dispose();
             _opponentEventListener?.Dispose();
@@ -74,16 +74,16 @@ namespace LoomNetwork.CZB.BackendCommunication
                 if (!dataManager.BetaConfig.SaveTurnData)
                     return;
 
-                Player.OnEndTurnEvent += OnEndTurnEventHandler;
-                Player.OnStartTurnEvent += OnStartTurnEventHandler;
-                Player.PlayerHpChangedEvent += OnPlayerHPChangedEventHandler;
-                Player.PlayerGooChangedEvent += OnPlayerGooChangedEventHandler;
-                Player.PlayerVialGooChangedEvent += OnPlayerVialGooChangedEventHandler;
-                Player.DeckChangedEvent += OnDeckChangedEventHandler;
-                Player.HandChangedEvent += OnHandChangedEventHandler;
-                Player.GraveyardChangedEvent += OnGraveyardChangedEventHandler;
-                Player.BoardChangedEvent += OnBoardChangedEventHandler;
-                Player.CardPlayedEvent += OnCardPlayedEventHandler;
+                Player.TurnEnded += TurnEndedHandler;
+                Player.TurnStarted += TurnStartedHandler;
+                Player.PlayerHpChanged += PlayerHpChangedHandler;
+                Player.PlayerGooChanged += PlayerGooChangedHandler;
+                Player.PlayerVialGooChanged += PlayerVialGooChangedHandler;
+                Player.DeckChanged += DeckChangedHandler;
+                Player.HandChanged += HandChangedHandler;
+                Player.GraveyardChanged += GraveyardChangedHandler;
+                Player.BoardChanged += BoardChangedHandler;
+                Player.CardPlayed += CardPlayedHandler;
             }
 
             public Player Player { get; }
@@ -107,64 +107,64 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             private void UnsubscribeFromPlayerEvents()
             {
-                Player.OnEndTurnEvent -= OnEndTurnEventHandler;
-                Player.OnStartTurnEvent -= OnStartTurnEventHandler;
-                Player.PlayerHpChangedEvent -= OnPlayerHPChangedEventHandler;
-                Player.PlayerGooChangedEvent -= OnPlayerGooChangedEventHandler;
-                Player.PlayerVialGooChangedEvent -= OnPlayerVialGooChangedEventHandler;
-                Player.DeckChangedEvent -= OnDeckChangedEventHandler;
-                Player.HandChangedEvent -= OnHandChangedEventHandler;
-                Player.GraveyardChangedEvent -= OnGraveyardChangedEventHandler;
-                Player.BoardChangedEvent -= OnBoardChangedEventHandler;
-                Player.CardPlayedEvent -= OnCardPlayedEventHandler;
+                Player.TurnEnded -= TurnEndedHandler;
+                Player.TurnStarted -= TurnStartedHandler;
+                Player.PlayerHpChanged -= PlayerHpChangedHandler;
+                Player.PlayerGooChanged -= PlayerGooChangedHandler;
+                Player.PlayerVialGooChanged -= PlayerVialGooChangedHandler;
+                Player.DeckChanged -= DeckChangedHandler;
+                Player.HandChanged -= HandChangedHandler;
+                Player.GraveyardChanged -= GraveyardChangedHandler;
+                Player.BoardChanged -= BoardChangedHandler;
+                Player.CardPlayed -= CardPlayedHandler;
             }
 
-            private async void OnCardPlayedEventHandler(WorkingCard obj)
+            private async void CardPlayedHandler(WorkingCard obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("CardPlayed").Add("Card", WorkingCardToSimpleRepresentation(obj)));
             }
 
-            private async void OnBoardChangedEventHandler(int obj)
+            private async void BoardChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("BoardChanged").Add("CardsOnBoard", Player.CardsOnBoard.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
-            private async void OnGraveyardChangedEventHandler(int obj)
+            private async void GraveyardChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("GraveyardChanged").Add("CardsOnBoard", Player.CardsInGraveyard.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
-            private async void OnHandChangedEventHandler(int obj)
+            private async void HandChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("HandChanged").Add("CardsOnBoard", Player.CardsInHand.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
-            private async void OnDeckChangedEventHandler(int obj)
+            private async void DeckChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("DeckChanged").Add("CardsOnBoard", Player.CardsInDeck.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
-            private async void OnPlayerVialGooChangedEventHandler(int obj)
+            private async void PlayerVialGooChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("GooOnCurrentTurnChanged").Add("Goo", obj));
             }
 
-            private async void OnPlayerGooChangedEventHandler(int obj)
+            private async void PlayerGooChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("GooChanged").Add("Goo", obj));
             }
 
-            private async void OnPlayerHPChangedEventHandler(int obj)
+            private async void PlayerHpChangedHandler(int obj)
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("HealthChanged").Add("Health", obj));
             }
 
-            private async void OnStartTurnEventHandler()
+            private async void TurnStartedHandler()
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("TurnStart"));
             }
 
-            private async void OnEndTurnEventHandler()
+            private async void TurnEndedHandler()
             {
                 await UploadActionLogModel(CreateBasicActionLogModel("TurnEnd"));
             }

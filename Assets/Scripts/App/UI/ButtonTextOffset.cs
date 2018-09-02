@@ -1,12 +1,15 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ButtonTextOffset : Button
 {
+    [FormerlySerializedAs("buttonText")]
     public TextMeshProUGUI ButtonText;
 
+    [FormerlySerializedAs("textOffset")]
     public float TextOffset;
 
     private float _textStartY;

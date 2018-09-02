@@ -100,7 +100,7 @@ namespace LoomNetwork.CZB
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
-            _buttonArmy.OnClickEvent.AddListener(OnClickCollection);
+            _buttonArmy.Clicked.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
@@ -108,8 +108,8 @@ namespace LoomNetwork.CZB
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
             _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);
-            _buttonMusic.OnValueChangedEvent.AddListener(OnValueChangedEventMusic);
-            _buttonSfx.OnValueChangedEvent.AddListener(OnValueChangedEventSfx);
+            _buttonMusic.ValueChanged.AddListener(OnValueChangedEventMusic);
+            _buttonSfx.ValueChanged.AddListener(OnValueChangedEventSfx);
 
             _buttonArmy.Interactable = true;
 

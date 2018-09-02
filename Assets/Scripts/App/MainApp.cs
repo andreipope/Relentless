@@ -10,7 +10,7 @@ namespace LoomNetwork.CZB
     {
         public delegate void MainAppDelegate(object param);
 
-        public event MainAppDelegate OnLevelWasLoadedEvent;
+        public event MainAppDelegate LevelLoaded;
 
         public event Action LateUpdateEvent;
 
@@ -86,7 +86,7 @@ namespace LoomNetwork.CZB
         {
             if (Instance == this)
             {
-                OnLevelWasLoadedEvent?.Invoke(arg0.buildIndex);
+                LevelLoaded?.Invoke(arg0.buildIndex);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using UnityEngine;
@@ -48,9 +49,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnInputEndEventHandler()
+        protected override void InputEndedHandler()
         {
-            base.OnInputEndEventHandler();
+            base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {
@@ -58,31 +59,33 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             _turnsLength--;
 
-            if (_turnsLength <= 0)
+            if (_turnsLength > 0)
+                return;
+
+            switch (CardKind)
             {
-                if (CardKind == Enumerators.CardKind.CREATURE)
-                {
-                    // targetCreature.Card.DisconnectAbility((uint)abilityType);
-                    UnitOnDieEventHandler();
-                }
-                else if (CardKind == Enumerators.CardKind.SPELL)
-                {
-                    SpellOnUsedEventHandler();
+                case Enumerators.CardKind.CREATURE:
+                    UnitDiedHandler();
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    UsedHandler();
 
                     AbilitiesController.DeactivateAbility(ActivityId);
-                }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
-        protected override void OnStartTurnEventHandler()
+        protected override void TurnStartedHandler()
         {
-            base.OnStartTurnEventHandler();
+            base.TurnStartedHandler();
 
             if (_turnsLength > 0)
             {
@@ -95,11 +98,11 @@ namespace LoomNetwork.CZB
                 {
                     if (CardKind == Enumerators.CardKind.CREATURE)
                     {
-                        UnitOnDieEventHandler();
+                        UnitDiedHandler();
                     }
                     else if (CardKind == Enumerators.CardKind.SPELL)
                     {
-                        SpellOnUsedEventHandler();
+                        UsedHandler();
                         AbilitiesController.DeactivateAbility(ActivityId);
                     }
                 }

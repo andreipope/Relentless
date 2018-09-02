@@ -36,18 +36,18 @@ namespace LoomNetwork.CZB
 
         public void Dispose()
         {
-            MainApp.Instance.OnLevelWasLoadedEvent -= OnLevelWasLoadedHandler;
+            MainApp.Instance.LevelLoaded -= LevelLoadedHandler;
         }
 
         public void Init()
         {
             IsAutoSceneSwitcher = false;
 
-            MainApp.Instance.OnLevelWasLoadedEvent += OnLevelWasLoadedHandler;
+            MainApp.Instance.LevelLoaded += LevelLoadedHandler;
 
             _appStateManager = GameClient.Get<IAppStateManager>();
 
-            OnLevelWasLoadedHandler(null);
+            LevelLoadedHandler(null);
         }
 
         public void Update()
@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnLevelWasLoadedHandler(object param)
+        private void LevelLoadedHandler(object param)
         {
             CurrentAppStateScene = (Enumerators.AppState)Enum.Parse(typeof(Enumerators.AppState), SceneManager.GetActiveScene().name);
             _isLoadingStarted = false;

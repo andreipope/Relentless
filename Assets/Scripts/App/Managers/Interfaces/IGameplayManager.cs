@@ -5,15 +5,15 @@ namespace LoomNetwork.CZB
 {
     public interface IGameplayManager
     {
-        event Action OnGameStartedEvent;
+        event Action GameStarted;
 
-        event Action<Enumerators.EndGameType> OnGameEndedEvent;
+        event Action<Enumerators.EndGameType> GameEnded;
 
-        event Action OnGameInitializedEvent;
+        event Action GameInitialized;
 
-        event Action OnTurnStartedEvent;
+        event Action TurnStarted;
 
-        event Action OnTurnEndedEvent;
+        event Action TurnEnded;
 
         int PlayerDeckId { get; set; }
 
@@ -25,13 +25,13 @@ namespace LoomNetwork.CZB
 
         Player OpponentPlayer { get; set; }
 
-        bool GameStarted { get; set; }
+        bool IsGameStarted { get; set; }
 
-        bool GameEnded { get; set; }
+        bool IsGameEnded { get; set; }
 
         bool IsTutorial { get; set; }
 
-        bool IsPrepairingEnded { get; set; }
+        bool IsPreparingEnded { get; set; }
 
         int TutorialStep { get; set; }
 

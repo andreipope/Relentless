@@ -7,8 +7,6 @@ namespace LoomNetwork.CZB
 {
     public class PreparingForBattlePopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -28,8 +26,6 @@ namespace LoomNetwork.CZB
         public void Hide()
         {
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
-
-            OnHidePopupEvent?.Invoke();
 
             if (Self == null)
                 return;

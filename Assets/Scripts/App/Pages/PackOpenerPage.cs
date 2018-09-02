@@ -262,7 +262,7 @@ namespace LoomNetwork.CZB
                 {
                     _packOpenVfx = Object.Instantiate(_packOpenVfXprefab);
                     _packOpenVfx.transform.position = Utilites.CastVfxPosition(_centerPos);
-                    _packOpenVfx.GetComponent<AnimationEventTriggering>().OnAnimationEvent += OnPackOpenVFXAnimationEventHandler;
+                    _packOpenVfx.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += OnPackOpenVFXAnimationEventHandler;
 
                     Object.Destroy(go);
                     GameClient.Get<ITimerManager>().AddTimer(

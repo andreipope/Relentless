@@ -25,12 +25,12 @@ namespace LoomNetwork.CZB
 
             _eventHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
+            _eventHandler.Destroying += DestroyingHandler;
         }
 
-        public event Action SpellOnUsedEvent;
+        public event Action Used;
 
-        private void OnDestroyEventHandler(GameObject obj)
+        private void DestroyingHandler(GameObject obj)
         {
             if (TargetingArrow != null)
             {
@@ -38,7 +38,7 @@ namespace LoomNetwork.CZB
                 TargetingArrow = null;
             }
 
-            SpellOnUsedEvent?.Invoke();
+            Used?.Invoke();
         }
     }
 }

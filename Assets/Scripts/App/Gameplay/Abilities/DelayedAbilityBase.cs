@@ -25,9 +25,9 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
@@ -35,9 +35,9 @@ namespace LoomNetwork.CZB
             CountDelay();
         }
 
-        protected override void OnStartTurnEventHandler()
+        protected override void TurnStartedHandler()
         {
-            base.OnStartTurnEventHandler();
+            base.TurnStartedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.TURN)
                 return;

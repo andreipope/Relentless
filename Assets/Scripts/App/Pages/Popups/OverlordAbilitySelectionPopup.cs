@@ -15,7 +15,7 @@ namespace LoomNetwork.CZB
 
         private const int MaxSelectedAbilities = 2;
 
-        public static Action OnHidePopupEvent;
+        public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -119,7 +119,7 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            OnHidePopupEvent?.Invoke();
+            PopupHiding?.Invoke();
 
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }

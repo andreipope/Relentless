@@ -123,11 +123,8 @@ namespace LoomNetwork.CZB
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
 
-            // _timerManager.AddTimer((t) =>
-            // {
             DoAnimationOfWhoseTurn();
 
-            // return;
             _timerManager.AddTimer(
                 x =>
                 {
@@ -146,8 +143,6 @@ namespace LoomNetwork.CZB
                 },
                 null,
                 6f);
-
-            // }, null, 0.9f);
         }
 
         private void DoAnimationOfWhoseTurn()

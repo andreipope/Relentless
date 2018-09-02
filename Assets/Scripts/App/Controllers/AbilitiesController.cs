@@ -393,22 +393,19 @@ namespace LoomNetwork.CZB
                 // todo improve it bcoz can have queue of abilities with targets
                 activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
-                // Debug.Log(_abilitiesController.IsAbilityCanActivateTargetAtStart(item));
                 if (IsAbilityCanActivateTargetAtStart(item))
                 {
                     canUseAbility = true;
                 }
                 else
                 {
-                    // if (_abilitiesController.IsAbilityCanActivateWithoutTargetAtStart(item))
                     activeAbility.Ability.Activate();
                 }
             }
 
             if (kind == Enumerators.CardKind.SPELL)
             {
-                // if (isPlayer)
-                // currentSpellCard = card;
+
             }
             else
             {
@@ -490,10 +487,6 @@ namespace LoomNetwork.CZB
                                     _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                     _playerController.IsCardSelected = false;
-
-                                    // currentSpellCard = null;
-
-                                    // GameClient.Get<IUIManager>().GetPage<GameplayPage>().SetEndTurnButtonStatus(true);
                                 }
                                 else
                                 {
@@ -523,7 +516,6 @@ namespace LoomNetwork.CZB
                         _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
-                        // Debug.LogError(activeAbility.ability.abilityType.ToString() + " ABIITY WAS ACTIVATED!!!! on " + (target == null ? target : target.GetType()));
                         onCompleteCallback?.Invoke();
 
                         ResolveAllAbilitiesOnUnit(boardObject);

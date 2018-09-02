@@ -134,32 +134,30 @@ namespace LoomNetwork.CZB
             _deathAnimamtor.enabled = false;
             _deathAnimamtor.StopPlayback();
 
-            // _avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
-            // _avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
-            PlayerHpChangedEvent += PlayerHPChangedEventHandler;
+            PlayerHpChanged += PlayerHpChangedHandler;
 
             DamageByNoMoreCardsInDeck = 0;
         }
 
-        public event Action OnEndTurnEvent;
+        public event Action TurnStarted;
 
-        public event Action OnStartTurnEvent;
+        public event Action TurnEnded;
 
-        public event Action<int> PlayerHpChangedEvent;
+        public event Action<int> PlayerHpChanged;
 
-        public event Action<int> PlayerGooChangedEvent;
+        public event Action<int> PlayerGooChanged;
 
-        public event Action<int> PlayerVialGooChangedEvent;
+        public event Action<int> PlayerVialGooChanged;
 
-        public event Action<int> DeckChangedEvent;
+        public event Action<int> DeckChanged;
 
-        public event Action<int> HandChangedEvent;
+        public event Action<int> HandChanged;
 
-        public event Action<int> GraveyardChangedEvent;
+        public event Action<int> GraveyardChanged;
 
-        public event Action<int> BoardChangedEvent;
+        public event Action<int> BoardChanged;
 
-        public event Action<WorkingCard> CardPlayedEvent;
+        public event Action<WorkingCard> CardPlayed;
 
         public GameObject PlayerObject { get; }
 
@@ -177,7 +175,7 @@ namespace LoomNetwork.CZB
                 _gooOnCurrentTurn = value;
                 _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MaximumPlayerGoo);
 
-                PlayerVialGooChangedEvent?.Invoke(_gooOnCurrentTurn);
+                PlayerVialGooChanged?.Invoke(_gooOnCurrentTurn);
             }
         }
 
@@ -186,12 +184,9 @@ namespace LoomNetwork.CZB
             get => _goo;
             set
             {
-                int oldGoo = _goo;
-
-                // _goo = value;
                 _goo = Mathf.Clamp(value, 0, 999999);
 
-                PlayerGooChangedEvent?.Invoke(_goo);
+                PlayerGooChanged?.Invoke(_goo);
             }
         }
 
@@ -205,7 +200,7 @@ namespace LoomNetwork.CZB
 
                 _health = Mathf.Clamp(_health, 0, 99);
 
-                PlayerHpChangedEvent?.Invoke(_health);
+                PlayerHpChanged?.Invoke(_health);
             }
         }
 
@@ -241,18 +236,18 @@ namespace LoomNetwork.CZB
 
         public int MaxCurrentHp => InitialHp + BuffedHp;
 
-        public void CallOnEndTurnEvent()
+        public void InvokeTurnEnded()
         {
-            OnEndTurnEvent?.Invoke();
+            TurnEnded?.Invoke();
             if (Goo > GooOnCurrentTurn)
             {
                 Goo = GooOnCurrentTurn;
             }
         }
 
-        public void CallOnStartTurnEvent()
+        public void InvokeTurnStarted()
         {
-            OnStartTurnEvent?.Invoke();
+            TurnStarted?.Invoke();
 
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
@@ -280,14 +275,14 @@ namespace LoomNetwork.CZB
         {
             CardsInDeck.Add(card);
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public void RemoveCardFromDeck(WorkingCard card)
         {
             CardsInDeck.Remove(card);
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
@@ -307,7 +302,7 @@ namespace LoomNetwork.CZB
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
 
             return cardObject;
         }
@@ -327,7 +322,7 @@ namespace LoomNetwork.CZB
                 _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this, _cardsController.GetOpponentBoardCard(card));
             }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
         }
 
         public void RemoveCardFromHand(WorkingCard card, bool silent = false)
@@ -342,14 +337,14 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
         }
 
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
 
-            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+            BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
         public void RemoveCardFromBoard(WorkingCard card)
@@ -365,21 +360,21 @@ namespace LoomNetwork.CZB
                 _battlegroundController.RemoveOpponentCardFromBoardToGraveyard(card);
             }
 
-            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+            BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
         public void AddCardToGraveyard(WorkingCard card)
         {
             CardsInGraveyard.Add(card);
 
-            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+            GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
         public void RemoveCardFromGraveyard(WorkingCard card)
         {
             CardsInGraveyard.Remove(card);
 
-            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+            GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
         public void SetDeck(List<string> cards)
@@ -399,7 +394,7 @@ namespace LoomNetwork.CZB
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public List<T> ShuffleCardsList<T>(List<T> cards)
@@ -485,12 +480,12 @@ namespace LoomNetwork.CZB
 
         public void ThrowPlayCardEvent(WorkingCard card)
         {
-            CardPlayedEvent?.Invoke(card);
+            CardPlayed?.Invoke(card);
         }
 
         public void ThrowOnHandChanged()
         {
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
         }
 
         private WorkingCard GetCardThatNotInDistribution()
@@ -503,7 +498,7 @@ namespace LoomNetwork.CZB
 
         #region handlers
 
-        private void PlayerHPChangedEventHandler(int now)
+        private void PlayerHpChangedHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {
@@ -512,26 +507,6 @@ namespace LoomNetwork.CZB
                 _isDead = true;
             }
         }
-
-        // private void OnTriggerEnter2DEventHandler(Collider2D collider)
-        // {
-        // if (collider.transform.parent != null)
-        // {
-        // var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        // if (boardArrow != null)
-        // boardArrow.OnPlayerSelected(this);
-        // }
-        // }
-
-        // private void OnTriggerExit2DEventHandler(Collider2D collider)
-        // {
-        // if (collider.transform.parent != null)
-        // {
-        // var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        // if (boardArrow != null)
-        // boardArrow.OnPlayerUnselected(this);
-        // }
-        // }
 
         #endregion
     }

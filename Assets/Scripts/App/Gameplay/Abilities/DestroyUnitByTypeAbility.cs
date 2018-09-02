@@ -26,9 +26,9 @@ namespace LoomNetwork.CZB
             BattlegroundController.DestroyBoardUnit(TargetUnit);
         }
 
-        protected override void OnInputEndEventHandler()
+        protected override void InputEndedHandler()
         {
-            base.OnInputEndEventHandler();
+            base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {

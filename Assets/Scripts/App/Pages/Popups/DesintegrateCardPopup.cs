@@ -52,9 +52,9 @@ namespace LoomNetwork.CZB
             _noButton = Self.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
             _backButton = Self.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>();
 
-            _yesButton.OnClickEvent.AddListener(DesintegrateButtonHandler);
-            _noButton.OnClickEvent.AddListener(CloseDesintegratePopup);
-            _backButton.OnClickEvent.AddListener(CloseDesintegratePopup);
+            _yesButton.Clicked.AddListener(DesintegrateButtonHandler);
+            _noButton.Clicked.AddListener(CloseDesintegratePopup);
+            _backButton.Clicked.AddListener(CloseDesintegratePopup);
         }
 
         public void Show(object data)

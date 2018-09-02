@@ -68,9 +68,8 @@ namespace LoomNetwork.CZB
             _soundManager = GameClient.Get<ISoundManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-            // _cards = new List<CardInGraveyard>();
-            _gameplayManager.OnGameInitializedEvent += OnGameInitializedEventHandler;
-            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.GameInitialized += GameInitializedHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
 
             _deckStatus = new List<CardZoneOnBoardStatus>();
             _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
@@ -143,8 +142,6 @@ namespace LoomNetwork.CZB
         public void SetEndTurnButtonStatus(bool status)
         {
             _endTurnButton.GetComponent<EndTurnButton>().SetEnabled(status);
-
-            // _endTurnButton.SetActive(status);
         }
 
         public void StartGame()
@@ -153,8 +150,8 @@ namespace LoomNetwork.CZB
             {
                 _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
-                _battlegroundController.OnPlayerGraveyardUpdatedEvent += OnPlayerGraveyardUpdatedEventHandler;
-                _battlegroundController.OnOpponentGraveyardUpdatedEvent += OnOpponentGraveyardUpdatedEventHandler;
+                _battlegroundController.PlayerGraveyardUpdated += PlayerGraveyardUpdatedHandler;
+                _battlegroundController.OpponentGraveyardUpdated += OpponentGraveyardUpdatedHandler;
             }
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
@@ -262,22 +259,12 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
+        private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
-            // ClearGraveyard();
             SetEndTurnButtonStatus(true);
 
             _reportGameActionsPanel?.Clear();
         }
-
-        // public void ClearGraveyard()
-        // {
-        // foreach (var item in _cards)
-        // {
-        // item.Dispose();
-        // }
-        // _cards.Clear();
-        // }
 
         // TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
         private void DelayedCardDestroy(object[] card)
@@ -336,33 +323,33 @@ namespace LoomNetwork.CZB
 
         #region event handlers
 
-        private void OnGameInitializedEventHandler()
+        private void GameInitializedHandler()
         {
             Player player = _gameplayManager.CurrentPlayer;
             Player opponent = _gameplayManager.OpponentPlayer;
 
-            player.DeckChangedEvent += OnPlayerDeckChangedEventHandler;
-            player.PlayerHpChangedEvent += OnPlayerHpChanged;
-            player.PlayerGooChangedEvent += OnPlayerGooChanged;
-            player.PlayerVialGooChangedEvent += OnPlayerVialGooChanged;
-            opponent.DeckChangedEvent += OnOpponentDeckChangedEventHandler;
-            opponent.PlayerHpChangedEvent += OnOpponentHpChanged;
-            opponent.PlayerGooChangedEvent += OnOpponentGooChanged;
-            opponent.PlayerVialGooChangedEvent += OnOpponentVialGooChanged;
+            player.DeckChanged += OnPlayerDeckChangedHandler;
+            player.PlayerHpChanged += OnPlayerHpChanged;
+            player.PlayerGooChanged += OnPlayerGooChanged;
+            player.PlayerVialGooChanged += OnPlayerVialGooChanged;
+            opponent.DeckChanged += OnOpponentDeckChangedHandler;
+            opponent.PlayerHpChanged += OnOpponentHpChanged;
+            opponent.PlayerGooChanged += OnOpponentGooChanged;
+            opponent.PlayerVialGooChanged += OnOpponentVialGooChanged;
 
-            player.OnStartTurnEvent += OnStartTurnEventHandler;
+            player.TurnStarted += TurnStartedHandler;
 
-            OnPlayerDeckChangedEventHandler(player.CardsInDeck.Count);
+            OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
             OnPlayerHpChanged(player.Hp);
             OnPlayerGooChanged(player.Goo);
             OnPlayerVialGooChanged(player.GooOnCurrentTurn);
-            OnOpponentDeckChangedEventHandler(opponent.CardsInDeck.Count);
+            OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
             OnOpponentHpChanged(opponent.Hp);
             OnOpponentGooChanged(opponent.GooOnCurrentTurn);
             OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
         }
 
-        private void OnPlayerDeckChangedEventHandler(int index)
+        private void OnPlayerDeckChangedHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -383,7 +370,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnPlayerGraveyardUpdatedEventHandler(int index)
+        private void PlayerGraveyardUpdatedHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -413,7 +400,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnOpponentDeckChangedEventHandler(int index)
+        private void OnOpponentDeckChangedHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -434,7 +421,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnOpponentGraveyardUpdatedEventHandler(int index)
+        private void OpponentGraveyardUpdatedHandler(int index)
         {
             if (!_isPlayerInited)
                 return;
@@ -530,7 +517,7 @@ namespace LoomNetwork.CZB
             _opponentManaBar.SetVialGoo(currentTurnGoo);
         }
 
-        private void OnStartTurnEventHandler()
+        private void TurnStartedHandler()
         {
             _zippingVfx.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
         }

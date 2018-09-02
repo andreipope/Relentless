@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public UnityEvent OnClickEvent;
+    [FormerlySerializedAs("OnClickEvent")]
+    public UnityEvent Clicked;
 
     public bool IsHovered = true;
 
@@ -33,7 +34,6 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             _interactable = value;
 
-            // Debug.Log("_interactable = "+ _interactable);
             if (!_interactable)
             {
                 _onHoverOverlay.DOKill();
@@ -70,87 +70,83 @@ public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Debug.Log("OnPointerDown");
-        if (Interactable)
+        if (!Interactable)
+            return;
+
+        if (IsHovered)
         {
-            if (IsHovered)
-            {
-                _onHoverOverlay.DOKill();
-                _onHoverOverlay.DOFade(0.0f, 0.25f);
-            }
-
-            _onClickOverlay.DOKill();
-            _onClickOverlay.DOFade(1.0f, 0.2f);
-
-            if (_button == null)
-                return;
-
-            DoFadeForChildren(_button, 0f, 0.25f);
-            if (IsHovered)
-            {
-                DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
-            }
-
-            DoFadeForChildren(_onClickOverlay, 1, 0.25f);
+            _onHoverOverlay.DOKill();
+            _onHoverOverlay.DOFade(0.0f, 0.25f);
         }
+
+        _onClickOverlay.DOKill();
+        _onClickOverlay.DOFade(1.0f, 0.2f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        if (IsHovered)
+        {
+            DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
+        }
+
+        DoFadeForChildren(_onClickOverlay, 1, 0.25f);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Debug.Log("OnPointerEnter");
-        if (Interactable)
+        if (!Interactable)
+            return;
+
+        _onHoverOverlay.DOKill();
+        _onHoverOverlay.DOFade(1.0f, 0.5f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
+        if (!Input.GetMouseButton(0))
         {
-            _onHoverOverlay.DOKill();
-            _onHoverOverlay.DOFade(1.0f, 0.5f);
-
-            if (_button == null)
-                return;
-
-            DoFadeForChildren(_button, 0f, 0.25f);
-            DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
-            if (!Input.GetMouseButton(0))
-            {
-                DoFadeForChildren(_onClickOverlay, 0, 0.25f);
-            }
+            DoFadeForChildren(_onClickOverlay, 0, 0.25f);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // Debug.Log("OnPointerExit");
-        if (Interactable)
+        if (!Interactable)
+            return;
+
+        _onHoverOverlay.DOKill();
+        _onHoverOverlay.DOFade(0.0f, 0.25f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 1f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
+        if (!Input.GetMouseButton(0))
         {
-            _onHoverOverlay.DOKill();
-            _onHoverOverlay.DOFade(0.0f, 0.25f);
-
-            if (_button == null)
-                return;
-
-            DoFadeForChildren(_button, 1f, 0.25f);
-            DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
-            if (!Input.GetMouseButton(0))
-            {
-                DoFadeForChildren(_onClickOverlay, 0, 0.25f);
-            }
+            DoFadeForChildren(_onClickOverlay, 0, 0.25f);
         }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // Debug.Log("OnPointerUp");
-        if (Interactable)
-        {
-            _onClickOverlay.DOKill();
-            _onClickOverlay.DOFade(0.0f, 0.25f);
-            OnClickEvent.Invoke();
+        if (!Interactable)
+            return;
 
-            if (_button == null)
-                return;
+        _onClickOverlay.DOKill();
+        _onClickOverlay.DOFade(0.0f, 0.25f);
+        Clicked.Invoke();
 
-            DoFadeForChildren(_button, 0f, 0.25f);
-            DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
-            DoFadeForChildren(_onClickOverlay, 0, 0.25f);
-        }
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
+        DoFadeForChildren(_onClickOverlay, 0, 0.25f);
     }
 
     public void DoFadeForChildren(Image parent, float val, float duration)

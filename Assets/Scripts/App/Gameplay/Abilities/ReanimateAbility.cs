@@ -41,9 +41,9 @@ namespace LoomNetwork.CZB
             ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[] { owner, unit }));
         }
 
-        protected override void UnitOnDieEventHandler()
+        protected override void UnitDiedHandler()
         {
-            base.UnitOnDieEventHandler();
+            base.UnitDiedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;

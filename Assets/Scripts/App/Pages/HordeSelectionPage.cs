@@ -233,17 +233,16 @@ namespace LoomNetwork.CZB
 
         private void BattleButtonUpdate()
         {
+            bool canStartBattle =
 #if !DEV_MODE
-            if (_hordeDecks.Count == 0 || _selectedDeckId == -1 || _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize)
-            {
-                _battleButton.interactable = false;
-                _battleButtonWarning.gameObject.SetActive(true);
-            }
-
+                _hordeDecks.Count != 0 &&
+                _selectedDeckId != -1 &&
+                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() == Constants.MinDeckSize;
 #else
-            _battleButton.interactable = true;
-            _battleButtonWarning.gameObject.SetActive(false);
+                true;
 #endif
+            _battleButton.interactable = canStartBattle;
+            _battleButtonWarning.gameObject.SetActive(!canStartBattle);
         }
 
         private void LoadDeckObjects()
@@ -459,7 +458,6 @@ namespace LoomNetwork.CZB
             {
                 _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
             }
-
 #endif
         }
 
@@ -521,7 +519,7 @@ namespace LoomNetwork.CZB
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmDeleteDeckEventHandler;
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
 
                 _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.SelfDeck.Name + "?");
             }
@@ -541,9 +539,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void ConfirmDeleteDeckEventHandler(bool status)
+        private void ConfirmDeleteDeckReceivedHandler(bool status)
         {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmDeleteDeckEventHandler;
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
 
             if (!status)
                 return;

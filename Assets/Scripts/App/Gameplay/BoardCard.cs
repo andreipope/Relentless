@@ -57,7 +57,6 @@ namespace LoomNetwork.CZB
 
         protected TextMeshPro AmountText;
 
-        // protected GameObject previewCard;
         protected Animator CardAnimator;
 
         protected Vector3 PositionOnHand;
@@ -112,18 +111,17 @@ namespace LoomNetwork.CZB
 
             ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
 
-            // previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
             AnimationEventTriggering = GameObject.GetComponent<AnimationEventTriggering>();
             BehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            AnimationEventTriggering.OnAnimationEvent += OnAnimationEvent;
+            AnimationEventTriggering.AnimationEventTriggered += OnAnimationEvent;
 
             CardsController.UpdateCardsStatusEvent += UpdateCardsStatusEventHandler;
 
-            BehaviourHandler.OnMouseDownEvent += OnMouseDownEventHandler;
-            BehaviourHandler.OnMouseUpEvent += OnMouseUpEventHandler;
+            BehaviourHandler.MouseDownTriggered += MouseDownTriggeredHandler;
+            BehaviourHandler.MouseUpTriggered += MouseUpTriggeredHandler;
 
-            BehaviourHandler.OnDestroyEvent += OnDestroyEventHandler;
+            BehaviourHandler.Destroying += DestroyingHandler;
         }
 
         public int ManaCost { get; protected set; }
@@ -155,7 +153,7 @@ namespace LoomNetwork.CZB
             InitialCost = WorkingCard.InitialCost;
             ManaCost = InitialCost;
 
-            WorkingCard.Owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
+            WorkingCard.Owner.PlayerGooChanged += PlayerGooChangedHandler;
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.LibraryCard.CardRank);
 
@@ -345,11 +343,6 @@ namespace LoomNetwork.CZB
 #else
             return true;
 #endif
-        }
-
-        public void IsHighlighted()
-        {
-            // return glowSprite.enabled;
         }
 
         public void SetHighlightingEnabled(bool enabled)
@@ -735,11 +728,11 @@ namespace LoomNetwork.CZB
             Transform.DORotate(RotationOnHand, 0.5f);
         }
 
-        private void OnDestroyEventHandler(GameObject obj)
+        private void DestroyingHandler(GameObject obj)
         {
         }
 
-        private void PlayerGooChangedEventHandler(int obj)
+        private void PlayerGooChangedHandler(int obj)
         {
             UpdateCardsStatusEventHandler(WorkingCard.Owner);
         }
@@ -775,14 +768,14 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnMouseUpEventHandler(GameObject obj)
+        private void MouseUpTriggeredHandler(GameObject obj)
         {
             if (!CardsController.CardDistribution)
             {
             }
         }
 
-        private void OnMouseDownEventHandler(GameObject obj)
+        private void MouseDownTriggeredHandler(GameObject obj)
         {
             if (!CardsController.CardDistribution)
                 return;

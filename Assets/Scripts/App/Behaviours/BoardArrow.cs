@@ -64,13 +64,9 @@ public class BoardArrow : MonoBehaviour
         StartedDrag = true;
         _fromPosition = from;
 
-        // _rootObjectsGroup.transform.position = _fromPosition;
         ArrowObject.transform.position = _fromPosition;
 
         SetInverse(isInverse);
-
-        // if (this._isInverse)
-        // _arrowObject.transform.localScale = new Vector3(-1, _arrowObject.transform.localScale.y, _arrowObject.transform.localScale.z);
     }
 
     public void UpdateLength(Vector3 target, bool isInverse = true)
@@ -81,8 +77,6 @@ public class BoardArrow : MonoBehaviour
         _targetPosition = target;
 
         float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
-
-        // float rootObjectsOffset = 21f;
         float scaleX = 1f;
 
         if (!isInverse)
@@ -92,9 +86,7 @@ public class BoardArrow : MonoBehaviour
 
         ArrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
 
-        // _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
         float scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
-
         ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
 
@@ -143,7 +135,6 @@ public class BoardArrow : MonoBehaviour
             _selfObject.transform.localScale = new Vector3(-1, 1, 1);
         }
 
-        // _targetObjectsGroup.SetActive(false);
         InputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
         InputController.UnitSelectingEvent += UnitSelectingEventHandler;
         InputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
@@ -159,8 +150,6 @@ public class BoardArrow : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
             UpdateLength(mousePosition, _isInverse);
-
-            // CastRay(Input.mousePosition, 9);
         }
     }
 

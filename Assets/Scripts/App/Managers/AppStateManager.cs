@@ -45,47 +45,30 @@ namespace LoomNetwork.CZB
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                {
-                    // GameObject.Find("MainApp/Camera").SetActive(true);
-                    // GameObject.Find("MainApp/Camera2").SetActive(true);
                     _uiManager.SetPage<MainMenuPage>();
-                }
-
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                {
                     _uiManager.SetPage<HeroSelectionPage>();
-                }
-
                     break;
                 case Enumerators.AppState.DECK_SELECTION:
-                {
                     _uiManager.SetPage<HordeSelectionPage>();
-                }
-
                     break;
                 case Enumerators.AppState.COLLECTION:
-                {
                     _uiManager.SetPage<CollectionPage>();
-                }
-
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                {
                     _uiManager.SetPage<DeckEditingPage>();
-                }
-
                     break;
                 case Enumerators.AppState.SHOP:
-                {
                     if (!DisableShop)
                     {
                         _uiManager.SetPage<ShopPage>();
                     }
-
-                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
-                }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
 
                     break;
                 case Enumerators.AppState.PACK_OPENER:
@@ -94,9 +77,13 @@ namespace LoomNetwork.CZB
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                     }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
 
-                    _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                    break;
                 }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();

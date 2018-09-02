@@ -37,9 +37,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnInputEndEventHandler()
+        protected override void InputEndedHandler()
         {
-            base.OnInputEndEventHandler();
+            base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {
@@ -47,14 +47,14 @@ namespace LoomNetwork.CZB
 
                 if (TargetUnit != null)
                 {
-                    TargetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
+                    TargetUnit.UnitDied += TargetUnitDiedHandler;
                 }
             }
         }
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
@@ -72,11 +72,11 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void TargetUnitOnDieEventHandler()
+        private void TargetUnitDiedHandler()
         {
             if (TargetUnit != null)
             {
-                TargetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
+                TargetUnit.UnitDied -= TargetUnitDiedHandler;
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);

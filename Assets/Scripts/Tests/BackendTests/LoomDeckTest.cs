@@ -99,8 +99,6 @@ public class LoomDeckTest
                     Name = "Gaurav"
                 };
 
-                // deck.AddCard(0);
-                // deck.AddCard(1);
                 await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
             });
     }
@@ -167,9 +165,6 @@ public class LoomDeckTest
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 Deck deck = new Deck { Name = "Default" };
-
-                // deck.AddCard(0);
-                // deck.AddCard(1);
                 await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
             });
     }

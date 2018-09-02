@@ -22,27 +22,27 @@ namespace LoomNetwork.CZB
 
         private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
-        public event Action OnGameStartedEvent;
+        public event Action GameStarted;
 
-        public event Action OnGameInitializedEvent;
+        public event Action GameInitialized;
 
-        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
+        public event Action<Enumerators.EndGameType> GameEnded;
 
-        public event Action OnTurnStartedEvent;
+        public event Action TurnStarted;
 
-        public event Action OnTurnEndedEvent;
+        public event Action TurnEnded;
 
         public int PlayerDeckId { get; set; }
 
         public int OpponentDeckId { get; set; }
 
-        public bool GameStarted { get; set; }
+        public bool IsGameStarted { get; set; }
 
-        public bool GameEnded { get; set; }
+        public bool IsGameEnded { get; set; }
 
         public bool IsTutorial { get; set; }
 
-        public bool IsPrepairingEnded { get; set; }
+        public bool IsPreparingEnded { get; set; }
 
         public int TutorialStep { get; set; }
 
@@ -68,10 +68,10 @@ namespace LoomNetwork.CZB
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
         {
-            if (GameEnded)
+            if (IsGameEnded)
                 return;
 
-            GameEnded = true;
+            IsGameEnded = true;
 
             _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
@@ -101,7 +101,7 @@ namespace LoomNetwork.CZB
             CurrentPlayer = null;
             OpponentPlayer = null;
 
-            OnGameEndedEvent?.Invoke(endGameType);
+            GameEnded?.Invoke(endGameType);
         }
 
         public void StartGameplay()
@@ -113,11 +113,11 @@ namespace LoomNetwork.CZB
                 {
                     _uiManager.HidePopup<PreparingForBattlePopup>();
 
-                    GameStarted = true;
-                    GameEnded = false;
-                    IsPrepairingEnded = false;
+                    IsGameStarted = true;
+                    IsGameEnded = false;
+                    IsPreparingEnded = false;
 
-                    OnGameStartedEvent?.Invoke();
+                    GameStarted?.Invoke();
 
                     StartInitializeGame();
                 },
@@ -127,9 +127,9 @@ namespace LoomNetwork.CZB
 
         public void StopGameplay()
         {
-            GameStarted = false;
-            GameEnded = true;
-            IsPrepairingEnded = false;
+            IsGameStarted = false;
+            IsGameEnded = true;
+            IsPreparingEnded = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -147,7 +147,7 @@ namespace LoomNetwork.CZB
 
         public bool IsGameplayReady()
         {
-            return !GameEnded && GameStarted && IsPrepairingEnded;
+            return !IsGameEnded && IsGameStarted && IsPreparingEnded;
         }
 
         public void Dispose()
@@ -243,9 +243,9 @@ namespace LoomNetwork.CZB
                 GetController<CardsController>().StartCardDistribution();
             }
 
-            GameEnded = false;
+            IsGameEnded = false;
 
-            OnGameInitializedEvent?.Invoke();
+            GameInitialized?.Invoke();
         }
     }
 }

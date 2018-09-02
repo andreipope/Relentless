@@ -50,7 +50,7 @@ namespace LoomNetwork.CZB
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
 
-            _gameplayManager.OnGameEndedEvent += _gameplayManager_OnGameEndedEvent;
+            _gameplayManager.GameEnded += GameplayManagerGameEnded;
         }
 
         public void Update()
@@ -72,17 +72,17 @@ namespace LoomNetwork.CZB
         {
             GameplayPage rootPage = _uiManager.GetPage<GameplayPage>();
 
-            rootPage.PlayerPrimarySkillHandler.OnMouseDownEvent += PrimarySkillHandlerOnMouseDownEventHandler;
-            rootPage.PlayerPrimarySkillHandler.OnMouseUpEvent += PrimarySkillHandlerOnMouseUpEventHandler;
+            rootPage.PlayerPrimarySkillHandler.MouseDownTriggered += PrimarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.PlayerPrimarySkillHandler.MouseUpTriggered += PrimarySkillHandlerMouseUpTriggeredHandler;
 
-            rootPage.PlayerSecondarySkillHandler.OnMouseDownEvent += SecondarySkillHandlerOnMouseDownEventHandler;
-            rootPage.PlayerSecondarySkillHandler.OnMouseUpEvent += SecondarySkillHandlerOnMouseUpEventHandler;
+            rootPage.PlayerSecondarySkillHandler.MouseDownTriggered += SecondarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.PlayerSecondarySkillHandler.MouseUpTriggered += SecondarySkillHandlerMouseUpTriggeredHandler;
 
-            rootPage.OpponentPrimarySkillHandler.OnMouseDownEvent += OpponentPrimarySkillHandlerOnMouseDownEventHandler;
-            rootPage.OpponentPrimarySkillHandler.OnMouseUpEvent += OpponentPrimarySkillHandlerOnMouseUpEventHandler;
+            rootPage.OpponentPrimarySkillHandler.MouseDownTriggered += OpponentPrimarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.OpponentPrimarySkillHandler.MouseUpTriggered += OpponentPrimarySkillHandlerMouseUpTriggeredHandler;
 
-            rootPage.OpponentSecondarySkillHandler.OnMouseDownEvent += OpponentSecondarySkillHandlerOnMouseDownEventHandler;
-            rootPage.OpponentSecondarySkillHandler.OnMouseUpEvent += OpponentSecondarySkillHandlerOnMouseUpEventHandler;
+            rootPage.OpponentSecondarySkillHandler.MouseDownTriggered += OpponentSecondarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.OpponentSecondarySkillHandler.MouseUpTriggered += OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
@@ -202,75 +202,50 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void _gameplayManager_OnGameEndedEvent(Enumerators.EndGameType obj)
+        private void GameplayManagerGameEnded(Enumerators.EndGameType obj)
         {
             _skillsInitialized = false;
         }
 
-        private void PrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        private void PrimarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
             _playerPrimarySkill?.OnMouseDownEventHandler();
         }
 
-        private void PrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        private void PrimarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
             _playerPrimarySkill?.OnMouseUpEventHandler();
         }
 
-        private void SecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        private void SecondarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
             _playerSecondarySkill?.OnMouseDownEventHandler();
         }
 
-        private void SecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        private void SecondarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
             _playerSecondarySkill?.OnMouseUpEventHandler();
         }
 
-        private void OpponentPrimarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        private void OpponentPrimarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
             OpponentPrimarySkill?.OnMouseDownEventHandler();
         }
 
-        private void OpponentPrimarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        private void OpponentPrimarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
             OpponentPrimarySkill?.OnMouseUpEventHandler();
         }
 
-        private void OpponentSecondarySkillHandlerOnMouseDownEventHandler(GameObject obj)
+        private void OpponentSecondarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
             OpponentSecondarySkill?.OnMouseDownEventHandler();
         }
 
-        private void OpponentSecondarySkillHandlerOnMouseUpEventHandler(GameObject obj)
+        private void OpponentSecondarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
             OpponentSecondarySkill?.OnMouseUpEventHandler();
         }
-
-        private void SkillParticleActionCompleted(object target)
-        {
-            // switch (skillType)
-            // {
-            // case Enumerators.SetType.WATER:
-            // FreezeAction(target);
-            // break;
-            // case Enumerators.SetType.TOXIC:
-            // ToxicDamageAction(target);
-            // break;
-            // case Enumerators.SetType.FIRE:
-            // FireDamageAction(target);
-            // break;
-            // case Enumerators.SetType.LIFE:
-            // HealAnyAction(target);
-            // break;
-            // case Enumerators.SetType.AIR:
-            // //   CardReturnAction(target);
-            // break;
-            // default:
-            // break;
-            // }
-        }
-
         private GameObject GetVfxPrefabBySkill(BoardSkill skill)
         {
             GameObject prefab = null;
@@ -442,9 +417,6 @@ namespace LoomNetwork.CZB
             {
                 BoardUnit creature = target as BoardUnit;
                 int attackModifier = 0;
-
-                // if (creature.Card.libraryCard.cardSetType == setType)
-                // attackModifier = 1;
                 _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
             }
         }

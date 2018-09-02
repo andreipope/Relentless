@@ -19,11 +19,11 @@ namespace LoomNetwork.CZB
             _dragDelta = Constants.PointerMinDragDelta;
         }
 
-        public event Action OnClickEvent;
+        public event Action Clicked;
 
-        public event Action OnDragStartedEvent;
+        public event Action DragStarted;
 
-        public event Action OnEndEvent;
+        public event Action Ended;
 
         public bool IsPushed { get; private set; }
 
@@ -52,7 +52,7 @@ namespace LoomNetwork.CZB
             if (Mathf.Abs((_initialPointerPosition - Input.mousePosition).magnitude) > _dragDelta)
             {
                 _isResolved = true;
-                OnDragStartedEvent?.Invoke();
+                DragStarted?.Invoke();
             }
             else
             {
@@ -61,7 +61,7 @@ namespace LoomNetwork.CZB
                 if (_pressTimer >= Constants.PointerOnClickDelay)
                 {
                     _isResolved = true;
-                    OnDragStartedEvent?.Invoke();
+                    DragStarted?.Invoke();
                 }
             }
         }
@@ -73,13 +73,13 @@ namespace LoomNetwork.CZB
 
             if (!_isResolved)
             {
-                OnClickEvent?.Invoke();
+                Clicked?.Invoke();
             }
 
             IsPushed = false;
             _isResolved = false;
 
-            OnEndEvent?.Invoke();
+            Ended?.Invoke();
         }
     }
 }

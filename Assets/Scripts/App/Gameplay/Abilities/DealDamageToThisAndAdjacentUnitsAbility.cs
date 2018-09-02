@@ -49,9 +49,9 @@ namespace LoomNetwork.CZB
             TakeDamageToUnit(AbilityUnitOwner);
         }
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;

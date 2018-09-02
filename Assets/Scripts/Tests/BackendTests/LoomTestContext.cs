@@ -74,15 +74,6 @@ public static class LoomTestContext
             return;
 
         await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
-
-        /*LoomTestContext.LoomManager.UserDataModel = new LoomUserDataModel("LoomTest" + Random.value, CryptoUtils.GeneratePrivateKey());
-                try
-                {
-                    await LoomTestContext.LoomManager.SignUp(LoomTestContext.LoomManager.UserDataModel.UserId);
-                } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
-                {
-                    // Ignore
-                }*/
     }
 
     private static IEnumerator TaskAsIEnumerator(Task task)

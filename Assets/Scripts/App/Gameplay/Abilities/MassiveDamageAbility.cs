@@ -22,8 +22,6 @@ namespace LoomNetwork.CZB
                 return;
 
             Action();
-
-            // _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/healVFX");
         }
 
         public override void Update()
@@ -34,9 +32,9 @@ namespace LoomNetwork.CZB
         {
         }
 
-        protected override void UnitOnDieEventHandler()
+        protected override void UnitDiedHandler()
         {
-            base.UnitOnDieEventHandler();
+            base.UnitDiedHandler();
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
@@ -83,30 +81,14 @@ namespace LoomNetwork.CZB
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-
-                        // BoardCreature[] creatures = new BoardCreature[playerCallerOfAbility.opponentBoardCardsList.Count];
-                        // player.BoardCards.CopyTo(creatures);
                         foreach (BoardUnit cardOpponent in opponent.BoardCards)
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardOpponent);
                         }
 
                         CreateVfx(Vector3.up * 1.5f);
-
-                        // Array.Clear(creatures, 0, creatures.Length);
-                        // creatures = null;
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-
-                        // RuntimeCard[] cards = new RuntimeCard[playerCallerOfAbility.boardZone.cards.Count];
-                        // playerCallerOfAbility.boardZone.cards.CopyTo(cards);
-                        // foreach (var cardPlayer in cards)
-                        // {
-                        // playerCallerOfAbility.FightCreatureBySkill(value, cardPlayer);
-                        // CreateVFX(cardPlayer.transform.position);
-                        // }
-                        // Array.Clear(cards, 0, cards.Length);
-                        // cards = null;
                         foreach (BoardUnit cardPlayer in PlayerCallerOfAbility.BoardCards)
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardPlayer);
@@ -116,13 +98,9 @@ namespace LoomNetwork.CZB
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
-
-                        // CreateVFX(targetCreature.transform.position);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
-
-                        // CreateVFX(targetCreature.transform.position);
                         break;
                 }
             }

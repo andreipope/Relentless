@@ -25,9 +25,9 @@ namespace LoomNetwork.CZB
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
+            base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
@@ -42,8 +42,6 @@ namespace LoomNetwork.CZB
                     AbilityUnitOwner.CurrentDamage += Value;
                     break;
             }
-
-            // _ranksController.UpdateRanksBuffs();
         }
     }
 }

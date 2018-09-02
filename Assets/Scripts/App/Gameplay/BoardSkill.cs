@@ -74,15 +74,15 @@ namespace LoomNetwork.CZB
             _shutterAnimator.enabled = false;
             _shutterAnimator.StopPlayback();
 
-            Owner.OnStartTurnEvent += OnStartTurnEventHandler;
-            Owner.OnEndTurnEvent += OnEndTurnEventHandler;
+            Owner.TurnStarted += TurnStartedHandler;
+            Owner.TurnEnded += TurnEndedHandler;
 
             _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             {
                 _pointerEventSolver = new PointerEventSolver();
-                _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
-                _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;
-                _pointerEventSolver.OnEndEvent += PointerEventSolver_OnEndEventHandler;
+                _pointerEventSolver.DragStarted += PointerSolverDragStartedHandler;
+                _pointerEventSolver.Clicked += PointerEventSolverClickedHandler;
+                _pointerEventSolver.Ended += PointerEventSolverEndedHandler;
             }
 
             _cooldownText.text = _cooldown.ToString();
@@ -110,29 +110,6 @@ namespace LoomNetwork.CZB
             SetHighlightingEnabled(false);
         }
 
-        // public void OnTriggerEnter2D(Collider2D collider)
-        // {
-        // if (collider.transform.parent != null)
-        // {
-        // var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        // if (targetingArrow != null)
-        // {
-        // targetingArrow.OnCardSelected(null);
-        // }
-        // }
-        // }
-
-        // public void OnTriggerExit2D(Collider2D collider)
-        // {
-        // if (collider.transform.parent != null)
-        // {
-        // var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        // if (targetingArrow != null)
-        // {
-        // targetingArrow.OnCardUnselected(null);
-        // }
-        // }
-        // }
         public void StartDoSkill()
         {
             if (!IsSkillCanUsed())
@@ -147,7 +124,6 @@ namespace LoomNetwork.CZB
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
 
-                    // if (owner.SelfHero.heroElement == Enumerators.SetType.AIR)
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
@@ -190,7 +166,6 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.IsGameplayReady())
                 return;
             {
-                // if (owner.IsLocalPlayer)
                 _pointerEventSolver.Update();
 
                 if (Input.GetMouseButtonDown(0))
@@ -222,7 +197,7 @@ namespace LoomNetwork.CZB
             _pointerEventSolver.PopPointer();
         }
 
-        private void PointerEventSolver_OnDragStartedEventHandler()
+        private void PointerSolverDragStartedHandler()
         {
             if (Skill.SkillTargetTypes.Count > 0)
             {
@@ -237,7 +212,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PointerEventSolver_OnClickEventHandler()
+        private void PointerEventSolverClickedHandler()
         {
             if (Skill.SkillTargetTypes.Count > 0)
             {
@@ -256,7 +231,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PointerEventSolver_OnEndEventHandler()
+        private void PointerEventSolverEndedHandler()
         {
             if (Owner.IsLocalPlayer)
             {
@@ -264,7 +239,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnStartTurnEventHandler()
+        private void TurnStartedHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
                 return;
@@ -284,7 +259,7 @@ namespace LoomNetwork.CZB
             _cooldownText.text = _cooldown.ToString();
         }
 
-        private void OnEndTurnEventHandler()
+        private void TurnEndedHandler()
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
                 return;

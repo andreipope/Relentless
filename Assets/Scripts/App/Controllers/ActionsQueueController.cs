@@ -12,8 +12,6 @@ namespace LoomNetwork.CZB
 
         public event Action<GameActionReport> GotNewActionReportEvent;
 
-        public event Action<List<GameActionReport>> ActionsReportsUpdatedEvent;
-
         public List<GameActionReport> ActionsReports { get; private set; }
 
         public void Init()
@@ -76,7 +74,6 @@ namespace LoomNetwork.CZB
             {
                 ActionsReports.Add(report);
                 GotNewActionReportEvent?.Invoke(report);
-                ActionsReportsUpdatedEvent?.Invoke(ActionsReports);
             }
         }
 

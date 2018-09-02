@@ -55,15 +55,15 @@ public class HandBoardCard
 
         _behaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-        _behaviourHandler.OnMouseUpEvent += OnMouseUp;
-        _behaviourHandler.OnUpdateEvent += OnUpdateEventHandler;
+        _behaviourHandler.MouseUpTriggered += MouseUp;
+        _behaviourHandler.Updating += UpdatingHandler;
     }
 
     public Transform Transform => GameObject.transform;
 
     public GameObject GameObject { get; }
 
-    public void OnUpdateEventHandler(GameObject obj)
+    public void UpdatingHandler(GameObject obj)
     {
         if (!Enabled)
             return;
@@ -78,7 +78,7 @@ public class HandBoardCard
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
             {
                 _canceledPlay = true;
-                OnMouseUp(null);
+                MouseUp(null);
             }
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
@@ -122,7 +122,7 @@ public class HandBoardCard
         }
     }
 
-    public void OnMouseUp(GameObject obj)
+    public void MouseUp(GameObject obj)
     {
         if (!Enabled)
             return;

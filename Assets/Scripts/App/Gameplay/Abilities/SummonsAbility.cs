@@ -60,9 +60,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnStartTurnEventHandler()
+        protected override void TurnStartedHandler()
         {
-            base.OnStartTurnEventHandler();
+            base.TurnStartedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.TURN || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;

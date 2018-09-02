@@ -54,13 +54,13 @@ namespace LoomNetwork.CZB
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
-            _gameplayManager.OnGameStartedEvent += OnGameStartedEventHandler;
-            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.GameStarted += GameStartedHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
 
             _pointerEventSolver = new PointerEventSolver();
-            _pointerEventSolver.OnDragStartedEvent += PointerEventSolver_OnDragStartedEventHandler;
-            _pointerEventSolver.OnClickEvent += PointerEventSolver_OnClickEventHandler;
-            _pointerEventSolver.OnEndEvent += PointerEventSolver_OnEndEventHandler;
+            _pointerEventSolver.DragStarted += PointerSolverDragStartedHandler;
+            _pointerEventSolver.Clicked += PointerEventSolverClickedHandler;
+            _pointerEventSolver.Ended += PointerEventSolverEndedHandler;
         }
 
         public void Dispose()
@@ -69,7 +69,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if (!_gameplayManager.GameStarted || _gameplayManager.GameEnded)
+            if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep != 8 && _tutorialManager.CurrentStep != 17 && _tutorialManager.CurrentStep != 19 && _tutorialManager.CurrentStep != 27)
@@ -119,8 +119,8 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
 
-            _gameplayManager.CurrentPlayer.OnStartTurnEvent += OnTurnStartedEventHandler;
-            _gameplayManager.CurrentPlayer.OnEndTurnEvent += OnTurnEndedEventHandler;
+            _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
+            _gameplayManager.CurrentPlayer.TurnEnded += OnTurnEndedEndedHandler;
         }
 
         public void SetHand()
@@ -136,11 +136,11 @@ namespace LoomNetwork.CZB
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
-        public virtual void OnGameStartedEventHandler()
+        public virtual void GameStartedHandler()
         {
         }
 
-        public virtual void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
+        public virtual void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             IsActive = false;
             IsPlayerStunned = false;
@@ -174,11 +174,11 @@ namespace LoomNetwork.CZB
             _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
         }
 
-        public void OnTurnEndedEventHandler()
+        public void OnTurnEndedEndedHandler()
         {
         }
 
-        public void OnTurnStartedEventHandler()
+        public void OnTurnStartedStartedHandler()
         {
         }
 
@@ -302,7 +302,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PointerEventSolver_OnDragStartedEventHandler()
+        private void PointerSolverDragStartedHandler()
         {
             _topmostBoardCard.HandBoardCard.OnSelected();
             if (_tutorialManager.IsTutorial)
@@ -316,7 +316,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PointerEventSolver_OnClickEventHandler()
+        private void PointerEventSolverClickedHandler()
         {
             if (_battlegroundController.CardsZoomed)
             {
@@ -333,7 +333,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void PointerEventSolver_OnEndEventHandler()
+        private void PointerEventSolverEndedHandler()
         {
             _delayTimerOfClick = 0f;
             _startedOnClickDelay = false;

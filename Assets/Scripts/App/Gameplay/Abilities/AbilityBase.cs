@@ -105,7 +105,7 @@ namespace LoomNetwork.CZB
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponenentAvatar = GameplayManager.OpponentPlayer;
 
-            PermanentInputEndEvent += OnInputEndEventHandler;
+            PermanentInputEndEvent += InputEndedHandler;
 
             ParticleIds = new List<ulong>();
         }
@@ -140,24 +140,24 @@ namespace LoomNetwork.CZB
                 TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
             }
 
-            TargettingArrow.OnCardSelectedEvent += OnCardSelectedEventHandler;
-            TargettingArrow.OnCardUnselectedevent += OnCardUnselectedeventHandler;
-            TargettingArrow.OnPlayerSelectedEvent += OnPlayerSelectedHandler;
-            TargettingArrow.OnPlayerUnselectedEvent += OnPlayerUnselectedHandler;
-            TargettingArrow.OnInputEndEvent += OnInputEndEventHandler;
-            TargettingArrow.OnInputCancelEvent += OnInputCancelEventHandler;
+            TargettingArrow.CardSelected += CardSelectedHandler;
+            TargettingArrow.CardUnselected += CardUnselectedHandler;
+            TargettingArrow.PlayerSelected += PlayerSelectedHandler;
+            TargettingArrow.PlayerUnselected += PlayerUnselectedHandler;
+            TargettingArrow.InputEnded += InputEndedHandler;
+            TargettingArrow.InputCanceled += InputCanceledHandler;
         }
 
         public void DeactivateSelectTarget()
         {
             if (TargettingArrow != null)
             {
-                TargettingArrow.OnCardSelectedEvent -= OnCardSelectedEventHandler;
-                TargettingArrow.OnCardUnselectedevent -= OnCardUnselectedeventHandler;
-                TargettingArrow.OnPlayerSelectedEvent -= OnPlayerSelectedHandler;
-                TargettingArrow.OnPlayerUnselectedEvent -= OnPlayerUnselectedHandler;
-                TargettingArrow.OnInputEndEvent -= OnInputEndEventHandler;
-                TargettingArrow.OnInputCancelEvent -= OnInputCancelEventHandler;
+                TargettingArrow.CardSelected -= CardSelectedHandler;
+                TargettingArrow.CardUnselected -= CardUnselectedHandler;
+                TargettingArrow.PlayerSelected -= PlayerSelectedHandler;
+                TargettingArrow.PlayerUnselected -= PlayerUnselectedHandler;
+                TargettingArrow.InputEnded -= InputEndedHandler;
+                TargettingArrow.InputCanceled -= InputCanceledHandler;
 
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
@@ -171,24 +171,19 @@ namespace LoomNetwork.CZB
 
         public virtual void Activate()
         {
-            PlayerCallerOfAbility.OnEndTurnEvent += OnEndTurnEventHandler;
-            PlayerCallerOfAbility.OnStartTurnEvent += OnStartTurnEventHandler;
+            PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
             if (CardKind == Enumerators.CardKind.CREATURE && AbilityUnitOwner != null)
             {
-                AbilityUnitOwner.UnitOnDieEvent += UnitOnDieEventHandler;
-                AbilityUnitOwner.UnitOnAttackEvent += UnitOnAttackEventHandler;
-                AbilityUnitOwner.UnitHpChangedEvent += UnitHPChangedEventHandler;
-                AbilityUnitOwner.UnitGotDamageEvent += UnitGotDamageEventHandler;
-
-                if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
-                {
-                    // boardCreature.Card.ConnectAbility((uint)abilityType);
-                }
+                AbilityUnitOwner.UnitDied += UnitDiedHandler;
+                AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
+                AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
             }
             else if (CardKind == Enumerators.CardKind.SPELL && BoardSpell != null)
             {
-                BoardSpell.SpellOnUsedEvent += SpellOnUsedEventHandler;
+                BoardSpell.Used += UsedHandler;
             }
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
@@ -207,8 +202,8 @@ namespace LoomNetwork.CZB
 
         public virtual void Dispose()
         {
-            PlayerCallerOfAbility.OnEndTurnEvent -= OnEndTurnEventHandler;
-            PlayerCallerOfAbility.OnStartTurnEvent -= OnStartTurnEventHandler;
+            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
 
             DeactivateSelectTarget();
             ClearParticles();
@@ -239,11 +234,6 @@ namespace LoomNetwork.CZB
             {
                 IsAbilityResolved = true;
 
-                if (AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                    // targetCreature.Card.ConnectAbility((uint)abilityType);
-                }
-
                 OnObjectSelectedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectedByTargettingArrowCallback = null;
             }
@@ -258,26 +248,26 @@ namespace LoomNetwork.CZB
         {
         }
 
-        protected virtual void OnCardSelectedEventHandler(BoardUnit obj)
+        protected virtual void CardSelectedHandler(BoardUnit obj)
         {
             TargetUnit = obj;
 
             TargetPlayer = null;
         }
 
-        protected virtual void OnCardUnselectedeventHandler(BoardUnit obj)
+        protected virtual void CardUnselectedHandler(BoardUnit obj)
         {
             TargetUnit = null;
         }
 
-        protected virtual void OnPlayerSelectedHandler(Player obj)
+        protected virtual void PlayerSelectedHandler(Player obj)
         {
             TargetPlayer = obj;
 
             TargetUnit = null;
         }
 
-        protected virtual void OnPlayerUnselectedHandler(Player obj)
+        protected virtual void PlayerUnselectedHandler(Player obj)
         {
             TargetPlayer = null;
         }
@@ -307,13 +297,13 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected virtual void OnInputEndEventHandler()
+        protected virtual void InputEndedHandler()
         {
             SelectedTargetAction();
             DeactivateSelectTarget();
         }
 
-        protected virtual void OnInputCancelEventHandler()
+        protected virtual void InputCanceledHandler()
         {
             OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
             OnObjectSelectFailedByTargettingArrowCallback = null;
@@ -321,47 +311,43 @@ namespace LoomNetwork.CZB
             DeactivateSelectTarget();
         }
 
-        protected virtual void OnEndTurnEventHandler()
+        protected virtual void TurnEndedHandler()
         {
             if (TargettingArrow != null)
             {
-                OnInputEndEventHandler();
+                InputEndedHandler();
             }
         }
 
-        protected virtual void OnStartTurnEventHandler()
+        protected virtual void TurnStartedHandler()
         {
         }
 
-        protected virtual void UnitOnDieEventHandler()
+        protected virtual void UnitDiedHandler()
         {
-            // if(targetCreature != null)
-            // targetCreature.Card.DisconnectAbility((uint)abilityType);
-            AbilityUnitOwner.UnitOnDieEvent -= UnitOnDieEventHandler;
-            AbilityUnitOwner.UnitHpChangedEvent -= UnitHPChangedEventHandler;
-            AbilityUnitOwner.UnitGotDamageEvent -= UnitGotDamageEventHandler;
+            AbilityUnitOwner.UnitDied -= UnitDiedHandler;
+            AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+            AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
 
             AbilitiesController.DeactivateAbility(ActivityId);
             Dispose();
         }
 
-        protected virtual void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        protected virtual void UnitAttackedHandler(object info, int damage, bool isAttacker)
         {
         }
 
-        protected virtual void UnitHPChangedEventHandler()
+        protected virtual void UnitHpChangedHandler()
         {
         }
 
-        protected virtual void UnitGotDamageEventHandler(object from)
+        protected virtual void UnitDamagedHandler(object from)
         {
         }
 
-        protected void SpellOnUsedEventHandler()
+        protected void UsedHandler()
         {
-            BoardSpell.SpellOnUsedEvent -= SpellOnUsedEventHandler;
-
-            // _abilitiesController.DeactivateAbility(activityId);
+            BoardSpell.Used -= UsedHandler;
         }
 
         protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)

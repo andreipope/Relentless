@@ -54,13 +54,9 @@ namespace LoomNetwork.CZB
 
         private BoardUnit _lastBoardUntilOnPreview;
 
-        private ILoadObjectsManager _loadObjectsManager;
-
         private PlayerController _playerController;
 
         private IPlayerManager _playerManager;
-
-        private RanksController _ranksController;
 
         private ISoundManager _soundManager;
 
@@ -72,13 +68,13 @@ namespace LoomNetwork.CZB
 
         private Sequence _rearrangingRealTimeSequence;
 
-        public event Action<int> OnPlayerGraveyardUpdatedEvent;
+        public event Action<int> PlayerGraveyardUpdated;
 
-        public event Action<int> OnOpponentGraveyardUpdatedEvent;
+        public event Action<int> OpponentGraveyardUpdated;
 
-        public event Action OnTurnStartedEvent;
+        public event Action TurnStarted;
 
-        public event Action OnTurnEndeddEvent;
+        public event Action TurnEnded;
 
         public void Init()
         {
@@ -88,18 +84,15 @@ namespace LoomNetwork.CZB
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AiController>();
 
-            _ranksController = _gameplayManager.GetController<RanksController>();
-
             _cardsInDestroy = new List<BoardUnit>();
 
-            _gameplayManager.OnGameEndedEvent += OnGameEndedEventHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
         }
 
         public void Dispose()
@@ -108,7 +101,7 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if (_gameplayManager.GameStarted && !_gameplayManager.GameEnded)
+            if (_gameplayManager.IsGameStarted && !_gameplayManager.IsGameEnded)
             {
                 CheckGameDynamic();
 
@@ -153,8 +146,6 @@ namespace LoomNetwork.CZB
                 DestroyCardPreview();
             }
 
-            bool isOpponentCard = cardToDestroy.OwnerPlayer == _gameplayManager.CurrentPlayer?false:true;
-
             cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x, cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
 
             _timerManager.AddTimer(
@@ -178,7 +169,7 @@ namespace LoomNetwork.CZB
                             cardToDestroy.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
                             cardToDestroy.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Card);
 
-                            cardToDestroy.ThrowOnDieEvent();
+                            cardToDestroy.InvokeUnitDied();
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
 
@@ -210,11 +201,11 @@ namespace LoomNetwork.CZB
         {
             if (player.IsLocalPlayer)
             {
-                OnPlayerGraveyardUpdatedEvent?.Invoke(index);
+                PlayerGraveyardUpdated?.Invoke(index);
             }
             else
             {
-                OnOpponentGraveyardUpdatedEvent?.Invoke(index);
+                OpponentGraveyardUpdated?.Invoke(index);
             }
         }
 
@@ -269,7 +260,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void OnGameEndedEventHandler(Enumerators.EndGameType endGameType)
+        public void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             CurrentTurn = 0;
 
@@ -287,7 +278,7 @@ namespace LoomNetwork.CZB
          } */
         public void StartTurn()
         {
-            if (_gameplayManager.GameEnded)
+            if (_gameplayManager.IsGameEnded)
                 return;
 
             CurrentTurn++;
@@ -352,17 +343,17 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _gameplayManager.CurrentPlayer.CallOnStartTurnEvent();
-            _gameplayManager.OpponentPlayer.CallOnStartTurnEvent();
+            _gameplayManager.CurrentPlayer.InvokeTurnStarted();
+            _gameplayManager.OpponentPlayer.InvokeTurnStarted();
 
             _playerController.UpdateHandCardsHighlight();
 
-            OnTurnStartedEvent?.Invoke();
+            TurnStarted?.Invoke();
         }
 
         public void EndTurn()
         {
-            if (_gameplayManager.GameEnded)
+            if (_gameplayManager.IsGameEnded)
                 return;
 
             if (_gameplayManager.IsLocalPlayerTurn())
@@ -382,14 +373,14 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            _gameplayManager.CurrentPlayer.CallOnEndTurnEvent();
-            _gameplayManager.OpponentPlayer.CallOnEndTurnEvent();
+            _gameplayManager.CurrentPlayer.InvokeTurnEnded();
+            _gameplayManager.OpponentPlayer.InvokeTurnEnded();
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn()?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 
-            OnTurnEndeddEvent?.Invoke();
+            TurnEnded?.Invoke();
         }
 
         public void StopTurn()
@@ -458,7 +449,7 @@ namespace LoomNetwork.CZB
 
         public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnit> cardsList, Action onComplete = null)
         {
-            if (_gameplayManager.GameEnded)
+            if (_gameplayManager.IsGameEnded)
                 return;
 
             if (_rearrangingRealTimeSequence != null)
@@ -468,7 +459,7 @@ namespace LoomNetwork.CZB
             }
 
             float boardWidth = 0.0f;
-            float spacing = 0.2f; // -0.2
+            float spacing = 0.2f;
             float cardWidth = 0.0f;
             foreach (BoardUnit card in cardsList)
             {
@@ -518,7 +509,7 @@ namespace LoomNetwork.CZB
                 return;
             }
 
-            if (_gameplayManager.GameEnded)
+            if (_gameplayManager.IsGameEnded)
                 return;
 
             List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;

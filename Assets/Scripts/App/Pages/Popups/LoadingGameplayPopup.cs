@@ -7,8 +7,6 @@ namespace LoomNetwork.CZB
 {
     public class LoadingGameplayPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -32,8 +30,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-
             if (Self == null)
                 return;
 

@@ -15,8 +15,6 @@ namespace LoomNetwork.CZB
 {
     public class YouWonPopup : IUIPopup
     {
-        public static Action OnHidePopupEvent;
-
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -39,7 +37,6 @@ namespace LoomNetwork.CZB
 
         public GameObject Self { get; private set; }
 
-        // private TextMeshProUGUI _nameHeroText;
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -52,7 +49,6 @@ namespace LoomNetwork.CZB
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
             GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
             if (Self == null)
@@ -75,9 +71,6 @@ namespace LoomNetwork.CZB
             _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero").GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
-            // _winTutorialPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPackTutorial").gameObject;
-            // _winPackObject = _selfPage.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/WinPack").gameObject;
-            // _nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
             _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
@@ -100,8 +93,6 @@ namespace LoomNetwork.CZB
             _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
 
-            // _nameHeroText.text = heroName + " Hero";
-
             // TODO : instead of 1000, should be a value accordint to Level
             // TODO : instead of 400, should be how much player experinece on wining game
             _currentLevel.text = currentPlayerHero.Level.ToString();
@@ -111,7 +102,6 @@ namespace LoomNetwork.CZB
             GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 400);
             float updatedExperiencePercetage = (float)currentPlayerHero.Experience / 1000;
 
-            // Debug.Log(updatedExperiencePercetage + " , " + currentExperiencePercentage);
             if (updatedExperiencePercetage < currentExperiencePercentage)
             {
                 MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.Level));
@@ -127,11 +117,6 @@ namespace LoomNetwork.CZB
             {
                 dataManager.CachedHeroesData.Heroes[index] = currentPlayerHero;
             }
-
-            // else Debug.LogError(" =========== Hero not foound ======================= ");
-
-            // _winTutorialPackObject.SetActive(GameClient.Get<ITutorialManager>().IsTutorial);
-            // _winPackObject.SetActive(!GameClient.Get<ITutorialManager>().IsTutorial);
         }
 
         public void Show(object data)
@@ -160,7 +145,6 @@ namespace LoomNetwork.CZB
             // show level up pop up or something
             yield return _experienceFillWait;
 
-            // Debug.Log("====== Show LevelUp Pop Up Or Message ==============");
             _experienceBar.fillAmount = 0f;
             _currentLevel.text = currentLevel.ToString();
             _nextLevel.text = (currentLevel + 1).ToString();

@@ -246,7 +246,7 @@ namespace LoomNetwork.CZB
 
             _deckNameInputField.onEndEdit.AddListener(OnDeckNameInputFieldEndedEdit);
 
-            WarningPopup.OnHidePopupEvent += OnCloseAlertDialogEventHandler;
+            _uiManager.GetPopup<WarningPopup>().PopupHiding += OnCloseAlertDialogEventHandler;
             FillCollectionData();
 
             _selfPage.SetActive(true);
@@ -286,7 +286,7 @@ namespace LoomNetwork.CZB
         {
             ResetArmyCards();
             ResetHordeItems();
-            WarningPopup.OnHidePopupEvent -= OnCloseAlertDialogEventHandler;
+            _uiManager.GetPopup<WarningPopup>().PopupHiding -= OnCloseAlertDialogEventHandler;
 
             _cardInfoPopupHandler.Dispose();
         }
@@ -366,9 +366,9 @@ namespace LoomNetwork.CZB
 
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
-                eventHandler.OnBeginDragEvent += BoardCardOnBeginDragEventHandler;
-                eventHandler.OnEndDragEvent += BoardCardOnEndDragEventHandler;
-                eventHandler.OnDragEvent += BoardCardOnDragEventHandler;
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardDragEndedHandler;
+                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdArmyCards.Add(boardCard);
             }
@@ -947,7 +947,7 @@ namespace LoomNetwork.CZB
                 });
         }
 
-        private void BoardCardOnBeginDragEventHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
                 return;
@@ -964,7 +964,7 @@ namespace LoomNetwork.CZB
             _draggingObject.transform.position = position;
         }
 
-        private void BoardCardOnEndDragEventHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
                 return;
@@ -991,7 +991,7 @@ namespace LoomNetwork.CZB
             _isDragging = false;
         }
 
-        private void BoardCardOnDragEventHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardDragUpdatedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
                 return;
@@ -1018,13 +1018,13 @@ namespace LoomNetwork.CZB
         private void BackButtonHandler()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent += ConfirmQuitEventHandler;
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmQuitReceivedHandler;
             _uiManager.DrawPopup<QuestionPopup>(new object[] { "Would you like to save the current horde?", true });
         }
 
-        private void ConfirmQuitEventHandler(bool status)
+        private void ConfirmQuitReceivedHandler(bool status)
         {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationEvent -= ConfirmQuitEventHandler;
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmQuitReceivedHandler;
             if (status)
             {
                 OnDoneButtonPressed();

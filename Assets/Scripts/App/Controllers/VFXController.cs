@@ -92,10 +92,6 @@ namespace LoomNetwork.CZB
                             });
                     }
 
-                    // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                    // {
-                    // _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CREATURE_ATTACK_SOUND_VOLUME, false, false, true);
-                    // }, null, 0.75f, false);
                     break;
                 }
                 case Enumerators.CardType.HEAVY: {
@@ -114,10 +110,6 @@ namespace LoomNetwork.CZB
                     _particlesController.RegisterParticleSystem(effect, true, 5f);
 
                     _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
-
-                    /* GameClient.Get<ITimerManager>().AddTimer((a) =>
-                                     {
-                                     }, null, 0.75f, false);*/
                     break;
                 }
                 default: {
@@ -141,19 +133,11 @@ namespace LoomNetwork.CZB
                             null,
                             0.5f);
 
-                        // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                        // {
                         _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CreatureAttackSoundVolume, false, false, true);
-
-                        // }, null, 0.75f, false);
                     }
                     else
                     {
-                        // GameClient.Get<ITimerManager>().AddTimer((a) =>
-                        // {
                         _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CreatureAttackSoundVolume, false, false, true);
-
-                        // }, null, 0.75f, false);
                     }
 
                     break;

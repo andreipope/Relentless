@@ -19,9 +19,9 @@ namespace LoomNetwork.CZB
             BattlegroundController.DestroyBoardUnit(unit);
         }
 
-        protected override void UnitOnAttackEventHandler(object from, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(object from, int damage, bool isAttacker)
         {
-            base.UnitOnAttackEventHandler(from, damage, isAttacker);
+            base.UnitAttackedHandler(from, damage, isAttacker);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;

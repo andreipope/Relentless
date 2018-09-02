@@ -75,8 +75,6 @@ namespace LoomNetwork.CZB
                 {
                     leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
                 }
-
-                // CreateVFX(leftAdjustment..transform.position);
             }
 
             if (rightAdjastment != null)
@@ -89,8 +87,6 @@ namespace LoomNetwork.CZB
                 {
                     rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
                 }
-
-                // CreateVFX(targetCreature.transform.position);
             }
 
             if (creature.IsStun)
@@ -103,9 +99,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void OnInputEndEventHandler()
+        protected override void InputEndedHandler()
         {
-            base.OnInputEndEventHandler();
+            base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {

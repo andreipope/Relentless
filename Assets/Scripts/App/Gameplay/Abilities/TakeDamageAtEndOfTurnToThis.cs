@@ -29,9 +29,9 @@ namespace LoomNetwork.CZB
             CreateVfx(AbilityUnitOwner.Transform.position, true, 5f);
         }
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;

@@ -31,9 +31,9 @@ namespace LoomNetwork.CZB
                 InputEvent item = new InputEvent
                 {
                     Code = inputCode,
-                    OnInputEvent = onInput,
-                    OnInputDownEvent = onInputDown,
-                    OnInputUpEvent = onInputUp,
+                    InputCallback = onInput,
+                    InputDownCallback = onInputDown,
+                    InputUpCallback = onInputUp,
                     Type = type,
                     Index = _customFreeIndex++
                 };
@@ -96,17 +96,17 @@ namespace LoomNetwork.CZB
                     {
                         if (Input.GetMouseButton(item.Code))
                         {
-                            item.ThrowOnInputEvent();
+                            item.InvokeInputCallback();
                         }
 
                         if (Input.GetMouseButtonUp(item.Code))
                         {
-                            item.ThrowOnInputUpEvent();
+                            item.InvokeInputUpCallback();
                         }
 
                         if (Input.GetMouseButtonDown(item.Code))
                         {
-                            item.ThrowOnInputDownEvent();
+                            item.InvokeInputDownCallback();
                         }
                     }
 
@@ -115,17 +115,17 @@ namespace LoomNetwork.CZB
                     {
                         if (Input.GetKey((KeyCode)item.Code))
                         {
-                            item.ThrowOnInputEvent();
+                            item.InvokeInputCallback();
                         }
 
                         if (Input.GetKeyUp((KeyCode)item.Code))
                         {
-                            item.ThrowOnInputUpEvent();
+                            item.InvokeInputUpCallback();
                         }
 
                         if (Input.GetKeyDown((KeyCode)item.Code))
                         {
-                            item.ThrowOnInputDownEvent();
+                            item.InvokeInputDownCallback();
                         }
                     }
 
@@ -143,25 +143,25 @@ namespace LoomNetwork.CZB
 
         public Enumerators.InputType Type;
 
-        public Action OnInputUpEvent;
+        public Action InputUpCallback;
 
-        public Action OnInputDownEvent;
+        public Action InputDownCallback;
 
-        public Action OnInputEvent;
+        public Action InputCallback;
 
-        public void ThrowOnInputUpEvent()
+        public void InvokeInputUpCallback()
         {
-            OnInputUpEvent?.Invoke();
+            InputUpCallback?.Invoke();
         }
 
-        public void ThrowOnInputDownEvent()
+        public void InvokeInputDownCallback()
         {
-            OnInputDownEvent?.Invoke();
+            InputDownCallback?.Invoke();
         }
 
-        public void ThrowOnInputEvent()
+        public void InvokeInputCallback()
         {
-            OnInputEvent?.Invoke();
+            InputCallback?.Invoke();
         }
     }
 }

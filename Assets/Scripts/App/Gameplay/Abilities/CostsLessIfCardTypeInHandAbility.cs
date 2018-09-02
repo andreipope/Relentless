@@ -23,8 +23,8 @@ namespace LoomNetwork.CZB
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
-            PlayerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
+            PlayerCallerOfAbility.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             TimerManager.AddTimer(
                 x =>
@@ -45,16 +45,16 @@ namespace LoomNetwork.CZB
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard, MainWorkingCard.RealCost + gooCost, BoardCard);
         }
 
-        private void CardPlayedEventHandler(WorkingCard card)
+        private void CardPlayedHandler(WorkingCard card)
         {
             if (!card.Equals(MainWorkingCard))
                 return;
 
-            PlayerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
-            PlayerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
+            PlayerCallerOfAbility.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private void HandChangedEventHandler(int obj)
+        private void HandChangedHandler(int obj)
         {
             Action();
         }

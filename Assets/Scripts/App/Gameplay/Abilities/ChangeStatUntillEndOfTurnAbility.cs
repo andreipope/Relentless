@@ -58,9 +58,9 @@ namespace LoomNetwork.CZB
         }
 
 
-        protected override void OnEndTurnEventHandler()
+        protected override void TurnEndedHandler()
         {
-            base.OnEndTurnEventHandler();
+            base.TurnEndedHandler();
 
             Player opponent = GetOpponentOverlord();
 

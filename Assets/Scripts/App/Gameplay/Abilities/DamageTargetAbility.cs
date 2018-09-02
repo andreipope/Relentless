@@ -38,9 +38,9 @@ namespace LoomNetwork.CZB
             CreateVfx(Vector3.zero);
         }
 
-        protected override void OnInputEndEventHandler()
+        protected override void InputEndedHandler()
         {
-            base.OnInputEndEventHandler();
+            base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {
@@ -66,7 +66,6 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            // base.CreateVFX(pos);
             Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER?TargetUnit.Transform.position:TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
@@ -88,13 +87,9 @@ namespace LoomNetwork.CZB
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.PLAYER:
-
-                    // if (targetPlayer.id == playerCallerOfAbility.id)
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-
-                    // playerCallerOfAbility.FightCreatureBySkill(value, targetCreature.card);
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
             }

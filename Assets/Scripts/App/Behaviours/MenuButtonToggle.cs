@@ -10,14 +10,15 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 {
     public bool IsToggleEnabled;
 
-    public MenuButtonToggleEvent OnValueChangedEvent = new MenuButtonToggleEvent();
+    [FormerlySerializedAs("OnValueChangedEvent")]
+    public MenuButtonToggleEvent ValueChanged = new MenuButtonToggleEvent();
 
     [SerializeField]
     [FormerlySerializedAs("onHoverOverlayToggleDisabled")]
     protected Image OnHoverOverlayToggleDisabled;
 
     [SerializeField]
-    [FormerlySerializedAs("ClickOverlayToggleDisabled")]
+    [FormerlySerializedAs("onClickOverlayToggleDisabled")]
     protected Image OnClickOverlayToggleDisabled;
 
     [SerializeField]
@@ -113,7 +114,7 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         IsToggleEnabled = !IsToggleEnabled;
 
-        OnValueChangedEvent?.Invoke(IsToggleEnabled);
+        ValueChanged?.Invoke(IsToggleEnabled);
     }
 
     public void SetStatus(bool status)

@@ -50,7 +50,6 @@ namespace LoomNetwork.CZB
 
             string languageCode = language.ToString().ToLower();
 
-            // I2.Loc.LocalizationManager.SetLanguageAndCode(I2.Loc.LocalizationManager.GetLanguageFromCode(languageCode), languageCode);
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
 
@@ -59,7 +58,7 @@ namespace LoomNetwork.CZB
 
         public string GetUITranslation(string key)
         {
-            return ""; // I2.Loc.LocalizationManager.GetTermTranslation(key);
+            return "";
         }
 
         public void Dispose()

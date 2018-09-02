@@ -157,8 +157,8 @@ namespace LoomNetwork.CZB
 
             _onBehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            _onBehaviourHandler.OnTriggerEnterEvent += OnTriggerEnter;
-            _onBehaviourHandler.OnTriggerExitEvent += OnTriggerExit;
+            _onBehaviourHandler.TriggerEntered += TriggerEnter;
+            _onBehaviourHandler.TriggerExited += TriggerExit;
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
@@ -176,15 +176,15 @@ namespace LoomNetwork.CZB
             IsAllAbilitiesResolvedAtStart = true;
         }
 
-        public event Action UnitOnDieEvent;
+        public event Action UnitDied;
 
-        public event Action<object, int, bool> UnitOnAttackEvent;
+        public event Action<object, int, bool> UnitAttacked;
 
-        public event Action<object> UnitGotDamageEvent;
+        public event Action<object> UnitDamaged;
 
-        public event Action UnitHpChangedEvent;
+        public event Action UnitHpChanged;
 
-        public event Action UnitDamageChangedEvent;
+        public event Action UnitDamageChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -198,7 +198,7 @@ namespace LoomNetwork.CZB
             set
             {
                 _currentDamage = Mathf.Clamp(value, 0, 99999);
-                UnitDamageChangedEvent?.Invoke();
+                UnitDamageChanged?.Invoke();
             }
         }
 
@@ -212,7 +212,7 @@ namespace LoomNetwork.CZB
             set
             {
                 _currentHealth = Mathf.Clamp(value, 0, 99);
-                UnitHpChangedEvent?.Invoke();
+                UnitHpChanged?.Invoke();
             }
         }
 
@@ -285,8 +285,8 @@ namespace LoomNetwork.CZB
         {
             _timerManager.StopTimer(CheckIsCanDie);
 
-            UnitHpChangedEvent -= _healthChangedDelegate;
-            UnitDamageChangedEvent -= _damageChangedDelegate;
+            UnitHpChanged -= _healthChangedDelegate;
+            UnitDamageChanged -= _damageChangedDelegate;
 
             _dead = true;
             if (!returnToHand)
@@ -611,7 +611,7 @@ namespace LoomNetwork.CZB
                 UpdateUnitInfoText(_attackText, CurrentDamage, InitialDamage, MaxCurrentDamage);
             };
 
-            UnitDamageChangedEvent += _damageChangedDelegate;
+            UnitDamageChanged += _damageChangedDelegate;
 
             _healthChangedDelegate = () =>
             {
@@ -619,7 +619,7 @@ namespace LoomNetwork.CZB
                 CheckOnDie();
             };
 
-            UnitHpChangedEvent += _healthChangedDelegate;
+            UnitHpChanged += _healthChangedDelegate;
 
             InitialUnitType = Card.LibraryCard.CardType;
 
@@ -816,91 +816,88 @@ namespace LoomNetwork.CZB
 
             IsAttacking = true;
 
-            SortingGroup sortingGroup = GameObject.GetComponent<SortingGroup>();
-
-            if (target is Player)
+            switch (target)
             {
-                Player targetPlayer = target as Player;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
-                AttackedThisTurn = true;
+                case Player targetPlayer:
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+                    AttackedThisTurn = true;
 
-                _actionsQueueController.AddNewActionInToQueue(
-                    (parameter, completeCallback) =>
-                    {
-                        AttackedBoardObjectsThisTurn.Add(targetPlayer);
+                    _actionsQueueController.AddNewActionInToQueue(
+                        (parameter, completeCallback) =>
+                        {
+                            AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
-                        _animationsController.DoFightAnimation(
-                            GameObject,
-                            targetPlayer.AvatarObject,
-                            0.1f,
-                            () =>
-                            {
-                                Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-                                _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx, CurrentDamage);
-
-                                _battleController.AttackPlayerByUnit(this, targetPlayer);
-                            },
-                            () =>
-                            {
-                                _fightTargetingArrow = null;
-                                IsAttacking = false;
-
-                                SetHighlightingEnabled(true);
-                            });
-
-                        _timerManager.AddTimer(
-                            x =>
-                            {
-                                completeCallback?.Invoke();
-                            },
-                            null,
-                            1.5f);
-                    });
-            }
-            else if (target is BoardUnit)
-            {
-                BoardUnit targetCard = target as BoardUnit;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
-                AttackedThisTurn = true;
-
-                _actionsQueueController.AddNewActionInToQueue(
-                    (parameter, completeCallback) =>
-                    {
-                        AttackedBoardObjectsThisTurn.Add(targetCard);
-
-                        _animationsController.DoFightAnimation(
-                            GameObject,
-                            targetCard.Transform.gameObject,
-                            0.5f,
-                            () =>
-                            {
-                                _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, targetCard.Transform.position, CurrentDamage);
-
-                                _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
-
-                                if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
+                            _animationsController.DoFightAnimation(
+                                GameObject,
+                                targetPlayer.AvatarObject,
+                                0.1f,
+                                () =>
                                 {
-                                    targetCard.Stun(Enumerators.StunType.FREEZE, 1);
-                                }
-                            },
-                            () =>
-                            {
-                                _fightTargetingArrow = null;
-                                IsAttacking = false;
+                                    Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx, CurrentDamage);
 
-                                SetHighlightingEnabled(true);
-                            });
+                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                },
+                                () =>
+                                {
+                                    _fightTargetingArrow = null;
+                                    IsAttacking = false;
 
-                        _timerManager.AddTimer(
-                            x =>
-                            {
-                                completeCallback?.Invoke();
-                            },
-                            null,
-                            1.5f);
-                    });
+                                    SetHighlightingEnabled(true);
+                                });
+
+                            _timerManager.AddTimer(
+                                x =>
+                                {
+                                    completeCallback?.Invoke();
+                                },
+                                null,
+                                1.5f);
+                        });
+                    break;
+                case BoardUnit targetCard:
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+                    AttackedThisTurn = true;
+
+                    _actionsQueueController.AddNewActionInToQueue(
+                        (parameter, completeCallback) =>
+                        {
+                            AttackedBoardObjectsThisTurn.Add(targetCard);
+
+                            _animationsController.DoFightAnimation(
+                                GameObject,
+                                targetCard.Transform.gameObject,
+                                0.5f,
+                                () =>
+                                {
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, targetCard.Transform.position, CurrentDamage);
+
+                                    _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
+
+                                    if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
+                                    {
+                                        targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                    }
+                                },
+                                () =>
+                                {
+                                    _fightTargetingArrow = null;
+                                    IsAttacking = false;
+
+                                    SetHighlightingEnabled(true);
+                                });
+
+                            _timerManager.AddTimer(
+                                x =>
+                                {
+                                    completeCallback?.Invoke();
+                                },
+                                null,
+                                1.5f);
+                        });
+                    break;
             }
         }
 
@@ -931,11 +928,6 @@ namespace LoomNetwork.CZB
             return false;
         }
 
-        public void ThrowEventGotDamage(object from)
-        {
-            UnitGotDamageEvent?.Invoke(from);
-        }
-
         public void MoveUnitFromBoardToDeck()
         {
             try
@@ -956,14 +948,19 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void ThrowOnAttackEvent(object target, int damage, bool isAttacker)
+        public void InvokeUnitDamaged(object from)
         {
-            UnitOnAttackEvent?.Invoke(target, damage, isAttacker);
+            UnitDamaged?.Invoke(from);
         }
 
-        public void ThrowOnDieEvent()
+        public void InvokeUnitAttacked(object target, int damage, bool isAttacker)
         {
-            UnitOnDieEvent?.Invoke();
+            UnitAttacked?.Invoke(target, damage, isAttacker);
+        }
+
+        public void InvokeUnitDied()
+        {
+            UnitDied?.Invoke();
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
@@ -1059,7 +1056,7 @@ namespace LoomNetwork.CZB
             sequence.Play();
         }
 
-        private void OnTriggerEnter(Collider collider)
+        private void TriggerEnter(Collider collider)
         {
             if (collider.transform.parent != null)
             {
@@ -1071,7 +1068,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnTriggerExit(Collider collider)
+        private void TriggerExit(Collider collider)
         {
             if (collider.transform.parent != null)
             {
