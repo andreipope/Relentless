@@ -454,8 +454,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Account other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -702,8 +703,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Deck other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Id != 0L) {
         Id = other.Id;
       }
@@ -1194,8 +1196,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Card other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Id != 0L) {
         Id = other.Id;
       }
@@ -1464,8 +1467,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardViewInfo other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.position_ != null) {
         if (position_ == null) {
           position_ = new global::LoomNetwork.CZB.Protobuf.Coordinates();
@@ -1653,8 +1657,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Coordinates other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.X != 0F) {
         X = other.X;
       }
@@ -1879,8 +1884,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Effect other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Trigger.Length != 0) {
         Trigger = other.Trigger;
       }
@@ -2413,8 +2419,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Ability other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Type.Length != 0) {
         Type = other.Type;
       }
@@ -2661,8 +2668,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardList other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       cards_.Add(other.cards_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2808,8 +2816,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardCollection other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.CardName.Length != 0) {
         CardName = other.CardName;
       }
@@ -2958,8 +2967,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardSet other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
@@ -3085,8 +3095,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardLibrary other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       sets_.Add(other.sets_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3415,8 +3426,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Hero other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.HeroId != 0L) {
         HeroId = other.HeroId;
       }
@@ -3611,8 +3623,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListHeroesRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -3733,8 +3746,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListHeroesResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       heroes_.Add(other.heroes_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3901,8 +3915,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddHeroExperienceRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -4064,8 +4079,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(AddHeroExperienceResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.HeroId != 0L) {
         HeroId = other.HeroId;
       }
@@ -4220,8 +4236,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetHeroRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -4355,8 +4372,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetHeroResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.hero_ != null) {
         if (hero_ == null) {
           hero_ = new global::LoomNetwork.CZB.Protobuf.Hero();
@@ -4510,8 +4528,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetHeroSkillsRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -4660,8 +4679,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetHeroSkillsResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.HeroId != 0L) {
         HeroId = other.HeroId;
       }
@@ -5003,8 +5023,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(Skill other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Title.Length != 0) {
         Title = other.Title;
       }
@@ -5213,8 +5234,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(HeroList other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       heroes_.Add(other.heroes_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5333,8 +5355,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CardCollectionList other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       cards_.Add(other.cards_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5474,8 +5497,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DeckList other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       decks_.Add(other.decks_);
       if (other.LastModificationTimestamp != 0L) {
         LastModificationTimestamp = other.LastModificationTimestamp;
@@ -5646,8 +5670,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(InitRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       defaultDecks_.Add(other.defaultDecks_);
       defaultCollection_.Add(other.defaultCollection_);
       cards_.Add(other.cards_);
@@ -5955,8 +5980,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(UpsertAccountRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -6139,8 +6165,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetAccountRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -6288,8 +6315,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetDeckRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -6423,8 +6451,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetDeckResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.deck_ != null) {
         if (deck_ == null) {
           deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
@@ -6599,8 +6628,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CreateDeckRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -6747,8 +6777,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(CreateDeckResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.DeckId != 0L) {
         DeckId = other.DeckId;
       }
@@ -6917,8 +6948,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DeleteDeckRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -7101,8 +7133,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(EditDeckRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -7264,8 +7297,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(DecksResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -7397,8 +7431,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListDecksRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -7540,8 +7575,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListDecksResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       decks_.Add(other.decks_);
       if (other.LastModificationTimestamp != 0L) {
         LastModificationTimestamp = other.LastModificationTimestamp;
@@ -7652,8 +7688,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListCardLibraryRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -7767,8 +7804,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListCardLibraryResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       sets_.Add(other.sets_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7872,8 +7910,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListHeroLibraryRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -7987,8 +8026,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(ListHeroLibraryResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       heroes_.Add(other.heroes_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -8113,8 +8153,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetCollectionRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.UserId.Length != 0) {
         UserId = other.UserId;
       }
@@ -8235,8 +8276,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(GetCollectionResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       cards_.Add(other.cards_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
