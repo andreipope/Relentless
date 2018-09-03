@@ -9,7 +9,8 @@ namespace Loom.ZombieBattleground
     {
         private ILocalizationManager _localizationManager;
 
-        public List<SpreadsheetModelTutorialInfo> TutorialInfo { get; private set; }
+        public List<SpreadsheetModelInfo> TutorialInfo { get; private set; }
+        public List<SpreadsheetModelInfo> FlavorTextInfo { get; private set; }
 
         public void Init()
         {
@@ -47,23 +48,39 @@ namespace Loom.ZombieBattleground
         private void UpdateContentData()
         {
             FillTutorialInfo();
+            FillFlavorTextInfo();
         }
 
         private void FillTutorialInfo()
         {
-            TutorialInfo = new List<SpreadsheetModelTutorialInfo>();
+            TutorialInfo = new List<SpreadsheetModelInfo>();
 
-            ArrayList list = GetDataFromDb<SpreadsheetModelTutorialInfo>(Enumerators.SpreadsheetType.TUTORIAL);
+            ArrayList list = GetDataFromDb<SpreadsheetModelInfo>(Enumerators.SpreadsheetType.TUTORIAL);
 
-            foreach (SpreadsheetModelTutorialInfo item in list)
+            foreach (SpreadsheetModelInfo item in list)
             {
                 item.Description = InternalTools.ReplaceLineBreaks(item.Description);
                 TutorialInfo.Add(item);
             }
         }
+
+        private void FillFlavorTextInfo()
+        {
+            FlavorTextInfo = new List<SpreadsheetModelInfo>();
+
+            ArrayList list = GetDataFromDb<SpreadsheetModelInfo>(Enumerators.SpreadsheetType.FLAVOR_TEXT);
+
+            foreach (SpreadsheetModelInfo item in list)
+            {
+                item.Description = InternalTools.ReplaceLineBreaks(item.Description);
+                FlavorTextInfo.Add(item);
+            }
+        }
+
+
     }
 
-    public class SpreadsheetModelTutorialInfo
+    public class SpreadsheetModelInfo
     {
         public string Description;
     }

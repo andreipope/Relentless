@@ -436,7 +436,8 @@ namespace Loom.ZombieBattleground.Common
 
         public enum SpreadsheetType
         {
-            TUTORIAL
+            TUTORIAL,
+            FLAVOR_TEXT
         }
 
         public enum StatType

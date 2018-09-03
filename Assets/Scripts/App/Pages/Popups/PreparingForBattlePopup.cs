@@ -1,6 +1,8 @@
 using Loom.ZombieBattleground.Gameplay;
+using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,6 +11,8 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
+        private TextMeshProUGUI _flavorText;
+
 
         public GameObject Self { get; private set; }
 
@@ -45,6 +49,9 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            _flavorText = Self.transform.Find("Image_Machine/Flavor_Text").GetComponent<TextMeshProUGUI>();
+
+            ShowRandomFlavorText();
         }
 
         public void Show(object data)
@@ -55,5 +62,13 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
         }
+
+        private void ShowRandomFlavorText()
+        {
+            IContentManager contentManger = GameClient.Get<IContentManager>();
+            int randomVal = Random.Range(0, contentManger.FlavorTextInfo.Count);
+            _flavorText.text = contentManger.FlavorTextInfo[randomVal].Description;
+        }
+
     }
 }
