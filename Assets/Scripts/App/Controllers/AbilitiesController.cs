@@ -756,6 +756,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS:
                     ability = new ReturnUnitsOnBoardToOwnersHandsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES:
+                    ability = new ReplaceUnitsWithTypeOnStrongerOnesAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
+                    ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
+                    break;       
             }
 
             return ability;

@@ -114,7 +114,9 @@ namespace Loom.ZombieBattleground.Common
             PRIORITY_ATTACK,
             DESTROY_TARGET_UNIT_AFTER_ATTACK,
             COSTS_LESS_IF_CARD_TYPE_IN_HAND,
-            RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS
+            RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS,
+            REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES,
+            RESTORE_DEF_RANDOMLY_SPLIT
         }
 
         public enum ActionType

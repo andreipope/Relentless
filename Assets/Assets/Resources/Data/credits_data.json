@@ -1,334 +1,347 @@
 {
-    "creditsInfo": [
+  "creditsInfo": [
+    {
+      "subsectionType": "Main",
+      "credits": [
         {
-            "subsectionType": "Main",
-            "credits": [
-                {
-                    "FullName": "Matthew Campbell ",
-                    "Post": "Executive Producer",
-                },
-                {
-                    "FullName": "Luke Zhang",
-                    "Post": "Executive Producer",
-                },
-                {
-                    "FullName": "James Duffy",
-                    "Post": "Executive Producer",
-                },
-                {
-                  "FullName": "",
-                  "Post": "",
-                },
-                {
-                    "FullName": "Roy Shapira",
-                    "Post": "Game Director",
-                },
-            ]
+          "FullName": "Matthew Campbell ",
+          "Post": "Executive Producer"
         },
         {
-            "subsectionType": "Production",
-            "credits": [
-                {
-                    "FullName": "Diana Shapira",
-                    "Post": "Lead Producer",
-                },
-                {
-                    "FullName": "Monika Guballa",
-                    "Post": "Associate Producer",
-                },
-            ]
+          "FullName": "Luke Zhang",
+          "Post": "Executive Producer"
         },
         {
-            "subsectionType": "Game Design",
-            "credits": [
-                {
-                    "FullName": "Alexei Menardo",
-                    "Post": "Game Designer",
-                },
-            ]
+          "FullName": "James Duffy",
+          "Post": "Executive Producer"
         },
         {
-            "subsectionType": "Programming",
-            "credits": [
-                {
-                    "FullName": "Stanislav Sorokin",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Artem Shyriaiev",
-                    "Post": "Programmer",
-                },
-            ]
+          "FullName": "",
+          "Post": ""
         },
         {
-            "subsectionType": "Art",
-            "credits": [
-                {
-                    "FullName": "Janette Ramos",
-                    "Post": "Lead 2D Artist",
-                },
-                {
-                    "FullName": "Wilfred Dajotoy",
-                    "Post": "Senior 2D and 3D Artist",
-                },
-                {
-                    "FullName": "Alex Alexandrov",
-                    "Post": "Senior 2D Artist",
-                },
-                {
-                    "FullName": "Karen Manalastas",
-                    "Post": "Senior 2D Artist",
-                },
-                {
-                    "FullName": "Milica Celikovic",
-                    "Post": "Senior 2D Artist",
-                },
-                {
-                    "FullName": "Josef Kucera",
-                    "Post": "2D Artist",
-                },
-                {
-                    "FullName": "Basith Ibrahim",
-                    "Post": "2D Artist",
-                },
-                {
-                    "FullName": "Niles Arguelles",
-                    "Post": "2D Artist",
-                },
-                {
-                    "FullName": "Olga Pakskina",
-                    "Post": "2D Artist",
-                },
-                {
-                    "FullName": "Rastislav Le",
-                    "Post": "2D Artist",
-                },
-                {
-                    "FullName": "Pat Sevilla",
-                    "Post": "Junior 2D Artist",
-                },
-            ]
-        },
-        {
-            "subsectionType": "3D and Animations",
-            "credits": [
-                {
-                    "FullName": "Alexandru Salajan",
-                    "Post": "3D Artist",
-                },
-                {
-                    "FullName": "Roger Luzardo",
-                    "Post": "Senior 2D Artist and Animator",
-                },
-                {
-                    "FullName": "Martina Mazzitelli",
-                    "Post": "2D Artist and Animator",
-                },
-                {
-                    "FullName": "Jamie Geolina",
-                    "Post": "2D Artist and Animator",
-                },
-                {
-                    "FullName": "Yuriy Tarasov",
-                    "Post": "Animator and VFX Artist",
-                },
-                {
-                    "FullName": "Alexis Desuyo",
-                    "Post": "Animator and VFX Artist",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Music and Sound \n W.O.W Sound",
-            "credits": [
-                {
-                    "FullName": "",
-                    "Post": "",
-                },
-                {
-                    "FullName": "Sing Huey Lee",
-                    "Post": "Sound Designer and Composer",
-                },
-                {
-                    "FullName": "Sing Ern Lee",
-                    "Post": "Sound Designer and Composer",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Voice Acting",
-            "credits": [
-                {
-                    "FullName": "Lana Charto",
-                    "Post": "Jane Voice Actress",
-                },
-                {
-                    "FullName": "Ryan Withrow",
-                    "Post": "Zombies Voice Actor",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Backend",
-            "credits": [
-                {
-                    "FullName": "Nayeem Siddique",
-                    "Post": "Backend Producer",
-                },
-                {
-                    "FullName": "Kevin Sandom",
-                    "Post": "Lead Programmer",
-                },
-                {
-                    "FullName": "Ady Romantika",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Cristian Esposito",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Lock Thepdusith",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Parth Desai",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Siddhant Mutha",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Vadim Macagon",
-                    "Post": "Senior Programmer",
-                },
-                {
-                    "FullName": "Aditya Anil Godbole",
-                    "Post": "Programmer",
-                },
-                {
-                    "FullName": "Chinmay Naik",
-                    "Post": "Programmer",
-                },
-                {
-                    "FullName": "Gaurav Garg",
-                    "Post": "Programmer",
-                },
-                {
-                    "FullName": "Nishant Modak",
-                    "Post": "Programmer",
-                },
-                {
-                    "FullName": "Serhii Yolkin",
-                    "Post": "Programmer",
-                },
-                {
-                    "FullName": "Surabhi Borgikar",
-                    "Post": "Programmer",
-                },
-            ]
-        },
-        {
-            "subsectionType": "QA",
-            "credits": [
-                {
-                    "FullName": "Yuneek Sehgal",
-                    "Post": "Lead Quality Assurance",
-                },
-                {
-                    "FullName": "Vaibhav Dixit",
-                    "Post": "Quality Assurance",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Marketing",
-            "credits": [
-                {
-                    "FullName": "Mohit Tater",
-                    "Post": "Head of Marketing",
-                },
-                {
-                    "FullName": "Dilanka McLovin",
-                    "Post": "Marketing Manager",
-                },
-                {
-                    "FullName": "Michaela Thompson",
-                    "Post": "Marketing Manager",
-                },
-                {
-                    "FullName": "  Hyunjung Ko (Hannah)",
-                    "Post": "Korean Marketing Manager",
-                },
-                {
-                    "FullName": "Mami Mordovets",
-                    "Post": "Japanese Marketing Manager",
-                },
-                {
-                    "FullName": "Molly Thamrongvorapon",
-                    "Post": "APAC Marketing Manager",
-                },
-                {
-                    "FullName": "Stephanie Xiao",
-                    "Post": "Chinese Marketing Manager",
-                },
-                {
-                    "FullName": "Wang Shuwen (Katniss)",
-                    "Post": "Marketing Assistant",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Community Management",
-            "credits": [
-                {
-                    "FullName": "Robert Arthur Hacala",
-                    "Post": "Content & Community Manager",
-                },
-                {
-                    "FullName": "Tina Tang",
-                    "Post": "Chinese Community Manager",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Human Resources",
-            "credits": [
-                {
-                    "FullName": "Molly Thamrongvorapon",
-                    "Post": "Operations Manager",
-                },
-                {
-                    "FullName": "Macy Wanteh",
-                    "Post": "IT Office Manager",
-                },
-                {
-                    "FullName": "Nam Salita",
-                    "Post": "IT Office Manager",
-                },
-            ]
-        },
-        {
-            "subsectionType": "Special Thanks",
-            "credits": [
-                {
-                    "FullName": "Melo the Cat",
-                    "Post": "SFX and smell",
-                },
-				{
-                    "FullName": " ",
-                    "Post": " ",
-                },
-				{
-                    "FullName": " ",
-                    "Post": " ",
-                },
-				{
-                    "FullName": " ",
-                    "Post": " ",
-                },
-            ]
+          "FullName": "Roy Shapira",
+          "Post": "Game Director"
         }
-    ]
+      ]
+    },
+    {
+      "subsectionType": "Production",
+      "credits": [
+        {
+          "FullName": "Diana Shapira",
+          "Post": "Lead Producer"
+        },
+        {
+          "FullName": "Monika Guballa",
+          "Post": "Producer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Game Design",
+      "credits": [
+        {
+          "FullName": "Alexei Menardo",
+          "Post": "Game Designer"
+        },
+        {
+          "FullName": "Sara Santillan",
+          "Post": "Game Designer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Gameplay Programmers",
+      "credits": [
+        {
+          "FullName": "Stanislav Sorokin",
+          "Post": "Lead Gameplay Programmer"
+        },
+        {
+          "FullName": "Artem Shyriaiev",
+          "Post": "Gameplay Programmer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Unity Programmers",
+      "credits": [
+        {
+          "FullName": "Serhii Yolkin",
+          "Post": "Lead Programmer"
+        },
+        {
+          "FullName": "Cristian Esposito",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Gaurav Garg",
+          "Post": "Programmer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Art",
+      "credits": [
+        {
+          "FullName": "Janette Ramos",
+          "Post": "Lead 2D Artist"
+        },
+        {
+          "FullName": "Wilfred Dajotoy",
+          "Post": "Senior 2D and 3D Artist"
+        },
+        {
+          "FullName": "Alex Alexandrov",
+          "Post": "Senior 2D Artist"
+        },
+        {
+          "FullName": "Karen Manalastas",
+          "Post": "Senior 2D Artist"
+        },
+        {
+          "FullName": "Milica Celikovic",
+          "Post": "Senior 2D Artist"
+        },
+        {
+          "FullName": "Josef Kucera",
+          "Post": "2D Artist"
+        },
+        {
+          "FullName": "Basith Ibrahim",
+          "Post": "2D Artist"
+        },
+        {
+          "FullName": "Niles Arguelles",
+          "Post": "2D Artist"
+        },
+        {
+          "FullName": "Olga Pakskina",
+          "Post": "2D Artist"
+        },
+        {
+          "FullName": "Rastislav Le",
+          "Post": "2D Artist"
+        },
+        {
+          "FullName": "Pat Sevilla",
+          "Post": "Junior 2D Artist"
+        }
+      ]
+    },
+    {
+      "subsectionType": "3D and Animations",
+      "credits": [
+        {
+          "FullName": "Alexandru Salajan",
+          "Post": "3D Artist"
+        },
+        {
+          "FullName": "Roger Luzardo",
+          "Post": "Senior 2D Artist and Animator"
+        },
+        {
+          "FullName": "Martina Mazzitelli",
+          "Post": "2D Artist and Animator"
+        },
+        {
+          "FullName": "Jamie Geolina",
+          "Post": "2D Artist and Animator"
+        },
+        {
+          "FullName": "Yuriy Tarasov",
+          "Post": "Animator and VFX Artist"
+        },
+        {
+          "FullName": "Alexis Desuyo",
+          "Post": "Animator and VFX Artist"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Music and Sound \n W.O.W Sound",
+      "credits": [
+        {
+          "FullName": "",
+          "Post": ""
+        },
+        {
+          "FullName": "Sing Huey Lee",
+          "Post": "Sound Designer and Composer"
+        },
+        {
+          "FullName": "Sing Ern Lee",
+          "Post": "Sound Designer and Composer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Voice Acting",
+      "credits": [
+        {
+          "FullName": "Lana Charto",
+          "Post": "Jane Voice Actress"
+        },
+        {
+          "FullName": "Ryan Withrow",
+          "Post": "Zombies Voice Actor"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Backend",
+      "credits": [
+        {
+          "FullName": "Nayeem Siddique",
+          "Post": "Project Manager"
+        },
+        {
+          "FullName": "Kevin Sandom",
+          "Post": "Lead Programmer"
+        },
+        {
+          "FullName": "Ady Romantika",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Cristian Esposito",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Lock Thepdusith",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Parth Desai",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Siddhant Mutha",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Vadim Macagon",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Aditya Anil Godbole",
+          "Post": "Programmer"
+        },
+        {
+          "FullName": "Chinmay Naik",
+          "Post": "Programmer"
+        },
+        {
+          "FullName": "Nishant Modak",
+          "Post": "Programmer"
+        },
+        {
+          "FullName": "Surabhi Borgikar",
+          "Post": "Programmer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "QA",
+      "credits": [
+        {
+          "FullName": "Yuneek Sehgal",
+          "Post": "Head of QA"
+        },
+        {
+          "FullName": "Vaibhav Dixit",
+          "Post": "Quality Assurance"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Marketing",
+      "credits": [
+        {
+          "FullName": "Mohit Tater",
+          "Post": "Head of Marketing"
+        },
+        {
+          "FullName": "Dilanka McLovin",
+          "Post": "Marketing Manager"
+        },
+        {
+          "FullName": "Michaela Thompson",
+          "Post": "Marketing Manager"
+        },
+        {
+          "FullName": "Hyunjung Ko (Hannah)",
+          "Post": "Korean Marketing Manager"
+        },
+        {
+          "FullName": "Mami Mordovets",
+          "Post": "Japanese Marketing Manager"
+        },
+        {
+          "FullName": "Molly Thamrongvorapon",
+          "Post": "APAC Marketing Manager"
+        },
+        {
+          "FullName": "Stephanie Xiao",
+          "Post": "Chinese Marketing Manager"
+        },
+        {
+          "FullName": "Wang Shuwen (Katniss)",
+          "Post": "Marketing Assistant"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Community Management",
+      "credits": [
+        {
+          "FullName": "Robert Arthur Hacala",
+          "Post": "Content & Community Manager"
+        },
+        {
+          "FullName": "Tina Tang",
+          "Post": "Chinese Community Manager"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Human Resources",
+      "credits": [
+        {
+          "FullName": "Molly Thamrongvorapon",
+          "Post": "Operations Manager"
+        },
+        {
+          "FullName": "Macy Wanteh",
+          "Post": "IT Office Manager"
+        },
+        {
+          "FullName": "Nam Salita",
+          "Post": "IT Office Manager"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Special Thanks",
+      "credits": [
+        {
+          "FullName": "Melo the Cat",
+          "Post": "SFX and smell"
+        },
+        {
+          "FullName": " ",
+          "Post": " "
+        },
+        {
+          "FullName": " ",
+          "Post": " "
+        },
+        {
+          "FullName": " ",
+          "Post": " "
+        }
+      ]
+    }
+  ]
 }

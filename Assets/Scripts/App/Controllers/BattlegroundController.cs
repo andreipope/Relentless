@@ -241,8 +241,8 @@ namespace Loom.ZombieBattleground
             }
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.HP = 99;
-            _gameplayManager.CurrentPlayer.HP = 99;
+            _gameplayManager.OpponentPlayer.Health = 99;
+            _gameplayManager.CurrentPlayer.Health = 99;
 #endif
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
@@ -318,8 +318,6 @@ namespace Loom.ZombieBattleground
                 {
                     card.SetHighlightingEnabled(true);
                 }
-
-                _uiManager.DrawPopup<YourTurnPopup>();
             }
             else
             {
@@ -384,7 +382,19 @@ namespace Loom.ZombieBattleground
         public void StopTurn()
         {
             EndTurn();
-            StartTurn();
+
+
+            if (_gameplayManager.IsLocalPlayerTurn())
+            {
+                _uiManager.DrawPopup<YourTurnPopup>();
+
+                _timerManager.AddTimer((x) =>
+                {
+                    StartTurn();
+                }, null, 4f);
+            }
+            else
+                StartTurn();
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
