@@ -29,8 +29,6 @@ namespace Loom.ZombieBattleground
 
         public Player OwnerPlayer;
 
-        public List<UnitAnimatorInfo> AnimatorControllers;
-
         public List<object> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -223,9 +221,7 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard Card { get; private set; }
 
-        public int InstanceId { get; private set; }
-
-        public bool IsStun => _stunTurns > 0 ? true : false;
+        public bool IsStun => _stunTurns > 0;
 
         public bool IsCreatedThisTurn { get; private set; }
 
@@ -240,10 +236,6 @@ namespace Loom.ZombieBattleground
         public bool TakeFreezeToAttacked { get; set; }
 
         public int AdditionalDamage { get; set; }
-
-        public int AdditionalAttack { get; set; }
-
-        public int AdditionalDefense { get; set; }
 
         public int DamageDebuffUntillEndOfTurn { get; set; }
 
@@ -274,10 +266,6 @@ namespace Loom.ZombieBattleground
             CheckOnDie();
         }
 
-        public void Reset()
-        {
-        }
-
         public void Die(bool returnToHand = false)
         {
             _timerManager.StopTimer(CheckIsCanDie);
@@ -298,70 +286,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             BuffsOnUnit.Add(type);
-        }
-
-        public void RemoveBuff(Enumerators.BuffType type)
-        {
-            if (!_readyForBuffs)
-                return;
-
-            BuffsOnUnit.Remove(type);
-        }
-
-        public void ClearBuffs()
-        {
-            if (!_readyForBuffs)
-                return;
-
-            int damageToDelete = 0;
-            int attackToDelete = 0;
-            int defenseToDelete = 0;
-
-            foreach (Enumerators.BuffType buff in BuffsOnUnit)
-            {
-                switch (buff)
-                {
-                    case Enumerators.BuffType.ATTACK:
-                        attackToDelete++;
-                        break;
-                    case Enumerators.BuffType.DAMAGE:
-                        damageToDelete++;
-                        break;
-                    case Enumerators.BuffType.DEFENCE:
-                        defenseToDelete++;
-                        break;
-                    case Enumerators.BuffType.FREEZE:
-                        TakeFreezeToAttacked = false;
-                        break;
-                    case Enumerators.BuffType.HEAVY:
-                        HasBuffHeavy = false;
-                        break;
-                    case Enumerators.BuffType.RUSH:
-                        if (!IsPlayable && HasBuffRush && IsCreatedThisTurn && !AttackedThisTurn)
-                        {
-                            _sleepingParticles.gameObject.SetActive(true);
-                        }
-
-                        HasBuffRush = false;
-
-                        break;
-                    case Enumerators.BuffType.GUARD:
-                        HasBuffShield = false;
-                        break;
-                }
-            }
-
-            BuffsOnUnit.Clear();
-
-            AdditionalDefense -= defenseToDelete;
-            AdditionalAttack -= attackToDelete;
-            AdditionalDamage -= damageToDelete;
-            BuffedHp -= defenseToDelete;
-            CurrentHp -= defenseToDelete;
-            BuffedDamage -= attackToDelete;
-            CurrentDamage -= attackToDelete;
-
-            UpdateFrameByType();
         }
 
         public void ApplyBuff(Enumerators.BuffType type)
@@ -595,9 +519,8 @@ namespace Loom.ZombieBattleground
                 Process.Start(pathToLogFolder);
             }
 
-            _pictureSprite.transform.localPosition =
-                MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Position);
-            _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Scale);
+            _pictureSprite.transform.localPosition = (Vector3) Card.LibraryCard.CardViewInfo.Position;
+            _pictureSprite.transform.localScale = (Vector3) Card.LibraryCard.CardViewInfo.Scale;
 
             if (Card.Type == Enumerators.CardType.WALKER)
             {

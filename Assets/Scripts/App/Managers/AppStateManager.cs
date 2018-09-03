@@ -101,20 +101,6 @@ namespace Loom.ZombieBattleground
             CheckBackButton();
         }
 
-        public void PauseGame(bool enablePause)
-        {
-            if (enablePause)
-            {
-                Time.timeScale = 0;
-            }
-            else
-            {
-                Time.timeScale = 1;
-            }
-
-            IsAppPaused = enablePause;
-        }
-
         private void CheckBackButton()
         {
             if (Input.GetKeyDown(KeyCode.Escape))

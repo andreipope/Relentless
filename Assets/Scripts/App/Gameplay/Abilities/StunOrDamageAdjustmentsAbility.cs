@@ -19,8 +19,6 @@ namespace Loom.ZombieBattleground
 
         public override void Activate()
         {
-            base.Activate();
-
             switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:

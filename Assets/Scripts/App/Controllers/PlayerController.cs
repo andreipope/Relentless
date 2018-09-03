@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerSolverDragStartedHandler()
         {
-            _topmostBoardCard.HandBoardCard.OnSelected();
+            _topmostBoardCard?.HandBoardCard?.OnSelected();
             if (_tutorialManager.IsTutorial)
             {
                 _tutorialManager.DeactivateSelectTarget();

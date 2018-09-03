@@ -108,8 +108,6 @@ namespace Loom.ZombieBattleground.Data
 
         public int Attack;
 
-        public int Health;
-
         [JsonIgnore]
         public Enumerators.OverlordSkill OverlordSkill;
 

@@ -1,4 +1,4 @@
-#define USE_GAMECHAIN_1_FOR_PRODUCTION
+//#define USE_GAMECHAIN_1_FOR_PRODUCTION
 
 using System.Collections.Generic;
 
@@ -10,22 +10,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             new Dictionary<BackendPurpose, BackendEndpoint>
             {
                 {
-                    BackendPurpose.Local, new BackendEndpoint("http://stage.loom.games", "ws://127.0.0.1:9999/queryws",
-                        "ws://127.0.0.1:46657/websocket")
-                },
-                {
-                    BackendPurpose.Production, new BackendEndpoint(
-                        "http://loom.games",
-
-                        // FIXME
-#if USE_GAMECHAIN_1_FOR_PRODUCTION
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket"
-#else
-                    "ws://gamechain-2.dappchains.com:9999/queryws",
-                    "ws://gamechain-2.dappchains.com:46657/websocket"
-#endif
-                    )
+                    BackendPurpose.Local,
+                    new BackendEndpoint(
+                        "http://stage.loom.games",
+                        "ws://127.0.0.1:9999/queryws",
+                        "ws://127.0.0.1:46657/websocket"
+                        )
                 },
                 {
                     BackendPurpose.Staging, new BackendEndpoint(
@@ -34,8 +24,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                    "ws://gamechain-2.dappchains.com:9999/queryws",
-                    "ws://gamechain-2.dappchains.com:46657/websocket"
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket"
+#endif
+                    )
+                },
+                {
+                    BackendPurpose.Production, new BackendEndpoint(
+                        "http://loom.games",
+
+#if USE_GAMECHAIN_1_FOR_PRODUCTION
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket"
+#else
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket"
 #endif
                     )
                 }

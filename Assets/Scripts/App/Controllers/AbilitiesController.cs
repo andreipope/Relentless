@@ -61,28 +61,6 @@ namespace Loom.ZombieBattleground
             Reset();
         }
 
-        public static uint[] AbilityTypeToUintArray(List<Enumerators.AbilityType> abilities)
-        {
-            uint[] abils = new uint[abilities.Count];
-            for (int i = 0; i < abilities.Count; i++)
-            {
-                abils[i] = (uint) abilities[i];
-            }
-
-            return abils;
-        }
-
-        public static List<Enumerators.AbilityType> AbilityTypeToUintArray(uint[] abilities)
-        {
-            List<Enumerators.AbilityType> abils = new List<Enumerators.AbilityType>();
-            for (int i = 0; i < abilities.Length; i++)
-            {
-                abils[i] = (Enumerators.AbilityType) abilities[i];
-            }
-
-            return abils;
-        }
-
         public void Reset()
         {
             lock (_lock)
@@ -199,16 +177,6 @@ namespace Loom.ZombieBattleground
         public bool IsAbilityCanActivateTargetAtStart(AbilityData ability)
         {
             if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && IsAbilityActive(ability))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool IsAbilityCanActivateWithoutTargetAtStart(AbilityData ability)
-        {
-            if (HasTargets(ability) && IsAbilityCallsAtStart(ability) && !IsAbilityActive(ability))
             {
                 return true;
             }
@@ -561,13 +529,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public Player GetOpponentPlayer(AbilityBase ability)
-        {
-            return ability.PlayerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
-        }
-
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
         {
             ActiveAbility activeAbility =
@@ -763,9 +724,9 @@ namespace Loom.ZombieBattleground
 
         private void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
         {
-            if (boardObject is BoardUnit)
+            if (boardObject is BoardUnit unit)
             {
-                (boardObject as BoardUnit).IsAllAbilitiesResolvedAtStart = status;
+                unit.IsAllAbilitiesResolvedAtStart = status;
             }
         }
 
@@ -796,7 +757,7 @@ namespace Loom.ZombieBattleground
                     }, 0.5f);
 
                     GameClient.Get<ITimerManager>().AddTimer(
-                        creat =>
+                        create =>
                         {
                             card.WorkingCard.Owner.GraveyardCardsCount++;
 

@@ -131,10 +131,6 @@ namespace Loom.ZombieBattleground
 
         public TextMeshProUGUI PostText;
 
-        public CreditView()
-        {
-        }
-
         public CreditView(GameObject prefab, Transform parent, string name, string post)
         {
             SelfObject = Object.Instantiate(prefab, parent, false);
@@ -155,10 +151,6 @@ namespace Loom.ZombieBattleground
         public GameObject SelfObject;
 
         public TextMeshProUGUI SectionText;
-
-        public CreditSubSectionView()
-        {
-        }
 
         public CreditSubSectionView(GameObject prefab, Transform parent, string section)
         {

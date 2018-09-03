@@ -35,10 +35,6 @@ namespace Loom.ZombieBattleground
 
         private GameObject _reportActionPreviewPanel;
 
-        public ReportViewBase()
-        {
-        }
-
         public ReportViewBase(GameObject prefab, Transform parent, GameActionReport gameAction)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -66,12 +62,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public virtual void PointerExitedHandler(PointerEventData obj)
+        public void PointerExitedHandler(PointerEventData obj)
         {
             _reportActionPreviewPanel.SetActive(false);
         }
 
-        public virtual void PointerEnteredHandler(PointerEventData obj)
+        public void PointerEnteredHandler(PointerEventData obj)
         {
             _reportActionPreviewPanel.SetActive(true);
         }
@@ -129,62 +125,7 @@ namespace Loom.ZombieBattleground
             return avatar;
         }
 
-        // todo improve
-        public GameObject CreateSkillPreview(Player player)
-        {
-            GameObject avatar =
-                Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
-            SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            Sprite heroSprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
-                    player.SelfHero.HeroElement + "_EXP");
-            sprite.sprite = heroSprite;
-            TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            hpText.text = player.Health.ToString();
-            avatar.transform.localPosition = new Vector3(5f, 0, 0);
-            avatar.transform.localScale = Vector3.one * 1.6f;
-            avatar.GetComponent<SortingGroup>().sortingOrder = 1000;
-            avatar.layer = LayerMask.NameToLayer("Ignore Raycast");
-
-            return avatar;
-        }
-
-        // todo improve
-        public GameObject CreateAbilityPreview(WorkingCard card, Vector3 pos)
-        {
-            BoardCard boardCard;
-            GameObject currentBoardCard;
-            CardsController.GetSetOfCard(card.LibraryCard);
-
-            switch (card.LibraryCard.CardKind)
-            {
-                case Enumerators.CardKind.CREATURE:
-                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab,
-                        _reportActionPreviewPanel.transform, false);
-                    boardCard = new UnitBoardCard(currentBoardCard);
-                    break;
-                case Enumerators.CardKind.SPELL:
-                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
-                        _reportActionPreviewPanel.transform, false);
-                    boardCard = new SpellBoardCard(currentBoardCard);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            boardCard.Init(card);
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.IsPreview = true;
-            currentBoardCard.transform.localPosition = pos;
-            currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
-            currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
-            currentBoardCard.GetComponent<SortingGroup>().sortingOrder = 1000;
-            currentBoardCard.layer = LayerMask.NameToLayer("Ignore Raycast");
-
-            return currentBoardCard;
-        }
-
-        public virtual void Dispose()
+        public void Dispose()
         {
             Object.Destroy(_reportActionPreviewPanel);
             Object.Destroy(SelfObject);
