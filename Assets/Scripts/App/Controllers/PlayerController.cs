@@ -163,7 +163,7 @@ namespace LoomNetwork.CZB
 
         public void HandCardPreview(object[] param)
         {
-            Vector3 cardPosition = Vector3.zero;
+            Vector3 cardPosition;
 
             if (!InternalTools.IsTabletScreen())
             {

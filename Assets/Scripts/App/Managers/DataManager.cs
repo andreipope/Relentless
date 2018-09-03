@@ -11,7 +11,6 @@ using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Protobuf;
-using LoomNetwork.Internal;
 using Newtonsoft.Json;
 using UnityEngine;
 using Card = LoomNetwork.CZB.Data.Card;
@@ -199,7 +198,7 @@ namespace LoomNetwork.CZB
         private uint GetMaxCopiesValue(Card card, string setName)
         {
             Enumerators.CardRank rank = card.CardRank;
-            uint maxCopies = 0;
+            uint maxCopies;
 
             if (setName.ToLower().Equals("item"))
             {

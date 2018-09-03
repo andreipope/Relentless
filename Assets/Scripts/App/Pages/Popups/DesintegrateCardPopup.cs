@@ -1,6 +1,5 @@
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using TMPro;
 using UnityEngine;
 
 namespace LoomNetwork.CZB

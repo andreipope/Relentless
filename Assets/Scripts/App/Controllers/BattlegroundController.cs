@@ -313,7 +313,6 @@ namespace LoomNetwork.CZB
                 }
 
                 creatures.Clear();
-                creatures = null;
 
                 foreach (BoardUnit card in PlayerBoardCards)
                 {
@@ -463,7 +462,7 @@ namespace LoomNetwork.CZB
             float boardWidth = 0.0f;
             float spacing = 0.2f;
             float cardWidth = 0.0f;
-            foreach (BoardUnit card in cardsList)
+            for (int i = 0; i < cardsList.Count; i++)
             {
                 cardWidth = 2.5f;
                 boardWidth += cardWidth;
@@ -477,7 +476,6 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < cardsList.Count; i++)
             {
-                BoardUnit card = cardsList[i];
                 newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
                 pivot.x += boardWidth / cardsList.Count;
             }
@@ -514,7 +512,7 @@ namespace LoomNetwork.CZB
             float spacing = 0.2f;
             float cardWidth = 0.0f;
 
-            foreach (BoardUnit card in opponentBoardCards)
+            for (int i = 0; i < opponentBoardCards.Count; i++)
             {
                 cardWidth = 2.5f;
                 boardWidth += cardWidth;
@@ -528,7 +526,6 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
-                BoardUnit card = opponentBoardCards[i];
                 newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
                 pivot.x += boardWidth / opponentBoardCards.Count;
             }
@@ -584,9 +581,7 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            string cardSetName = _cardsController.GetSetOfCard(card.LibraryCard);
-
-            BoardCard boardCard = null;
+            BoardCard boardCard;
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -693,7 +688,7 @@ namespace LoomNetwork.CZB
                 twistPerCard = -3;
             }
 
-            foreach (BoardCard card in PlayerHandCards)
+            for (int i = 0; i < PlayerHandCards.Count; i++)
             {
                 handWidth += spacing;
             }
@@ -739,7 +734,7 @@ namespace LoomNetwork.CZB
             float handWidth = 0.0f;
             float spacing = -1.0f;
 
-            foreach (GameObject card in OpponentHandCards)
+            for (int i = 0; i < OpponentHandCards.Count; i++)
             {
                 handWidth += spacing;
             }
@@ -756,17 +751,15 @@ namespace LoomNetwork.CZB
 
             int totalTwist = twistPerCard * OpponentHandCards.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
-            float scalingFactor = 0.04f;
-            Vector3 movePosition = Vector3.zero;
-            Vector3 rotatePosition = Vector3.zero;
+            float scalingFactor;
+            Vector3 movePosition;
+            Vector3 rotatePosition;
 
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
                 GameObject card = OpponentHandCards[i];
                 float twist = startTwist - i * twistPerCard;
-                float nudge = Mathf.Abs(twist);
 
-                nudge *= scalingFactor;
                 movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
                 rotatePosition = new Vector3(0, 0, twist);
 

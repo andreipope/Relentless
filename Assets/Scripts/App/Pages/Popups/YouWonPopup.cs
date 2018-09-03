@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using System.Linq;
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Gameplay;
-using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -95,7 +93,6 @@ namespace LoomNetwork.CZB
             string heroName = currentPlayerHero.Element.ToLower();
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
-            heroName = Utilites.FirstCharToUpper(heroName);
 
             // TODO : instead of 1000, should be a value accordint to Level
             // TODO : instead of 400, should be how much player experinece on wining game

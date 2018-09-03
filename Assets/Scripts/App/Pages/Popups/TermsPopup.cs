@@ -1,4 +1,3 @@
-using System;
 using LoomNetwork.CZB.Common;
 using TMPro;
 using UnityEngine;

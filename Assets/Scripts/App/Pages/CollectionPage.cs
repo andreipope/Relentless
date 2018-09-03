@@ -287,8 +287,8 @@ namespace LoomNetwork.CZB
                 if (cardData == null)
                     continue;
 
-                GameObject go = null;
-                BoardCard boardCard = null;
+                GameObject go;
+                BoardCard boardCard;
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:

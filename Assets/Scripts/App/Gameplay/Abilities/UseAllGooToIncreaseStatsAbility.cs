@@ -30,7 +30,7 @@ namespace LoomNetwork.CZB
             if (PlayerCallerOfAbility.Goo == 0)
                 return;
 
-            int increaseOn = 0;
+            int increaseOn;
 
             increaseOn = PlayerCallerOfAbility.Goo * Value;
             AbilityUnitOwner.BuffedHp += increaseOn;

@@ -459,7 +459,7 @@ namespace LoomNetwork.CZB
             const float offset = 0f;
             const float spacing = -6.75f;
 
-            BuffOnCardInfoObject buff = null;
+            BuffOnCardInfoObject buff;
 
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
@@ -622,7 +622,7 @@ namespace LoomNetwork.CZB
             const float offset = 0f;
             const float spacing = -6.75f;
 
-            BuffOnCardInfoObject buff = null;
+            BuffOnCardInfoObject buff;
 
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 

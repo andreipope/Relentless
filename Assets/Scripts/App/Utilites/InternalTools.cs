@@ -99,12 +99,12 @@ namespace LoomNetwork.CZB.Helpers
             }
             else
             {
-                object element = null;
+                object element;
                 for (int i = 0; i < count; i++)
                 {
                     element = ShakeList(root).First(x => !list.Contains(x));
 
-                    if (element != null && element != default(List<object>))
+                    if (element != null)
                     {
                         list.Add(element);
                     }

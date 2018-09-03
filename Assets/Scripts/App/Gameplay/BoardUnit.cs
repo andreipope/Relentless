@@ -8,7 +8,6 @@ using LoomNetwork.CZB.Helpers;
 using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -1110,7 +1109,7 @@ namespace LoomNetwork.CZB
         {
             if (unit == this)
             {
-                OnMouseDown(null);
+                OnMouseDown();
             }
         }
 
@@ -1118,11 +1117,11 @@ namespace LoomNetwork.CZB
         {
             if (unit == this)
             {
-                OnMouseUp(null);
+                OnMouseUp();
             }
         }
 
-        private void OnMouseDown(GameObject obj)
+        private void OnMouseDown()
         {
             if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
                 return;
@@ -1162,7 +1161,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void OnMouseUp(GameObject obj)
+        private void OnMouseUp()
         {
             if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
             {

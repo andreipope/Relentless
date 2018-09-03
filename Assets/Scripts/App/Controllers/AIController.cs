@@ -384,7 +384,7 @@ namespace LoomNetwork.CZB
             cards.AddRange(GetUnitCardsInHand());
             cards.AddRange(GetSpellCardsInHand());
             cards = cards.FindAll(x => CardBePlayableForOverflowGoo(x.LibraryCard.Cost, gooAmount));
-            AbilityData overflowGooAbility = null;
+            AbilityData overflowGooAbility;
             for (int i = 0; i < cards.Count; i++)
             {
                 if (cards[i].LibraryCard.Abilities != null)
@@ -435,7 +435,7 @@ namespace LoomNetwork.CZB
                 }
 
                 PlayCardOnBoard(expensiveCard);
-                wasAction = true;
+
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
                 if (wasAction)
@@ -954,7 +954,7 @@ namespace LoomNetwork.CZB
 
         private BoardUnit GetRandomUnit(bool lowHp = false, List<BoardUnit> unitsToIgnore = null)
         {
-            List<BoardUnit> eligibleUnits = null;
+            List<BoardUnit> eligibleUnits;
 
             if (!lowHp)
             {

@@ -307,12 +307,9 @@ namespace LoomNetwork.CZB
 
             for (int i = 0; i < Constants.CardsInPack; i++)
             {
-                int n = i;
                 Card card = cardsInPack[i];
 
-                string cardSetName = _cardsController.GetSetOfCard(card);
-
-                GameObject go = null;
+                GameObject go;
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
@@ -367,7 +364,6 @@ namespace LoomNetwork.CZB
             if (!go.transform.Find("Back").gameObject.activeSelf)
                 return;
 
-            Vector3 rotation = go.transform.eulerAngles;
             Sequence animationSequence3 = DOTween.Sequence();
             animationSequence3.Append(
                 go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));

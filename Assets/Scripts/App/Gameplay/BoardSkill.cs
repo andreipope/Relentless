@@ -347,7 +347,7 @@ namespace LoomNetwork.CZB
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            Vector3 position = Vector3.zero;
+            Vector3 position;
 
             if (Owner.IsLocalPlayer)
             {

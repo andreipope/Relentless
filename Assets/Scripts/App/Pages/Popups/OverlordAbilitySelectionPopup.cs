@@ -172,8 +172,6 @@ namespace LoomNetwork.CZB
 
             private HeroSkill _skill;
 
-            private bool _allowMultiSelect;
-
             private bool _isSelected;
 
             public AbilityInstance(Transform root)
@@ -211,7 +209,6 @@ namespace LoomNetwork.CZB
 
             public bool AllowMultiSelect
             {
-                get => _allowMultiSelect;
                 set => _abilityToggle.group = value ? null : _parentGameObject.GetComponent<ToggleGroup>();
             }
 

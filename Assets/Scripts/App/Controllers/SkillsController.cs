@@ -77,7 +77,6 @@ namespace LoomNetwork.CZB
 
             rootPage.PlayerSecondarySkillHandler.MouseDownTriggered += SecondarySkillHandlerMouseDownTriggeredHandler;
             rootPage.PlayerSecondarySkillHandler.MouseUpTriggered += SecondarySkillHandlerMouseUpTriggeredHandler;
-
             rootPage.OpponentPrimarySkillHandler.MouseDownTriggered +=
                 OpponentPrimarySkillHandlerMouseDownTriggeredHandler;
             rootPage.OpponentPrimarySkillHandler.MouseUpTriggered += OpponentPrimarySkillHandlerMouseUpTriggeredHandler;
@@ -260,7 +259,7 @@ namespace LoomNetwork.CZB
 
         private GameObject GetVfxPrefabBySkill(BoardSkill skill)
         {
-            GameObject prefab = null;
+            GameObject prefab;
 
             switch (skill.Skill.OverlordSkill)
             {
@@ -323,7 +322,7 @@ namespace LoomNetwork.CZB
                     RabiesAction(skill.Owner, skill, skill.Skill, target);
                     break;
                 case Enumerators.OverlordSkill.HARDEN:
-                    HardenAction(skill.Owner, skill, skill.Skill);
+                    HardenAction(skill.Owner, skill, skill.Skill, target);
                     break;
                 case Enumerators.OverlordSkill.STONE_SKIN:
                     StoneskinAction(skill.Owner, skill, skill.Skill, target);
@@ -421,7 +420,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void HardenAction(Player owner, BoardSkill boardSkill, HeroSkill skill)
+        private void HardenAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             _battleController.HealPlayerBySkill(owner, skill, owner);
 
@@ -442,10 +441,8 @@ namespace LoomNetwork.CZB
             Enumerators.SetType attackType,
             Enumerators.SetType setType)
         {
-            if (target is Player)
+            if (target is Player player)
             {
-                Player player = target as Player;
-
                 // TODO additional damage to heros
                 _battleController.AttackPlayerBySkill(owner, skill, player);
             }

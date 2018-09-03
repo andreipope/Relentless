@@ -392,8 +392,8 @@ namespace LoomNetwork.CZB
 
         public BoardCard CreateCard(Card card, Vector3 worldPos, RectTransform root)
         {
-            BoardCard boardCard = null;
-            GameObject go = null;
+            BoardCard boardCard;
+            GameObject go;
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -816,7 +816,7 @@ namespace LoomNetwork.CZB
 
         public void SelectCard(DeckBuilderCard deckBuilderCard, Card card)
         {
-            BoardCard boardCard = null;
+            BoardCard boardCard;
             if (deckBuilderCard.IsHordeItem)
             {
                 boardCard = _createdHordeCards.First(c => c.LibraryCard.Id == card.Id);

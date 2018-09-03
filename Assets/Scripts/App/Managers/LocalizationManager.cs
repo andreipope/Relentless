@@ -48,8 +48,6 @@ namespace LoomNetwork.CZB
             if (language == CurrentLanguage && !forceUpdate)
                 return;
 
-            string languageCode = language.ToString().ToLower();
-
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
 

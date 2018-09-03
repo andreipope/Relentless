@@ -132,10 +132,7 @@ namespace LoomNetwork.CZB
                 // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
                 SetUIState(LoginState.BetaKeyValidateAndLogin);
 
-                byte[] privateKey;
-                byte[] publicKey;
-                string userId;
-                GenerateKeysAndUserFromBetaKey(betaKey, out privateKey, out publicKey, out userId);
+                GenerateKeysAndUserFromBetaKey(betaKey, out byte[] privateKey, out byte[] _, out string userId);
 
                 try
                 {

@@ -9,11 +9,11 @@ public class EndTurnButton : MonoBehaviour
 {
     [SerializeField]
     [FormerlySerializedAs("textPressedPosition")]
-    private readonly Vector3 _textPressedPosition = new Vector3(0, -0.12f, 0);
+    private Vector3 _textPressedPosition = new Vector3(0, -0.12f, 0);
 
     [SerializeField]
     [FormerlySerializedAs("textDefaultPosition")]
-    private readonly Vector3 _textDefaultPosition = new Vector3(0, -0.00f, 0);
+    private Vector3 _textDefaultPosition = new Vector3(0, -0.00f, 0);
 
     [SerializeField]
     [FormerlySerializedAs("defaultSprite")]

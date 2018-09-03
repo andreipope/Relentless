@@ -223,8 +223,7 @@ namespace LoomNetwork.CZB
                             Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
                             Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
                         {
-                            CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index,
-                                ref startWithSecondPlayer);
+                            CheckPlayerObjects(ref isFrontViewPlayer, ref startWithSecondPlayer);
                         }
 
                         if (index == turnsCount - 1)
@@ -239,8 +238,7 @@ namespace LoomNetwork.CZB
             _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
         }
 
-        private void CheckPlayerObjects(
-            ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)
+        private void CheckPlayerObjects(ref bool isFrontView, ref bool startWithSecondPlayer)
         {
             isFrontView = !isFrontView;
 

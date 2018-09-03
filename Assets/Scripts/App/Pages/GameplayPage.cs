@@ -401,8 +401,10 @@ namespace LoomNetwork.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.Percent - percent))
-                    .Where(y => y.Percent > 0).First();
+                CardZoneOnBoardStatus nearest =
+                    _deckStatus
+                        .OrderBy(x => Math.Abs(x.Percent - percent))
+                        .First(y => y.Percent > 0);
 
                 _playerDeckStatusTexture.sprite = nearest.StatusSprite;
             }
@@ -424,7 +426,7 @@ namespace LoomNetwork.CZB
                 List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus
                     .OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
-                CardZoneOnBoardStatus nearest = null;
+                CardZoneOnBoardStatus nearest;
 
                 if (nearestObjects[0].Percent > 0)
                 {
@@ -477,8 +479,7 @@ namespace LoomNetwork.CZB
                 List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus
                     .OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
-                CardZoneOnBoardStatus nearest = null;
-
+                CardZoneOnBoardStatus nearest;
                 if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];

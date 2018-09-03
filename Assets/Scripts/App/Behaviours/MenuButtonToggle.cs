@@ -124,10 +124,6 @@ public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExi
         OnPointerUp(null);
     }
 
-    private void Awake()
-    {
-    }
-
     private void Start()
     {
         if (IsToggleEnabled)
