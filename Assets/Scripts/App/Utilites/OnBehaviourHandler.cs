@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler,
         IBeginDragHandler, IEndDragHandler

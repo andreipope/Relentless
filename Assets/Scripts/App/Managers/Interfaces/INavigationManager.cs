@@ -1,4 +1,4 @@
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface INavigationManager
     {

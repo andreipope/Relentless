@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class ParticleSystemScaleGravityModifier : MonoBehaviour

@@ -1,5 +1,5 @@
-using LoomNetwork.CZB;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;

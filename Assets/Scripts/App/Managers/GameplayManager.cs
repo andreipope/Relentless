@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class GameplayManager : IService, IGameplayManager
     {

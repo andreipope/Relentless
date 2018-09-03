@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class UpdatePlayerSettingsVersions : IPreprocessBuildWithReport
     {

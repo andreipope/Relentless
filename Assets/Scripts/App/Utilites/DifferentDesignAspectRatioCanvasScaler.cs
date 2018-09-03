@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     [RequireComponent(typeof(Canvas))]
     [ExecuteInEditMode]

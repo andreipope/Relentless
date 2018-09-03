@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PlayerController : IController
     {

@@ -1,7 +1,7 @@
 using System;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB.Gameplay
+namespace Loom.ZombieBattleground.Gameplay
 {
     public interface ICameraManager
     {

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BoardUnit
     {

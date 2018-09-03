@@ -1,8 +1,8 @@
 using System;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
-namespace LoomNetwork.CZB.Gameplay
+namespace Loom.ZombieBattleground.Gameplay
 {
     public class CameraManager : IService, ICameraManager
     {

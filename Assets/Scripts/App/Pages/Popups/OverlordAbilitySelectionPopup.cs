@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class OverlordAbilitySelectionPopup : IUIPopup
     {

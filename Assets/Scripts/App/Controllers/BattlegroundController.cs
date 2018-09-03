@@ -2,15 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BattlegroundController : IController
     {
@@ -751,17 +751,14 @@ namespace LoomNetwork.CZB
 
             int totalTwist = twistPerCard * OpponentHandCards.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
-            float scalingFactor;
-            Vector3 movePosition;
-            Vector3 rotatePosition;
 
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
                 GameObject card = OpponentHandCards[i];
                 float twist = startTwist - i * twistPerCard;
 
-                movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
-                rotatePosition = new Vector3(0, 0, twist);
+                Vector3 movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
+                Vector3 rotatePosition = new Vector3(0, 0, twist);
 
                 if (isMove)
                 {

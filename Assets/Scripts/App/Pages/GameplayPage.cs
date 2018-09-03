@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class GameplayPage : IUIElement
     {

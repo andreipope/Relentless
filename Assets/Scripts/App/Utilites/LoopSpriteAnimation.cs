@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class LoopSpriteAnimation : MonoBehaviour

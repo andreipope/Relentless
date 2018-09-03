@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ActionLogCollectorUploader : IService
     {

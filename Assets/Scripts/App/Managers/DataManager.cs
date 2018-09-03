@@ -7,17 +7,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Protobuf;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
-using Card = LoomNetwork.CZB.Data.Card;
-using CardSet = LoomNetwork.CZB.Data.CardSet;
-using Deck = LoomNetwork.CZB.Data.Deck;
+using Card = Loom.ZombieBattleground.Data.Card;
+using CardSet = Loom.ZombieBattleground.Data.CardSet;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
     {
@@ -195,7 +195,7 @@ namespace LoomNetwork.CZB
         {
         }
 
-        private uint GetMaxCopiesValue(Card card, string setName)
+        private uint GetMaxCopiesValue(Data.Card card, string setName)
         {
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
@@ -324,7 +324,7 @@ namespace LoomNetwork.CZB
                             remoteDecksData = new DecksData
                             {
                                 Decks = listDecksResponse.Decks
-                                    .Select(d => JsonConvert.DeserializeObject<Deck>(d.ToString())).ToList()
+                                    .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString())).ToList()
                             };
                             remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
                         }
@@ -356,14 +356,14 @@ namespace LoomNetwork.CZB
                             try
                             {
                                 // Remove all remote decks, fingers crossed
-                                foreach (Deck remoteDeck in remoteDecksData.Decks)
+                                foreach (Data.Deck remoteDeck in remoteDecksData.Decks)
                                 {
                                     await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId,
                                         remoteDeck.Id, 0);
                                 }
 
                                 // Upload local decks
-                                foreach (Deck localDeck in localDecksData.Decks)
+                                foreach (Data.Deck localDeck in localDecksData.Decks)
                                 {
                                     long createdDeckId = await _backendFacade.AddDeck(
                                         _backendDataControlMediator.UserDataModel.UserId, localDeck,
@@ -509,9 +509,9 @@ namespace LoomNetwork.CZB
             CachedCollectionData = new CollectionData();
             CachedCollectionData.Cards = new List<CollectionCardData>();
 
-            foreach (CardSet set in CachedCardsLibraryData.Sets)
+            foreach (Data.CardSet set in CachedCardsLibraryData.Sets)
             {
-                foreach (Card card in set.Cards)
+                foreach (Data.Card card in set.Cards)
                 {
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData

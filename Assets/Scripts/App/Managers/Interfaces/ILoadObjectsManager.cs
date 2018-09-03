@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface ILoadObjectsManager
     {

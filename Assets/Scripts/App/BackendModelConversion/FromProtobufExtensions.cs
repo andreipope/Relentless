@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using LoomNetwork.CZB.Helpers;
-using LoomNetwork.CZB.Protobuf;
+using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public static class FromProtobufExtensions
     {

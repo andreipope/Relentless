@@ -1,11 +1,11 @@
 using System;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AnimationsController : IController
     {

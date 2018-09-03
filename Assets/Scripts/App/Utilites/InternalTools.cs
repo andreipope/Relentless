@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Random = System.Random;
 
-namespace LoomNetwork.CZB.Helpers
+namespace Loom.ZombieBattleground.Helpers
 {
     public class InternalTools
     {

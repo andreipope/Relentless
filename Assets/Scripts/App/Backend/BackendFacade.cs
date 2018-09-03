@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Protobuf;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using Deck = LoomNetwork.CZB.Data.Deck;
-using ProtobufDeck = LoomNetwork.CZB.Protobuf.Deck;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
@@ -145,14 +143,14 @@ namespace LoomNetwork.CZB.BackendCommunication
             await Contract.CallAsync(DeleteDeckMethod, request);
         }
 
-        public async Task EditDeck(string userId, Deck deck, long lastModificationTimestamp)
+        public async Task EditDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
         {
             EditDeckRequest request = EditDeckRequest(userId, deck, lastModificationTimestamp);
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
-        public async Task<long> AddDeck(string userId, Deck deck, long lastModificationTimestamp)
+        public async Task<long> AddDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -170,7 +168,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
-                Deck = new ProtobufDeck
+                Deck = new Deck
                 {
                     Name = deck.Name,
                     HeroId = deck.HeroId,
@@ -187,7 +185,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             return createDeckResponse.DeckId;
         }
 
-        private static EditDeckRequest EditDeckRequest(string userId, Deck deck, long lastModificationTimestamp)
+        private static EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -205,7 +203,7 @@ namespace LoomNetwork.CZB.BackendCommunication
             EditDeckRequest request = new EditDeckRequest
             {
                 UserId = userId,
-                Deck = new ProtobufDeck
+                Deck = new Deck
                 {
                     Id = deck.Id,
                     Name = deck.Name,

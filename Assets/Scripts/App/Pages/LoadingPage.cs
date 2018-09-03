@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class LoadingPage : IUIElement
     {

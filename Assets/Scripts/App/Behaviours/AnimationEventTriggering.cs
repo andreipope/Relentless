@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AnimationEventTriggering : MonoBehaviour
     {

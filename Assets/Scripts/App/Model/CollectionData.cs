@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class CollectionData
     {

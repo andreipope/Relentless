@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface IDataManager
     {

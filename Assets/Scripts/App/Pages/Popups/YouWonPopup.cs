@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Linq;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class YouWonPopup : IUIPopup
     {

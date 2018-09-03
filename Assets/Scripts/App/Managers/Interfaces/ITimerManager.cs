@@ -1,6 +1,6 @@
 using System;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface ITimerManager
     {

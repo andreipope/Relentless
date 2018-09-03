@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ActionsQueueController : IController
     {

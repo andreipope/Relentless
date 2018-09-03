@@ -1,6 +1,6 @@
 using DG.Tweening;
-using LoomNetwork.CZB;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 

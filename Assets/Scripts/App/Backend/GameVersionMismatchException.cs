@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class GameVersionMismatchException : Exception
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ReportPanelItem
     {

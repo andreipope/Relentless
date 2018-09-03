@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Gameplay;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BoardCard
     {

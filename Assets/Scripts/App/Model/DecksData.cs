@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class DecksData
     {

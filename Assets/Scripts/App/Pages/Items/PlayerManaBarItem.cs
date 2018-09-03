@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PlayerManaBarItem
     {

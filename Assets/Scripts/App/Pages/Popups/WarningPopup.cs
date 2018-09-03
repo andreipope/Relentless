@@ -1,10 +1,10 @@
 using System;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class WarningPopup : IUIPopup
     {

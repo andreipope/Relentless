@@ -1,9 +1,9 @@
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BoardSkill
     {

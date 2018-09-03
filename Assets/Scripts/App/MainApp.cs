@@ -1,9 +1,9 @@
 using System;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class MainApp : MonoBehaviour
     {

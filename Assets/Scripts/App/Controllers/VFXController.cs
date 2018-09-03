@@ -1,12 +1,12 @@
 using System;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class VfxController : IController
     {

@@ -1,10 +1,10 @@
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class TermsPopup : IUIPopup
     {
