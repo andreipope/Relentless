@@ -667,7 +667,7 @@
           "id": 8,
           "kind": "CREATURE",
           "name": "Zhatterer",
-          "cost": 2,
+          "cost": 3,
           "description": "<b>Entry: Destroy</b> a <b>Frozen</b> zombie",
           "flavorText": "So the other day Gargantua asked for a toothpick.. and it needs to be really cold to actually work...",
           "picture": "Zhatterer",
