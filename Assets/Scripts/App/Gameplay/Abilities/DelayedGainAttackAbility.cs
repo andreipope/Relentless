@@ -1,27 +1,24 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DelayedGainAttackAbility : DelayedAbilityBase
     {
-        public int value = 0;
+        public int Value;
 
-        public DelayedGainAttackAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DelayedGainAttackAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            abilityUnitOwner.CurrentDamage += value;
-            abilityUnitOwner.BuffedDamage += value;
+            AbilityUnitOwner.CurrentDamage += Value;
+            AbilityUnitOwner.BuffedDamage += Value;
         }
     }
 }

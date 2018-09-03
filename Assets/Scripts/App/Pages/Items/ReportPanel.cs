@@ -1,54 +1,40 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
+using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using System.Collections.Generic;
-using DG.Tweening;
-using TMPro;
-using System;
-using System.Linq;
-using UnityEngine.Rendering;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ReportPanelItem
     {
-        private ILoadObjectsManager _loadObjectsManager;
-        private IGameplayManager _gameplayManager;
-        private ITimerManager _timerManager;
+        private readonly GameObject _playedCardPrefab;
 
-        private CardsController cardsController;
-        private ActionsQueueController _actionsQueueController;
+        private readonly ActionsQueueController _actionsQueueController;
 
-        private GameObject selfPanel;
-        private VerticalLayoutGroup _reportGroup;
+        private readonly GameObject _selfPanel;
 
-        public GameObject playedCardPrefab;
+        private readonly VerticalLayoutGroup _reportGroup;
 
-        private List<ReportViewBase> _allReports;
+        private readonly List<ReportViewBase> _allReports;
 
-        public ReportPanelItem() { }
+        public ReportPanelItem()
+        {
+        }
 
         public ReportPanelItem(GameObject gameObject)
         {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
+            ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
 
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
-            cardsController = _gameplayManager.GetController<CardsController>();
+            _actionsQueueController = gameplayManager.GetController<ActionsQueueController>();
 
             _allReports = new List<ReportViewBase>();
 
-            selfPanel = gameObject.transform.Find("Viewport/CardGraveyard").gameObject;
-            _reportGroup = selfPanel.GetComponent<VerticalLayoutGroup>();
+            _selfPanel = gameObject.transform.Find("Viewport/CardGraveyard").gameObject;
+            _reportGroup = _selfPanel.GetComponent<VerticalLayoutGroup>();
 
-            playedCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
+            _playedCardPrefab =
+                loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
 
             _actionsQueueController.GotNewActionReportEvent += GotNewActionReportEventHandler;
 
@@ -62,8 +48,11 @@ namespace LoomNetwork.CZB
 
         public void Clear()
         {
-            foreach (var item in _allReports)
+            foreach (ReportViewBase item in _allReports)
+            {
                 item.Dispose();
+            }
+
             _allReports.Clear();
 
             _reportGroup.padding.top = 0;
@@ -72,58 +61,72 @@ namespace LoomNetwork.CZB
         private void GotNewActionReportEventHandler(GameActionReport report)
         {
             ReportViewBase reportView = null;
-            switch (report.actionType)
+            switch (report.ActionType)
             {
                 case Enumerators.ActionType.ATTACK_PLAYER_BY_CREATURE:
-                    reportView = new ReportViewBaseAttackPlayerByCreature(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new ReportViewBaseAttackPlayerByCreature(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE:
-                    reportView = new ReportViewBaseAttackCreatureByCreature(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new ReportViewBaseAttackCreatureByCreature(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL:
-                    reportView = new GameplayActionReport_AttackCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportAttackCreatureBySkill(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL:
-                    reportView = new GameplayActionReport_AttackPlayerBySkill(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportAttackPlayerBySkill(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_PLAYER_BY_SKILL:
-                    reportView = new GameplayActionReport_HealPlayerBySkill(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportHealPlayerBySkill(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_CREATURE_BY_SKILL:
-                    reportView = new GameplayActionReport_HealCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportHealCreatureBySkill(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY:
-                    reportView = new GameplayActionReport_AttackCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportAttackCreatureByAbility(_playedCardPrefab, _selfPanel.transform,
+                            report);
                     break;
                 case Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY:
-                    reportView = new GameplayActionReport_AttackPlayerByAbility(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportAttackPlayerByAbility(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY:
-                    reportView = new GameplayActionReport_HealPlayerByAbility(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportHealPlayerByAbility(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY:
-                    reportView = new GameplayActionReport_HealCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportHealCreatureByAbility(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.PLAY_UNIT_CARD:
-                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);
+                    reportView = new GameplayActionReportPlayUnitCard(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.PLAY_SPELL_CARD:
-                    reportView = new GameplayActionReport_PlaySpellCard(playedCardPrefab, selfPanel.transform, report);
+                    reportView = new GameplayActionReportPlaySpellCard(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.STUN_CREATURE_BY_ABILITY:
-                    reportView = new GameplayActionReport_StunCreatureByAbility(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportStunCreatureByAbility(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.STUN_UNIT_BY_SKILL:
-                    reportView = new GameplayActionReport_StunCreatureBySkill(playedCardPrefab, selfPanel.transform, report);
+                    reportView =
+                        new GameplayActionReportStunCreatureBySkill(_playedCardPrefab, _selfPanel.transform, report);
                     break;
                 case Enumerators.ActionType.SUMMON_UNIT_CARD:
-                    reportView = new GameplayActionReport_PlayUnitCard(playedCardPrefab, selfPanel.transform, report);
-                    break;
-                default:
+                    reportView = new GameplayActionReportPlayUnitCard(_playedCardPrefab, _selfPanel.transform, report);
                     break;
             }
+
             if (reportView != null)
+            {
                 _allReports.Add(reportView);
+            }
         }
     }
 }

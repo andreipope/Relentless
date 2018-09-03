@@ -1,62 +1,34 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using LoomNetwork.CZB.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class StunOrDamageAdjustmentsAbility : AbilityBase
     {
-        public Enumerators.StatType statType;
-        public int value = 1;
+        public Enumerators.StatType StatType { get; }
 
+        public int Value { get; } = 1;
 
-        public StunOrDamageAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public StunOrDamageAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.value = ability.value;
+            StatType = ability.AbilityStatType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
-            }
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                Action(targetUnit);
             }
         }
 
@@ -64,54 +36,76 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            var creature = info as BoardUnit;
+            BoardUnit creature = info as BoardUnit;
 
-            CreateVFX(creature.transform.position);
+            CreateVfx(creature.Transform.position);
 
-            BoardUnit leftAdjustment = null,
-                    rightAdjastment = null;
+            BoardUnit leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            for (int i = 0; i < creature.ownerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < creature.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (creature.ownerPlayer.BoardCards[i] == creature)
+                if (creature.OwnerPlayer.BoardCards[i] == creature)
+                {
                     targetIndex = i;
+                }
             }
+
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
-                    leftAdjustment = creature.ownerPlayer.BoardCards[targetIndex - 1];
-                if (targetIndex + 1 < creature.ownerPlayer.BoardCards.Count)
-                    rightAdjastment = creature.ownerPlayer.BoardCards[targetIndex + 1];
+                {
+                    leftAdjustment = creature.OwnerPlayer.BoardCards[targetIndex - 1];
+                }
+
+                if (targetIndex + 1 < creature.OwnerPlayer.BoardCards.Count)
+                {
+                    rightAdjastment = creature.OwnerPlayer.BoardCards[targetIndex + 1];
+                }
             }
 
             if (leftAdjustment != null)
             {
                 if (leftAdjustment.IsStun)
-                    _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, leftAdjustment);
+                {
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
+                }
                 else
+                {
                     leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
-                //CreateVFX(leftAdjustment..transform.position);
+                }
             }
 
             if (rightAdjastment != null)
             {
                 if (rightAdjastment.IsStun)
-                    _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, rightAdjastment);
+                {
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
+                }
                 else
+                {
                     rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
-                //CreateVFX(targetCreature.transform.position);
+                }
             }
 
             if (creature.IsStun)
-                _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, creature);
+            {
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, creature);
+            }
             else
+            {
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
+            }
         }
 
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
+        protected override void InputEndedHandler()
         {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action(TargetUnit);
+            }
         }
     }
 }

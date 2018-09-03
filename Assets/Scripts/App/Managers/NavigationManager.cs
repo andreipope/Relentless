@@ -1,18 +1,14 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Common;
+using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class NavigationManager : IService, INavigationManager
     {
         private EventSystem _currentEventSystem;
+
         private IInputManager _inputManager;
 
         private int _registeredTabHandlerIndex = -1;
@@ -27,7 +23,8 @@ namespace LoomNetwork.CZB
             _currentEventSystem = EventSystem.current;
             _inputManager = GameClient.Get<IInputManager>();
 
-            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Tab, null, OnInputDownTabButton, null);
+            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                (int) KeyCode.Tab, null, OnInputDownTabButton);
         }
 
         public void Update()
@@ -38,20 +35,25 @@ namespace LoomNetwork.CZB
         {
             if (_currentEventSystem.currentSelectedGameObject != null)
             {
-                var currentSelectable = _currentEventSystem.currentSelectedGameObject.GetComponent<Selectable>();
+                Selectable currentSelectable = _currentEventSystem.currentSelectedGameObject.GetComponent<Selectable>();
 
                 if (currentSelectable != null)
                 {
-                    var nextSelectable = currentSelectable.FindSelectableOnDown();
+                    Selectable nextSelectable = currentSelectable.FindSelectableOnDown();
 
                     if (nextSelectable != null)
                     {
-                        var inputfield = nextSelectable.GetComponent<InputField>();
+                        InputField inputfield = nextSelectable.GetComponent<InputField>();
 
                         if (inputfield != null)
-                            inputfield.OnPointerClick(new PointerEventData(_currentEventSystem));  //if it's an input field, also set the text caret
+                        {
+                            inputfield.OnPointerClick(
+                                new PointerEventData(
+                                    _currentEventSystem)); // if it's an input field, also set the text caret
+                        }
 
-                        _currentEventSystem.SetSelectedGameObject(nextSelectable.gameObject, new BaseEventData(_currentEventSystem));
+                        _currentEventSystem.SetSelectedGameObject(nextSelectable.gameObject,
+                            new BaseEventData(_currentEventSystem));
                     }
                     else
                     {

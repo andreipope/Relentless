@@ -1,127 +1,150 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using Loom.Newtonsoft.Json;
+using Loom.ZombieBattleground.Common;
 using LoomNetwork.Internal;
+using Newtonsoft.Json;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class HeroesData
     {
-        public List<Hero> heroes;
+        public List<Hero> Heroes;
+
         [JsonIgnore]
         private bool _casted;
+
         [JsonIgnore]
-        public List<Hero> Heroes
+        public List<Hero> HeroesParsed
         {
             get
             {
                 if (!_casted)
+                {
                     CastData();
-                return heroes;
+                }
+
+                return Heroes;
             }
-        }
-
-        public HeroesData()
-        {
-
         }
 
         public void CastData()
         {
-            foreach (var item in heroes)
+            foreach (Hero item in Heroes)
             {
-                item.heroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.element);
+                item.HeroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.Element);
                 item.CastSkills();
                 item.ValidateSkillLocking();
             }
+
             _casted = true;
         }
     }
 
     public class Hero
     {
-        public int heroId;
-        public string icon;
-        public string name;
-        public string shortDescription;
-        public string longDescription;
-        public string element;
-        public int experience;
-        public int level;
+        public int HeroId;
+
+        public string Icon;
+
+        public string Name;
+
+        public string ShortDescription;
+
+        public string LongDescription;
+
+        public string Element;
+
+        public int Experience;
+
+        public int Level;
+
         [JsonIgnore]
-        public Enumerators.SetType heroElement;
-        public List<HeroSkill> skills;
-        public int primarySkill;
-        public int secondarySkill;
+        public Enumerators.SetType HeroElement;
 
-        public string FullName => $"{name}, {shortDescription}";
+        public List<HeroSkill> Skills;
 
-        public Hero()
-        {
+        public int PrimarySkill;
 
-        }
+        public int SecondarySkill;
+
+        public string FullName => $"{Name}, {ShortDescription}";
 
         public void ValidateSkillLocking()
         {
-            int skillId = level % 4;
+            int skillId = Level % 4;
             for (int i = 0; i < skillId; i++)
-                skills[i].unlocked = true;
+            {
+                Skills[i].Unlocked = true;
+            }
         }
 
         public void CastSkills()
         {
-            foreach (var skill in skills)
+            foreach (HeroSkill skill in Skills)
+            {
                 skill.CastData();
+            }
         }
     }
 
     public class HeroSkill
     {
-        public string title;
-        public string skill;
-		public string iconPath;
-		public string description;
-        public string skillTargets;
-        public string elementTargets;
-        public int cooldown;
-        public int initialCooldown;
-        public int value;
+        public string Title;
 
-        public int attack;
-        public int health;
+        public string Skill;
+
+        public string IconPath;
+
+        public string Description;
+
+        public string SkillTargets;
+
+        public string ElementTargets;
+
+        public int Cooldown;
+
+        public int InitialCooldown;
+
+        public int Value;
+
+        public int Attack;
+
+        public int Health;
 
         [JsonIgnore]
-        public bool unlocked;
-        [JsonIgnore]
-        public Enumerators.OverlordSkill overlordSkill;
-        [JsonIgnore]
-        public List<Enumerators.SkillTargetType> skillTargetTypes;
-        public List<Enumerators.SetType> elementTargetTypes;
+        public Enumerators.OverlordSkill OverlordSkill;
 
-        public HeroSkill()
-        {
-          
-        }
+        [JsonIgnore]
+        public List<Enumerators.SkillTargetType> SkillTargetTypes;
+
+        [JsonIgnore]
+        public bool Unlocked;
+
+        public List<Enumerators.SetType> ElementTargetTypes;
 
         public void CastData()
         {
-            if (!string.IsNullOrEmpty(skill))
-                overlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(skill);
+            if (!string.IsNullOrEmpty(Skill))
+            {
+                OverlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(Skill);
+            }
 
-            if (!string.IsNullOrEmpty(skillTargets))
-                skillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(skillTargets);
-            else skillTargetTypes = new List<Enumerators.SkillTargetType>();
+            if (!string.IsNullOrEmpty(SkillTargets))
+            {
+                SkillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(SkillTargets);
+            }
+            else
+            {
+                SkillTargetTypes = new List<Enumerators.SkillTargetType>();
+            }
 
-            if (!string.IsNullOrEmpty(elementTargets))
-                elementTargetTypes = Utilites.CastList<Enumerators.SetType>(elementTargets);
-            else elementTargetTypes = new List<Enumerators.SetType>();
+            if (!string.IsNullOrEmpty(ElementTargets))
+            {
+                ElementTargetTypes = Utilites.CastList<Enumerators.SetType>(ElementTargets);
+            }
+            else
+            {
+                ElementTargetTypes = new List<Enumerators.SetType>();
+            }
         }
     }
 }

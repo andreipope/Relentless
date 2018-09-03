@@ -1,23 +1,17 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AnimationEventTriggering : MonoBehaviour
     {
-        public Action<string> OnAnimationEvent;
+        [FormerlySerializedAs("OnAnimationEvent")]
+        public Action<string> AnimationEventTriggered;
 
         public void AnimationEvent(string animationName)
         {
-            if (OnAnimationEvent != null)
-            {
-                OnAnimationEvent(animationName);
-            }
+            AnimationEventTriggered?.Invoke(animationName);
         }
     }
 }
