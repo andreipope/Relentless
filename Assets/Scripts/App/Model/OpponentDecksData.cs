@@ -1,62 +1,54 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using Loom.Newtonsoft.Json;
+using Loom.ZombieBattleground.Common;
 using LoomNetwork.Internal;
+using Newtonsoft.Json;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class OpponentDecksData
     {
-        public List<OpponentDeck> decks;
-
-        public OpponentDecksData()
-        {
-
-        }
+        public List<OpponentDeck> Decks;
 
         public void ParseData()
         {
-			if (decks != null) {
-				foreach (var deck in decks) {
-					deck.ParseData ();
-				}
-			}
+            if (Decks != null)
+            {
+                foreach (OpponentDeck deck in Decks)
+                {
+                    deck.ParseData();
+                }
+            }
         }
     }
 
     public class OpponentDeck
     {
-        public int id;
-        public int heroId;
-        public string type;
-        public string actions;
-        public List<DeckCardData> cards;
+        public int Id;
+
+        public int HeroId;
+
+        public string Type;
+
+        public string Actions;
+
+        public List<DeckCardData> Cards;
 
         [JsonIgnore]
-        public List<Enumerators.AIActionType> opponentActions;
-
-        public OpponentDeck()
-        {
-        }
+        public List<Enumerators.AiActionType> OpponentActions;
 
         public void ParseData()
         {
-            opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
+            OpponentActions = Utilites.CastList<Enumerators.AiActionType>(Actions);
         }
-
 
         public int GetNumCards()
         {
             int amount = 0;
-            foreach (var card in cards)
-                amount += card.amount;
+            foreach (DeckCardData card in Cards)
+            {
+                amount += card.Amount;
+            }
+
             return amount;
         }
     }

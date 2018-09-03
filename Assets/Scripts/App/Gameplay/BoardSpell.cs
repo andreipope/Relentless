@@ -1,47 +1,44 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BoardSpell
     {
-        public event Action SpellOnUsedEvent;
+        public GameObject GameObject;
 
-        private OnBehaviourHandler _eventHandler;
+        public Transform Transform;
 
-        public GameObject gameObject;
-        public Transform transform;
-
-        public BoardArrow targetingArrow;
+        public BoardArrow TargetingArrow;
 
         public WorkingCard Card;
 
+        private readonly OnBehaviourHandler _eventHandler;
+
         public BoardSpell(GameObject obj, WorkingCard card)
         {
-            gameObject = obj;
-            transform = obj.transform;
+            GameObject = obj;
+            Transform = obj.transform;
 
             Card = card;
 
-            _eventHandler = gameObject.GetComponent<OnBehaviourHandler>();
+            _eventHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            _eventHandler.OnDestroyEvent += OnDestroyEventHandler;
+            _eventHandler.Destroying += DestroyingHandler;
         }
 
-        private void OnDestroyEventHandler(GameObject obj)
+        public event Action Used;
+
+        private void DestroyingHandler(GameObject obj)
         {
-            if (targetingArrow != null)
+            if (TargetingArrow != null)
             {
-                MonoBehaviour.Destroy(targetingArrow.gameObject);
-                targetingArrow = null;
+                Object.Destroy(TargetingArrow.gameObject);
+                TargetingArrow = null;
             }
 
-            SpellOnUsedEvent?.Invoke();
+            Used?.Invoke();
         }
     }
 }

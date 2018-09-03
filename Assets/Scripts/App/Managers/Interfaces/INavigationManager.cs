@@ -1,12 +1,6 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface INavigationManager
     {
-
     }
 }

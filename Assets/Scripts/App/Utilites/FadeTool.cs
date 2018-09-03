@@ -1,19 +1,14 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class FadeTool : MonoBehaviour
 {
-    public TextMeshPro[] texts;
-    public SpriteRenderer[] sprites;
-    public MeshRenderer[] meshRenderers;
+    public TextMeshPro[] Texts;
 
+    public SpriteRenderer[] Sprites;
+
+    public MeshRenderer[] MeshRenderers;
 
     public void FadeIn()
     {
@@ -27,14 +22,20 @@ public class FadeTool : MonoBehaviour
 
         for (int i = 0; i < turns; i++)
         {
-            foreach (var item in texts)
+            foreach (TextMeshPro item in Texts)
+            {
                 item.color = FadeItem(size, item.color);
+            }
 
-            foreach (var item in sprites)
+            foreach (SpriteRenderer item in Sprites)
+            {
                 item.color = FadeItem(size, item.color);
+            }
 
-            foreach (var item in meshRenderers)
+            foreach (MeshRenderer item in MeshRenderers)
+            {
                 item.material.color = FadeItem(size, item.material.color);
+            }
 
             yield return null;
         }
@@ -46,4 +47,4 @@ public class FadeTool : MonoBehaviour
         clr.a = Mathf.Clamp(clr.a - value, 0, 1);
         return clr;
     }
-} 
+}

@@ -1,19 +1,18 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
 
-
-
-using LoomNetwork.CZB.Common;
-
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class UserLocalData
     {
-        public Enumerators.Language appLanguage;
-        public bool tutorial = true;
-        public int lastSelectedDeckId;
-		public bool agreedTerms = false;
-        public bool openedFirstPack = false;
+        public Enumerators.Language AppLanguage;
+
+        public bool Tutorial = true;
+
+        public int LastSelectedDeckId;
+
+        public bool AgreedTerms = false;
+
+        public bool OpenedFirstPack;
 
         public UserLocalData()
         {
@@ -22,9 +21,9 @@ namespace LoomNetwork.CZB.Data
 
         public void Reset()
         {
-            appLanguage = Enumerators.Language.NONE;
-            lastSelectedDeckId = -1;
-            openedFirstPack = false;
+            AppLanguage = Enumerators.Language.NONE;
+            LastSelectedDeckId = -1;
+            OpenedFirstPack = false;
         }
     }
 }

@@ -1,25 +1,12 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class TutorialBoardArrow : BoardArrow
     {
-        public bool isEnabled;
+        public bool IsEnabled;
 
         private Vector3 _targetPosition;
-
-        private void Awake()
-        {
-            Init();
-        }
-
 
         public void UpdateTargetPosition(Vector3 position)
         {
@@ -29,29 +16,32 @@ namespace LoomNetwork.CZB
 
         public void Activate()
         {
-            isEnabled = true;
+            IsEnabled = true;
             UpdateVisibility();
         }
 
         public void Deactivate()
         {
-            isEnabled = false;
+            IsEnabled = false;
             UpdateVisibility();
         }
 
         protected override void Update()
         {
-            //base.Update();
-            if(isEnabled)
+            if (IsEnabled)
             {
                 UpdateLength(_targetPosition);
             }
         }
 
-        private void UpdateVisibility()
+        private void Awake()
         {
-            gameObject.SetActive(isEnabled);
+            Init();
         }
 
+        private void UpdateVisibility()
+        {
+            gameObject.SetActive(IsEnabled);
+        }
     }
 }

@@ -1,106 +1,63 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.BackendCommunication;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class GameplayManager : IService, IGameplayManager
     {
-        public event Action OnGameStartedEvent;
-        public event Action OnGameInitializedEvent;
-        public event Action<Enumerators.EndGameType> OnGameEndedEvent;
-        public event Action OnTurnStartedEvent;
-        public event Action OnTurnEndedEvent;
-
         private IDataManager _dataManager;
+
         private IMatchManager _matchManager;
+
         private ISoundManager _soundManager;
+
         private IUIManager _uiManager;
+
         private ITimerManager _timerManager;
-        private ITutorialManager _tutorialManager;
 
         private List<IController> _controllers;
 
+        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
+
+        public event Action GameStarted;
+
+        public event Action GameInitialized;
+
+        public event Action<Enumerators.EndGameType> GameEnded;
+
+#pragma warning disable 67
+        public event Action TurnStarted;
+
+        public event Action TurnEnded;
+#pragma warning restore 67
+
         public int PlayerDeckId { get; set; }
+
         public int OpponentDeckId { get; set; }
 
-        public bool GameStarted { get; set; }
-        public bool GameEnded { get; set; }
-        public bool IsTutorial { get; set; }
-        public bool IsPrepairingEnded { get; set; }
+        public bool IsGameStarted { get; set; }
 
-        public int TurnDuration { get; set; }
-        public int CurrentTurn { get; set; }
+        public bool IsGameEnded { get; set; }
+
+        public bool IsTutorial { get; set; }
+
+        public bool IsPreparingEnded { get; set; }
 
         public int TutorialStep { get; set; }
 
         public Player CurrentTurnPlayer { get; set; }
+
         public Player CurrentPlayer { get; set; }
+
         public Player OpponentPlayer { get; set; }
-        
-        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
 
-        public void Dispose()
+        public T GetController<T>()
+            where T : IController
         {
-            foreach (var item in _controllers)
-                item.Dispose();
-        }
-
-        public void Init()
-        {
-            _dataManager = GameClient.Get<IDataManager>();
-            _matchManager = GameClient.Get<IMatchManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
-            _uiManager = GameClient.Get<IUIManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
-
-            InitControllers();
-
-            if (!_dataManager.CachedUserLocalData.tutorial)
-            {
-                Constants.ZOMBIES_SOUND_VOLUME = 0.25f;
-                Constants.CREATURE_ATTACK_SOUND_VOLUME *= 3;
-            }
-        }
-
-        public void Update()
-        {
-            foreach (var item in _controllers)
-                item.Update();
-        }
-
-        public T GetController<T>() where T : IController
-        {
-            return (T)_controllers.Find(x => x is T);
-        }
-
-        private void InitControllers()
-        {
-            _controllers = new List<IController>();
-            _controllers.Add(new VFXController());
-            _controllers.Add(new ParticlesController());
-            _controllers.Add(new AbilitiesController());
-            _controllers.Add(new ActionsQueueController());
-            _controllers.Add(new PlayerController());
-            _controllers.Add(new AIController());
-            _controllers.Add(new CardsController());
-            _controllers.Add(new BattlegroundController());
-            _controllers.Add(new AnimationsController());
-            _controllers.Add(new BattleController());
-            _controllers.Add(new BoardArrowController());
-            _controllers.Add(new SkillsController());
-            _controllers.Add(new RanksController());
-            _controllers.Add(new InputController());
-
-            foreach (var controller in _controllers)
-                controller.Init();
+            return (T) _controllers.Find(x => x is T);
         }
 
         public void RearrangeHands()
@@ -113,59 +70,68 @@ namespace LoomNetwork.CZB
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
         {
-            if (GameEnded)
+            if (IsGameEnded)
                 return;
 
-            GameEnded = true;
+            IsGameEnded = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
-                _timerManager.AddTimer((x) =>
-                {
-                    if (endGameType == Enumerators.EndGameType.WIN)
-                        _uiManager.DrawPopup<YouWonPopup>();
-                    else if (endGameType == Enumerators.EndGameType.LOSE)
-                        _uiManager.DrawPopup<YouLosePopup>();
-                }, null, timer);
+                _timerManager.AddTimer(
+                    x =>
+                    {
+                        if (endGameType == Enumerators.EndGameType.WIN)
+                        {
+                            _uiManager.DrawPopup<YouWonPopup>();
+                        }
+                        else if (endGameType == Enumerators.EndGameType.LOSE)
+                        {
+                            _uiManager.DrawPopup<YouLosePopup>();
+                        }
+                    },
+                    null,
+                    timer);
             }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
 
             StopGameplay();
 
-
             CurrentTurnPlayer = null;
             CurrentPlayer = null;
             OpponentPlayer = null;
 
-            OnGameEndedEvent?.Invoke(endGameType);
+            GameEnded?.Invoke(endGameType);
         }
 
         public void StartGameplay()
         {
             _uiManager.DrawPopup<PreparingForBattlePopup>();
 
-            _timerManager.AddTimer((x) =>
-            {
-                _uiManager.HidePopup<PreparingForBattlePopup>();
+            _timerManager.AddTimer(
+                x =>
+                {
+                    _uiManager.HidePopup<PreparingForBattlePopup>();
 
-                GameStarted = true;
-                GameEnded = false;
-                IsPrepairingEnded = false;
+                    IsGameStarted = true;
+                    IsGameEnded = false;
+                    IsPreparingEnded = false;
 
-                OnGameStartedEvent?.Invoke();
+                    GameStarted?.Invoke();
 
-                StartInitializeGame();
-            }, null, 2f);
+                    StartInitializeGame();
+                },
+                null,
+                2f);
         }
 
         public void StopGameplay()
         {
-            GameStarted = false;
-            GameEnded = true;
-             IsPrepairingEnded = false;
+            IsGameStarted = false;
+            IsGameEnded = true;
+            IsPreparingEnded = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -173,48 +139,118 @@ namespace LoomNetwork.CZB
             return CurrentTurnPlayer.Equals(CurrentPlayer);
         }
 
+        public void ResetWholeGameplayScene()
+        {
+            foreach (IController controller in _controllers)
+            {
+                controller.ResetAll();
+            }
+        }
+
+        public bool IsGameplayReady()
+        {
+            return !IsGameEnded && IsGameStarted && IsPreparingEnded;
+        }
+
+        public void Dispose()
+        {
+            foreach (IController item in _controllers)
+            {
+                item.Dispose();
+            }
+        }
+
+        public void Init()
+        {
+            _dataManager = GameClient.Get<IDataManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+            _timerManager = GameClient.Get<ITimerManager>();
+
+            InitControllers();
+
+            if (!_dataManager.CachedUserLocalData.Tutorial)
+            {
+                Constants.ZombiesSoundVolume = 0.25f;
+                Constants.CreatureAttackSoundVolume *= 3;
+            }
+        }
+
+        public void Update()
+        {
+            foreach (IController item in _controllers)
+            {
+                item.Update();
+            }
+        }
+
+        private void InitControllers()
+        {
+            _controllers = new List<IController>
+            {
+                new VfxController(),
+                new ParticlesController(),
+                new AbilitiesController(),
+                new ActionsQueueController(),
+                new PlayerController(),
+                new AIController(),
+                new CardsController(),
+                new BattlegroundController(),
+                new AnimationsController(),
+                new BattleController(),
+                new BoardArrowController(),
+                new SkillsController(),
+                new RanksController(),
+                new InputController()
+            };
+
+            foreach (IController controller in _controllers)
+            {
+                controller.Init();
+            }
+        }
+
         private void StartInitializeGame()
         {
-            //initialize players
+            // initialize players
             GetController<PlayerController>().InitializePlayer();
 
-
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+            {
                 GetController<AIController>().InitializePlayer();
+            }
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
             if (!IsTutorial)
-                CurrentTurnPlayer = UnityEngine.Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+            {
+                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+            }
             else
+            {
                 CurrentTurnPlayer = CurrentPlayer;
+            }
 
             OpponentPlayer.SetFirstHand(IsTutorial);
 
             if (!IsTutorial)
-                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
+            {
+                _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                {
+                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                });
+            }
             else
             {
                 GetController<PlayerController>().SetHand();
                 GetController<CardsController>().StartCardDistribution();
             }
 
-            GameEnded = false;
+            IsGameEnded = false;
 
-            OnGameInitializedEvent?.Invoke();
-        }
-
-
-        public void ResetWholeGameplayScene()
-        {
-            foreach (var controller in _controllers)
-                controller.ResetAll();
-        }
-
-        public bool IsGameplayReady()
-        {
-            return !GameEnded && GameStarted && IsPrepairingEnded;
+            GameInitialized?.Invoke();
         }
     }
 }

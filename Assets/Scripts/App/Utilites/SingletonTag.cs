@@ -1,23 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
-	[DisallowMultipleComponent]
-	public class SingletonTag : MonoBehaviour
-	{
-		private void Start()
-		{
-			string tag = gameObject.tag;
-			SingletonTag existingSingleton = FindObjectsOfType<SingletonTag>()
-				.FirstOrDefault(singletonTag => singletonTag != this && singletonTag.gameObject.CompareTag(tag));
-			if (existingSingleton != null)
-			{
-				gameObject.SetActive(false);
-				Debug.LogWarning($"Found another {nameof(SingletonTag)} with tag {tag}, disabled itself");
-			}
-		}
-	}
+    [DisallowMultipleComponent]
+    public class SingletonTag : MonoBehaviour
+    {
+        private void Start()
+        {
+            string tag = gameObject.tag;
+            SingletonTag existingSingleton =
+                FindObjectsOfType<SingletonTag>()
+                    .FirstOrDefault(singletonTag => singletonTag != this && singletonTag.gameObject.CompareTag(tag));
+
+            if (existingSingleton != null)
+            {
+                gameObject.SetActive(false);
+                Debug.LogWarning($"Found another {nameof(SingletonTag)} with tag {tag}, disabled itself");
+            }
+        }
+    }
 }

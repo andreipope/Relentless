@@ -1,24 +1,27 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
 
-
-
-using LoomNetwork.CZB.Common;
-using System;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface ITutorialManager
     {
-        void StartTutorial();
-        void StopTutorial();
-        void ReportAction(Enumerators.TutorialReportAction action);
         int CurrentStep { get; }
+
         bool IsTutorial { get; }
+
         bool IsBubbleShow { get; set; }
+
+        void StartTutorial();
+
+        void StopTutorial();
+
+        void ReportAction(Enumerators.TutorialReportAction action);
+
         void ActivateSelectTarget();
+
         void DeactivateSelectTarget();
+
         void NextButtonClickHandler();
+
         void SkipTutorial(Enumerators.AppState state);
     }
 }

@@ -1,55 +1,50 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using DG.Tweening;
-using LoomNetwork.CZB;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class HandBoardCard
 {
-    private IGameplayManager _gameplayManager;
-    private ISoundManager _soundManager;
-    private ITutorialManager _tutorialManager;
-    private PlayerController _playerController;
-    private CardsController _cardsController;
+    public Player OwnerPlayer;
 
-    private GameObject _selfObject;
+    public GameObject BoardZone;
 
-    public Player ownerPlayer;
-    public GameObject boardZone;
+    public bool Enabled = true;
 
-    protected BoardCard cardView;
+    protected BoardCard CardView;
 
-    protected bool startedDrag;
-    protected Vector3 initialPos;
-    protected Vector3 initialRotation;
+    protected bool StartedDrag;
+
+    protected Vector3 InitialPos;
+
+    protected Vector3 InitialRotation;
+
+    private readonly IGameplayManager _gameplayManager;
+
+    private readonly ISoundManager _soundManager;
+
+    private readonly ITutorialManager _tutorialManager;
+
+    private readonly PlayerController _playerController;
+
+    private readonly CardsController _cardsController;
+
+    private readonly OnBehaviourHandler _behaviourHandler;
 
     private bool _isHandCard = true;
 
-    private bool _isReturnToHand = false;
-    private bool _alreadySelected = false;
-    private bool _canceledPlay = false;
+    private bool _isReturnToHand;
 
-    private int _handInd;
+    private bool _alreadySelected;
 
-    private OnBehaviourHandler _behaviourHandler;
-
-    public bool enabled = true;
-
-    public Transform transform { get { return _selfObject.transform; } }
-    public GameObject gameObject { get { return _selfObject; } }
+    private bool _canceledPlay;
 
     public HandBoardCard(GameObject selfObject, BoardCard boardCard)
     {
-        _selfObject = selfObject;
+        GameObject = selfObject;
 
-        cardView = boardCard;
-
-        _handInd = GetHashCode();
+        CardView = boardCard;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -58,53 +53,58 @@ public class HandBoardCard
         _playerController = _gameplayManager.GetController<PlayerController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
 
-        _behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
+        _behaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-        _behaviourHandler.OnMouseUpEvent += OnMouseUp;
-        _behaviourHandler.OnUpdateEvent += OnUpdateEventHandler;
+        _behaviourHandler.MouseUpTriggered += MouseUp;
+        _behaviourHandler.Updating += UpdatingHandler;
     }
 
-    public void OnUpdateEventHandler(GameObject obj)
+    public Transform Transform => GameObject.transform;
+
+    public GameObject GameObject { get; }
+
+    public void UpdatingHandler(GameObject obj)
     {
-        if (!enabled)
+        if (!Enabled)
             return;
 
-        if (startedDrag)
+        if (StartedDrag)
         {
-            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var newPos = transform.position;
+            Transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 newPos = Transform.position;
             newPos.z = 0;
-            transform.position = newPos;
+            Transform.position = newPos;
 
-            if(Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
             {
                 _canceledPlay = true;
-                OnMouseUp(null);
+                MouseUp(null);
             }
 
-            if (boardZone.GetComponent<BoxCollider2D> ().bounds.Contains (transform.position) && _isHandCard) {
-                _cardsController.HoverPlayerCardOnBattleground (ownerPlayer, cardView, this);
-            } else {
-                _cardsController.ResetPlayerCardsOnBattlegroundPosition ();
+            if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
+            {
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
             }
-
-            if (Vector3.Distance(initialPos, transform.position) > 1f)
-                _playerController.HideCardPreview();
+            else
+            {
+                _cardsController.ResetPlayerCardsOnBattlegroundPosition();
+            }
         }
     }
 
     public void OnSelected()
     {
-        if (!enabled)
+        if (!Enabled)
             return;
 
-        if (_playerController.IsActive && cardView.CanBePlayed(ownerPlayer) && !_isReturnToHand && !_alreadySelected && enabled)
+        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
+            Enabled)
         {
-            startedDrag = true;
-            initialPos = transform.position;
-            initialRotation = transform.eulerAngles;
+            StartedDrag = true;
+            InitialPos = Transform.position;
+            InitialRotation = Transform.eulerAngles;
 
-            transform.eulerAngles = Vector3.zero;
+            Transform.eulerAngles = Vector3.zero;
 
             _playerController.IsCardSelected = true;
             _alreadySelected = true;
@@ -113,48 +113,47 @@ public class HandBoardCard
 
     public void CheckStatusOfHighlight()
     {
-        if (cardView.CanBePlayed(ownerPlayer) && cardView.CanBeBuyed(ownerPlayer))
+        if (CardView.CanBePlayed(OwnerPlayer) && CardView.CanBeBuyed(OwnerPlayer))
         {
-            cardView.SetHighlightingEnabled(true);
+            CardView.SetHighlightingEnabled(true);
         }
         else
         {
-            cardView.SetHighlightingEnabled(false);
+            CardView.SetHighlightingEnabled(false);
         }
     }
 
-    public void OnMouseUp(GameObject obj)
+    public void MouseUp(GameObject obj)
     {
-        if (!enabled)
+        if (!Enabled)
             return;
 
-        if (!startedDrag)
+        if (!StartedDrag)
             return;
 
-        _cardsController.ResetPlayerCardsOnBattlegroundPosition ();
+        _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
         _alreadySelected = false;
-        startedDrag = false;
+        StartedDrag = false;
         _playerController.IsCardSelected = false;
 
-        bool playable = true;
-        if (_canceledPlay || !cardView.CanBeBuyed(ownerPlayer) || (cardView.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.CREATURE &&
-                                                     ownerPlayer.BoardCards.Count >= Constants.MAX_BOARD_UNITS))
-            playable = false;
-        
+        bool playable = !_canceledPlay &&
+            CardView.CanBeBuyed(OwnerPlayer) &&
+            (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
+                OwnerPlayer.BoardCards.Count < Constants.MaxBoardUnits);
 
         if (playable)
         {
-            if (boardZone.GetComponent<BoxCollider2D>().bounds.Contains(transform.position) && _isHandCard)
+            if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(ownerPlayer, cardView, this);
-                cardView.SetHighlightingEnabled(false);
+                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
+                CardView.SetHighlightingEnabled(false);
             }
             else
             {
-                transform.position = initialPos;
-                transform.eulerAngles = initialRotation;
+                Transform.position = InitialPos;
+                Transform.eulerAngles = InitialRotation;
                 if (_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ActivateSelectTarget();
@@ -165,40 +164,42 @@ public class HandBoardCard
         {
             _isReturnToHand = true;
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
-            transform.DOMove(initialPos, 0.5f).OnComplete(() => 
-            {
-                transform.position = initialPos;
-                transform.eulerAngles = initialRotation;
-                _isReturnToHand = false;
-            });
+            Transform.DOMove(InitialPos, 0.5f).OnComplete(
+                () =>
+                {
+                    Transform.position = InitialPos;
+                    Transform.eulerAngles = InitialRotation;
+                    _isReturnToHand = false;
+                });
         }
     }
 
     public void ResetToInitialPosition()
     {
-        transform.position = initialPos;
-        transform.eulerAngles = initialRotation;
+        Transform.position = InitialPos;
+        Transform.eulerAngles = InitialRotation;
     }
 
     public void ResetToHandAnimation()
     {
         _canceledPlay = false;
         _alreadySelected = false;
-        startedDrag = false;
+        StartedDrag = false;
         _isReturnToHand = true;
         _isHandCard = true;
-        enabled = true;
-        gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_HAND_CARDS;
-        gameObject.GetComponent<SortingGroup>().sortingOrder = 0;
+        Enabled = true;
+        GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerHandCards;
+        GameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
-        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
-        transform.DOMove(initialPos, 0.5f).OnComplete(() =>
-        {
-            transform.position = initialPos;
-            _isReturnToHand = false;
-        });
+        Transform.DOMove(InitialPos, 0.5f).OnComplete(
+            () =>
+            {
+                Transform.position = InitialPos;
+                _isReturnToHand = false;
+            });
     }
 }

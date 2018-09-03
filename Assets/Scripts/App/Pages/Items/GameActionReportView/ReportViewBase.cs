@@ -1,114 +1,106 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
-using UnityEngine.UI;
-using LoomNetwork.CZB.Common;
+using System;
+using Loom.ZombieBattleground.Common;
 using TMPro;
-using UnityEngine.Rendering;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Data;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public abstract class ReportViewBase
     {
-        public GameObject selfObject;
+        public GameObject SelfObject;
 
-        protected ILoadObjectsManager loadObjectsManager;
-        protected IGameplayManager gameplayManager;
-        protected CardsController cardsController;
-        protected ActionsQueueController actionsQueueController;
+        protected ILoadObjectsManager LoadObjectsManager;
 
-        protected Image previewImage;
+        protected IGameplayManager GameplayManager;
 
-        protected GameActionReport gameAction;
+        protected CardsController CardsController;
 
-        protected GameObject playerAvatarPreviewPrefab;
-        protected GameObject attackingHealthPrefab;
+        protected ActionsQueueController ActionsQueueController;
 
-        protected GameObject attackingPictureObject;
-        protected GameObject healPictureObject;
+        protected Image PreviewImage;
 
-        private GameObject reportActionPreviewPanel;
+        protected GameActionReport GameAction;
 
-        public ReportViewBase() { }
+        protected GameObject PlayerAvatarPreviewPrefab;
+
+        protected GameObject AttackingHealthPrefab;
+
+        protected GameObject AttackingPictureObject;
+
+        protected GameObject HealPictureObject;
+
+        private GameObject _reportActionPreviewPanel;
+
+        public ReportViewBase()
+        {
+        }
 
         public ReportViewBase(GameObject prefab, Transform parent, GameActionReport gameAction)
         {
-            loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            gameplayManager = GameClient.Get<IGameplayManager>();
-            actionsQueueController = gameplayManager.GetController<ActionsQueueController>();
-            cardsController = gameplayManager.GetController<CardsController>();
+            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            CardsController = GameplayManager.GetController<CardsController>();
 
-            this.gameAction = gameAction;
-            selfObject = MonoBehaviour.Instantiate(prefab, parent, false);
-			selfObject.transform.SetSiblingIndex (0);
-            previewImage = selfObject.transform.Find("Image").GetComponent<Image>();
+            GameAction = gameAction;
+            SelfObject = Object.Instantiate(prefab, parent, false);
+            SelfObject.transform.SetSiblingIndex(0);
+            PreviewImage = SelfObject.transform.Find("Image").GetComponent<Image>();
 
-            var behaviour = selfObject.GetComponent<OnBehaviourHandler>();
-            behaviour.OnPointerEnterEvent += OnPointerEnterEventHandler;
-            behaviour.OnPointerExitEvent += OnPointerExitEventHandler;
+            OnBehaviourHandler behaviour = SelfObject.GetComponent<OnBehaviourHandler>();
+            behaviour.PointerEntered += PointerEnteredHandler;
+            behaviour.PointerExited += PointerExitedHandler;
 
-            playerAvatarPreviewPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
-            attackingHealthPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
+            PlayerAvatarPreviewPrefab =
+                LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
+            AttackingHealthPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
 
             CreatePreviewPanel();
         }
 
         public virtual void SetInfo()
         {
-
         }
 
-        private void CreatePreviewPanel()
+        public virtual void PointerExitedHandler(PointerEventData obj)
         {
-            reportActionPreviewPanel = MonoBehaviour.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));//new GameObject(gameAction.actionType.ToString());
-            reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
-            reportActionPreviewPanel.SetActive(false);
-
-            attackingPictureObject = reportActionPreviewPanel.transform.Find("PictureAttack").gameObject;
-            attackingPictureObject.SetActive(false);
-
-            healPictureObject = reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
-            healPictureObject.SetActive(false);
-
-            SetInfo();
+            _reportActionPreviewPanel.SetActive(false);
         }
 
-        public virtual void OnPointerExitEventHandler(PointerEventData obj)
+        public virtual void PointerEnteredHandler(PointerEventData obj)
         {
-            reportActionPreviewPanel.SetActive(false);
-        }
-
-        public virtual void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            reportActionPreviewPanel.SetActive(true);
+            _reportActionPreviewPanel.SetActive(true);
         }
 
         public GameObject CreateCardPreview(WorkingCard card, Vector3 pos)
         {
-            BoardCard boardCard = null;
-            GameObject currentBoardCard = null;
-            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
+            BoardCard boardCard;
+            GameObject currentBoardCard;
+            CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
-                boardCard = new UnitBoardCard(currentBoardCard);
-
-            }
-            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
-            {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
-                boardCard = new SpellBoardCard(currentBoardCard);
+                case Enumerators.CardKind.CREATURE:
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
+                    boardCard = new UnitBoardCard(currentBoardCard);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
+                    boardCard = new SpellBoardCard(currentBoardCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
-            boardCard.isPreview = true;
+            boardCard.IsPreview = true;
             currentBoardCard.transform.localPosition = pos;
             currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
             currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
@@ -120,12 +112,15 @@ namespace LoomNetwork.CZB
 
         public GameObject CreatePlayerPreview(Player player, Vector3 pos)
         {
-            GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
-            var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            var heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement.ToString() + "_EXP");
+            GameObject avatar =
+                Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
+            SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
+            Sprite heroSprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                    player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
-            var hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            hpText.text = player.HP.ToString();
+            TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            hpText.text = player.Health.ToString();
             avatar.transform.localPosition = pos;
             avatar.transform.localScale = Vector3.one * 1.6f;
             avatar.GetComponent<SortingGroup>().sortingOrder = 1000;
@@ -133,15 +128,19 @@ namespace LoomNetwork.CZB
 
             return avatar;
         }
-        //todo improve
+
+        // todo improve
         public GameObject CreateSkillPreview(Player player)
         {
-            GameObject avatar = MonoBehaviour.Instantiate(playerAvatarPreviewPrefab, reportActionPreviewPanel.transform, false);
-            var sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            var heroSprite = loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.heroElement.ToString() + "_EXP");
+            GameObject avatar =
+                Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
+            SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
+            Sprite heroSprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                    player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
-            var hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            hpText.text = player.HP.ToString();
+            TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            hpText.text = player.Health.ToString();
             avatar.transform.localPosition = new Vector3(5f, 0, 0);
             avatar.transform.localScale = Vector3.one * 1.6f;
             avatar.GetComponent<SortingGroup>().sortingOrder = 1000;
@@ -149,28 +148,33 @@ namespace LoomNetwork.CZB
 
             return avatar;
         }
-        //todo improve
+
+        // todo improve
         public GameObject CreateAbilityPreview(WorkingCard card, Vector3 pos)
         {
-            BoardCard boardCard = null;
-            GameObject currentBoardCard = null;
-            string cardSetName = cardsController.GetSetOfCard(card.libraryCard);
+            BoardCard boardCard;
+            GameObject currentBoardCard;
+            CardsController.GetSetOfCard(card.LibraryCard);
 
-            if (card.libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            switch (card.LibraryCard.CardKind)
             {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.creatureCardViewPrefab, reportActionPreviewPanel.transform, false);
-                boardCard = new UnitBoardCard(currentBoardCard);
-
-            }
-            else if (card.libraryCard.cardKind == Enumerators.CardKind.SPELL)
-            {
-                currentBoardCard = MonoBehaviour.Instantiate(cardsController.spellCardViewPrefab, reportActionPreviewPanel.transform, false);
-                boardCard = new SpellBoardCard(currentBoardCard);
+                case Enumerators.CardKind.CREATURE:
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
+                    boardCard = new UnitBoardCard(currentBoardCard);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
+                    boardCard = new SpellBoardCard(currentBoardCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
-            boardCard.isPreview = true;
+            boardCard.IsPreview = true;
             currentBoardCard.transform.localPosition = pos;
             currentBoardCard.transform.localRotation = Quaternion.Euler(Vector3.zero);
             currentBoardCard.transform.localScale = new Vector2(.4f, .4f);
@@ -182,8 +186,25 @@ namespace LoomNetwork.CZB
 
         public virtual void Dispose()
         {
-            MonoBehaviour.Destroy(reportActionPreviewPanel);
-            MonoBehaviour.Destroy(selfObject);
+            Object.Destroy(_reportActionPreviewPanel);
+            Object.Destroy(SelfObject);
+        }
+
+        private void CreatePreviewPanel()
+        {
+            _reportActionPreviewPanel =
+                Object.Instantiate(
+                    LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));
+            _reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
+            _reportActionPreviewPanel.SetActive(false);
+
+            AttackingPictureObject = _reportActionPreviewPanel.transform.Find("PictureAttack").gameObject;
+            AttackingPictureObject.SetActive(false);
+
+            HealPictureObject = _reportActionPreviewPanel.transform.Find("PictureHeal").gameObject;
+            HealPictureObject.SetActive(false);
+
+            SetInfo();
         }
     }
 }

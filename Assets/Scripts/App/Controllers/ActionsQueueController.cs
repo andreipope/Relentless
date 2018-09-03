@@ -1,36 +1,23 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ActionsQueueController : IController
     {
-        public event Action<GameActionReport> GotNewActionReportEvent;
-        public event Action<List<GameActionReport>> ActionsReportsUpdatedEvent;
-
         private Queue<GameAction<object>> _actionsToDo;
-        private List<GameActionReport> _actionsReports;
 
         private GameAction<object> _actionInProgress;
 
-        public List<GameActionReport> ActionsReports
-        {
-            get
-            {
-                return _actionsReports;
-            }
-        }
+        public event Action<GameActionReport> GotNewActionReportEvent;
+
+        public List<GameActionReport> ActionsReports { get; private set; }
 
         public void Init()
         {
             _actionsToDo = new Queue<GameAction<object>>();
-            _actionsReports = new List<GameActionReport>();
+            ActionsReports = new List<GameActionReport>();
             _actionInProgress = null;
         }
 
@@ -46,23 +33,26 @@ namespace LoomNetwork.CZB
         {
             StopAllActions();
 
-            _actionsReports.Clear();
+            ActionsReports.Clear();
         }
 
         /// <summary>
-        /// AddNewActionInToQueue
+        ///     AddNewActionInToQueue
         /// </summary>
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public void AddNewActionInToQueue(Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
+        public void AddNewActionInToQueue(
+            Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Enqueue(gameAction);
 
             if (_actionInProgress == null && _actionsToDo.Count < 2)
+            {
                 TryCallNewActionFromQueue();
+            }
         }
 
         public void StopAllActions()
@@ -71,7 +61,7 @@ namespace LoomNetwork.CZB
             _actionInProgress = null;
         }
 
-        //todo improve I guess
+        // todo improve I guess
         public GameActionReport FormatGameActionReport(Enumerators.ActionType actionType, object[] parameters)
         {
             GameActionReport actionReport = new GameActionReport(actionType, parameters);
@@ -83,15 +73,14 @@ namespace LoomNetwork.CZB
         {
             if (report != null)
             {
-                _actionsReports.Add(report);
+                ActionsReports.Add(report);
                 GotNewActionReportEvent?.Invoke(report);
-                ActionsReportsUpdatedEvent?.Invoke(_actionsReports);
             }
         }
 
         private void OnActionDoneEvent(GameAction<object> previousAction)
         {
-            PostGameActionReport(previousAction.report);
+            PostGameActionReport(previousAction.Report);
 
             TryCallNewActionFromQueue();
         }
@@ -103,41 +92,48 @@ namespace LoomNetwork.CZB
                 _actionInProgress = _actionsToDo.Dequeue();
                 _actionInProgress.DoAction();
             }
-            else _actionInProgress = null;
+            else
+            {
+                _actionInProgress = null;
+            }
         }
     }
 
     public class GameAction<T>
     {
-        public event Action<GameAction<T>> OnActionDoneEvent;
+        public Action<T, Action> Action;
 
-        private ITimerManager _timerManager;
+        public T Parameter;
 
-        private bool _actionDone = false;
+        public GameActionReport Report;
 
-        public Action<T, Action> action;
-        public T parameter;
-        public GameActionReport report;
+        private readonly ITimerManager _timerManager;
+
+        private bool _actionDone;
 
         public GameAction(Action<T, Action> action, T parameter, GameActionReport report)
         {
             _timerManager = GameClient.Get<ITimerManager>();
 
-            this.action = action;
-            this.parameter = parameter;
-            this.report = report;
+            Action = action;
+            Parameter = parameter;
+            Report = report;
         }
+
+        public event Action<GameAction<T>> OnActionDoneEvent;
 
         public void DoAction()
         {
             try
             {
-                action?.Invoke(parameter, ActionDoneCallback);
+                Action?.Invoke(Parameter, ActionDoneCallback);
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                if(!_actionDone)
-                ActionDoneCallback();
+                if (!_actionDone)
+                {
+                    ActionDoneCallback();
+                }
             }
         }
 
@@ -145,23 +141,27 @@ namespace LoomNetwork.CZB
         {
             _actionDone = true;
 
-            //small delay between actions
-            _timerManager.AddTimer((x) =>
-            {
-                OnActionDoneEvent?.Invoke(this);
-            }, null, Constants.DELAY_BETWEEN_GAMEPLAY_ACTIONS);
+            // small delay between actions
+            _timerManager.AddTimer(
+                x =>
+                {
+                    OnActionDoneEvent?.Invoke(this);
+                },
+                null,
+                Constants.DelayBetweenGameplayActions);
         }
     }
 
     public class GameActionReport
     {
-        public Enumerators.ActionType actionType;
-        public object[] parameters;
+        public Enumerators.ActionType ActionType;
+
+        public object[] Parameters;
 
         public GameActionReport(Enumerators.ActionType actionType, object[] parameters)
         {
-            this.actionType = actionType;
-            this.parameters = parameters;
+            ActionType = actionType;
+            Parameters = parameters;
         }
     }
 }
