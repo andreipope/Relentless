@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ContentManager : IService, IContentManager
     {

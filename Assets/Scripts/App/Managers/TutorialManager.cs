@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class TutorialManager : IService, ITutorialManager
     {

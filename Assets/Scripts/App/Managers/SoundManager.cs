@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class SoundManager : ISoundManager, IService
     {
@@ -443,12 +443,11 @@ namespace LoomNetwork.CZB
         {
             _gameSounds = new List<SoundTypeList>();
 
-            SoundTypeList soundsList = null;
             int countOfTypes = Enum.GetNames(typeof(Enumerators.SoundType)).Length;
 
             for (int i = 0; i < countOfTypes; i++)
             {
-                soundsList = new SoundTypeList();
+                SoundTypeList soundsList = new SoundTypeList();
                 soundsList.SoundType = (Enumerators.SoundType) i;
                 soundsList.AudioTypeClips = LoadAudioClipsByType(soundsList.SoundType);
 
@@ -458,8 +457,7 @@ namespace LoomNetwork.CZB
 
         private List<AudioClip> LoadAudioClipsByType(Enumerators.SoundType soundType)
         {
-            List<AudioClip> list = null;
-
+            List<AudioClip> list;
             string pathToSoundsLibrary = "Sounds/";
 
             switch (soundType)

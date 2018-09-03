@@ -3,7 +3,7 @@ using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Loom.Client;
-using LoomNetwork.CZB.BackendCommunication;
+using Loom.ZombieBattleground.BackendCommunication;
 using NUnit.Framework;
 
 public static class LoomTestContext

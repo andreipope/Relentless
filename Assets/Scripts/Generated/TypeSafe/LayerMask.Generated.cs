@@ -12,7 +12,7 @@
 // 
 // ------------------------------------------------------------------------------
 
-namespace LoomNetwork.CZB {
+namespace Loom.ZombieBattleground {
     
     
     public sealed class SRLayerMask {

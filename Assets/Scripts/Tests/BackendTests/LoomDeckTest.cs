@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Protobuf;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine.TestTools;
-using Deck = LoomNetwork.CZB.Data.Deck;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
 public class LoomDeckTest
 {

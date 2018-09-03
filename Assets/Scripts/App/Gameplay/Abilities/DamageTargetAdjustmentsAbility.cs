@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using LoomNetwork.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {

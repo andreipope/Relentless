@@ -9,7 +9,7 @@ using pb = global::Loom.Google.Protobuf;
 using pbc = global::Loom.Google.Protobuf.Collections;
 using pbr = global::Loom.Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace LoomNetwork.CZB.Protobuf {
+namespace Loom.ZombieBattleground.Protobuf {
 
   /// <summary>Holder for reflection information generated from github.com/loomnetwork/zombie_battleground/types/zb/zb.proto</summary>
   public static partial class ZbReflection {
@@ -115,48 +115,48 @@ namespace LoomNetwork.CZB.Protobuf {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Account), global::LoomNetwork.CZB.Protobuf.Account.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Owner" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Deck), global::LoomNetwork.CZB.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Card), global::LoomNetwork.CZB.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Set", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Frame", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardViewInfo), global::LoomNetwork.CZB.Protobuf.CardViewInfo.Parser, new[]{ "Position", "Scale" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Coordinates), global::LoomNetwork.CZB.Protobuf.Coordinates.Parser, new[]{ "X", "Y", "Z" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Effect), global::LoomNetwork.CZB.Protobuf.Effect.Parser, new[]{ "Trigger", "Effect_", "Duration", "Target", "Limit" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Ability), global::LoomNetwork.CZB.Protobuf.Ability.Parser, new[]{ "Type", "ActivityType", "CallType", "TargetType", "StatType", "SetType", "Value", "BuffType", "EffectType", "UnitType", "Count", "Name", "Turns", "Delay", "UnitStatus", "CardType", "Health", "Damage", "AttackInfo" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardList), global::LoomNetwork.CZB.Protobuf.CardList.Parser, new[]{ "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardCollection), global::LoomNetwork.CZB.Protobuf.CardCollection.Parser, new[]{ "CardName", "Amount" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardSet), global::LoomNetwork.CZB.Protobuf.CardSet.Parser, new[]{ "Name", "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardLibrary), global::LoomNetwork.CZB.Protobuf.CardLibrary.Parser, new[]{ "Sets" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Hero), global::LoomNetwork.CZB.Protobuf.Hero.Parser, new[]{ "HeroId", "Icon", "Name", "ShortDescription", "LongDescription", "Element", "Experience", "Level", "Skills", "PrimarySkill", "SecondarySkill" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListHeroesRequest), global::LoomNetwork.CZB.Protobuf.ListHeroesRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListHeroesResponse), global::LoomNetwork.CZB.Protobuf.ListHeroesResponse.Parser, new[]{ "Heroes" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.AddHeroExperienceRequest), global::LoomNetwork.CZB.Protobuf.AddHeroExperienceRequest.Parser, new[]{ "UserId", "HeroId", "Experience" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.AddHeroExperienceResponse), global::LoomNetwork.CZB.Protobuf.AddHeroExperienceResponse.Parser, new[]{ "HeroId", "Experience" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroRequest), global::LoomNetwork.CZB.Protobuf.GetHeroRequest.Parser, new[]{ "UserId", "HeroId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroResponse), global::LoomNetwork.CZB.Protobuf.GetHeroResponse.Parser, new[]{ "Hero" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroSkillsRequest), global::LoomNetwork.CZB.Protobuf.GetHeroSkillsRequest.Parser, new[]{ "UserId", "HeroId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetHeroSkillsResponse), global::LoomNetwork.CZB.Protobuf.GetHeroSkillsResponse.Parser, new[]{ "HeroId", "Skills" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.Skill), global::LoomNetwork.CZB.Protobuf.Skill.Parser, new[]{ "Title", "Skill_", "IconPath", "Description", "SkillTargets", "ElementTargets", "Value", "Cooldown", "InitialCooldown", "Attack", "Health" }, null, new[]{ typeof(global::LoomNetwork.CZB.Protobuf.Skill.Types.SkillTargetType) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.HeroList), global::LoomNetwork.CZB.Protobuf.HeroList.Parser, new[]{ "Heroes" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CardCollectionList), global::LoomNetwork.CZB.Protobuf.CardCollectionList.Parser, new[]{ "Cards" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeckList), global::LoomNetwork.CZB.Protobuf.DeckList.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.InitRequest), global::LoomNetwork.CZB.Protobuf.InitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.UpsertAccountRequest), global::LoomNetwork.CZB.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetAccountRequest), global::LoomNetwork.CZB.Protobuf.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetDeckRequest), global::LoomNetwork.CZB.Protobuf.GetDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetDeckResponse), global::LoomNetwork.CZB.Protobuf.GetDeckResponse.Parser, new[]{ "Deck" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CreateDeckRequest), global::LoomNetwork.CZB.Protobuf.CreateDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.CreateDeckResponse), global::LoomNetwork.CZB.Protobuf.CreateDeckResponse.Parser, new[]{ "DeckId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest), global::LoomNetwork.CZB.Protobuf.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckId", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.EditDeckRequest), global::LoomNetwork.CZB.Protobuf.EditDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.DecksResponse), global::LoomNetwork.CZB.Protobuf.DecksResponse.Parser, new[]{ "UserId", "Decks" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListDecksRequest), global::LoomNetwork.CZB.Protobuf.ListDecksRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListDecksResponse), global::LoomNetwork.CZB.Protobuf.ListDecksResponse.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListCardLibraryRequest), global::LoomNetwork.CZB.Protobuf.ListCardLibraryRequest.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListCardLibraryResponse), global::LoomNetwork.CZB.Protobuf.ListCardLibraryResponse.Parser, new[]{ "Sets" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListHeroLibraryRequest), global::LoomNetwork.CZB.Protobuf.ListHeroLibraryRequest.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.ListHeroLibraryResponse), global::LoomNetwork.CZB.Protobuf.ListHeroLibraryResponse.Parser, new[]{ "Heroes" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetCollectionRequest), global::LoomNetwork.CZB.Protobuf.GetCollectionRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoomNetwork.CZB.Protobuf.GetCollectionResponse), global::LoomNetwork.CZB.Protobuf.GetCollectionResponse.Parser, new[]{ "Cards" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Account), global::Loom.ZombieBattleground.Protobuf.Account.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Owner" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Deck), global::Loom.ZombieBattleground.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Card), global::Loom.ZombieBattleground.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Set", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Frame", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardViewInfo), global::Loom.ZombieBattleground.Protobuf.CardViewInfo.Parser, new[]{ "Position", "Scale" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Coordinates), global::Loom.ZombieBattleground.Protobuf.Coordinates.Parser, new[]{ "X", "Y", "Z" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Effect), global::Loom.ZombieBattleground.Protobuf.Effect.Parser, new[]{ "Trigger", "Effect_", "Duration", "Target", "Limit" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Ability), global::Loom.ZombieBattleground.Protobuf.Ability.Parser, new[]{ "Type", "ActivityType", "CallType", "TargetType", "StatType", "SetType", "Value", "BuffType", "EffectType", "UnitType", "Count", "Name", "Turns", "Delay", "UnitStatus", "CardType", "Health", "Damage", "AttackInfo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardList), global::Loom.ZombieBattleground.Protobuf.CardList.Parser, new[]{ "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardCollection), global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser, new[]{ "CardName", "Amount" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardSet), global::Loom.ZombieBattleground.Protobuf.CardSet.Parser, new[]{ "Name", "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardLibrary), global::Loom.ZombieBattleground.Protobuf.CardLibrary.Parser, new[]{ "Sets" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Hero), global::Loom.ZombieBattleground.Protobuf.Hero.Parser, new[]{ "HeroId", "Icon", "Name", "ShortDescription", "LongDescription", "Element", "Experience", "Level", "Skills", "PrimarySkill", "SecondarySkill" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroesRequest), global::Loom.ZombieBattleground.Protobuf.ListHeroesRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroesResponse), global::Loom.ZombieBattleground.Protobuf.ListHeroesResponse.Parser, new[]{ "Heroes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.AddHeroExperienceRequest), global::Loom.ZombieBattleground.Protobuf.AddHeroExperienceRequest.Parser, new[]{ "UserId", "HeroId", "Experience" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.AddHeroExperienceResponse), global::Loom.ZombieBattleground.Protobuf.AddHeroExperienceResponse.Parser, new[]{ "HeroId", "Experience" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetHeroRequest), global::Loom.ZombieBattleground.Protobuf.GetHeroRequest.Parser, new[]{ "UserId", "HeroId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetHeroResponse), global::Loom.ZombieBattleground.Protobuf.GetHeroResponse.Parser, new[]{ "Hero" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetHeroSkillsRequest), global::Loom.ZombieBattleground.Protobuf.GetHeroSkillsRequest.Parser, new[]{ "UserId", "HeroId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetHeroSkillsResponse), global::Loom.ZombieBattleground.Protobuf.GetHeroSkillsResponse.Parser, new[]{ "HeroId", "Skills" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Skill), global::Loom.ZombieBattleground.Protobuf.Skill.Parser, new[]{ "Title", "Skill_", "IconPath", "Description", "SkillTargets", "ElementTargets", "Value", "Cooldown", "InitialCooldown", "Attack", "Health" }, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.Skill.Types.SkillTargetType) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.HeroList), global::Loom.ZombieBattleground.Protobuf.HeroList.Parser, new[]{ "Heroes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardCollectionList), global::Loom.ZombieBattleground.Protobuf.CardCollectionList.Parser, new[]{ "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DeckList), global::Loom.ZombieBattleground.Protobuf.DeckList.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.InitRequest), global::Loom.ZombieBattleground.Protobuf.InitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest), global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetAccountRequest), global::Loom.ZombieBattleground.Protobuf.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckRequest), global::Loom.ZombieBattleground.Protobuf.GetDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckResponse), global::Loom.ZombieBattleground.Protobuf.GetDeckResponse.Parser, new[]{ "Deck" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CreateDeckRequest), global::Loom.ZombieBattleground.Protobuf.CreateDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CreateDeckResponse), global::Loom.ZombieBattleground.Protobuf.CreateDeckResponse.Parser, new[]{ "DeckId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DeleteDeckRequest), global::Loom.ZombieBattleground.Protobuf.DeleteDeckRequest.Parser, new[]{ "UserId", "DeckId", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.EditDeckRequest), global::Loom.ZombieBattleground.Protobuf.EditDeckRequest.Parser, new[]{ "UserId", "Deck", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DecksResponse), global::Loom.ZombieBattleground.Protobuf.DecksResponse.Parser, new[]{ "UserId", "Decks" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListDecksRequest), global::Loom.ZombieBattleground.Protobuf.ListDecksRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListDecksResponse), global::Loom.ZombieBattleground.Protobuf.ListDecksResponse.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListCardLibraryResponse), global::Loom.ZombieBattleground.Protobuf.ListCardLibraryResponse.Parser, new[]{ "Sets" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryResponse), global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryResponse.Parser, new[]{ "Heroes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest), global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest.Parser, new[]{ "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse), global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse.Parser, new[]{ "Cards" }, null, null, null)
           }));
     }
     #endregion
@@ -171,7 +171,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -552,7 +552,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -616,11 +616,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 4;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardCollection> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(34, global::LoomNetwork.CZB.Protobuf.CardCollection.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardCollection> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(34, global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> Cards {
       get { return cards_; }
     }
 
@@ -757,7 +757,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -967,9 +967,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "card_view_info" field.</summary>
     public const int CardViewInfoFieldNumber = 16;
-    private global::LoomNetwork.CZB.Protobuf.CardViewInfo cardViewInfo_;
+    private global::Loom.ZombieBattleground.Protobuf.CardViewInfo cardViewInfo_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.CardViewInfo CardViewInfo {
+    public global::Loom.ZombieBattleground.Protobuf.CardViewInfo CardViewInfo {
       get { return cardViewInfo_; }
       set {
         cardViewInfo_ = value;
@@ -978,21 +978,21 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "effects" field.</summary>
     public const int EffectsFieldNumber = 17;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Effect> _repeated_effects_codec
-        = pb::FieldCodec.ForMessage(138, global::LoomNetwork.CZB.Protobuf.Effect.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect> effects_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Effect> _repeated_effects_codec
+        = pb::FieldCodec.ForMessage(138, global::Loom.ZombieBattleground.Protobuf.Effect.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Effect> effects_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Effect>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Effect> Effects {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Effect> Effects {
       get { return effects_; }
     }
 
     /// <summary>Field number for the "abilities" field.</summary>
     public const int AbilitiesFieldNumber = 18;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Ability> _repeated_abilities_codec
-        = pb::FieldCodec.ForMessage(146, global::LoomNetwork.CZB.Protobuf.Ability.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability> abilities_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Ability> _repeated_abilities_codec
+        = pb::FieldCodec.ForMessage(146, global::Loom.ZombieBattleground.Protobuf.Ability.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Ability> abilities_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Ability>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Ability> Abilities {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Ability> Abilities {
       get { return abilities_; }
     }
 
@@ -1246,7 +1246,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.cardViewInfo_ != null) {
         if (cardViewInfo_ == null) {
-          cardViewInfo_ = new global::LoomNetwork.CZB.Protobuf.CardViewInfo();
+          cardViewInfo_ = new global::Loom.ZombieBattleground.Protobuf.CardViewInfo();
         }
         CardViewInfo.MergeFrom(other.CardViewInfo);
       }
@@ -1325,7 +1325,7 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 130: {
             if (cardViewInfo_ == null) {
-              cardViewInfo_ = new global::LoomNetwork.CZB.Protobuf.CardViewInfo();
+              cardViewInfo_ = new global::Loom.ZombieBattleground.Protobuf.CardViewInfo();
             }
             input.ReadMessage(cardViewInfo_);
             break;
@@ -1352,7 +1352,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1381,9 +1381,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "position" field.</summary>
     public const int PositionFieldNumber = 1;
-    private global::LoomNetwork.CZB.Protobuf.Coordinates position_;
+    private global::Loom.ZombieBattleground.Protobuf.Coordinates position_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Coordinates Position {
+    public global::Loom.ZombieBattleground.Protobuf.Coordinates Position {
       get { return position_; }
       set {
         position_ = value;
@@ -1392,9 +1392,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "scale" field.</summary>
     public const int ScaleFieldNumber = 2;
-    private global::LoomNetwork.CZB.Protobuf.Coordinates scale_;
+    private global::Loom.ZombieBattleground.Protobuf.Coordinates scale_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Coordinates Scale {
+    public global::Loom.ZombieBattleground.Protobuf.Coordinates Scale {
       get { return scale_; }
       set {
         scale_ = value;
@@ -1472,13 +1472,13 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.position_ != null) {
         if (position_ == null) {
-          position_ = new global::LoomNetwork.CZB.Protobuf.Coordinates();
+          position_ = new global::Loom.ZombieBattleground.Protobuf.Coordinates();
         }
         Position.MergeFrom(other.Position);
       }
       if (other.scale_ != null) {
         if (scale_ == null) {
-          scale_ = new global::LoomNetwork.CZB.Protobuf.Coordinates();
+          scale_ = new global::Loom.ZombieBattleground.Protobuf.Coordinates();
         }
         Scale.MergeFrom(other.Scale);
       }
@@ -1495,14 +1495,14 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           case 10: {
             if (position_ == null) {
-              position_ = new global::LoomNetwork.CZB.Protobuf.Coordinates();
+              position_ = new global::Loom.ZombieBattleground.Protobuf.Coordinates();
             }
             input.ReadMessage(position_);
             break;
           }
           case 18: {
             if (scale_ == null) {
-              scale_ = new global::LoomNetwork.CZB.Protobuf.Coordinates();
+              scale_ = new global::Loom.ZombieBattleground.Protobuf.Coordinates();
             }
             input.ReadMessage(scale_);
             break;
@@ -1521,7 +1521,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1706,7 +1706,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1947,7 +1947,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2580,7 +2580,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2608,11 +2608,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Card> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Card.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Card> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Card.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> Cards {
       get { return cards_; }
     }
 
@@ -2701,7 +2701,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2858,7 +2858,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2898,11 +2898,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Card> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(18, global::LoomNetwork.CZB.Protobuf.Card.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Card> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.Card.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> Cards {
       get { return cards_; }
     }
 
@@ -3007,7 +3007,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3035,11 +3035,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "sets" field.</summary>
     public const int SetsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardSet> _repeated_sets_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.CardSet.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet> sets_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardSet> _repeated_sets_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.CardSet.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet> sets_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet> Sets {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet> Sets {
       get { return sets_; }
     }
 
@@ -3128,7 +3128,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3254,11 +3254,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "skills" field.</summary>
     public const int SkillsFieldNumber = 9;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Skill> _repeated_skills_codec
-        = pb::FieldCodec.ForMessage(74, global::LoomNetwork.CZB.Protobuf.Skill.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill> skills_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Skill> _repeated_skills_codec
+        = pb::FieldCodec.ForMessage(74, global::Loom.ZombieBattleground.Protobuf.Skill.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill> skills_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill> Skills {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill> Skills {
       get { return skills_; }
     }
 
@@ -3529,7 +3529,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3658,7 +3658,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[13]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3686,11 +3686,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "heroes" field.</summary>
     public const int HeroesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Hero> _repeated_heroes_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Hero.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Hero> _repeated_heroes_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Hero.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> Heroes {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> Heroes {
       get { return heroes_; }
     }
 
@@ -3779,7 +3779,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[14]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3964,7 +3964,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[15]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4121,7 +4121,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4278,7 +4278,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4306,9 +4306,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "hero" field.</summary>
     public const int HeroFieldNumber = 1;
-    private global::LoomNetwork.CZB.Protobuf.Hero hero_;
+    private global::Loom.ZombieBattleground.Protobuf.Hero hero_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Hero Hero {
+    public global::Loom.ZombieBattleground.Protobuf.Hero Hero {
       get { return hero_; }
       set {
         hero_ = value;
@@ -4377,7 +4377,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.hero_ != null) {
         if (hero_ == null) {
-          hero_ = new global::LoomNetwork.CZB.Protobuf.Hero();
+          hero_ = new global::Loom.ZombieBattleground.Protobuf.Hero();
         }
         Hero.MergeFrom(other.Hero);
       }
@@ -4394,7 +4394,7 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           case 10: {
             if (hero_ == null) {
-              hero_ = new global::LoomNetwork.CZB.Protobuf.Hero();
+              hero_ = new global::Loom.ZombieBattleground.Protobuf.Hero();
             }
             input.ReadMessage(hero_);
             break;
@@ -4413,7 +4413,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[18]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4570,7 +4570,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[19]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4610,11 +4610,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "skills" field.</summary>
     public const int SkillsFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Skill> _repeated_skills_codec
-        = pb::FieldCodec.ForMessage(18, global::LoomNetwork.CZB.Protobuf.Skill.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill> skills_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Skill> _repeated_skills_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.Skill.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill> skills_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Skill> Skills {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Skill> Skills {
       get { return skills_; }
     }
 
@@ -4719,7 +4719,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5146,7 +5146,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5174,11 +5174,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "heroes" field.</summary>
     public const int HeroesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Hero> _repeated_heroes_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Hero.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Hero> _repeated_heroes_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Hero.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> Heroes {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> Heroes {
       get { return heroes_; }
     }
 
@@ -5267,7 +5267,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5295,11 +5295,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardCollection> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.CardCollection.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardCollection> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> Cards {
       get { return cards_; }
     }
 
@@ -5388,7 +5388,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5417,11 +5417,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "decks" field.</summary>
     public const int DecksFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Deck> _repeated_decks_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Deck.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Deck> _repeated_decks_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Deck.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> Decks {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> Decks {
       get { return decks_; }
     }
 
@@ -5537,7 +5537,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5568,41 +5568,41 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "default_decks" field.</summary>
     public const int DefaultDecksFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Deck> _repeated_defaultDecks_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Deck.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> defaultDecks_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Deck> _repeated_defaultDecks_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Deck.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> defaultDecks_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> DefaultDecks {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> DefaultDecks {
       get { return defaultDecks_; }
     }
 
     /// <summary>Field number for the "default_collection" field.</summary>
     public const int DefaultCollectionFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardCollection> _repeated_defaultCollection_codec
-        = pb::FieldCodec.ForMessage(18, global::LoomNetwork.CZB.Protobuf.CardCollection.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> defaultCollection_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardCollection> _repeated_defaultCollection_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> defaultCollection_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> DefaultCollection {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> DefaultCollection {
       get { return defaultCollection_; }
     }
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 3;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Card> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(26, global::LoomNetwork.CZB.Protobuf.Card.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Card> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(26, global::Loom.ZombieBattleground.Protobuf.Card.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Card> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> Cards {
       get { return cards_; }
     }
 
     /// <summary>Field number for the "heroes" field.</summary>
     public const int HeroesFieldNumber = 4;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Hero> _repeated_heroes_codec
-        = pb::FieldCodec.ForMessage(34, global::LoomNetwork.CZB.Protobuf.Hero.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Hero> _repeated_heroes_codec
+        = pb::FieldCodec.ForMessage(34, global::Loom.ZombieBattleground.Protobuf.Hero.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> Heroes {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> Heroes {
       get { return heroes_; }
     }
 
@@ -5718,7 +5718,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6071,7 +6071,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6200,7 +6200,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6357,7 +6357,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6385,9 +6385,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "deck" field.</summary>
     public const int DeckFieldNumber = 2;
-    private global::LoomNetwork.CZB.Protobuf.Deck deck_;
+    private global::Loom.ZombieBattleground.Protobuf.Deck deck_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Deck Deck {
+    public global::Loom.ZombieBattleground.Protobuf.Deck Deck {
       get { return deck_; }
       set {
         deck_ = value;
@@ -6456,7 +6456,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.deck_ != null) {
         if (deck_ == null) {
-          deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+          deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
         }
         Deck.MergeFrom(other.Deck);
       }
@@ -6473,7 +6473,7 @@ namespace LoomNetwork.CZB.Protobuf {
             break;
           case 18: {
             if (deck_ == null) {
-              deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+              deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
             }
             input.ReadMessage(deck_);
             break;
@@ -6492,7 +6492,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6533,9 +6533,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "deck" field.</summary>
     public const int DeckFieldNumber = 2;
-    private global::LoomNetwork.CZB.Protobuf.Deck deck_;
+    private global::Loom.ZombieBattleground.Protobuf.Deck deck_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Deck Deck {
+    public global::Loom.ZombieBattleground.Protobuf.Deck Deck {
       get { return deck_; }
       set {
         deck_ = value;
@@ -6636,7 +6636,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.deck_ != null) {
         if (deck_ == null) {
-          deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+          deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
         }
         Deck.MergeFrom(other.Deck);
       }
@@ -6660,7 +6660,7 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 18: {
             if (deck_ == null) {
-              deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+              deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
             }
             input.ReadMessage(deck_);
             break;
@@ -6683,7 +6683,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6812,7 +6812,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6997,7 +6997,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7038,9 +7038,9 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "deck" field.</summary>
     public const int DeckFieldNumber = 2;
-    private global::LoomNetwork.CZB.Protobuf.Deck deck_;
+    private global::Loom.ZombieBattleground.Protobuf.Deck deck_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::LoomNetwork.CZB.Protobuf.Deck Deck {
+    public global::Loom.ZombieBattleground.Protobuf.Deck Deck {
       get { return deck_; }
       set {
         deck_ = value;
@@ -7141,7 +7141,7 @@ namespace LoomNetwork.CZB.Protobuf {
       }
       if (other.deck_ != null) {
         if (deck_ == null) {
-          deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+          deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
         }
         Deck.MergeFrom(other.Deck);
       }
@@ -7165,7 +7165,7 @@ namespace LoomNetwork.CZB.Protobuf {
           }
           case 18: {
             if (deck_ == null) {
-              deck_ = new global::LoomNetwork.CZB.Protobuf.Deck();
+              deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
             }
             input.ReadMessage(deck_);
             break;
@@ -7188,7 +7188,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7228,11 +7228,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "decks" field.</summary>
     public const int DecksFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Deck> _repeated_decks_codec
-        = pb::FieldCodec.ForMessage(18, global::LoomNetwork.CZB.Protobuf.Deck.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Deck> _repeated_decks_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.Deck.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> Decks {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> Decks {
       get { return decks_; }
     }
 
@@ -7337,7 +7337,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7466,7 +7466,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7495,11 +7495,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "decks" field.</summary>
     public const int DecksFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Deck> _repeated_decks_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Deck.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Deck> _repeated_decks_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Deck.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> decks_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Deck> Decks {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> Decks {
       get { return decks_; }
     }
 
@@ -7615,7 +7615,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7716,7 +7716,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[37]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7744,11 +7744,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "sets" field.</summary>
     public const int SetsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardSet> _repeated_sets_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.CardSet.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet> sets_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardSet> _repeated_sets_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.CardSet.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet> sets_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardSet> Sets {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardSet> Sets {
       get { return sets_; }
     }
 
@@ -7837,7 +7837,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[38]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7938,7 +7938,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[39]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7966,11 +7966,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "heroes" field.</summary>
     public const int HeroesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.Hero> _repeated_heroes_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.Hero.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Hero> _repeated_heroes_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Hero.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.Hero> Heroes {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> Heroes {
       get { return heroes_; }
     }
 
@@ -8059,7 +8059,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[40]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8188,7 +8188,7 @@ namespace LoomNetwork.CZB.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoomNetwork.CZB.Protobuf.ZbReflection.Descriptor.MessageTypes[41]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8216,11 +8216,11 @@ namespace LoomNetwork.CZB.Protobuf {
 
     /// <summary>Field number for the "cards" field.</summary>
     public const int CardsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::LoomNetwork.CZB.Protobuf.CardCollection> _repeated_cards_codec
-        = pb::FieldCodec.ForMessage(10, global::LoomNetwork.CZB.Protobuf.CardCollection.Parser);
-    private readonly pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection>();
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardCollection> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::LoomNetwork.CZB.Protobuf.CardCollection> Cards {
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> Cards {
       get { return cards_; }
     }
 

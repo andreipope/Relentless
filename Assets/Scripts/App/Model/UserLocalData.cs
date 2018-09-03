@@ -1,6 +1,6 @@
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class UserLocalData
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public abstract class ServiceLocatorBase : IServiceLocator
     {
@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        /// <exception cref="System.Exception">Service  + typeof(T) +  is not registered!</exception>
+        /// <exception cref="Exception">Service  + typeof(T) +  is not registered!</exception>
         public T GetService<T>()
         {
             try
@@ -47,7 +47,7 @@ namespace LoomNetwork.CZB
         /// <summary>
         ///     Initializes the services.
         /// </summary>
-        /// <exception cref="System.Exception">Service don't have Init() method!</exception>
+        /// <exception cref="Exception">Service don't have Init() method!</exception>
         public void InitServices()
         {
             foreach (IService service in Services.Values)

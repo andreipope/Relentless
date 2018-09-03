@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Helpers;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class Player
     {
@@ -85,7 +85,7 @@ namespace LoomNetwork.CZB
 
             CardsPreparingToHand = new List<BoardCard>();
 
-            int heroId = 0;
+            int heroId;
 
             if (!isOpponent)
             {
@@ -189,10 +189,7 @@ namespace LoomNetwork.CZB
             get => _health;
             set
             {
-                int oldHealth = _health;
-                _health = value;
-
-                _health = Mathf.Clamp(_health, 0, 99);
+                _health = Mathf.Clamp(value, 0, 99);
 
                 PlayerHpChanged?.Invoke(_health);
             }
@@ -281,7 +278,7 @@ namespace LoomNetwork.CZB
 
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
-            GameObject cardObject = null;
+            GameObject cardObject;
             CardsInHand.Add(card);
 
             if (IsLocalPlayer)

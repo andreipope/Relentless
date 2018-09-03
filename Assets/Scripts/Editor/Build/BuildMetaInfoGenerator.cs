@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.CloudBuild;
 using Debug = UnityEngine.Debug;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BuildMetaInfoGenerator : IPreprocessBuildWithReport
     {

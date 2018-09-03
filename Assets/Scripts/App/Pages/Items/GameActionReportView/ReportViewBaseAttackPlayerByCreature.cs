@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ReportViewBaseAttackPlayerByCreature : ReportViewBase
     {

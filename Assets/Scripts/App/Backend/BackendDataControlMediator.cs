@@ -2,12 +2,10 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Loom.Client;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.Internal;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendDataControlMediator : IService
     {

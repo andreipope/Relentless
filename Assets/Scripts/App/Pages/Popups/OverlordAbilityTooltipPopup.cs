@@ -1,11 +1,11 @@
 using System;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class OverlordAbilityTooltipPopup : IUIPopup
     {

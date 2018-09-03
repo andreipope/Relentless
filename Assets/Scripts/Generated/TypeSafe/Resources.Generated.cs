@@ -12,7 +12,7 @@
 // 
 // ------------------------------------------------------------------------------
 
-namespace LoomNetwork.CZB {
+namespace Loom.ZombieBattleground {
     
     
     public sealed class SRResources {
@@ -6634,59 +6634,45 @@ namespace LoomNetwork.CZB {
             private Data() {
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> action_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> buffs_tooltip_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[0]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> buffs_tooltip_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> credits_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[1]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> credits_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> decks_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[2]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> action_library_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> card_library_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[3]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> decks_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> opponent_decks_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[4]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> card_library_data {
+            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> heroes_data {
                 get {
                     return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[5]));
                 }
             }
             
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> opponent_decks_data {
-                get {
-                    return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[6]));
-                }
-            }
-            
-            public static global::TypeSafe.Resource<global::UnityEngine.TextAsset> heroes_data {
-                get {
-                    return ((global::TypeSafe.Resource<global::UnityEngine.TextAsset>)(@__ts_internal_resources[7]));
-                }
-            }
-            
             private static global::System.Collections.Generic.IList<global::TypeSafe.IResource> @__ts_internal_resources = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.IResource>(new global::TypeSafe.IResource[] {
-                        new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("action_data", "Data/action_data"),
                         new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("buffs_tooltip_data", "Data/buffs_tooltip_data"),
                         new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("credits_data", "Data/credits_data"),
-                        new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("action_library_data", "Data/action_library_data"),
                         new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("decks_data", "Data/decks_data"),
                         new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("card_library_data", "Data/card_library_data"),
                         new global::TypeSafe.Resource<global::UnityEngine.TextAsset>("opponent_decks_data", "Data/opponent_decks_data"),

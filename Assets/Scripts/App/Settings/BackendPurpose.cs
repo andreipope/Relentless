@@ -1,4 +1,4 @@
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public enum BackendPurpose
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LoomNetwork.CZB.Common
+namespace Loom.ZombieBattleground.Common
 {
     public class Constants
     {

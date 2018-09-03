@@ -1,7 +1,7 @@
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Gameplay;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class GameClient : ServiceLocatorBase
     {

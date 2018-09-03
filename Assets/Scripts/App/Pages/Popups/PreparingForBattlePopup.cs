@@ -1,9 +1,8 @@
-using System;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PreparingForBattlePopup : IUIPopup
     {

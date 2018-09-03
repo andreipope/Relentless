@@ -252,15 +252,11 @@ namespace LoomNetwork.Internal
                 file.Delete();
             }
 
-            files = null;
-
             DirectoryInfo[] directories = dir.GetDirectories();
             foreach (DirectoryInfo directory in directories)
             {
                 directory.Delete(true);
             }
-
-            directories = null;
 
             DebugLog("Clean Game Data Successful");
         }
@@ -437,7 +433,7 @@ namespace LoomNetwork.Internal
         [DebuggerNonUserCode]
         public static string Decrypt(string value, string key)
         {
-            string result = string.Empty;
+            string result;
 
             try
             {
@@ -461,10 +457,9 @@ namespace LoomNetwork.Internal
         {
             SymmetricAlgorithm symmetricAlgorithm = Rijndael.Create();
             ICryptoTransform cryptoTransform =
-                symmetricAlgorithm.CreateEncryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16),
-                    new byte[16]);
-            byte[] result = null;
+                symmetricAlgorithm.CreateEncryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16), new byte[16]);
 
+            byte[] result;
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 using (CryptoStream cryptoStream =

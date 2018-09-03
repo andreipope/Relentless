@@ -1,10 +1,10 @@
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class CardInfoPopup : IUIPopup
     {

@@ -1,8 +1,8 @@
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {

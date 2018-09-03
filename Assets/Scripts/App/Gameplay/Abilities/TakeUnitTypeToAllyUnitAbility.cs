@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
@@ -26,24 +26,13 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            List<BoardUnit> allies = new List<BoardUnit>();
-
-            allies = PlayerCallerOfAbility.BoardCards
-                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0).ToList();
+            List<BoardUnit> allies = PlayerCallerOfAbility.BoardCards
+                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+                .ToList();
 
             if (allies.Count > 0)
             {

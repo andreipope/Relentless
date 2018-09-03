@@ -1,8 +1,8 @@
-﻿using LoomNetwork.CZB.Common;
+﻿using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     [RequireComponent(typeof(Text))]
     public class SetAppVersionText : MonoBehaviour

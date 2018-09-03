@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Analytics;
 using Object = UnityEngine.Object;

@@ -1,4 +1,4 @@
-﻿using LoomNetwork.CZB.Common;
+﻿using Loom.ZombieBattleground.Common;
 
 public interface IAnalyticsManager
 {

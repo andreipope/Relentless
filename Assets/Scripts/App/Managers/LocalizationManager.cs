@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class LocalizationManager : IService, ILocalizationManager
     {
@@ -47,8 +47,6 @@ namespace LoomNetwork.CZB
         {
             if (language == CurrentLanguage && !forceUpdate)
                 return;
-
-            string languageCode = language.ToString().ToLower();
 
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;

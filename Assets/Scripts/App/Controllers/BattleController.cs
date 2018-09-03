@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BattleController : IController
     {
@@ -67,7 +67,7 @@ namespace LoomNetwork.CZB
         public void AttackUnitByUnit(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
         {
             int damageAttacked = 0;
-            int damageAttacking = 0;
+            int damageAttacking;
 
             if (attackingUnit != null && attackedUnit != null)
             {

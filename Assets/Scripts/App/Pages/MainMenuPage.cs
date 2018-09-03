@@ -2,14 +2,14 @@ using System;
 using System.Threading.Tasks;
 using App.Utilites;
 using Loom.Client;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class MainMenuPage : IUIElement
     {

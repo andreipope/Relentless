@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface ISoundManager
     {

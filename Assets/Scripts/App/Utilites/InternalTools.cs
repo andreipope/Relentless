@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Random = System.Random;
 
-namespace LoomNetwork.CZB.Helpers
+namespace Loom.ZombieBattleground.Helpers
 {
     public class InternalTools
     {
@@ -99,12 +99,12 @@ namespace LoomNetwork.CZB.Helpers
             }
             else
             {
-                object element = null;
+                object element;
                 for (int i = 0; i < count; i++)
                 {
                     element = ShakeList(root).First(x => !list.Contains(x));
 
-                    if (element != null && element != default(List<object>))
+                    if (element != null)
                     {
                         list.Add(element);
                     }

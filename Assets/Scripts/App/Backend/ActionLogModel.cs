@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ActionLogModel
     {

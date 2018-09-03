@@ -1,11 +1,11 @@
 using System;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AnimationsController : IController
     {
@@ -53,17 +53,15 @@ namespace LoomNetwork.CZB
             sortingGroup.sortingLayerName = Constants.LayerBoardCards;
             sortingGroup.sortingOrder = 1000;
 
-            Vector3 partWay = Vector3.zero;
+            Vector3 partWay;
 
             if (isCreatureAttacker)
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f,
-                    0.6f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.6f);
             }
             else
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f,
-                    0.7f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
             }
 
             if (isCreatureAttacker)

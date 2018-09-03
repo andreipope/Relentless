@@ -1,11 +1,10 @@
-using System;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class YourTurnPopup : IUIPopup
     {

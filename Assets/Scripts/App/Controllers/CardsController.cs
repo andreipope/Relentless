@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
@@ -198,11 +198,9 @@ namespace LoomNetwork.CZB
 
             Vector3 pivot = new Vector3(-3f, 0, 0);
 
-            Vector3 moveToPosition = Vector3.zero;
-
             for (int i = 0; i < count; i++)
             {
-                moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
+                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
                 player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f);
                 player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
 
@@ -661,8 +659,8 @@ namespace LoomNetwork.CZB
 
         public void DrawCardInfo(WorkingCard card)
         {
-            GameObject go = null;
-            BoardCard boardCard = null;
+            GameObject go;
+            BoardCard boardCard;
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -867,9 +865,8 @@ namespace LoomNetwork.CZB
 
         private BoardCard CreateBoardCard(WorkingCard card)
         {
-            string cardSetName = GetSetOfCard(card.LibraryCard);
-            GameObject go = null;
-            BoardCard boardCard = null;
+            GameObject go;
+            BoardCard boardCard;
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:

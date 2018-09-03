@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {

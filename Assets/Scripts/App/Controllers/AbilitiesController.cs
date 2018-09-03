@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
@@ -267,7 +267,7 @@ namespace LoomNetwork.CZB
             Card attackedCard = attacked.Card.LibraryCard;
             Card attackerCard = attacker.Card.LibraryCard;
 
-            List<AbilityData> abilities = null;
+            List<AbilityData> abilities;
 
             if (isAttackking)
             {
@@ -396,13 +396,6 @@ namespace LoomNetwork.CZB
             HandBoardCard handCard = null)
         {
             ResolveAllAbilitiesOnUnit(boardObject, false);
-
-            Vector3 postionOfCardView = Vector3.zero;
-
-            if (card != null && card.GameObject != null)
-            {
-                postionOfCardView = card.Transform.position;
-            }
 
             bool canUseAbility = false;
             ActiveAbility activeAbility = null;

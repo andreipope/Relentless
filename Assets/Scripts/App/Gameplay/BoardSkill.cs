@@ -1,9 +1,9 @@
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class BoardSkill
     {
@@ -347,7 +347,7 @@ namespace LoomNetwork.CZB
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            Vector3 position = Vector3.zero;
+            Vector3 position;
 
             if (Owner.IsLocalPlayer)
             {

@@ -1,6 +1,6 @@
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface IOverlordManager
     {

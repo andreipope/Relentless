@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditor.UI;
 
-namespace LoomNetwork.CZB.Editor
+namespace Loom.ZombieBattleground.Editor
 {
     [CustomEditor(typeof(ButtonShiftingContent))]
     public class ButtonShiftingContentEditor : ButtonEditor

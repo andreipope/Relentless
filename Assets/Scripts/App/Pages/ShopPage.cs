@@ -1,10 +1,10 @@
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ShopPage : IUIElement
     {
@@ -183,7 +183,7 @@ namespace LoomNetwork.CZB
 
             _playerManager.LocalUser.Wallet -= _costs[_currentPackId];
             _wallet.text = _playerManager.LocalUser.Wallet.ToString("0.00") + " $";
-            GameObject prefab = null;
+            GameObject prefab;
             for (int i = 0; i < _amount[_currentPackId]; i++)
             {
                 _playerManager.LocalUser.PacksCount++;

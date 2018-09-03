@@ -1,7 +1,7 @@
 using System;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface IGameplayManager
     {

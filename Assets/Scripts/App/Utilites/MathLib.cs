@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LoomNetwork.CZB.Helpers
+namespace Loom.ZombieBattleground.Helpers
 {
     public struct IntVector2
     {

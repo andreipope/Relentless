@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace LoomNetwork.CZB.Helpers
+namespace Loom.ZombieBattleground.Helpers
 {
     public class CsvMap
     {

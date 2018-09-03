@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PlayerManaBarItem
     {
@@ -47,10 +47,9 @@ namespace LoomNetwork.CZB
             _gooAmountText = _gooMeterObject.transform.Find("Text").GetComponent<TextMeshPro>();
             _arrowObject = _gooMeterObject.transform.Find("ArrowCenter").gameObject;
             _gooBottles = new List<GooBottleItem>();
-            GameObject bottle = null;
             for (int i = 0; i < _selfObject.transform.childCount; i++)
             {
-                bottle = _selfObject.transform.GetChild(i).gameObject;
+                GameObject bottle = _selfObject.transform.GetChild(i).gameObject;
                 if (bottle.name.Contains("BottleGoo"))
                 {
                     _gooBottles.Add(new GooBottleItem(bottle));

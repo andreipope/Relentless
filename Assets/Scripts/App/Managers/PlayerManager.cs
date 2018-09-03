@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PlayerManager : IService, IPlayerManager
     {

@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class CollectionPage : IUIElement
     {
@@ -287,8 +287,8 @@ namespace LoomNetwork.CZB
                 if (cardData == null)
                     continue;
 
-                GameObject go = null;
-                BoardCard boardCard = null;
+                GameObject go;
+                BoardCard boardCard;
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:

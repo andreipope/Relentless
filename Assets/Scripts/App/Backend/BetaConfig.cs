@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace LoomNetwork.CZB.BackendCommunication
+namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BetaConfig
     {

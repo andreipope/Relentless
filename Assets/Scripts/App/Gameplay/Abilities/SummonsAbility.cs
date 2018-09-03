@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class SummonsAbility : AbilityBase
     {
@@ -78,9 +78,8 @@ namespace LoomNetwork.CZB
 
             Card libraryCard = DataManager.CachedCardsLibraryData.GetCardFromName(Name).Clone();
 
-            string cardSetName = CardsController.GetSetOfCard(libraryCard);
             WorkingCard card = new WorkingCard(libraryCard, owner);
-            BoardUnit unit = CreateBoardUnit(card, cardSetName, owner);
+            BoardUnit unit = CreateBoardUnit(card,  owner);
 
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
@@ -103,7 +102,7 @@ namespace LoomNetwork.CZB
                 }));
         }
 
-        private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
+        private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ?
                 BattlegroundController.PlayerBoardObject :

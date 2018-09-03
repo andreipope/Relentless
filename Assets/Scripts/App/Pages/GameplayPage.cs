@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class GameplayPage : IUIElement
     {
@@ -401,8 +401,10 @@ namespace LoomNetwork.CZB
             {
                 int percent = GetPercentFromMaxDeck(index);
 
-                CardZoneOnBoardStatus nearest = _deckStatus.OrderBy(x => Math.Abs(x.Percent - percent))
-                    .Where(y => y.Percent > 0).First();
+                CardZoneOnBoardStatus nearest =
+                    _deckStatus
+                        .OrderBy(x => Math.Abs(x.Percent - percent))
+                        .First(y => y.Percent > 0);
 
                 _playerDeckStatusTexture.sprite = nearest.StatusSprite;
             }
@@ -424,7 +426,7 @@ namespace LoomNetwork.CZB
                 List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus
                     .OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
-                CardZoneOnBoardStatus nearest = null;
+                CardZoneOnBoardStatus nearest;
 
                 if (nearestObjects[0].Percent > 0)
                 {
@@ -477,8 +479,7 @@ namespace LoomNetwork.CZB
                 List<CardZoneOnBoardStatus> nearestObjects = _graveyardStatus
                     .OrderBy(x => Math.Abs(x.Percent - percent)).Where(y => y.Percent > 0).ToList();
 
-                CardZoneOnBoardStatus nearest = null;
-
+                CardZoneOnBoardStatus nearest;
                 if (nearestObjects[0].Percent > 0)
                 {
                     nearest = nearestObjects[0];

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
@@ -13,7 +13,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DeckEditingPage : IUIElement
     {
@@ -392,8 +392,8 @@ namespace LoomNetwork.CZB
 
         public BoardCard CreateCard(Card card, Vector3 worldPos, RectTransform root)
         {
-            BoardCard boardCard = null;
-            GameObject go = null;
+            BoardCard boardCard;
+            GameObject go;
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -816,7 +816,7 @@ namespace LoomNetwork.CZB
 
         public void SelectCard(DeckBuilderCard deckBuilderCard, Card card)
         {
-            BoardCard boardCard = null;
+            BoardCard boardCard;
             if (deckBuilderCard.IsHordeItem)
             {
                 boardCard = _createdHordeCards.First(c => c.LibraryCard.Id == card.Id);
