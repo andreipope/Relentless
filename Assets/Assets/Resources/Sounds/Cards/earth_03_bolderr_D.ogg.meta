@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: 2f5a1c2c7d6430a43b9a33a6647e2f27
-timeCreated: 1526987305
-licenseType: Pro
 AudioImporter:
   externalObjects: {}
   serializedVersion: 6
@@ -20,5 +18,5 @@ AudioImporter:
   ambisonic: 0
   3D: 1
   userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+  assetBundleName: testbundle
+  assetBundleVariant: test

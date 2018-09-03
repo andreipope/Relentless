@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: cd644c9865b3c064d973ad8ee65b2ebc
-timeCreated: 1528979814
-licenseType: Free
 AudioImporter:
   externalObjects: {}
   serializedVersion: 6
@@ -20,5 +18,5 @@ AudioImporter:
   ambisonic: 0
   3D: 1
   userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+  assetBundleName: testbundle
+  assetBundleVariant: test

@@ -77,9 +77,6 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: 57466c40c8aae3b4bb01e790ecef96e7, type: 3}
   - {fileID: 21300000, guid: 5b4fae503994bac4a93f0d17c7600140, type: 3}
-  - {fileID: 21300000, guid: be1a0860067d72c4ab04b2bbb5581660, type: 3}
-  - {fileID: 21300000, guid: 956eea60df9b5454397dedecc55c5118, type: 3}
-  - {fileID: 21300000, guid: ff81f6319e20a584a890cca272e52e55, type: 3}
   - {fileID: 21300000, guid: eaafd861d38613943a54fd6c8502f17c, type: 3}
   - {fileID: 21300000, guid: cf6d5812a470d4cf7a6c030ebbd71f4a, type: 3}
   - {fileID: 21300000, guid: 1a82bc1283d49664c8f8593392b1c84c, type: 3}
@@ -94,11 +91,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ab8541f2b02c92645b5c468f23883a40, type: 3}
   - {fileID: 21300000, guid: 4dcd221362c47474b91e13d2e2f4b84b, type: 3}
   - {fileID: 21300000, guid: e16d58630393f3d43a494ff2c0b48346, type: 3}
-  - {fileID: 21300000, guid: f9cfa2934e4b1294e80b12ea34eb8f3e, type: 3}
   - {fileID: 21300000, guid: f5416693fd3fefe4ab22241ab804f67b, type: 3}
   - {fileID: 21300000, guid: bbe91aa3ecc77ba40924195629082e1c, type: 3}
-  - {fileID: 21300000, guid: 6d03fca3fcd60864aa82dfb505bc7b45, type: 3}
-  - {fileID: 21300000, guid: f3ba29c39499df041bee007876b16e23, type: 3}
   - {fileID: 21300000, guid: 71619a54fb052964fbd34e94a10b8f0f, type: 3}
   - {fileID: 21300000, guid: ec732605b6bc8e841981aeed1b0a804d, type: 3}
   - {fileID: 21300000, guid: b5dce2554ac812d409a68b5cccde95e5, type: 3}
@@ -107,7 +101,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b8c42985c7d8b4949910dc514737070b, type: 3}
   - {fileID: 21300000, guid: a19db395a75f258488b26838e8ab8931, type: 3}
   - {fileID: 21300000, guid: 53cfb9b5fdaa0564a9be26e8de522925, type: 3}
-  - {fileID: 21300000, guid: edb33ec55bf663c42a2a1e0e0564aaff, type: 3}
   - {fileID: 21300000, guid: ac124736d509c41fe8bdcc2854824bf5, type: 3}
   - {fileID: 21300000, guid: d54a39a6514849440b14e75f3eb5d2f5, type: 3}
   - {fileID: 21300000, guid: 6d53d4e687d4e8e4cb959649f7fb404b, type: 3}
@@ -120,9 +113,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2aca8d28525ce404a8bedc0f77734ca1, type: 3}
   - {fileID: 21300000, guid: 78d9a548a7d8a4f419e84d50e2413fd2, type: 3}
   - {fileID: 21300000, guid: ea5288487ae848041998c78326af1199, type: 3}
-  - {fileID: 21300000, guid: 9410ac58692c69e4b802e1498b4111da, type: 3}
   - {fileID: 21300000, guid: 28e3cd58c7eda074bb68cdf6dac82ced, type: 3}
-  - {fileID: 21300000, guid: 4f4a0f88eb9ffb3489ba8699be69d659, type: 3}
   - {fileID: 21300000, guid: f5460ba8097ec024ab7ee0af9f1bbf07, type: 3}
   - {fileID: 21300000, guid: 7c062b096b2e35e43a938fbc76368343, type: 3}
   - {fileID: 21300000, guid: 7feb635966e5427478e9f557eb61bd78, type: 3}
@@ -134,17 +125,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0d3e1af96ca3843d9972666be74ec265, type: 3}
   - {fileID: 21300000, guid: 9ea8b56adf5cc4c4b80d82204a533911, type: 3}
   - {fileID: 21300000, guid: 5edef56a664c0894d9df8463afacccb9, type: 3}
-  - {fileID: 21300000, guid: 13b1a2bad920aca44a9e638c0c242b97, type: 3}
   - {fileID: 21300000, guid: 13169fba37c37d54c85ad8f05a00fd63, type: 3}
   - {fileID: 21300000, guid: 023df80b5ef91b74ea047106a8cd1bd8, type: 3}
-  - {fileID: 21300000, guid: d47ba63ba7c833c49ad94c90fbdd112e, type: 3}
   - {fileID: 21300000, guid: ceaa083be222e4f6ea4788c2360369a3, type: 3}
   - {fileID: 21300000, guid: db2a60abb37e4b945a3f06e17a741fc7, type: 3}
   - {fileID: 21300000, guid: 49eec8ab17d89c541838e86f5f7c0e7d, type: 3}
   - {fileID: 21300000, guid: 532e9abb2235740f2a9fb7bbb39078b1, type: 3}
   - {fileID: 21300000, guid: 94714debe393f5f45aeaecce70528dbe, type: 3}
   - {fileID: 21300000, guid: a011fefbf43c52f46b0f3922a8e2c037, type: 3}
-  - {fileID: 21300000, guid: 9593920c224679e4cadce43789e4aeb9, type: 3}
   - {fileID: 21300000, guid: 6ec7462c4b1d58e4db1baa4fa9481247, type: 3}
   - {fileID: 21300000, guid: 2ea6824c56e9f454c9a3ac5553587f47, type: 3}
   - {fileID: 21300000, guid: 02d2fb7c3ba63dd43b00d764978f1461, type: 3}
@@ -164,16 +152,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1a5570ee60b8ecb499dc569b7aedd03e, type: 3}
   - {fileID: 21300000, guid: 51d8b1eed90b4964480fe74958da4ae9, type: 3}
   - {fileID: 21300000, guid: e62b68fe05d786b42899b62cf895875e, type: 3}
-  - {fileID: 21300000, guid: 0d8eacfe8a6000740b405e342e8e4d9c, type: 3}
   - {fileID: 21300000, guid: a33afb1fd5ce40c489eb756a713ce1f3, type: 3}
   - {fileID: 21300000, guid: a873df1ff4634bc4295fa2538bc8b84f, type: 3}
   - {fileID: 21300000, guid: e056988feeb0f89498a397d182b4466d, type: 3}
   m_PackedSpriteNamesToIndex:
   - battleground_past_action_bar_icon_damage
   - heroability_life_healing_touch
-  - battleground_mechanic_icon_flash_large
-  - battleground_mechanic_icon_turn_large
-  - battleground_mechanic_icon_ragex_large
   - battleground_mechanic_icon_destroy_large
   - tab_toxic
   - heroability_fire_fire_bolt
@@ -185,23 +169,19 @@ SpriteAtlas:
   - battleground_mechanic_icon_turn_large
   - heroability_air_push
   - battleground_past_action_bar_icon_attack
-  - Icon_element_earth
+  - Icon_element_earth_noborder
   - battleground_mechanic_icon_swingx_large
-  - Icon_element_tool
-  - battleground_mechanic_icon_freeze_large
+  - Icon_element_tool_noborder
   - battleground_past_action_bar_icon_effect
   - battleground_mechanic_icon_shatter_large
-  - battleground_mechanic_icon_delayedx_large
-  - battleground_mechanic_icon_reanimate_large
   - battleground_rank_icon_minion_large
   - battleground_past_action_bar_icon_feral
   - battleground_past_action_bar_icon_attack_debuff
   - battleground_past_action_bar_icon_blitz
-  - Icon_element_air
+  - Icon_element_air_noborder
   - battleground_mechanic_icon_entry_large
   - battleground_mechanic_icon_distract_large
   - overlordability_water_ice_bolt
-  - battleground_mechanic_icon_death_large
   - tab_water
   - overlordability_silo_closed
   - heroability_silo_closed
@@ -214,31 +194,26 @@ SpriteAtlas:
   - heroability_water_freeze
   - heroability_water_ice_bolt
   - battleground_rank_icon_general_large
-  - battleground_mechanic_icon_shatter_large
   - battleground_past_action_bar_icon_attack_buff
-  - battleground_mechanic_icon_distract_large
   - battleground_past_action_bar_icon_heavy
   - battleground_rank_icon_commander_large
   - heroability_toxic_poison_dart
   - overlordability_fire_rabies
   - battleground_mechanic_icon_reanimate_large
   - battleground_mechanic_icon_delayedx_large
-  - icon_element_toxic
+  - icon_element_toxic_noborder
   - battleground_mechanic_icon_ragex_large
   - tab_earth
   - battleground_past_action_bar_icon_death_mark
   - overlordability_fire
-  - battleground_mechanic_icon_end_large
   - overlordability_toxic
   - battleground_mechanic_icon_death_large
-  - battleground_mechanic_icon_attack_large
   - tab_air
-  - icon_element_life
+  - icon_element_life_noborder
   - overlordability_water
   - tab_life
   - heroability_earth_stone_skin
   - battleground_mechanic_icon_heavy_large
-  - battleground_mechanic_icon_swingx_large
   - battleground_past_action_bar_icon_guard
   - overlordability_toxic_toxic_power
   - battleground_mechanic_icon_blank_large
@@ -247,18 +222,17 @@ SpriteAtlas:
   - overlordability_earth
   - overlordability_air_push
   - battleground_rank_icon_officer_large
-  - Icon_element_water
+  - Icon_element_water_noborder
   - heroability_life_mend
   - overlordability_earth_stone_skin
   - heroability_earth_harden
-  - Icon_element_fire
+  - Icon_element_fire_noborder
   - battleground_mechanic_icon_attack_large
   - overlordability_air_draw
   - heroability_fire_rabies
   - battleground_mechanic_icon_freeze_large
   - battleground_past_action_bar_icon_shield_debuff
   - battleground_mechanic_icon_overflowx_large
-  - battleground_mechanic_icon_destroy_large
   - heroability_locked
   - overlordability_life_mend
   - heroability_toxic_toxic_power
