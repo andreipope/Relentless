@@ -27,7 +27,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement || CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
+            if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
+                CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 PlayerCallerOfAbility.Goo += Value;
             }

@@ -38,11 +38,9 @@ public class GoogleAnalyticsMPV3 {
   private bool anonymizeIP;
   private bool dryRun;
   private bool optOut;
-  private int sessionTimeout;
   private string screenRes;
   private string clientId;
   private string url;
-  private float timeStarted;
   private Dictionary<Field, object> trackerValues = new Dictionary<Field, object>();
   private bool startSessionOnNextHit;
   private bool endSessionOnNextHit;
@@ -227,10 +225,8 @@ public class GoogleAnalyticsMPV3 {
     }
     foreach(KeyValuePair<int, float> entry in builder.GetCustomMetrics())
     {
-      if (entry.Value != null) {
         url += Fields.CUSTOM_METRIC.ToString() + entry.Key + "=" +
             WWW.EscapeURL(entry.Value.ToString());
-      }
     }
 
     if(!String.IsNullOrEmpty(url)){

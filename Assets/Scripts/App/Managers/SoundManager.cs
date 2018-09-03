@@ -95,17 +95,19 @@ namespace LoomNetwork.CZB
 
             AudioClip clip = soundTypeList.AudioTypeClips.Find(x => x.name.Contains(namePattern));
 
-            return clip != null?clip.length:0f;
+            return clip != null ? clip.length : 0f;
         }
 
         public float GetSoundLength(Enumerators.SoundType soundType)
         {
             SoundTypeList soundTypeList = _gameSounds.Find(x => x.SoundType == soundType);
 
-            return soundTypeList.AudioTypeClips.Count > 0?soundTypeList.AudioTypeClips[0].length:0f;
+            return soundTypeList.AudioTypeClips.Count > 0 ? soundTypeList.AudioTypeClips[0].length : 0f;
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+        public void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float volume = -1f,
+            Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
             foreach (SoundContainer item in _soundContainers)
             {
@@ -116,7 +118,9 @@ namespace LoomNetwork.CZB
             CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
+        public void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f,
+            Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
         {
             foreach (SoundContainer item in _soundContainers)
             {
@@ -124,21 +128,28 @@ namespace LoomNetwork.CZB
                     return;
             }
 
-            SoundContainer thisSoundContainer = CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
+            SoundContainer thisSoundContainer = CreateSound(soundType, volume, null, false, false, 0, clipTitle, false,
+                cardSoundType.ToString());
             FadeSound(thisSoundContainer, false, 0.005f, 0f, fadeOutAfterTime);
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false, bool isInQueue = false)
+        public void PlaySound(
+            Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false,
+            bool dropOldBackgroundMusic = false, bool isInQueue = false)
         {
             PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue);
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false, bool isInQueue = false)
+        public void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false,
+            bool isInQueue = false)
         {
             CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle, isInQueue);
         }
 
-        public void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false, bool isInQueue = false)
+        public void PlaySound(
+            Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false,
+            bool isInQueue = false)
         {
             CreateSound(soundType, volume, null, isLoop, false, clipIndex, isInQueue: isInQueue);
         }
@@ -290,14 +301,18 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void FadeSound(SoundContainer soundContainer, bool isIn = false, float volumeStep = 0, float targetVolume = 0, float targetTime = 0.1f)
+        private void FadeSound(
+            SoundContainer soundContainer, bool isIn = false, float volumeStep = 0, float targetVolume = 0,
+            float targetTime = 0.1f)
         {
             List<SoundContainer> list = new List<SoundContainer>();
             list.Add(soundContainer);
             FadeSound(list, isIn, volumeStep, targetVolume, targetTime);
         }
 
-        private void FadeSound(List<SoundContainer> soundcontainers, bool isIn = false, float volumeStep = 0.05f, float targetVolume = 1, float targetTime = 0.1f)
+        private void FadeSound(
+            List<SoundContainer> soundcontainers, bool isIn = false, float volumeStep = 0.05f, float targetVolume = 1,
+            float targetTime = 0.1f)
         {
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
@@ -310,7 +325,7 @@ namespace LoomNetwork.CZB
                             break;
                         }
 
-                        container.AudioSource.volume += volumeStep * (isIn?1:-1);
+                        container.AudioSource.volume += volumeStep * (isIn ? 1 : -1);
 
                         if (container.AudioSource.volume == 0 && !isIn)
                         {
@@ -345,7 +360,8 @@ namespace LoomNetwork.CZB
             bool isInQueue = false,
             string tag = "")
         {
-            return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue, tag);
+            return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue,
+                tag);
         }
 
         private SoundContainer DoSoundContainer(
@@ -433,7 +449,7 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < countOfTypes; i++)
             {
                 soundsList = new SoundTypeList();
-                soundsList.SoundType = (Enumerators.SoundType)i;
+                soundsList.SoundType = (Enumerators.SoundType) i;
                 soundsList.AudioTypeClips = LoadAudioClipsByType(soundsList.SoundType);
 
                 _gameSounds.Add(soundsList);
@@ -456,7 +472,8 @@ namespace LoomNetwork.CZB
                     list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
                     break;
                 default:
-                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString()).ToList();
+                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString())
+                        .ToList();
                     break;
             }
 
@@ -494,7 +511,9 @@ namespace LoomNetwork.CZB
 
         public string Tag;
 
-        public void Init(Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled, int soundIndex = 0)
+        public void Init(
+            Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled,
+            int soundIndex = 0)
         {
             ForceClose = false;
             CurrentSoundIndex = soundIndex;

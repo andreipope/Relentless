@@ -64,7 +64,8 @@ namespace LoomNetwork.CZB
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN || !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             Action();
@@ -95,17 +96,24 @@ namespace LoomNetwork.CZB
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.SUMMON_UNIT_CARD, new object[] { owner, unit }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                Enumerators.ActionType.SUMMON_UNIT_CARD, new object[]
+                {
+                    owner, unit
+                }));
         }
 
         private BoardUnit CreateBoardUnit(WorkingCard card, string cardSetName, Player owner)
         {
-            GameObject playerBoard = owner.IsLocalPlayer?BattlegroundController.PlayerBoardObject:BattlegroundController.OpponentBoardObject;
+            GameObject playerBoard = owner.IsLocalPlayer ?
+                BattlegroundController.PlayerBoardObject :
+                BattlegroundController.OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnit.Transform.parent = playerBoard.transform;
-            boardUnit.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer?-1.66f:1.66f);
+            boardUnit.Transform.position =
+                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnit.OwnerPlayer = owner;
             boardUnit.SetObjectInfo(card);
 

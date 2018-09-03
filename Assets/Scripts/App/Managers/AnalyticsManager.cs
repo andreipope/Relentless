@@ -45,8 +45,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
             eventAction,
             new Dictionary<string, object>
             {
-                { "label", eventLabel },
-                { "value", value }
+                {
+                    "label", eventLabel
+                },
+                {
+                    "value", value
+                }
             });
     }
 

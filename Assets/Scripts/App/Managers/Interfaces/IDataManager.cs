@@ -36,5 +36,9 @@ namespace LoomNetwork.CZB
         TooltipContentData.RankInfo GetRankInfoByType(string type);
 
         void DeleteData();
+
+        string DecryptData(string data);
+
+        string EncryptData(string data);
     }
 }

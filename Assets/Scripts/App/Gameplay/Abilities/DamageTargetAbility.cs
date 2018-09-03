@@ -48,25 +48,32 @@ namespace LoomNetwork.CZB
             }
         }
 
-        protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected override void CreateVfx(
+            Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetFireAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellTargetLifeAttack");
                     break;
                 case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
 
-            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER?TargetUnit.Transform.position:TargetPlayer.AvatarObject.transform.position;
+            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                TargetUnit.Transform.position :
+                TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
             VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitOwner.Transform.position);
@@ -82,7 +89,7 @@ namespace LoomNetwork.CZB
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {

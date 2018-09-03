@@ -97,7 +97,8 @@ public class HandBoardCard
         if (!Enabled)
             return;
 
-        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected && Enabled)
+        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
+            Enabled)
         {
             StartedDrag = true;
             InitialPos = Transform.position;

@@ -121,27 +121,38 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             private async void CardPlayedHandler(WorkingCard obj)
             {
-                await UploadActionLogModel(CreateBasicActionLogModel("CardPlayed").Add("Card", WorkingCardToSimpleRepresentation(obj)));
+                await
+                    UploadActionLogModel(CreateBasicActionLogModel("CardPlayed")
+                        .Add("Card", WorkingCardToSimpleRepresentation(obj)));
             }
 
             private async void BoardChangedHandler(int obj)
             {
-                await UploadActionLogModel(CreateBasicActionLogModel("BoardChanged").Add("CardsOnBoard", Player.CardsOnBoard.Select(WorkingCardToSimpleRepresentation).ToArray()));
+                await
+                    UploadActionLogModel(CreateBasicActionLogModel("BoardChanged")
+                        .Add("CardsOnBoard", Player.CardsOnBoard.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
             private async void GraveyardChangedHandler(int obj)
             {
-                await UploadActionLogModel(CreateBasicActionLogModel("GraveyardChanged").Add("CardsOnBoard", Player.CardsInGraveyard.Select(WorkingCardToSimpleRepresentation).ToArray()));
+                await
+                    UploadActionLogModel(CreateBasicActionLogModel("GraveyardChanged")
+                        .Add("CardsOnBoard",
+                            Player.CardsInGraveyard.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
             private async void HandChangedHandler(int obj)
             {
-                await UploadActionLogModel(CreateBasicActionLogModel("HandChanged").Add("CardsOnBoard", Player.CardsInHand.Select(WorkingCardToSimpleRepresentation).ToArray()));
+                await
+                    UploadActionLogModel(CreateBasicActionLogModel("HandChanged")
+                        .Add("CardsOnBoard", Player.CardsInHand.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
             private async void DeckChangedHandler(int obj)
             {
-                await UploadActionLogModel(CreateBasicActionLogModel("DeckChanged").Add("CardsOnBoard", Player.CardsInDeck.Select(WorkingCardToSimpleRepresentation).ToArray()));
+                await
+                    UploadActionLogModel(CreateBasicActionLogModel("DeckChanged")
+                        .Add("CardsOnBoard", Player.CardsInDeck.Select(WorkingCardToSimpleRepresentation).ToArray()));
             }
 
             private async void PlayerVialGooChangedHandler(int obj)
@@ -171,7 +182,11 @@ namespace LoomNetwork.CZB.BackendCommunication
 
             private ActionLogModel CreateBasicActionLogModel(string eventName)
             {
-                return new ActionLogModel().Add("UserId", _backendDataControlMediator.UserDataModel.UserId).Add("CurrentTurnPlayer", IsOpponent?"Opponent":"Player").Add("Event", eventName);
+                return
+                    new ActionLogModel()
+                        .Add("UserId", _backendDataControlMediator.UserDataModel.UserId)
+                        .Add("CurrentTurnPlayer", IsOpponent ? "Opponent" : "Player")
+                        .Add("Event", eventName);
             }
 
             private async Task UploadActionLogModel(ActionLogModel model)

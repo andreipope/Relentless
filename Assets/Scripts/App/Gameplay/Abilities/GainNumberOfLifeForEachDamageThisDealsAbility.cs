@@ -25,7 +25,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            int damageDeal = (int)info;
+            int damageDeal = (int) info;
 
             AbilityUnitOwner.BuffedHp += Value * damageDeal;
             AbilityUnitOwner.CurrentHp += Value * damageDeal;

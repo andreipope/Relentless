@@ -27,7 +27,8 @@ namespace LoomNetwork.CZB
             _usedSkill = GameAction.Parameters[1] as HeroSkill;
             _skillUsedOnPlayer = GameAction.Parameters[2] as Player;
 
-            PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.HeroElement + "_EXP");
+            PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                _callerPlayer.SelfHero.HeroElement + "_EXP");
 
             HealPictureObject.SetActive(true);
 

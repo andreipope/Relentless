@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
             uint[] abils = new uint[abilities.Count];
             for (int i = 0; i < abilities.Count; i++)
             {
-                abils[i] = (uint)abilities[i];
+                abils[i] = (uint) abilities[i];
             }
 
             return abils;
@@ -77,7 +77,7 @@ namespace LoomNetwork.CZB
             List<Enumerators.AbilityType> abils = new List<Enumerators.AbilityType>();
             for (int i = 0; i < abilities.Length; i++)
             {
-                abils[i] = (Enumerators.AbilityType)abilities[i];
+                abils[i] = (Enumerators.AbilityType) abilities[i];
             }
 
             return abils;
@@ -220,7 +220,9 @@ namespace LoomNetwork.CZB
         {
             bool available = false;
 
-            Player opponent = localPlayer.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            Player opponent = localPlayer.Equals(_gameplayManager.CurrentPlayer) ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
 
             lock (_lock)
             {
@@ -269,7 +271,8 @@ namespace LoomNetwork.CZB
 
             if (isAttackking)
             {
-                abilities = attackerCard.Abilities.FindAll(x => x.AbilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
+                abilities = attackerCard.Abilities.FindAll(x =>
+                    x.AbilityType == Enumerators.AbilityType.MODIFICATOR_STATS);
 
                 for (int i = 0; i < abilities.Count; i++)
                 {
@@ -280,7 +283,8 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            abilities = attackerCard.Abilities.FindAll(x => x.AbilityType == Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK);
+            abilities = attackerCard.Abilities.FindAll(x =>
+                x.AbilityType == Enumerators.AbilityType.ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK);
 
             for (int i = 0; i < abilities.Count; i++)
             {
@@ -300,24 +304,32 @@ namespace LoomNetwork.CZB
                 return false;
             }
 
-            Player opponent = workingCard.Owner.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            Player opponent = workingCard.Owner.Equals(_gameplayManager.CurrentPlayer) ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
             Player player = workingCard.Owner;
 
             foreach (Enumerators.AbilityTargetType target in ability.AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER_CARD: {
+                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    {
                         List<BoardUnit> units =
-                            player.BoardCards.FindAll(x => x.InitialUnitType == ability.TargetCardType && x.UnitStatus == ability.TargetUnitStatusType);
+                            player.BoardCards.FindAll(x =>
+                                x.InitialUnitType == ability.TargetCardType &&
+                                x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
                         break;
                     }
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD: {
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    {
                         List<BoardUnit> units =
-                            opponent.BoardCards.FindAll(x => x.InitialUnitType == ability.TargetCardType && x.UnitStatus == ability.TargetUnitStatusType);
+                            opponent.BoardCards.FindAll(x =>
+                                x.InitialUnitType == ability.TargetCardType &&
+                                x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
@@ -336,23 +348,29 @@ namespace LoomNetwork.CZB
                 return false;
             }
 
-            Player opponent = workingCard.Owner.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            Player opponent = workingCard.Owner.Equals(_gameplayManager.CurrentPlayer) ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
             Player player = workingCard.Owner;
 
             foreach (Enumerators.AbilityTargetType target in ability.AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER_CARD: {
-                        List<BoardUnit> units = player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    {
+                        List<BoardUnit> units =
+                            player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
 
                         break;
                     }
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD: {
-                        List<BoardUnit> units = opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    {
+                        List<BoardUnit> units =
+                            opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -391,7 +409,8 @@ namespace LoomNetwork.CZB
             foreach (AbilityData item in libraryCard.Abilities)
             {
                 // todo improve it bcoz can have queue of abilities with targets
-                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                activeAbility =
+                    CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
                 if (IsAbilityCanActivateTargetAtStart(item))
                 {
@@ -405,7 +424,6 @@ namespace LoomNetwork.CZB
 
             if (kind == Enumerators.CardKind.SPELL)
             {
-
             }
             else
             {
@@ -425,7 +443,10 @@ namespace LoomNetwork.CZB
             {
                 AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
 
-                if (ability.TargetCardType != Enumerators.CardType.NONE && !HasSpecialUnitOnBoard(workingCard, ability) || ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE && !HasSpecialUnitStatusOnBoard(workingCard, ability))
+                if (ability.TargetCardType != Enumerators.CardType.NONE &&
+                    !HasSpecialUnitOnBoard(workingCard, ability) ||
+                    ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE &&
+                    !HasSpecialUnitStatusOnBoard(workingCard, ability))
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
@@ -455,14 +476,22 @@ namespace LoomNetwork.CZB
                                     workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                     workingCard.Owner.AddCardToBoard(workingCard);
 
-                                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f);
+                                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
+                                    {
+                                        card
+                                    }, 0.5f);
 
                                     GameClient.Get<ITimerManager>().AddTimer(
                                         creat =>
                                         {
                                             workingCard.Owner.GraveyardCardsCount++;
 
-                                            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[] { workingCard.Owner, card }));
+                                            _actionsQueueController.PostGameActionReport(
+                                                _actionsQueueController.FormatGameActionReport(
+                                                    Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                                                    {
+                                                        workingCard.Owner, card
+                                                    }));
                                         },
                                         null,
                                         1.5f);
@@ -513,7 +542,8 @@ namespace LoomNetwork.CZB
 
                         activeAbility.Ability.SelectedTargetAction(true);
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
+                            .BoardCards);
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
                         onCompleteCallback?.Invoke();
@@ -540,21 +570,26 @@ namespace LoomNetwork.CZB
 
         public Player GetOpponentPlayer(AbilityBase ability)
         {
-            return ability.PlayerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer)?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            return ability.PlayerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
         {
-            ActiveAbility activeAbility = CreateActiveAbility(GetAbilityDataByType(ability), card.CardKind, target, owner, card, null);
+            ActiveAbility activeAbility =
+                CreateActiveAbility(GetAbilityDataByType(ability), card.CardKind, target, owner, card, null);
             activeAbility.Ability.Activate();
         }
 
         public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)
         {
-            List<AbilityData> handAbilities = card.LibraryCard.Abilities.FindAll(x => x.AbilityCallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+            List<AbilityData> handAbilities =
+                card.LibraryCard.Abilities.FindAll(x => x.AbilityCallType.Equals(Enumerators.AbilityCallType.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
-                CreateActiveAbility(ability, card.LibraryCard.CardKind, boardCard, card.Owner, card.LibraryCard, card).Ability.Activate();
+                CreateActiveAbility(ability, card.LibraryCard.CardKind, boardCard, card.Owner, card.LibraryCard, card)
+                    .Ability.Activate();
             }
         }
 
@@ -762,14 +797,21 @@ namespace LoomNetwork.CZB
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
 
-                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[] { card }, 0.5f);
+                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
+                    {
+                        card
+                    }, 0.5f);
 
                     GameClient.Get<ITimerManager>().AddTimer(
                         creat =>
                         {
                             card.WorkingCard.Owner.GraveyardCardsCount++;
 
-                            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.PLAY_SPELL_CARD, new object[] { card.WorkingCard.Owner, card }));
+                            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
+                                Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
+                                {
+                                    card.WorkingCard.Owner, card
+                                }));
                         },
                         null,
                         1.5f);

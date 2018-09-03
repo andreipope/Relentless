@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatAbility : AbilityBase
     {
-
         public Enumerators.StatType StatType { get; }
 
         public int Value { get; }

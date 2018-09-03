@@ -43,8 +43,6 @@ namespace LoomNetwork.CZB
 
         private Animator _logoAnimator;
 
-        private bool _logoShowed;
-
         private TextMeshProUGUI _connectionStatusText;
 
         private Button _buttonReconnect;
@@ -75,13 +73,15 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
             _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
-            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits").GetComponent<ButtonShiftingContent>();
+            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits")
+                .GetComponent<ButtonShiftingContent>();
             _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
@@ -92,7 +92,8 @@ namespace LoomNetwork.CZB
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
-            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText").GetComponent<TextMeshProUGUI>();
+            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText")
+                .GetComponent<TextMeshProUGUI>();
             _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
             _buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
             _markerOffline = _selfPage.transform.Find("ConnectionPanel/Marker_Status_Offline").gameObject;
@@ -113,7 +114,9 @@ namespace LoomNetwork.CZB
 
             _buttonArmy.Interactable = true;
 
-            _packsCount.text = _playerManager.LocalUser.PacksCount <= 99?_playerManager.LocalUser.PacksCount.ToString():"99";
+            _packsCount.text = _playerManager.LocalUser.PacksCount <= 99 ?
+                _playerManager.LocalUser.PacksCount.ToString() :
+                "99";
 
             _logoAnimator.SetBool("LogoShow", true);
 
@@ -125,19 +128,6 @@ namespace LoomNetwork.CZB
                 _uiManager.DrawPopup<TermsPopup>();
             }
 
-            /*if (_logoShowed && !_logoAnimator.GetBool("LogoShow"))
-                _logoAnimator.SetBool("LogoShow", true);
-
-            if (!_logoShowed)
-            {
-                GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.LOGO_APPEAR);
-                _logoShowed = true;
-            } */
-
-            /*if (LoomManager.Instance.Contract != null)
-            {
-                LoomManagerOnContractCreated(null, LoomManager.Instance.Contract);
-            }*/
             UpdateConnectionStateUI();
         }
 
@@ -171,7 +161,9 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
 
-            _connectionStatusText.text = _backendFacade.IsConnected?"<color=green>Online</color>":"<color=red>Offline</color>";
+            _connectionStatusText.text = _backendFacade.IsConnected ?
+                "<color=green>Online</color>" :
+                "<color=red>Offline</color>";
 
             _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
             _markerOffline.gameObject.SetActive(_buttonReconnect.gameObject.activeSelf);
@@ -270,7 +262,8 @@ namespace LoomNetwork.CZB
                     try
                     {
                         await _backendDataControlMediator.LoginAndLoadData();
-                    } catch (Exception)
+                    }
+                    catch (Exception)
                     {
                         // HACK: ignore to allow offline mode
                     }
@@ -292,10 +285,12 @@ namespace LoomNetwork.CZB
                 _uiManager.DrawPopup<ConnectionPopup>();
                 connectionPopup.ConnectFunc = connectFunc;
                 await connectionPopup.ExecuteConnection();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.LogException(e);
-                OpenAlertDialog($"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
+                OpenAlertDialog(
+                    $"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
             }
         }
 
@@ -319,5 +314,6 @@ namespace LoomNetwork.CZB
         }
 
         #endregion
+
     }
 }

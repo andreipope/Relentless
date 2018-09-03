@@ -5,7 +5,6 @@ namespace LoomNetwork.CZB
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-
         public int Health { get; }
 
         public int Damage { get; }

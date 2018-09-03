@@ -55,7 +55,8 @@ namespace LoomNetwork.CZB
             behaviour.PointerEntered += PointerEnteredHandler;
             behaviour.PointerExited += PointerExitedHandler;
 
-            PlayerAvatarPreviewPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
+            PlayerAvatarPreviewPrefab =
+                LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/PlayerAvatarPreview");
             AttackingHealthPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/AttackingHealth");
 
             CreatePreviewPanel();
@@ -84,11 +85,13 @@ namespace LoomNetwork.CZB
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
-                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
                     boardCard = new UnitBoardCard(currentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
                     boardCard = new SpellBoardCard(currentBoardCard);
                     break;
                 default:
@@ -109,9 +112,12 @@ namespace LoomNetwork.CZB
 
         public GameObject CreatePlayerPreview(Player player, Vector3 pos)
         {
-            GameObject avatar = Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
+            GameObject avatar =
+                Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
             SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            Sprite heroSprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement + "_EXP");
+            Sprite heroSprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                    player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
             TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             hpText.text = player.Health.ToString();
@@ -126,9 +132,12 @@ namespace LoomNetwork.CZB
         // todo improve
         public GameObject CreateSkillPreview(Player player)
         {
-            GameObject avatar = Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
+            GameObject avatar =
+                Object.Instantiate(PlayerAvatarPreviewPrefab, _reportActionPreviewPanel.transform, false);
             SpriteRenderer sprite = avatar.transform.Find("Hero").GetComponent<SpriteRenderer>();
-            Sprite heroSprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement + "_EXP");
+            Sprite heroSprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                    player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
             TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
             hpText.text = player.Health.ToString();
@@ -150,11 +159,13 @@ namespace LoomNetwork.CZB
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
-                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    currentBoardCard = Object.Instantiate(CardsController.CreatureCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
                     boardCard = new UnitBoardCard(currentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab, _reportActionPreviewPanel.transform, false);
+                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
+                        _reportActionPreviewPanel.transform, false);
                     boardCard = new SpellBoardCard(currentBoardCard);
                     break;
                 default:
@@ -182,7 +193,8 @@ namespace LoomNetwork.CZB
         private void CreatePreviewPanel()
         {
             _reportActionPreviewPanel =
-                Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));
+                Object.Instantiate(
+                    LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ContainerGameReportView"));
             _reportActionPreviewPanel.transform.position = new Vector3(-6, 1, 0);
             _reportActionPreviewPanel.SetActive(false);
 

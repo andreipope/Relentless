@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class StunOrDamageAdjustmentsAbility : AbilityBase
     {
-
         public Enumerators.StatType StatType { get; }
 
         public int Value { get; } = 1;

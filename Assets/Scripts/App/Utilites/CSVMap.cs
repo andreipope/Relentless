@@ -131,13 +131,14 @@ namespace LoomNetwork.CZB.Helpers
                             continue;
                         }
 
-                        FieldInfo templateInfo = (FieldInfo)_columnMap[columns[i]];
+                        FieldInfo templateInfo = (FieldInfo) _columnMap[columns[i]];
 
                         // Debug.Log("------- " + templateInfo);
                         // 	Debug.Log (templateInfo + " " + columns [i] + " " + columnMap.Count);
                         if (templateInfo == null)
                         {
-                            Debug.LogError("CSV Field Not Found In ClassTemplate: " + columns[i] + "  length: " + columns[i].ToString().Length + "  in " + _classTemplate);
+                            Debug.LogError("CSV Field Not Found In ClassTemplate: " + columns[i] + "  length: " +
+                                columns[i].ToString().Length + "  in " + _classTemplate);
                         }
 
                         Type colType = templateInfo.FieldType;
@@ -146,7 +147,8 @@ namespace LoomNetwork.CZB.Helpers
                         {
                             if (colType == typeof(Vector3))
                             {
-                                Vector3 useVector = new Vector3(float.Parse(c[i].Split(':')[0]), float.Parse(c[i].Split(':')[1]), float.Parse(c[i].Split(':')[2]));
+                                Vector3 useVector = new Vector3(float.Parse(c[i].Split(':')[0]),
+                                    float.Parse(c[i].Split(':')[1]), float.Parse(c[i].Split(':')[2]));
                                 templateInfo.SetValue(templated, useVector);
                             }
                             else if (colType == typeof(string[]))
@@ -181,7 +183,7 @@ namespace LoomNetwork.CZB.Helpers
         /// <param name="fileName">File name.</param>
         public ArrayList LoadCsvFromFile(string fileName)
         {
-            TextAsset textAsset = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
+            TextAsset textAsset = (TextAsset) Resources.Load(fileName, typeof(TextAsset));
 
             if (textAsset == null)
             {

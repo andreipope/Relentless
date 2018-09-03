@@ -72,7 +72,9 @@ namespace LoomNetwork.CZB
             if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep != 8 && _tutorialManager.CurrentStep != 17 && _tutorialManager.CurrentStep != 19 && _tutorialManager.CurrentStep != 27)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep != 8 &&
+                _tutorialManager.CurrentStep != 17 && _tutorialManager.CurrentStep != 19 &&
+                _tutorialManager.CurrentStep != 27)
                 return;
 
             _pointerEventSolver.Update();
@@ -108,8 +110,9 @@ namespace LoomNetwork.CZB
                     for (int i = 0; i < card.Amount; i++)
                     {
 #if DEV_MODE
-                        // playerDeck.Add("Whizpar");
-                        // playerDeck.Add("Nail Bomb");
+
+// playerDeck.Add("Whizpar");
+// playerDeck.Add("Nail Bomb");
 #endif
 
                         playerDeck.Add(card.CardName);
@@ -212,7 +215,8 @@ namespace LoomNetwork.CZB
                 bool hitBoardCard = false;
                 foreach (RaycastHit2D hit in hits)
                 {
-                    if (hit.collider != null && hit.collider.gameObject != null && _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject) != null)
+                    if (hit.collider != null && hit.collider.gameObject != null &&
+                        _battlegroundController.GetBoardCardFromHisObject(hit.collider.gameObject) != null)
                     {
                         hitCards.Add(hit.collider.gameObject);
                         hitHandCard = true;
@@ -237,10 +241,13 @@ namespace LoomNetwork.CZB
                     {
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
 
-                        BoardCard topmostBoardCard = _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
+                        BoardCard topmostBoardCard =
+                            _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
                         if (topmostBoardCard != null && !topmostBoardCard.IsPreview)
                         {
-                            float delta = Application.isMobilePlatform?Constants.PointerMinDragDelta * 2f:Constants.PointerMinDragDeltaMobile;
+                            float delta = Application.isMobilePlatform ?
+                                Constants.PointerMinDragDelta * 2f :
+                                Constants.PointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -256,10 +263,14 @@ namespace LoomNetwork.CZB
                         StopHandTimer();
 
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        BoardUnit selectedBoardUnit = _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
-                        if (selectedBoardUnit != null && (!_battlegroundController.IsPreviewActive || selectedBoardUnit.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
+                        BoardUnit selectedBoardUnit =
+                            _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
+                        if (selectedBoardUnit != null && (!_battlegroundController.IsPreviewActive ||
+                            selectedBoardUnit.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
                         {
-                            float delta = Application.isMobilePlatform?Constants.PointerMinDragDelta * 2f:Constants.PointerMinDragDeltaMobile;
+                            float delta = Application.isMobilePlatform ?
+                                Constants.PointerMinDragDelta * 2f :
+                                Constants.PointerMinDragDeltaMobile;
                             _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
@@ -348,12 +359,16 @@ namespace LoomNetwork.CZB
                     StopHandTimer();
                     _battlegroundController.DestroyCardPreview();
 
-                    if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
+                    if (_boardArrowController.CurrentBoardArrow != null &&
+                        _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
                     {
                     }
                     else
                     {
-                        HandCardPreview(new object[] { _topmostBoardCard });
+                        HandCardPreview(new object[]
+                        {
+                            _topmostBoardCard
+                        });
                     }
                 }
             }
@@ -364,12 +379,16 @@ namespace LoomNetwork.CZB
                     StopHandTimer();
                     _battlegroundController.DestroyCardPreview();
 
-                    if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
+                    if (_boardArrowController.CurrentBoardArrow != null &&
+                        _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
                     {
                     }
                     else
                     {
-                        HandCardPreview(new object[] { _selectedBoardUnit });
+                        HandCardPreview(new object[]
+                        {
+                            _selectedBoardUnit
+                        });
                     }
                 }
             }

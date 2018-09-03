@@ -24,7 +24,9 @@ namespace LoomNetwork.CZB
         public WalkerArrivalAnimation(Sprite sprite, Transform parent)
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
-            SelfObject = Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/WalkerArrivalAnimation"), parent);
+            SelfObject =
+                Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/WalkerArrivalAnimation"),
+                    parent);
             SelfObject.transform.localPosition = _offset;
             Picture = SelfObject.transform.Find("Picture").GetComponent<SpriteRenderer>();
             Picture.sprite = sprite;

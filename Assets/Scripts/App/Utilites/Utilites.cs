@@ -60,7 +60,7 @@ namespace LoomNetwork.Internal
 
         public static T CastStringTuEnum<T>(string data)
         {
-            return (T)Enum.Parse(typeof(T), data.ToUpper());
+            return (T) Enum.Parse(typeof(T), data.ToUpper());
         }
 
         public static List<T> CastList<T>(string data, char separator = '|')
@@ -92,7 +92,7 @@ namespace LoomNetwork.Internal
 
         public static byte[] GetByteArrFromString(string str)
         {
-            return string.IsNullOrEmpty(str)?null:Convert.FromBase64String(str);
+            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
         }
 
         public static T CreateFromJson<T>(string jsonString)
@@ -120,7 +120,7 @@ namespace LoomNetwork.Internal
         {
             DateTime localDateTime = DateTime.Now;
             DateTime universalDateTime = localDateTime.ToUniversalTime();
-            return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
+            return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
         }
 
         #region asset bundles and cache
@@ -315,7 +315,8 @@ namespace LoomNetwork.Internal
         [MenuItem("Utilites/AutoSaverScene/Init Auto Saving")]
         public static void Init()
         {
-            DebugLog("Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
+            DebugLog(
+                "Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
             _isStop = false;
             EditorCoroutine.Start(Save());
         }
@@ -447,7 +448,8 @@ namespace LoomNetwork.Internal
                         result = streamReader.ReadToEnd();
                     }
                 }
-            } catch (CryptographicException)
+            }
+            catch (CryptographicException)
             {
                 return null;
             }
@@ -458,12 +460,15 @@ namespace LoomNetwork.Internal
         private static byte[] Encrypt(byte[] key, string value)
         {
             SymmetricAlgorithm symmetricAlgorithm = Rijndael.Create();
-            ICryptoTransform cryptoTransform = symmetricAlgorithm.CreateEncryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16), new byte[16]);
+            ICryptoTransform cryptoTransform =
+                symmetricAlgorithm.CreateEncryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16),
+                    new byte[16]);
             byte[] result = null;
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                using (CryptoStream cryptoStream =
+                    new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
                 {
                     cryptoStream.Write(key, 0, key.Length);
                     cryptoStream.FlushFinalBlock();
@@ -481,12 +486,15 @@ namespace LoomNetwork.Internal
         private static CryptoStream InternalDecrypt(byte[] key, string value)
         {
             SymmetricAlgorithm symmetricAlgorithm = Rijndael.Create();
-            ICryptoTransform cryptoTransform = symmetricAlgorithm.CreateDecryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16), new byte[16]);
+            ICryptoTransform cryptoTransform =
+                symmetricAlgorithm.CreateDecryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16),
+                    new byte[16]);
 
             MemoryStream memoryStream = new MemoryStream(key);
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
         }
 
         #endregion cryptography
+
     }
 }

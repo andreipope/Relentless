@@ -8,9 +8,15 @@ namespace LoomNetwork.CZB
 {
     public class ShopPage : IUIElement
     {
-        private readonly float[] _costs = { 1.99f, 2.99f, 4.99f, 9.99f };
+        private readonly float[] _costs =
+        {
+            1.99f, 2.99f, 4.99f, 9.99f
+        };
 
-        private readonly int[] _amount = { 1, 2, 5, 10 };
+        private readonly int[] _amount =
+        {
+            1, 2, 5, 10
+        };
 
         private IUIManager _uiManager;
 
@@ -54,7 +60,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
@@ -84,9 +91,18 @@ namespace LoomNetwork.CZB
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
 
-            _packsObjects = new[] { _buttonItem1.gameObject, _buttonItem2.gameObject, _buttonItem3.gameObject, _buttonItem4.gameObject };
+            _packsObjects = new[]
+            {
+                _buttonItem1.gameObject, _buttonItem2.gameObject, _buttonItem3.gameObject, _buttonItem4.gameObject
+            };
 
-            _imageObjects = new[] { _buttonItem1.transform.Find("Image").GetComponent<Image>(), _buttonItem2.transform.Find("Image").GetComponent<Image>(), _buttonItem3.transform.Find("Image").GetComponent<Image>(), _buttonItem4.transform.Find("Image").GetComponent<Image>() };
+            _imageObjects = new[]
+            {
+                _buttonItem1.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem2.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem3.transform.Find("Image").GetComponent<Image>(),
+                _buttonItem4.transform.Find("Image").GetComponent<Image>()
+            };
 
             foreach (Image img in _imageObjects)
             {
@@ -136,25 +152,29 @@ namespace LoomNetwork.CZB
 
         public void OpenButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
         public void CollectionButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
         }
 
         private void BackButtonhandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().BackAppState();
         }
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_currentPackId >= _costs.Length || _currentPackId < 0)
             {
                 Debug.LogError("No pack chosen");
@@ -209,5 +229,6 @@ namespace LoomNetwork.CZB
         }
 
         #endregion
+
     }
 }

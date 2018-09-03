@@ -71,7 +71,7 @@ namespace LoomNetwork.CZB
         {
             Show();
 
-            _text.text = (string)data;
+            _text.text = (string) data;
         }
 
         public void Update()
@@ -82,7 +82,8 @@ namespace LoomNetwork.CZB
         {
             _dataManager.CachedUserLocalData.AgreedTerms = true;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
         }
 

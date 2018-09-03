@@ -48,7 +48,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _gotItButton = Self.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
@@ -61,7 +62,7 @@ namespace LoomNetwork.CZB
         {
             Show();
 
-            _text.text = (string)data;
+            _text.text = (string) data;
         }
 
         public void Update()
@@ -70,7 +71,8 @@ namespace LoomNetwork.CZB
 
         public void CloseButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
         }
     }

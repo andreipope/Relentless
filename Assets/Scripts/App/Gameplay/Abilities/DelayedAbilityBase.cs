@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class DelayedAbilityBase : AbilityBase
     {
-
         public int Delay { get; }
 
         private int _delayedTurnsLeft;

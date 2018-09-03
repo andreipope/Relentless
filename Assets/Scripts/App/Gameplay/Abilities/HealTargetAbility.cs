@@ -9,7 +9,6 @@ namespace LoomNetwork.CZB
 {
     public class HealTargetAbility : AbilityBase
     {
-
         public int Value { get; }
 
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -37,7 +36,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {
@@ -65,7 +64,9 @@ namespace LoomNetwork.CZB
             target = Utilites.CastVfxPosition(target);
             if (AbilityEffectType == Enumerators.AbilityEffectType.HEAL)
             {
-                Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+                Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
+                    AbilityUnitOwner.Transform.position :
+                    SelectedPlayer.Transform.position;
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
 
                 CreateVfx(startPosition);

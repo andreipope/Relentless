@@ -52,22 +52,26 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouLosePopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouLosePopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
+            _selectHeroSpriteRenderer =
+                Self.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
 
             _buttonOk = Self.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SfxSoundVolume, false,
+                false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             int heroId = GameClient.Get<IDataManager>().CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.HeroesParsed[heroId];
             string heroName = currentPlayerHero.Element.ToLower();
-            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
+            _selectHeroSpriteRenderer.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
         }
 
         public void Show(object data)
@@ -81,7 +85,8 @@ namespace LoomNetwork.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 

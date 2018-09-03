@@ -27,7 +27,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.BoardCards.Count == 0 || PlayerCallerOfAbility.BoardCards.Count == 1 && PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitOwner))
+            if (PlayerCallerOfAbility.BoardCards.Count == 0 || PlayerCallerOfAbility.BoardCards.Count == 1 &&
+                PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitOwner))
             {
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;

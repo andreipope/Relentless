@@ -43,7 +43,8 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
         }
 

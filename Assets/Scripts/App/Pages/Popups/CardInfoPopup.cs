@@ -26,8 +26,6 @@ namespace LoomNetwork.CZB
 
         private ButtonShiftingContent _buttonMelt;
 
-        private TextMeshProUGUI _buttonText;
-
         private Card _card;
 
         public GameObject Self { get; private set; }
@@ -58,7 +56,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _buttonMelt = Self.transform.Find("MeltArea/Button_Melt").GetComponent<ButtonShiftingContent>();
@@ -71,7 +70,8 @@ namespace LoomNetwork.CZB
             _description = Self.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
             _amountAward = Self.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
         }
 
         public void Show(object data)
@@ -81,7 +81,7 @@ namespace LoomNetwork.CZB
             _card = data as Card;
             _description.text = _card.FlavorText;
 
-            _amountAward.text = (5 * ((int)_card.CardRank + 1)).ToString();
+            _amountAward.text = (5 * ((int) _card.CardRank + 1)).ToString();
 
             CardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.Name);
             UpdateCardAmount();
@@ -109,12 +109,14 @@ namespace LoomNetwork.CZB
                 return;
 
             Hide();
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
+                Constants.SfxSoundVolume, false, false, true);
         }
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             int amount = CardData.Amount;
 
             if (!_disableMelt)
@@ -123,7 +125,6 @@ namespace LoomNetwork.CZB
                 {
                     _buttonMelt.GetComponent<MenuButtonNoGlow>().Interactable = false;
                 }
-
                 else
                 {
                     Hide();
@@ -132,7 +133,8 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                _uiManager.DrawPopup<WarningPopup>($"Melting is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}.\n Thanks for helping us make this game Awesome\n-Loom Team");
+                _uiManager.DrawPopup<WarningPopup>(
+                    $"Melting is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}.\n Thanks for helping us make this game Awesome\n-Loom Team");
             }
         }
     }

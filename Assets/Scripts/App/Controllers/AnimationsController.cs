@@ -57,11 +57,13 @@ namespace LoomNetwork.CZB
 
             if (isCreatureAttacker)
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.6f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f,
+                    0.6f);
             }
             else
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f,
+                    0.7f);
             }
 
             if (isCreatureAttacker)
@@ -69,22 +71,25 @@ namespace LoomNetwork.CZB
                 Transform shieldObject = source.transform.Find("Other/Shield");
                 Vector3 originalShieldPosition = shieldObject.transform.position;
 
-                Vector3 partWayShield = Vector3.Lerp(originalShieldPosition + Vector3.forward * 5f, target.transform.position + Vector3.forward * 5f, 0.6f);
+                Vector3 partWayShield = Vector3.Lerp(originalShieldPosition + Vector3.forward * 5f,
+                    target.transform.position + Vector3.forward * 5f, 0.6f);
 
                 shieldObject.transform.DOMove(partWayShield, 0.1f).SetEase(Ease.InSine).OnComplete(
                     () =>
                     {
-                        shieldObject.transform.DOMove(originalShieldPosition, duration).SetEase(Ease.OutSine).OnComplete(
-                            () =>
-                            {
-                            });
+                        shieldObject.transform.DOMove(originalShieldPosition, duration).SetEase(Ease.OutSine)
+                            .OnComplete(
+                                () =>
+                                {
+                                });
                     });
             }
 
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
-                    DOTween.Sequence().Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f)).Append(target.GetComponent<Image>().DOColor(Color.white, 0.25f)).Play();
+                    DOTween.Sequence().Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f))
+                        .Append(target.GetComponent<Image>().DOColor(Color.white, 0.25f)).Play();
 
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
 

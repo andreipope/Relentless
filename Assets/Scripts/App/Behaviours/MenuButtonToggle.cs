@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+public class MenuButtonToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler,
+    IPointerUpHandler
 {
     public bool IsToggleEnabled;
 

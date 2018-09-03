@@ -28,7 +28,8 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            List<WorkingCard> units = GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+            List<WorkingCard> units =
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
             {

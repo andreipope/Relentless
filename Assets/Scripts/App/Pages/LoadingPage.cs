@@ -56,7 +56,8 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
 
-            if (!_selfPage.activeInHierarchy || GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
+            if (!_selfPage.activeInHierarchy ||
+                GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
             if (!_isLoaded)
@@ -80,7 +81,8 @@ namespace LoomNetwork.CZB
 
                 _pressAnyText.gameObject.SetActive(false);
 
-                if (_backendDataControlMediator.LoadUserDataModel() && _backendDataControlMediator.UserDataModel.IsValid)
+                if (_backendDataControlMediator.LoadUserDataModel() &&
+                    _backendDataControlMediator.UserDataModel.IsValid)
                 {
                     ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 
@@ -90,12 +92,14 @@ namespace LoomNetwork.CZB
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
-                        } catch (GameVersionMismatchException e)
+                        }
+                        catch (GameVersionMismatchException e)
                         {
                             success = false;
                             _uiManager.DrawPopup<LoginPopup>();
                             _uiManager.GetPopup<LoginPopup>().Show(e);
-                        } catch (Exception e)
+                        }
+                        catch (Exception e)
                         {
                             // HACK: ignore to allow offline mode
                             Debug.LogWarning(e);
@@ -121,9 +125,11 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume,
+                false, false, true);
 
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _progressBar = _selfPage.transform.Find("ProgresBar");
@@ -179,7 +185,8 @@ namespace LoomNetwork.CZB
 
         public async void OnLoginButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             string usernameText = _usernameInputField.text;
 
             // Perform some basic validation of the user input locally prior to calling the
@@ -204,12 +211,12 @@ namespace LoomNetwork.CZB
 
         private void UpdateLocalization()
         {
-
         }
 
         private async void OnSignupButtonPressed()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             string usernameText = _usernameInputField.text;
             if (string.IsNullOrEmpty(usernameText))
             {
@@ -227,7 +234,8 @@ namespace LoomNetwork.CZB
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 await dataManager.StartLoadCache();
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 OpenAlertDialog("Not Able to Create Account..");
             }

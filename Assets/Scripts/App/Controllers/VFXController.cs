@@ -57,11 +57,13 @@ namespace LoomNetwork.CZB
 
             switch (type)
             {
-                case Enumerators.CardType.FERAL: {
+                case Enumerators.CardType.FERAL:
+                {
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
                     effect.transform.position = target - offset;
-                    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume, false, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
+                        false, false, true);
 
                     _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -94,7 +96,8 @@ namespace LoomNetwork.CZB
 
                     break;
                 }
-                case Enumerators.CardType.HEAVY: {
+                case Enumerators.CardType.HEAVY:
+                {
                     Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
                     string prefabName = "Prefabs/VFX/HeavyAttackVFX";
                     if (damage > 4)
@@ -112,7 +115,8 @@ namespace LoomNetwork.CZB
                     _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
                     break;
                 }
-                default: {
+                default:
+                {
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
                     effect.transform.position = target - offset;
@@ -133,11 +137,13 @@ namespace LoomNetwork.CZB
                             null,
                             0.5f);
 
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2, Constants.CreatureAttackSoundVolume, false, false, true);
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2,
+                            Constants.CreatureAttackSoundVolume, false, false, true);
                     }
                     else
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1, Constants.CreatureAttackSoundVolume, false, false, true);
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1,
+                            Constants.CreatureAttackSoundVolume, false, false, true);
                     }
 
                     break;
@@ -164,7 +170,8 @@ namespace LoomNetwork.CZB
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
                 case Enumerators.SetType.EARTH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
                     break;
                 case Enumerators.SetType.AIR:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
@@ -212,16 +219,17 @@ namespace LoomNetwork.CZB
             switch (target)
             {
                 case Player player:
-                    particleSystem.transform.DOMove(Utilites.CastVfxPosition(player.AvatarObject.transform.position), .5f).OnComplete(
-                        () =>
-                        {
-                            callbackComplete(target);
-
-                            if (particleSystem != null)
+                    particleSystem.transform
+                        .DOMove(Utilites.CastVfxPosition(player.AvatarObject.transform.position), .5f).OnComplete(
+                            () =>
                             {
-                                Object.Destroy(particleSystem);
-                            }
-                        });
+                                callbackComplete(target);
+
+                                if (particleSystem != null)
+                                {
+                                    Object.Destroy(particleSystem);
+                                }
+                            });
                     break;
                 case BoardUnit unit:
                     particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
@@ -252,7 +260,9 @@ namespace LoomNetwork.CZB
                     break;
             }
 
-            GameObject effect = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));
+            GameObject effect =
+                Object.Instantiate(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Item_GotDamageEffect"));
             effect.transform.Find("Text_Info").GetComponent<TextMeshPro>().text = count.ToString();
             effect.transform.SetParent(target, false);
             effect.transform.localPosition = Vector3.zero;

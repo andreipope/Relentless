@@ -14,10 +14,10 @@ class AutomaticInstantiator
 {
 	static AutomaticInstantiator()
 	{
-		EditorApplication.playmodeStateChanged += PlaymodeStateChanged;
+		EditorApplication.playModeStateChanged += PlaymodeStateChanged;
 	}
 
-	private static void PlaymodeStateChanged()
+	private static void PlaymodeStateChanged(PlayModeStateChange playModeStateChange)
 	{
 		if (EditorApplication.isPlaying)
 		{

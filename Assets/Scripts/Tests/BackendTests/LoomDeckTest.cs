@@ -164,7 +164,10 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck { Name = "Default" };
+                Deck deck = new Deck
+                {
+                    Name = "Default"
+                };
                 await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
             });
     }

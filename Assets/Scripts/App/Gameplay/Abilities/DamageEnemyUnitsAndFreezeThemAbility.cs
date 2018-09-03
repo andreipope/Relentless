@@ -5,7 +5,6 @@ namespace LoomNetwork.CZB
 {
     public class DamageEnemyUnitsAndFreezeThemAbility : AbilityBase
     {
-
         public int Value { get; }
 
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -28,7 +27,9 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
 
             foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {

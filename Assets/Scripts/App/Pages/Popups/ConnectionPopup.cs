@@ -55,7 +55,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _failedGroup = Self.transform.Find("Failed_Group");
@@ -88,7 +89,8 @@ namespace LoomNetwork.CZB
                 {
                     SetUIState(ConnectionState.Connecting);
                     await task;
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MAIN_MENU)
                     {
@@ -112,7 +114,7 @@ namespace LoomNetwork.CZB
             await ExecuteConnection();
         }
 
-        private async void PressedCloseHandler()
+        private void PressedCloseHandler()
         {
             Hide();
         }

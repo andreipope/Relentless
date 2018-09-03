@@ -62,7 +62,9 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void AddTimer(Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false, bool storeTimer = false)
+        public void AddTimer(
+            Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false,
+            bool storeTimer = false)
         {
             Timer timer = new Timer(handler, parameters, time, loop);
             timer.Index = _timersCount++;
@@ -139,7 +141,8 @@ namespace LoomNetwork.CZB
                 try
                 {
                     Handler(Parameters);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Debug.LogError(ex.Message + " : " + ex.StackTrace);
                 }

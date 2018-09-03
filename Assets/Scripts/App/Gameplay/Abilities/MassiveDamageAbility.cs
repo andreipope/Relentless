@@ -42,9 +42,10 @@ namespace LoomNetwork.CZB
             Action();
         }
 
-        protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected override void CreateVfx(
+            Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
-            int playerPos = PlayerCallerOfAbility.IsLocalPlayer?1:-1;
+            int playerPos = PlayerCallerOfAbility.IsLocalPlayer ? 1 : -1;
 
             switch (AbilityEffectType)
             {
@@ -52,7 +53,8 @@ namespace LoomNetwork.CZB
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
                     break;
                 case Enumerators.AbilityEffectType.MASSIVE_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellMassiveFireVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellMassiveFireVFX");
                     break;
                 case Enumerators.AbilityEffectType.MASSIVE_LIGHTNING:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/LightningVFX");
@@ -73,9 +75,11 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
-            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
             foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {
                 switch (target)

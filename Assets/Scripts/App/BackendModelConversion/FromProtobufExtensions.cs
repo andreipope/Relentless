@@ -10,14 +10,17 @@ namespace LoomNetwork.CZB.Data
         {
             return new CollectionCardData
             {
-                Amount = (int)cardCollection.Amount,
+                Amount = (int) cardCollection.Amount,
                 CardName = cardCollection.CardName
             };
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
         {
-            return new CollectionData { Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList() };
+            return new CollectionData
+            {
+                Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
+            };
         }
 
         public static FloatVector3 FromProtobuf(this Coordinates coordinates)
@@ -69,7 +72,7 @@ namespace LoomNetwork.CZB.Data
         {
             return new Card
             {
-                Id = (int)card.Id,
+                Id = (int) card.Id,
                 Kind = card.Kind,
                 Name = card.Name,
                 Cost = card.Cost,
@@ -88,14 +91,17 @@ namespace LoomNetwork.CZB.Data
 
         public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
         {
-            return new CardsLibraryData { Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList() };
+            return new CardsLibraryData
+            {
+                Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList()
+            };
         }
 
         public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
         {
             return new CardSet
             {
-                Name = !string.IsNullOrEmpty(cardSet.Name)?cardSet.Name:"none",
+                Name = !string.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
                 Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }

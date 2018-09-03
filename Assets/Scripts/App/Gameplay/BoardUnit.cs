@@ -108,10 +108,6 @@ namespace LoomNetwork.CZB
 
         private BattleBoardArrow _fightTargetingArrow;
 
-        private AnimationEventTriggering _arrivalAnimationEventHandler;
-
-        private Animator _unitAnimator;
-
         private bool _dead;
 
         private bool _arrivalDone;
@@ -135,10 +131,12 @@ namespace LoomNetwork.CZB
             _cardsController = _gameplayManager.GetController<CardsController>();
             _inputController = _gameplayManager.GetController<InputController>();
 
-            GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
+            GameObject =
+                Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             GameObject.transform.SetParent(parent, false);
 
-            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _pictureSprite = GameObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
@@ -228,7 +226,7 @@ namespace LoomNetwork.CZB
 
         public int InstanceId { get; private set; }
 
-        public bool IsStun => _stunTurns > 0?true:false;
+        public bool IsStun => _stunTurns > 0 ? true : false;
 
         public bool IsCreatedThisTurn { get; private set; }
 
@@ -400,10 +398,12 @@ namespace LoomNetwork.CZB
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this, Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this,
+                        Card.LibraryCard, OwnerPlayer);
                     break;
                 case Enumerators.BuffType.DESTROY:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK, this, Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        this, Card.LibraryCard, OwnerPlayer);
                     break;
             }
 
@@ -517,17 +517,24 @@ namespace LoomNetwork.CZB
             {
                 if (Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1", Constants.ZombiesSoundVolume, false, true);
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2", Constants.ZombiesSoundVolume / 2f, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1",
+                        Constants.ZombiesSoundVolume, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2",
+                        Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+                        false, true);
                 }
 
                 if (Card.LibraryCard.Name.Equals("Freezzee"))
                 {
-                    List<BoardUnit> freezzees = GetEnemyUnitsList(this).FindAll(x => x.Card.LibraryCard.Id == Card.LibraryCard.Id);
+                    List<BoardUnit> freezzees = GetEnemyUnitsList(this)
+                        .FindAll(x => x.Card.LibraryCard.Id == Card.LibraryCard.Id);
 
                     if (freezzees.Count > 0)
                     {
@@ -557,14 +564,16 @@ namespace LoomNetwork.CZB
             // hack for top zombies
             if (!OwnerPlayer.IsLocalPlayer)
             {
-                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x, _sleepingParticles.transform.localPosition.y, 3f);
+                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x,
+                    _sleepingParticles.transform.localPosition.y, 3f);
             }
 
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
             string rank = Card.LibraryCard.CardRank.ToString().ToLower();
             string picture = Card.LibraryCard.Picture.ToLower();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+            string fullPathToPicture =
+                string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -581,12 +590,14 @@ namespace LoomNetwork.CZB
 
                 Debug.LogError(data);
 
-                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.LibraryCard.Name + "_PICTURE_ERROR.txt";
+                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.LibraryCard.Name +
+                    "_PICTURE_ERROR.txt";
                 File.WriteAllText(pathToLogFolder, data);
                 Process.Start(pathToLogFolder);
             }
 
-            _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Position);
+            _pictureSprite.transform.localPosition =
+                MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Position);
             _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Scale);
 
             if (Card.Type == Enumerators.CardType.WALKER)
@@ -631,7 +642,8 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer(
                         x =>
                         {
-                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
+                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
                         },
                         null,
                         .55f);
@@ -642,14 +654,15 @@ namespace LoomNetwork.CZB
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?2.9f:1.7f);
+                        OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
                     break;
                 case Enumerators.CardType.HEAVY:
                     _timerManager.AddTimer(
                         x =>
                         {
-                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
+                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
                         });
 
                     _timerManager.AddTimer(
@@ -658,7 +671,7 @@ namespace LoomNetwork.CZB
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?2.7f:1.7f);
+                        OwnerPlayer.IsLocalPlayer ? 2.7f : 1.7f);
                     HasHeavy = true;
                     break;
                 case Enumerators.CardType.WALKER:
@@ -666,7 +679,8 @@ namespace LoomNetwork.CZB
                     _timerManager.AddTimer(
                         x =>
                         {
-                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume, false, false, true);
+                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
                         },
                         null,
                         .6f);
@@ -676,7 +690,7 @@ namespace LoomNetwork.CZB
                             ArrivalAnimationEventHandler();
                         },
                         null,
-                        OwnerPlayer.IsLocalPlayer?1.3f:0.3f);
+                        OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
 
                     break;
             }
@@ -686,9 +700,11 @@ namespace LoomNetwork.CZB
 
         public void PlayArrivalAnimation()
         {
-            GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival");
+            GameObject arrivalPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
-            Transform spriteContainerTransform = _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            Transform spriteContainerTransform =
+                _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;
             scale.x *= -1;
             spriteContainerTransform.transform.localScale = scale;
@@ -835,7 +851,8 @@ namespace LoomNetwork.CZB
                                 () =>
                                 {
                                     Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx, CurrentDamage);
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx,
+                                        CurrentDamage);
 
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
                                 },
@@ -872,7 +889,8 @@ namespace LoomNetwork.CZB
                                 0.5f,
                                 () =>
                                 {
-                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, targetCard.Transform.position, CurrentDamage);
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType,
+                                        targetCard.Transform.position, CurrentDamage);
 
                                     _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
@@ -942,7 +960,8 @@ namespace LoomNetwork.CZB
                 {
                     _timerManager.AddTimer(CheckIsCanDie, null, Time.deltaTime, true);
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
             }
@@ -979,14 +998,15 @@ namespace LoomNetwork.CZB
                     ArrivalAnimationEventHandler();
                 },
                 null,
-                OwnerPlayer.IsLocalPlayer?playerTime:opponentTime);
+                OwnerPlayer.IsLocalPlayer ? playerTime : opponentTime);
 
             _readyForBuffs = true;
         }
 
         private void CreateFrozenVfx(Vector3 pos)
         {
-            GameObject frozenVfx = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
+            GameObject frozenVfx =
+                Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
             frozenVfx.transform.position = Utilites.CastVfxPosition(pos + Vector3.forward);
             DestroyCurrentParticle(frozenVfx);
         }
@@ -995,11 +1015,17 @@ namespace LoomNetwork.CZB
         {
             if (isDirectly)
             {
-                DestroyParticle(new object[] { currentParticle });
+                DestroyParticle(new object[]
+                {
+                    currentParticle
+                });
             }
             else
             {
-                _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time);
+                _timerManager.AddTimer(DestroyParticle, new object[]
+                {
+                    currentParticle
+                }, time);
             }
         }
 
@@ -1130,7 +1156,9 @@ namespace LoomNetwork.CZB
                 }
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
-                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume, false, true);
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                    Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    false, true);
             }
         }
 

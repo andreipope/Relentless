@@ -47,7 +47,7 @@ namespace LoomNetwork.CZB
 
         private readonly Animator _avatarAnimator;
 
-        private readonly Animator _deathAnimamtor;
+        private readonly Animator _deathAnimator;
 
         private readonly FadeTool _gooBarFadeTool;
 
@@ -62,14 +62,6 @@ namespace LoomNetwork.CZB
         private bool _isDead;
 
         private int _turnsLeftToFreeFromStun;
-
-        private List<WorkingCard> _cardsInDeck;
-
-        private List<WorkingCard> _cardsInGraveyard;
-
-        private List<WorkingCard> _cardsInHand;
-
-        private List<WorkingCard> _cardsInBoard;
 
         public Player(GameObject playerObject, bool isOpponent)
         {
@@ -99,7 +91,8 @@ namespace LoomNetwork.CZB
             {
                 if (!_gameplayManager.IsTutorial)
                 {
-                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
+                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
+                        .HeroId;
                 }
                 else
                 {
@@ -108,7 +101,8 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
+                heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId)
+                    .HeroId;
             }
 
             SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
@@ -125,14 +119,14 @@ namespace LoomNetwork.CZB
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
-            _deathAnimamtor = _overlordDeathObject.GetComponent<Animator>();
+            _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
             _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
             _avatarAnimator.enabled = false;
-            _deathAnimamtor.enabled = false;
-            _deathAnimamtor.StopPlayback();
+            _deathAnimator.enabled = false;
+            _deathAnimator.StopPlayback();
 
             PlayerHpChanged += PlayerHpChangedHandler;
 
@@ -315,11 +309,13 @@ namespace LoomNetwork.CZB
 
             if (IsLocalPlayer)
             {
-                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this,
+                    _cardsController.GetBoardCard(card));
             }
             else
             {
-                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this, _cardsController.GetOpponentBoardCard(card));
+                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this,
+                    _cardsController.GetOpponentBoardCard(card));
             }
 
             HandChanged?.Invoke(CardsInHand.Count);
@@ -431,7 +427,8 @@ namespace LoomNetwork.CZB
         {
             if (IsLocalPlayer)
             {
-                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution()); // CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+                _cardsController.AddCardToDistributionState(this,
+                    GetCardThatNotInDistribution()); // CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
             }
             else
             {
@@ -447,10 +444,10 @@ namespace LoomNetwork.CZB
             _overlordDeathObject.SetActive(true);
 
             _avatarAnimator.enabled = true;
-            _deathAnimamtor.enabled = true;
+            _deathAnimator.enabled = true;
             _avatarHeroHighlight.SetActive(false);
             _avatarAnimator.Play(0);
-            _deathAnimamtor.Play(0);
+            _deathAnimator.Play(0);
 
             _skillsController.DisableSkillsContent(this);
 
@@ -509,5 +506,6 @@ namespace LoomNetwork.CZB
         }
 
         #endregion
+
     }
 }

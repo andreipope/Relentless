@@ -6,7 +6,8 @@ namespace LoomNetwork.CZB
 {
     public static class TightImageSpriteMeshDataProvider
     {
-        private static readonly Dictionary<Sprite, SpriteMeshData> SpriteMeshDataMap = new Dictionary<Sprite, SpriteMeshData>();
+        private static readonly Dictionary<Sprite, SpriteMeshData> SpriteMeshDataMap =
+            new Dictionary<Sprite, SpriteMeshData>();
 
         public static SpriteMeshData GetSpriteMeshData(Sprite sprite)
         {

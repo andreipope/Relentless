@@ -21,9 +21,9 @@ namespace LoomNetwork.CZB
             base.SetInfo();
 
             _attackingCreature = GameAction.Parameters[0] as BoardUnit;
-            _attackingDamage = (int)GameAction.Parameters[1];
+            _attackingDamage = (int) GameAction.Parameters[1];
             _attackedCreature = GameAction.Parameters[2] as BoardUnit;
-            _attackedDamage = (int)GameAction.Parameters[3];
+            _attackedDamage = (int) GameAction.Parameters[3];
 
             PreviewImage.sprite = _attackingCreature.Sprite;
             _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
@@ -41,7 +41,8 @@ namespace LoomNetwork.CZB
             {
                 GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
                 attackViewCreature.SetActive(true);
-                TextMeshPro damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
+                TextMeshPro damageTextCreature =
+                    attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
                 damageTextCreature.text = (-_attackedDamage).ToString();
                 attackViewCreature.transform.localPosition = -Vector3.up * 3;
             }

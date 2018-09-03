@@ -52,7 +52,9 @@ namespace LoomNetwork.CZB.Data
                 {
                     foreach (Card card in set.Cards)
                     {
-                        card.CardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.Name.ToUpper()); // todo improve this shit!
+                        card.CardSetType =
+                            (Enumerators.SetType) Enum.Parse(typeof(Enumerators.SetType),
+                                set.Name.ToUpper()); // todo improve this shit!
 
                         if (card.Kind != null)
                         {
@@ -91,11 +93,11 @@ namespace LoomNetwork.CZB.Data
 
         public void SortCardsByRank()
         {
-            _allCards = _allCards?.OrderBy(x => (int)x.CardRank).ToList();
+            _allCards = _allCards?.OrderBy(x => (int) x.CardRank).ToList();
 
             foreach (CardSet set in Sets)
             {
-                set.Cards = set.Cards.OrderBy(x => (int)x.CardRank).ToList();
+                set.Cards = set.Cards.OrderBy(x => (int) x.CardRank).ToList();
             }
         }
     }

@@ -146,19 +146,23 @@ namespace LoomNetwork.CZB
                 DestroyCardPreview();
             }
 
-            cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x, cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
+            cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x,
+                cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
 
             _timerManager.AddTimer(
                 x =>
                 {
                     cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
 
-                    string cardDeathSoundName = cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
+                    string cardDeathSoundName =
+                        cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
                     if (!cardToDestroy.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName, Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume, Enumerators.CardSoundType.DEATH);
+                        _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName,
+                            Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume,
+                            Enumerators.CardSoundType.DEATH);
                         soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
                     }
 
@@ -255,7 +259,9 @@ namespace LoomNetwork.CZB
 
             if (!_gameplayManager.IsTutorial)
             {
-                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ?
+                    _gameplayManager.OpponentPlayer :
+                    _gameplayManager.CurrentPlayer;
                 _cardsController.AddCardToHand(player);
             }
         }
@@ -267,15 +273,6 @@ namespace LoomNetwork.CZB
             ClearBattleground();
         }
 
-        /* private void RunTurnAsync(object[] param)
-         {
-             EndTurn();
-
-             if (!gameFinished)
-                 StartTurn();
-             else
-                 _timerManager.StopTimer(RunTurnAsync);
-         } */
         public void StartTurn()
         {
             if (_gameplayManager.IsGameEnded)
@@ -376,7 +373,9 @@ namespace LoomNetwork.CZB
             _gameplayManager.CurrentPlayer.InvokeTurnEnded();
             _gameplayManager.OpponentPlayer.InvokeTurnEnded();
 
-            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 
@@ -395,7 +394,8 @@ namespace LoomNetwork.CZB
             if (boardCard == null)
                 return;
 
-            boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
+            boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
+                boardCard.Transform.localPosition.y, -0.2f);
 
             PlayerBoardCards.Remove(boardCard);
             PlayerGraveyardCards.Add(boardCard);
@@ -415,7 +415,8 @@ namespace LoomNetwork.CZB
             {
                 if (boardCard.Transform != null)
                 {
-                    boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x, boardCard.Transform.localPosition.y, -0.2f);
+                    boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
+                        boardCard.Transform.localPosition.y, -0.2f);
                 }
 
                 OpponentBoardCards.Remove(boardCard);
@@ -433,7 +434,8 @@ namespace LoomNetwork.CZB
             else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
-                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName =
+                    Constants.LayerBoardCards;
                 Object.Destroy(_aiController.CurrentSpellCard.GameObject.GetComponent<BoxCollider2D>());
                 Sequence sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
@@ -715,7 +717,8 @@ namespace LoomNetwork.CZB
                 float nudge = Mathf.Abs(twist);
 
                 nudge *= scalingFactor;
-                moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge, (PlayerHandCards.Count - i) * 0.1f);
+                moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge,
+                    (PlayerHandCards.Count - i) * 0.1f);
 
                 if (isMove)
                 {

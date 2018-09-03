@@ -101,7 +101,8 @@ public class DragableObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         RectTransform rt = _mDraggingIcon.GetComponent<RectTransform>();
         Vector3 globalMousePos;
-        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_mDraggingPlane, data.position, data.pressEventCamera, out globalMousePos))
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_mDraggingPlane, data.position,
+            data.pressEventCamera, out globalMousePos))
         {
             rt.position = globalMousePos;
             rt.rotation = _mDraggingPlane.rotation;

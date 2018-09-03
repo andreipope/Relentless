@@ -34,14 +34,15 @@ namespace LoomNetwork.CZB
 
         public void Show(object data)
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityTooltipPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityTooltipPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _abilityIconImage = Self.transform.Find("AbilityIcon/Image").GetComponent<Image>();
             _abilityNameText = Self.transform.Find("AbilityName").GetComponent<TextMeshProUGUI>();
             _abilityDescriptionText = Self.transform.Find("AbilityDescription").GetComponent<TextMeshProUGUI>();
 
-            HeroSkill skill = (HeroSkill)data;
+            HeroSkill skill = (HeroSkill) data;
 
             _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.IconPath);
             _abilityNameText.text = skill.Title;

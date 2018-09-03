@@ -63,7 +63,8 @@ namespace LoomNetwork.CZB
 
         private void LevelLoadedHandler(object param)
         {
-            CurrentAppStateScene = (Enumerators.AppState)Enum.Parse(typeof(Enumerators.AppState), SceneManager.GetActiveScene().name);
+            CurrentAppStateScene =
+                (Enumerators.AppState) Enum.Parse(typeof(Enumerators.AppState), SceneManager.GetActiveScene().name);
             _isLoadingStarted = false;
             IsLoadedScene = true;
             SceneLoadingProgress = 0;

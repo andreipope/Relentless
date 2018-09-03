@@ -70,13 +70,6 @@ namespace LoomNetwork.CZB.Common
 
         internal const int TutorialPlayerHeroId = 4;
 
-        internal const bool DataEncryptionEnabled =
-#if !UNITY_EDITOR
-            true;
-#else
-            false;
-#endif
-
         internal const uint HeroesAmount = 9;
 
         internal const uint DeckMaxSize = 30;

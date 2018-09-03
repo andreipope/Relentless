@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
-    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler,
+        IBeginDragHandler, IEndDragHandler
     {
         public event Action<GameObject> MouseUpTriggered;
 

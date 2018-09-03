@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
-
         public int Health { get; }
 
         public int Damage { get; }
@@ -56,7 +55,6 @@ namespace LoomNetwork.CZB
                 }
             }
         }
-
 
         protected override void TurnEndedHandler()
         {

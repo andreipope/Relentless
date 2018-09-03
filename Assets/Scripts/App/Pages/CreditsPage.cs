@@ -37,8 +37,10 @@ namespace LoomNetwork.CZB
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
-            _creditListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
-            _creditSubsectionListItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
+            _creditListItemPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
+            _creditSubsectionListItemPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditSubSectionListItem");
         }
 
         public void Update()
@@ -51,14 +53,16 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CreditsPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _creditsListScroll = _selfPage.transform.Find("Panel_CreditsList").GetComponent<ScrollRect>();
             _panelCreditsList = _selfPage.transform.Find("Panel_CreditsList/Group");
 
             _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks").GetComponent<ButtonShiftingContent>();
+            _buttonThanks = _selfPage.transform.Find("Panel_CreditsList/Group/ButtonSpace/Button_Thanks")
+                .GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
             _buttonThanks.onClick.AddListener(BackButtonOnClickHandler);
@@ -91,7 +95,8 @@ namespace LoomNetwork.CZB
             {
                 if (i > 0)
                 {
-                    new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList, _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
+                    new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList,
+                        _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
                 }
 
                 for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Credits.Count; j++)
@@ -102,7 +107,7 @@ namespace LoomNetwork.CZB
                             _panelCreditsList,
                             _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName,
                             _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post
-                            );
+                        );
                     _credits.Add(credit);
                 }
             }
@@ -112,7 +117,8 @@ namespace LoomNetwork.CZB
 
         private void BackButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
     }

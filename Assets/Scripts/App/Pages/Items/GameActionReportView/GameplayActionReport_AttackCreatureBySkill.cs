@@ -16,7 +16,8 @@ namespace LoomNetwork.CZB
 
         private GameObject _attackedCreatureObj, _attackingPlayerObj;
 
-        public GameplayActionReportAttackCreatureBySkill(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportAttackCreatureBySkill(
+            GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -27,10 +28,11 @@ namespace LoomNetwork.CZB
 
             _callerPlayer = GameAction.Parameters[0] as Player;
             _usedSkill = GameAction.Parameters[1] as HeroSkill;
-            _skillValue = (int)GameAction.Parameters[2];
+            _skillValue = (int) GameAction.Parameters[2];
             _skillUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
 
-            PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + _callerPlayer.SelfHero.HeroElement + "_EXP");
+            PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                _callerPlayer.SelfHero.HeroElement + "_EXP");
 
             AttackingPictureObject.SetActive(true);
 

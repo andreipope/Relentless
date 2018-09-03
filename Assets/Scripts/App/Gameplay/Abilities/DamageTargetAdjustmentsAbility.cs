@@ -29,7 +29,8 @@ namespace LoomNetwork.CZB
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
         }
@@ -64,19 +65,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
-
-            /*if (targetIndex == -1)
-                for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
-                {
-                    if (playerCallerOfAbility.BoardCards[i] == creature)
-                    {
-                        targetIndex = i;
-                        list = playerCallerOfAbility.BoardCards;
-                        break;
-                    }
-                }
-                */
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -115,7 +104,7 @@ namespace LoomNetwork.CZB
         {
             base.InputEndedHandler();
 
-            object caller = AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             if (IsAbilityResolved)
             {
@@ -147,7 +136,9 @@ namespace LoomNetwork.CZB
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
-            Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE?AbilityUnitOwner.Transform.position:SelectedPlayer.Transform.position;
+            Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
+                AbilityUnitOwner.Transform.position :
+                SelectedPlayer.Transform.position;
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 GameObject particleMain = Object.Instantiate(VfxObject);
@@ -159,12 +150,14 @@ namespace LoomNetwork.CZB
                         if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                         {
                             DestroyParticle(particleMain, true);
-                            GameObject prefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                            GameObject prefab =
+                                LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                             GameObject particle = Object.Instantiate(prefab);
                             particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
                             ParticlesController.RegisterParticleSystem(particle, true);
 
-                            SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb", Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                            SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb",
+                                Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
                         }
                         else if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
                         {
@@ -187,11 +180,17 @@ namespace LoomNetwork.CZB
         {
             if (isDirectly)
             {
-                DestroyParticle(new object[] { particleObj });
+                DestroyParticle(new object[]
+                {
+                    particleObj
+                });
             }
             else
             {
-                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[] { particleObj }, time);
+                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, new object[]
+                {
+                    particleObj
+                }, time);
             }
         }
 

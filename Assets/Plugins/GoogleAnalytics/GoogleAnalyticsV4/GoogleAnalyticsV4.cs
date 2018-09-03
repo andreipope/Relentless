@@ -119,7 +119,7 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
     }
 
     if (UncaughtExceptionReporting) {
-#if UNITY_5 || UNITY_2017
+#if UNITY_5 || UNITY_2017_1_OR_NEWER
       Application.logMessageReceived += HandleException;
 #else
       Application.RegisterLogCallback (HandleException);
@@ -158,7 +158,7 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
       if(string.IsNullOrEmpty(bundleIdentifier)) {
 #if UNITY_5
         bundleIdentifier = Application.bundleIdentifier;
-#elif UNITY_2017
+#elif UNITY_2017_1_OR_NEWER
         bundleIdentifier = Application.identifier;
 #endif
       }

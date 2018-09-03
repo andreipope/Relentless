@@ -24,7 +24,9 @@ namespace LoomNetwork.CZB
         /// <param name="onInputUp">On input up.</param>
         /// <param name="onInputDown">On input down.</param>
         /// <param name="onInput">On input.</param>
-        public int RegisterInputHandler(Enumerators.InputType type, int inputCode, Action onInputUp = null, Action onInputDown = null, Action onInput = null)
+        public int RegisterInputHandler(
+            Enumerators.InputType type, int inputCode, Action onInputUp = null, Action onInputDown = null,
+            Action onInput = null)
         {
             lock (_sync)
             {
@@ -113,17 +115,17 @@ namespace LoomNetwork.CZB
                         break;
                     case Enumerators.InputType.KEYBOARD:
                     {
-                        if (Input.GetKey((KeyCode)item.Code))
+                        if (Input.GetKey((KeyCode) item.Code))
                         {
                             item.InvokeInputCallback();
                         }
 
-                        if (Input.GetKeyUp((KeyCode)item.Code))
+                        if (Input.GetKeyUp((KeyCode) item.Code))
                         {
                             item.InvokeInputUpCallback();
                         }
 
-                        if (Input.GetKeyDown((KeyCode)item.Code))
+                        if (Input.GetKeyDown((KeyCode) item.Code))
                         {
                             item.InvokeInputDownCallback();
                         }

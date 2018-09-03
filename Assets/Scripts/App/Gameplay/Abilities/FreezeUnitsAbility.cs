@@ -30,7 +30,9 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
 
             foreach (BoardUnit unit in opponent.BoardCards)
             {

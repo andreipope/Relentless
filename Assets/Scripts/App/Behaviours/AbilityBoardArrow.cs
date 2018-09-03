@@ -48,7 +48,8 @@ namespace LoomNetwork.CZB
             {
                 if (TargetUnitType == Enumerators.CardType.NONE || unit.InitialUnitType == TargetUnitType)
                 {
-                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE || unit.UnitStatus == TargetUnitStatusType)
+                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
+                        unit.UnitStatus == TargetUnitStatusType)
                     {
                         if (SelfBoardCreature != unit)
                         {
@@ -83,7 +84,11 @@ namespace LoomNetwork.CZB
             if (player.Health <= 0)
                 return;
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(SRTags.PlayerOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(SRTags.OpponentOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
+                player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
+                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) &&
+                player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
+                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);
@@ -117,9 +122,12 @@ namespace LoomNetwork.CZB
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    _onMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1, OnRightMouseButtonUpHandler);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler);
+                    _onMouseDownInputIndex =
+                        _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
+                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1,
+                        OnRightMouseButtonUpHandler);
+                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                        (int) KeyCode.Escape, null, OnRightMouseButtonUpHandler);
                 },
                 null,
                 Time.fixedDeltaTime);

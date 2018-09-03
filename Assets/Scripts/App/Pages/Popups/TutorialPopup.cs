@@ -16,8 +16,6 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI _text;
 
-        private GameObject _yesnoObject;
-
         private ButtonShiftingContent _nextButton, _playButton, _skipButton;
 
         private GameObject _focusedObject;
@@ -69,7 +67,8 @@ namespace LoomNetwork.CZB
                 Hide();
             }
 
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialPopup"));
 
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
@@ -113,7 +112,7 @@ namespace LoomNetwork.CZB
                 GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f);
             }
 
-            _text.text = (string)data;
+            _text.text = (string) data;
         }
 
         public void Update()
@@ -122,7 +121,7 @@ namespace LoomNetwork.CZB
 
         public void UpdatePose(Enumerators.TutorialJanePoses pose)
         {
-            _janeImage.sprite = _janePoses[(int)pose];
+            _janeImage.sprite = _janePoses[(int) pose];
         }
 
         public void ShowBubble(object[] param)

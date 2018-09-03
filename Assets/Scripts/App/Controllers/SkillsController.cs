@@ -78,26 +78,33 @@ namespace LoomNetwork.CZB
             rootPage.PlayerSecondarySkillHandler.MouseDownTriggered += SecondarySkillHandlerMouseDownTriggeredHandler;
             rootPage.PlayerSecondarySkillHandler.MouseUpTriggered += SecondarySkillHandlerMouseUpTriggeredHandler;
 
-            rootPage.OpponentPrimarySkillHandler.MouseDownTriggered += OpponentPrimarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.OpponentPrimarySkillHandler.MouseDownTriggered +=
+                OpponentPrimarySkillHandlerMouseDownTriggeredHandler;
             rootPage.OpponentPrimarySkillHandler.MouseUpTriggered += OpponentPrimarySkillHandlerMouseUpTriggeredHandler;
 
-            rootPage.OpponentSecondarySkillHandler.MouseDownTriggered += OpponentSecondarySkillHandlerMouseDownTriggeredHandler;
-            rootPage.OpponentSecondarySkillHandler.MouseUpTriggered += OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
+            rootPage.OpponentSecondarySkillHandler.MouseDownTriggered +=
+                OpponentSecondarySkillHandlerMouseDownTriggeredHandler;
+            rootPage.OpponentSecondarySkillHandler.MouseUpTriggered +=
+                OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
-            if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count && secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
+            if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
+                secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
-                SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.Skills[primary], _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
+                SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.Skills[primary],
+                    _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
             }
 
             primary = _gameplayManager.OpponentPlayer.SelfHero.PrimarySkill;
             secondary = _gameplayManager.OpponentPlayer.SelfHero.SecondarySkill;
 
-            if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count && secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
+            if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count &&
+                secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
             {
-                SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.Skills[primary], _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
+                SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.Skills[primary],
+                    _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
             }
 
             _skillsInitialized = true;
@@ -133,14 +140,18 @@ namespace LoomNetwork.CZB
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _playerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, primary, true);
-            _playerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject, _gameplayManager.CurrentPlayer, secondary, false);
+            _playerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
+                _gameplayManager.CurrentPlayer, primary, true);
+            _playerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
+                _gameplayManager.CurrentPlayer, secondary, false);
         }
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            OpponentPrimarySkill = new BoardSkill(rootPage.OpponentPrimarySkillHandler.gameObject, _gameplayManager.OpponentPlayer, primary, true);
-            OpponentSecondarySkill = new BoardSkill(rootPage.OpponentSecondarySkillHandler.gameObject, _gameplayManager.OpponentPlayer, secondary, false);
+            OpponentPrimarySkill = new BoardSkill(rootPage.OpponentPrimarySkillHandler.gameObject,
+                _gameplayManager.OpponentPlayer, primary, true);
+            OpponentSecondarySkill = new BoardSkill(rootPage.OpponentSecondarySkillHandler.gameObject,
+                _gameplayManager.OpponentPlayer, secondary, false);
         }
 
         public void DoSkillAction(BoardSkill skill, object target = null)
@@ -335,19 +346,33 @@ namespace LoomNetwork.CZB
                 case BoardUnit unit:
                     unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
-                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
+                    _vfxController.CreateVfx(
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
 
-                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.Title.Trim().ToLower().ToLower(), Constants.OverlordAbilitySoundVolume,
+                        Enumerators.CardSoundType.NONE);
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[] { owner, unit }));
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
+                        Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
+                        {
+                            owner, unit
+                        }));
                     break;
                 case Player player:
                     player.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
-                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
-                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _vfxController.CreateVfx(
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
+                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.Title.Trim().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume,
+                        Enumerators.CardSoundType.NONE);
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[] { owner, player }));
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
+                        Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
+                        {
+                            owner, player
+                        }));
                     break;
             }
         }
@@ -355,15 +380,19 @@ namespace LoomNetwork.CZB
         private void PoisonDartAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _vfxController.CreateVfx(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact",
+                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
         }
 
         private void FireBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), target);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"),
+                target);
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
         }
 
         private void HealingTouchAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -374,8 +403,10 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealPlayerBySkill(owner, skill, player);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
             else
             {
@@ -383,8 +414,10 @@ namespace LoomNetwork.CZB
 
                 _battleController.HealUnitBySkill(owner, skill, unit);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
         }
 
@@ -397,7 +430,8 @@ namespace LoomNetwork.CZB
             transform.position = owner.AvatarObject.transform.position;
             transform.position -= Vector3.up * 3.3f;
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
+                transform);
         }
 
         private void AttackWithModifiers(
@@ -434,9 +468,11 @@ namespace LoomNetwork.CZB
 
             Vector3 unitPosition = targetUnit.Transform.position;
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), targetUnit);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"),
+                targetUnit);
 
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
             _timerManager.AddTimer(
                 x =>
@@ -457,7 +493,11 @@ namespace LoomNetwork.CZB
                     // STEP 4 - REARRANGE HANDS
                     _gameplayManager.RearrangeHands();
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[] { owner, skill, targetUnit }));
+                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
+                        Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
+                        {
+                            owner, skill, targetUnit
+                        }));
 
                     // _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
                 },
@@ -469,10 +509,16 @@ namespace LoomNetwork.CZB
         {
             _cardsController.AddCardToHand(owner);
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"), owner);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"),
+                owner);
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.DRAW_CARD_SKILL, new object[] { owner, skill }));
+            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
+                Enumerators.ActionType.DRAW_CARD_SKILL, new object[]
+                {
+                    owner, skill
+                }));
         }
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -489,8 +535,10 @@ namespace LoomNetwork.CZB
                 transform.position = unit.Transform.position;
                 transform.position -= Vector3.up * 3.3f;
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
         }
 
@@ -502,8 +550,10 @@ namespace LoomNetwork.CZB
 
                 unit.SetAsFeralUnit();
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
         }
 
@@ -518,7 +568,8 @@ namespace LoomNetwork.CZB
                 unit.BuffedDamage += skill.Attack;
                 unit.CurrentDamage += skill.Attack;
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
             }
         }
 
@@ -535,8 +586,10 @@ namespace LoomNetwork.CZB
                     unit.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"), unit);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
         }
 
@@ -548,10 +601,13 @@ namespace LoomNetwork.CZB
             Transform transform = new GameObject().transform;
             transform.position = owner.AvatarObject.transform.position;
             transform.position += Vector3.up * 2;
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(), Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"),
+                transform);
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
         }
 
         #endregion
+
     }
 }

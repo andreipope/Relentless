@@ -43,7 +43,7 @@ namespace LoomNetwork.CZB
         private void UpdateBox()
         {
             // determine the game window's current aspect ratio
-            float windowAspect = Screen.width / (float)Screen.height;
+            float windowAspect = Screen.width / (float) Screen.height;
 
             // current viewport height should be scaled by this amount
             float scaleHeight = windowAspect / _targetAspectRatio;

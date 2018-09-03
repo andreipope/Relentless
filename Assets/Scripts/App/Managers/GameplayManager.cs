@@ -28,9 +28,11 @@ namespace LoomNetwork.CZB
 
         public event Action<Enumerators.EndGameType> GameEnded;
 
+#pragma warning disable 67
         public event Action TurnStarted;
 
         public event Action TurnEnded;
+#pragma warning restore 67
 
         public int PlayerDeckId { get; set; }
 
@@ -55,7 +57,7 @@ namespace LoomNetwork.CZB
         public T GetController<T>()
             where T : IController
         {
-            return (T)_controllers.Find(x => x is T);
+            return (T) _controllers.Find(x => x is T);
         }
 
         public void RearrangeHands()
@@ -235,7 +237,10 @@ namespace LoomNetwork.CZB
 
             if (!IsTutorial)
             {
-                _uiManager.DrawPopup<PlayerOrderPopup>(new object[] { CurrentPlayer.SelfHero, OpponentPlayer.SelfHero });
+                _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                {
+                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                });
             }
             else
             {

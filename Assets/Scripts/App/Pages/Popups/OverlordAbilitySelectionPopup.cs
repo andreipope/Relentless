@@ -23,8 +23,6 @@ namespace LoomNetwork.CZB
 
         private Button _continueButton;
 
-        private Button _buyButton;
-
         private Button _cancelButton;
 
         private GameObject _abilitiesGroup;
@@ -75,7 +73,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _continueButton = Self.transform.Find("Button_Continue").GetComponent<Button>();
@@ -106,7 +105,7 @@ namespace LoomNetwork.CZB
         {
             Show();
 
-            FillInfo((Hero)data);
+            FillInfo((Hero) data);
             _abilities[0].IsSelected = true;
             AbilityInstanceOnSelectionChanged(_abilities[0]);
         }
@@ -117,7 +116,8 @@ namespace LoomNetwork.CZB
 
         public void ContinueButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             PopupHiding?.Invoke();
 
@@ -126,13 +126,15 @@ namespace LoomNetwork.CZB
 
         public void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
         private void FillInfo(Hero heroData)
         {
-            _heroImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
+            _heroImage.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
             _heroImage.SetNativeSize();
 
             for (int i = 0; i < AbilityListSize; i++)
@@ -179,7 +181,10 @@ namespace LoomNetwork.CZB
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
                 _parentGameObject = root;
-                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"), root, false);
+                SelfObject =
+                    Object.Instantiate(
+                        _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"), root, false);
 
                 _abilityToggle = SelfObject.GetComponent<Toggle>();
                 _abilityToggle.group = root.GetComponent<ToggleGroup>();
@@ -207,7 +212,7 @@ namespace LoomNetwork.CZB
             public bool AllowMultiSelect
             {
                 get => _allowMultiSelect;
-                set => _abilityToggle.group = value?null:_parentGameObject.GetComponent<ToggleGroup>();
+                set => _abilityToggle.group = value ? null : _parentGameObject.GetComponent<ToggleGroup>();
             }
 
             public HeroSkill Skill
@@ -243,11 +248,13 @@ namespace LoomNetwork.CZB
                 _abilityToggle.interactable = Skill != null;
                 if (Skill != null)
                 {
-                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
+                    _abilityIconImage.sprite =
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
                 }
                 else
                 {
-                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
+                    _abilityIconImage.sprite =
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
                 }
             }
         }

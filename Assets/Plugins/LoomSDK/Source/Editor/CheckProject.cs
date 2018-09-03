@@ -1,19 +1,20 @@
-﻿#if !NET_4_6
+#if !NET_4_6
     #error Loom SDK requires .NET 4.6. Please go to Build Settings -> Player Settings -> Configuration and set Scripting Runtime Version to .NET 4.6
 #endif
 
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 
 namespace Loom.Client.Unity.Editor.Internal
 {
-    internal class CheckProject : IPreprocessBuild
+    internal class CheckProject : IPreprocessBuildWithReport
     {
         public int callbackOrder { get; }
 
-        public void OnPreprocessBuild(BuildTarget target, string path)
+        public void OnPreprocessBuild(BuildReport report)
         {
-            if (target == BuildTarget.WebGL)
+            if (report.summary.platform == BuildTarget.WebGL)
             {
                 CheckWebGLTemplate();
                 CheckWebGLPrebuiltEngine();

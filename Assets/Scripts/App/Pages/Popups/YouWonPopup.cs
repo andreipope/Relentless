@@ -21,8 +21,6 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private GameObject _winTutorialPackObject, _winPackObject;
-
         private Button _buttonOk;
 
         private TextMeshProUGUI _message;
@@ -68,19 +66,24 @@ namespace LoomNetwork.CZB
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero").GetComponent<SpriteRenderer>();
+            _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero")
+                .GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
             _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
-            _experienceBar = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar").GetComponent<Image>();
-            _currentLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel").GetComponent<TextMeshProUGUI>();
-            _nextLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/NextLevel").GetComponent<TextMeshProUGUI>();
+            _experienceBar = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar")
+                .GetComponent<Image>();
+            _currentLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel")
+                .GetComponent<TextMeshProUGUI>();
+            _nextLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/NextLevel")
+                .GetComponent<TextMeshProUGUI>();
 
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false,
+                false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
             Self.SetActive(true);
 
@@ -90,21 +93,23 @@ namespace LoomNetwork.CZB
             int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
             Hero currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
             string heroName = currentPlayerHero.Element.ToLower();
-            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
+            _selectHeroSpriteRenderer.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
             heroName = Utilites.FirstCharToUpper(heroName);
 
             // TODO : instead of 1000, should be a value accordint to Level
             // TODO : instead of 400, should be how much player experinece on wining game
             _currentLevel.text = currentPlayerHero.Level.ToString();
             _nextLevel.text = (currentPlayerHero.Level + 1).ToString();
-            float currentExperiencePercentage = (float)currentPlayerHero.Experience / 1000;
+            float currentExperiencePercentage = (float) currentPlayerHero.Experience / 1000;
             _experienceBar.fillAmount = currentExperiencePercentage;
             GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 400);
-            float updatedExperiencePercetage = (float)currentPlayerHero.Experience / 1000;
+            float updatedExperiencePercetage = (float) currentPlayerHero.Experience / 1000;
 
             if (updatedExperiencePercetage < currentExperiencePercentage)
             {
-                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage, currentPlayerHero.Level));
+                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage,
+                    currentPlayerHero.Level));
             }
             else
             {
@@ -158,7 +163,8 @@ namespace LoomNetwork.CZB
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 

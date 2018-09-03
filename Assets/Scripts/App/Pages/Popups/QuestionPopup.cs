@@ -19,8 +19,6 @@ namespace LoomNetwork.CZB
 
         private ButtonShiftingContent _buttonYes, _buttonNo;
 
-        private TextMeshProUGUI _buttonText;
-
         public event Action<bool> ConfirmationReceived;
 
         public GameObject Self { get; private set; }
@@ -71,14 +69,14 @@ namespace LoomNetwork.CZB
 
             if (data is object[])
             {
-                object[] param = (object[])data;
-                _text.text = (string)param[0];
-                _backButton.gameObject.SetActive((bool)param[1]);
+                object[] param = (object[]) data;
+                _text.text = (string) param[0];
+                _backButton.gameObject.SetActive((bool) param[1]);
             }
             else
             {
                 _backButton.gameObject.SetActive(false);
-                _text.text = (string)data;
+                _text.text = (string) data;
             }
         }
 
@@ -88,7 +86,8 @@ namespace LoomNetwork.CZB
 
         private void ConfirmationButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             ConfirmationReceived?.Invoke(true);
 

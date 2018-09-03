@@ -46,7 +46,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConfirmationPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _cancelButton = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
@@ -61,7 +62,7 @@ namespace LoomNetwork.CZB
         public void Show(object data)
         {
             Show();
-            _callback = (Action)data;
+            _callback = (Action) data;
         }
 
         public void Update()
@@ -70,7 +71,8 @@ namespace LoomNetwork.CZB
 
         private void ConfirmButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _callback?.Invoke();
             _callback = null;
             Hide();
@@ -78,7 +80,8 @@ namespace LoomNetwork.CZB
 
         private void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
         }
     }

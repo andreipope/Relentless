@@ -6,10 +6,6 @@ namespace LoomNetwork.CZB
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
-        private const bool DisableShop = true;
-
-        private const bool DisablePacks = true;
-
         private const float BackButtonResetDelay = 0.5f;
 
         private IUIManager _uiManager;
@@ -21,8 +17,6 @@ namespace LoomNetwork.CZB
         private bool _isBackButtonCounting;
 
         private Enumerators.AppState _previousState;
-
-        private Enumerators.AppState _previousState2;
 
         public bool IsAppPaused { get; private set; }
 
@@ -38,7 +32,8 @@ namespace LoomNetwork.CZB
                 case Enumerators.AppState.APP_INIT:
                 {
                     _uiManager.SetPage<LoadingPage>();
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128,
+                        Constants.BackgroundSoundVolume, null, true);
                 }
 
                     break;
@@ -60,29 +55,16 @@ namespace LoomNetwork.CZB
                     _uiManager.SetPage<DeckEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
-                    if (!DisableShop)
-                    {
-                        _uiManager.SetPage<ShopPage>();
-                    }
-                    else
-                    {
-                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                        return;
-                    }
 
+                    //_uiManager.SetPage<ShopPage>();
+                    _uiManager.DrawPopup<WarningPopup>(
+                        $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                 {
-                    if (!DisablePacks)
-                    {
-                        _uiManager.SetPage<PackOpenerPage>();
-                    }
-                    else
-                    {
-                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                        return;
-                    }
-
+                    //_uiManager.SetPage<PackOpenerPage>();
+                    _uiManager.DrawPopup<WarningPopup>(
+                        $"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     break;
                 }
                 case Enumerators.AppState.GAMEPLAY:

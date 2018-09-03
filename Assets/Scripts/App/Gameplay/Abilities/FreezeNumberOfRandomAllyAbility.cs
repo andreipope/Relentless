@@ -8,7 +8,6 @@ namespace LoomNetwork.CZB
 {
     public class FreezeNumberOfRandomAllyAbility : AbilityBase
     {
-
         public int Value { get; }
 
         public int Turns { get; }

@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class ReturnToHandAbility : AbilityBase
     {
-
         public int Value { get; }
 
         public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -63,7 +62,11 @@ namespace LoomNetwork.CZB
                     // STEP 4 - REARRANGE HANDS
                     GameplayManager.RearrangeHands();
 
-                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[] { PlayerCallerOfAbility, AbilityData, TargetUnit }));
+                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                        Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+                        {
+                            PlayerCallerOfAbility, AbilityData, TargetUnit
+                        }));
                 },
                 null,
                 2f);

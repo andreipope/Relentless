@@ -116,12 +116,16 @@ namespace LoomNetwork.CZB
 
         public AbilityData AbilityData { get; protected set; }
 
-        public void ActivateSelectTarget(List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
+        public void ActivateSelectTarget(
+            List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            TargettingArrow = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object")).AddComponent<AbilityBoardArrow>();
+            TargettingArrow = Object
+                .Instantiate(
+                    LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object"))
+                .AddComponent<AbilityBoardArrow>();
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
             TargettingArrow.SelfBoardCreature = AbilityUnitOwner;
             TargettingArrow.TargetUnitType = TargetCardType;
@@ -133,7 +137,8 @@ namespace LoomNetwork.CZB
             }
             else if (CardKind == Enumerators.CardKind.SPELL)
             {
-                TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
+                TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform
+                    .position); // (boardSpell.transform.position);
             }
             else
             {
@@ -166,7 +171,7 @@ namespace LoomNetwork.CZB
 
         public AbilityBase Clone()
         {
-            return (AbilityBase)MemberwiseClone();
+            return (AbilityBase) MemberwiseClone();
         }
 
         public virtual void Activate()
@@ -272,7 +277,8 @@ namespace LoomNetwork.CZB
             TargetPlayer = null;
         }
 
-        protected virtual void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected virtual void CreateVfx(
+            Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
             // todo make it async
             if (VfxObject != null)
@@ -372,12 +378,14 @@ namespace LoomNetwork.CZB
 
         protected object GetCaller()
         {
-            return AbilityUnitOwner != null?AbilityUnitOwner:(object)BoardSpell;
+            return AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
         }
 
         protected Player GetOpponentOverlord()
         {
-            return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer)?GameplayManager.OpponentPlayer:GameplayManager.CurrentPlayer;
+            return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
         }
 
         private void DestroyParticle(object[] param)

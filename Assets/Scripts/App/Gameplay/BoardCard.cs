@@ -167,7 +167,9 @@ namespace LoomNetwork.CZB
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.LibraryCard.Picture.ToLower()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(),
+                WorkingCard.LibraryCard.Picture.ToLower()));
 
             AmountText.transform.parent.gameObject.SetActive(false);
             DistibuteCardObject.SetActive(false);
@@ -213,7 +215,8 @@ namespace LoomNetwork.CZB
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.Picture.ToLower()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.Picture.ToLower()));
 
             DistibuteCardObject.SetActive(false);
         }
@@ -330,7 +333,8 @@ namespace LoomNetwork.CZB
         public virtual bool CanBePlayed(Player owner)
         {
 #if !DEV_MODE
-            return GameplayManager.GetController<PlayerController>().IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            return GameplayManager.GetController<PlayerController>()
+                .IsActive; // && owner.manaStat.effectiveValue >= manaCost;
 #else
             return true;
 #endif
@@ -462,10 +466,12 @@ namespace LoomNetwork.CZB
             // left block info ------------------------------------
             if (unit.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetRankInfoByType(unit.Card.LibraryCard.CardRank.ToString());
+                TooltipContentData.RankInfo rankInfo =
+                    DataManager.GetRankInfoByType(unit.Card.LibraryCard.CardRank.ToString());
                 if (rankInfo != null)
                 {
-                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y => y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Card.LibraryCard).ToLower()));
+                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
+                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Card.LibraryCard).ToLower()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -478,7 +484,8 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            if (unit.InitialUnitType != Enumerators.CardType.WALKER && unit.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.InitialUnitType != Enumerators.CardType.WALKER &&
+                unit.InitialUnitType != Enumerators.CardType.NONE)
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
                 if (buffInfo != null)
@@ -541,7 +548,7 @@ namespace LoomNetwork.CZB
 
             InternalTools.GroupVerticalObjects(ParentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
 
-            Transform parent = buffs.Count > 0?ParentOfRightBlockOfCardInfo:ParentOfLeftBlockOfCardInfo;
+            Transform parent = buffs.Count > 0 ? ParentOfRightBlockOfCardInfo : ParentOfLeftBlockOfCardInfo;
 
             buffs.Clear();
 
@@ -622,10 +629,13 @@ namespace LoomNetwork.CZB
             // left block info ------------------------------------
             if (boardCard.WorkingCard.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetRankInfoByType(boardCard.WorkingCard.LibraryCard.CardRank.ToString());
+                TooltipContentData.RankInfo rankInfo =
+                    DataManager.GetRankInfoByType(boardCard.WorkingCard.LibraryCard.CardRank.ToString());
                 if (rankInfo != null)
                 {
-                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y => y.Element.ToLower().Equals(CardsController.GetSetOfCard(boardCard.WorkingCard.LibraryCard).ToLower()));
+                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
+                        y.Element.ToLower()
+                            .Equals(CardsController.GetSetOfCard(boardCard.WorkingCard.LibraryCard).ToLower()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -638,9 +648,11 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            if (boardCard.WorkingCard.Type != Enumerators.CardType.WALKER && boardCard.WorkingCard.Type != Enumerators.CardType.NONE)
+            if (boardCard.WorkingCard.Type != Enumerators.CardType.WALKER &&
+                boardCard.WorkingCard.Type != Enumerators.CardType.NONE)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(boardCard.WorkingCard.Type.ToString());
+                TooltipContentData.BuffInfo buffInfo =
+                    DataManager.GetBuffInfoByType(boardCard.WorkingCard.Type.ToString());
                 if (buffInfo != null)
                 {
                     buffs.Add(
@@ -824,14 +836,18 @@ namespace LoomNetwork.CZB
 
                 BuffTooltipInfo = buffTooltipInfo;
 
-                _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
+                _selfObject =
+                    Object.Instantiate(
+                        _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
 
                 Transform.localPosition = new Vector3(0, offsetY, 0f);
 
                 _callTypeText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
-                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon").GetComponent<SpriteRenderer>();
+                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon")
+                    .GetComponent<SpriteRenderer>();
 
                 _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpper();
                 _descriptionText.text = ReplaceXByValue(buffTooltipInfo.Description, buffTooltipInfo.Value);
@@ -839,14 +855,20 @@ namespace LoomNetwork.CZB
                 switch (buffTooltipInfo.TooltipObjectType)
                 {
                     case Enumerators.TooltipObjectType.RANK:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsRanks/battleground_rank_icon_" + buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsRanks/battleground_rank_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.ABILITY:
                     case Enumerators.TooltipObjectType.BUFF:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsBuffTypes/battleground_mechanic_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.UNIT_TYPE:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsUnitTypes/battleground_mechanic_icon_" + buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsUnitTypes/battleground_mechanic_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     default:
                         _buffIconPicture.sprite = null;
@@ -875,7 +897,10 @@ namespace LoomNetwork.CZB
 
             public ElementSlotOfCards(Transform parent, bool used)
             {
-                SelfObject = Object.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
+                SelfObject =
+                    Object.Instantiate(
+                        GameClient.Get<ILoadObjectsManager>()
+                            .GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
 
                 FreeObject = SelfObject.transform.Find("Object_Free").gameObject;
                 UsedObject = SelfObject.transform.Find("Object_Used").gameObject;

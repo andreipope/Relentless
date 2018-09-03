@@ -44,7 +44,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingGameplayPopup"));
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingGameplayPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _progressBar = Self.transform.Find("ProgresBar/Fill").GetComponent<Image>();

@@ -64,7 +64,8 @@ namespace LoomNetwork.CZB
             AttackText.text = Damage.ToString();
             DefenseText.text = Health.ToString();
 
-            TypeSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+            TypeSprite.sprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {
@@ -83,7 +84,8 @@ namespace LoomNetwork.CZB
             AttackText.text = card.Damage.ToString();
             DefenseText.text = card.Health.ToString();
 
-            TypeSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+            TypeSprite.sprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
         }
     }
 }

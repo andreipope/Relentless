@@ -51,13 +51,15 @@ namespace LoomNetwork.CZB
 
         private Card GenerateNewCard()
         {
-            Enumerators.CardRank rarity = (Enumerators.CardRank)IsChanceFit(0);
-            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item => item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS);
+            Enumerators.CardRank rarity = (Enumerators.CardRank) IsChanceFit(0);
+            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item =>
+                item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS);
             Card card = cards[Random.Range(0, cards.Count)].Clone();
             return card;
         }
 
-        private int IsChanceFit(int rarity) {
+        private int IsChanceFit(int rarity)
+        {
             while (true)
             {
                 int random = Random.Range(0, 100);
@@ -71,7 +73,9 @@ namespace LoomNetwork.CZB
         // TEMPORARY OR SPECIAL
         private void GetSpecialCardPack()
         {
-            List<Card> fullColection = _dataManager.CachedCardsLibraryData.Cards.FindAll(item => item.CardSetType != Enumerators.SetType.OTHERS);
+            List<Card> fullColection =
+                _dataManager.CachedCardsLibraryData.Cards.FindAll(item =>
+                    item.CardSetType != Enumerators.SetType.OTHERS);
 
             List<Card> legendary = fullColection.FindAll(item => item.CardRank == Enumerators.CardRank.GENERAL);
             List<Card> epic = fullColection.FindAll(item => item.CardRank == Enumerators.CardRank.COMMANDER);

@@ -23,7 +23,8 @@ namespace LoomNetwork.CZB
             _currentEventSystem = EventSystem.current;
             _inputManager = GameClient.Get<IInputManager>();
 
-            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD, (int)KeyCode.Tab, null, OnInputDownTabButton);
+            _registeredTabHandlerIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                (int) KeyCode.Tab, null, OnInputDownTabButton);
         }
 
         public void Update()
@@ -46,10 +47,13 @@ namespace LoomNetwork.CZB
 
                         if (inputfield != null)
                         {
-                            inputfield.OnPointerClick(new PointerEventData(_currentEventSystem)); // if it's an input field, also set the text caret
+                            inputfield.OnPointerClick(
+                                new PointerEventData(
+                                    _currentEventSystem)); // if it's an input field, also set the text caret
                         }
 
-                        _currentEventSystem.SetSelectedGameObject(nextSelectable.gameObject, new BaseEventData(_currentEventSystem));
+                        _currentEventSystem.SetSelectedGameObject(nextSelectable.gameObject,
+                            new BaseEventData(_currentEventSystem));
                     }
                     else
                     {

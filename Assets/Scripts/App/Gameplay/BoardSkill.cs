@@ -69,8 +69,9 @@ namespace LoomNetwork.CZB
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-            string name = isPrimary?"1stShutters":"2ndtShutters";
-            _shutterAnimator = SelfObject.transform.parent.transform.Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
+            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            _shutterAnimator = SelfObject.transform.parent.transform
+                .Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
             _shutterAnimator.enabled = false;
             _shutterAnimator.StopPlayback();
 
@@ -87,7 +88,8 @@ namespace LoomNetwork.CZB
 
             _cooldownText.text = _cooldown.ToString();
 
-            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
         public bool IsSkillReady => _cooldown == 0;
@@ -119,8 +121,11 @@ namespace LoomNetwork.CZB
             {
                 if (Skill.SkillTargetTypes.Count > 0)
                 {
-                    FightTargetingArrow = Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
-                    FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == Owner?_gameplayManager.OpponentPlayer.BoardCards:_gameplayManager.CurrentPlayer.BoardCards;
+                    FightTargetingArrow =
+                        Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
+                    FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == Owner ?
+                        _gameplayManager.OpponentPlayer.BoardCards :
+                        _gameplayManager.CurrentPlayer.BoardCards;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
 
@@ -283,8 +288,8 @@ namespace LoomNetwork.CZB
         {
             _glowObjectSprite.gameObject.SetActive(isActive);
 
-            _shutterAnimator.enabled = isActive?true:false;
-            _shutterAnimator.speed = isActive?1:-1;
+            _shutterAnimator.enabled = isActive ? true : false;
+            _shutterAnimator.speed = isActive ? 1 : -1;
             _shutterAnimator.StartPlayback();
         }
 
@@ -323,7 +328,8 @@ namespace LoomNetwork.CZB
                 return true;
             }
 
-            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != Owner || _usedInThisTurn || _tutorialManager.IsTutorial)
+            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != Owner || _usedInThisTurn ||
+                _tutorialManager.IsTutorial)
             {
                 return false;
             }
@@ -385,19 +391,25 @@ namespace LoomNetwork.CZB
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
+                _selfObject =
+                    Object.Instantiate(
+                        _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/Gameplay/Tooltips/Tooltip_OverlordAbilityInfo"), parent, false);
 
                 Transform.localPosition = position;
 
                 _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
-                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon").GetComponent<SpriteRenderer>();
+                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon")
+                    .GetComponent<SpriteRenderer>();
 
                 _callTypeText.text = skill.Title.ToUpper();
                 _descriptionText.text = "    " + skill.Description;
 
-                _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.IconPath.Replace(" ", string.Empty));
+                _buffIconPicture.sprite =
+                    _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" +
+                        skill.IconPath.Replace(" ", string.Empty));
             }
 
             public Transform Transform => _selfObject.transform;

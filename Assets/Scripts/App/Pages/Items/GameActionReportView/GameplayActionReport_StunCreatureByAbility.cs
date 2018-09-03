@@ -10,7 +10,8 @@ namespace LoomNetwork.CZB
 
         private GameObject _stunnedUnitPreviewObject, _abilityOwnerObject;
 
-        public GameplayActionReportStunCreatureByAbility(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportStunCreatureByAbility(
+            GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }

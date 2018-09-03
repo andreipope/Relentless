@@ -44,7 +44,8 @@ namespace LoomNetwork.CZB
                     throw new Exception("exitCode != 0");
 
                 buildMetaInfo.GitBranchName = output;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 buildMetaInfo.GitBranchName = "[error]";
                 Debug.LogException(e);
@@ -57,7 +58,8 @@ namespace LoomNetwork.CZB
                     throw new Exception("exitCode != 0");
 
                 buildMetaInfo.GitCommitHash = output;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 buildMetaInfo.GitCommitHash = "[error]";
                 Debug.LogException(e);
@@ -81,7 +83,10 @@ namespace LoomNetwork.CZB
             buildMetaInfo.CloudBuildTargetName = manifest.GetValue<string>("cloudBuildTargetName");
 
             const int gitShortHashLength = 8;
-            buildMetaInfo.GitCommitHash = buildMetaInfo.GitCommitHash.Substring(0, buildMetaInfo.GitCommitHash.Length > gitShortHashLength?gitShortHashLength:buildMetaInfo.GitCommitHash.Length);
+            buildMetaInfo.GitCommitHash = buildMetaInfo.GitCommitHash.Substring(0,
+                buildMetaInfo.GitCommitHash.Length > gitShortHashLength ?
+                    gitShortHashLength :
+                    buildMetaInfo.GitCommitHash.Length);
 
             EditorUtility.SetDirty(buildMetaInfo);
         }
@@ -125,7 +130,8 @@ namespace LoomNetwork.CZB
             program.Start();
             if (standardInput != null)
             {
-                StreamWriter streamWriter = new StreamWriter(program.StandardInput.BaseStream, standardInputEncoding ?? new UTF8Encoding(false));
+                StreamWriter streamWriter = new StreamWriter(program.StandardInput.BaseStream,
+                    standardInputEncoding ?? new UTF8Encoding(false));
                 streamWriter.Write(standardInput);
                 streamWriter.Close();
             }

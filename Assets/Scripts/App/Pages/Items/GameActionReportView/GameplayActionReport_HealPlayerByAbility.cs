@@ -28,7 +28,7 @@ namespace LoomNetwork.CZB
             base.SetInfo();
             _abilityOwner = GameAction.Parameters[0];
             _usedAbility = GameAction.Parameters[1] as AbilityData;
-            _abilityValue = (int)GameAction.Parameters[2];
+            _abilityValue = (int) GameAction.Parameters[2];
             _abilityUsedOnPlayer = GameAction.Parameters[3] as Player;
 
             switch (_abilityOwner)
@@ -37,10 +37,13 @@ namespace LoomNetwork.CZB
                     PreviewImage.sprite = unit.Sprite;
                     _healCreatureObj = CreateCardPreview(unit.Card, Vector3.zero);
                     break;
-                case BoardSpell spell: {
+                case BoardSpell spell:
+                {
                     string rarity = Enum.GetName(typeof(Enumerators.CardRank), spell.Card.LibraryCard.CardRank);
                     string cardSetName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
-                    PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), spell.Card.LibraryCard.Picture.ToLower()));
+                    PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(
+                        string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(),
+                            spell.Card.LibraryCard.Picture.ToLower()));
                     _healCreatureObj = CreateCardPreview(spell.Card, Vector3.zero);
                     break;
                 }

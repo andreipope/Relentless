@@ -19,7 +19,8 @@ namespace LoomNetwork.CZB.Helpers
             return data.Replace(LineBreak, "\n");
         }
 
-        public static void SetLayerRecursively(GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
+        public static void SetLayerRecursively(
+            GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
         {
             if (!parentIgnored)
             {
@@ -73,7 +74,8 @@ namespace LoomNetwork.CZB.Helpers
             }
         }
 
-        public static void GroupVerticalObjects(Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
+        public static void GroupVerticalObjects(
+            Transform root, float spacing, float centerOffset = -7f, float height = 7.2f)
         {
             int count = root.childCount;
             float halfHeightOffset = height + spacing;
@@ -82,7 +84,8 @@ namespace LoomNetwork.CZB.Helpers
 
             for (int i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x, startPos - halfHeightOffset * i, root.GetChild(i).localPosition.z);
+                root.GetChild(i).localPosition = new Vector3(root.GetChild(i).localPosition.x,
+                    startPos - halfHeightOffset * i, root.GetChild(i).localPosition.z);
             }
         }
 

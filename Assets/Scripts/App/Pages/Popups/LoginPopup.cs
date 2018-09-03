@@ -113,14 +113,16 @@ namespace LoomNetwork.CZB
 
         private async void PressedBetaHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             string betaKey = _betaKeyInputField.text.Trim();
             bool isBetaKeyValid = betaKey.Length == 12;
             try
             {
                 isBetaKeyValid &= CryptoUtils.HexStringToBytes(betaKey).Length == 6;
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 isBetaKeyValid = false;
             }
@@ -156,11 +158,13 @@ namespace LoomNetwork.CZB
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
 
                     SuccessfulLogin();
-                } catch (GameVersionMismatchException e)
+                }
+                catch (GameVersionMismatchException e)
                 {
                     SetUIState(LoginState.RemoteVersionMismatch);
                     UpdateVersionMismatchText(e);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Debug.LogWarning(e);
                     SetUIState(LoginState.BetaKeyValidationFailed);
@@ -207,10 +211,12 @@ namespace LoomNetwork.CZB
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
         {
-            _versionMismatchText.text = $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
+            _versionMismatchText.text =
+                $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
         }
 
-        private void GenerateKeysAndUserFromBetaKey(string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId)
+        private void GenerateKeysAndUserFromBetaKey(
+            string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId)
         {
             betaKey = betaKey.ToLowerInvariant();
 

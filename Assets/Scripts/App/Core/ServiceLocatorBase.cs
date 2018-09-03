@@ -25,8 +25,9 @@ namespace LoomNetwork.CZB
         {
             try
             {
-                return (T)Services[typeof(T)];
-            } catch (KeyNotFoundException)
+                return (T) Services[typeof(T)];
+            }
+            catch (KeyNotFoundException)
             {
                 throw new Exception("Service " + typeof(T) + " is not registered!");
             }

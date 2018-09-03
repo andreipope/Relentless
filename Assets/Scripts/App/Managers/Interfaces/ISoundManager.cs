@@ -14,9 +14,13 @@ namespace LoomNetwork.CZB
 
         float GetSoundLength(Enumerators.SoundType soundType);
 
-        void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
+        void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float volume = -1f,
+            Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
 
-        void PlaySound(Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f, Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
+        void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float fadeOutAfterTime, float volume = -1f,
+            Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE);
 
         void PlaySound(
             Enumerators.SoundType soundType,
@@ -28,11 +32,17 @@ namespace LoomNetwork.CZB
             bool dropOldBackgroundMusic = true,
             bool isInQueue = false);
 
-        void PlaySound(Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false, bool dropOldBackgroundMusic = false, bool isInQueue = false);
+        void PlaySound(
+            Enumerators.SoundType soundType, float volume = -1f, bool isLoop = false,
+            bool dropOldBackgroundMusic = false, bool isInQueue = false);
 
-        void PlaySound(Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false, bool isInQueue = false);
+        void PlaySound(
+            Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false,
+            bool isInQueue = false);
 
-        void PlaySound(Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false, bool isInQueue = false);
+        void PlaySound(
+            Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false,
+            bool isInQueue = false);
 
         void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false);
 

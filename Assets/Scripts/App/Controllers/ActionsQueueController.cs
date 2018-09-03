@@ -42,7 +42,8 @@ namespace LoomNetwork.CZB
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public void AddNewActionInToQueue(Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
+        public void AddNewActionInToQueue(
+            Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
@@ -126,7 +127,8 @@ namespace LoomNetwork.CZB
             try
             {
                 Action?.Invoke(Parameter, ActionDoneCallback);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 if (!_actionDone)
                 {

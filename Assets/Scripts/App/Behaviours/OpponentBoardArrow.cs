@@ -44,6 +44,7 @@ namespace LoomNetwork.CZB
 
                 _target = null;
             }
+
             base.Dispose();
         }
 

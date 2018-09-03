@@ -121,7 +121,6 @@ namespace LoomNetwork.CZB.Data
 
         public List<Enumerators.SetType> ElementTargetTypes;
 
-
         public void CastData()
         {
             if (!string.IsNullOrEmpty(Skill))

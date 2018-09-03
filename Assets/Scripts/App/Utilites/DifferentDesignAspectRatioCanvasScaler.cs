@@ -36,7 +36,8 @@ namespace LoomNetwork.CZB
             {
                 case ScreenMatchMode.MatchWidthOrHeight:
                 {
-                    scaleFactor = Mathf.Min(screenSize.x / ReferenceScreenResolution.x, screenSize.y / ReferenceScreenResolution.y);
+                    scaleFactor = Mathf.Min(screenSize.x / ReferenceScreenResolution.x,
+                        screenSize.y / ReferenceScreenResolution.y);
                     scaleFactor *= ReferenceScreenResolution.y / m_ReferenceResolution.y;
 
                     break;
@@ -44,13 +45,15 @@ namespace LoomNetwork.CZB
 
                 case ScreenMatchMode.Expand:
                 {
-                    scaleFactor = Mathf.Min(screenSize.x / m_ReferenceResolution.x, screenSize.y / m_ReferenceResolution.y);
+                    scaleFactor = Mathf.Min(screenSize.x / m_ReferenceResolution.x,
+                        screenSize.y / m_ReferenceResolution.y);
                     break;
                 }
 
                 case ScreenMatchMode.Shrink:
                 {
-                    scaleFactor = Mathf.Max(screenSize.x / m_ReferenceResolution.x, screenSize.y / m_ReferenceResolution.y);
+                    scaleFactor = Mathf.Max(screenSize.x / m_ReferenceResolution.x,
+                        screenSize.y / m_ReferenceResolution.y);
                     break;
                 }
             }

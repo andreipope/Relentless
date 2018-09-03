@@ -92,7 +92,7 @@ namespace LoomNetwork.CZB
             _gooAmountText.text = _currentValue + "/" + _maxValue;
             for (int i = 0; i < _gooBottles.Count; i++)
             {
-                _gooBottles[i].Self.SetActive(i < _maxValue?true:false);
+                _gooBottles[i].Self.SetActive(i < _maxValue ? true : false);
             }
 
             UpdateGooOVerflow();
@@ -130,7 +130,7 @@ namespace LoomNetwork.CZB
                 _overflowGooAmountText.text = _currentValue + "/" + _maxValue;
                 for (int i = 0; i < _overflowBottleContainer.childCount; i++)
                 {
-                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue?true:false);
+                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
                 }
             }
         }
@@ -148,25 +148,29 @@ namespace LoomNetwork.CZB
 
         private void CreateOverflow()
         {
-            _overflowObject = Object.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>(_overflowPrefabPath));
+            _overflowObject = Object.Instantiate(GameClient.Get<ILoadObjectsManager>()
+                .GetObjectByPath<GameObject>(_overflowPrefabPath));
             _overflowObject.transform.localPosition = _overflowPos;
             _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
             _overflowBottleContainer = _overflowObject.transform.Find("Bottles").transform;
             for (int i = 0; i < _overflowBottleContainer.childCount; i++)
             {
-                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue?true:false);
+                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
             }
 
             _selfObject.SetActive(false);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN, Constants.BattlegroundEffectsSoundVolume);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN,
+                Constants.BattlegroundEffectsSoundVolume);
 
-            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null, GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN));
+            GameClient.Get<ITimerManager>().AddTimer(PlayOverflowLoopDelay, null,
+                GameClient.Get<ISoundManager>().GetSoundLength(Enumerators.SoundType.GOO_OVERFLOW_FADE_IN));
         }
 
         private void PlayOverflowLoopDelay(object[] param)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP, Constants.BattlegroundEffectsSoundVolume, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_LOOP,
+                Constants.BattlegroundEffectsSoundVolume, true);
         }
 
         private void DestroyOverflow()
@@ -179,7 +183,8 @@ namespace LoomNetwork.CZB
 
             StopOverfowSounds();
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT, Constants.BattlegroundEffectsSoundVolume);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.GOO_OVERFLOW_FADE_OUT,
+                Constants.BattlegroundEffectsSoundVolume);
         }
 
         private void StopOverfowSounds()

@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class DealDamageToThisAndAdjacentUnitsAbility : AbilityBase
     {
-
         public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {

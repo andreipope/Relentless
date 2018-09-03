@@ -21,12 +21,6 @@ namespace LoomNetwork.CZB.BackendCommunication
 
         public UserDataModel UserDataModel { get; set; }
 
-        /*public async Task LoadUserDataModelAndCreateContract()
-        {
-            LoadUserDataModel();
-            Debug.Log("User Id: " + UserDataModel.UserId);
-            await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-        }*/
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
@@ -54,13 +48,9 @@ namespace LoomNetwork.CZB.BackendCommunication
             }
 
             string modelJson = File.ReadAllText(UserDataFilePath);
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (Constants.DataEncryptionEnabled)
-            {
-                modelJson = Utilites.Decrypt(modelJson, Constants.PrivateEncryptionKeyForApp);
-            }
 
-            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
             return true;
         }
 
@@ -70,13 +60,8 @@ namespace LoomNetwork.CZB.BackendCommunication
                 throw new ArgumentNullException(nameof(userDataModel));
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (Constants.DataEncryptionEnabled)
-            {
-                modelJson = Utilites.Encrypt(modelJson, Constants.PrivateEncryptionKeyForApp);
-            }
 
-            File.WriteAllText(UserDataFilePath, modelJson);
+            File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
             UserDataModel = userDataModel;
             return true;
         }
@@ -87,7 +72,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             Debug.Log("User Id: " + UserDataModel.UserId);
 
             await _dataManager.LoadRemoteConfig();
-            Debug.Log($"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
+            Debug.Log(
+                $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
                 throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
@@ -96,7 +82,8 @@ namespace LoomNetwork.CZB.BackendCommunication
             try
             {
                 await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.LogWarning(e);
 
@@ -106,10 +93,12 @@ namespace LoomNetwork.CZB.BackendCommunication
             try
             {
                 await _backendFacade.SignUp(UserDataModel.UserId);
-            } catch (TxCommitException e) when (e.Message.Contains("user already exists"))
+            }
+            catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.LogWarning(e);
 

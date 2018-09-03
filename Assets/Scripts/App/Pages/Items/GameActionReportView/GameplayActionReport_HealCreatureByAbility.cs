@@ -18,7 +18,8 @@ namespace LoomNetwork.CZB
 
         private GameObject _healCreatureObj, _healedCreatureObj;
 
-        public GameplayActionReportHealCreatureByAbility(GameObject prefab, Transform parent, GameActionReport gameAction)
+        public GameplayActionReportHealCreatureByAbility(
+            GameObject prefab, Transform parent, GameActionReport gameAction)
             : base(prefab, parent, gameAction)
         {
         }
@@ -29,7 +30,7 @@ namespace LoomNetwork.CZB
 
             _abilityOwner = GameAction.Parameters[0];
             _usedAbility = GameAction.Parameters[1] as AbilityData;
-            _abilityValue = (int)GameAction.Parameters[2];
+            _abilityValue = (int) GameAction.Parameters[2];
             _abilityUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
 
             if (_abilityOwner is BoardUnit)
@@ -39,9 +40,12 @@ namespace LoomNetwork.CZB
             }
             else
             {
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank),
+                    (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
                 string cardSetName = CardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.LibraryCard);
-                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.LibraryCard.Picture.ToLower()));
+                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(
+                    string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(),
+                        (_abilityOwner as BoardSpell).Card.LibraryCard.Picture.ToLower()));
                 _healCreatureObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
             }
 

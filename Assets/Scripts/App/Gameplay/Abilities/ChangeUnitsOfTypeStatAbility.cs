@@ -43,7 +43,8 @@ namespace LoomNetwork.CZB
 
         private void Action()
         {
-            List<BoardUnit> unitsOnBoard = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType.Equals(SetType));
+            List<BoardUnit> unitsOnBoard =
+                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType.Equals(SetType));
 
             foreach (BoardUnit unit in unitsOnBoard)
             {

@@ -35,7 +35,8 @@ namespace LoomNetwork.CZB
 
         private void GenerateTightMeshSprite(VertexHelper toFill, Sprite sprite, bool preserveAspect)
         {
-            TightImageSpriteMeshDataProvider.SpriteMeshData spriteMeshData = TightImageSpriteMeshDataProvider.GetSpriteMeshData(sprite);
+            TightImageSpriteMeshDataProvider.SpriteMeshData spriteMeshData =
+                TightImageSpriteMeshDataProvider.GetSpriteMeshData(sprite);
             ushort[] spriteTriangles = spriteMeshData.Triangles;
             Vector2[] spriteUV = spriteMeshData.UV;
             Vector2[] spriteVertices = spriteMeshData.Vertices;
@@ -43,11 +44,13 @@ namespace LoomNetwork.CZB
             toFill.Clear();
 
             Vector4 drawingDimensions = GetDrawingDimensions(preserveAspect);
-            Vector2 spriteNormalizedPivot = new Vector2(sprite.pivot.x / sprite.rect.width, sprite.pivot.y / sprite.rect.height);
+            Vector2 spriteNormalizedPivot =
+                new Vector2(sprite.pivot.x / sprite.rect.width, sprite.pivot.y / sprite.rect.height);
             Vector2 normalizeScaleFactor = new Vector2(1f / sprite.bounds.size.x, 1f / sprite.bounds.size.y);
             Vector2 normalizeShift = new Vector2(spriteNormalizedPivot.x, spriteNormalizedPivot.y);
             Vector2 shift = new Vector2(drawingDimensions.x, drawingDimensions.y);
-            Vector2 scaleFactor = new Vector2(drawingDimensions.z - drawingDimensions.x, drawingDimensions.w - drawingDimensions.y);
+            Vector2 scaleFactor = new Vector2(drawingDimensions.z - drawingDimensions.x,
+                drawingDimensions.w - drawingDimensions.y);
 
             UIVertex vertex = UIVertex.simpleVert;
             vertex.color = color;
@@ -85,7 +88,9 @@ namespace LoomNetwork.CZB
         private Vector4 GetDrawingDimensions(bool shouldPreserveAspect)
         {
             Sprite activeSprite = overrideSprite;
-            Vector2 size = activeSprite == null ? Vector2.zero : new Vector2(activeSprite.rect.width, activeSprite.rect.height);
+            Vector2 size = activeSprite == null ?
+                Vector2.zero :
+                new Vector2(activeSprite.rect.width, activeSprite.rect.height);
 
             Rect r = GetPixelAdjustedRect();
 

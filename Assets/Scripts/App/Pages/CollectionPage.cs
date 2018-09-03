@@ -93,7 +93,8 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();
@@ -213,7 +214,8 @@ namespace LoomNetwork.CZB
 
         public void MoveCardsPage(int direction)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
             CalculateNumberOfPages();
 
             _currentElementPage += direction;
@@ -224,7 +226,7 @@ namespace LoomNetwork.CZB
 
                 if (_currentSet < 0)
                 {
-                    _currentSet = (Enumerators.SetType)(_numSets - 1);
+                    _currentSet = (Enumerators.SetType) (_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -234,14 +236,14 @@ namespace LoomNetwork.CZB
 
                     _currentElementPage = _numElementPages - 1;
 
-                    _currentElementPage = _currentElementPage < 0?0:_currentElementPage;
+                    _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
                 }
             }
             else if (_currentElementPage >= _numElementPages)
             {
                 _currentSet += direction;
 
-                if ((int)_currentSet >= _numSets)
+                if ((int) _currentSet >= _numSets)
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
@@ -261,7 +263,7 @@ namespace LoomNetwork.CZB
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild((int)setType).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -326,7 +328,7 @@ namespace LoomNetwork.CZB
 
         private void IconSetButtonClick(Button toggleObj)
         {
-            _currentSet = (Enumerators.SetType)toggleObj.transform.GetSiblingIndex();
+            _currentSet = (Enumerators.SetType) toggleObj.transform.GetSiblingIndex();
             _currentElementPage = 0;
             LoadCards(_currentElementPage, _currentSet);
         }
@@ -345,7 +347,8 @@ namespace LoomNetwork.CZB
             CalculateNumberOfPages();
             LoadCards(0, 0);
 
-            _cardCounter.text = _dataManager.CachedCollectionData.Cards.Count + "/" + _dataManager.CachedCardsLibraryData.Cards.Count;
+            _cardCounter.text = _dataManager.CachedCollectionData.Cards.Count + "/" +
+                _dataManager.CachedCardsLibraryData.Cards.Count;
         }
 
         private void HighlightCorrectIcon()
@@ -353,13 +356,14 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
             {
                 GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                c.SetActive(i == (int)_currentSet);
+                c.SetActive(i == (int) _currentSet);
             }
         }
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count / (float)CardPositions.Count);
+            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
+                (float) CardPositions.Count);
         }
 
         private void OpenAlertDialog(string msg)
@@ -371,7 +375,8 @@ namespace LoomNetwork.CZB
 
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
             _currentSet = type;
             LoadCards(0, type);
         }
@@ -387,34 +392,40 @@ namespace LoomNetwork.CZB
 
         private void BuyButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void OpenButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
         private void BackButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
 
         private void ArrowLeftButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(-1);
         }
 
         private void ArrowRightButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(1);
         }
 
         #endregion
+
     }
 }

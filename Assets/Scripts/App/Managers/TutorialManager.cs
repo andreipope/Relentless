@@ -34,7 +34,8 @@ namespace LoomNetwork.CZB
             _contentManager = GameClient.Get<IContentManager>();
             _soundManager = GameClient.Get<ISoundManager>();
 
-            _steps = new List<TutorialStep> {
+            _steps = new List<TutorialStep>
+            {
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
@@ -43,31 +44,38 @@ namespace LoomNetwork.CZB
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(5f, -6f, 0),
+                    new Vector3(0, -1.7f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(0, -1.5f, 0),
+                    new Vector3(0, 2f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true, true, new Vector3(0, -1.6f, 0),
+                    new Vector3(0, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0),
+                    new Vector3(0, 2f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(7f, -6.5f, 0),
+                    new Vector3(0, -1.6f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0),
+                    new Vector3(0, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(2.5f, -5.0f, 0),
+                    new Vector3(0f, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
@@ -81,7 +89,8 @@ namespace LoomNetwork.CZB
             }
 
             // card vs player
-            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>()
+                .GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
         }
 
         public void Update()
@@ -139,7 +148,11 @@ namespace LoomNetwork.CZB
             if (!IsTutorial)
                 return;
 
-            if (CurrentStep == 0 || CurrentStep == 1 || CurrentStep == 2 || CurrentStep == 3 || CurrentStep == 4 || CurrentStep == 5 || CurrentStep == 6 || CurrentStep == 7 || CurrentStep == 9 || CurrentStep == 14 || CurrentStep == 15 || CurrentStep == 18 || CurrentStep == 20 || CurrentStep == 22 || CurrentStep == 24 || CurrentStep == 25 || CurrentStep == 26 || CurrentStep == 29 || CurrentStep == 30 || CurrentStep == 31 || CurrentStep == 33 || CurrentStep == 34 || CurrentStep == 35 || CurrentStep == 36 || CurrentStep == 37)
+            if (CurrentStep == 0 || CurrentStep == 1 || CurrentStep == 2 || CurrentStep == 3 || CurrentStep == 4 ||
+                CurrentStep == 5 || CurrentStep == 6 || CurrentStep == 7 || CurrentStep == 9 || CurrentStep == 14 ||
+                CurrentStep == 15 || CurrentStep == 18 || CurrentStep == 20 || CurrentStep == 22 || CurrentStep == 24 ||
+                CurrentStep == 25 || CurrentStep == 26 || CurrentStep == 29 || CurrentStep == 30 || CurrentStep == 31 ||
+                CurrentStep == 33 || CurrentStep == 34 || CurrentStep == 35 || CurrentStep == 36 || CurrentStep == 37)
             {
                 NextStep();
             }
@@ -164,7 +177,8 @@ namespace LoomNetwork.CZB
 
                         break;
                     case Enumerators.TutorialReportAction.END_TURN:
-                        if (CurrentStep == 10 || CurrentStep == 12 || CurrentStep == 16 || CurrentStep == 17 || CurrentStep == 21)
+                        if (CurrentStep == 10 || CurrentStep == 12 || CurrentStep == 16 || CurrentStep == 17 ||
+                            CurrentStep == 21)
                         {
                             NextStep();
                         }
@@ -259,14 +273,16 @@ namespace LoomNetwork.CZB
                 GameClient.Get<ITimerManager>().AddTimer(
                     x =>
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep, Constants.TutorialSoundVolume, false);
+                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep,
+                            Constants.TutorialSoundVolume, false);
                     },
                     null,
                     6f);
             }
             else
             {
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep, Constants.TutorialSoundVolume, false);
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep, Constants.TutorialSoundVolume,
+                    false);
             }
         }
 

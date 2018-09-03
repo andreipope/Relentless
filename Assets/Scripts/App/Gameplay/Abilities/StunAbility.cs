@@ -6,7 +6,6 @@ namespace LoomNetwork.CZB
 {
     public class StunAbility : AbilityBase
     {
-
         public Enumerators.StatType StatType { get; }
 
         public int Value { get; }
@@ -45,7 +44,11 @@ namespace LoomNetwork.CZB
                 creature.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(creature.Transform.position);
 
-                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[] { AbilityUnitOwner, creature }));
+                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                    Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
+                    {
+                        AbilityUnitOwner, creature
+                    }));
             }
         }
     }

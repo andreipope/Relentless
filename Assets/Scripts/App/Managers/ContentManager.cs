@@ -28,7 +28,8 @@ namespace LoomNetwork.CZB
 
         public ArrayList GetDataFromDb<T>(Enumerators.SpreadsheetType type, bool removeLatestLine = true)
         {
-            string path = Constants.ContentFolderName + _localizationManager.CurrentLanguage + "_" + type + Constants.SpreadsheetFileFormat;
+            string path = Constants.ContentFolderName + _localizationManager.CurrentLanguage + "_" + type +
+                Constants.SpreadsheetFileFormat;
 
             CsvMap map = new CsvMap(typeof(T));
             ArrayList list;

@@ -96,7 +96,8 @@ namespace LoomNetwork.CZB
             _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY);
         }
 
-        private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state) {
+        private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state)
+        {
             switch (state)
             {
                 case Enumerators.AppState.GAMEPLAY:

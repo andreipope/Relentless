@@ -20,7 +20,7 @@ namespace LoomNetwork.CZB
         private void Update()
         {
             Vector3 lossyScale = transform.lossyScale;
-            float scale = Is2D?((Vector2)lossyScale).magnitude:lossyScale.magnitude;
+            float scale = Is2D ? ((Vector2) lossyScale).magnitude : lossyScale.magnitude;
             ParticleSystem.MainModule mainModule = _particleSystem.main;
             mainModule.gravityModifierMultiplier = _initialGravityModifierMultiplier * scale;
         }

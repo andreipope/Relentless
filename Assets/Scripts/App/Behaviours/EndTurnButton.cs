@@ -36,8 +36,8 @@ public class EndTurnButton : MonoBehaviour
     public void SetEnabled(bool enabled)
     {
         _active = enabled;
-        _buttonText.text = enabled?"END\nTURN":"\nWAIT";
-        _thisRenderer.sprite = enabled?_defaultSprite:_pressedSprite;
+        _buttonText.text = enabled ? "END\nTURN" : "\nWAIT";
+        _thisRenderer.sprite = enabled ? _defaultSprite : _pressedSprite;
     }
 
     private void Awake()
@@ -69,13 +69,16 @@ public class EndTurnButton : MonoBehaviour
 
         _thisRenderer.sprite = _pressedSprite;
         _buttonText.transform.localPosition = _textPressedPosition;
-        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128, Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
+        GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128,
+            Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
     }
 
     // was OnMouseDown
     private void OnMouseUp()
     {
-        if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep != 10 && GameClient.Get<ITutorialManager>().CurrentStep != 16 && GameClient.Get<ITutorialManager>().CurrentStep != 21)
+        if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep != 10 &&
+            GameClient.Get<ITutorialManager>().CurrentStep != 16 &&
+            GameClient.Get<ITutorialManager>().CurrentStep != 21)
             return;
 
         if (_active && _hovering)
