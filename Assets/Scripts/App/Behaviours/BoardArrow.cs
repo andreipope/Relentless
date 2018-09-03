@@ -1,112 +1,45 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 using LoomNetwork.CZB;
 using LoomNetwork.CZB.Common;
+using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
 {
-    protected IGameplayManager _gameplayManager;
-    protected BoardArrowController _boardArrowController;
-    protected InputController _inputController;
+    public List<Enumerators.SkillTargetType> TargetsType = new List<Enumerators.SkillTargetType>();
 
-    public Action onTargetSelected;
+    public List<Enumerators.SetType> ElementType = new List<Enumerators.SetType>();
+
+    protected IGameplayManager GameplayManager;
+
+    protected BoardArrowController BoardArrowController;
+
+    protected InputController InputController;
+
+    protected GameObject TargetObjectsGroup, RootObjectsGroup, ArrowObject, TargetColliderObject;
+
+    protected bool StartedDrag;
+
+    private readonly float _defaultArrowScale = 6.25f;
 
     private GameObject _selfObject;
 
-    protected GameObject _targetObjectsGroup,
-                         _rootObjectsGroup,
-                         _arrowObject,
-                         _targetColliderObject;
-
-    protected ParticleSystem _upBubbles;
-
-    private Vector3 _fromPosition,
-                    _targetPosition;
-
-    private float _defaultArrowScale = 6.25f;
+    private Vector3 _fromPosition, _targetPosition;
 
     private bool _isInverse = true;
 
-    protected bool startedDrag;
+    public BoardUnit SelectedCard { get; set; }
 
-    protected BoardUnit boardCreature;
-
-    public List<Enumerators.SkillTargetType> targetsType = new List<Enumerators.SkillTargetType>();
-    public List<Enumerators.SetType> elementType = new List<Enumerators.SetType>();
-
-    public BoardUnit selectedCard { get; set; }
-    public Player selectedPlayer { get; set; }
-
-
-    private void Awake()
-    {
-        Init();
-    }
-
-    protected void Init()
-    {
-        _gameplayManager = GameClient.Get<IGameplayManager>();
-        _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
-        _inputController = _gameplayManager.GetController<InputController>();
-
-        _selfObject = gameObject;
-
-        _targetObjectsGroup = _selfObject.transform.Find("Group_TargetObjects").gameObject;
-        _rootObjectsGroup = _selfObject.transform.Find("Arrow/Group_RootObjects").gameObject;
-        _arrowObject = _selfObject.transform.Find("Arrow").gameObject;
-        _targetColliderObject = _selfObject.transform.Find("Target_Collider").gameObject;
-
-        _upBubbles = _rootObjectsGroup.transform.Find("UpBubbles").GetComponent<ParticleSystem>();
-
-
-        if (_isInverse)
-            _selfObject.transform.localScale = new Vector3(-1, 1, 1);
-        //  _targetObjectsGroup.SetActive(false);
-
-        _inputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
-        _inputController.UnitSelectingEvent += UnitSelectingEventHandler;
-        _inputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
-    }
-
-    protected virtual void Update()
-    {
-        if (startedDrag)
-        {
-            _boardArrowController.CurrentBoardArrow = this;
-            _boardArrowController.SetStatusOfBoardArrowOnBoard(true);
-
-            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePosition.z = 0;
-            UpdateLength(mousePosition, _isInverse);
-
-
-            //  CastRay(Input.mousePosition, 9);
-        }
-    }
-
-    protected virtual void OnDestroy()
-    {
-        GameClient.Get<ITimerManager>().AddTimer((x) =>
-        {
-            _boardArrowController.CurrentBoardArrow = null;
-            _boardArrowController.SetStatusOfBoardArrowOnBoard(false);
-        }, null, 0.25f);
-    }
-
+    public Player SelectedPlayer { get; set; }
 
     public bool IsDragging()
     {
-        if (startedDrag)
+        if (StartedDrag)
         {
-            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.POINTER_MIN_DRAG_DELTA)
+            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.PointerMinDragDelta)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -114,10 +47,12 @@ public class BoardArrow : MonoBehaviour
 
     public void SetInverse(bool isInverse = true)
     {
-        var scaleX = 1;
+        int scaleX = 1;
 
         if (isInverse)
+        {
             scaleX = -1;
+        }
 
         _selfObject.transform.localScale = new Vector3(scaleX, 1, 1);
     }
@@ -126,41 +61,34 @@ public class BoardArrow : MonoBehaviour
     {
         _isInverse = isInverse;
 
-        startedDrag = true;
+        StartedDrag = true;
         _fromPosition = from;
-        //   _rootObjectsGroup.transform.position = _fromPosition;
-        _arrowObject.transform.position = _fromPosition;
+
+        ArrowObject.transform.position = _fromPosition;
 
         SetInverse(isInverse);
-
-        //  if (this._isInverse)
-        //     _arrowObject.transform.localScale = new Vector3(-1, _arrowObject.transform.localScale.y, _arrowObject.transform.localScale.z);
     }
 
     public void UpdateLength(Vector3 target, bool isInverse = true)
     {
-        _targetColliderObject.transform.position = target;
-        _targetObjectsGroup.transform.position = target;
+        TargetColliderObject.transform.position = target;
+        TargetObjectsGroup.transform.position = target;
 
         _targetPosition = target;
 
         float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
-        // float rootObjectsOffset = 21f;
-
-        var scaleX = 1f;
+        float scaleX = 1f;
 
         if (!isInverse)
+        {
             scaleX = -1f;
+        }
 
-        _arrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
-        //  _rootObjectsGroup.transform.eulerAngles = new Vector3(0, 180, -angle + rootObjectsOffset);
+        ArrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
 
-        var scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
-
-
-        _arrowObject.transform.localScale = new Vector3(scaleX, scaleY, _arrowObject.transform.localScale.z);
+        float scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
+        ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
-
 
     public virtual void OnCardSelected(BoardUnit creature)
     {
@@ -178,39 +106,90 @@ public class BoardArrow : MonoBehaviour
     {
     }
 
-    protected void CreateTarget(Vector3 target)
+    public virtual void Dispose()
     {
-        //  _targetObjectsGroup.SetActive(true);
-    }
-
-    public void Dispose()
-    {
-        _inputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
-        _inputController.UnitSelectingEvent -= UnitSelectingEventHandler;
-        _inputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
+        InputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
+        InputController.UnitSelectingEvent -= UnitSelectingEventHandler;
+        InputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
 
         ResetSelecting();
 
-        MonoBehaviour.Destroy(_selfObject);
+        Destroy(_selfObject);
     }
 
+    protected void Init()
+    {
+        GameplayManager = GameClient.Get<IGameplayManager>();
+        BoardArrowController = GameplayManager.GetController<BoardArrowController>();
+        InputController = GameplayManager.GetController<InputController>();
+
+        _selfObject = gameObject;
+
+        TargetObjectsGroup = _selfObject.transform.Find("Group_TargetObjects").gameObject;
+        RootObjectsGroup = _selfObject.transform.Find("Arrow/Group_RootObjects").gameObject;
+        ArrowObject = _selfObject.transform.Find("Arrow").gameObject;
+        TargetColliderObject = _selfObject.transform.Find("Target_Collider").gameObject;
+
+        if (_isInverse)
+        {
+            _selfObject.transform.localScale = new Vector3(-1, 1, 1);
+        }
+
+        InputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
+        InputController.UnitSelectingEvent += UnitSelectingEventHandler;
+        InputController.NoObjectsSelectedEvent += NoObjectsSelectedEventHandler;
+    }
+
+    protected virtual void Update()
+    {
+        if (StartedDrag)
+        {
+            BoardArrowController.CurrentBoardArrow = this;
+            BoardArrowController.SetStatusOfBoardArrowOnBoard(true);
+
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosition.z = 0;
+            UpdateLength(mousePosition, _isInverse);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        GameClient.Get<ITimerManager>().AddTimer(
+            x =>
+            {
+                BoardArrowController.CurrentBoardArrow = null;
+                BoardArrowController.SetStatusOfBoardArrowOnBoard(false);
+            },
+            null,
+            0.25f);
+    }
+
+    private void Awake()
+    {
+        Init();
+    }
 
     private void ResetSelecting()
     {
-        if (selectedCard != null)
+        if (SelectedCard != null)
         {
-            if(selectedCard.gameObject != null)
-                selectedCard.SetSelectedUnit(false);
+            if (SelectedCard.GameObject != null)
+            {
+                SelectedCard.SetSelectedUnit(false);
+            }
 
-            selectedCard = null;
+            SelectedCard = null;
         }
 
-        if (selectedPlayer != null)
+        if (SelectedPlayer != null)
         {
-            if (selectedPlayer.AvatarObject != null)
-                selectedPlayer.SetGlowStatus(false);
+            if (SelectedPlayer.AvatarObject != null)
+            {
+                SelectedPlayer.SetGlowStatus(false);
+            }
 
-            selectedPlayer = null;
+            SelectedPlayer = null;
         }
     }
 

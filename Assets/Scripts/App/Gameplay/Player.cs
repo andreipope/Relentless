@@ -1,188 +1,81 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using LoomNetwork.CZB.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LoomNetwork.CZB.BackendCommunication;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using LoomNetwork.CZB.Helpers;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace LoomNetwork.CZB
 {
     public class Player
     {
-        public event Action OnEndTurnEvent;
-        public event Action OnStartTurnEvent;
+        public int Turn;
 
-        public event Action<int> PlayerHPChangedEvent;
-        public event Action<int> PlayerGooChangedEvent;
-        public event Action<int> PlayerVialGooChangedEvent;
-        public event Action<int> DeckChangedEvent;
-        public event Action<int> HandChangedEvent;
-        public event Action<int> GraveyardChangedEvent;
-        public event Action<int> BoardChangedEvent;
-        public event Action<WorkingCard> CardPlayedEvent;
+        public int InitialHp;
 
-        private GameObject _playerObject;
+        public int CurrentGooModificator;
 
-        private GameObject _freezedHighlightObject;
+        public int DamageByNoMoreCardsInDeck;
 
-        private IDataManager _dataManager;
-        private IGameplayManager _gameplayManager;
-        private ISoundManager _soundManager;
-        private ITutorialManager _tutorialManager;
+        private readonly GameObject _freezedHighlightObject;
 
-        private CardsController _cardsController;
-        private BattlegroundController _battlegroundController;
-        private SkillsController _skillsController;
-        private AnimationsController _animationsController;
-        private VFXController _vfxController;
+        private readonly IDataManager _dataManager;
+
+        private readonly IGameplayManager _gameplayManager;
+
+        private readonly ISoundManager _soundManager;
+
+        private readonly CardsController _cardsController;
+
+        private readonly BattlegroundController _battlegroundController;
+
+        private readonly SkillsController _skillsController;
+
+        private readonly AnimationsController _animationsController;
+
+        private readonly GameObject _avatarObject;
+
+        private readonly GameObject _overlordRegularObject;
+
+        private readonly GameObject _overlordDeathObject;
+
+        private readonly GameObject _avatarHeroHighlight;
+
+        private readonly GameObject _avatarSelectedHighlight;
+
+        private readonly Animator _avatarAnimator;
+
+        private readonly Animator _deathAnimator;
+
+        private readonly FadeTool _gooBarFadeTool;
 
         private int _goo;
+
         private int _gooOnCurrentTurn;
+
         private int _health;
-        private int _graveyardCardsCount = 0;
+
+        private int _graveyardCardsCount;
 
         private bool _isDead;
 
-        private int _turnsLeftToFreeFromStun = 0;
-
-        private Hero _selfHero;
-
-        private List<WorkingCard> _cardsInDeck;
-        private List<WorkingCard> _CardsInGraveyard;
-        private List<WorkingCard> _cardsInHand;
-        private List<WorkingCard> _cardsInBoard;
-
-        private OnBehaviourHandler _avatarOnBehaviourHandler;
-
-        private GameObject _avatarObject,
-                           _overlordRegularObject,
-                           _overlordDeathObject,
-                           _avatarHeroHighlight,
-                           _avatarSelectedHighlight;
-
-        private Animator _avatarAnimator, 
-                         _deathAnimamtor;
-
-        private FadeTool _gooBarFadeTool;
-
-
-        public GameObject PlayerObject { get { return _playerObject; } }
-        public GameObject AvatarObject { get { return _avatarObject.transform.parent.gameObject; } }
-        public Transform Transform { get { return _playerObject.transform; } }
-       
-        public Hero SelfHero { get { return _selfHero; } }
-
-        public int id;
-        public int deckId;
-
-        public int turn;
-
-        public string nickname;
-
-        public int initialHP;
-
-        public int currentGooModificator;
-
-        public int damageByNoMoreCardsInDeck = 0;
-
-        public int GooOnCurrentTurn
-        {
-            get { return _gooOnCurrentTurn; }
-            set
-            {
-                _gooOnCurrentTurn = value;
-                _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MAXIMUM_PLAYER_GOO);
-
-                PlayerVialGooChangedEvent?.Invoke(_gooOnCurrentTurn);
-            }
-        }
-
-        public int Goo
-        {
-            get
-            {
-                return _goo;
-            }
-            set
-            {
-                var oldGoo = _goo;
-              // _goo = value;
-
-                _goo = Mathf.Clamp(value, 0,999999);
-
-                PlayerGooChangedEvent?.Invoke(_goo);
-            }
-        }
-
-        public int HP
-        {
-            get
-            {
-                return _health;
-            }
-            set
-            {
-                var oldHealth = _health;
-                _health = value;
-
-                _health = Mathf.Clamp(_health, 0, 99);
-
-                PlayerHPChangedEvent?.Invoke(_health);
-            }
-        }   
-
-        public int GraveyardCardsCount
-        {
-            get { return _graveyardCardsCount; }
-            set
-            {
-                _graveyardCardsCount = value;
-                _battlegroundController.UpdateGraveyard(_graveyardCardsCount, this);
-            }
-        }
-
-        public bool IsLocalPlayer { get; set; }
-        public bool AlreadyAttackedInThisTurn { get; set; }
-
-        public List<BoardUnit> BoardCards { get; set; }
-
-        public List<WorkingCard> CardsInDeck { get; set; }
-        public List<WorkingCard> CardsInGraveyard { get; private set; }
-        public List<WorkingCard> CardsInHand { get; private set; }
-        public List<WorkingCard> CardsOnBoard { get; private set; }
-
-        public List<BoardCard> CardsPreparingToHand { get; set; }
-
-        public bool IsStunned { get; private set; }
-
-    
-        public int BuffedHP { get; set; }
-        public int MaxCurrentHP { get { return initialHP + BuffedHP; } }
-
+        private int _turnsLeftToFreeFromStun;
 
         public Player(GameObject playerObject, bool isOpponent)
         {
-            _playerObject = playerObject;
+            PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
-            id = isOpponent ? 1 : 0;
 
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
-            _vfxController = _gameplayManager.GetController<VFXController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -197,24 +90,27 @@ namespace LoomNetwork.CZB
             if (!isOpponent)
             {
                 if (!_gameplayManager.IsTutorial)
-                    heroId = _dataManager.CachedDecksData.decks.First(d => d.id == _gameplayManager.PlayerDeckId).heroId;
+                {
+                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
+                        .HeroId;
+                }
                 else
-                    heroId = Constants.TUTORIAL_PLAYER_HERO_ID;
+                {
+                    heroId = Constants.TutorialPlayerHeroId;
+                }
             }
             else
-                heroId = _dataManager.CachedOpponentDecksData.decks.First(d => d.id == _gameplayManager.OpponentDeckId).heroId;
+            {
+                heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId)
+                    .HeroId;
+            }
 
-            _selfHero = _dataManager.CachedHeroesData.Heroes[heroId];
+            SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
 
-            nickname = _selfHero.FullName;
-            deckId = _gameplayManager.PlayerDeckId;
-
-            _health = Constants.DEFAULT_PLAYER_HP;
-            initialHP = _health;
-            BuffedHP = 0;
-            _goo = Constants.DEFAULT_PLAYER_GOO;
-
-            _avatarOnBehaviourHandler = playerObject.transform.Find("Avatar").GetComponent<OnBehaviourHandler>();
+            _health = Constants.DefaultPlayerHp;
+            InitialHp = _health;
+            BuffedHp = 0;
+            _goo = Constants.DefaultPlayerGoo;
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -223,39 +119,135 @@ namespace LoomNetwork.CZB
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
-            _deathAnimamtor = _overlordDeathObject.GetComponent<Animator>();
+            _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
             _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
 
-            _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject; 
+            _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
             _avatarAnimator.enabled = false;
-            _deathAnimamtor.enabled = false;
-            _deathAnimamtor.StopPlayback();
+            _deathAnimator.enabled = false;
+            _deathAnimator.StopPlayback();
 
-            //_avatarOnBehaviourHandler.OnTriggerEnter2DEvent += OnTriggerEnter2DEventHandler;
-            //_avatarOnBehaviourHandler.OnTriggerExit2DEvent += OnTriggerExit2DEventHandler;
+            PlayerHpChanged += PlayerHpChangedHandler;
 
-            PlayerHPChangedEvent += PlayerHPChangedEventHandler;
-
-            damageByNoMoreCardsInDeck = 0;
+            DamageByNoMoreCardsInDeck = 0;
         }
 
-        public void CallOnEndTurnEvent()
+        public event Action TurnStarted;
+
+        public event Action TurnEnded;
+
+        public event Action<int> PlayerHpChanged;
+
+        public event Action<int> PlayerGooChanged;
+
+        public event Action<int> PlayerVialGooChanged;
+
+        public event Action<int> DeckChanged;
+
+        public event Action<int> HandChanged;
+
+        public event Action<int> GraveyardChanged;
+
+        public event Action<int> BoardChanged;
+
+        public event Action<WorkingCard> CardPlayed;
+
+        public GameObject PlayerObject { get; }
+
+        public GameObject AvatarObject => _avatarObject.transform.parent.gameObject;
+
+        public Transform Transform => PlayerObject.transform;
+
+        public Hero SelfHero { get; }
+
+        public int GooOnCurrentTurn
         {
-            OnEndTurnEvent?.Invoke();
+            get => _gooOnCurrentTurn;
+            set
+            {
+                _gooOnCurrentTurn = value;
+                _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MaximumPlayerGoo);
+
+                PlayerVialGooChanged?.Invoke(_gooOnCurrentTurn);
+            }
+        }
+
+        public int Goo
+        {
+            get => _goo;
+            set
+            {
+                _goo = Mathf.Clamp(value, 0, 999999);
+
+                PlayerGooChanged?.Invoke(_goo);
+            }
+        }
+
+        public int Health
+        {
+            get => _health;
+            set
+            {
+                int oldHealth = _health;
+                _health = value;
+
+                _health = Mathf.Clamp(_health, 0, 99);
+
+                PlayerHpChanged?.Invoke(_health);
+            }
+        }
+
+        public int GraveyardCardsCount
+        {
+            get => _graveyardCardsCount;
+            set
+            {
+                _graveyardCardsCount = value;
+                _battlegroundController.UpdateGraveyard(_graveyardCardsCount, this);
+            }
+        }
+
+        public bool IsLocalPlayer { get; set; }
+
+        public bool AlreadyAttackedInThisTurn { get; set; }
+
+        public List<BoardUnit> BoardCards { get; set; }
+
+        public List<WorkingCard> CardsInDeck { get; set; }
+
+        public List<WorkingCard> CardsInGraveyard { get; }
+
+        public List<WorkingCard> CardsInHand { get; }
+
+        public List<WorkingCard> CardsOnBoard { get; }
+
+        public List<BoardCard> CardsPreparingToHand { get; set; }
+
+        public bool IsStunned { get; private set; }
+
+        public int BuffedHp { get; set; }
+
+        public int MaxCurrentHp => InitialHp + BuffedHp;
+
+        public void InvokeTurnEnded()
+        {
+            TurnEnded?.Invoke();
             if (Goo > GooOnCurrentTurn)
+            {
                 Goo = GooOnCurrentTurn;
+            }
         }
 
-        public void CallOnStartTurnEvent()
+        public void InvokeTurnStarted()
         {
-            OnStartTurnEvent?.Invoke();
+            TurnStarted?.Invoke();
 
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooOnCurrentTurn++;
-                Goo = GooOnCurrentTurn + currentGooModificator;
-                currentGooModificator = 0;
+                Goo = GooOnCurrentTurn + CurrentGooModificator;
+                CurrentGooModificator = 0;
 
                 if (_turnsLeftToFreeFromStun > 0 && IsStunned)
                 {
@@ -277,14 +269,14 @@ namespace LoomNetwork.CZB
         {
             CardsInDeck.Add(card);
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public void RemoveCardFromDeck(WorkingCard card)
         {
             CardsInDeck.Remove(card);
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
@@ -304,23 +296,29 @@ namespace LoomNetwork.CZB
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
 
             return cardObject;
         }
 
         public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)
         {
-            card.owner = this;
+            card.Owner = this;
 
             CardsInHand.Add(card);
 
-            if(IsLocalPlayer)
-                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this, _cardsController.GetBoardCard(card));
+            if (IsLocalPlayer)
+            {
+                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this,
+                    _cardsController.GetBoardCard(card));
+            }
             else
-                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this, _cardsController.GetOpponentBoardCard(card));
+            {
+                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this,
+                    _cardsController.GetOpponentBoardCard(card));
+            }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
         }
 
         public void RemoveCardFromHand(WorkingCard card, bool silent = false)
@@ -330,28 +328,19 @@ namespace LoomNetwork.CZB
             if (IsLocalPlayer)
             {
                 if (!silent)
+                {
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-            }
-            else
-            {
-                //var randomIndex = UnityEngine.Random.Range(0, _battlegroundController.opponentHandCards.Count);
-                //if (randomIndex < _battlegroundController.opponentHandCards.Count)
-                //{
-                //    var randomCard = _battlegroundController.opponentHandCards[randomIndex];
-                //    _battlegroundController.opponentHandCards.Remove(randomCard);
-                //    MonoBehaviour.Destroy(randomCard);
-                //    _battlegroundController.RearrangeOpponentHand(true);
-                //}
+                }
             }
 
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
         }
 
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
 
-            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+            BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
         public void RemoveCardFromBoard(WorkingCard card)
@@ -367,21 +356,21 @@ namespace LoomNetwork.CZB
                 _battlegroundController.RemoveOpponentCardFromBoardToGraveyard(card);
             }
 
-            BoardChangedEvent?.Invoke(CardsOnBoard.Count);
+            BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
         public void AddCardToGraveyard(WorkingCard card)
         {
             CardsInGraveyard.Add(card);
 
-            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+            GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
         public void RemoveCardFromGraveyard(WorkingCard card)
         {
             CardsInGraveyard.Remove(card);
 
-            GraveyardChangedEvent?.Invoke(CardsInGraveyard.Count);
+            GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
         public void SetDeck(List<string> cards)
@@ -390,25 +379,28 @@ namespace LoomNetwork.CZB
 
             cards = ShuffleCardsList(cards);
 
-            foreach (var card in cards)
+            foreach (string card in cards)
             {
-#if UNITY_EDITOR
-                if (IsLocalPlayer && Constants.DEV_MODE)
+#if DEV_MODE
+                if (IsLocalPlayer)
+                {
                     CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card /* 15 */), this)); // special card id
-                else
+                }
 #endif
-                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
-            DeckChangedEvent?.Invoke(CardsInDeck.Count);
+            DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
         public List<T> ShuffleCardsList<T>(List<T> cards)
         {
-            var array = cards;
+            List<T> array = cards;
 
             if (!_gameplayManager.IsTutorial)
-                InternalTools.ShakeList<T>(ref array);// shake
+            {
+                InternalTools.ShakeList(ref array); // shake
+            }
 
             return array;
         }
@@ -418,29 +410,30 @@ namespace LoomNetwork.CZB
             if (isTutorial)
                 return;
 
-            for (int i = 0; i < Constants.DEFAULT_CARDS_IN_HAND_AT_START_GAME; i++)
+            for (int i = 0; i < Constants.DefaultCardsInHandAtStartGame; i++)
             {
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
+                }
                 else
+                {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
             }
         }
 
         public void DistributeCard()
         {
             if (IsLocalPlayer)
-                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());// CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+            {
+                _cardsController.AddCardToDistributionState(this,
+                    GetCardThatNotInDistribution()); // CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
+            }
             else
-                _cardsController.AddCardToHand(this, CardsInDeck[UnityEngine.Random.Range(0, CardsInDeck.Count)]);
-        }
-
-        private WorkingCard GetCardThatNotInDistribution()
-        {
-            var usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
-            var cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
-
-            return cards[0];
+            {
+                _cardsController.AddCardToHand(this, CardsInDeck[Random.Range(0, CardsInDeck.Count)]);
+            }
         }
 
         public void PlayerDie()
@@ -451,17 +444,19 @@ namespace LoomNetwork.CZB
             _overlordDeathObject.SetActive(true);
 
             _avatarAnimator.enabled = true;
-            _deathAnimamtor.enabled = true;
+            _deathAnimator.enabled = true;
             _avatarHeroHighlight.SetActive(false);
             _avatarAnimator.Play(0);
-            _deathAnimamtor.Play(0);
+            _deathAnimator.Play(0);
 
             _skillsController.DisableSkillsContent(this);
 
-            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HERO_DEATH_SOUND_VOLUME, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume);
 
-            if(!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial)
+            {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+            }
         }
 
         public void SetGlowStatus(bool status)
@@ -471,31 +466,36 @@ namespace LoomNetwork.CZB
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
-            //todo implement logic
-
+            // todo implement logic
             _freezedHighlightObject.SetActive(true);
             IsStunned = true;
             _turnsLeftToFreeFromStun = turnsCount;
 
             _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
-
         }
 
         public void ThrowPlayCardEvent(WorkingCard card)
         {
-            CardPlayedEvent?.Invoke(card);
+            CardPlayed?.Invoke(card);
         }
 
         public void ThrowOnHandChanged()
         {
-            HandChangedEvent?.Invoke(CardsInHand.Count);
+            HandChanged?.Invoke(CardsInHand.Count);
+        }
+
+        private WorkingCard GetCardThatNotInDistribution()
+        {
+            List<WorkingCard> usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
+            List<WorkingCard> cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+
+            return cards[0];
         }
 
         #region handlers
 
-
-        private void PlayerHPChangedEventHandler(int now)
+        private void PlayerHpChangedHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {
@@ -505,26 +505,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        //private void OnTriggerEnter2DEventHandler(Collider2D collider)
-        //{
-        //    if (collider.transform.parent != null)
-        //    {
-        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        //        if (boardArrow != null)
-        //            boardArrow.OnPlayerSelected(this);
-        //    }
-        //}
-
-        //private void OnTriggerExit2DEventHandler(Collider2D collider)
-        //{
-        //    if (collider.transform.parent != null)
-        //    {
-        //        var boardArrow = collider.transform.parent.GetComponent<BoardArrow>();
-        //        if (boardArrow != null)
-        //            boardArrow.OnPlayerUnselected(this);
-        //    }
-        //}
-
         #endregion
+
     }
 }

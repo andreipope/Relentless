@@ -1,47 +1,46 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-using System;
-using UnityEngine;
-using LoomNetwork.CZB;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace LoomNetwork.CZB
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public DeckEditingPage scene;
-        public Card card;
-        public bool isActive;
-        public bool isHordeItem = false;
+        public DeckEditingPage Scene;
+
+        public Card Card;
+
+        public bool IsHordeItem;
+
         private MultiPointerClickHandler _multiPointerClickHandler;
+
+        public void OnScroll(PointerEventData eventData)
+        {
+            Scene?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
+        }
 
         private void Awake()
         {
-            isActive = true;
             _multiPointerClickHandler = gameObject.AddComponent<MultiPointerClickHandler>();
             _multiPointerClickHandler.SingleClickReceived += SingleClickAction;
             _multiPointerClickHandler.DoubleClickReceived += DoubleClickAction;
         }
 
-        public void OnScroll(PointerEventData eventData)
-        {
-            if (scene != null)
-                scene.ScrollCardList(isHordeItem, eventData.scrollDelta);
-        }
-
         private void SingleClickAction()
         {
-            scene.SelectCard(this, card);
+            Scene.SelectCard(this, Card);
         }
 
         private void DoubleClickAction()
         {
-            if (!isHordeItem)
-                scene.AddCardToDeck(this, card);
+            if (!IsHordeItem)
+            {
+                Scene.AddCardToDeck(this, Card);
+            }
             else
-                scene.RemoveCardFromDeck(this, card);
+            {
+                Scene.RemoveCardFromDeck(this, Card);
+            }
         }
     }
 }

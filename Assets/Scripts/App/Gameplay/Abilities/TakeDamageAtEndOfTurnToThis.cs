@@ -1,7 +1,3 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using UnityEngine;
@@ -10,54 +6,40 @@ namespace LoomNetwork.CZB
 {
     public class TakeDamageAtEndOfTurnToThis : AbilityBase
     {
-        public int value = 0;
+        public int Value { get; }
 
-        public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeDamageAtEndOfTurnToThis(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void OnEndTurnEventHandler()
-        {
-            base.OnEndTurnEventHandler();
-
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-                return;
-
-            if (abilityCallType != Enumerators.AbilityCallType.END)
-                return;
-
-            Action();
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, abilityUnitOwner);
-            CreateVFX(abilityUnitOwner.transform.position, true, 5f);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+            CreateVfx(AbilityUnitOwner.Transform.position, true, 5f);
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            Action();
         }
     }
 }

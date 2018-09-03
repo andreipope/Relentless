@@ -1,0 +1,95 @@
+{
+   "Version" : 2,
+   "AlphaSpriteToOpaqueSpriteDictionary" : [
+      
+   ],
+   "SpriteMeshSettings" : [
+      {
+         "k" : {
+            "Guid" : "fc022a97ea6984c79b13da79b0e7d747",
+            "LocalIdentifier" : 21300000,
+            "LastPath" : "Assets/Assets/Sprites/Animations/Feral_Attack/Bite_Attack_001.png"
+         },
+         "v" : {
+            "PlatformSharedTightMeshSettings" : {
+               
+            },
+            "PerPlatformTightMeshSettings" : [
+               
+            ],
+            "DefaultTightMeshSettings" : {
+               "IsOverriding" : true,
+               "ProcessingMethod" : "RectGrid",
+               "SharedTightMeshSettings" : {
+                  "Detail" : 0.3,
+                  "AlphaTolerance" : 10,
+                  "AlphaSourceChannel" : "Alpha"
+               },
+               "UnityMethodTightMeshSettings" : {
+                  "VertexMergeDistance" : 3,
+                  "DetectHoles" : true
+               },
+               "AlphaSeparationTightMeshSettings" : {
+                  "OpaqueVertexMergeDistance" : 2,
+                  "OpaqueNegativeExtrude" : 3,
+                  "ReduceAlphaBleed" : false,
+                  "OpaqueAlphaTolerance" : 254
+               },
+               "PreciseTightMeshSettings" : {
+                  "EdgeInflation" : 2
+               },
+               "RectGridTightMeshSettings" : {
+                  "XSubdivisions" : 5,
+                  "YSubdivisions" : 5,
+                  "CullByBoundingBox" : true,
+                  "RemoveEmptyCells" : true,
+                  "ScaleAroundCenter" : 0
+               }
+            }
+         }
+      }
+   ],
+   "Preferences" : {
+      "IsDisabled" : false,
+      "SkipTextureSpriteExtrude" : false,
+      "WorkaroundSpriteAtlasRepacking" : true,
+      "ReimportChangedSpritesOnDatabaseMismatch" : true,
+      "DefaultSettings" : {
+         "PlatformSharedTightMeshSettings" : {
+            
+         },
+         "PerPlatformTightMeshSettings" : [
+            
+         ],
+         "DefaultTightMeshSettings" : {
+            "IsOverriding" : false,
+            "ProcessingMethod" : "Normal",
+            "SharedTightMeshSettings" : {
+               "Detail" : 0.3,
+               "AlphaTolerance" : 10,
+               "AlphaSourceChannel" : "Alpha"
+            },
+            "UnityMethodTightMeshSettings" : {
+               "VertexMergeDistance" : 3,
+               "DetectHoles" : true
+            },
+            "AlphaSeparationTightMeshSettings" : {
+               "OpaqueVertexMergeDistance" : 2,
+               "OpaqueNegativeExtrude" : 3,
+               "ReduceAlphaBleed" : false,
+               "OpaqueAlphaTolerance" : 254
+            },
+            "PreciseTightMeshSettings" : {
+               "EdgeInflation" : 2
+            },
+            "RectGridTightMeshSettings" : {
+               "XSubdivisions" : 5,
+               "YSubdivisions" : 5,
+               "CullByBoundingBox" : true,
+               "RemoveEmptyCells" : true,
+               "ScaleAroundCenter" : 0
+            }
+         }
+      }
+   }
+}

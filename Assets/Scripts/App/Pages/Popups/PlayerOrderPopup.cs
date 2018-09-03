@@ -1,52 +1,43 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using LoomNetwork.CZB.Data;
 using DG.Tweening;
 using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace LoomNetwork.CZB
 {
     public class PlayerOrderPopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
         private ILoadObjectsManager _loadObjectsManager;
-        private IUIManager _uiManager;
-        private IGameplayManager _gameplayManager;
-        private ITimerManager _timerManager;
-        private ISoundManager _soundManager;
 
-        private GameObject _selfPage;
+        private IUIManager _uiManager;
+
+        private IGameplayManager _gameplayManager;
+
+        private ITimerManager _timerManager;
+
+        private ISoundManager _soundManager;
 
         private Animator _selfAnimator;
 
+        private TextMeshProUGUI _playerOverlordNameText, _opponentOverlordNameText;
 
-        private TextMeshProUGUI _playerOverlordNameText,
-                                _opponentOverlordNameText;
-
-        private Image _playerOverlordPicture,
-                      _opponentOverlordPicture;
+        private Image _playerOverlordPicture, _opponentOverlordPicture;
 
         private GameObject _opponentTurnRootObject,
-                           _opponentFirstTurnObject,
-                           _opponentSecondTurnObject,
-                           _opponentCardBackObject,
-                           _opponentCardFrontObject;
+            _opponentFirstTurnObject,
+            _opponentSecondTurnObject,
+            _opponentCardBackObject,
+            _opponentCardFrontObject;
 
         private GameObject _playerTurnRootObject,
-                           _playerFirstTurnObject,
-                           _playerSecondTurnObject,
-                           _playerCardBackObject,
-                           _playerCardFrontObject;
+            _playerFirstTurnObject,
+            _playerSecondTurnObject,
+            _playerCardBackObject,
+            _playerCardFrontObject;
 
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
@@ -56,7 +47,6 @@ namespace LoomNetwork.CZB
             _timerManager = GameClient.Get<ITimerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
         }
-
 
         public void Dispose()
         {
@@ -76,12 +66,12 @@ namespace LoomNetwork.CZB
             _opponentFirstTurnObject.SetActive(false);
             _opponentSecondTurnObject.SetActive(false);
 
-            if (_selfPage == null)
+            if (Self == null)
                 return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
         }
 
         public void SetMainPriority()
@@ -90,30 +80,32 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _selfAnimator = _selfPage.GetComponent<Animator>();
+            _selfAnimator = Self.GetComponent<Animator>();
 
-            _playerOverlordNameText = _selfPage.transform.Find("Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
-            _opponentOverlordNameText = _selfPage.transform.Find("Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
+            _playerOverlordNameText = Self.transform.Find("Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
+            _opponentOverlordNameText =
+                Self.transform.Find("Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
 
-            _playerOverlordPicture = _selfPage.transform.Find("Image_PlayerOverlord").GetComponent<Image>();
-            _opponentOverlordPicture = _selfPage.transform.Find("Image_OpponentOverlord").GetComponent<Image>();
+            _playerOverlordPicture = Self.transform.Find("Image_PlayerOverlord").GetComponent<Image>();
+            _opponentOverlordPicture = Self.transform.Find("Image_OpponentOverlord").GetComponent<Image>();
 
-            _opponentTurnRootObject = _selfPage.transform.Find("Item_OpponentOverlordTurn").gameObject;
-            _opponentFirstTurnObject = _selfPage.transform.Find("Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
-            _opponentSecondTurnObject = _selfPage.transform.Find("Item_OpponentOverlordTurn/Image_SecondTurn").gameObject;
-            _opponentCardBackObject = _selfPage.transform.Find("Item_OpponentOverlordTurn/Image_BackCard").gameObject;
-            _opponentCardFrontObject = _selfPage.transform.Find("Item_OpponentOverlordTurn/Image_FrontCard").gameObject;
+            _opponentTurnRootObject = Self.transform.Find("Item_OpponentOverlordTurn").gameObject;
+            _opponentFirstTurnObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
+            _opponentSecondTurnObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_SecondTurn").gameObject;
+            _opponentCardBackObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_BackCard").gameObject;
+            _opponentCardFrontObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_FrontCard").gameObject;
 
-            _playerTurnRootObject = _selfPage.transform.Find("Item_PlayerOverlordTurn").gameObject;
-            _playerFirstTurnObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_FirstTurn").gameObject;
-            _playerSecondTurnObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_SecondTurn").gameObject;
-            _playerCardBackObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_BackCard").gameObject;
-            _playerCardFrontObject = _selfPage.transform.Find("Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
+            _playerTurnRootObject = Self.transform.Find("Item_PlayerOverlordTurn").gameObject;
+            _playerFirstTurnObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_FirstTurn").gameObject;
+            _playerSecondTurnObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_SecondTurn").gameObject;
+            _playerCardBackObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_BackCard").gameObject;
+            _playerCardFrontObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
 
-            _selfPage.SetActive(true);
+            Self.SetActive(true);
             _selfAnimator.Play(0);
         }
 
@@ -121,55 +113,57 @@ namespace LoomNetwork.CZB
         {
             Show();
 
-            object[] param = (object[])data;
+            object[] param = (object[]) data;
 
-            ApplyInfoAboutHeroes((Hero)param[0], (Hero)param[1]);
+            ApplyInfoAboutHeroes((Hero) param[0], (Hero) param[1]);
         }
 
         public void Update()
         {
-
         }
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.text = player.name.ToUpper();
-            _opponentOverlordNameText.text = opponent.name.ToUpper();
+            _playerOverlordNameText.text = player.Name.ToUpper();
+            _opponentOverlordNameText.text = opponent.Name.ToUpper();
 
-            _playerOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + player.element.ToLower());
-            _opponentOverlordPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" + opponent.element.ToLower());
+            _playerOverlordPicture.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" +
+                    player.Element.ToLower());
+            _opponentOverlordPicture.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Overlords/abilityselect_hero_" +
+                    opponent.Element.ToLower());
 
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
 
-            // _timerManager.AddTimer((t) =>
-            //   {
             DoAnimationOfWhoseTurn();
 
-
-            // return;
-            _timerManager.AddTimer((x) =>
-            {
-                _selfAnimator.SetTrigger("Exit");
-
-                _timerManager.AddTimer((y) =>
+            _timerManager.AddTimer(
+                x =>
                 {
-                    _uiManager.HidePopup<PlayerOrderPopup>();
+                    _selfAnimator.SetTrigger("Exit");
 
-                    _gameplayManager.GetController<PlayerController>().SetHand();
-                    _gameplayManager.GetController<CardsController>().StartCardDistribution();
-                }, null, 1.2f);
+                    _timerManager.AddTimer(
+                        y =>
+                        {
+                            _uiManager.HidePopup<PlayerOrderPopup>();
 
-            }, null, 6f);
-            //}, null, 0.9f);
+                            _gameplayManager.GetController<PlayerController>().SetHand();
+                            _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                        },
+                        null,
+                        1.2f);
+                },
+                null,
+                6f);
         }
 
         private void DoAnimationOfWhoseTurn()
         {
-            int turnsCount = 23;
-            float rotateTime = 0.125f;
-            float rotateAngle = 90f;
-            RotateMode mode = RotateMode.Fast;
+            const int turnsCount = 23;
+            const float rotateTime = 0.125f;
+            const float rotateAngle = 90f;
 
             _playerCardBackObject.SetActive(true);
             _playerCardFrontObject.SetActive(false);
@@ -191,21 +185,25 @@ namespace LoomNetwork.CZB
             bool startWithSecondPlayer = !isLatestSecondPlayer;
 
             // opponent
-
             Sequence sequenceOpponent = DOTween.Sequence();
 
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequenceOpponent.Append(_opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
-                sequenceOpponent.AppendCallback(() =>
-                {
-                    if ((Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45) ||
-                        (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45))
+                sequenceOpponent.Append(
+                    _opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
+                sequenceOpponent.AppendCallback(
+                    () =>
                     {
-                        CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index, ref startWithSecondOpponent);
-                    }
-                });
+                        if (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
+                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
+                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
+                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
+                        {
+                            CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index,
+                                ref startWithSecondOpponent);
+                        }
+                    });
             }
 
             sequenceOpponent.Play();
@@ -215,35 +213,39 @@ namespace LoomNetwork.CZB
             for (int i = 1; i < turnsCount; i++)
             {
                 int index = i;
-                sequence.Append(_playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime, mode));
-                sequence.AppendCallback(() =>
-                {
-                    if ((Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45) ||
-                        (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 && Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45))
+                sequence.Append(
+                    _playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
+                sequence.AppendCallback(
+                    () =>
                     {
-                        CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index, ref startWithSecondPlayer);
-                    }
-                    if (index == turnsCount - 1)
-                        _soundManager.StopPlaying(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
-                });
+                        if (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
+                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
+                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
+                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
+                        {
+                            CheckPlayerObjects(ref isFrontViewPlayer, isLatestSecondPlayer, index,
+                                ref startWithSecondPlayer);
+                        }
+
+                        if (index == turnsCount - 1)
+                        {
+                            _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                        }
+                    });
             }
 
             sequence.Play();
 
-
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SFX_SOUND_VOLUME, true, false, false);
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
         }
 
-
-
-
-        private void CheckPlayerObjects(ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)
+        private void CheckPlayerObjects(
+            ref bool isFrontView, bool isLatestSecondPlayer, int index, ref bool startWithSecondPlayer)
         {
             isFrontView = !isFrontView;
 
             _playerCardFrontObject.SetActive(isFrontView);
             _playerCardBackObject.SetActive(!isFrontView);
-
 
             float finalRotate = _playerTurnRootObject.transform.localEulerAngles.y;
 
@@ -299,7 +301,8 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void CheckOpponentObjects(ref bool isFrontView, bool isLatestSecondOpponent, int index, ref bool startWithSecondOpponent)
+        private void CheckOpponentObjects(
+            ref bool isFrontView, bool isLatestSecondOpponent, int index, ref bool startWithSecondOpponent)
         {
             isFrontView = !isFrontView;
 

@@ -1,38 +1,23 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using LoomNetwork.CZB.Gameplay;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class PreparingForBattlePopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
-        private IUIManager _uiManager;
-        private GameObject _selfPage;
 
+        private IUIManager _uiManager;
+
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
         }
-
 
         public void Dispose()
         {
@@ -42,15 +27,13 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
 
-            OnHidePopupEvent?.Invoke();
-
-            if (_selfPage == null)
+            if (Self == null)
                 return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
-		}
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
+        }
 
         public void SetMainPriority()
         {
@@ -60,8 +43,9 @@ namespace LoomNetwork.CZB
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
         }
 
         public void Show(object data)
@@ -71,8 +55,6 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-
         }
-
     }
 }

@@ -1,77 +1,54 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class StunAbility : AbilityBase
     {
-        public Enumerators.StatType statType;
-        public int value = 1;
+        public Enumerators.StatType StatType { get; }
 
+        public int Value { get; }
 
-        public StunAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public StunAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.value = ability.value;
+            StatType = ability.AbilityStatType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (abilityEffectType)
+            switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_FREEZES:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
-            
         }
 
-        public override void Update()
+        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
         {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
-            if (abilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
-            if(info is BoardUnit)
-            {
-                var creature = info as BoardUnit;
-                creature.Stun(Enumerators.StunType.FREEZE, value);
-				CreateVFX(creature.transform.position);
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
-                {
-                    abilityUnitOwner,
-                    creature
-                }));
+            if (info is BoardUnit)
+            {
+                BoardUnit creature = info as BoardUnit;
+                creature.Stun(Enumerators.StunType.FREEZE, Value);
+                CreateVfx(creature.Transform.position);
+
+                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                    Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
+                    {
+                        AbilityUnitOwner, creature
+                    }));
             }
         }
     }

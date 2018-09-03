@@ -1,7 +1,3 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using UnityEngine;
@@ -10,47 +6,22 @@ namespace LoomNetwork.CZB
 {
     public class ReanimateAbility : AbilityBase
     {
-        public ReanimateAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReanimateAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-           
-        }
-
-        public override void Activate()
-        {
-            base.Activate();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void UnitOnDieEventHandler()
-        {
-            base.UnitOnDieEventHandler();
-
-            if (abilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
-            Action();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (abilityUnitOwner.IsReanimated)
+            if (AbilityUnitOwner.IsReanimated)
                 return;
 
-            var owner = abilityUnitOwner.ownerPlayer;
-            var libraryCard = abilityUnitOwner.Card.libraryCard.Clone();
-            var card = new WorkingCard(libraryCard, owner);
-            var unit = CreateBoardUnit(card, owner);
+            Player owner = AbilityUnitOwner.OwnerPlayer;
+            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
+            WorkingCard card = new WorkingCard(libraryCard, owner);
+            BoardUnit unit = CreateBoardUnit(card, owner);
             unit.IsReanimated = true;
 
             owner.AddCardToBoard(card);
@@ -58,35 +29,50 @@ namespace LoomNetwork.CZB
 
             if (!owner.IsLocalPlayer)
             {
-                _battlegroundController.opponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                BattlegroundController.OpponentBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
             }
             else
             {
-                _battlegroundController.playerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                BattlegroundController.PlayerBoardCards.Add(unit);
+                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]
-            {
-                owner,
-                unit
-            }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]
+                {
+                    owner, unit
+                }));
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            Action();
         }
 
         private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
         {
-            GameObject _playerBoard = owner.IsLocalPlayer ? _battlegroundController.playerBoardObject : _battlegroundController.opponentBoardObject;
+            GameObject playerBoard = owner.IsLocalPlayer ?
+                BattlegroundController.PlayerBoardObject :
+                BattlegroundController.OpponentBoardObject;
 
-            var boardUnit = new BoardUnit(_playerBoard.transform);
-            boardUnit.transform.tag = owner.IsLocalPlayer ? Constants.TAG_PLAYER_OWNED : Constants.TAG_OPPONENT_OWNED;
-            boardUnit.transform.parent = _playerBoard.transform;
-            boardUnit.transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnit.ownerPlayer = owner;
+            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
+            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnit.Transform.parent = playerBoard.transform;
+            boardUnit.Transform.position =
+                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnit.OwnerPlayer = owner;
             boardUnit.SetObjectInfo(card);
 
-            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
+            {
                 boardUnit.IsPlayable = true;
+            }
 
             boardUnit.PlayArrivalAnimation();
 

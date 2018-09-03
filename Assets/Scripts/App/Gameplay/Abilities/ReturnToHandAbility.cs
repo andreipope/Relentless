@@ -1,83 +1,85 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class ReturnToHandAbility : AbilityBase
     {
-        public int value = 1;
+        public int Value { get; }
 
-        public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
         }
 
-        public override void Update() { }
-
-        public override void Dispose() { }
-
-        protected override void OnInputEndEventHandler()
+        public override void Update()
         {
-            base.OnInputEndEventHandler();
+        }
 
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
+        public override void Dispose()
+        {
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            Player unitOwner = targetUnit.ownerPlayer;
-            WorkingCard returningCard = targetUnit.Card;
+            Player unitOwner = TargetUnit.OwnerPlayer;
+            WorkingCard returningCard = TargetUnit.Card;
 
-            returningCard.initialCost = returningCard.libraryCard.cost;
-            returningCard.realCost = returningCard.initialCost;
+            returningCard.InitialCost = returningCard.LibraryCard.Cost;
+            returningCard.RealCost = returningCard.InitialCost;
 
-            Vector3 unitPosition = targetUnit.transform.position;
+            Vector3 unitPosition = TargetUnit.Transform.position;
 
-            CreateVFX(unitPosition, true, 3f, true);
+            CreateVfx(unitPosition, true, 3f, true);
 
-            _timerManager.AddTimer((x) =>
-            {
-                // STEP 1 - REMOVE UNIT FROM BOARD
-                unitOwner.BoardCards.Remove(targetUnit);
-
-                // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
-                targetUnit.Die(true);
-                MonoBehaviour.Destroy(targetUnit.gameObject);
-
-                // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                unitOwner.RemoveCardFromBoard(returningCard);
-
-                // STEP 4 - RETURN CARD TO HAND
-                _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-                // STEP 4 - REARRANGE HANDS
-                _gameplayManager.RearrangeHands();
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+            TimerManager.AddTimer(
+                x =>
                 {
-                playerCallerOfAbility,
-                abilityData,
-                targetUnit
-                }));
-            }, null, 2f);
+                    // STEP 1 - REMOVE UNIT FROM BOARD
+                    unitOwner.BoardCards.Remove(TargetUnit);
+
+                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
+                    TargetUnit.Die(true);
+                    Object.Destroy(TargetUnit.GameObject);
+
+                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
+                    unitOwner.RemoveCardFromBoard(returningCard);
+
+                    // STEP 4 - RETURN CARD TO HAND
+                    CardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+
+                    // STEP 4 - REARRANGE HANDS
+                    GameplayManager.RearrangeHands();
+
+                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                        Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+                        {
+                            PlayerCallerOfAbility, AbilityData, TargetUnit
+                        }));
+                },
+                null,
+                2f);
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+            }
         }
     }
 }

@@ -1,52 +1,42 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class TakeDefenseIfOverlordHasLessDefenseThanAbility : AbilityBase
     {
-        public int value;
-        public int health;
+        public int Value;
 
-        public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int Health;
+
+        public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
-            this.health = ability.health;
+            Value = ability.Value;
+            Health = ability.Health;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if(playerCallerOfAbility.HP <= health)
+            if (PlayerCallerOfAbility.Health <= Health)
             {
-                abilityUnitOwner.BuffedHP += value;
-                abilityUnitOwner.CurrentHP += value;
-
-               // CreateVFX(abilityUnitOwner.transform.position, true, 5f);
+                AbilityUnitOwner.BuffedHp += Value;
+                AbilityUnitOwner.CurrentHp += Value;
             }
         }
     }

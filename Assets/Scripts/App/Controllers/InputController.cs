@@ -1,6 +1,6 @@
-﻿using LoomNetwork.CZB.Common;
 using System;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
 
 namespace LoomNetwork.CZB
@@ -8,24 +8,22 @@ namespace LoomNetwork.CZB
     public class InputController : IController
     {
         public Action<BoardUnit> UnitSelectedEvent;
+
         public Action<BoardUnit> UnitDeselectedEvent;
+
         public Action<BoardUnit> UnitSelectingEvent;
 
         public Action<Player> PlayerSelectedEvent;
+
         public Action<Player> PlayerSelectingEvent;
 
         public Action NoObjectsSelectedEvent;
-
 
         private IGameplayManager _gameplayManager;
 
         private Camera _raysCamera;
 
         private List<BoardUnit> _selectedUnitsList;
-
-        private int _unitsLayerMask = 9;
-        private int _playersLayerMask = 9;
-
 
         public void Dispose()
         {
@@ -51,30 +49,30 @@ namespace LoomNetwork.CZB
             _selectedUnitsList.Clear();
         }
 
-
         private void HandleInput()
         {
             if (Application.isMobilePlatform)
             {
-                foreach (var touch in Input.touches)
+                foreach (Touch touch in Input.touches)
                 {
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
-                            CastRay(touch.position, _unitsLayerMask);
+                            CastRay(touch.position, SRLayerMask.Default);
                             break;
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                            CastRay(touch.position, _unitsLayerMask, true);
+                            CastRay(touch.position, SRLayerMask.Default, true);
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
-                            foreach (var unit in _selectedUnitsList)
+                            foreach (BoardUnit unit in _selectedUnitsList)
+                            {
                                 UnitDeselectedEvent?.Invoke(unit);
+                            }
+
                             _selectedUnitsList.Clear();
                             break;
-                        default: break;
-
                     }
                 }
             }
@@ -82,20 +80,22 @@ namespace LoomNetwork.CZB
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    CastRay(Input.mousePosition, _unitsLayerMask);
+                    CastRay(Input.mousePosition, SRLayerMask.Default);
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    CastRay(Input.mousePosition, _unitsLayerMask, true);
+                    CastRay(Input.mousePosition, SRLayerMask.Default, true);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    foreach (var unit in _selectedUnitsList)
+                    foreach (BoardUnit unit in _selectedUnitsList)
+                    {
                         UnitDeselectedEvent?.Invoke(unit);
+                    }
+
                     _selectedUnitsList.Clear();
                 }
             }
-
         }
 
         private void CastRay(Vector3 origin, int layerMask, bool permanent = false)
@@ -104,12 +104,14 @@ namespace LoomNetwork.CZB
 
             Vector3 point = _raysCamera.ScreenToWorldPoint(origin);
 
-            var hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << layerMask);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << layerMask);
 
             if (hits.Length > 0)
             {
-                foreach (var hit in hits)
+                foreach (RaycastHit2D hit in hits)
+                {
                     CheckColliders(hit.collider, permanent);
+                }
             }
             else
             {
@@ -119,68 +121,76 @@ namespace LoomNetwork.CZB
 
         private void CheckColliders(Collider2D collider, bool permanent = false)
         {
-            if(collider.name.Equals(Constants.PLAYER_BOARD) ||
-               collider.name.Equals(Constants.OPPONENT_BOARD))
+            if (collider.name.Equals(Constants.PlayerBoard) || collider.name.Equals(Constants.OpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
-
                 return;
             }
 
             // check on units
-
             bool hasTarget = false;
 
-            foreach (var unit in _gameplayManager.CurrentPlayer.BoardCards)
+            foreach (BoardUnit unit in _gameplayManager.CurrentPlayer.BoardCards)
             {
-                if (unit.gameObject == collider.gameObject)
+                if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
 
                     if (!permanent)
                     {
                         if (!_selectedUnitsList.Contains(unit))
+                        {
                             _selectedUnitsList.Add(unit);
+                        }
+
                         UnitSelectedEvent?.Invoke(unit);
                     }
                     else
                     {
                         UnitSelectingEvent?.Invoke(unit);
                     }
+
                     break;
                 }
             }
 
-            foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
+            foreach (BoardUnit unit in _gameplayManager.OpponentPlayer.BoardCards)
             {
-                if (unit.gameObject == collider.gameObject)
+                if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
 
                     if (!permanent)
                     {
                         if (!_selectedUnitsList.Contains(unit))
+                        {
                             _selectedUnitsList.Add(unit);
+                        }
+
                         UnitSelectedEvent?.Invoke(unit);
                     }
                     else
                     {
                         UnitSelectingEvent?.Invoke(unit);
                     }
+
                     break;
                 }
             }
 
             // check on players
-
             if (_gameplayManager.CurrentPlayer.AvatarObject == collider.gameObject)
             {
                 hasTarget = true;
 
                 if (!permanent)
+                {
                     PlayerSelectedEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                }
                 else
+                {
                     PlayerSelectingEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                }
             }
 
             if (_gameplayManager.OpponentPlayer.AvatarObject == collider.gameObject)
@@ -188,13 +198,19 @@ namespace LoomNetwork.CZB
                 hasTarget = true;
 
                 if (!permanent)
+                {
                     PlayerSelectedEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                }
                 else
+                {
                     PlayerSelectingEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                }
             }
 
-            if(!hasTarget)
+            if (!hasTarget)
+            {
                 NoObjectsSelectedEvent?.Invoke();
+            }
         }
     }
 }

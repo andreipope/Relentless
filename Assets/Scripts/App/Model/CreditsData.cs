@@ -1,40 +1,33 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace LoomNetwork.CZB.Data
 {
     public class CreditsData
     {
-        public List<CreditsInfo> creditsInfo;
+        public List<CreditsInfo> CreditsInfo;
 
         public CreditsData()
         {
-            creditsInfo = new List<CreditsInfo>();
+            CreditsInfo = new List<CreditsInfo>();
         }
     }
 
     public class CreditsInfo
     {
-        public string subsectionType;
-        public List<CreditItem> credits;
+        public string SubsectionType;
+
+        public List<CreditItem> Credits;
 
         public CreditsInfo()
         {
-            credits = new List<CreditItem>();
+            Credits = new List<CreditItem>();
         }
     }
 
     public class CreditItem
     {
         public string FullName;
-        public string Post;
 
-        public CreditItem() { }
+        public string Post;
     }
 }

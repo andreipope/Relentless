@@ -1,111 +1,111 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
-using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
-using UnityEngine;
 using LoomNetwork.CZB.Data;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class DeactivateTargetAbility : AbilityBase
     {
+        public int Value = 1;
+
         private int _turnsLength;
 
-        public int value = 1;
-
-        public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1) : base(cardKind, ability)
+        public DeactivateTargetAbility(Enumerators.CardKind cardKind, AbilityData ability, int value = 1)
+            : base(cardKind, ability)
         {
-            this.value = value;
+            Value = value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-            _turnsLength = (int)(value);
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
+            _turnsLength = Value;
         }
 
-        public override void Update() { }
-
-        public override void Dispose() { }
-
-        protected override void OnInputEndEventHandler()
+        public override void Update()
         {
-            base.OnInputEndEventHandler();
-
-            if (_isAbilityResolved)
-            {
-                Action();
-            }
         }
-        protected override void OnEndTurnEventHandler()
+
+        public override void Dispose()
         {
-            base.OnEndTurnEventHandler();
-
-            _turnsLength--;
-
-            if (_turnsLength <= 0)
-            {
-                if (this.cardKind == Enumerators.CardKind.CREATURE)
-                {
-                    // targetCreature.Card.DisconnectAbility((uint)abilityType);
-                    UnitOnDieEventHandler();
-                }
-                else if (this.cardKind == Enumerators.CardKind.SPELL)
-                {
-                    SpellOnUsedEventHandler();
-
-                    _abilitiesController.DeactivateAbility(activityId);
-                }
-            }
         }
 
-
-        protected override void OnStartTurnEventHandler()
-        {
-            base.OnStartTurnEventHandler();
-
-            if (_turnsLength > 0)
-            {
-                if (targetUnit != null)
-                {
-                    targetUnit.Card.IsPlayable = false;
-                    targetUnit.SetHighlightingEnabled(false);
-                }
-                else
-                {
-                    if (this.cardKind == Enumerators.CardKind.CREATURE)
-                    {
-                        UnitOnDieEventHandler();
-                    }
-                    else if (this.cardKind == Enumerators.CardKind.SPELL)
-                    {
-
-                        SpellOnUsedEventHandler();
-                        _abilitiesController.DeactivateAbility(activityId);
-                    }
-                }
-            }
-        }
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            switch (affectObjectType)
+            switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.CHARACTER:
 
-                    targetUnit.Card.IsPlayable = false;
-                    targetUnit.SetHighlightingEnabled(false);
+                    TargetUnit.Card.IsPlayable = false;
+                    TargetUnit.SetHighlightingEnabled(false);
 
-                    CreateVFX(targetUnit.transform.position);
+                    CreateVfx(TargetUnit.Transform.position);
                     break;
-                default: break;
+            }
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+            }
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            _turnsLength--;
+
+            if (_turnsLength > 0)
+                return;
+
+            switch (CardKind)
+            {
+                case Enumerators.CardKind.CREATURE:
+                    UnitDiedHandler();
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    UsedHandler();
+
+                    AbilitiesController.DeactivateAbility(ActivityId);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected override void TurnStartedHandler()
+        {
+            base.TurnStartedHandler();
+
+            if (_turnsLength > 0)
+            {
+                if (TargetUnit != null)
+                {
+                    TargetUnit.Card.IsPlayable = false;
+                    TargetUnit.SetHighlightingEnabled(false);
+                }
+                else
+                {
+                    if (CardKind == Enumerators.CardKind.CREATURE)
+                    {
+                        UnitDiedHandler();
+                    }
+                    else if (CardKind == Enumerators.CardKind.SPELL)
+                    {
+                        UsedHandler();
+                        AbilitiesController.DeactivateAbility(ActivityId);
+                    }
+                }
             }
         }
     }

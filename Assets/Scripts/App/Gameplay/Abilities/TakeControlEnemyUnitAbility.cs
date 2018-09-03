@@ -1,40 +1,22 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using LoomNetwork.CZB.Common;
+﻿using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
 namespace LoomNetwork.CZB
 {
     public class TakeControlEnemyUnitAbility : AbilityBase
     {
-        public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
         }
 
-        public override void Activate()
+        protected override void InputEndedHandler()
         {
-            base.Activate();
-        }
+            base.InputEndedHandler();
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-
-            if(_isAbilityResolved)
+            if (IsAbilityResolved)
             {
-                _battlegroundController.TakeControlUnit(playerCallerOfAbility, targetUnit);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
             }
         }
     }

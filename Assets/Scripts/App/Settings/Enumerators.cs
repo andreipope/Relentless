@@ -1,157 +1,47 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
- namespace LoomNetwork.CZB.Common
+namespace LoomNetwork.CZB.Common
 {
     public class Enumerators
     {
-        public enum AppState
+        public enum AbilityActivityType
         {
-            NONE,
-            APP_INIT,
-            LOGIN,
-			MAIN_MENU,
-            HERO_SELECTION,
-			DECK_SELECTION,
-            COLLECTION,
-            SHOP,
-            GAMEPLAY,
-            DECK_EDITING,
-            PACK_OPENER,
-            CREDITS
+            PASSIVE,
+            ACTIVE
         }
 
-        public enum ButtonState
+        public enum AbilityCallType
         {
-            ACTIVE,
-            DEFAULT
-        }
-
-        public enum SoundType : int
-        {
-            CLICK,
-            OTHER,
-            BACKGROUND,
-            BATTLEGROUND,
-            TUTORIAL,
-            CARDS,
-            END_TURN,
-            OVERLORD_ABILITIES,
-            SPELLS,
-
-            WALKER_ARRIVAL,
-            FERAL_ARRIVAL,
-            HEAVY_ARRIVAL,
-
-            FERAL_ATTACK,
-            HEAVY_ATTACK_1,
-            HEAVY_ATTACK_2,
-            WALKER_ATTACK_1,
-            WALKER_ATTACK_2,
-
-
-            HERO_DEATH,
-            LOGO_APPEAR,
-
-            CARD_BATTLEGROUND_TO_TRASH,
-            CARD_DECK_TO_HAND_MULTIPLE,
-            CARD_DECK_TO_HAND_SINGLE,
-            CARD_FLY_HAND,
-            CARD_FLY_HAND_TO_BATTLEGROUND,
-
-            CHANGE_SCREEN,
-
-            DECKEDITING_ADD_CARD,
-            DECKEDITING_REMOVE_CARD,
-
-            LOST_POPUP,
-            WON_POPUP,
-            WON_REWARD_POPUP,
-            YOURTURN_POPUP,
-
-            SHUTTERS_CLOSING,
-            SHUTTERS_OPEN,
-
-            GOO_OVERFLOW_FADE_IN,
-            GOO_OVERFLOW_FADE_LOOP,
-            GOO_OVERFLOW_FADE_OUT
-        }
-
-        public enum CardSoundType
-        {
-            NONE,
+            TURN,
+            ENTRY,
+            END,
             ATTACK,
             DEATH,
-            PLAY
+            PERMANENT,
+            GOT_DAMAGE,
+            AT_DEFENCE,
+            IN_HAND
         }
 
-        public enum NotificationType
-        {
-            LOG,
-            ERROR,
-            WARNING,
-
-            MESSAGE
-        }
-
-        public enum Language
+        public enum AbilityEffectType
         {
             NONE,
-
-            DE,
-            EN,
-            RU
+            MASSIVE_WATER_WAVE,
+            MASSIVE_FIRE,
+            MASSIVE_LIGHTNING,
+            MASSIVE_TOXIC_ALL,
+            TARGET_ROCK,
+            TARGET_FIRE,
+            TARGET_LIFE,
+            TARGET_TOXIC,
+            TARGET_WATER,
+            TARGET_ADJUSTMENTS_BOMB,
+            STUN_FREEZES,
+            STUN_OR_DAMAGE_FREEZES,
+            TARGET_ADJUSTMENTS_AIR,
+            HEAL_DIRECTLY,
+            HEAL
         }
 
-        public enum ScreenOrientationMode
-        {
-            PORTRAIT,
-            LANDSCAPE
-        }
-
-        public enum CacheDataType
-        {
-			CARDS_LIBRARY_DATA,
-			HEROES_DATA,
-			COLLECTION_DATA,
-            DECKS_DATA,
-            DECKS_OPPONENT_DATA,
-            USER_LOCAL_DATA,
-            OPPONENT_ACTIONS_LIBRARY_DATA,
-            CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA
-        }
-
-        public enum NotificationButtonState
-        {
-            ACTIVE,
-            INACTIVE
-        }
-
-        public enum MouseCode
-        {
-            LEFT_MOUSE_BUTTON = 0,
-            RIGHT_MOUSE_BUTTON,
-            WHEEL_MOUSE,
-            OTHER
-        }
-
-        public enum InputType
-        {
-            KEYBOARD = 0,
-            MOUSE,
-            TOUCH
-        }
-
-        public enum FadeState
-        {
-            DEFAULT,
-            FADED
-        }
-
-        public enum SkillTargetType
+        public enum AbilityTargetType
         {
             NONE,
             PLAYER,
@@ -160,37 +50,8 @@
             OPPONENT,
             OPPONENT_CARD,
             OPPONENT_ALL_CARDS,
-            ALL_CARDS
-        }
-
-        public enum CardKind
-        {
-            CREATURE,
-            SPELL,
-        }
-
-        public enum CardType
-        {
-            WALKER,
-            FERAL,
-            HEAVY,
-
-            NONE
-        }
-
-        public enum CardRank
-        {
-            MINION,
-            OFFICER,
-            COMMANDER,
-            GENERAL,
-        }
-
-        public enum GameEndCondition
-        {
-            LIFE,
-            TIME,
-            TURN,
+            ALL_CARDS,
+            ALL
         }
 
         public enum AbilityType
@@ -198,8 +59,8 @@
             HEAL,
             MODIFICATOR_STATS,
             CHANGE_STAT,
-			STUN,
-			STUN_OR_DAMAGE_ADJUSTMENTS,
+            STUN,
+            STUN_OR_DAMAGE_ADJUSTMENTS,
             SPURT,
             ADD_GOO_VIAL,
             ADD_GOO_CARRIER,
@@ -207,8 +68,8 @@
             SUMMON,
             SPELL_ATTACK,
             MASSIVE_DAMAGE,
-			DAMAGE_TARGET_ADJUSTMENTS,
-			DAMAGE_TARGET,
+            DAMAGE_TARGET_ADJUSTMENTS,
+            DAMAGE_TARGET,
             CARD_RETURN,
             WEAPON,
             CHANGE_STAT_OF_CREATURES_BY_TYPE,
@@ -256,110 +117,6 @@
             RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS
         }
 
-        public enum AbilityActivityType
-        {
-            PASSIVE,
-            ACTIVE
-        }
-
-        public enum AbilityCallType
-        {
-            TURN,
-            ENTRY,
-            END,
-            ATTACK,
-            DEATH,
-
-            PERMANENT,
-            GOT_DAMAGE,
-            AT_DEFENCE,
-
-            IN_HAND
-        }
-
-        public enum StatType
-        {
-            HEALTH,
-            DAMAGE,
-
-            NONE
-        }
-
-        public enum AbilityTargetType
-        {
-            NONE,
-            PLAYER,
-            PLAYER_CARD,
-            PLAYER_ALL_CARDS,
-            OPPONENT,
-            OPPONENT_CARD,
-            OPPONENT_ALL_CARDS,
-            ALL_CARDS,
-            ALL
-        }
-
-        public enum AffectObjectType
-        {
-            NONE,
-            PLAYER,
-            CARD,
-            CHARACTER
-        }
-
-        public enum SetType
-        {
-            FIRE,
-            WATER,
-            EARTH,
-            AIR,
-            LIFE,
-            TOXIC,
-			ITEM,
-			OTHERS,
-
-            NONE
-        }
-
-        public enum TutorialReportAction
-        {
-            END_TURN,
-            MOVE_CARD,
-            ATTACK_CARD_CARD,
-            ATTACK_CARD_HERO,
-            USE_ABILITY,
-        }
-
-        public enum AbilityEffectType
-        {
-            NONE,
-            MASSIVE_WATER_WAVE,
-            MASSIVE_FIRE,
-            MASSIVE_LIGHTNING,
-            MASSIVE_TOXIC_ALL,
-            TARGET_ROCK,
-            TARGET_FIRE,
-            TARGET_LIFE,
-            TARGET_TOXIC,
-            TARGET_WATER,
-            TARGET_ADJUSTMENTS_BOMB,
-            STUN_FREEZES,
-            STUN_OR_DAMAGE_FREEZES,
-            TARGET_ADJUSTMENTS_AIR,
-            HEAL_DIRECTLY,
-            HEAL
-        }
-
-        public enum SpreadsheetType
-        {
-            TUTORIAL
-        }
-
-        public enum AIActionType
-        {
-            TEST,
-            TEST2
-        }
-
         public enum ActionType
         {
             ATTACK_PLAYER_BY_CREATURE,
@@ -379,68 +136,63 @@
             SUMMON_UNIT_CARD,
             RETURN_TO_HAND_CARD_ABILITY,
             RETURN_TO_HAND_CARD_SKILL,
-
             DRAW_CARD_SKILL,
             STUN_PLAYER_BY_SKILL,
-
             REANIMATE_UNIT_BY_ABILITY
         }
 
-
-        public enum EffectActivateType
+        public enum AffectObjectType
         {
-            PLAY_SKILL_EFFECT
+            NONE,
+            PLAYER,
+            CARD,
+            CHARACTER
         }
 
-        public enum AIType
+        public enum AiActionType
+        {
+            TEST,
+            TEST2
+        }
+
+        public enum AiType
         {
             BLITZ_AI,
             DEFENSE_AI,
             MIXED_AI,
             MIXED_BLITZ_AI,
             TIME_BLITZ_AI,
-            MIXED_DEFENSE_AI,
+            MIXED_DEFENSE_AI
         }
 
-        public enum TutorialJanePoses
-		{
-			NORMAL,
-			THINKING,
-			POINTING,
-			THUMBSUP,
-			KISS,
-		}
-
-        public enum CardZoneOnBoardType
+        public enum AppState
         {
-            DECK,
-            GRAVEYARD
+            NONE,
+            APP_INIT,
+            LOGIN,
+            MAIN_MENU,
+            HERO_SELECTION,
+            DECK_SELECTION,
+            COLLECTION,
+            SHOP,
+            GAMEPLAY,
+            DECK_EDITING,
+            PACK_OPENER,
+            CREDITS
         }
 
-        public enum CardPackType
+        public enum AttackInfoType
         {
-            DEFAULT
+            ANY,
+            ONLY_DIFFERENT
         }
 
-        public enum EndGameType
+        public enum BuffActivityType
         {
-            WIN,
-            LOSE,
-            CANCEL
-        }
-
-        public enum MatchType
-        {
-            LOCAL,
-
-            PVP,
-            PVE
-        }
-
-        public enum SkillType
-        {
-            PRIMARY,
-            SECONDARY
+            ONE_TIME,
+            PERMANENT,
+            TILL_FIRST_DEFENSE_FROM_ATTACK,
+            TURN_BASED
         }
 
         public enum BuffType
@@ -458,33 +210,110 @@
             REANIMATE
         }
 
-        public enum BuffActivityType
+        public enum ButtonState
         {
-            ONE_TIME,
-            PERMANENT,
-            TILL_FIRST_DEFENSE_FROM_ATTACK,
-            TURN_BASED,
+            ACTIVE,
+            DEFAULT
         }
 
-        public enum AttackInfoType
+        public enum CacheDataType
         {
-            ANY,
-            ONLY_DIFFERENT
+            CARDS_LIBRARY_DATA,
+            HEROES_DATA,
+            COLLECTION_DATA,
+            DECKS_DATA,
+            DECKS_OPPONENT_DATA,
+            USER_LOCAL_DATA,
+            CREDITS_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
-        public enum UnitStatusType
+        public enum CardKind
+        {
+            CREATURE,
+            SPELL
+        }
+
+        public enum CardPackType
+        {
+            DEFAULT
+        }
+
+        public enum CardRank
+        {
+            MINION,
+            OFFICER,
+            COMMANDER,
+            GENERAL
+        }
+
+        public enum CardSoundType
         {
             NONE,
-
-            FROZEN,
+            ATTACK,
+            DEATH,
+            PLAY
         }
 
-        public enum StunType
+        public enum CardType
+        {
+            WALKER,
+            FERAL,
+            HEAVY,
+            NONE
+        }
+
+        public enum CardZoneOnBoardType
+        {
+            DECK,
+            GRAVEYARD
+        }
+
+        public enum EffectActivateType
+        {
+            PLAY_SKILL_EFFECT
+        }
+
+        public enum EndGameType
+        {
+            WIN,
+            LOSE,
+            CANCEL
+        }
+
+        public enum FadeState
+        {
+            DEFAULT,
+            FADED
+        }
+
+        public enum GameEndCondition
+        {
+            LIFE,
+            TIME,
+            TURN
+        }
+
+        public enum InputType
+        {
+            KEYBOARD = 0,
+            MOUSE,
+            TOUCH
+        }
+
+        public enum Language
         {
             NONE,
+            DE,
+            EN,
+            RU
+        }
 
-            FREEZE,
-            DISABLE,
+        public enum MatchType
+        {
+            LOCAL,
+            PVP,
+            PVE
         }
 
         public enum OverlordSkill
@@ -532,7 +361,96 @@
             ICE_WALL,
             SHATTER,
             BLIZZARD
-       
+        }
+
+        public enum SetType
+        {
+            FIRE,
+            WATER,
+            EARTH,
+            AIR,
+            LIFE,
+            TOXIC,
+            ITEM,
+            OTHERS,
+            NONE
+        }
+
+        public enum SkillTargetType
+        {
+            NONE,
+            PLAYER,
+            PLAYER_CARD,
+            PLAYER_ALL_CARDS,
+            OPPONENT,
+            OPPONENT_CARD,
+            OPPONENT_ALL_CARDS,
+            ALL_CARDS
+        }
+
+        public enum SkillType
+        {
+            PRIMARY,
+            SECONDARY
+        }
+
+        public enum SoundType
+        {
+            CLICK,
+            OTHER,
+            BACKGROUND,
+            BATTLEGROUND,
+            TUTORIAL,
+            CARDS,
+            END_TURN,
+            OVERLORD_ABILITIES,
+            SPELLS,
+            WALKER_ARRIVAL,
+            FERAL_ARRIVAL,
+            HEAVY_ARRIVAL,
+            FERAL_ATTACK,
+            HEAVY_ATTACK_1,
+            HEAVY_ATTACK_2,
+            WALKER_ATTACK_1,
+            WALKER_ATTACK_2,
+            HERO_DEATH,
+            LOGO_APPEAR,
+            CARD_BATTLEGROUND_TO_TRASH,
+            CARD_DECK_TO_HAND_MULTIPLE,
+            CARD_DECK_TO_HAND_SINGLE,
+            CARD_FLY_HAND,
+            CARD_FLY_HAND_TO_BATTLEGROUND,
+            CHANGE_SCREEN,
+            DECKEDITING_ADD_CARD,
+            DECKEDITING_REMOVE_CARD,
+            LOST_POPUP,
+            WON_POPUP,
+            WON_REWARD_POPUP,
+            YOURTURN_POPUP,
+            SHUTTERS_CLOSING,
+            SHUTTERS_OPEN,
+            GOO_OVERFLOW_FADE_IN,
+            GOO_OVERFLOW_FADE_LOOP,
+            GOO_OVERFLOW_FADE_OUT
+        }
+
+        public enum SpreadsheetType
+        {
+            TUTORIAL
+        }
+
+        public enum StatType
+        {
+            HEALTH,
+            DAMAGE,
+            NONE
+        }
+
+        public enum StunType
+        {
+            NONE,
+            FREEZE,
+            DISABLE
         }
 
         public enum TooltipObjectType
@@ -541,6 +459,30 @@
             ABILITY,
             UNIT_TYPE,
             BUFF
+        }
+
+        public enum TutorialJanePoses
+        {
+            NORMAL,
+            THINKING,
+            POINTING,
+            THUMBS_UP,
+            KISS
+        }
+
+        public enum TutorialReportAction
+        {
+            END_TURN,
+            MOVE_CARD,
+            ATTACK_CARD_CARD,
+            ATTACK_CARD_HERO,
+            USE_ABILITY
+        }
+
+        public enum UnitStatusType
+        {
+            NONE,
+            FROZEN
         }
     }
 }

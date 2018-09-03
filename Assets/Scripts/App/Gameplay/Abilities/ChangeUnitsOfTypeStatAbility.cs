@@ -1,7 +1,4 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
+using System.Collections.Generic;
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 using LoomNetwork.Internal;
@@ -11,70 +8,64 @@ namespace LoomNetwork.CZB
 {
     public class ChangeUnitsOfTypeStatAbility : AbilityBase
     {
-        public Enumerators.SetType setType;
-        public Enumerators.StatType statType;
-        public int value = 1;
+        public Enumerators.SetType SetType;
 
+        public Enumerators.StatType StatType;
 
-        public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int Value = 1;
+
+        public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.statType = ability.abilityStatType;
-            this.setType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.setType);
-            this.value = ability.value;
+            StatType = ability.AbilityStatType;
+            SetType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.SetType);
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            switch (statType)
+            switch (StatType)
             {
                 case Enumerators.StatType.HEALTH:
                 case Enumerators.StatType.DAMAGE:
                 default:
-                    _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
             }
 
-            if (abilityCallType != Enumerators.AbilityCallType.PERMANENT)
+            if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;
 
             Action();
         }
 
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         private void Action()
         {
-            var unitsOnBoard = playerCallerOfAbility.BoardCards.FindAll(x => x.Card.libraryCard.cardSetType.Equals(setType));
+            List<BoardUnit> unitsOnBoard =
+                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType.Equals(SetType));
 
-            foreach (var unit in unitsOnBoard)
+            foreach (BoardUnit unit in unitsOnBoard)
             {
-                if (unit.Equals(abilityUnitOwner))
-                    continue;
-
-                switch (statType)
+                if (unit.Equals(AbilityUnitOwner))
                 {
-                    case Enumerators.StatType.DAMAGE:
-                        unit.BuffedDamage += value;
-                        unit.CurrentDamage += value;
-                        break;
-                    case Enumerators.StatType.HEALTH:
-                        unit.BuffedHP += value;
-                        unit.CurrentHP += value;
-                        break;
-                    default: break;
+                    continue;
                 }
 
-                CreateVFX(unit.transform.position, true);
+                switch (StatType)
+                {
+                    case Enumerators.StatType.DAMAGE:
+                        unit.BuffedDamage += Value;
+                        unit.CurrentDamage += Value;
+                        break;
+                    case Enumerators.StatType.HEALTH:
+                        unit.BuffedHp += Value;
+                        unit.CurrentHp += Value;
+                        break;
+                }
+
+                CreateVfx(unit.Transform.position, true);
             }
         }
     }

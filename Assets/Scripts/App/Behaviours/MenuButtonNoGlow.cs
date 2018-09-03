@@ -1,159 +1,169 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-using DG.Tweening;
-using TMPro;
-
-public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+public class MenuButtonNoGlow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler,
+    IPointerUpHandler
 {
+    [FormerlySerializedAs("OnClickEvent")]
+    public UnityEvent Clicked;
+
+    public bool IsHovered = true;
+
     [SerializeField]
-    protected Image button;
+    [FormerlySerializedAs("button")]
+    private Image _button;
+
     [SerializeField]
-    protected Image onHoverOverlay;
-	[SerializeField]
-	protected Image onClickOverlay;
+    [FormerlySerializedAs("onHoverOverlay")]
+    private Image _onHoverOverlay;
 
-    public bool _interactable = true;
+    [SerializeField]
+    [FormerlySerializedAs("onClickOverlay")]
+    private Image _onClickOverlay;
 
-    public UnityEvent onClickEvent;
+    private bool _interactable = true;
 
-    public bool isHovered = true;
-
-    public bool interactable
+    public bool Interactable
     {
-        get { return _interactable; }
-        set { _interactable = value;
-
-            //Debug.Log("_interactable = "+ _interactable);
+        get => _interactable;
+        set
+        {
+            _interactable = value;
 
             if (!_interactable)
             {
-                onHoverOverlay.DOKill();
-                onClickOverlay.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.3f);
-                onClickOverlay.DOFade(0.0f, 0.3f);
-                button.DOFade(0.5f, 0.3f);
+                _onHoverOverlay.DOKill();
+                _onClickOverlay.DOKill();
+                _onHoverOverlay.DOFade(0.0f, 0.3f);
+                _onClickOverlay.DOFade(0.0f, 0.3f);
+                _button.DOFade(0.5f, 0.3f);
 
-                if (button == null) return;
+                if (_button == null)
+                    return;
 
-                DoFadeForChildren(button, 0.5f, 0.3f);
-                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
-                DoFadeForChildren(onClickOverlay, 0, 0.3f);
+                DoFadeForChildren(_button, 0.5f, 0.3f);
+                DoFadeForChildren(_onHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(_onClickOverlay, 0, 0.3f);
             }
             else
             {
-                onHoverOverlay.DOKill();
-                onClickOverlay.DOKill();
-                button.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.3f);
-                onClickOverlay.DOFade(0.0f, 0.3f);
-                button.DOFade(1f, 0.3f);
+                _onHoverOverlay.DOKill();
+                _onClickOverlay.DOKill();
+                _button.DOKill();
+                _onHoverOverlay.DOFade(0.0f, 0.3f);
+                _onClickOverlay.DOFade(0.0f, 0.3f);
+                _button.DOFade(1f, 0.3f);
 
-                if (button == null) return;
+                if (_button == null)
+                    return;
 
-                DoFadeForChildren(button, 1f, 0.3f);
-                DoFadeForChildren(onHoverOverlay, 0, 0.3f);
-                DoFadeForChildren(onClickOverlay, 0, 0.3f);
+                DoFadeForChildren(_button, 1f, 0.3f);
+                DoFadeForChildren(_onHoverOverlay, 0, 0.3f);
+                DoFadeForChildren(_onClickOverlay, 0, 0.3f);
             }
         }
     }
 
-    public void DoFadeForChildren(Image parent, float val, float duration)
+    public void OnPointerDown(PointerEventData eventData)
     {
-		TextMeshProUGUI[] tms = parent.GetComponentsInChildren<TextMeshProUGUI>();
-        foreach (var item in tms)
+        if (!Interactable)
+            return;
+
+        if (IsHovered)
         {
-            item.DOKill();
-            item.DOFade(val, duration);
+            _onHoverOverlay.DOKill();
+            _onHoverOverlay.DOFade(0.0f, 0.25f);
         }
-		Image[] imgs = parent.GetComponentsInChildren<Image> ();
-		foreach (var item in imgs) {
-			item.DOKill ();
-			item.DOFade (val, duration);
-		}
+
+        _onClickOverlay.DOKill();
+        _onClickOverlay.DOFade(1.0f, 0.2f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        if (IsHovered)
+        {
+            DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
+        }
+
+        DoFadeForChildren(_onClickOverlay, 1, 0.25f);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerEnter");
+        if (!Interactable)
+            return;
 
-        if (_interactable)
+        _onHoverOverlay.DOKill();
+        _onHoverOverlay.DOFade(1.0f, 0.5f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
+        if (!Input.GetMouseButton(0))
         {
-            onHoverOverlay.DOKill();
-            onHoverOverlay.DOFade(1.0f, 0.5f);
-
-            if (button == null) return;
-
-            DoFadeForChildren(button, 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
-            if (!Input.GetMouseButton(0))
-                DoFadeForChildren(onClickOverlay, 0, 0.25f);
+            DoFadeForChildren(_onClickOverlay, 0, 0.25f);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerExit");
+        if (!Interactable)
+            return;
 
-        if (_interactable)
+        _onHoverOverlay.DOKill();
+        _onHoverOverlay.DOFade(0.0f, 0.25f);
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 1f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 0, 0.25f);
+        if (!Input.GetMouseButton(0))
         {
-            onHoverOverlay.DOKill();
-            onHoverOverlay.DOFade(0.0f, 0.25f);
-
-            if (button == null) return;
-
-            DoFadeForChildren(button, 1f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 0, 0.25f);
-            if (!Input.GetMouseButton(0))
-                DoFadeForChildren(onClickOverlay, 0, 0.25f);
+            DoFadeForChildren(_onClickOverlay, 0, 0.25f);
         }
     }
 
-	public void OnPointerDown(PointerEventData eventData)
-	{
-        //Debug.Log("OnPointerDown");
-
-        if (_interactable)
-        {
-            if (isHovered)
-            {
-                onHoverOverlay.DOKill();
-                onHoverOverlay.DOFade(0.0f, 0.25f);
-            }
-            
-            onClickOverlay.DOKill();
-            onClickOverlay.DOFade(1.0f, 0.2f);
-
-            if (button == null) return;
-
-            DoFadeForChildren(button, 0f, 0.25f);
-            if (isHovered)
-                DoFadeForChildren(onHoverOverlay, 0, 0.25f);
-            DoFadeForChildren(onClickOverlay, 1, 0.25f);
-        }
-	}
-
     public void OnPointerUp(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerUp");
+        if (!Interactable)
+            return;
 
-        if (_interactable)
+        _onClickOverlay.DOKill();
+        _onClickOverlay.DOFade(0.0f, 0.25f);
+        Clicked.Invoke();
+
+        if (_button == null)
+            return;
+
+        DoFadeForChildren(_button, 0f, 0.25f);
+        DoFadeForChildren(_onHoverOverlay, 1, 0.25f);
+        DoFadeForChildren(_onClickOverlay, 0, 0.25f);
+    }
+
+    public void DoFadeForChildren(Image parent, float val, float duration)
+    {
+        TextMeshProUGUI[] tms = parent.GetComponentsInChildren<TextMeshProUGUI>();
+        foreach (TextMeshProUGUI item in tms)
         {
-            onClickOverlay.DOKill();
-            onClickOverlay.DOFade(0.0f, 0.25f);
-            onClickEvent.Invoke();
+            item.DOKill();
+            item.DOFade(val, duration);
+        }
 
-            if (button == null) return;
-
-            DoFadeForChildren(button, 0f, 0.25f);
-            DoFadeForChildren(onHoverOverlay, 1, 0.25f);
-            DoFadeForChildren(onClickOverlay, 0, 0.25f);
+        Image[] imgs = parent.GetComponentsInChildren<Image>();
+        foreach (Image item in imgs)
+        {
+            item.DOKill();
+            item.DOFade(val, duration);
         }
     }
 }

@@ -1,7 +1,3 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
 
@@ -9,69 +5,54 @@ namespace LoomNetwork.CZB
 {
     public class DamageEnemyUnitsAndFreezeThemAbility : AbilityBase
     {
-        public int value;
+        public int Value { get; }
 
-        public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            value = ability.value;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            var opponent = playerCallerOfAbility.Equals(_gameplayManager.CurrentPlayer) ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
 
-
-            foreach (var target in abilityTargetTypes)
+            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 
-                        foreach (var unit in opponent.BoardCards)
-                            _battleController.AttackUnitByAbility(GetCaller(), abilityData, unit);
+                        foreach (BoardUnit unit in opponent.BoardCards)
+                        {
+                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                        }
 
-                        foreach (var unit in opponent.BoardCards)
-                            unit.Stun(Enumerators.StunType.FREEZE, value);
+                        foreach (BoardUnit unit in opponent.BoardCards)
+                        {
+                            unit.Stun(Enumerators.StunType.FREEZE, Value);
+                        }
+
                         break;
-                  
+
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        _battleController.AttackPlayerByAbility(GetCaller(), abilityData, opponent);
-                        opponent.Stun(Enumerators.StunType.FREEZE, value);
+                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
+                        opponent.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
-                   
-                    default: break;
                 }
             }
         }

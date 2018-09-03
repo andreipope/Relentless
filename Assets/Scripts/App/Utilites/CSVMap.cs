@@ -1,18 +1,13 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
-using System.Collections;
 using System;
-using System.Text.RegularExpressions;
-using System.Reflection;
+using System.Collections;
 using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace LoomNetwork.CZB.Helpers
 {
-    public class CSVMap
+    public class CsvMap
     {
         /*
          * 
@@ -59,47 +54,48 @@ namespace LoomNetwork.CZB.Helpers
 
         Currently the only array type that is supported is a string array.
         */
+        private Hashtable _columnMap = new Hashtable();
 
-        private Hashtable columnMap = new Hashtable();
-        Type ClassTemplate;
+        private Type _classTemplate;
 
-        public CSVMap()
+        public CsvMap()
         {
         }
 
         /// <summary>
-        /// Shortcut to defineColumns from constructor
+        ///     Shortcut to defineColumns from constructor
         /// </summary>
         /// <param name="classDefinition">Class definition.</param>
-        public CSVMap(Type classDefinition)
+        public CsvMap(Type classDefinition)
         {
-            defineColumns(classDefinition);
+            DefineColumns(classDefinition);
         }
+
         /// <summary>
-        /// Define Columns - call this first, with the typeof of the class you want to map to.  Example:
-        /// CSVMap myMap = new CSVMap();
-        /// myMap.defineColumns(typeof(MYCLASS));
-        /// This will analyze your class and save the information for later.
+        ///     Define Columns - call this first, with the typeof of the class you want to map to.  Example:
+        ///     CSVMap myMap = new CSVMap();
+        ///     myMap.defineColumns(typeof(MYCLASS));
+        ///     This will analyze your class and save the information for later.
         /// </summary>
         /// <param name="classDefinition">Class definition.</param>
-        public void defineColumns(Type classDefinition)
+        public void DefineColumns(Type classDefinition)
         {
-            ClassTemplate = classDefinition;
-            columnMap = new Hashtable();
+            _classTemplate = classDefinition;
+            _columnMap = new Hashtable();
             MemberInfo[] members = classDefinition.GetFields();
             foreach (FieldInfo m in members)
             {
-                columnMap[m.Name] = m;
+                _columnMap[m.Name] = m;
             }
         }
 
         /// <summary>
-        /// Use this after calling defineColumns to load your CSV data (if it is not coming from a file).
-        /// The data can easily come from a web service call over the internet, a website, a file, or elsewhere. 
+        ///     Use this after calling defineColumns to load your CSV data (if it is not coming from a file).
+        ///     The data can easily come from a web service call over the internet, a website, a file, or elsewhere.
         /// </summary>
         /// <returns>The csv from string.</returns>
         /// <param name="data">Data.</param>
-        public ArrayList loadCsvFromString(string data)
+        public ArrayList LoadCsvFromString(string data)
         {
             string[] lines = data.Split('\n');
             int ctr = 0;
@@ -107,9 +103,8 @@ namespace LoomNetwork.CZB.Helpers
             ArrayList columns = new ArrayList();
             foreach (string line in lines)
             {
-                //if (fix_break)
-                //		continue;
-
+                // if (fix_break)
+                // 		continue;
                 Regex csvread = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
                 string[] c = csvread.Split(line);
 
@@ -118,6 +113,7 @@ namespace LoomNetwork.CZB.Helpers
                     c[i] = c[i].TrimStart(' ', '"');
                     c[i] = c[i].TrimEnd('"');
                 }
+
                 if (ctr == 0)
                 {
                     foreach (string colName in c)
@@ -127,74 +123,86 @@ namespace LoomNetwork.CZB.Helpers
                 }
                 else
                 {
-                    object templated = Activator.CreateInstance(ClassTemplate);
+                    object templated = Activator.CreateInstance(_classTemplate);
                     for (int i = 0; i < c.Length; i++)
                     {
-                        if (i > columnMap.Count - 1)
+                        if (i > _columnMap.Count - 1)
                         {
                             continue;
                         }
 
-                        FieldInfo templateInfo = (FieldInfo)columnMap[columns[i]];
+                        FieldInfo templateInfo = (FieldInfo) _columnMap[columns[i]];
+
                         // Debug.Log("------- " + templateInfo);
-                        //	Debug.Log (templateInfo + " " + columns [i] + " " + columnMap.Count);
+                        // 	Debug.Log (templateInfo + " " + columns [i] + " " + columnMap.Count);
                         if (templateInfo == null)
                         {
-                            	Debug.LogError ("CSV Field Not Found In ClassTemplate: " + columns [i].ToString () + "  length: "+ columns[i].ToString().Length + "  in "+ClassTemplate);
+                            Debug.LogError("CSV Field Not Found In ClassTemplate: " + columns[i] + "  length: " +
+                                columns[i].ToString().Length + "  in " + _classTemplate);
                         }
+
                         Type colType = templateInfo.FieldType;
 
                         if (colType != null && c[i] != null && c[i].Length > 0)
                         {
                             if (colType == typeof(Vector3))
                             {
-                                Vector3 useVector = new Vector3(float.Parse(c[i].Split(':')[0]), float.Parse(c[i].Split(':')[1]), float.Parse(c[i].Split(':')[2]));
+                                Vector3 useVector = new Vector3(float.Parse(c[i].Split(':')[0]),
+                                    float.Parse(c[i].Split(':')[1]), float.Parse(c[i].Split(':')[2]));
                                 templateInfo.SetValue(templated, useVector);
                             }
                             else if (colType == typeof(string[]))
                             {
-                                string[] useList = ((string)c[i]).Split('|');
+                                string[] useList = c[i].Split('|');
                                 templateInfo.SetValue(templated, useList);
                             }
                             else
                             {
-                                //Debug.Log("------- " + c[i]);
+                                // Debug.Log("------- " + c[i]);
                                 templateInfo.SetValue(templated, Convert.ChangeType(c[i], colType));
                             }
                         }
                     }
+
                     rows.Add(templated);
                 }
+
                 ctr++;
             }
+
             return rows;
         }
 
         /// <summary>
-        /// loadCsvFromFile will load data directly from your Resources folder of your Unity project.  Perfect for embedded game data.
-        /// Remember not to put an extension on your filename.  Example:  "items.csv" just becomes "items".
-        /// loadCsvFromFile("items");
+        ///     loadCsvFromFile will load data directly from your Resources folder of your Unity project.  Perfect for embedded
+        ///     game data.
+        ///     Remember not to put an extension on your filename.  Example:  "items.csv" just becomes "items".
+        ///     loadCsvFromFile("items");
         /// </summary>
         /// <returns>The csv from file.</returns>
         /// <param name="fileName">File name.</param>
-        public ArrayList loadCsvFromFile(string fileName)
+        public ArrayList LoadCsvFromFile(string fileName)
         {
-            TextAsset textAsset = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
+            TextAsset textAsset = (TextAsset) Resources.Load(fileName, typeof(TextAsset));
 
             if (textAsset == null)
+            {
                 return null;
-            else
-                return loadCsvFromString(textAsset.text);
+            }
+
+            return LoadCsvFromString(textAsset.text);
         }
 
-        public ArrayList loadCsvFromPersistentPathFile(string fileName)
+        public ArrayList LoadCsvFromPersistentPathFile(string fileName)
         {
             string text = File.ReadAllText(Path.Combine(Application.persistentDataPath, fileName));
 
             if (string.IsNullOrEmpty(text))
+            {
                 return null;
-            else
-                return loadCsvFromString(text);
+            }
+
+            return LoadCsvFromString(text);
         }
     }
 }

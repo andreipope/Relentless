@@ -1,9 +1,5 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using LoomNetwork.CZB.Common;
 using System;
+using LoomNetwork.CZB.Data;
 using TMPro;
 using UnityEngine;
 
@@ -11,81 +7,85 @@ namespace LoomNetwork.CZB
 {
     public class UnitBoardCard : BoardCard
     {
+        public int InitialHealth, InitialDamage;
+
+        protected TextMeshPro AttackText;
+
+        protected SpriteRenderer TypeSprite;
+
+        protected TextMeshPro DefenseText;
+
+        private int _hp, _damage;
+
+        public UnitBoardCard(GameObject selfObject)
+            : base(selfObject)
+        {
+            AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
+            TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
+        }
+
         public event Action<int, int> HealthChangedEvent;
+
         public event Action<int, int> DamageChangedEvent;
-
-        protected TextMeshPro attackText;
-        protected SpriteRenderer typeSprite;
-        protected TextMeshPro defenseText;
-
-        private int _hp,
-                    _damage;
-
-        public int initialHealth,
-                   initialDamage;
 
         public int Health
         {
-            get
-            {
-                return _hp;
-            }
+            get => _hp;
             set
             {
-                int oldHP = _hp;
+                int oldHp = _hp;
                 _hp = Mathf.Clamp(value, 0, int.MaxValue);
-                HealthChangedEvent?.Invoke(oldHP, _hp);
+                HealthChangedEvent?.Invoke(oldHp, _hp);
             }
         }
 
         public int Damage
         {
-            get
-            {
-                return _damage;
-            }
+            get => _damage;
             set
             {
-                int _oldDamage = _damage;
+                int oldDamage = _damage;
                 _damage = Mathf.Clamp(value, 0, int.MaxValue);
-                DamageChangedEvent?.Invoke(_oldDamage, _damage);
+                DamageChangedEvent?.Invoke(oldDamage, _damage);
             }
-        }
-
-        public UnitBoardCard(GameObject selfObject) : base(selfObject)
-        {
-            attackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
-            defenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
-            typeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
         public override void Init(WorkingCard card)
         {
             base.Init(card);
 
-            Damage = card.libraryCard.damage;
-            initialDamage = card.libraryCard.damage;
+            Damage = card.LibraryCard.Damage;
+            InitialDamage = card.LibraryCard.Damage;
 
-            Health = card.libraryCard.health;
-            initialHealth = card.libraryCard.health;
+            Health = card.LibraryCard.Health;
+            InitialHealth = card.LibraryCard.Health;
 
-            attackText.text = Damage.ToString();
-            defenseText.text = Health.ToString();
+            AttackText.text = Damage.ToString();
+            DefenseText.text = Health.ToString();
 
-            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", (Enumerators.CardType)card.type + "_icon"));
+            TypeSprite.sprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
 
-            DamageChangedEvent += (oldValue, newValue) => { attackText.text = newValue.ToString(); };
-            HealthChangedEvent += (oldValue, newValue) => { defenseText.text = newValue.ToString(); };
+            DamageChangedEvent += (oldValue, newValue) =>
+            {
+                AttackText.text = newValue.ToString();
+            };
+            HealthChangedEvent += (oldValue, newValue) =>
+            {
+                DefenseText.text = newValue.ToString();
+            };
         }
 
-        public override void Init(Data.Card card, int amount = 0)
+        public override void Init(Card card, int amount = 0)
         {
             base.Init(card, amount);
 
-            attackText.text = card.damage.ToString();
-            defenseText.text = card.health.ToString();
+            AttackText.text = card.Damage.ToString();
+            DefenseText.text = card.Health.ToString();
 
-            typeSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.type + "_icon"));
+            TypeSprite.sprite =
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
         }
     }
 }

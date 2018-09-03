@@ -1,82 +1,136 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
-using TMPro;
 using System;
-using LoomNetwork.CZB.Common;
-using DG.Tweening;
-using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Helpers;
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
+using LoomNetwork.CZB.Data;
 using LoomNetwork.CZB.Gameplay;
-
+using LoomNetwork.CZB.Helpers;
+using TMPro;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class BoardCard
     {
-        protected ILoadObjectsManager _loadObjectsManager;
-        protected ISoundManager _soundManager;
-        protected IDataManager _dataManager;
-        protected IGameplayManager _gameplayManager;
-        protected ITimerManager _timerManager;
+        public int CardsAmountDeckEditing;
 
-        protected CardsController _cardsController;
-        protected AbilitiesController _abilitiesController;
-        protected BattlegroundController _battlegroundController;
+        public bool CardShouldBeChanged;
 
-        private GameObject _selfObject;
+        public bool IsNewCard;
 
-        protected SpriteRenderer glowSprite;
-        protected SpriteRenderer pictureSprite;
-        protected SpriteRenderer backgroundSprite;
+        public bool IsPreview;
 
-        protected GameObject distibuteCardObject;
+        public int InitialCost;
 
-        protected TextMeshPro costText;
-        protected TextMeshPro nameText;
-        protected TextMeshPro bodyText;
-        protected TextMeshPro amountText;
+        public Card LibraryCard;
 
-        //  protected GameObject previewCard;
+        protected ILoadObjectsManager LoadObjectsManager;
 
-        protected Animator cardAnimator;
+        protected ISoundManager SoundManager;
 
-        protected Vector3 positionOnHand;
-        protected Vector3 rotationOnHand;
-        protected Vector3 scaleOnHand;
+        protected IDataManager DataManager;
 
-        protected AnimationEventTriggering animationEventTriggering;
-        protected OnBehaviourHandler behaviourHandler;
+        protected IGameplayManager GameplayManager;
 
-        protected List<ElementSlotOfCards> _elementSlotsOfCards;
-        protected Transform _parentOfEditingGroupUI;
+        protected ITimerManager TimerManager;
 
-        protected List<BuffOnCardInfoObject> _buffOnCardInfoObjects;
+        protected CardsController CardsController;
 
-        protected Transform _parentOfLeftBlockOfCardInfo,
-                            _parentOfRightBlockOfCardInfo;
+        protected AbilitiesController AbilitiesController;
 
-        public int cardsAmountDeckEditing = 0;
+        protected BattlegroundController BattlegroundController;
 
-        public bool cardShouldBeChanged = false;
+        protected SpriteRenderer GlowSprite;
 
-        public bool isNewCard = false;
-        public bool isPreview;
+        protected SpriteRenderer PictureSprite;
 
-        public int initialCost;
+        protected SpriteRenderer BackgroundSprite;
 
-        public Card libraryCard;
+        protected GameObject DistibuteCardObject;
 
-        public int manaCost { get; protected set; }
+        protected TextMeshPro CostText;
 
-        public ParticleSystem removeCardParticle { get; protected set; }
+        protected TextMeshPro NameText;
 
-        public Transform transform { get { return _selfObject.transform; } }
-        public GameObject gameObject { get { return _selfObject; } }
+        protected TextMeshPro BodyText;
+
+        protected TextMeshPro AmountText;
+
+        protected Animator CardAnimator;
+
+        protected Vector3 PositionOnHand;
+
+        protected Vector3 RotationOnHand;
+
+        protected Vector3 ScaleOnHand;
+
+        protected AnimationEventTriggering AnimationEventTriggering;
+
+        protected OnBehaviourHandler BehaviourHandler;
+
+        protected List<ElementSlotOfCards> ElementSlotsOfCards;
+
+        protected Transform ParentOfEditingGroupUI;
+
+        protected List<BuffOnCardInfoObject> BuffOnCardInfoObjects;
+
+        protected Transform ParentOfLeftBlockOfCardInfo, ParentOfRightBlockOfCardInfo;
+
+        public BoardCard(GameObject selfObject)
+        {
+            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            SoundManager = GameClient.Get<ISoundManager>();
+            DataManager = GameClient.Get<IDataManager>();
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            TimerManager = GameClient.Get<ITimerManager>();
+
+            CardsController = GameplayManager.GetController<CardsController>();
+            AbilitiesController = GameplayManager.GetController<AbilitiesController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+
+            GameObject = selfObject;
+
+            ElementSlotsOfCards = new List<ElementSlotOfCards>();
+
+            CardAnimator = GameObject.GetComponent<Animator>();
+            CardAnimator.enabled = false;
+
+            GlowSprite = Transform.Find("Glow").GetComponent<SpriteRenderer>();
+            PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
+            BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
+
+            CostText = Transform.Find("GooText").GetComponent<TextMeshPro>();
+            NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
+            BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
+            AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
+
+            RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
+
+            DistibuteCardObject = Transform.Find("DistributeCardObject").gameObject;
+
+            ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
+
+            AnimationEventTriggering = GameObject.GetComponent<AnimationEventTriggering>();
+            BehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
+
+            AnimationEventTriggering.AnimationEventTriggered += OnAnimationEvent;
+
+            CardsController.UpdateCardsStatusEvent += UpdateCardsStatusEventHandler;
+
+            BehaviourHandler.MouseDownTriggered += MouseDownTriggeredHandler;
+            BehaviourHandler.MouseUpTriggered += MouseUpTriggeredHandler;
+
+            BehaviourHandler.Destroying += DestroyingHandler;
+        }
+
+        public int ManaCost { get; protected set; }
+
+        public ParticleSystem RemoveCardParticle { get; protected set; }
+
+        public Transform Transform => GameObject.transform;
+
+        public GameObject GameObject { get; }
 
         public int CurrentTurn { get; set; }
 
@@ -84,159 +138,103 @@ namespace LoomNetwork.CZB
 
         public HandBoardCard HandBoardCard { get; set; }
 
-        public BoardCard(GameObject selfObject)
-        {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _timerManager = GameClient.Get<ITimerManager>();
-
-            _cardsController = _gameplayManager.GetController<CardsController>();
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
-            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-
-            _selfObject = selfObject;
-
-            _elementSlotsOfCards = new List<ElementSlotOfCards>();
-
-            cardAnimator = gameObject.GetComponent<Animator>();
-            cardAnimator.enabled = false;
-
-            glowSprite = transform.Find("Glow").GetComponent<SpriteRenderer>();
-            pictureSprite = transform.Find("Picture").GetComponent<SpriteRenderer>();
-            backgroundSprite = transform.Find("Frame").GetComponent<SpriteRenderer>();
-
-            costText = transform.Find("GooText").GetComponent<TextMeshPro>();
-            nameText = transform.Find("TitleText").GetComponent<TextMeshPro>();
-            bodyText = transform.Find("BodyText").GetComponent<TextMeshPro>();
-            amountText = transform.Find("Amount/Text").GetComponent<TextMeshPro>();
-
-            removeCardParticle = transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
-
-            distibuteCardObject = transform.Find("DistributeCardObject").gameObject;
-
-            _parentOfEditingGroupUI = transform.Find("DeckEditingGroupUI");
-
-            //   previewCard = _loadObjectsManager.GetObjectByPath<GameObject>("");
-
-            animationEventTriggering = _selfObject.GetComponent<AnimationEventTriggering>();
-            behaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
-
-            animationEventTriggering.OnAnimationEvent += OnAnimationEvent;
-
-            _cardsController.UpdateCardsStatusEvent += UpdateCardsStatusEventHandler;
-
-            behaviourHandler.OnMouseDownEvent += OnMouseDownEventHandler;
-            behaviourHandler.OnMouseUpEvent += OnMouseUpEventHandler;
-
-            behaviourHandler.OnDestroyEvent += OnDestroyEventHandler;
-        }
-
-        private void OnDestroyEventHandler(GameObject obj)
-        {
-
-        }
-
         public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;
 
-            libraryCard = WorkingCard.libraryCard;
+            LibraryCard = WorkingCard.LibraryCard;
 
-            nameText.text = libraryCard.name;
-            bodyText.text = libraryCard.description;
-            costText.text = libraryCard.cost.ToString();
+            NameText.text = LibraryCard.Name;
+            BodyText.text = LibraryCard.Description;
+            CostText.text = LibraryCard.Cost.ToString();
 
-            isNewCard = true;
+            IsNewCard = true;
 
-            initialCost = WorkingCard.initialCost;
-            manaCost = initialCost;
+            InitialCost = WorkingCard.InitialCost;
+            ManaCost = InitialCost;
 
-            WorkingCard.owner.PlayerGooChangedEvent += PlayerGooChangedEventHandler;
+            WorkingCard.Owner.PlayerGooChanged += PlayerGooChangedHandler;
 
-            var rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.libraryCard.cardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.LibraryCard.CardRank);
 
-            var setName = libraryCard.cardSetType.ToString();
+            string setName = LibraryCard.CardSetType.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-            if (!string.IsNullOrEmpty(libraryCard.frame))
-                frameName = "Images/Cards/Frames/" + libraryCard.frame;
-
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), WorkingCard.libraryCard.picture.ToLower()));
-
-            amountText.transform.parent.gameObject.SetActive(false);
-            distibuteCardObject.SetActive(false);
-
-            if (libraryCard.cardKind == Enumerators.CardKind.CREATURE)
+            if (!string.IsNullOrEmpty(LibraryCard.Frame))
             {
+                frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+            }
 
-                _parentOfLeftBlockOfCardInfo = transform.Find("Group_LeftBlockInfo");
-                _parentOfRightBlockOfCardInfo = transform.Find("Group_RightBlockInfo");
+            BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(),
+                WorkingCard.LibraryCard.Picture.ToLower()));
+
+            AmountText.transform.parent.gameObject.SetActive(false);
+            DistibuteCardObject.SetActive(false);
+
+            if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            {
+                ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
+                ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
 
                 if (!InternalTools.IsTabletScreen())
                 {
-                    _parentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                    _parentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
+                    ParentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    ParentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
 
-                    _parentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                    _parentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
+                    ParentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    ParentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
                 }
             }
         }
 
-        private void PlayerGooChangedEventHandler(int obj)
-        {
-            UpdateCardsStatusEventHandler(WorkingCard.owner);
-        }
-
         public virtual void Init(Card card, int amount = 0)
         {
-            libraryCard = card;
+            LibraryCard = card;
 
-            nameText.text = libraryCard.name;
-            bodyText.text = libraryCard.description;
-            amountText.text = amount.ToString();
-            costText.text = libraryCard.cost.ToString();
+            NameText.text = LibraryCard.Name;
+            BodyText.text = LibraryCard.Description;
+            AmountText.text = amount.ToString();
+            CostText.text = LibraryCard.Cost.ToString();
 
-            initialCost = libraryCard.cost;
-            manaCost = initialCost;
+            InitialCost = LibraryCard.Cost;
+            ManaCost = InitialCost;
 
-            var rarity = Enum.GetName(typeof(Enumerators.CardRank), card.cardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.CardRank);
 
-            var setName = libraryCard.cardSetType.ToString();
+            string setName = LibraryCard.CardSetType.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-            if (!string.IsNullOrEmpty(libraryCard.frame))
-                frameName = "Images/Cards/Frames/" + libraryCard.frame;
+            if (!string.IsNullOrEmpty(LibraryCard.Frame))
+            {
+                frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+            }
 
-            backgroundSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
-            pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.picture.ToLower()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.Picture.ToLower()));
 
-            distibuteCardObject.SetActive(false);
+            DistibuteCardObject.SetActive(false);
         }
-
 
         public void SetCardCost(int value, bool changeRealCost = false)
         {
             if (changeRealCost)
             {
-                WorkingCard.libraryCard.cost = value;
-                WorkingCard.realCost = value;
-                manaCost = WorkingCard.realCost;
-                costText.text = manaCost.ToString();
+                WorkingCard.LibraryCard.Cost = value;
+                WorkingCard.RealCost = value;
+                ManaCost = WorkingCard.RealCost;
+                CostText.text = ManaCost.ToString();
             }
             else
             {
-                manaCost = value;
-                costText.text = manaCost.ToString();
+                ManaCost = value;
+                CostText.text = ManaCost.ToString();
             }
-
 
             UpdateColorOfCost();
         }
@@ -245,90 +243,75 @@ namespace LoomNetwork.CZB
         {
             if (changeRealCost)
             {
-                WorkingCard.libraryCard.cost += value;
-                WorkingCard.realCost += value;
-                manaCost = WorkingCard.realCost;
-                costText.text = manaCost.ToString();
+                WorkingCard.LibraryCard.Cost += value;
+                WorkingCard.RealCost += value;
+                ManaCost = WorkingCard.RealCost;
+                CostText.text = ManaCost.ToString();
             }
             else
             {
-                manaCost = WorkingCard.realCost + value;
-                costText.text = manaCost.ToString();
+                ManaCost = WorkingCard.RealCost + value;
+                CostText.text = ManaCost.ToString();
             }
 
             UpdateColorOfCost();
         }
 
-        private void UpdateColorOfCost()
-        {
-            if (manaCost > initialCost)
-                costText.color = Color.red;
-            else if (manaCost < initialCost)
-                costText.color = Color.green;
-            else
-                costText.color = Color.white;
-        }
-
         public virtual void UpdateAmount(int amount)
         {
-            amountText.text = amount.ToString();
+            AmountText.text = amount.ToString();
         }
 
         public virtual void UpdateCardPositionInHand(Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            if (isPreview)
+            if (IsPreview)
                 return;
 
-            positionOnHand = position;
-            rotationOnHand = rotation;
-            scaleOnHand = scale;
+            PositionOnHand = position;
+            RotationOnHand = rotation;
+            ScaleOnHand = scale;
 
-            if (!isNewCard)
+            if (!IsNewCard)
             {
                 UpdatePositionOnHand();
             }
             else if (CurrentTurn != 0)
             {
-                cardAnimator.enabled = true;
-                cardAnimator.SetTrigger("DeckToHand");
+                CardAnimator.enabled = true;
+                CardAnimator.SetTrigger("DeckToHand");
 
-                _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume);
             }
 
-            isNewCard = false;
-        }
-
-        protected virtual void UpdatePositionOnHand()
-        {
-            if (isPreview)
-                return;
-            transform.DOScale(scaleOnHand, 0.5f);
-            transform.DOMove(positionOnHand, 0.5f);
-            transform.DORotate(rotationOnHand, 0.5f);
+            IsNewCard = false;
         }
 
         public virtual void MoveCardFromDeckToCenter()
         {
-            cardAnimator.enabled = true;
-            cardAnimator.SetTrigger("DeckToCenterDistribute");
+            CardAnimator.enabled = true;
+            CardAnimator.SetTrigger("DeckToCenterDistribute");
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
         public virtual void SetDefaultAnimation(int id)
         {
-            if (isPreview)
+            if (IsPreview)
                 return;
 
-            cardAnimator.enabled = true;
-            cardAnimator.SetTrigger("DeckToHandDefault");
+            CardAnimator.enabled = true;
+            CardAnimator.SetTrigger("DeckToHandDefault");
 
-            if (_dataManager.CachedUserLocalData.tutorial)
-                cardAnimator.SetFloat("Id", 2);
+            if (DataManager.CachedUserLocalData.Tutorial)
+            {
+                CardAnimator.SetFloat("Id", 2);
+            }
             else
-                cardAnimator.SetFloat("Id", id);
+            {
+                CardAnimator.SetFloat("Id", id);
+            }
 
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CARDS_MOVE_SOUND_VOLUME, false, false);
+            SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
         public virtual void OnAnimationEvent(string name)
@@ -336,221 +319,222 @@ namespace LoomNetwork.CZB
             switch (name)
             {
                 case "DeckToHandEnd":
-                    cardAnimator.enabled = false;
+                    CardAnimator.enabled = false;
 
-                    if (!_cardsController.CardDistribution)
+                    if (!CardsController.CardDistribution)
+                    {
                         UpdatePositionOnHand();
-                    break;
-                default:
+                    }
+
                     break;
             }
         }
 
         public virtual bool CanBePlayed(Player owner)
         {
-            if (Constants.DEV_MODE)
-                return true;
-
-            return _gameplayManager.GetController<PlayerController>().IsActive;// && owner.manaStat.effectiveValue >= manaCost;
+#if !DEV_MODE
+            return GameplayManager.GetController<PlayerController>()
+                .IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+#else
+            return true;
+#endif
         }
 
         public virtual bool CanBeBuyed(Player owner)
         {
-            if (Constants.DEV_MODE)
-                return true;
-
-            return owner.Goo >= manaCost;
-        }
-
-        public void IsHighlighted()
-        {
-            //return glowSprite.enabled;
+#if !DEV_MODE
+            return owner.Goo >= ManaCost;
+#else
+            return true;
+#endif
         }
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            if (glowSprite != null && glowSprite)
-                glowSprite.enabled = enabled;
+            if (GlowSprite != null && GlowSprite)
+            {
+                GlowSprite.enabled = enabled;
+            }
         }
 
         public void Dispose()
         {
-            MonoBehaviour.Destroy(_selfObject);
-        }
-
-
-        private void UpdateCardsStatusEventHandler(Player player)
-        {
-            if (isPreview)
-                return;
-
-            if (CanBePlayed(player) && CanBeBuyed(player))
-                SetHighlightingEnabled(true);
-            else
-                SetHighlightingEnabled(false);
+            Object.Destroy(GameObject);
         }
 
         public void ReturnCardToDeck()
         {
-            if (!_cardsController.CardDistribution)
+            if (!CardsController.CardDistribution)
                 return;
 
-            _cardsController.ReturnCardToDeck(this, () =>
-            {
-                WorkingCard.owner.DistributeCard();
-            });
+            CardsController.ReturnCardToDeck(
+                this,
+                () =>
+                {
+                    WorkingCard.Owner.DistributeCard();
+                });
         }
 
         public void DrawCardFromOpponentDeckToPlayer()
         {
-            _selfObject.transform.localScale = Vector3.zero;
+            GameObject.transform.localScale = Vector3.zero;
 
-            _selfObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
+            GameObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
 
-            cardAnimator.enabled = true;
-            cardAnimator.StopPlayback();
-            cardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
+            CardAnimator.enabled = true;
+            CardAnimator.StopPlayback();
+            CardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
 
-            _timerManager.AddTimer((x) =>
-            {
-                cardAnimator.enabled = false;
+            TimerManager.AddTimer(
+                x =>
+                {
+                    CardAnimator.enabled = false;
 
-                _battlegroundController.playerHandCards.Add(this);
+                    BattlegroundController.PlayerHandCards.Add(this);
 
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-
-            }, null, 2f);
+                    BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                },
+                null,
+                2f);
         }
 
         // editing deck page
         public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount)
         {
-            cardsAmountDeckEditing = amount;
+            CardsAmountDeckEditing = amount;
             if (init)
             {
-                foreach (Transform child in _parentOfEditingGroupUI)
+                foreach (Transform child in ParentOfEditingGroupUI)
                 {
-                    MonoBehaviour.Destroy(child.gameObject);
+                    Object.Destroy(child.gameObject);
                 }
-                foreach (var item in _elementSlotsOfCards)
-                    MonoBehaviour.Destroy(item.selfObject);
-                _elementSlotsOfCards.Clear();
+
+                foreach (ElementSlotOfCards item in ElementSlotsOfCards)
+                {
+                    Object.Destroy(item.SelfObject);
+                }
+
+                ElementSlotsOfCards.Clear();
 
                 for (int i = 0; i < maxCopies; i++)
-                    _elementSlotsOfCards.Add(new ElementSlotOfCards(_parentOfEditingGroupUI, false));
+                {
+                    ElementSlotsOfCards.Add(new ElementSlotOfCards(ParentOfEditingGroupUI, false));
+                }
             }
 
             for (int i = 0; i < maxCopies; i++)
             {
-                if (i >= _elementSlotsOfCards.Count)
-                    _elementSlotsOfCards.Add(new ElementSlotOfCards(_parentOfEditingGroupUI, false));
+                if (i >= ElementSlotsOfCards.Count)
+                {
+                    ElementSlotsOfCards.Add(new ElementSlotOfCards(ParentOfEditingGroupUI, false));
+                }
 
-                _elementSlotsOfCards[i].SetStatus(i < amount);
+                ElementSlotsOfCards[i].SetStatus(i < amount);
             }
 
             float offset = 0.5f;
 
             if (maxCopies > 3)
+            {
                 offset = 0.8f;
+            }
             else if (maxCopies > 2)
+            {
                 offset = 0.5f;
+            }
             else if (maxCopies > 1)
+            {
                 offset = 0.7f;
+            }
 
-            InternalTools.GroupHorizontalObjects(_parentOfEditingGroupUI, offset, 2f);
+            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, 2f);
         }
-
-        private void OnMouseUpEventHandler(GameObject obj)
-        {
-            if (!_cardsController.CardDistribution)
-                return;
-        }
-
-        private void OnMouseDownEventHandler(GameObject obj)
-        {
-            if (!_cardsController.CardDistribution)
-                return;
-
-            cardShouldBeChanged = !cardShouldBeChanged;
-
-            distibuteCardObject.SetActive(cardShouldBeChanged);
-        }
-
 
         public void DrawTooltipInfoOfUnit(BoardUnit unit)
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
+            BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
 
-            float offset = 0f;
-            float spacing = -6.75f;
+            const float offset = 0f;
+            const float spacing = -6.75f;
 
             BuffOnCardInfoObject buff = null;
 
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
-            #region fill buffs
-
             // left block info ------------------------------------
-
-            if (unit.Card.libraryCard.cardRank != Enumerators.CardRank.MINION)
+            if (unit.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
-                var rankInfo = _dataManager.GetRankInfoByType(unit.Card.libraryCard.cardRank.ToString());
+                TooltipContentData.RankInfo rankInfo =
+                    DataManager.GetRankInfoByType(unit.Card.LibraryCard.CardRank.ToString());
                 if (rankInfo != null)
                 {
-                    var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(unit.Card.libraryCard).ToLower()));
+                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
+                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Card.LibraryCard).ToLower()));
 
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = rankInfo.name,
-                        description = rankDescription.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.RANK,
-                        value = -1
-                    });
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = rankInfo.Name,
+                            Description = rankDescription.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.RANK,
+                            Value = -1
+                        });
                 }
             }
 
-            if (unit.InitialUnitType != Enumerators.CardType.WALKER && unit.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.InitialUnitType != Enumerators.CardType.WALKER &&
+                unit.InitialUnitType != Enumerators.CardType.NONE)
             {
-                var buffInfo = _dataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
                 if (buffInfo != null)
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = buffInfo.name,
-                        description = buffInfo.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
-                        value = -1
-                    });
+                {
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = buffInfo.Name,
+                            Description = buffInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
+                            Value = -1
+                        });
+                }
             }
 
-            if (unit.Card.libraryCard.abilities != null)
+            if (unit.Card.LibraryCard.Abilities != null)
             {
-                foreach (var abil in unit.Card.libraryCard.abilities)
+                foreach (AbilityData abil in unit.Card.LibraryCard.Abilities)
                 {
-                    var buffInfo = _dataManager.GetBuffInfoByType(abil.buffType);
+                    TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.BuffType);
                     if (buffInfo != null)
-                        buffs.Add(new BuffTooltipInfo()
-                        {
-                            title = buffInfo.name,
-                            description = buffInfo.tooltip,
-                            tooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                            value = GetValueOfAbilityByType(abil)
-                        });
+                    {
+                        buffs.Add(
+                            new BuffTooltipInfo
+                            {
+                                Title = buffInfo.Name,
+                                Description = buffInfo.Tooltip,
+                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                Value = GetValueOfAbilityByType(abil)
+                            });
+                    }
                 }
             }
 
             for (int i = 0; i < buffs.Count; i++)
             {
                 if (i >= 3)
+                {
                     break;
+                }
 
-                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title.Equals(buffs[i].Title)) != null)
+                {
                     continue;
+                }
 
-                buff = new BuffOnCardInfoObject(buffs[i], _parentOfLeftBlockOfCardInfo, offset + spacing * i);
+                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + spacing * i);
 
-                _buffOnCardInfoObjects.Add(buff);
+                BuffOnCardInfoObjects.Add(buff);
             }
 
             float cardSize = 7.2f;
@@ -562,122 +546,44 @@ namespace LoomNetwork.CZB
                 centerOffset = -10f;
             }
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
+            InternalTools.GroupVerticalObjects(ParentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
 
-            var parent = buffs.Count > 0 ? _parentOfRightBlockOfCardInfo : _parentOfLeftBlockOfCardInfo;
+            Transform parent = buffs.Count > 0 ? ParentOfRightBlockOfCardInfo : ParentOfLeftBlockOfCardInfo;
 
             buffs.Clear();
 
             // right block info ------------------------------------
 
             // IMPROVE!!!
-            foreach (var abil in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit))
             {
-                var buffInfo = _dataManager.GetBuffInfoByType(abil.AbilityData.buffType);
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
                 if (buffInfo != null)
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = buffInfo.name,
-                        description = buffInfo.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.BUFF,
-                        value = -1
-                    });
-            }
-
-            // IMPROVE!!!
-            foreach (var buffOnUnit in unit.BuffsOnUnit)
-            {
-                var buffInfo = _dataManager.GetBuffInfoByType(buffOnUnit.ToString());
-                if (buffInfo != null)
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = buffInfo.name,
-                        description = buffInfo.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.BUFF,
-                        value = -1
-                    });
-            }
-
-            for (int i = 0; i < buffs.Count; i++)
-            {
-                if (i >= 3)
-                    break;
-
-                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
-                    continue;
-
-                buff = new BuffOnCardInfoObject(buffs[i], parent, offset + spacing * i);
-
-                _buffOnCardInfoObjects.Add(buff);
-            }
-
-            buffs.Clear();
-
-            InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
-
-            #endregion
-        }
-
-        public void DrawTooltipInfoOfCard(BoardCard boardCard)
-        {
-            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
-
-
-            if (boardCard.WorkingCard.libraryCard.cardKind == Enumerators.CardKind.SPELL)
-                return;
-
-            _buffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
-
-            float offset = 0f;
-            float spacing = -6.75f;
-
-            BuffOnCardInfoObject buff = null;
-
-            List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
-
-            // left block info ------------------------------------
-            if (boardCard.WorkingCard.libraryCard.cardRank != Enumerators.CardRank.MINION)
-            {
-                var rankInfo = _dataManager.GetRankInfoByType(boardCard.WorkingCard.libraryCard.cardRank.ToString());
-                if (rankInfo != null)
                 {
-                    var rankDescription = rankInfo.info.Find(y => y.element.ToLower().Equals(_cardsController.GetSetOfCard(boardCard.WorkingCard.libraryCard).ToLower()));
-
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = rankInfo.name,
-                        description = rankDescription.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.RANK,
-                        value = -1
-                    });
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = buffInfo.Name,
+                            Description = buffInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
+                            Value = -1
+                        });
                 }
             }
 
-            if (boardCard.WorkingCard.type != Enumerators.CardType.WALKER && boardCard.WorkingCard.type != Enumerators.CardType.NONE)
+            // IMPROVE!!!
+            foreach (Enumerators.BuffType buffOnUnit in unit.BuffsOnUnit)
             {
-                var buffInfo = _dataManager.GetBuffInfoByType(boardCard.WorkingCard.type.ToString());
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffOnUnit.ToString());
                 if (buffInfo != null)
-                    buffs.Add(new BuffTooltipInfo()
-                    {
-                        title = buffInfo.name,
-                        description = buffInfo.tooltip,
-                        tooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
-                        value = -1
-                    });
-            }
-
-            if (boardCard.WorkingCard.libraryCard.abilities != null)
-            {
-                foreach (var abil in boardCard.WorkingCard.libraryCard.abilities)
                 {
-                    var buffInfo = _dataManager.GetBuffInfoByType(abil.buffType);
-                    if (buffInfo != null)
-                        buffs.Add(new BuffTooltipInfo()
+                    buffs.Add(
+                        new BuffTooltipInfo
                         {
-                            title = buffInfo.name,
-                            description = buffInfo.tooltip,
-                            tooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                            value = GetValueOfAbilityByType(abil)
+                            Title = buffInfo.Name,
+                            Description = buffInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
+                            Value = -1
                         });
                 }
             }
@@ -685,15 +591,117 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < buffs.Count; i++)
             {
                 if (i >= 3)
+                {
                     break;
+                }
 
-                if (_buffOnCardInfoObjects.Find(x => x.buffTooltipInfo.title.Equals(buffs[i].title)) != null)
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title.Equals(buffs[i].Title)) != null)
+                {
                     continue;
+                }
 
-                buff = new BuffOnCardInfoObject(buffs[i], _parentOfLeftBlockOfCardInfo, offset + spacing * i);
+                buff = new BuffOnCardInfoObject(buffs[i], parent, offset + spacing * i);
 
-                _buffOnCardInfoObjects.Add(buff);
+                BuffOnCardInfoObjects.Add(buff);
             }
+
+            buffs.Clear();
+
+            InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
+        }
+
+        public void DrawTooltipInfoOfCard(BoardCard boardCard)
+        {
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+
+            if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+                return;
+
+            BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
+
+            const float offset = 0f;
+            const float spacing = -6.75f;
+
+            BuffOnCardInfoObject buff = null;
+
+            List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
+
+            // left block info ------------------------------------
+            if (boardCard.WorkingCard.LibraryCard.CardRank != Enumerators.CardRank.MINION)
+            {
+                TooltipContentData.RankInfo rankInfo =
+                    DataManager.GetRankInfoByType(boardCard.WorkingCard.LibraryCard.CardRank.ToString());
+                if (rankInfo != null)
+                {
+                    TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
+                        y.Element.ToLower()
+                            .Equals(CardsController.GetSetOfCard(boardCard.WorkingCard.LibraryCard).ToLower()));
+
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = rankInfo.Name,
+                            Description = rankDescription.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.RANK,
+                            Value = -1
+                        });
+                }
+            }
+
+            if (boardCard.WorkingCard.Type != Enumerators.CardType.WALKER &&
+                boardCard.WorkingCard.Type != Enumerators.CardType.NONE)
+            {
+                TooltipContentData.BuffInfo buffInfo =
+                    DataManager.GetBuffInfoByType(boardCard.WorkingCard.Type.ToString());
+                if (buffInfo != null)
+                {
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = buffInfo.Name,
+                            Description = buffInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.UNIT_TYPE,
+                            Value = -1
+                        });
+                }
+            }
+
+            if (boardCard.WorkingCard.LibraryCard.Abilities != null)
+            {
+                foreach (AbilityData abil in boardCard.WorkingCard.LibraryCard.Abilities)
+                {
+                    TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.BuffType);
+                    if (buffInfo != null)
+                    {
+                        buffs.Add(
+                            new BuffTooltipInfo
+                            {
+                                Title = buffInfo.Name,
+                                Description = buffInfo.Tooltip,
+                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                Value = GetValueOfAbilityByType(abil)
+                            });
+                    }
+                }
+            }
+
+            for (int i = 0; i < buffs.Count; i++)
+            {
+                if (i >= 3)
+                {
+                    break;
+                }
+
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title.Equals(buffs[i].Title)) != null)
+                {
+                    continue;
+                }
+
+                buff = new BuffOnCardInfoObject(buffs[i], ParentOfLeftBlockOfCardInfo, offset + spacing * i);
+
+                BuffOnCardInfoObjects.Add(buff);
+            }
+
             buffs.Clear();
 
             float cardSize = 7.2f;
@@ -705,116 +713,197 @@ namespace LoomNetwork.CZB
                 centerOffset = -10f;
             }
 
-            InternalTools.GroupVerticalObjects(_parentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
+            InternalTools.GroupVerticalObjects(ParentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
         }
 
         public void ClearBuffsOnUnit()
         {
-            if (_buffOnCardInfoObjects != null)
+            if (BuffOnCardInfoObjects != null)
             {
-                foreach (var item in _buffOnCardInfoObjects)
+                foreach (BuffOnCardInfoObject item in BuffOnCardInfoObjects)
+                {
                     item.Dispose();
-                _buffOnCardInfoObjects.Clear();
-                _buffOnCardInfoObjects = null;
+                }
+
+                BuffOnCardInfoObjects.Clear();
+                BuffOnCardInfoObjects = null;
             }
+        }
+
+        protected virtual void UpdatePositionOnHand()
+        {
+            if (IsPreview)
+                return;
+
+            Transform.DOScale(ScaleOnHand, 0.5f);
+            Transform.DOMove(PositionOnHand, 0.5f);
+            Transform.DORotate(RotationOnHand, 0.5f);
+        }
+
+        private void DestroyingHandler(GameObject obj)
+        {
+        }
+
+        private void PlayerGooChangedHandler(int obj)
+        {
+            UpdateCardsStatusEventHandler(WorkingCard.Owner);
+        }
+
+        private void UpdateColorOfCost()
+        {
+            if (ManaCost > InitialCost)
+            {
+                CostText.color = Color.red;
+            }
+            else if (ManaCost < InitialCost)
+            {
+                CostText.color = Color.green;
+            }
+            else
+            {
+                CostText.color = Color.white;
+            }
+        }
+
+        private void UpdateCardsStatusEventHandler(Player player)
+        {
+            if (IsPreview)
+                return;
+
+            if (CanBePlayed(player) && CanBeBuyed(player))
+            {
+                SetHighlightingEnabled(true);
+            }
+            else
+            {
+                SetHighlightingEnabled(false);
+            }
+        }
+
+        private void MouseUpTriggeredHandler(GameObject obj)
+        {
+            if (!CardsController.CardDistribution)
+            {
+            }
+        }
+
+        private void MouseDownTriggeredHandler(GameObject obj)
+        {
+            if (!CardsController.CardDistribution)
+                return;
+
+            CardShouldBeChanged = !CardShouldBeChanged;
+
+            DistibuteCardObject.SetActive(CardShouldBeChanged);
         }
 
         private int GetValueOfAbilityByType(AbilityData ability)
         {
-            switch(ability.buffType)
+            switch (ability.BuffType)
             {
                 case "DELAYED":
-                    return ability.delay;
-                default: return ability.value;
+                    return ability.Delay;
+                default: return ability.Value;
             }
         }
 
-
         public class BuffTooltipInfo
         {
-            public string title,
-                          description;
+            public string Title, Description;
 
-            public Enumerators.TooltipObjectType tooltipObjectType;
+            public Enumerators.TooltipObjectType TooltipObjectType;
 
-            public int value;
+            public int Value;
         }
 
         public class BuffOnCardInfoObject
         {
-            private ILoadObjectsManager _loadObjectsManager;
+            public BuffTooltipInfo BuffTooltipInfo;
 
-            private GameObject _selfObject;
+            private readonly ILoadObjectsManager _loadObjectsManager;
 
-            private SpriteRenderer _buffIconPicture;
+            private readonly GameObject _selfObject;
 
-            private TextMeshPro _callTypeText,
-                                _descriptionText;
+            private readonly SpriteRenderer _buffIconPicture;
 
-            public BuffTooltipInfo buffTooltipInfo;
+            private readonly TextMeshPro _callTypeText;
 
-            public Transform transform { get { return _selfObject.transform; } }
+            private readonly TextMeshPro _descriptionText;
 
             public BuffOnCardInfoObject(BuffTooltipInfo buffTooltipInfo, Transform parent, float offsetY)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                this.buffTooltipInfo = buffTooltipInfo;
+                BuffTooltipInfo = buffTooltipInfo;
 
-                _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
+                _selfObject =
+                    Object.Instantiate(
+                        _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/Gameplay/Tooltips/Tooltip_BuffOnCardInfo"), parent, false);
 
-                transform.localPosition = new Vector3(0, offsetY, 0f);
+                Transform.localPosition = new Vector3(0, offsetY, 0f);
 
                 _callTypeText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
-                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon").GetComponent<SpriteRenderer>();
+                _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon")
+                    .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.title, buffTooltipInfo.value).ToUpper();
-                _descriptionText.text = ReplaceXByValue(buffTooltipInfo.description, buffTooltipInfo.value);
+                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpper();
+                _descriptionText.text = ReplaceXByValue(buffTooltipInfo.Description, buffTooltipInfo.Value);
 
-                switch(buffTooltipInfo.tooltipObjectType)
+                switch (buffTooltipInfo.TooltipObjectType)
                 {
                     case Enumerators.TooltipObjectType.RANK:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsRanks/battleground_rank_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsRanks/battleground_rank_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.ABILITY:
                     case Enumerators.TooltipObjectType.BUFF:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsBuffTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsBuffTypes/battleground_mechanic_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.UNIT_TYPE:
-                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/IconsUnitTypes/battleground_mechanic_icon_" + buffTooltipInfo.title.Replace(" ", string.Empty).ToLower() + "_large");
+                        _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                            "Images/IconsUnitTypes/battleground_mechanic_icon_" +
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
                         break;
                     default:
                         _buffIconPicture.sprite = null;
                         break;
-                }           
+                }
             }
+
+            public Transform Transform => _selfObject.transform;
 
             public void Dispose()
             {
-                MonoBehaviour.Destroy(_selfObject);
+                Object.Destroy(_selfObject);
             }
 
             private string ReplaceXByValue(string val, int intVal)
             {
-               return val.Replace("X", intVal.ToString());
+                return val.Replace("X", intVal.ToString());
             }
         }
 
         public class ElementSlotOfCards
         {
-            public GameObject selfObject;
+            public GameObject SelfObject;
 
-            public GameObject usedObject,
-                              freeObject;
+            public GameObject UsedObject, FreeObject;
 
             public ElementSlotOfCards(Transform parent, bool used)
             {
-                selfObject = MonoBehaviour.Instantiate(GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
+                SelfObject =
+                    Object.Instantiate(
+                        GameClient.Get<ILoadObjectsManager>()
+                            .GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
 
-                freeObject = selfObject.transform.Find("Object_Free").gameObject;
-                usedObject = selfObject.transform.Find("Object_Used").gameObject;
+                FreeObject = SelfObject.transform.Find("Object_Free").gameObject;
+                UsedObject = SelfObject.transform.Find("Object_Used").gameObject;
 
                 SetStatus(used);
             }
@@ -823,13 +912,13 @@ namespace LoomNetwork.CZB
             {
                 if (used)
                 {
-                    freeObject.SetActive(false);
-                    usedObject.SetActive(true);
+                    FreeObject.SetActive(false);
+                    UsedObject.SetActive(true);
                 }
                 else
                 {
-                    freeObject.SetActive(true);
-                    usedObject.SetActive(false);
+                    FreeObject.SetActive(true);
+                    UsedObject.SetActive(false);
                 }
             }
         }

@@ -1,34 +1,65 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using LoomNetwork.CZB.Common;
 using UnityEngine;
-using System.Linq;
-
 
 namespace LoomNetwork.CZB
 {
     public class LocalizationManager : IService, ILocalizationManager
     {
-        public event Action<Enumerators.Language> LanguageWasChangedEvent;
+        private readonly Enumerators.Language _defaultLanguage = Enumerators.Language.EN;
 
         private IDataManager _dataManager;
 
-        private Enumerators.Language _defaultLanguage = Enumerators.Language.EN,
-                                     _currentLanguage = Enumerators.Language.NONE;
+        public event Action<Enumerators.Language> LanguageWasChangedEvent;
 
+        public Dictionary<SystemLanguage, Enumerators.Language> SupportedLanguages { get; private set; }
 
-        private Dictionary<SystemLanguage, Enumerators.Language> _languages;
+        public Enumerators.Language CurrentLanguage { get; private set; } = Enumerators.Language.NONE;
 
-        public Dictionary<SystemLanguage, Enumerators.Language> SupportedLanguages { get { return _languages; } }
+        public void ApplyLocalization()
+        {
+            if (!SupportedLanguages.ContainsKey(Application.systemLanguage))
+            {
+                if (_dataManager.CachedUserLocalData.AppLanguage == Enumerators.Language.NONE)
+                {
+                    SetLanguage(_defaultLanguage);
+                }
+                else
+                {
+                    SetLanguage(_dataManager.CachedUserLocalData.AppLanguage);
+                }
+            }
+            else
+            {
+                if (_dataManager.CachedUserLocalData.AppLanguage == Enumerators.Language.NONE)
+                {
+                    SetLanguage(SupportedLanguages[Application.systemLanguage]);
+                }
+                else
+                {
+                    SetLanguage(_dataManager.CachedUserLocalData.AppLanguage);
+                }
+            }
+        }
 
-        public Enumerators.Language CurrentLanguage { get { return _currentLanguage; } }
+        public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
+        {
+            if (language == CurrentLanguage && !forceUpdate)
+                return;
 
+            string languageCode = language.ToString().ToLower();
+
+            CurrentLanguage = language;
+            _dataManager.CachedUserLocalData.AppLanguage = language;
+
+            LanguageWasChangedEvent?.Invoke(CurrentLanguage);
+        }
+
+        public string GetUITranslation(string key)
+        {
+            return "";
+        }
 
         public void Dispose()
         {
@@ -41,60 +72,17 @@ namespace LoomNetwork.CZB
             FillLanguages();
         }
 
-        public void ApplyLocalization()
-        {
-            if (!_languages.ContainsKey(Application.systemLanguage))
-            {
-                if (_dataManager.CachedUserLocalData.appLanguage == Enumerators.Language.NONE)
-                    SetLanguage(_defaultLanguage);
-                else
-                {
-                    SetLanguage(_dataManager.CachedUserLocalData.appLanguage);
-                }
-            }
-            else
-            {
-                if (_dataManager.CachedUserLocalData.appLanguage == Enumerators.Language.NONE)
-                    SetLanguage(_languages[Application.systemLanguage]);
-                else
-                    SetLanguage(_dataManager.CachedUserLocalData.appLanguage);
-            }
-        }
-
-
         public void Update()
         {
         }
 
-        public void SetLanguage(Enumerators.Language language, bool forceUpdate = false)
-        {
-            if (language == CurrentLanguage && !forceUpdate)
-                return;
-
-            string languageCode = language.ToString().ToLower();
-
-            //I2.Loc.LocalizationManager.SetLanguageAndCode(I2.Loc.LocalizationManager.GetLanguageFromCode(languageCode), languageCode);
-
-            _currentLanguage = language;
-            _dataManager.CachedUserLocalData.appLanguage = language;
-
-            if (LanguageWasChangedEvent != null)
-                LanguageWasChangedEvent(_currentLanguage);
-        }
-
-        public string GetUITranslation(string key)
-        {
-            return "";// I2.Loc.LocalizationManager.GetTermTranslation(key);
-        }
-
-
         private void FillLanguages()
         {
-            _languages = new Dictionary<SystemLanguage, Enumerators.Language>();
+            SupportedLanguages = new Dictionary<SystemLanguage, Enumerators.Language>();
 
-            _languages.Add(SystemLanguage.Russian, Enumerators.Language.RU);
-            _languages.Add(SystemLanguage.English, Enumerators.Language.EN);
-            _languages.Add(SystemLanguage.German, Enumerators.Language.DE);
+            SupportedLanguages.Add(SystemLanguage.Russian, Enumerators.Language.RU);
+            SupportedLanguages.Add(SystemLanguage.English, Enumerators.Language.EN);
+            SupportedLanguages.Add(SystemLanguage.German, Enumerators.Language.DE);
         }
     }
 }

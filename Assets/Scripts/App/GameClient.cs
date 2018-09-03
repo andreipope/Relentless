@@ -1,6 +1,3 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
 using LoomNetwork.CZB.BackendCommunication;
 using LoomNetwork.CZB.Gameplay;
 
@@ -8,38 +5,24 @@ namespace LoomNetwork.CZB
 {
     public class GameClient : ServiceLocatorBase
     {
-        private static object _sync = new object();
+        private static readonly object Sync = new object();
 
-        private static GameClient _Instance;
-        public static GameClient Instance
-        {
-            get
-            {
-                if (_Instance == null)
-                {
-                    lock (_sync)
-                    {
-                        _Instance = new GameClient();
-                    }
-                }
-                return _Instance;
-            }
-        }
+        private static GameClient _instance;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameClient"/> class.
+        ///     Initializes a new instance of the <see cref="GameClient" /> class.
         /// </summary>
-        internal GameClient() : base()
+        internal GameClient()
         {
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
-            BackendPurpose backend = BackendPurpose.Local;
+            const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
-            BackendPurpose backend = BackendPurpose.Production;
+            const BackendPurpose backend = BackendPurpose.Production;
 #else
-            BackendPurpose backend = BackendPurpose.Staging;
+            const BackendPurpose backend = BackendPurpose.Staging;
 #endif
 
-            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.KEndpoints[backend];
             AddService<ITimerManager>(new TimerManager());
             AddService<ILoadObjectsManager>(new LoadObjectsManager());
             AddService<IInputManager>(new InputManager());
@@ -47,7 +30,7 @@ namespace LoomNetwork.CZB
             AddService<IDataManager>(new DataManager());
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
-            AddService<ICameraManager>(new CameraManager()); 
+            AddService<ICameraManager>(new CameraManager());
             AddService<IPlayerManager>(new PlayerManager());
             AddService<ISoundManager>(new SoundManager());
             AddService<INavigationManager>(new NavigationManager());
@@ -57,14 +40,26 @@ namespace LoomNetwork.CZB
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<BackendFacade>(new BackendFacade(
-                backendEndpoint.AuthHost,
-                backendEndpoint.ReaderHost,
-                backendEndpoint.WriterHost
-                ));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost, backendEndpoint.WriterHost));
             AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
+        }
+
+        public static GameClient Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (Sync)
+                    {
+                        _instance = new GameClient();
+                    }
+                }
+
+                return _instance;
+            }
         }
 
         public static T Get<T>()

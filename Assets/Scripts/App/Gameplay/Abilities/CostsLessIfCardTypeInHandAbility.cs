@@ -1,80 +1,64 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
 using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Data;
-using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
     public class CostsLessIfCardTypeInHandAbility : AbilityBase
     {
-        private int _changedCostOn = 0;
+        public Enumerators.SetType SetType;
 
-        public Enumerators.SetType setType;
-        public int value = 0;
+        public int Value;
 
-        public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            setType = ability.abilitySetType;
-            value = ability.value;
+            SetType = ability.AbilitySetType;
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.IN_HAND)
+            if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
-            playerCallerOfAbility.HandChangedEvent += HandChangedEventHandler;
-            playerCallerOfAbility.CardPlayedEvent += CardPlayedEventHandler;
+            PlayerCallerOfAbility.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            _timerManager.AddTimer((x) =>
-            {
-                Action();
-            }, null, 0.5f);
-        }
-
-        private void CardPlayedEventHandler(WorkingCard card)
-        {
-            if (!card.Equals(mainWorkingCard))
-                return;
-
-            playerCallerOfAbility.HandChangedEvent -= HandChangedEventHandler;
-            playerCallerOfAbility.CardPlayedEvent -= CardPlayedEventHandler;
-        }
-
-        private void HandChangedEventHandler(int obj)
-        {
-            Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
+            TimerManager.AddTimer(
+                x =>
+                {
+                    Action();
+                },
+                null,
+                0.5f);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
-
-            if (!playerCallerOfAbility.CardsInHand.Contains(mainWorkingCard))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
-            int gooCost = playerCallerOfAbility.CardsInHand.FindAll(x => x.libraryCard.cardSetType == setType && x != mainWorkingCard).Count * value;
+            int gooCost = PlayerCallerOfAbility.CardsInHand
+                .FindAll(x => x.LibraryCard.CardSetType == SetType && x != MainWorkingCard).Count * Value;
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
+                MainWorkingCard.RealCost + gooCost, BoardCard);
+        }
 
-            //gooCost = _changedCostOn;
+        private void CardPlayedHandler(WorkingCard card)
+        {
+            if (!card.Equals(MainWorkingCard))
+                return;
 
-            //_changedCostOn = gooCost;
+            PlayerCallerOfAbility.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
+        }
 
-            _cardsController.SetGooCostOfCardInHand(playerCallerOfAbility, mainWorkingCard, mainWorkingCard.realCost + gooCost, boardCard);
+        private void HandChangedHandler(int obj)
+        {
+            Action();
         }
     }
 }

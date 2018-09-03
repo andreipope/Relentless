@@ -1,196 +1,116 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
-
-using UnityEngine;
-using UnityEngine.Rendering;
-
-using DG.Tweening;
-using TMPro;
-using LoomNetwork.CZB.Common;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using DG.Tweening;
+using LoomNetwork.CZB.Common;
 using LoomNetwork.CZB.Helpers;
 using LoomNetwork.Internal;
-using LoomNetwork.CZB.Data;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 namespace LoomNetwork.CZB
 {
     public class BoardUnit
     {
-        public event Action UnitOnDieEvent;
-        public event Action<object, int, bool> UnitOnAttackEvent;
-        public event Action<object> UnitGotDamageEvent;
+        public bool AttackedThisTurn;
 
-        public event Action UnitHPChangedEvent;
-        public event Action UnitDamageChangedEvent;
+        public bool HasFeral;
 
-        private Action damageChangedDelegate;
-        private Action healthChangedDelegate;
+        public bool HasHeavy;
 
-        private ILoadObjectsManager _loadObjectsManager;
-        private IGameplayManager _gameplayManager;
-        private ISoundManager _soundManager;
-        private ITimerManager _timerManager;
-        private ITutorialManager _tutorialManager;
-        private PlayerController _playerController;
-        private BattlegroundController _battlegroundController;
-        private AnimationsController _animationsController;
-        private BattleController _battleController;
-        private ActionsQueueController _actionsQueueController;
-        private VFXController _vfxController;
-        private RanksController _ranksController;
-        private AbilitiesController _abilitiesController;
-        private CardsController _cardsController;
-        private InputController _inputController;
+        public int NumTurnsOnBoard;
 
-        private GameObject _fightTargetingArrowPrefab;
+        public int InitialDamage;
 
-        private GameObject _selfObject, _battleframeObject;
+        public int InitialHp;
 
-        private SpriteRenderer _pictureSprite;
-        private SpriteRenderer _frozenSprite;
-        private SpriteRenderer _glowSprite;
-        private GameObject _shieldSprite;
+        public Player OwnerPlayer;
 
-        private GameObject _glowSelectedObjectSprite;
+        public List<UnitAnimatorInfo> AnimatorControllers;
 
-        private TextMeshPro _attackText;
-        private TextMeshPro _healthText;
+        public List<object> AttackedBoardObjectsThisTurn;
 
-        private ParticleSystem _sleepingParticles;
+        public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
+
+        private readonly ILoadObjectsManager _loadObjectsManager;
+
+        private readonly IGameplayManager _gameplayManager;
+
+        private readonly ISoundManager _soundManager;
+
+        private readonly ITimerManager _timerManager;
+
+        private readonly ITutorialManager _tutorialManager;
+
+        private readonly PlayerController _playerController;
+
+        private readonly BattlegroundController _battlegroundController;
+
+        private readonly AnimationsController _animationsController;
+
+        private readonly BattleController _battleController;
+
+        private readonly ActionsQueueController _actionsQueueController;
+
+        private readonly VfxController _vfxController;
+
+        private readonly RanksController _ranksController;
+
+        private readonly AbilitiesController _abilitiesController;
+
+        private readonly CardsController _cardsController;
+
+        private readonly InputController _inputController;
+
+        private readonly GameObject _fightTargetingArrowPrefab;
+
+        private readonly SpriteRenderer _pictureSprite;
+
+        private readonly SpriteRenderer _frozenSprite;
+
+        private readonly SpriteRenderer _glowSprite;
+
+        private readonly GameObject _shieldSprite;
+
+        private readonly GameObject _glowSelectedObjectSprite;
+
+        private readonly TextMeshPro _attackText;
+
+        private readonly TextMeshPro _healthText;
+
+        private readonly ParticleSystem _sleepingParticles;
+
+        private readonly OnBehaviourHandler _onBehaviourHandler;
+
+        private readonly GameObject _unitContentObject;
+
+        private Action _damageChangedDelegate;
+
+        private Action _healthChangedDelegate;
+
+        private GameObject _battleframeObject;
 
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
-        private Enumerators.CardType _initialUnitType;
-
         private int _currentDamage;
+
         private int _currentHealth;
 
-        private int _stunTurns = 0;
+        private int _stunTurns;
 
-        private bool _readyForBuffs = false;
+        private bool _readyForBuffs;
 
-        private bool _ignoreArrivalEndEvents = false;
+        private bool _ignoreArrivalEndEvents;
 
-        private BoardArrow abilitiesTargetingArrow;
-        private BattleBoardArrow fightTargetingArrow;
+        private BattleBoardArrow _fightTargetingArrow;
 
-        private AnimationEventTriggering arrivalAnimationEventHandler;
+        private bool _dead;
 
-        private OnBehaviourHandler _onBehaviourHandler;
-
-        private GameObject unitContentObject;
-
-        private Animator unitAnimator;
-
-        private List<Enumerators.BuffType> _buffsOnUnit;
-
-        private bool _dead = false;
-
-        private bool _arrivalDone = false;
-
-        public bool AttackedThisTurn = false;
-
-        public bool hasFeral;
-        public bool hasHeavy;
-        public int numTurnsOnBoard;
-
-        public int initialDamage;
-        public int initialHP;
-
-        public Player ownerPlayer;
-
-        public List<UnitAnimatorInfo> animatorControllers;
-
-        public List<object> attackedBoardObjectsThisTurn;
-
-        public Enumerators.AttackInfoType attackInfoType = Enumerators.AttackInfoType.ANY;
-
-
-        public Enumerators.CardType InitialUnitType { get { return _initialUnitType; } }
-
-
-        public int MaxCurrentDamage { get { return initialDamage + BuffedDamage; } }
-        public int BuffedDamage { get; set; }
-
-
-        public int CurrentDamage
-        {
-            get
-            {
-                return _currentDamage;
-            }
-            set
-            {
-                var oldDamage = _currentDamage;
-
-                _currentDamage = Mathf.Clamp(value, 0, 99999);
-                // if (oldDamage != _currentDamage)
-                UnitDamageChangedEvent?.Invoke();
-            }
-        }
-
-        public int MaxCurrentHP { get { return initialHP + BuffedHP; } }
-        public int BuffedHP { get; set; }
-
-        public int CurrentHP
-        {
-            get
-            {
-                return _currentHealth;
-            }
-            set
-            {
-                var oldHealth = _currentHealth;
-
-                _currentHealth = Mathf.Clamp(value, 0, 99);
-                //   if (oldHealth != _currentHealth)
-                UnitHPChangedEvent?.Invoke();
-            }
-        }
-
-        public Transform transform { get { return _selfObject.transform; } }
-        public GameObject gameObject { get { return _selfObject; } }
-        public Sprite sprite { get { return _pictureSprite.sprite; } }
-
-        public bool IsPlayable { get; set; }
-
-        public WorkingCard Card { get; private set; }
-
-        public int InstanceId { get; private set; }
-
-        public bool IsStun
-        {
-            get { return (_stunTurns > 0 ? true : false); }
-        }
-
-        public bool IsCreatedThisTurn { get; private set; }
-
-        public List<Enumerators.BuffType> BuffsOnUnit { get { return _buffsOnUnit; } }
-
-        public bool HasBuffRush { get; set; }
-        public bool HasBuffHeavy { get; set; }
-        public bool HasBuffShield { get; set; }
-        public bool TakeFreezeToAttacked { get; set; }
-        public int AdditionalDamage { get; set; }
-        public int AdditionalAttack { get; set; }
-        public int AdditionalDefense { get; set; }
-
-        public int DamageDebuffUntillEndOfTurn { get; set; }
-        public int HPDebuffUntillEndOfTurn { get; set; }
-
-
-        public bool IsAttacking { get; private set; }
-
-        public bool IsAllAbilitiesResolvedAtStart { get; set; }
-
-        public bool IsReanimated { get; set; }
-        public bool AttackAsFirst { get; set; }
-
-        public Enumerators.UnitStatusType UnitStatus { get; set; }
+        private bool _arrivalDone;
 
         public BoardUnit(Transform parent)
         {
@@ -205,62 +125,44 @@ namespace LoomNetwork.CZB
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
-            _vfxController = _gameplayManager.GetController<VFXController>();
+            _vfxController = _gameplayManager.GetController<VfxController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _inputController = _gameplayManager.GetController<InputController>();
 
-            _selfObject = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
-            _selfObject.transform.SetParent(parent, false);
+            GameObject =
+                Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
+            GameObject.transform.SetParent(parent, false);
 
-            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
-            _pictureSprite = _selfObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
-            _frozenSprite = _selfObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
-            _glowSprite = _selfObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
-            _shieldSprite = _selfObject.transform.Find("Other/Shield").gameObject;
+            _pictureSprite = GameObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
+            _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
+            _glowSprite = GameObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
+            _shieldSprite = GameObject.transform.Find("Other/Shield").gameObject;
 
-            _glowSelectedObjectSprite = _selfObject.transform.Find("Other/GlowSelectedObject").gameObject;
+            _glowSelectedObjectSprite = GameObject.transform.Find("Other/GlowSelectedObject").gameObject;
 
-            _attackText = _selfObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
-            _healthText = _selfObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
+            _attackText = GameObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
+            _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
-            _sleepingParticles = _selfObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
+            _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
 
-            //unitAnimator = _selfObject.transform.Find("GraphicsAnimation").GetComponent<Animator>();
+            _unitContentObject = GameObject.transform.Find("Other").gameObject;
+            _unitContentObject.SetActive(false);
 
-            unitContentObject = _selfObject.transform.Find("Other").gameObject;
-            unitContentObject.SetActive(false);
+            _onBehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
-            //arrivalAnimationEventHandler = _selfObject.transform.Find("GraphicsAnimation").GetComponent<AnimationEventTriggering>();
-
-            _onBehaviourHandler = _selfObject.GetComponent<OnBehaviourHandler>();
-
-            //arrivalAnimationEventHandler.OnAnimationEvent += ArrivalAnimationEventHandler;
-
-         //   _onBehaviourHandler.OnMouseUpEvent += OnMouseUp;
-         //   _onBehaviourHandler.OnMouseDownEvent += OnMouseDown;
-            _onBehaviourHandler.OnTriggerEnterEvent += OnTriggerEnter;
-            _onBehaviourHandler.OnTriggerExitEvent += OnTriggerExit;
-
+            _onBehaviourHandler.TriggerEntered += TriggerEnter;
+            _onBehaviourHandler.TriggerExited += TriggerExit;
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
-            /*
-            animatorControllers = new List<UnitAnimatorInfo>();
-            for (int i = 0; i < Enum.GetNames(typeof(Enumerators.CardType)).Length; i++)
-            {
-                animatorControllers.Add(new UnitAnimatorInfo()
-                {
-                    animator = _loadObjectsManager.GetObjectByPath<RuntimeAnimatorController>("Animators/" + ((Enumerators.CardType)i).ToString() + "ArrivalController"),
-                    cardType = (Enumerators.CardType)i
-                });
-            }
-              */
-            _buffsOnUnit = new List<Enumerators.BuffType>();
-            attackedBoardObjectsThisTurn = new List<object>();
+            BuffsOnUnit = new List<Enumerators.BuffType>();
+            AttackedBoardObjectsThisTurn = new List<object>();
 
             _glowSprite.gameObject.SetActive(true);
             _glowSprite.enabled = false;
@@ -272,16 +174,101 @@ namespace LoomNetwork.CZB
             IsAllAbilitiesResolvedAtStart = true;
         }
 
+        public event Action UnitDied;
+
+        public event Action<object, int, bool> UnitAttacked;
+
+        public event Action<object> UnitDamaged;
+
+        public event Action UnitHpChanged;
+
+        public event Action UnitDamageChanged;
+
+        public Enumerators.CardType InitialUnitType { get; private set; }
+
+        public int MaxCurrentDamage => InitialDamage + BuffedDamage;
+
+        public int BuffedDamage { get; set; }
+
+        public int CurrentDamage
+        {
+            get => _currentDamage;
+            set
+            {
+                _currentDamage = Mathf.Clamp(value, 0, 99999);
+                UnitDamageChanged?.Invoke();
+            }
+        }
+
+        public int MaxCurrentHp => InitialHp + BuffedHp;
+
+        public int BuffedHp { get; set; }
+
+        public int CurrentHp
+        {
+            get => _currentHealth;
+            set
+            {
+                _currentHealth = Mathf.Clamp(value, 0, 99);
+                UnitHpChanged?.Invoke();
+            }
+        }
+
+        public Transform Transform => GameObject.transform;
+
+        public GameObject GameObject { get; }
+
+        public Sprite Sprite => _pictureSprite.sprite;
+
+        public bool IsPlayable { get; set; }
+
+        public WorkingCard Card { get; private set; }
+
+        public int InstanceId { get; private set; }
+
+        public bool IsStun => _stunTurns > 0 ? true : false;
+
+        public bool IsCreatedThisTurn { get; private set; }
+
+        public List<Enumerators.BuffType> BuffsOnUnit { get; }
+
+        public bool HasBuffRush { get; set; }
+
+        public bool HasBuffHeavy { get; set; }
+
+        public bool HasBuffShield { get; set; }
+
+        public bool TakeFreezeToAttacked { get; set; }
+
+        public int AdditionalDamage { get; set; }
+
+        public int AdditionalAttack { get; set; }
+
+        public int AdditionalDefense { get; set; }
+
+        public int DamageDebuffUntillEndOfTurn { get; set; }
+
+        public int HpDebuffUntillEndOfTurn { get; set; }
+
+        public bool IsAttacking { get; private set; }
+
+        public bool IsAllAbilitiesResolvedAtStart { get; set; }
+
+        public bool IsReanimated { get; set; }
+
+        public bool AttackAsFirst { get; set; }
+
+        public Enumerators.UnitStatusType UnitStatus { get; set; }
+
         public bool IsHeavyUnit()
         {
-            return HasBuffHeavy || hasHeavy;
+            return HasBuffHeavy || HasHeavy;
         }
 
         public bool IsFeralUnit()
         {
-            return hasFeral;
+            return HasFeral;
         }
-
 
         public void Update()
         {
@@ -290,29 +277,28 @@ namespace LoomNetwork.CZB
 
         public void Reset()
         {
-
         }
 
         public void Die(bool returnToHand = false)
         {
-            //Debug.Log("DIE - " + Card.libraryCard.name);
             _timerManager.StopTimer(CheckIsCanDie);
 
-            UnitHPChangedEvent -= healthChangedDelegate;
-            UnitDamageChangedEvent -= damageChangedDelegate;
+            UnitHpChanged -= _healthChangedDelegate;
+            UnitDamageChanged -= _damageChangedDelegate;
 
             _dead = true;
-            //if(CurrentHP > 0)
-              //  Debug.LogError(Card.libraryCard.name);
             if (!returnToHand)
+            {
                 _battlegroundController.KillBoardCard(this);
+            }
         }
 
         public void BuffUnit(Enumerators.BuffType type)
         {
             if (!_readyForBuffs)
                 return;
-            _buffsOnUnit.Add(type);
+
+            BuffsOnUnit.Add(type);
         }
 
         public void RemoveBuff(Enumerators.BuffType type)
@@ -320,7 +306,7 @@ namespace LoomNetwork.CZB
             if (!_readyForBuffs)
                 return;
 
-            _buffsOnUnit.Remove(type);
+            BuffsOnUnit.Remove(type);
         }
 
         public void ClearBuffs()
@@ -332,7 +318,7 @@ namespace LoomNetwork.CZB
             int attackToDelete = 0;
             int defenseToDelete = 0;
 
-            foreach (var buff in _buffsOnUnit)
+            foreach (Enumerators.BuffType buff in BuffsOnUnit)
             {
                 switch (buff)
                 {
@@ -353,25 +339,26 @@ namespace LoomNetwork.CZB
                         break;
                     case Enumerators.BuffType.RUSH:
                         if (!IsPlayable && HasBuffRush && IsCreatedThisTurn && !AttackedThisTurn)
+                        {
                             _sleepingParticles.gameObject.SetActive(true);
+                        }
 
                         HasBuffRush = false;
-                        // IsPlayable = _attacked;
+
                         break;
                     case Enumerators.BuffType.GUARD:
                         HasBuffShield = false;
                         break;
-                    default: break;
                 }
             }
 
-            _buffsOnUnit.Clear();
+            BuffsOnUnit.Clear();
 
             AdditionalDefense -= defenseToDelete;
             AdditionalAttack -= attackToDelete;
             AdditionalDamage -= damageToDelete;
-            BuffedHP -= defenseToDelete;
-            CurrentHP -= defenseToDelete;
+            BuffedHp -= defenseToDelete;
+            CurrentHp -= defenseToDelete;
             BuffedDamage -= attackToDelete;
             CurrentDamage -= attackToDelete;
 
@@ -383,19 +370,15 @@ namespace LoomNetwork.CZB
             if (!_readyForBuffs)
                 return;
 
-
-            //foreach (var buff in _buffsOnUnit)
-            //{
             switch (type)
             {
                 case Enumerators.BuffType.ATTACK:
                     CurrentDamage++;
                     break;
                 case Enumerators.BuffType.DAMAGE:
-                    //AdditionalDamage++;
                     break;
                 case Enumerators.BuffType.DEFENCE:
-                    CurrentHP++;
+                    CurrentHp++;
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
@@ -404,28 +387,25 @@ namespace LoomNetwork.CZB
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.RUSH:
-                    if(numTurnsOnBoard == 0)
+                    if (NumTurnsOnBoard == 0)
+                    {
                         HasBuffRush = true;
-                    // IsPlayable = !_attacked;
+                    }
+
                     _sleepingParticles.gameObject.SetActive(false);
                     break;
                 case Enumerators.BuffType.GUARD:
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this, Card.libraryCard, ownerPlayer);
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this,
+                        Card.LibraryCard, OwnerPlayer);
                     break;
                 case Enumerators.BuffType.DESTROY:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK, this, Card.libraryCard, ownerPlayer);
+                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        this, Card.LibraryCard, OwnerPlayer);
                     break;
-                default: break;
             }
-            //}
-
-            //BuffedHP += AdditionalDefense;
-            //CurrentHP += BuffedHP;
-            //BuffedDamage += AdditionalAttack;
-            //CurrentDamage += BuffedDamage;
 
             UpdateFrameByType();
         }
@@ -433,7 +413,7 @@ namespace LoomNetwork.CZB
         public void UseShieldFromBuff()
         {
             HasBuffShield = false;
-            _buffsOnUnit.Remove(Enumerators.BuffType.GUARD);
+            BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             _shieldSprite.SetActive(HasBuffShield);
         }
 
@@ -442,10 +422,12 @@ namespace LoomNetwork.CZB
             _shieldSprite.SetActive(HasBuffShield);
 
             if (HasBuffHeavy)
-                SetAsHeavyUnit(true);
+            {
+                SetAsHeavyUnit();
+            }
             else
             {
-                switch (_initialUnitType)
+                switch (InitialUnitType)
                 {
                     case Enumerators.CardType.WALKER:
                         SetAsWalkerUnit();
@@ -456,54 +438,44 @@ namespace LoomNetwork.CZB
                     case Enumerators.CardType.HEAVY:
                         SetAsHeavyUnit();
                         break;
-                    default: break;
                 }
             }
         }
 
-        public void SetAsHeavyUnit(bool buff = false)
+        public void SetAsHeavyUnit()
         {
-            if (hasHeavy)
+            if (HasHeavy)
                 return;
 
-            //if (!buff)
-            //{
-            hasHeavy = true;
-            hasFeral = false;
-            _initialUnitType = Enumerators.CardType.HEAVY;
-            //}
-            // Debug.Log();
+            HasHeavy = true;
+            HasFeral = false;
+            InitialUnitType = Enumerators.CardType.HEAVY;
+
             ChangeTypeFrame(2.5f, 1.7f);
         }
 
-        public void SetAsWalkerUnit(bool buff = false)
+        public void SetAsWalkerUnit()
         {
-            if (!hasHeavy && !hasFeral && !HasBuffHeavy)
+            if (!HasHeavy && !HasFeral && !HasBuffHeavy)
                 return;
 
-            // if (!buff)
-            // {
-            hasHeavy = false;
-            hasFeral = false;
+            HasHeavy = false;
+            HasFeral = false;
             HasBuffHeavy = false;
-            _initialUnitType = Enumerators.CardType.WALKER;
-            // }
+            InitialUnitType = Enumerators.CardType.WALKER;
 
             ChangeTypeFrame(1.3f, 0.3f);
         }
 
-        public void SetAsFeralUnit(bool buff = false)
+        public void SetAsFeralUnit()
         {
-            if (hasFeral)
+            if (HasFeral)
                 return;
 
-            //if (!buff)
-            //{
-            hasHeavy = false;
+            HasHeavy = false;
             HasBuffHeavy = false;
-            hasFeral = true;
-            _initialUnitType = Enumerators.CardType.FERAL;
-            //}
+            HasFeral = true;
+            InitialUnitType = Enumerators.CardType.FERAL;
 
             ChangeTypeFrame(2.7f, 1.7f);
 
@@ -515,24 +487,6 @@ namespace LoomNetwork.CZB
             }
         }
 
-        private void ChangeTypeFrame(float playerTime, float opponentTime)
-        {
-            _ignoreArrivalEndEvents = true;
-            unitContentObject.SetActive(false);
-
-            _pictureSprite.transform.SetParent(_selfObject.transform, false);
-            _pictureSprite.gameObject.SetActive(false);
-            GameObject.Destroy(_battleframeObject);
-            PlayArrivalAnimation();
-            _pictureSprite.gameObject.SetActive(true);
-            _timerManager.AddTimer((x) =>
-            {
-                ArrivalAnimationEventHandler();
-            }, null, ownerPlayer.IsLocalPlayer ? playerTime : opponentTime, false);
-
-            _readyForBuffs = true;
-        }
-
         public void BuffShield()
         {
             BuffUnit(Enumerators.BuffType.GUARD);
@@ -542,86 +496,65 @@ namespace LoomNetwork.CZB
 
         public void ArrivalAnimationEventHandler()
         {
-            unitContentObject.SetActive(true);
-            if (hasFeral)
+            _unitContentObject.SetActive(true);
+            if (HasFeral)
+            {
                 StopSleepingParticles();
-            if (!_ignoreArrivalEndEvents)
-                if (hasFeral)
-                    if (ownerPlayer != null)
-                        SetHighlightingEnabled(true);
+            }
 
             if (!_ignoreArrivalEndEvents)
             {
-                if (Card.libraryCard.cardRank == Enumerators.CardRank.COMMANDER)
+                if (HasFeral)
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "1", Constants.ZOMBIES_SOUND_VOLUME, false, true);
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY + "2", Constants.ZOMBIES_SOUND_VOLUME / 2f, false, true);
+                    if (OwnerPlayer != null)
+                    {
+                        SetHighlightingEnabled(true);
+                    }
+                }
+            }
+
+            if (!_ignoreArrivalEndEvents)
+            {
+                if (Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
+                {
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1",
+                        Constants.ZombiesSoundVolume, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2",
+                        Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_PLAY, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                        Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+                        false, true);
                 }
 
-
-                if (Card.libraryCard.name.Equals("Freezzee"))
+                if (Card.LibraryCard.Name.Equals("Freezzee"))
                 {
-                    var freezzees = GetEnemyUnitsList(this).FindAll(x => x.Card.libraryCard.id == Card.libraryCard.id);
+                    List<BoardUnit> freezzees = GetEnemyUnitsList(this)
+                        .FindAll(x => x.Card.LibraryCard.Id == Card.LibraryCard.Id);
 
                     if (freezzees.Count > 0)
                     {
-                        foreach (var creature in freezzees)
+                        foreach (BoardUnit creature in freezzees)
                         {
                             creature.Stun(Enumerators.StunType.FREEZE, 1);
-                            CreateFrozenVFX(creature.transform.position);
+                            CreateFrozenVfx(creature.Transform.position);
                         }
                     }
                 }
 
-
                 _readyForBuffs = true;
-                _ranksController.UpdateRanksByElements(ownerPlayer.BoardCards, Card.libraryCard);
+                _ranksController.UpdateRanksByElements(OwnerPlayer.BoardCards, Card.LibraryCard);
             }
-            // }
-            /* else if (param.Equals("ArrivalAnimationHeavySetLayerUnderBattleFrame"))
-             {
-                 InternalTools.SetLayerRecursively(gameObject, 0, new List<string>() { _sleepingParticles.name, _shieldSprite.name });
 
-                 _pictureSprite.sortingOrder = -_pictureSprite.sortingOrder;
-             }*/
-
-            _initialScale = _selfObject.transform.localScale;
+            _initialScale = GameObject.transform.localScale;
 
             _ignoreArrivalEndEvents = false;
 
             _arrivalDone = true;
-        }
-
-        private void CreateFrozenVFX(Vector3 pos)
-        {
-            var _frozenVFX = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
-            _frozenVFX.transform.position = Utilites.CastVFXPosition(pos + Vector3.forward);
-            DestroyCurrentParticle(_frozenVFX);
-        }
-
-        private void DestroyCurrentParticle(GameObject currentParticle, bool isDirectly = false, float time = 5f)
-        {
-            if (isDirectly)
-                DestroyParticle(new object[] { currentParticle });
-            else
-                _timerManager.AddTimer(DestroyParticle, new object[] { currentParticle }, time, false);
-        }
-
-        private void DestroyParticle(object[] param)
-        {
-            GameObject particleObj = param[0] as GameObject;
-            MonoBehaviour.Destroy(particleObj);
-        }
-
-        private List<BoardUnit> GetEnemyUnitsList(BoardUnit unit)
-        {
-            if (_gameplayManager.CurrentPlayer.BoardCards.Contains(unit))
-                return _gameplayManager.OpponentPlayer.BoardCards;
-            return _gameplayManager.CurrentPlayer.BoardCards;
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -629,17 +562,20 @@ namespace LoomNetwork.CZB
             Card = card;
 
             // hack for top zombies
-            if (!ownerPlayer.IsLocalPlayer)
-                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x, _sleepingParticles.transform.localPosition.y, 3f);
+            if (!OwnerPlayer.IsLocalPlayer)
+            {
+                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x,
+                    _sleepingParticles.transform.localPosition.y, 3f);
+            }
 
-            string setName = _cardsController.GetSetOfCard(card.libraryCard);
-            string rank = Card.libraryCard.cardRank.ToString().ToLower();
-            string picture = Card.libraryCard.picture.ToLower();
+            string setName = _cardsController.GetSetOfCard(card.LibraryCard);
+            string rank = Card.LibraryCard.CardRank.ToString().ToLower();
+            string picture = Card.LibraryCard.Picture.ToLower();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+            string fullPathToPicture =
+                string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-
 
             // DEBUG FOR FIDNING PROBLEM WITH PICTURE NOT FOUND
             if (_pictureSprite.sprite == null)
@@ -647,141 +583,146 @@ namespace LoomNetwork.CZB
                 string data = string.Empty;
 
                 data += "---------- BEGIN: " + Time.time + "----------------" + Environment.NewLine;
-                data += card.libraryCard.name + Environment.NewLine;
+                data += card.LibraryCard.Name + Environment.NewLine;
                 data += rank + " | " + picture + setName + Environment.NewLine;
                 data += fullPathToPicture + Environment.NewLine;
                 data += "---------- END: " + Time.time + "----------------";
 
                 Debug.LogError(data);
 
-                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.libraryCard.name + "_PICTURE_ERROR.txt";
-                System.IO.File.WriteAllText(pathToLogFolder, data);
-                System.Diagnostics.Process.Start(pathToLogFolder);
+                string pathToLogFolder = Application.persistentDataPath + "/BOARD_UNIT_" + card.LibraryCard.Name +
+                    "_PICTURE_ERROR.txt";
+                File.WriteAllText(pathToLogFolder, data);
+                Process.Start(pathToLogFolder);
             }
 
-            _pictureSprite.transform.localPosition = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.position);
-            _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.libraryCard.cardViewInfo.scale);
+            _pictureSprite.transform.localPosition =
+                MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Position);
+            _pictureSprite.transform.localScale = MathLib.FloatVector3ToVector3(Card.LibraryCard.CardViewInfo.Scale);
 
-            //unitAnimator.runtimeAnimatorController = animatorControllers.Find(x => x.cardType == Card.libraryCard.cardType).animator;
-            if (Card.type == Enumerators.CardType.WALKER)
+            if (Card.Type == Enumerators.CardType.WALKER)
             {
                 _sleepingParticles.transform.position += Vector3.up * 0.7f;
             }
 
-            CurrentDamage = card.damage;
-            CurrentHP = card.health;
+            CurrentDamage = card.Damage;
+            CurrentHp = card.Health;
 
             BuffedDamage = 0;
-            BuffedHP = 0;
+            BuffedHp = 0;
 
-            initialDamage = CurrentDamage;
-            initialHP = CurrentHP;
+            InitialDamage = CurrentDamage;
+            InitialHp = CurrentHp;
 
             _attackText.text = CurrentDamage.ToString();
-            _healthText.text = CurrentHP.ToString();
+            _healthText.text = CurrentHp.ToString();
 
-            damageChangedDelegate = () =>
+            _damageChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_attackText, CurrentDamage, initialDamage, MaxCurrentDamage);
+                UpdateUnitInfoText(_attackText, CurrentDamage, InitialDamage, MaxCurrentDamage);
             };
 
-            UnitDamageChangedEvent += damageChangedDelegate;
+            UnitDamageChanged += _damageChangedDelegate;
 
-            healthChangedDelegate = () =>
+            _healthChangedDelegate = () =>
             {
-                UpdateUnitInfoText(_healthText, CurrentHP, initialHP, MaxCurrentHP);
+                UpdateUnitInfoText(_healthText, CurrentHp, InitialHp, MaxCurrentHp);
                 CheckOnDie();
             };
 
-            UnitHPChangedEvent += healthChangedDelegate;
+            UnitHpChanged += _healthChangedDelegate;
 
-            _initialUnitType = Card.libraryCard.cardType;
+            InitialUnitType = Card.LibraryCard.CardType;
 
-            switch (_initialUnitType)
+            switch (InitialUnitType)
             {
                 case Enumerators.CardType.FERAL:
-                    hasFeral = true;
+                    HasFeral = true;
                     IsPlayable = true;
-                    _timerManager.AddTimer((x) =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                    }, null, .55f, false);
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
+                        },
+                        null,
+                        .55f);
 
-                    _timerManager.AddTimer((x) =>
-                    {
-                        ArrivalAnimationEventHandler();
-                    }, null, ownerPlayer.IsLocalPlayer ? 2.9f : 1.7f, false);
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            ArrivalAnimationEventHandler();
+                        },
+                        null,
+                        OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
                     break;
                 case Enumerators.CardType.HEAVY:
-                    _timerManager.AddTimer((x) =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                    }, null, 1f, false);
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
+                        });
 
-                    _timerManager.AddTimer((x) =>
-                    {
-                        ArrivalAnimationEventHandler();
-                    }, null, ownerPlayer.IsLocalPlayer ? 2.7f : 1.7f, false);
-                    hasHeavy = true;
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            ArrivalAnimationEventHandler();
+                        },
+                        null,
+                        OwnerPlayer.IsLocalPlayer ? 2.7f : 1.7f);
+                    HasHeavy = true;
                     break;
                 case Enumerators.CardType.WALKER:
                 default:
-                    _timerManager.AddTimer((x) =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ARRIVAL_SOUND_VOLUME, false, false, true);
-                    }, null, .6f, false);
-                    _timerManager.AddTimer((x) =>
-                    {
-                        ArrivalAnimationEventHandler();
-                    }, null, ownerPlayer.IsLocalPlayer ? 1.3f : 0.3f, false);
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
+                                false, false, true);
+                        },
+                        null,
+                        .6f);
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            ArrivalAnimationEventHandler();
+                        },
+                        null,
+                        OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
 
                     break;
             }
 
-            if (hasHeavy)
-            {
-                // glowSprite.gameObject.SetActive(false);
-                // pictureMaskTransform.localScale = new Vector3(50, 55, 1);
-                // frameSprite.sprite = frameSprites[2];
-            }
             SetHighlightingEnabled(false);
-
-            //unitAnimator.StopPlayback();
-            //unitAnimator.Play(0);
-
-
-        }
-
-        private void CheckOnDie()
-        {
-            if (CurrentHP <= 0 && !_dead)
-            {
-                if (IsAllAbilitiesResolvedAtStart && _arrivalDone)
-                    Die();
-            }
         }
 
         public void PlayArrivalAnimation()
         {
-            var arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + _initialUnitType.ToString() + "_Arrival");
-            _battleframeObject = GameObject.Instantiate(arrivalPrefab, _selfObject.transform, false).gameObject;
-            var spriteContainerTransform = _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+            GameObject arrivalPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival");
+            _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+            Transform spriteContainerTransform =
+                _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;
             scale.x *= -1;
             spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
-            _selfObject.transform.position += (Vector3.back * 5f);
+            GameObject.transform.position += Vector3.back * 5f;
         }
 
         public void OnStartTurn()
         {
-            attackedBoardObjectsThisTurn.Clear();
-            numTurnsOnBoard++;
+            AttackedBoardObjectsThisTurn.Clear();
+            NumTurnsOnBoard++;
             StopSleepingParticles();
 
             if (_stunTurns > 0)
+            {
                 _stunTurns--;
+            }
+
             if (_stunTurns == 0)
             {
                 IsPlayable = true;
@@ -789,10 +730,12 @@ namespace LoomNetwork.CZB
                 UnitStatus = Enumerators.UnitStatusType.NONE;
             }
 
-            if (ownerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(ownerPlayer))
+            if (OwnerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
             {
                 if (CurrentDamage > 0)
+                {
                     SetHighlightingEnabled(true);
+                }
 
                 AttackedThisTurn = false;
 
@@ -807,22 +750,27 @@ namespace LoomNetwork.CZB
             CancelTargetingArrows();
         }
 
-
         public void SetSelectedUnit(bool status)
         {
             _glowSelectedObjectSprite.SetActive(status);
 
             if (status)
-                _selfObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
+            {
+                GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
+            }
             else
-                _selfObject.transform.localScale = _initialScale;
+            {
+                GameObject.transform.localScale = _initialScale;
+            }
         }
-
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
             if (turns > _stunTurns)
+            {
                 _stunTurns = turns;
+            }
+
             IsPlayable = false;
 
             _frozenSprite.DOFade(1, 1);
@@ -830,142 +778,34 @@ namespace LoomNetwork.CZB
             SetHighlightingEnabled(false);
 
             UnitStatus = Enumerators.UnitStatusType.FROZEN;
-            //sleepingParticles.Play();
         }
 
         public void CancelTargetingArrows()
         {
-            if (abilitiesTargetingArrow != null)
+            if (_fightTargetingArrow != null)
             {
-                abilitiesTargetingArrow.Dispose();
+                _fightTargetingArrow.Dispose();
             }
-            if (fightTargetingArrow != null)
-            {
-                fightTargetingArrow.Dispose();
-            }
-        }
-
-        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
-        {
-            if (text == null || !text)
-                return;
-
-            text.text = stat.ToString();
-
-            if (stat > initialStat)
-                text.color = Color.green;
-            else if (stat < initialStat || stat < maxCurrentStat)
-                text.color = Color.red;
-            else
-            {
-                text.color = Color.white;
-            }
-            var sequence = DOTween.Sequence();
-            sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
-            sequence.Append(text.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.2f));
-            sequence.Play();
         }
 
         public void SetHighlightingEnabled(bool enabled)
         {
             if (!UnitCanBeUsable())
+            {
                 enabled = false;
+            }
 
             if (_glowSprite)
+            {
                 _glowSprite.enabled = enabled;
+            }
         }
 
         public void StopSleepingParticles()
         {
             if (_sleepingParticles != null)
+            {
                 _sleepingParticles.Stop();
-        }
-
-        private void OnTriggerEnter(Collider collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardSelected(this);
-                }
-            }
-        }
-
-        private void OnTriggerExit(Collider collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                var targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardUnselected(this);
-                }
-            }
-        }
-
-        private void UnitSelectedEventHandler(BoardUnit unit)
-        {
-            if (unit == this)
-                OnMouseDown(null);
-        }
-
-        private void UnitDeselectedEventHandler(BoardUnit unit)
-        {
-            if (unit == this)
-                OnMouseUp(null);
-        }
-
-
-        private void OnMouseDown(GameObject obj)
-        {
-            //if (fightTargetingArrowPrefab == null)
-            //    return;
-
-            //Debug.LogError(IsPlayable + " | " + ownerPlayer.isActivePlayer + " | " + ownerPlayer);
-
-            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
-                return;
-
-            if (ownerPlayer != null && ownerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
-            {
-                fightTargetingArrow = MonoBehaviour.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
-                fightTargetingArrow.targetsType = new List<Enumerators.SkillTargetType>() { Enumerators.SkillTargetType.OPPONENT, Enumerators.SkillTargetType.OPPONENT_CARD };
-                fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-                fightTargetingArrow.owner = this;
-                fightTargetingArrow.Begin(transform.position);
-
-                if (attackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
-                    fightTargetingArrow.ignoreBoardObjectsList = attackedBoardObjectsThisTurn;
-
-                if (ownerPlayer.Equals(_gameplayManager.CurrentPlayer))
-                {
-                    _battlegroundController.DestroyCardPreview();
-                    _playerController.IsCardSelected = true;
-
-                    if (_tutorialManager.IsTutorial)
-                        _tutorialManager.DeactivateSelectTarget();
-                }
-
-                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
-                _soundManager.PlaySound(Enumerators.SoundType.CARDS, Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-            }
-        }
-
-        private void OnMouseUp(GameObject obj)
-        {
-            if (ownerPlayer != null && ownerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
-            {
-                if (fightTargetingArrow != null)
-                {
-                    fightTargetingArrow.End(this);
-
-                    if (ownerPlayer.Equals(_gameplayManager.CurrentPlayer))
-                    {
-                        _playerController.IsCardSelected = false;
-                    }
-                }
             }
         }
 
@@ -983,120 +823,127 @@ namespace LoomNetwork.CZB
             if (target == null)
             {
                 if (_tutorialManager.IsTutorial)
+                {
                     _tutorialManager.ActivateSelectTarget();
+                }
+
                 return;
             }
 
             IsAttacking = true;
 
-            var sortingGroup = _selfObject.GetComponent<SortingGroup>();
-
-            if (target is Player)
+            switch (target)
             {
-                var targetPlayer = target as Player;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
-                AttackedThisTurn = true;
+                case Player targetPlayer:
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+                    AttackedThisTurn = true;
 
-                // GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
+                    _actionsQueueController.AddNewActionInToQueue(
+                        (parameter, completeCallback) =>
+                        {
+                            AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
-                //sortingGroup.sortingOrder = 100;
+                            _animationsController.DoFightAnimation(
+                                GameObject,
+                                targetPlayer.AvatarObject,
+                                0.1f,
+                                () =>
+                                {
+                                    Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx,
+                                        CurrentDamage);
 
-                _actionsQueueController.AddNewActionInToQueue((Action<object, Action>)((parameter, completeCallback) =>
-                {
-                    attackedBoardObjectsThisTurn.Add(targetPlayer);
+                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                },
+                                () =>
+                                {
+                                    _fightTargetingArrow = null;
+                                    IsAttacking = false;
 
-                    _animationsController.DoFightAnimation(_selfObject, targetPlayer.AvatarObject, 0.1f, (Action)(() =>
-                    {
+                                    SetHighlightingEnabled(true);
+                                });
 
-                        Vector3 positionOfVFX = targetPlayer.AvatarObject.transform.position;
-                        // positionOfVFX.y = 4.45f; // was used only for local player
+                            _timerManager.AddTimer(
+                                x =>
+                                {
+                                    completeCallback?.Invoke();
+                                },
+                                null,
+                                1.5f);
+                        });
+                    break;
+                case BoardUnit targetCard:
+                    SetHighlightingEnabled(false);
+                    IsPlayable = false;
+                    AttackedThisTurn = true;
 
-                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, positionOfVFX, CurrentDamage);
+                    _actionsQueueController.AddNewActionInToQueue(
+                        (parameter, completeCallback) =>
+                        {
+                            AttackedBoardObjectsThisTurn.Add(targetCard);
 
-                        _battleController.AttackPlayerByUnit(this, targetPlayer);
-                    }),
-                    () =>
-                    {
-                        //sortingGroup.sortingOrder = 0;
-                        fightTargetingArrow = null;
-                        IsAttacking = false;
-                        // completeCallback?.Invoke();
+                            _animationsController.DoFightAnimation(
+                                GameObject,
+                                targetCard.Transform.gameObject,
+                                0.5f,
+                                () =>
+                                {
+                                    _vfxController.PlayAttackVfx(Card.LibraryCard.CardType,
+                                        targetCard.Transform.position, CurrentDamage);
 
-                        SetHighlightingEnabled(true);
-                    });
+                                    _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
-                    _timerManager.AddTimer((x) =>
-                    {
-                        completeCallback?.Invoke();
-                    }, null, 1.5f);
-                }));
-            }
-            else if (target is BoardUnit)
-            {
-                var targetCard = target as BoardUnit;
-                SetHighlightingEnabled(false);
-                IsPlayable = false;
-                AttackedThisTurn = true;
+                                    if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
+                                    {
+                                        targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                    }
+                                },
+                                () =>
+                                {
+                                    _fightTargetingArrow = null;
+                                    IsAttacking = false;
 
-                _actionsQueueController.AddNewActionInToQueue(((parameter, completeCallback) =>
-                {
-                    attackedBoardObjectsThisTurn.Add(targetCard);
+                                    SetHighlightingEnabled(true);
+                                });
 
-                    //sortingGroup.sortingOrder = 100;
-
-                    // play sound when target creature attack more than our
-                    // if (targetCard.CurrentDamage > CurrentDamage)
-                    //    _soundManager.PlaySound(Enumerators.SoundType.CARDS, targetCard.Card.libraryCard.name.ToLower() + "_" + Constants.CARD_SOUND_ATTACK, Constants.ZOMBIES_SOUND_VOLUME, false, true);
-
-                    _animationsController.DoFightAnimation(_selfObject, targetCard.transform.gameObject, 0.5f, (Action)(() =>
-                    {
-                        _vfxController.PlayAttackVFX(Card.libraryCard.cardType, targetCard.transform.position, CurrentDamage);
-
-                        _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
-
-                        if (TakeFreezeToAttacked && targetCard.CurrentHP > 0)
-                            targetCard.Stun(Enumerators.StunType.FREEZE, 1);
-                    }),
-                    () =>
-                    {
-                        //sortingGroup.sortingOrder = 0;
-                        fightTargetingArrow = null;
-                        IsAttacking = false;
-
-                        SetHighlightingEnabled(true);
-                    });
-
-                    _timerManager.AddTimer((x) =>
-                    {
-                        completeCallback?.Invoke();
-                    }, null, 1.5f);
-                }));
+                            _timerManager.AddTimer(
+                                x =>
+                                {
+                                    completeCallback?.Invoke();
+                                },
+                                null,
+                                1.5f);
+                        });
+                    break;
             }
         }
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHP <= 0 || CurrentDamage <= 0 || IsStun)
+            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun)
+            {
                 return false;
+            }
 
             if (IsPlayable)
             {
                 if (IsFeralUnit())
+                {
                     return true;
+                }
 
-                if (numTurnsOnBoard >= 1)
+                if (NumTurnsOnBoard >= 1)
+                {
                     return true;
+                }
             }
             else if (!AttackedThisTurn && HasBuffRush)
+            {
                 return true;
+            }
 
             return false;
-        }
-
-        public void ThrowEventGotDamage(object from)
-        {
-            UnitGotDamageEvent?.Invoke(from);
         }
 
         public void MoveUnitFromBoardToDeck()
@@ -1120,15 +967,216 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public void ThrowOnAttackEvent(object target, int damage, bool isAttacker)
+        public void InvokeUnitDamaged(object from)
         {
-            UnitOnAttackEvent?.Invoke(target, damage, isAttacker);
-        }
-        public void ThrowOnDieEvent()
-        {
-            UnitOnDieEvent?.Invoke();
+            UnitDamaged?.Invoke(from);
         }
 
+        public void InvokeUnitAttacked(object target, int damage, bool isAttacker)
+        {
+            UnitAttacked?.Invoke(target, damage, isAttacker);
+        }
+
+        public void InvokeUnitDied()
+        {
+            UnitDied?.Invoke();
+        }
+
+        private void ChangeTypeFrame(float playerTime, float opponentTime)
+        {
+            _ignoreArrivalEndEvents = true;
+            _unitContentObject.SetActive(false);
+
+            _pictureSprite.transform.SetParent(GameObject.transform, false);
+            _pictureSprite.gameObject.SetActive(false);
+            Object.Destroy(_battleframeObject);
+            PlayArrivalAnimation();
+            _pictureSprite.gameObject.SetActive(true);
+            _timerManager.AddTimer(
+                x =>
+                {
+                    ArrivalAnimationEventHandler();
+                },
+                null,
+                OwnerPlayer.IsLocalPlayer ? playerTime : opponentTime);
+
+            _readyForBuffs = true;
+        }
+
+        private void CreateFrozenVfx(Vector3 pos)
+        {
+            GameObject frozenVfx =
+                Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX"));
+            frozenVfx.transform.position = Utilites.CastVfxPosition(pos + Vector3.forward);
+            DestroyCurrentParticle(frozenVfx);
+        }
+
+        private void DestroyCurrentParticle(GameObject currentParticle, bool isDirectly = false, float time = 5f)
+        {
+            if (isDirectly)
+            {
+                DestroyParticle(new object[]
+                {
+                    currentParticle
+                });
+            }
+            else
+            {
+                _timerManager.AddTimer(DestroyParticle, new object[]
+                {
+                    currentParticle
+                }, time);
+            }
+        }
+
+        private void DestroyParticle(object[] param)
+        {
+            GameObject particleObj = param[0] as GameObject;
+            Object.Destroy(particleObj);
+        }
+
+        private List<BoardUnit> GetEnemyUnitsList(BoardUnit unit)
+        {
+            if (_gameplayManager.CurrentPlayer.BoardCards.Contains(unit))
+            {
+                return _gameplayManager.OpponentPlayer.BoardCards;
+            }
+
+            return _gameplayManager.CurrentPlayer.BoardCards;
+        }
+
+        private void CheckOnDie()
+        {
+            if (CurrentHp <= 0 && !_dead)
+            {
+                if (IsAllAbilitiesResolvedAtStart && _arrivalDone)
+                {
+                    Die();
+                }
+            }
+        }
+
+        private void UpdateUnitInfoText(TextMeshPro text, int stat, int initialStat, int maxCurrentStat)
+        {
+            if (text == null || !text)
+                return;
+
+            text.text = stat.ToString();
+
+            if (stat > initialStat)
+            {
+                text.color = Color.green;
+            }
+            else if (stat < initialStat || stat < maxCurrentStat)
+            {
+                text.color = Color.red;
+            }
+            else
+            {
+                text.color = Color.white;
+            }
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(text.transform.DOScale(new Vector3(1.4f, 1.4f, 1.0f), 0.4f));
+            sequence.Append(text.transform.DOScale(new Vector3(1.0f, 1.0f, 1.0f), 0.2f));
+            sequence.Play();
+        }
+
+        private void TriggerEnter(Collider collider)
+        {
+            if (collider.transform.parent != null)
+            {
+                BoardArrow targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+                if (targetingArrow != null)
+                {
+                    targetingArrow.OnCardSelected(this);
+                }
+            }
+        }
+
+        private void TriggerExit(Collider collider)
+        {
+            if (collider.transform.parent != null)
+            {
+                BoardArrow targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
+                if (targetingArrow != null)
+                {
+                    targetingArrow.OnCardUnselected(this);
+                }
+            }
+        }
+
+        private void UnitSelectedEventHandler(BoardUnit unit)
+        {
+            if (unit == this)
+            {
+                OnMouseDown(null);
+            }
+        }
+
+        private void UnitDeselectedEventHandler(BoardUnit unit)
+        {
+            if (unit == this)
+            {
+                OnMouseUp(null);
+            }
+        }
+
+        private void OnMouseDown(GameObject obj)
+        {
+            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
+                return;
+
+            if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
+            {
+                _fightTargetingArrow = Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
+                _fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
+                {
+                    Enumerators.SkillTargetType.OPPONENT,
+                    Enumerators.SkillTargetType.OPPONENT_CARD
+                };
+                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
+                _fightTargetingArrow.Owner = this;
+                _fightTargetingArrow.Begin(Transform.position);
+
+                if (AttackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
+                {
+                    _fightTargetingArrow.IgnoreBoardObjectsList = AttackedBoardObjectsThisTurn;
+                }
+
+                if (OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                {
+                    _battlegroundController.DestroyCardPreview();
+                    _playerController.IsCardSelected = true;
+
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        _tutorialManager.DeactivateSelectTarget();
+                    }
+                }
+
+                _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS,
+                    Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    false, true);
+            }
+        }
+
+        private void OnMouseUp(GameObject obj)
+        {
+            if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
+            {
+                if (_fightTargetingArrow != null)
+                {
+                    _fightTargetingArrow.End(this);
+
+                    if (OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                    {
+                        _playerController.IsCardSelected = false;
+                    }
+                }
+            }
+        }
 
         private void CheckIsCanDie(object[] param)
         {
@@ -1142,18 +1190,19 @@ namespace LoomNetwork.CZB
 
         private void RemoveUnitFromBoard()
         {
-            ownerPlayer.BoardCards.Remove(this);
-            ownerPlayer.RemoveCardFromBoard(Card);
-            ownerPlayer.AddCardToGraveyard(Card);
+            OwnerPlayer.BoardCards.Remove(this);
+            OwnerPlayer.RemoveCardFromBoard(Card);
+            OwnerPlayer.AddCardToGraveyard(Card);
 
-            MonoBehaviour.Destroy(gameObject);
+            Object.Destroy(GameObject);
         }
     }
 
     [Serializable]
     public class UnitAnimatorInfo
     {
-        public Enumerators.CardType cardType;
-        public RuntimeAnimatorController animator;
+        public Enumerators.CardType CardType;
+
+        public RuntimeAnimatorController Animator;
     }
 }

@@ -1,0 +1,89 @@
+2.5.1.0
+- Fixed exception in Unity 2017.3 on Reimport All.
+
+2.5.0.0
+- Added "Opaque Alpha Tolerance" property to the Alpha Separation method.
+- Added Alpha Source Channel property, it defines the channel used for generating the mesh outline.
+- New database is now created relative to the SpriteSharp folder even if it was moved.
+- Fixed crash on Unity 2017.2 when closing the Editor.
+- Fixed an exception when SpriteSharp is moved to a directory with spaces in it.
+- Fixed overriding Polygon sprite type mesh.
+- Minor fixes and improvements.
+
+2.4.3.0
+- Fixed an issue that caused the texture meta data to change every time a sprite with custom mesh settings was reimported.
+
+2.4.2.0
+- Prevent texture meta data being changed every time a sprite with custom mesh settings is reimported.
+- Improved Unity 2017.1 support for Sprite Dicing.
+
+2.4.1.0
+- Unity 2017.1 support.
+- Added a workaround for the Unity issue that causes Sprite Atlas to not repack sprite with modified meshes.
+
+2.4.0.0
+- Added Sprite Dicing feature that allows for tighter sprite atlas packing.
+- Added "Attach Alpha Sprites To Selection" menu item.
+- External changes to the database file are now detected, new and modified sprites are reimported accordingly.
+- Fixed issue with Rect Grid mode failing on scaled down textures.
+- Fixed Sprite inspector displaying incorrect previews when multiple sprites were selected.
+- Minor fixes and improvements.
+
+2.3.4.0
+- Exported sprite meshes now have (0, 0, -1) normal for all vertices.
+
+2.3.3.0
+- Improved Unity 5.6 compatibility.
+- Fixed textures with "Alpha to Grayscale" enabled not being detected as having alpha.
+
+2.3.2.0
+- Fixed crash when importing a new texture if "Use Default Override Settings" is enabled.
+
+2.3.1.0
+- X/Y Subdivisions in Rectangle Grid method can now be set as low as 1.
+- Fixed incorrect cell coordinate calculation with Rectangle Grid method in some cases.
+- Added a global option to ignore Unity's 'Extrude Edges' Texture option on overriden sprites.
+- Exposed some internal classes to the public and cleaned up the API to allow custom advanced interaction with SpriteSharp.
+
+2.3.0.0
+- Added Rectangle Grid processing method. Useful for creating custom vertex shaders that modify vertex positions.
+- Fixed an issue with sprite meshes not applying when Cache Server is enabled.
+- Added "Sprites-OpaqueDiffuse" shader for opaque lighted sprites.
+- Minor fixes and improvements.
+
+2.2.1.0
+- Added a menu item to clear Sprite Packer atlas cache ("Tools/Lost Polygon/SpriteSharp/Clear Sprite Packer Atlas Cache"). Useful to work around Unity bugs when working with Sprite Packer and modified sprite meshes.
+- Disabled the ability to edit packed sprites in Play mode, as it was causing numerous Unity-side bugs.
+
+2.2.0.0
+- Improved Unity 5.4 compatibility.
+- Added a menu item to remove sprites without any overrides from the database.
+- Added sprite mesh export feature.
+- Massively reduced memory consumption. Previously, all sprites were loaded into memory constantly, now they are only loaded when needed.
+- Fixed SpriteSharp database not saved when Editor is closed.
+- Fixed broken Alpha Separation method when Extrude Edges is set to a high value in texture settings.
+- Minor UI fixes and improvements.
+
+2.1.0.0
+- Improvements of Alpha Separation method. Exposed a separate "Vertex merge distance" property for opaque sprite. Added an option to reduce alpha bleeding.
+- Minor GUI improvements.
+- Minor performance optimizations.
+
+2.0.0.0
+- Added Precise and Alpha Separation processing methods.
+- Per-project default sprite mesh settings (available in Unity Preferences window).
+- Per-platform sprite mesh settings support.
+- Unity Cloud Build support.
+- Added "Sprites-Opaque" shader for opaque sprites.
+- Database is now reliably stored in a JSON file, no more losing data when scripts mismatch.
+- Correct behavior during initial texture import phase (i.e. after deleting Library).
+- GUI improvements.
+- Fix sprites meshes being reset after renaming the texture.
+- Significant mesh simplification improvements.
+- Performance improvements.
+- Fixed errors when importing the package.
+- Fixed namespace conflict in third-party libraries that prevented SpriteSharp from importing correctly for some people.
+- Stability and reliability improvements.
+
+1.0.0.0:
+- Initial release.

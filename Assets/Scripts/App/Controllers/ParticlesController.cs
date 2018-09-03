@@ -1,10 +1,3 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +6,9 @@ namespace LoomNetwork.CZB
     public class ParticlesController : IController
     {
         private ITimerManager _timerManager;
-        private ulong _freeId = 0;
+
+        private ulong _freeId;
+
         private List<ParticleSystemElement> _particleSystemElements;
 
         public void Init()
@@ -34,8 +29,11 @@ namespace LoomNetwork.CZB
 
         public void ResetAll()
         {
-            foreach (var item in _particleSystemElements)
+            foreach (ParticleSystemElement item in _particleSystemElements)
+            {
                 item.Dispose();
+            }
+
             _particleSystemElements.Clear();
         }
 
@@ -45,12 +43,15 @@ namespace LoomNetwork.CZB
 
             _particleSystemElements.Add(new ParticleSystemElement(id, particle));
 
-            if(autoDestroy)
+            if (autoDestroy)
             {
-                _timerManager.AddTimer((x) =>
-                {
-                    DestoryParticle(id);
-                }, null, duration, false);
+                _timerManager.AddTimer(
+                    x =>
+                    {
+                        DestoryParticle(id);
+                    },
+                    null,
+                    duration);
             }
 
             return id;
@@ -58,7 +59,7 @@ namespace LoomNetwork.CZB
 
         public void DestoryParticle(ulong id)
         {
-           var element = _particleSystemElements.Find(x => x.id == id);
+            ParticleSystemElement element = _particleSystemElements.Find(x => x.Id == id);
 
             if (element != null)
             {
@@ -67,11 +68,13 @@ namespace LoomNetwork.CZB
             }
         }
 
-
         public void ForceDestroyParticles()
         {
-            foreach (var item in _particleSystemElements)
+            foreach (ParticleSystemElement item in _particleSystemElements)
+            {
                 item.Dispose();
+            }
+
             _particleSystemElements.Clear();
             _freeId = 0;
         }
@@ -79,19 +82,22 @@ namespace LoomNetwork.CZB
 
     public class ParticleSystemElement
     {
-        public ulong id;
-        public GameObject particleObject;
+        public ulong Id;
+
+        public GameObject ParticleObject;
 
         public ParticleSystemElement(ulong id, GameObject particleObject)
         {
-            this.id = id;
-            this.particleObject = particleObject;
+            Id = id;
+            ParticleObject = particleObject;
         }
 
         public void Dispose()
         {
-            if (particleObject != null && particleObject)
-                MonoBehaviour.Destroy(particleObject);
+            if (ParticleObject != null && ParticleObject)
+            {
+                Object.Destroy(ParticleObject);
+            }
         }
     }
 }

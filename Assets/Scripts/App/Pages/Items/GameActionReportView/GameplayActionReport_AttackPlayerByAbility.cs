@@ -1,76 +1,63 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
-using TMPro;
-using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Data;
+﻿using System;
 using LoomNetwork.CZB.Common;
-using System;
+using LoomNetwork.CZB.Data;
+using TMPro;
+using UnityEngine;
 
 namespace LoomNetwork.CZB
 {
-    public class GameplayActionReport_AttackPlayerByAbility : ReportViewBase
+    public class GameplayActionReportAttackPlayerByAbility : ReportViewBase
     {
         private object _abilityOwner;
+
         private AbilityData _usedAbility;
+
         private int _abilityValue;
+
         private Player _abilityUsedOnPlayer;
 
-        private GameObject _attackedPlayerObj,
-                           _attackingAbilityOwnerObj;
+        private GameObject _attackedPlayerObj, _attackingAbilityOwnerObj;
 
-        public GameplayActionReport_AttackPlayerByAbility(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public GameplayActionReportAttackPlayerByAbility(
+            GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
             base.SetInfo();
 
-            _abilityOwner = gameAction.parameters[0];
-            _usedAbility = gameAction.parameters[1] as AbilityData;
-            _abilityValue = (int)gameAction.parameters[2];
-            _abilityUsedOnPlayer = gameAction.parameters[3] as Player;
+            _abilityOwner = GameAction.Parameters[0];
+            _usedAbility = GameAction.Parameters[1] as AbilityData;
+            _abilityValue = (int) GameAction.Parameters[2];
+            _abilityUsedOnPlayer = GameAction.Parameters[3] as Player;
 
             if (_abilityOwner is BoardUnit)
             {
-                previewImage.sprite = (_abilityOwner as BoardUnit).sprite;
+                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
                 _attackingAbilityOwnerObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
             }
             else
             {
-                var rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.libraryCard.cardRank);
-                string cardSetName = cardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.libraryCard);
-                previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.libraryCard.picture.ToLower()));
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank),
+                    (_abilityOwner as BoardSpell).Card.LibraryCard.CardRank);
+                string cardSetName = CardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.LibraryCard);
+                PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(
+                    string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(),
+                        (_abilityOwner as BoardSpell).Card.LibraryCard.Picture.ToLower()));
                 _attackingAbilityOwnerObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
             }
 
-            attackingPictureObject.SetActive(true);
+            AttackingPictureObject.SetActive(true);
 
             _attackedPlayerObj = CreatePlayerPreview(_abilityUsedOnPlayer, Vector3.right * 6);
 
             GameObject cardView = _attackedPlayerObj.transform.Find("AttackingHealth").gameObject;
             cardView.SetActive(true);
-            var damageText = cardView.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            TextMeshPro damageText = cardView.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_abilityValue).ToString();
             cardView.transform.localPosition = -Vector3.up;
         }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
     }
 }

@@ -1,110 +1,108 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LoomNetwork.CZB.Protobuf;
+﻿using System.Linq;
 using LoomNetwork.CZB.Helpers;
+using LoomNetwork.CZB.Protobuf;
 
 namespace LoomNetwork.CZB.Data
 {
     public static class FromProtobufExtensions
     {
-        public static CollectionCardData FromProtobuf(this CardCollection cardCollection) {
+        public static CollectionCardData FromProtobuf(this CardCollection cardCollection)
+        {
             return new CollectionCardData
             {
-                amount = (int) cardCollection.Amount,
-                cardName = cardCollection.CardName
+                Amount = (int) cardCollection.Amount,
+                CardName = cardCollection.CardName
             };
         }
 
-        public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse) {
+        public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
+        {
             return new CollectionData
             {
-                cards = getCollectionResponse.Cards
-                    .Select(card => card.FromProtobuf())
-                    .ToList()
+                Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
 
-        public static FloatVector3 FromProtobuf(this LoomNetwork.CZB.Protobuf.Coordinates coordinates) {
+        public static FloatVector3 FromProtobuf(this Coordinates coordinates)
+        {
             return new FloatVector3(coordinates.X, coordinates.Y, coordinates.Z);
         }
 
-        public static AbilityData FromProtobuf(this LoomNetwork.CZB.Protobuf.Ability ability) {
+        public static AbilityData FromProtobuf(this Ability ability)
+        {
             return new AbilityData
             {
-                buffType = ability.BuffType,
-                type = ability.Type,
-                activityType = ability.ActivityType,
-                callType = ability.CallType,
-                targetType = ability.TargetType,
-                statType = ability.StatType,
-                setType = ability.SetType,
-                effectType = ability.EffectType,
-                cardType = ability.CardType,
-                unitStatus = ability.UnitStatus,
-                unitType = ability.UnitType,
-                value = ability.Value,
-                damage = ability.Damage,
-                health = ability.Health,
-                attackInfo = ability.AttackInfo,
-                name = ability.Name,
-                turns = ability.Turns,
-                count = ability.Count,
-                delay = ability.Delay,
+                BuffType = ability.BuffType,
+                Type = ability.Type,
+                ActivityType = ability.ActivityType,
+                CallType = ability.CallType,
+                TargetType = ability.TargetType,
+                StatType = ability.StatType,
+                SetType = ability.SetType,
+                EffectType = ability.EffectType,
+                CardType = ability.CardType,
+                UnitStatus = ability.UnitStatus,
+                UnitType = ability.UnitType,
+                Value = ability.Value,
+                Damage = ability.Damage,
+                Health = ability.Health,
+                AttackInfo = ability.AttackInfo,
+                Name = ability.Name,
+                Turns = ability.Turns,
+                Count = ability.Count,
+                Delay = ability.Delay
             };
         }
 
-        public static CardViewInfo FromProtobuf(this LoomNetwork.CZB.Protobuf.CardViewInfo cardViewInfo) {
+        public static CardViewInfo FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
+        {
             if (cardViewInfo == null)
+            {
                 return null;
-            
+            }
+
             return new CardViewInfo
             {
-                position = cardViewInfo.Position.FromProtobuf(),
-                scale = cardViewInfo.Scale.FromProtobuf()
+                Position = cardViewInfo.Position.FromProtobuf(),
+                Scale = cardViewInfo.Scale.FromProtobuf()
             };
         }
 
-        public static Card FromProtobuf(this LoomNetwork.CZB.Protobuf.Card card) {
+        public static Card FromProtobuf(this Protobuf.Card card)
+        {
             return new Card
             {
-                id = (int) card.Id,
-                kind = card.Kind,
-                name = card.Name,
-                cost = card.Cost,
-                description = card.Description,
-                flavorText = card.FlavorText,
-                picture = card.Picture,
-                damage = card.Damage,
-                health = card.Health,
-                rank = card.Rank,
-                type = card.Type,
-                frame = card.Frame,
-                abilities =
-                    card.Abilities
-                    .Select(x => x.FromProtobuf()).ToList(),
-                cardViewInfo = card.CardViewInfo.FromProtobuf(),
+                Id = (int) card.Id,
+                Kind = card.Kind,
+                Name = card.Name,
+                Cost = card.Cost,
+                Description = card.Description,
+                FlavorText = card.FlavorText,
+                Picture = card.Picture,
+                Damage = card.Damage,
+                Health = card.Health,
+                Rank = card.Rank,
+                Type = card.Type,
+                Frame = card.Frame,
+                Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
+                CardViewInfo = card.CardViewInfo.FromProtobuf()
             };
         }
 
-        public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse) {
+        public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
+        {
             return new CardsLibraryData
             {
-                sets = listCardLibraryResponse.Sets
-                    .Select(set => set.FromProtobuf())
-                    .ToList()
+                Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList()
             };
         }
 
-        public static CardSet FromProtobuf(this LoomNetwork.CZB.Protobuf.CardSet cardSet) {
+        public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
+        {
             return new CardSet
             {
-                name = !String.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
-                cards = cardSet.Cards
-                    .Select(card => card.FromProtobuf())
-                    .ToList()
+                Name = !string.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
+                Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
     }
