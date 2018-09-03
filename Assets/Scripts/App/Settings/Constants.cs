@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground.Common
 {
-    public class Constants
+    public static class Constants
     {
         internal const string CurrentVersionBase = "0.1.3";
 
@@ -32,22 +32,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string OpponentBoard = "OpponentBoard";
 
-        internal const string LayerHandCards = "HandCards";
-
-        internal const string LayerBoardCards = "BoardCards";
-
-        internal const string ZoneHand = "Hand";
-
-        internal const string ZoneBoard = "Board";
-
-        internal const string ZoneDeck = "Deck";
-
-        internal const string ZoneGraveyard = "Graveyard";
-
-        internal const string StatDamage = "DMG";
-
-        internal const string StatHp = "HP";
-
         internal const string ContentFolderName = "SpreadsheetsData/";
 
         internal const string SpreadsheetFileFormat = ".csv";
@@ -68,8 +52,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int TutorialPlayerHeroId = 4;
 
-        internal const uint HeroesAmount = 9;
-
         internal const uint DeckMaxSize = 30;
 
         internal const uint CardItemMaxCopies = 2;
@@ -86,13 +68,9 @@ namespace Loom.ZombieBattleground.Common
 
         internal const uint MaxBoardUnits = 6;
 
-        internal const int DefaultTurnDuration = 60;
-
         internal const int MaxDeckSize = 30;
 
         internal const int MinDeckSize = 30;
-
-        internal const int MaxDecksAtAll = 6;
 
         internal const int MaxCardsInHand = 10;
 
@@ -131,10 +109,6 @@ namespace Loom.ZombieBattleground.Common
         internal const float BattlegroundEffectsSoundVolume = 0.25f;
 
         internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
-
-        internal const float DelayToPlayDeathSoundOfCreature = 2f;
-
-        internal const float CardDistributionTime = 5f;
 
         internal static Vector3 VfxOffset = Vector3.zero;
 

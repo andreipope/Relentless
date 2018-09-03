@@ -25,8 +25,7 @@ namespace Loom.ZombieBattleground
         {
             _loader = GameClient.Get<ILoadObjectsManager>();
             SelfObject =
-                Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/HeavyArrivalAnimation"),
-                    parent);
+                Object.Instantiate(_loader.GetObjectByPath<GameObject>("Prefabs/Gameplay/HeavyArrivalAnimation"), parent);
             SelfObject.transform.localPosition = _offset;
             Picture = SelfObject.transform.Find("Picture").GetComponent<SpriteRenderer>();
             Picture.sprite = sprite;
