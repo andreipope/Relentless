@@ -4,7 +4,7 @@ namespace LoomNetwork.CZB.Common
 {
     public class Constants
     {
-        internal const string CurrentVersionBase = "0.1.2";
+        internal const string CurrentVersionBase = "0.1.3";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
