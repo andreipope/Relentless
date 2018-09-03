@@ -26,6 +26,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
 
+        // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 
         internal const string PlayerBoard = "PlayerBoard";
@@ -33,8 +34,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string OpponentBoard = "OpponentBoard";
 
         internal const string ContentFolderName = "SpreadsheetsData/";
-
-        internal const string SpreadsheetFileFormat = ".csv";
 
         internal const string CardSoundPlay = "P";
 

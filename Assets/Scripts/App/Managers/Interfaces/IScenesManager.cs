@@ -13,8 +13,6 @@ namespace Loom.ZombieBattleground
 
         bool IsLoadedScene { get; set; }
 
-        bool IsAutoSceneSwitcher { get; set; }
-
         void ChangeScene(Enumerators.AppState appState);
     }
 }

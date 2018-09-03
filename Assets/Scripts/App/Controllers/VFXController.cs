@@ -151,38 +151,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CreateVfx(Enumerators.SetType setType, Vector3 position, bool autoDestroy = true, float delay = 3f)
-        {
-            GameObject prefab = null;
-
-            switch (setType)
-            {
-                case Enumerators.SetType.WATER:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
-                    break;
-                case Enumerators.SetType.TOXIC:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX");
-                    break;
-                case Enumerators.SetType.FIRE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX");
-                    break;
-                case Enumerators.SetType.LIFE:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
-                    break;
-                case Enumerators.SetType.EARTH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Skills/HealingTouchVFX"); // todo improve particle
-                    break;
-                case Enumerators.SetType.AIR:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
-                    break;
-            }
-
-            GameObject particle = Object.Instantiate(prefab);
-            particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
-            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
-        }
-
         public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
         {
             if (prefab == null)

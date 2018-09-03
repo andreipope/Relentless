@@ -17,10 +17,6 @@ namespace Loom.ZombieBattleground
 
         private readonly List<ReportViewBase> _allReports;
 
-        public ReportPanelItem()
-        {
-        }
-
         public ReportPanelItem(GameObject gameObject)
         {
             ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();

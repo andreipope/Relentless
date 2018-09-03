@@ -7,8 +7,6 @@ namespace Loom.ZombieBattleground
 {
     public class BoardSkill
     {
-        public BoardArrow AbilitiesTargetingArrow;
-
         public BattleBoardArrow FightTargetingArrow;
 
         public GameObject SelfObject;

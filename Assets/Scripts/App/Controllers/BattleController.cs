@@ -330,24 +330,5 @@ namespace Loom.ZombieBattleground
                 }
             };
         }
-
-        private int GetStrongersAndWeakersModifier(
-            Enumerators.SetType attackerElement, Enumerators.SetType defenderElement)
-        {
-            int modifier = 0;
-
-            if (_strongerElemental.ContainsKey(attackerElement) &&
-                _strongerElemental[attackerElement].Equals(defenderElement))
-            {
-                modifier++;
-            }
-            else if (_weakerElemental.ContainsKey(attackerElement) &&
-                _weakerElemental[attackerElement].Equals(defenderElement))
-            {
-                modifier--;
-            }
-
-            return modifier;
-        }
     }
 }
