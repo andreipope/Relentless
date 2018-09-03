@@ -3,10 +3,9 @@ using UnityEditor.Build.Reporting;
 
 #if UNITY_CLOUD_BUILD
 using UnityEditor;
-#endif
-
 #if UNITY_IOS
 using System;
+#endif
 #endif
 
 namespace Loom.ZombieBattleground
