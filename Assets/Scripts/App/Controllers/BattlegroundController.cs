@@ -14,7 +14,7 @@ namespace LoomNetwork.CZB
 {
     public class BattlegroundController : IController
     {
-        public bool RearrangingTopBoard, IsPreviewActive;
+        public bool IsPreviewActive;
 
         public bool CardsZoomed = false;
 
@@ -40,7 +40,7 @@ namespace LoomNetwork.CZB
 
         public List<BoardCard> PlayerHandCards = new List<BoardCard>();
 
-        private AiController _aiController;
+        private AIController _aiController;
 
         private bool _battleDynamic;
 
@@ -66,7 +66,7 @@ namespace LoomNetwork.CZB
 
         private IUIManager _uiManager;
 
-        private Sequence _rearrangingRealTimeSequence;
+        private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
 
         public event Action<int> PlayerGraveyardUpdated;
 
@@ -88,7 +88,7 @@ namespace LoomNetwork.CZB
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
-            _aiController = _gameplayManager.GetController<AiController>();
+            _aiController = _gameplayManager.GetController<AIController>();
 
             _cardsInDestroy = new List<BoardUnit>();
 
@@ -229,7 +229,7 @@ namespace LoomNetwork.CZB
 
             if (_gameplayManager.IsTutorial)
             {
-                _gameplayManager.OpponentPlayer.Hp = 12;
+                _gameplayManager.OpponentPlayer.Health = 12;
                 _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
                 _gameplayManager.OpponentPlayer.Goo = 10;
                 _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
@@ -255,7 +255,7 @@ namespace LoomNetwork.CZB
 
             if (!_gameplayManager.IsTutorial)
             {
-                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
                 _cardsController.AddCardToHand(player);
             }
         }
@@ -376,7 +376,7 @@ namespace LoomNetwork.CZB
             _gameplayManager.CurrentPlayer.InvokeTurnEnded();
             _gameplayManager.OpponentPlayer.InvokeTurnEnded();
 
-            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn()?_gameplayManager.OpponentPlayer:_gameplayManager.CurrentPlayer;
+            _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
 
@@ -452,10 +452,10 @@ namespace LoomNetwork.CZB
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            if (_rearrangingRealTimeSequence != null)
+            if (_rearrangingBottomRealTimeSequence != null)
             {
-                _rearrangingRealTimeSequence.Kill();
-                _rearrangingRealTimeSequence = null;
+                _rearrangingBottomRealTimeSequence.Kill();
+                _rearrangingBottomRealTimeSequence = null;
             }
 
             float boardWidth = 0.0f;
@@ -487,7 +487,7 @@ namespace LoomNetwork.CZB
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
-            _rearrangingRealTimeSequence = sequence;
+            _rearrangingBottomRealTimeSequence = sequence;
             sequence.OnComplete(
                 () =>
                 {
@@ -497,24 +497,16 @@ namespace LoomNetwork.CZB
 
         public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
         {
-            if (RearrangingTopBoard)
-            {
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-                    },
-                    null,
-                    .1f);
-                return;
-            }
-
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
+            if (_rearrangingTopRealTimeSequence != null)
+            {
+                _rearrangingTopRealTimeSequence.Kill();
+                _rearrangingTopRealTimeSequence = null;
+            }
 
-            RearrangingTopBoard = true;
+            List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
             float boardWidth = 0.0f;
             float spacing = 0.2f;
@@ -546,19 +538,12 @@ namespace LoomNetwork.CZB
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
+            _rearrangingTopRealTimeSequence = sequence;
             sequence.OnComplete(
                 () =>
                 {
                     onComplete?.Invoke();
                 });
-
-            _timerManager.AddTimer(
-                x =>
-                {
-                    RearrangingTopBoard = false;
-                },
-                null,
-                1.5f);
         }
 
         // rewrite
@@ -836,10 +821,10 @@ namespace LoomNetwork.CZB
 
         public BoardUnit CreateBoardUnit(Player owner, WorkingCard card)
         {
-            GameObject playerBoard = owner.IsLocalPlayer?PlayerBoardObject:OpponentBoardObject;
+            GameObject playerBoard = owner.IsLocalPlayer ? PlayerBoardObject : OpponentBoardObject;
 
             BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer?SRTags.PlayerOwned:SRTags.OpponentOwned;
+            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnit.Transform.SetParent(playerBoard.transform);
             boardUnit.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
             boardUnit.OwnerPlayer = owner;

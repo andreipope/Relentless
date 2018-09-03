@@ -68,7 +68,7 @@ namespace LoomNetwork.CZB
             if (GameplayManager.IsTutorial && GameplayManager.TutorialStep != 19 && GameplayManager.TutorialStep != 28 && GameplayManager.TutorialStep != 32)
                 return;
 
-            if (player.Hp <= 0)
+            if (player.Health <= 0)
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))

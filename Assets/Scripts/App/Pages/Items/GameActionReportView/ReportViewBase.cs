@@ -114,7 +114,7 @@ namespace LoomNetwork.CZB
             Sprite heroSprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
             TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            hpText.text = player.Hp.ToString();
+            hpText.text = player.Health.ToString();
             avatar.transform.localPosition = pos;
             avatar.transform.localScale = Vector3.one * 1.6f;
             avatar.GetComponent<SortingGroup>().sortingOrder = 1000;
@@ -131,7 +131,7 @@ namespace LoomNetwork.CZB
             Sprite heroSprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement + "_EXP");
             sprite.sprite = heroSprite;
             TextMeshPro hpText = avatar.transform.Find("LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            hpText.text = player.Hp.ToString();
+            hpText.text = player.Health.ToString();
             avatar.transform.localPosition = new Vector3(5f, 0, 0);
             avatar.transform.localScale = Vector3.one * 1.6f;
             avatar.GetComponent<SortingGroup>().sortingOrder = 1000;

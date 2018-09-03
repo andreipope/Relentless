@@ -39,11 +39,11 @@ namespace LoomNetwork.CZB
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().Hp -= Value;
+                        GetOpponentOverlord().Health -= Value;
                         CreateVfx(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        PlayerCallerOfAbility.Hp -= Value;
+                        PlayerCallerOfAbility.Health -= Value;
                         CreateVfx(PlayerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
                         break;
                     default: continue;

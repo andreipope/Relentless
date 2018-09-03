@@ -33,7 +33,7 @@ namespace LoomNetwork.CZB
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.Hp <= Health)
+            if (PlayerCallerOfAbility.Health <= Health)
             {
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;

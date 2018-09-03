@@ -192,7 +192,7 @@ namespace LoomNetwork.CZB
                 new AbilitiesController(),
                 new ActionsQueueController(),
                 new PlayerController(),
-                new AiController(),
+                new AIController(),
                 new CardsController(),
                 new BattlegroundController(),
                 new AnimationsController(),
@@ -216,7 +216,7 @@ namespace LoomNetwork.CZB
 
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
             {
-                GetController<AiController>().InitializePlayer();
+                GetController<AIController>().InitializePlayer();
             }
 
             GetController<SkillsController>().InitializeSkills();
@@ -224,7 +224,7 @@ namespace LoomNetwork.CZB
 
             if (!IsTutorial)
             {
-                CurrentTurnPlayer = Random.Range(0, 100) > 50?CurrentPlayer:OpponentPlayer;
+                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
             }
             else
             {

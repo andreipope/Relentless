@@ -80,7 +80,7 @@ namespace LoomNetwork.CZB
 
         public override void OnPlayerSelected(Player player)
         {
-            if (player.Hp <= 0)
+            if (player.Health <= 0)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) && player.AvatarObject.CompareTag(SRTags.PlayerOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) && player.AvatarObject.CompareTag(SRTags.OpponentOwned) || PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))

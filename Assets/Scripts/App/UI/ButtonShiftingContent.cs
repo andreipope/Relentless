@@ -78,7 +78,6 @@ namespace LoomNetwork.CZB
                 ShiftedChild = null;
             }
         }
-
 #endif
 
         private void UpdateShiftedChildPosition()
@@ -108,7 +107,7 @@ namespace LoomNetwork.CZB
                     throw new ArgumentOutOfRangeException();
             }
 
-            ShiftedChild.localPosition = isShift?_originalShiftedChildPosition + ShiftValue:_originalShiftedChildPosition;
+            ShiftedChild.localPosition = isShift ? _originalShiftedChildPosition + ShiftValue : _originalShiftedChildPosition;
         }
     }
 }

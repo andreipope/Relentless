@@ -12,7 +12,7 @@ using Random = System.Random;
 
 namespace LoomNetwork.CZB
 {
-    public class AiController : IController
+    public class AIController : IController
     {
         public BoardCard CurrentSpellCard;
 
@@ -42,6 +42,8 @@ namespace LoomNetwork.CZB
 
         private List<BoardUnit> _unitsToIgnoreThisTurn;
 
+        private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
+
         private GameObject _fightTargetingArrowPrefab; // rewrite
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
@@ -62,6 +64,9 @@ namespace LoomNetwork.CZB
 
             _gameplayManager.GameEnded += GameEndedHandler;
             _gameplayManager.GameStarted += GameStartedHandler;
+
+            _normalUnitCardInHand = new List<WorkingCard>();
+            _normalSpellCardInHand = new List<WorkingCard>();
         }
 
         public void Dispose()
@@ -201,8 +206,10 @@ namespace LoomNetwork.CZB
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
+            await CheckGooCard(cancellationToken);
+
             bool wasAction = false;
-            foreach (WorkingCard card in GetUnitCardsInHand())
+            foreach (WorkingCard card in _normalUnitCardInHand)
             {
                 if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
                 {
@@ -218,7 +225,7 @@ namespace LoomNetwork.CZB
                 }
             }
 
-            foreach (WorkingCard card in GetSpellCardsInHand())
+            foreach (WorkingCard card in _normalSpellCardInHand)
             {
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
@@ -234,6 +241,8 @@ namespace LoomNetwork.CZB
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
             }
+
+            await CheckGooCard(cancellationToken);
         }
 
         // ai step 2
@@ -275,7 +284,7 @@ namespace LoomNetwork.CZB
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.CurrentPlayer.Hp || _aiType == Enumerators.AiType.BLITZ_AI || _aiType == Enumerators.AiType.TIME_BLITZ_AI) && !_tutorialManager.IsTutorial)
+            if ((totalValue >= _gameplayManager.CurrentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI || _aiType == Enumerators.AiType.TIME_BLITZ_AI) && !_tutorialManager.IsTutorial)
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {
@@ -360,6 +369,94 @@ namespace LoomNetwork.CZB
             cancellationToken.ThrowIfCancellationRequested();
         }
 
+        private async Task CheckGooCard(CancellationToken cancellationToken)
+        {
+            int benefit = 0;
+            int boardCount = 0;
+            int gooAmount = _gameplayManager.OpponentPlayer.Goo;
+            List<WorkingCard> overflowGooCards = new List<WorkingCard>();
+            List<WorkingCard> cards = new List<WorkingCard>();
+            cards.AddRange(GetUnitCardsInHand());
+            cards.AddRange(GetSpellCardsInHand());
+            cards = cards.FindAll(x => CardBePlayableForOverflowGoo(x.LibraryCard.Cost, gooAmount));
+            AbilityData overflowGooAbility = null;
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].LibraryCard.Abilities != null)
+                {
+                    AbilityData attackOverlordAbility = cards[i].LibraryCard.Abilities.Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
+                    if (attackOverlordAbility != null)
+                    {
+                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                            break;
+                    }
+
+                    overflowGooAbility = cards[i].LibraryCard.Abilities.Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
+                    if (overflowGooAbility != null)
+                    {
+                        if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < Constants.MaxBoardUnits - 1)
+                        {
+                            boardCount++;
+                            gooAmount -= cards[i].LibraryCard.Cost;
+                            benefit += overflowGooAbility.Value - cards[i].LibraryCard.Cost;
+                            overflowGooCards.Add(cards[i]);
+                            cards = cards.FindAll(x => CardBePlayableForOverflowGoo(x.LibraryCard.Cost, gooAmount));
+                        }
+                    }
+                }
+            }
+
+            WorkingCard expensiveCard =
+                GetUnitCardsInHand()
+                    .Find(
+                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.Goo &&
+                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo + benefit);
+            if (expensiveCard != null)
+            {
+                bool wasAction = false;
+                foreach (WorkingCard card in overflowGooCards)
+                {
+                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
+                        break;
+                    if (CardCanBePlayable(card))
+                    {
+                        PlayCardOnBoard(card);
+                        wasAction = true;
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+                    }
+                }
+
+                PlayCardOnBoard(expensiveCard);
+                wasAction = true;
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                if (wasAction)
+                {
+                    await LetsThink(cancellationToken);
+                    await LetsThink(cancellationToken);
+                }
+            }
+            else
+            {
+                _normalUnitCardInHand.Clear();
+                _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
+                _normalUnitCardInHand.RemoveAll(x => x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                _normalSpellCardInHand.Clear();
+                _normalSpellCardInHand.AddRange(GetSpellCardsInHand());
+                _normalSpellCardInHand.RemoveAll(x => x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+            }
+        }
+
+        private bool CardBePlayableForOverflowGoo(int cost, int goo)
+        {
+#if !DEV_MODE
+            return cost <= goo && _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
+#else
+            return true;
+#endif
+        }
+
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
@@ -383,7 +480,7 @@ namespace LoomNetwork.CZB
                     if (ability.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         // smart enough HP to use goo carriers
-                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Hp)
+                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
                         {
                             return false;
                         }
@@ -420,7 +517,8 @@ namespace LoomNetwork.CZB
 
                     _cardsController.DrawCardInfo(card);
                     break;
-                case Enumerators.CardKind.SPELL: {
+                case Enumerators.CardKind.SPELL:
+                {
                     if (target != null && needTargetForAbility || !needTargetForAbility)
                     {
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
@@ -437,12 +535,14 @@ namespace LoomNetwork.CZB
             _gameplayManager.OpponentPlayer.Goo -= card.LibraryCard.Cost;
         }
 
-        private void PlayCardCompleteHandler(WorkingCard card, object target) {
+        private void PlayCardCompleteHandler(WorkingCard card, object target)
+        {
             WorkingCard workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
             switch (card.LibraryCard.CardKind)
             {
-                case Enumerators.CardKind.CREATURE: {
+                case Enumerators.CardKind.CREATURE:
+                {
                     BoardUnit boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
                     GameObject boardCreature = boardUnitElement.GameObject;
                     boardCreature.tag = SRTags.OpponentOwned;
@@ -490,7 +590,8 @@ namespace LoomNetwork.CZB
                         });
                     break;
                 }
-                case Enumerators.CardKind.SPELL: {
+                case Enumerators.CardKind.SPELL:
+                {
                     GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
@@ -548,177 +649,125 @@ namespace LoomNetwork.CZB
                     switch (item)
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        {
                             if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 || ability.AbilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.CurrentPlayer.BoardCards.Count > 0)
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
                             }
-                        }
 
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        {
                             if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 || libraryCard.CardKind == Enumerators.CardKind.SPELL || ability.AbilityType == Enumerators.AbilityType.CARD_RETURN && _gameplayManager.OpponentPlayer.BoardCards.Count > 0)
                             {
                                 needsToSelectTarget = true;
                                 abilitiesWithTarget.Add(ability);
                             }
-                        }
 
                             break;
                         case Enumerators.AbilityTargetType.PLAYER:
                         case Enumerators.AbilityTargetType.OPPONENT:
                         case Enumerators.AbilityTargetType.ALL:
-                        {
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
-                        }
-
                             break;
                     }
                 }
             }
 
-            if (needsToSelectTarget)
+            if (!needsToSelectTarget)
+                return null;
+
+            foreach (AbilityData ability in abilitiesWithTarget)
             {
-                foreach (AbilityData ability in abilitiesWithTarget)
+                switch (ability.AbilityType)
                 {
-                    switch (ability.AbilityType)
-                    {
-                        case Enumerators.AbilityType.ADD_GOO_VIAL:
+                    case Enumerators.AbilityType.ADD_GOO_VIAL:
+                        target = _gameplayManager.OpponentPlayer;
+                        break;
+                    case Enumerators.AbilityType.CARD_RETURN:
+                        if (!AddRandomTargetUnit(true, ref target, false, true))
                         {
-                            target = _gameplayManager.OpponentPlayer;
+                            AddRandomTargetUnit(false, ref target, true, true);
                         }
 
-                            break;
-                        case Enumerators.AbilityType.CARD_RETURN:
-                        {
-                            if (!AddRandomTargetUnit(true, ref target, false, true))
-                            {
-                                AddRandomTargetUnit(false, ref target, true, true);
-                            }
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.DAMAGE_TARGET:
-                        {
-                            CheckAndAddTargets(ability, ref target);
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
-                        {
-                            if (!AddRandomTargetUnit(true, ref target))
-                            {
-                                target = _gameplayManager.CurrentPlayer;
-                            }
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.MASSIVE_DAMAGE:
-                        {
-                            AddRandomTargetUnit(true, ref target);
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.MODIFICATOR_STATS:
-                        {
-                            if (ability.Value > 0)
-                            {
-                                AddRandomTargetUnit(false, ref target);
-                            }
-                            else
-                            {
-                                AddRandomTargetUnit(true, ref target);
-                            }
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.STUN:
-                        {
-                            CheckAndAddTargets(ability, ref target);
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
-                        {
-                            CheckAndAddTargets(ability, ref target);
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.CHANGE_STAT:
-                        {
-                            if (ability.Value > 0)
-                            {
-                                AddRandomTargetUnit(false, ref target);
-                            }
-                            else
-                            {
-                                AddRandomTargetUnit(true, ref target);
-                            }
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.SUMMON:
-                        {
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.WEAPON:
+                        break;
+                    case Enumerators.AbilityType.DAMAGE_TARGET:
+                        CheckAndAddTargets(ability, ref target);
+                        break;
+                    case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
+                        if (!AddRandomTargetUnit(true, ref target))
                         {
                             target = _gameplayManager.CurrentPlayer;
                         }
 
-                            break;
-                        case Enumerators.AbilityType.SPURT:
+                        break;
+                    case Enumerators.AbilityType.MASSIVE_DAMAGE:
+                        AddRandomTargetUnit(true, ref target);
+                        break;
+                    case Enumerators.AbilityType.MODIFICATOR_STATS:
+                        if (ability.Value > 0)
+                        {
+                            AddRandomTargetUnit(false, ref target);
+                        }
+                        else
                         {
                             AddRandomTargetUnit(true, ref target);
                         }
 
-                            break;
-                        case Enumerators.AbilityType.SPELL_ATTACK:
+                        break;
+                    case Enumerators.AbilityType.STUN:
+                        CheckAndAddTargets(ability, ref target);
+                        break;
+                    case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
+                        CheckAndAddTargets(ability, ref target);
+                        break;
+                    case Enumerators.AbilityType.CHANGE_STAT:
+                        if (ability.Value > 0)
                         {
-                            CheckAndAddTargets(ability, ref target);
+                            AddRandomTargetUnit(false, ref target);
+                        }
+                        else
+                        {
+                            AddRandomTargetUnit(true, ref target);
                         }
 
-                            break;
-                        case Enumerators.AbilityType.HEAL:
-                        {
-                            List<BoardUnit> units = GetUnitsWithLowHp();
+                        break;
+                    case Enumerators.AbilityType.SUMMON:
+                        break;
+                    case Enumerators.AbilityType.WEAPON:
+                        target = _gameplayManager.CurrentPlayer;
+                        break;
+                    case Enumerators.AbilityType.SPURT:
+                        AddRandomTargetUnit(true, ref target);
+                        break;
+                    case Enumerators.AbilityType.SPELL_ATTACK:
+                        CheckAndAddTargets(ability, ref target);
+                        break;
+                    case Enumerators.AbilityType.HEAL:
+                        List<BoardUnit> units = GetUnitsWithLowHp();
 
-                            if (units.Count > 0)
-                            {
-                                target = units[_random.Next(0, units.Count)];
-                            }
-                            else
-                            {
-                                target = _gameplayManager.OpponentPlayer;
-                            }
+                        if (units.Count > 0)
+                        {
+                            target = units[_random.Next(0, units.Count)];
+                        }
+                        else
+                        {
+                            target = _gameplayManager.OpponentPlayer;
                         }
 
-                            break;
-                        case Enumerators.AbilityType.DOT:
-                        {
-                            CheckAndAddTargets(ability, ref target);
-                        }
-
-                            break;
-                        case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
-                        {
-                            GetTargetByType(ability, ref target, false);
-                        }
-
-                            break;
-                    }
-
-                    return target; // hack to handle only one ability
+                        break;
+                    case Enumerators.AbilityType.DOT:
+                        CheckAndAddTargets(ability, ref target);
+                        break;
+                    case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
+                        GetTargetByType(ability, ref target, false);
+                        break;
                 }
 
-                return target;
+                return target; // hack to handle only one ability
             }
 
-            return null;
+            return target;
         }
 
         private void CheckAndAddTargets(AbilityData ability, ref object target)
@@ -777,7 +826,6 @@ namespace LoomNetwork.CZB
             }
 
             return true;
-
         }
 
         private int GetPlayerAttackingValue()
@@ -964,7 +1012,7 @@ namespace LoomNetwork.CZB
                     target = _gameplayManager.OpponentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
-                    if (_gameplayManager.OpponentPlayer.Hp > 13)
+                    if (_gameplayManager.OpponentPlayer.Health > 13)
                     {
                         if (skill.Skill.ElementTargetTypes.Count > 0)
                         {

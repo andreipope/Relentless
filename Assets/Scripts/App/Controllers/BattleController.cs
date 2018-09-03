@@ -48,7 +48,7 @@ namespace LoomNetwork.CZB
 
             if (attackingUnit != null && attackedPlayer != null)
             {
-                attackedPlayer.Hp -= damageAttacking;
+                attackedPlayer.Health -= damageAttacking;
             }
 
             attackingUnit.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
@@ -135,7 +135,7 @@ namespace LoomNetwork.CZB
             {
                 int damage = skill.Value;
 
-                attackedPlayer.Hp -= damage;
+                attackedPlayer.Health -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
 
@@ -147,13 +147,13 @@ namespace LoomNetwork.CZB
         {
             if (healingPlayer != null)
             {
-                healedPlayer.Hp += skill.Value;
+                healedPlayer.Health += skill.Value;
 
                 if (skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN)
                 {
-                    if (healingPlayer.Hp > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Health > Constants.DefaultPlayerHp)
                     {
-                        healingPlayer.Hp = Constants.DefaultPlayerHp;
+                        healingPlayer.Health = Constants.DefaultPlayerHp;
                     }
                 }
             }
@@ -205,7 +205,7 @@ namespace LoomNetwork.CZB
             {
                 int damage = ability.Value;
 
-                attackedPlayer.Hp -= damage;
+                attackedPlayer.Health -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
 
@@ -217,10 +217,10 @@ namespace LoomNetwork.CZB
         {
             if (healedPlayer != null)
             {
-                healedPlayer.Hp += ability.Value;
-                if (healedPlayer.Hp > Constants.DefaultPlayerHp)
+                healedPlayer.Health += ability.Value;
+                if (healedPlayer.Health > Constants.DefaultPlayerHp)
                 {
-                    healedPlayer.Hp = Constants.DefaultPlayerHp;
+                    healedPlayer.Health = Constants.DefaultPlayerHp;
                 }
             }
 

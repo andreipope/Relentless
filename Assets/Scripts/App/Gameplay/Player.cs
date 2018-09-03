@@ -190,7 +190,7 @@ namespace LoomNetwork.CZB
             }
         }
 
-        public int Hp
+        public int Health
         {
             get => _health;
             set
@@ -458,7 +458,7 @@ namespace LoomNetwork.CZB
 
             if (!_gameplayManager.IsTutorial)
             {
-                _gameplayManager.EndGame(IsLocalPlayer?Enumerators.EndGameType.LOSE:Enumerators.EndGameType.WIN);
+                _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
             }
         }
 

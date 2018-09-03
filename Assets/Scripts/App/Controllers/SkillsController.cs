@@ -246,6 +246,7 @@ namespace LoomNetwork.CZB
         {
             OpponentSecondarySkill?.OnMouseUpEventHandler();
         }
+
         private GameObject GetVfxPrefabBySkill(BoardSkill skill)
         {
             GameObject prefab = null;
@@ -327,7 +328,8 @@ namespace LoomNetwork.CZB
 
         #region actions
 
-        private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target) {
+        private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
+        {
             switch (target)
             {
                 case BoardUnit unit:
@@ -540,7 +542,7 @@ namespace LoomNetwork.CZB
 
         private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            owner.Hp = Mathf.Clamp(owner.Hp + skill.Value, 0, owner.MaxCurrentHp);
+            owner.Health = Mathf.Clamp(owner.Health + skill.Value, 0, owner.MaxCurrentHp);
 
             // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;

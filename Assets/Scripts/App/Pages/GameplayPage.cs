@@ -340,11 +340,11 @@ namespace LoomNetwork.CZB
             player.TurnStarted += TurnStartedHandler;
 
             OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
-            OnPlayerHpChanged(player.Hp);
+            OnPlayerHpChanged(player.Health);
             OnPlayerGooChanged(player.Goo);
             OnPlayerVialGooChanged(player.GooOnCurrentTurn);
             OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
-            OnOpponentHpChanged(opponent.Hp);
+            OnOpponentHpChanged(opponent.Health);
             OnOpponentGooChanged(opponent.GooOnCurrentTurn);
             OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
         }

@@ -241,7 +241,7 @@ namespace LoomNetwork.CZB
                 if (player.CardsInDeck.Count == 0)
                 {
                     player.DamageByNoMoreCardsInDeck++;
-                    player.Hp -= player.DamageByNoMoreCardsInDeck;
+                    player.Health -= player.DamageByNoMoreCardsInDeck;
                     _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
                     return;
                 }
@@ -263,7 +263,7 @@ namespace LoomNetwork.CZB
                 if (otherPlayer.CardsInDeck.Count == 0)
                 {
                     otherPlayer.DamageByNoMoreCardsInDeck++;
-                    otherPlayer.Hp -= otherPlayer.DamageByNoMoreCardsInDeck;
+                    otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
                     _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
                     return;
                 }
@@ -520,7 +520,8 @@ namespace LoomNetwork.CZB
 
                 switch (libraryCard.CardKind)
                 {
-                    case Enumerators.CardKind.CREATURE: {
+                    case Enumerators.CardKind.CREATURE:
+                    {
                         int indexOfCard = 0;
                         float newCreatureCardPosition = card.Transform.position.x;
 
@@ -589,7 +590,8 @@ namespace LoomNetwork.CZB
                         _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                         break;
                     }
-                    case Enumerators.CardKind.SPELL: {
+                    case Enumerators.CardKind.SPELL:
+                    {
                         player.CardsInHand.Remove(card.WorkingCard);
                         _battlegroundController.PlayerHandCards.Remove(card);
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
