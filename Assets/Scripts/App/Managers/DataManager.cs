@@ -11,11 +11,13 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+
 using Newtonsoft.Json;
 using UnityEngine;
-using Card = Loom.ZombieBattleground.Data.Card;
-using CardSet = Loom.ZombieBattleground.Data.CardSet;
-using Deck = Loom.ZombieBattleground.Data.Deck;
+
+#if !DISABLE_DATA_ENCRYPTION
+using LoomNetwork.Internal;
+#endif
 
 namespace Loom.ZombieBattleground
 {

@@ -19,7 +19,7 @@ MonoBehaviour:
   HasShownWelcome: 1
   IncludeNonActiveScenes: 1
   MinimumBuildTime: 3.5
-  Namespace: LoomNetwork.CZB
+  Namespace: Loom.ZombieBattleground
   OutputDirectory: Scripts/Generated/TypeSafe
   ResourceFolderFilter:
   - Assets/Plugins

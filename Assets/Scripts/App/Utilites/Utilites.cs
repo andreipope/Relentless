@@ -1,5 +1,3 @@
-#if UNITY_EDITOR
-#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,12 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using UnityEditor;
-using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
+
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+#endif
 
 namespace LoomNetwork.Internal
 {
@@ -43,7 +45,6 @@ namespace LoomNetwork.Internal
 
             Selection.objects = selection.ToArray();
         }
-
 #endif
 
         #endregion scene hierarchy utilites
