@@ -22,8 +22,6 @@ namespace LoomNetwork.CZB.Common
 
         internal const string LocalOpponentDecksDataFilePath = "opponent_decks_data.json";
 
-        internal const string LocalOpponentActionsLibraryDataFilePath = "action_library_data.json";
-
         internal const string LocalCreditsDataFilePath = "credits_data.json";
 
         internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
