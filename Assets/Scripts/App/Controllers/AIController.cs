@@ -196,10 +196,16 @@ namespace Loom.ZombieBattleground
                 {
                     await UseUnitsOnBoard(cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
+
+                    await LetsThink(cancellationToken);
+                    await LetsThink(cancellationToken);
                     _battlegroundController.StopTurn();
+
                 }
                 else
                 {
+                    await LetsThink(cancellationToken);
+                    await LetsThink(cancellationToken);
                     _battlegroundController.StopTurn();
                 }
             }

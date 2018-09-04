@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
             _localizationManager.ApplyLocalization();
 
 #if DEV_MODE
-            CachedUserLocalData.tutorial = false;
+            CachedUserLocalData.Tutorial = false;
 #endif
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
