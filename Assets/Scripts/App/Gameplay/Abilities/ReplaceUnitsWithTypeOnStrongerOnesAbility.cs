@@ -19,13 +19,6 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
-
-            Action();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
         }
     }
 }
