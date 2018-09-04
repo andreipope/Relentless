@@ -238,11 +238,6 @@ namespace Loom.ZombieBattleground
             _cardsTurned = 0;
         }
 
-        private void OpenAlertDialog(string msg)
-        {
-            _uiManager.DrawPopup<WarningPopup>(msg);
-        }
-
         private void InitObjects()
         {
             _cardsContainer = new GameObject("CardsContainer").transform;

@@ -58,11 +58,11 @@ namespace Loom.ZombieBattleground
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
-                            CastRay(touch.position, SRLayerMask.Default);
+                            CastRay(touch.position, SRLayerMask.Battleground);
                             break;
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                            CastRay(touch.position, SRLayerMask.Default, true);
+                            CastRay(touch.position, SRLayerMask.Battleground, true);
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
@@ -80,11 +80,11 @@ namespace Loom.ZombieBattleground
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    CastRay(Input.mousePosition, SRLayerMask.Default);
+                    CastRay(Input.mousePosition, SRLayerMask.Battleground);
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    CastRay(Input.mousePosition, SRLayerMask.Default, true);
+                    CastRay(Input.mousePosition, SRLayerMask.Battleground, true);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 point = _raysCamera.ScreenToWorldPoint(origin);
 
-            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << layerMask);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, layerMask);
 
             if (hits.Length > 0)
             {

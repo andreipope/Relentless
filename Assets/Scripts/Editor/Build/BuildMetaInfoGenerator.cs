@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
-using UnityEngine.CloudBuild;
 using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground
@@ -28,7 +27,7 @@ namespace Loom.ZombieBattleground
             GetBuildMetaInfo();
         }
 
-        public static void PreBuildInternal()
+        private static void PreBuildInternal()
         {
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
             buildMetaInfo.BuildDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ssZ");
@@ -70,7 +69,8 @@ namespace Loom.ZombieBattleground
             EditorUtility.SetDirty(buildMetaInfo);
         }
 
-        public static void PreCloudBuildExport(BuildManifestObject manifest)
+        // ReSharper disable once RedundantNameQualifier
+        public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
 #if UNITY_CLOUD_BUILD
             Debug.Log("Cloud Build manifest:\r\n" + manifest.ToJson());

@@ -7,16 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public class CardPack
     {
-        public Enumerators.CardPackType CardPackType;
-
         private IDataManager _dataManager;
 
         private List<Card> _cardsInPack;
-
-        public CardPack()
-        {
-            Init(Enumerators.CardPackType.DEFAULT);
-        }
 
         public CardPack(Enumerators.CardPackType type)
         {
@@ -43,8 +36,6 @@ namespace Loom.ZombieBattleground
         private void Init(Enumerators.CardPackType type)
         {
             _dataManager = GameClient.Get<IDataManager>();
-
-            CardPackType = type;
 
             _cardsInPack = new List<Card>();
         }

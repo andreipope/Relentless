@@ -169,11 +169,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public AbilityBase Clone()
-        {
-            return (AbilityBase) MemberwiseClone();
-        }
-
         public virtual void Activate()
         {
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
@@ -356,29 +351,17 @@ namespace Loom.ZombieBattleground
             BoardSpell.Used -= UsedHandler;
         }
 
-        protected void DestroyCurrentParticle(bool isDirectly = false, float time = 3f)
-        {
-            if (isDirectly)
-            {
-                DestroyParticle(null);
-            }
-            else
-            {
-                GameClient.Get<ITimerManager>().AddTimer(DestroyParticle, null, time);
-            }
-        }
-
         protected void ClearParticles()
         {
             foreach (ulong id in ParticleIds)
             {
-                ParticlesController.DestoryParticle(id);
+                ParticlesController.DestroyParticle(id);
             }
         }
 
         protected object GetCaller()
         {
-            return AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            return AbilityUnitOwner ?? (object) BoardSpell;
         }
 
         protected Player GetOpponentOverlord()
@@ -386,11 +369,6 @@ namespace Loom.ZombieBattleground
             return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
-        }
-
-        private void DestroyParticle(object[] param)
-        {
-            Object.Destroy(VfxObject);
         }
     }
 }

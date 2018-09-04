@@ -3,24 +3,6 @@
     <Parser ParserId="StyleCop.CSharp.CsParser">
       <ParserSettings>
         <CollectionProperty Name="GeneratedFileFilters">
-          <Value>[^a-z ]ABDataSource.cs</Value>
-          <Value>[^a-z ]ABDataSourceProvider.cs</Value>
-          <Value>[^a-z ]AssetDatabaseABDataSource.cs</Value>
-          <Value>[^a-z ]ABModel.cs</Value>
-          <Value>[^a-z ]ABModelAssetInfo.cs</Value>
-          <Value>[^a-z ]ABModelBundleInfo.cs</Value>
-          <Value>[^a-z ]AssetBundleInspectTab.cs</Value>
-          <Value>[^a-z ]AssetBundleRecord.cs</Value>
-          <Value>[^a-z ]InspectSingleBundle.cs</Value>
-          <Value>[^a-z ]InspectTreeView.cs</Value>
-          <Value>[^a-z ]AssetBundleBrowserMain.cs</Value>
-          <Value>[^a-z ]AssetBundleBuildTab.cs</Value>
-          <Value>[^a-z ]AssetBundleManageTab.cs</Value>
-          <Value>[^a-z ]AssetBundleTree.cs</Value>
-          <Value>[^a-z ]AssetListTree.cs</Value>
-          <Value>[^a-z ]BundleDetailList.cs</Value>
-          <Value>[^a-z ]MessageList.cs</Value>
-          <Value>[^a-z ]MessageSystem.cs</Value>
           <Value>[^a-z ]AsyncCoroutineRunner.cs</Value>
           <Value>[^a-z ]SyncContextUtil.cs</Value>
           <Value>[^a-z ]Awaiters.cs</Value>

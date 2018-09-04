@@ -32,11 +32,6 @@ namespace Loom.ZombieBattleground.Data
             return Cards.Find(x => x.Id == id);
         }
 
-        public int GetCardIdFromName(string name)
-        {
-            return Cards.Find(x => x.Name == name).Id;
-        }
-
         public Card GetCardFromName(string name)
         {
             return Cards.Find(x => x.Name == name);

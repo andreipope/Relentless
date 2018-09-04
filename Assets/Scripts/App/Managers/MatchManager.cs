@@ -76,18 +76,6 @@ namespace Loom.ZombieBattleground
             StartLoadMatch();
         }
 
-        private void CreatePveMatch()
-        {
-            // todo write logic
-            StartLoadMatch();
-        }
-
-        private void CreateNetworkMatch()
-        {
-            // todo write logic
-            StartLoadMatch();
-        }
-
         private void StartLoadMatch()
         {
             _uiManager.HideAllPages();

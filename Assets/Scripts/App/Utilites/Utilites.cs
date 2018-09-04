@@ -76,36 +76,6 @@ namespace LoomNetwork.Internal
             return list;
         }
 
-        public static string FirstCharToUpper(string input)
-        {
-            if (!string.IsNullOrEmpty(input))
-            {
-                input = input.First().ToString().ToUpper() + input.Substring(1);
-            }
-
-            return input;
-        }
-
-        public static string GetStringFromByteArray(byte[] byteArr)
-        {
-            return Convert.ToBase64String(byteArr);
-        }
-
-        public static byte[] GetByteArrFromString(string str)
-        {
-            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
-        }
-
-        public static T CreateFromJson<T>(string jsonString)
-        {
-            return JsonUtility.FromJson<T>(jsonString);
-        }
-
-        public static string SaveToString(object obj)
-        {
-            return JsonUtility.ToJson(obj);
-        }
-
         public static Vector3 CastVfxPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
@@ -415,11 +385,6 @@ namespace LoomNetwork.Internal
 #else
             SaveLog("Warning: " + message);
 #endif
-        }
-
-        private static void SaveLog(object message)
-        {
-            File.AppendAllText(Path.Combine(Application.persistentDataPath, "Logs.txt"), message + "\n");
         }
 
         #endregion debugger

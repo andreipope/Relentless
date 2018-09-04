@@ -36,7 +36,6 @@ namespace Loom.ZombieBattleground
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
             AddService<IOverlordManager>(new OverlordManager());
-            AddService<IContentManager>(new ContentManager());
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());

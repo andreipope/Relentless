@@ -401,7 +401,7 @@ namespace Loom.ZombieBattleground
 
             boardCard.SetHighlightingEnabled(false);
             boardCard.StopSleepingParticles();
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
 
             Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
         }
@@ -424,7 +424,7 @@ namespace Loom.ZombieBattleground
                 boardCard.StopSleepingParticles();
                 if (boardCard.GameObject != null)
                 {
-                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
 
@@ -433,8 +433,7 @@ namespace Loom.ZombieBattleground
             else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
-                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerName =
-                    Constants.LayerBoardCards;
+                _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                 Object.Destroy(_aiController.CurrentSpellCard.GameObject.GetComponent<BoxCollider2D>());
                 Sequence sequence = DOTween.Sequence();
                 sequence.PrependInterval(2.0f);
@@ -724,7 +723,7 @@ namespace Loom.ZombieBattleground
 
                 pivot.x += handWidth / PlayerHandCards.Count;
 
-                card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerHandCards;
+                card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
                 card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }

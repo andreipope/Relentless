@@ -149,12 +149,6 @@ namespace Loom.ZombieBattleground.Common
             CHARACTER
         }
 
-        public enum AiActionType
-        {
-            TEST,
-            TEST2
-        }
-
         public enum AiType
         {
             BLITZ_AI,
@@ -187,14 +181,6 @@ namespace Loom.ZombieBattleground.Common
             ONLY_DIFFERENT
         }
 
-        public enum BuffActivityType
-        {
-            ONE_TIME,
-            PERMANENT,
-            TILL_FIRST_DEFENSE_FROM_ATTACK,
-            TURN_BASED
-        }
-
         public enum BuffType
         {
             GUARD,
@@ -208,12 +194,6 @@ namespace Loom.ZombieBattleground.Common
             HEAL_ALLY,
             DESTROY,
             REANIMATE
-        }
-
-        public enum ButtonState
-        {
-            ACTIVE,
-            DEFAULT
         }
 
         public enum CacheDataType
@@ -263,17 +243,6 @@ namespace Loom.ZombieBattleground.Common
             NONE
         }
 
-        public enum CardZoneOnBoardType
-        {
-            DECK,
-            GRAVEYARD
-        }
-
-        public enum EffectActivateType
-        {
-            PLAY_SKILL_EFFECT
-        }
-
         public enum EndGameType
         {
             WIN,
@@ -285,13 +254,6 @@ namespace Loom.ZombieBattleground.Common
         {
             DEFAULT,
             FADED
-        }
-
-        public enum GameEndCondition
-        {
-            LIFE,
-            TIME,
-            TURN
         }
 
         public enum InputType
