@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _nextButton, _playButton, _skipButton;
 
-        private GameObject _focusedObject;
-
         private GameObject _bubbleObject;
 
         private Image _janeImage;
@@ -81,7 +79,6 @@ namespace Loom.ZombieBattleground
             _bubbleObject = Self.transform.Find("Description").gameObject;
 
             _text = Self.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
-            _focusedObject = Self.transform.Find("TutorialFocusObject").gameObject;
 
             _nextButton = Self.transform.Find("Button_Next").GetComponent<ButtonShiftingContent>();
             _playButton = Self.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
@@ -134,11 +131,6 @@ namespace Loom.ZombieBattleground
         {
             _bubbleObject.SetActive(true);
             _tutorialManager.IsBubbleShow = true;
-        }
-
-        public void SetPosition(Vector2 position)
-        {
-            _focusedObject.transform.position = new Vector3(position.x, position.y, 0);
         }
 
         public void ShowTutorialFocus(int step)

@@ -595,21 +595,4 @@ namespace Loom.ZombieBattleground
 
         public List<AudioClip> AudioClips;
     }
-
-    public class QueuedSoundElement
-    {
-        public Action Action;
-
-        public SoundContainer Container;
-
-        public QueuedSoundElement(Action action)
-        {
-            Action = action;
-        }
-
-        public void DoAction()
-        {
-            Action?.Invoke();
-        }
-    }
 }

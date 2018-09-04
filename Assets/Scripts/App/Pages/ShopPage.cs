@@ -143,11 +143,6 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private void OpenAlertDialog(string msg)
-        {
-            _uiManager.DrawPopup<WarningPopup>(msg);
-        }
-
         #region Buttons Handlers
 
         public void OpenButtonHandler()

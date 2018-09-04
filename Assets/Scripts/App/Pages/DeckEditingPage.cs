@@ -1006,7 +1006,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, 1 << 0);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
 
             if (hits.Length > 0)
             {

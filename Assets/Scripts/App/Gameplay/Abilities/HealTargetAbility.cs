@@ -58,33 +58,5 @@ namespace Loom.ZombieBattleground
                 Action();
             }
         }
-
-        private void CreateAndMoveParticle(Action callback, Vector3 target)
-        {
-            target = Utilites.CastVfxPosition(target);
-            if (AbilityEffectType == Enumerators.AbilityEffectType.HEAL)
-            {
-                Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
-                    AbilityUnitOwner.Transform.position :
-                    SelectedPlayer.Transform.position;
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetLifeAttack");
-
-                CreateVfx(startPosition);
-                VfxObject.transform.DOMove(target, 0.5f).OnComplete(
-                    () =>
-                    {
-                        ClearParticles();
-                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
-                        CreateVfx(target, true);
-                        callback();
-                    });
-            }
-            else if (AbilityEffectType == Enumerators.AbilityEffectType.HEAL_DIRECTLY)
-            {
-                CreateVfx(target, true);
-                callback();
-            }
-        }
     }
 }

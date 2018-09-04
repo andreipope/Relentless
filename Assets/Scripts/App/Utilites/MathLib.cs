@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Analytics;
 
 namespace Loom.ZombieBattleground.Helpers
 {
@@ -44,20 +45,10 @@ namespace Loom.ZombieBattleground.Helpers
         {
             return string.Format("x:{0}; y:{1}; z:{2}", X, Y, Z);
         }
-    }
 
-    public class MathLib
-    {
-        public static Vector3 FloatVector3ToVector3(FloatVector3 vector)
+        public static explicit operator Vector3(FloatVector3 vector)
         {
             return new Vector3(vector.X, vector.Y, vector.Z);
-        }
-
-        public static float AngleBetweenVector2(Vector2 vec1, Vector2 vec2)
-        {
-            Vector2 diference = vec2 - vec1;
-            float sign = vec2.x > vec1.x ? -1.0f : 1.0f;
-            return (180 + Vector2.Angle(Vector2.up, diference)) * sign;
         }
     }
 }

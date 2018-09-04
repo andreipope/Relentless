@@ -716,21 +716,7 @@ namespace Loom.ZombieBattleground
             InternalTools.GroupVerticalObjects(ParentOfLeftBlockOfCardInfo, 0f, centerOffset, cardSize);
         }
 
-        public void ClearBuffsOnUnit()
-        {
-            if (BuffOnCardInfoObjects != null)
-            {
-                foreach (BuffOnCardInfoObject item in BuffOnCardInfoObjects)
-                {
-                    item.Dispose();
-                }
-
-                BuffOnCardInfoObjects.Clear();
-                BuffOnCardInfoObjects = null;
-            }
-        }
-
-        protected virtual void UpdatePositionOnHand()
+        protected void UpdatePositionOnHand()
         {
             if (IsPreview)
                 return;

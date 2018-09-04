@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,9 +13,9 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        private IContentManager _contentManager;
-
         private ISoundManager _soundManager;
+
+        private ILoadObjectsManager _loadObjectsManager;
 
         private TutorialPopup _popup;
 
@@ -24,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _targettingArrowPrefab;
 
+        private TutorialLines _tutorialLines;
+
         public void Dispose()
         {
         }
@@ -31,8 +34,12 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
-            _contentManager = GameClient.Get<IContentManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _tutorialLines =
+                JsonConvert.DeserializeObject<TutorialLines>(
+                    _loadObjectsManager.GetObjectByPath<TextAsset>("Data/tutorial_1").text
+                    );
 
             _steps = new List<TutorialStep>
             {
@@ -44,38 +51,31 @@ namespace Loom.ZombieBattleground
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(5f, -6f, 0),
-                    new Vector3(0, -1.7f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(0, -1.5f, 0),
-                    new Vector3(0, 2f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true, true, new Vector3(0, -1.6f, 0),
-                    new Vector3(0, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0),
-                    new Vector3(0, 2f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(7f, -6.5f, 0),
-                    new Vector3(0, -1.6f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0),
-                    new Vector3(0, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(2.5f, -5.0f, 0),
-                    new Vector3(0f, 5.55f, 0)),
+                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
                 new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _steps.Count; i++)
             {
                 TutorialStep step = _steps[i];
-                step.Description = _contentManager.TutorialInfo[i].Description;
+                step.Description = _tutorialLines.Lines[i];
             }
 
             // card vs player
@@ -385,5 +385,10 @@ namespace Loom.ZombieBattleground
     {
         public Vector3 StartPosition;
         public Vector3 TargetPosition;
+    }
+
+    public struct TutorialLines
+    {
+        public string[] Lines;
     }
 }

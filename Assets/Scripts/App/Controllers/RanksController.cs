@@ -204,16 +204,6 @@ namespace Loom.ZombieBattleground
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void BuffHorde(List<BoardUnit> units, Enumerators.BuffType buffType)
-        {
-            foreach (BoardUnit unit in units)
-            {
-                Debug.Log(unit.Card.LibraryCard.Name);
-
-                unit.BuffUnit(buffType);
-            }
-        }
-
         private void BuffRandomAlly(List<BoardUnit> units, int count, List<Enumerators.BuffType> buffTypes)
         {
             int random;

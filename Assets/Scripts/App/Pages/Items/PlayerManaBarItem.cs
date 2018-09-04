@@ -34,10 +34,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isInOverflow;
 
-        public PlayerManaBarItem()
-        {
-        }
-
         public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos)
         {
             _overflowPrefabPath = "Prefabs/" + overflowPrefabName;

@@ -273,27 +273,8 @@ namespace Loom.ZombieBattleground
             }
 
             Sprite heroHighlight =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement +
-                    "_EXP");
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
-        }
-
-        public void SetPlayerDeckCards(int cards)
-        {
-            _playerCardDeckCountText.text = cards.ToString();
-            if (cards == 0 && _playerDeckStatusTexture.gameObject.activeInHierarchy)
-            {
-                _playerDeckStatusTexture.gameObject.SetActive(false);
-            }
-        }
-
-        public void SetOpponentDeckCards(int cards)
-        {
-            _opponentCardDeckCountText.text = cards.ToString();
-            if (cards == 0 && _opponentDeckStatusTexture.gameObject.activeInHierarchy)
-            {
-                _opponentDeckStatusTexture.gameObject.SetActive(false);
-            }
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -303,46 +284,9 @@ namespace Loom.ZombieBattleground
             _reportGameActionsPanel?.Clear();
         }
 
-        // TODO: pass parameters here and apply corresponding texture, since previews have not the same textures as cards
-        private void DelayedCardDestroy(object[] card)
-        {
-            BoardUnit cardToDestroy = (BoardUnit) card[0];
-            if (cardToDestroy != null)
-            {
-                cardToDestroy.Transform.DOKill();
-                Object.Destroy(cardToDestroy.GameObject);
-            }
-        }
-
         private int GetPercentFromMaxDeck(int index)
         {
             return 100 * index / (int) Constants.DeckMaxSize;
-        }
-
-        private class CardInGraveyard
-        {
-            public readonly GameObject SelfObject;
-
-            public readonly Image Image;
-
-            public CardInGraveyard(GameObject gameObject, Sprite sprite = null)
-            {
-                SelfObject = gameObject;
-                Image = SelfObject.transform.Find("Image").GetComponent<Image>();
-
-                if (sprite != null)
-                {
-                    Image.sprite = sprite;
-                }
-            }
-
-            public void Dispose()
-            {
-                if (SelfObject != null)
-                {
-                    Object.Destroy(SelfObject);
-                }
-            }
         }
 
         private class CardZoneOnBoardStatus
