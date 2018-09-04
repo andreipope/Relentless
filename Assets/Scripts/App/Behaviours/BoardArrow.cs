@@ -19,11 +19,11 @@ public class BoardArrow : MonoBehaviour
 
     protected bool StartedDrag;
 
+    protected Vector3 FromPosition, TargetPosition;
+
     private readonly float _defaultArrowScale = 6.25f;
 
     private GameObject _selfObject;
-
-    private Vector3 _fromPosition, _targetPosition;
 
     private bool _isInverse = true;
 
@@ -35,10 +35,7 @@ public class BoardArrow : MonoBehaviour
     {
         if (StartedDrag)
         {
-            if (Vector3.Distance(_fromPosition, _targetPosition) > Constants.PointerMinDragDelta)
-            {
-                return true;
-            }
+            if (Vector3.Distance(FromPosition, TargetPosition) > Constants.PointerMinDragDelta) return true;
         }
 
         return false;
@@ -48,10 +45,7 @@ public class BoardArrow : MonoBehaviour
     {
         int scaleX = 1;
 
-        if (isInverse)
-        {
-            scaleX = -1;
-        }
+        if (isInverse) scaleX = -1;
 
         _selfObject.transform.localScale = new Vector3(scaleX, 1, 1);
     }
@@ -61,9 +55,9 @@ public class BoardArrow : MonoBehaviour
         _isInverse = isInverse;
 
         StartedDrag = true;
-        _fromPosition = from;
+        FromPosition = from;
 
-        ArrowObject.transform.position = _fromPosition;
+        ArrowObject.transform.position = FromPosition;
 
         SetInverse(isInverse);
     }
@@ -73,19 +67,16 @@ public class BoardArrow : MonoBehaviour
         TargetColliderObject.transform.position = target;
         TargetObjectsGroup.transform.position = target;
 
-        _targetPosition = target;
+        TargetPosition = target;
 
-        float angle = Mathf.Atan2(target.y - _fromPosition.y, target.x - _fromPosition.x) * Mathf.Rad2Deg - 90.5f;
+        float angle = Mathf.Atan2(target.y - FromPosition.y, target.x - FromPosition.x) * Mathf.Rad2Deg - 90.5f;
         float scaleX = 1f;
 
-        if (!isInverse)
-        {
-            scaleX = -1f;
-        }
+        if (!isInverse) scaleX = -1f;
 
         ArrowObject.transform.eulerAngles = new Vector3(0, 180, -angle);
 
-        float scaleY = Vector3.Distance(_fromPosition, target) / _defaultArrowScale;
+        float scaleY = Vector3.Distance(FromPosition, target) / _defaultArrowScale;
         ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
 
@@ -129,10 +120,7 @@ public class BoardArrow : MonoBehaviour
         ArrowObject = _selfObject.transform.Find("Arrow").gameObject;
         TargetColliderObject = _selfObject.transform.Find("Target_Collider").gameObject;
 
-        if (_isInverse)
-        {
-            _selfObject.transform.localScale = new Vector3(-1, 1, 1);
-        }
+        if (_isInverse) _selfObject.transform.localScale = new Vector3(-1, 1, 1);
 
         InputController.PlayerSelectingEvent += PlayerSelectingEventHandler;
         InputController.UnitSelectingEvent += UnitSelectingEventHandler;
@@ -173,20 +161,14 @@ public class BoardArrow : MonoBehaviour
     {
         if (SelectedCard != null)
         {
-            if (SelectedCard.GameObject != null)
-            {
-                SelectedCard.SetSelectedUnit(false);
-            }
+            if (SelectedCard.GameObject != null) SelectedCard.SetSelectedUnit(false);
 
             SelectedCard = null;
         }
 
         if (SelectedPlayer != null)
         {
-            if (SelectedPlayer.AvatarObject != null)
-            {
-                SelectedPlayer.SetGlowStatus(false);
-            }
+            if (SelectedPlayer.AvatarObject != null) SelectedPlayer.SetGlowStatus(false);
 
             SelectedPlayer = null;
         }

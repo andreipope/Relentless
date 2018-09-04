@@ -17,7 +17,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 #endif
 
-namespace LoomNetwork.Internal
+namespace Loom.ZombieBattleground
 {
     public static class Utilites
     {
@@ -96,6 +96,16 @@ namespace LoomNetwork.Internal
 
         #region asset bundles and cache
 
+        public static string GetAssetBundleLocalRoot()
+        {
+            return Path.Combine(Application.streamingAssetsPath, "AssetBundles");
+        }
+
+        public static string GetAssetBundleLocalPath(string assetBundleName)
+        {
+            return Path.Combine(GetAssetBundleLocalRoot(), assetBundleName);
+        }
+
 #if UNITY_EDITOR
 
         [MenuItem("Utilites/CacheAndBundles/Clean Cache")]
@@ -117,39 +127,27 @@ namespace LoomNetwork.Internal
             BuildAssetBundlesAndGame(EditorUserBuildSettings.activeBuildTarget);
         }
 
-        private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
+        [MenuItem("Utilites/Build/Build Game")]
+        public static void BuildGame()
         {
-            BuildAssetBundles(buildTarget);
             BuildGame(EditorUserBuildSettings.activeBuildTarget);
-
-            // Delete existing StreamingAssets bundles
-            string assetBundleStreamingRoot = Application.streamingAssetsPath + "/AssetBundles";
-            string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
-            foreach (string existingBundle in existingBundles)
-            {
-                File.Delete(existingBundle);
-            }
-
-            // Copy to StreamingAssets
-            string[] files = Directory.GetFiles(GetAssetBundlesBuildPath(buildTarget));
-            if (!Directory.Exists(assetBundleStreamingRoot))
-            {
-                Directory.CreateDirectory(assetBundleStreamingRoot);
-            }
-
-            foreach (string file in files)
-            {
-                string outPath = Path.Combine(assetBundleStreamingRoot, Path.GetFileName(file));
-                File.Copy(file, outPath);
-            }
-
-            AssetDatabase.Refresh();
         }
 
         [MenuItem("Utilites/Build/Build Asset Bundles")]
         public static void BuildAssetBundles()
         {
             BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        public static BuildAssetBundleOptions GetBuildAssetBundleOptions()
+        {
+            return BuildAssetBundleOptions.UncompressedAssetBundle;
+        }
+
+        private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
+        {
+            BuildAssetBundles(buildTarget);
+            BuildGame(EditorUserBuildSettings.activeBuildTarget);
         }
 
         private static void BuildGame(BuildTarget buildTarget)
@@ -175,7 +173,8 @@ namespace LoomNetwork.Internal
                 scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray(),
                 locationPathName = outputPath,
                 target = buildTarget,
-                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget)
+                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget),
+                options = BuildOptions.Development
             };
             BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
             if (buildReport.summary.result != BuildResult.Succeeded)
@@ -185,20 +184,44 @@ namespace LoomNetwork.Internal
         private static void BuildAssetBundles(BuildTarget buildTarget)
         {
             string outputPath = GetAssetBundlesBuildPath(buildTarget);
-
             if (!Directory.Exists(outputPath))
             {
                 Directory.CreateDirectory(outputPath);
             }
 
-            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.UncompressedAssetBundle, buildTarget);
+            BuildPipeline.BuildAssetBundles(
+                outputPath,
+                GetBuildAssetBundleOptions(),
+                buildTarget);
+
+            // Delete existing StreamingAssets bundles
+            string assetBundleStreamingRoot = GetAssetBundleLocalRoot();
+            string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
+            foreach (string existingBundle in existingBundles)
+            {
+                File.Delete(existingBundle);
+            }
+
+            // Copy to StreamingAssets
+            string[] files = Directory.GetFiles(outputPath);
+            if (!Directory.Exists(assetBundleStreamingRoot))
+            {
+                Directory.CreateDirectory(assetBundleStreamingRoot);
+            }
+
+            foreach (string file in files)
+            {
+                string outPath = Path.Combine(assetBundleStreamingRoot, Path.GetFileName(file));
+                File.Copy(file, outPath);
+            }
+
+            AssetDatabase.Refresh();
         }
 
         private static string GetAssetBundlesBuildPath(BuildTarget buildTarget)
         {
             return Path.Combine("AssetBundles", buildTarget.ToString());
         }
-
 #endif
 
         #endregion asset bundles and cache

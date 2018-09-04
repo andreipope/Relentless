@@ -37,10 +37,10 @@ namespace Loom.ZombieBattleground
             _sfxVolume = 1f;
             _musicVolume = 1f;
 
-            _tutorialSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/TutorialSounds");
-            _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/CardsSounds");
-            _overlordAbilitiesSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/OverlordAbilitiesSounds");
-            _spellsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/SpellsSounds");
+            _tutorialSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/TutorialSounds");
+            _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/CardsSounds");
+            _overlordAbilitiesSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/OverlordAbilitiesSounds");
+            _spellsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/SpellsSounds");
 
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();

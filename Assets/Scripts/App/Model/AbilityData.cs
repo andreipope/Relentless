@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
-using LoomNetwork.Internal;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data

@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
-using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -623,7 +621,7 @@ namespace Loom.ZombieBattleground
         public void PlayArrivalAnimation()
         {
             GameObject arrivalPrefab =
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival");
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival_VFX");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
             Transform spriteContainerTransform =
                 _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");

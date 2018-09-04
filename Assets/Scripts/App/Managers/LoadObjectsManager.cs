@@ -1,32 +1,25 @@
+//#define ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+
 using UnityEngine;
-using UnityEditor;
-using System.Linq;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.Common;
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+using System.Linq;
+using UnityEditor;
+#endif
 
 namespace Loom.ZombieBattleground
 {
     public class LoadObjectsManager : IService, ILoadObjectsManager
     {
-        private string[] _assetBundleNames = new string[] { "data", "testbundle.test" };
-        private AssetBundle _loadedBundle;
-
-#if UNITY_EDITOR
+        private readonly Dictionary<string, AssetBundle> _loadedAssetBundles = new Dictionary<string, AssetBundle>();
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+        private const string DynamicLoadAssetsRoot = "Assets/Assets/LoadAtRuntime";
         private Dictionary<string, string> _assetsPaths;
 #endif
-
-        public T GetObjectByPath<T>(string path)
-            where T : UnityEngine.Object
-        {
-            return LoadFromAssetBundle<T>(path);
-        }
-
-        public T[] GetObjectsByPath<T>(string[] paths)
-            where T : UnityEngine.Object
-        {
-            return LoadAllFromAssetBundle<T>(paths);
-        }
 
         public void Dispose()
         {
@@ -34,123 +27,137 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             PrepareAssetPaths();
 #endif
-            LoadAssetBundle();
         }
 
         public void Update()
         {
         }
 
-#if UNITY_EDITOR
+        public T GetObjectByPath<T>(string path, string bundleName = null)
+            where T : UnityEngine.Object
+        {
+            AssetBundle assetBundle = GetAssetBundle(ref bundleName);
+
+            string fileName = Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+            T asset = Load<T>(fileName, assetBundle, bundleName);
+            if (asset == null)
+                throw new Exception($"Failed to load '{path}' from bundle '{bundleName}'");
+
+            return asset;
+        }
+
+        public T[] GetObjectsByPath<T>(string[] paths, string bundleName = null)
+            where T : UnityEngine.Object
+        {
+            AssetBundle assetBundle = GetAssetBundle(ref bundleName);
+
+            T[] assets = new T[paths.Length];
+            for (int i = 0; i < assets.Length; i++)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(paths[i]).ToLowerInvariant();
+                assets[i] = Load<T>(fileName, assetBundle, bundleName);
+                if (assets[i] == null)
+                    throw new Exception($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
+            }
+
+            return assets;
+        }
+
+        public void LoadAssetBundleFromFile(string name)
+        {
+            string bundleLocalPath = Utilites.GetAssetBundleLocalPath(name);
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+            if (!File.Exists(bundleLocalPath))
+                return;
+#endif
+
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(bundleLocalPath);
+            _loadedAssetBundles.Add(name, assetBundle);
+        }
+
+        public async Task LoadAssetBundleFromFileAsync(string name, IProgress<float> progress = null)
+        {
+            string bundleLocalPath = Utilites.GetAssetBundleLocalPath(name);
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+            if (!File.Exists(bundleLocalPath))
+                return;
+#endif
+
+            AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(bundleLocalPath);
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            request.completed += _ => tcs.TrySetResult(true);
+            await tcs.Task;
+
+            _loadedAssetBundles.Add(name, request.assetBundle);
+        }
+
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
         private void PrepareAssetPaths()
         {
             _assetsPaths = new Dictionary<string, string>();
 
-            string[] assetsPaths = AssetDatabase.FindAssets("", new[] { "Assets/Assets/LoadAtRuntime" });
+            string[] assetsPaths =
+                AssetDatabase
+                    .FindAssets("", new[] { DynamicLoadAssetsRoot })
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Where((s, i) => !AssetDatabase.IsValidFolder(s))
+                    .ToArray();
 
             for (int i = 0; i < assetsPaths.Length; i++)
             {
-                string path = AssetDatabase.GUIDToAssetPath(assetsPaths[i]);
-                string filename = Path.GetFileNameWithoutExtension(path).ToLower();
+                string path = assetsPaths[i];
+                string fileName = Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
 
-                if (!_assetsPaths.ContainsKey(filename))
+                if (_assetsPaths.ContainsKey(fileName))
                 {
-                    _assetsPaths.Add(Path.GetFileNameWithoutExtension(path).ToLower(), path);
-                }
-            }
-        }
-#endif
-
-        private void LoadAssetBundle()
-        {
-            _loadedBundle = AssetBundle.LoadFromFile(Application.streamingAssetsPath + "/" + _assetBundleNames[0]); //need to refactor once we decide on a loading system of multiple asset bundles, for now, hard coded to use the first string in the array
-        }
-
-        private T[] LoadAllFromAssetBundle<T>(string[] paths)
-            where T : UnityEngine.Object
-        {
-            T[] assets = null;
-            if (_loadedBundle != null)
-            {
-                T[] loadedAssets = new T[paths.Length];
-
-                int count = 0;
-                for (int i = 0; i < loadedAssets.Length; i++)
-                {
-                    string filename = Path.GetFileName(paths[i]);
-
-                    loadedAssets[count] = _loadedBundle.LoadAsset<T>(filename);
-
-                    if (loadedAssets[count] != null)
+                    string conflictingPath = _assetsPaths[fileName];
+                    if (conflictingPath != path)
                     {
-                        count++;
+                        throw new Exception($"Conflicting asset names:\n{conflictingPath}\n{path}");
                     }
                 }
-
-                assets = loadedAssets;
-            }
-
-#if UNITY_EDITOR
-            if (assets == null)
-            {
-                assets = LoadAllFromAssets<T>(paths);
-            }
-#endif
-            return assets;
-        }
-
-        private T LoadFromAssetBundle<T>(string path)
-            where T : UnityEngine.Object
-        {
-            string filename = Path.GetFileName(path);
-
-            T asset = null;
-            if (_loadedBundle != null)
-            {
-                asset = _loadedBundle.LoadAsset<T>(filename);
-            }
-
-#if UNITY_EDITOR
-            if (asset == null)
-            {
-                asset = LoadFromAssets<T>(filename);
-            }
-#endif
-            return asset;
-        }
-
-#if UNITY_EDITOR
-        private T[] LoadAllFromAssets<T>(string[] paths)
-            where T : UnityEngine.Object
-        {
-            T[] loadedAssets = new T[paths.Length];
-
-            int count = 0;
-            for (int i = 0; i < loadedAssets.Length; i++)
-            {
-                loadedAssets[count] = AssetDatabase.LoadAssetAtPath<T>(_assetsPaths[Path.GetFileName(paths[i]).ToLower()]);
-
-                if (loadedAssets[count] != null)
+                else
                 {
-                    count++;
+                    _assetsPaths.Add(fileName, path);
                 }
             }
-
-            loadedAssets = loadedAssets.Where(x => x != null).ToArray();
-
-            return loadedAssets;
-        }
-
-        private T LoadFromAssets<T>(string filename)
-            where T : UnityEngine.Object
-        {
-            filename = filename.ToLower();
-            string path = _assetsPaths[filename];
-            return AssetDatabase.LoadAssetAtPath<T>(path);
         }
 #endif
+
+        private AssetBundle GetAssetBundle(ref string bundleName)
+        {
+            if (String.IsNullOrEmpty(bundleName))
+            {
+                bundleName = Constants.AssetBundleMain;
+            }
+
+            bool bundleExists = _loadedAssetBundles.TryGetValue(bundleName, out AssetBundle assetBundle);
+#if !(UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION)
+            if (!bundleExists)
+                throw new Exception($"Asset bundle '{bundleName}' not loaded");
+#endif
+
+            return assetBundle;
+        }
+
+        private T Load<T>(string fileName, AssetBundle assetBundle, string bundleName)
+            where T : UnityEngine.Object
+        {
+            if (assetBundle != null)
+                return assetBundle.LoadAsset<T>(fileName);
+
+#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+            fileName = fileName.ToLowerInvariant();
+            string path = _assetsPaths[fileName];
+            return AssetDatabase.LoadAssetAtPath<T>(path);
+#endif
+
+            return null;
+        }
+
+
     }
 }
