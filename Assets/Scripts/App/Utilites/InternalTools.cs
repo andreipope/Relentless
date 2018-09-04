@@ -7,18 +7,6 @@ namespace Loom.ZombieBattleground.Helpers
 {
     public class InternalTools
     {
-        private static readonly string LineBreak = "%n%";
-
-        public static string ReplaceLineBreaks(string data)
-        {
-            if (data == null)
-            {
-                return "";
-            }
-
-            return data.Replace(LineBreak, "\n");
-        }
-
         public static void SetLayerRecursively(
             GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
         {

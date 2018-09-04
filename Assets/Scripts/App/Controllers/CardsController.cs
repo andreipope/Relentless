@@ -587,7 +587,7 @@ namespace Loom.ZombieBattleground
                         _battlegroundController.PlayerHandCards.Remove(card);
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                        card.GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerBoardCards;
+                        card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                         card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
                         BoardSpell boardSpell = new BoardSpell(card.GameObject, card.WorkingCard);

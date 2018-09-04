@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
                 _timerManager.AddTimer(
                     x =>
                     {
-                        DestoryParticle(id);
+                        DestroyParticle(id);
                     },
                     null,
                     duration);
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
             return id;
         }
 
-        public void DestoryParticle(ulong id)
+        public void DestroyParticle(ulong id)
         {
             ParticleSystemElement element = _particleSystemElements.Find(x => x.Id == id);
 

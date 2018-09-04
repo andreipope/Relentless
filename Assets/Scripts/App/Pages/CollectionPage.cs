@@ -257,10 +257,6 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        public void OnNextPageButtonPressed()
-        {
-        }
-
         public void LoadCards(int page, Enumerators.SetType setType)
         {
             _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
@@ -326,13 +322,6 @@ namespace Loom.ZombieBattleground
             _createdBoardCards.Clear();
         }
 
-        private void IconSetButtonClick(Button toggleObj)
-        {
-            _currentSet = (Enumerators.SetType) toggleObj.transform.GetSiblingIndex();
-            _currentElementPage = 0;
-            LoadCards(_currentElementPage, _currentSet);
-        }
-
         private void InitObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
@@ -364,11 +353,6 @@ namespace Loom.ZombieBattleground
         {
             _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
                 (float) CardPositions.Count);
-        }
-
-        private void OpenAlertDialog(string msg)
-        {
-            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         #region Buttons Handlers
@@ -426,6 +410,5 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
     }
 }

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Loom.ZombieBattleground
+﻿namespace Loom.ZombieBattleground
 {
     public class BoardArrowController : IController
     {
@@ -24,14 +22,6 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void BeginArrow(Vector3 startPosition)
-        {
-        }
-
-        public void EndArrow()
-        {
-        }
-
         public void SetStatusOfBoardArrowOnBoard(bool status)
         {
             IsBoardArrowNowInTheBattle = status;
@@ -44,10 +34,6 @@ namespace Loom.ZombieBattleground
                 CurrentBoardArrow.Dispose();
                 CurrentBoardArrow = null;
             }
-        }
-
-        public void CreateArrowFromTo(Vector3 from, Vector3 to, object target = null)
-        {
         }
     }
 }

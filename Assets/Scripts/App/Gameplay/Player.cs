@@ -207,8 +207,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public bool AlreadyAttackedInThisTurn { get; set; }
-
         public List<BoardUnit> BoardCards { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; set; }

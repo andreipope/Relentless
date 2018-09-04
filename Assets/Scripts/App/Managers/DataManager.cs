@@ -94,12 +94,11 @@ namespace Loom.ZombieBattleground
 
             // FIXME: remove next line after fetching collection from backend is implemented
             FillFullCollection();
-            CachedOpponentDecksData.ParseData();
 
             _localizationManager.ApplyLocalization();
 
 #if DEV_MODE
-            CachedUserLocalData.tutorial = false;
+            CachedUserLocalData.Tutorial = false;
 #endif
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;

@@ -190,7 +190,7 @@ public class HandBoardCard
         _isReturnToHand = true;
         _isHandCard = true;
         Enabled = true;
-        GameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LayerHandCards;
+        GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
         GameObject.GetComponent<SortingGroup>().sortingOrder = 0;
 
         _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);

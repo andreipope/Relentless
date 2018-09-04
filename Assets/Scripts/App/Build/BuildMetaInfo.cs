@@ -70,6 +70,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        // ReSharper disable once UnusedMember.Global
         public bool CheckBackendVersionMatch(Version backendVersion)
         {
             Version localVersion = Version;

@@ -14,24 +14,6 @@ MonoBehaviour:
   styleCopSettingsFilePath:
     relativePath: /Settings.StyleCop
   ignoredFilePaths:
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleDataSource/ABDataSource.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleDataSource/ABDataSourceProvider.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleDataSource/AssetDatabaseABDataSource.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleModel/ABModel.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleModel/ABModelAssetInfo.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleModel/ABModelBundleInfo.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/InspectTab/AssetBundleInspectTab.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/InspectTab/AssetBundleRecord.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/InspectTab/InspectSingleBundle.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/InspectTab/InspectTreeView.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleBrowserMain.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleBuildTab.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleManageTab.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetBundleTree.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/AssetListTree.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/BundleDetailList.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/MessageList.cs
-  - relativePath: /Assets/Plugins/AssetBundles-Browser/Editor/MessageSystem.cs
   - relativePath: /Assets/Plugins/AsyncAwaitUtil/Source/Internal/AsyncCoroutineRunner.cs
   - relativePath: /Assets/Plugins/AsyncAwaitUtil/Source/Internal/SyncContextUtil.cs
   - relativePath: /Assets/Plugins/AsyncAwaitUtil/Source/Awaiters.cs
