@@ -103,11 +103,11 @@ namespace LoomNetwork.Internal
         {
             if (Caching.ClearCache())
             {
-                DebugLog("Clean Cache Successful");
+                Debug.Log("Clean Cache Successful");
             }
             else
             {
-                DebugLog("Clean Cache Failed");
+                Debug.Log("Clean Cache Failed");
             }
         }
 
@@ -210,7 +210,7 @@ namespace LoomNetwork.Internal
         public static void DeletePlayerPrefs()
         {
             PlayerPrefs.DeleteAll();
-            DebugLog("Delete Player Prefs Successful");
+            Debug.Log("Delete Player Prefs Successful");
         }
 
         [MenuItem("Utilites/Data/Clean Game Data (LocalLow)")]
@@ -229,7 +229,7 @@ namespace LoomNetwork.Internal
                 directory.Delete(true);
             }
 
-            DebugLog("Clean Game Data Successful");
+            Debug.Log("Clean Game Data Successful");
         }
 
         [MenuItem("Utilites/Data/Open Local Low Folder")]
@@ -250,7 +250,7 @@ namespace LoomNetwork.Internal
         {
             ProcessDirectory(Directory.GetCurrentDirectory() + "/Assets");
             AssetDatabase.Refresh();
-            DebugLog("Delete Empty Folders Successful");
+            Debug.Log("Delete Empty Folders Successful");
         }
 
         private static void ProcessDirectory(string startLocation)
@@ -262,7 +262,7 @@ namespace LoomNetwork.Internal
                 {
                     Directory.Delete(directory);
                     File.Delete(directory + ".meta");
-                    DebugLog(directory + " deleted");
+                    Debug.Log(directory + " deleted");
                 }
             }
         }
@@ -282,7 +282,7 @@ namespace LoomNetwork.Internal
         [MenuItem("Utilites/AutoSaverScene/Init Auto Saving")]
         public static void Init()
         {
-            DebugLog(
+            Debug.Log(
                 "Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
             _isStop = false;
             EditorCoroutine.Start(Save());
@@ -291,7 +291,7 @@ namespace LoomNetwork.Internal
         [MenuItem("Utilites/AutoSaverScene/Stop Auto Saving")]
         public static void Stop()
         {
-            DebugLog("Stop Auto Saving");
+            Debug.Log("Stop Auto Saving");
             _isStop = true;
         }
 
@@ -305,14 +305,14 @@ namespace LoomNetwork.Internal
 
             if (!_isStop)
             {
-                DebugLog("Start Auto Save");
+                Debug.Log("Start Auto Save");
                 if (EditorSceneManager.SaveOpenScenes())
                 {
-                    DebugLog("All Opened scenes was saved successfull!");
+                    Debug.Log("All Opened scenes was saved successfull!");
                 }
                 else
                 {
-                    DebugLog("Saving opened scenes failed");
+                    Debug.Log("Saving opened scenes failed");
                 }
 
                 EditorCoroutine.Start(Save());
@@ -357,37 +357,6 @@ namespace LoomNetwork.Internal
 #endif
 
         #endregion Auto Saving Scenes in Editor
-
-        #region debugger
-
-        public static void DebugLog(object message)
-        {
-#if UNITY_EDITOR
-            Debug.Log(message);
-#else
-            SaveLog(message);
-#endif
-        }
-
-        public static void DebugError(object message)
-        {
-#if UNITY_EDITOR
-            Debug.LogError(message);
-#else
-            SaveLog("Error: " + message);
-#endif
-        }
-
-        public static void DebugWarning(object message)
-        {
-#if UNITY_EDITOR
-            Debug.LogWarning(message);
-#else
-            SaveLog("Warning: " + message);
-#endif
-        }
-
-        #endregion debugger
 
         #region cryptography
 
