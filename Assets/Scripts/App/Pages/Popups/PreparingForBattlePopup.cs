@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _battleFlavorLines = JsonConvert.DeserializeObject<BattleFlavorLines>(
-                    _loadObjectsManager.GetObjectByPath<TextAsset>("battle_flavor_1").text);
+                    _loadObjectsManager.GetObjectByPath<TextAsset>("Data/battle_flavor_1").text);
         }
 
         public void Dispose()

@@ -13,11 +13,18 @@ namespace Loom.ZombieBattleground
 
         private List<SoundContainer> _soundContainers, _containersToRemove;
 
+        protected ILoadObjectsManager LoadObjectsManager;
+
         private Transform _soundsRoot;
 
         private float _sfxVolume;
 
         private float _musicVolume;
+
+        private SoundsData _tutorialSoundsFilename;
+        private SoundsData _cardsSoundsFilename;
+        private SoundsData _overlordAbilitiesSoundsFilename;
+        private SoundsData _spellsSoundsFilename;
 
         public void Dispose()
         {
@@ -25,8 +32,15 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
             _sfxVolume = 1f;
             _musicVolume = 1f;
+
+            _tutorialSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/TutorialSounds");
+            _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/CardsSounds");
+            _overlordAbilitiesSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/OverlordAbilitiesSounds");
+            _spellsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("Data/SpellsSounds");
 
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
@@ -458,23 +472,27 @@ namespace Loom.ZombieBattleground
         private List<AudioClip> LoadAudioClipsByType(Enumerators.SoundType soundType)
         {
             List<AudioClip> list;
+
             string pathToSoundsLibrary = "Sounds/";
 
             switch (soundType)
             {
                 case Enumerators.SoundType.TUTORIAL:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_tutorialSoundsFilename.soundList).ToList();
+                    break;
                 case Enumerators.SoundType.CARDS:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_cardsSoundsFilename.soundList).ToList();
+                    break;
                 case Enumerators.SoundType.OVERLORD_ABILITIES:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_overlordAbilitiesSoundsFilename.soundList).ToList();
+                    break;
                 case Enumerators.SoundType.SPELLS:
-                    pathToSoundsLibrary = "Sounds/" + soundType.ToString().Replace("_", string.Empty);
-                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).ToList();
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_spellsSoundsFilename.soundList).ToList();
                     break;
                 default:
-                    list = Resources.LoadAll<AudioClip>(pathToSoundsLibrary).Where(x => x.name == soundType.ToString())
-                        .ToList();
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(new string[] { pathToSoundsLibrary + soundType.ToString() }).ToList();
                     break;
             }
-
             return list;
         }
     }

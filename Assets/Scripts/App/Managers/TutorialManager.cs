@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _tutorialLines =
                 JsonConvert.DeserializeObject<TutorialLines>(
-                    _loadObjectsManager.GetObjectByPath<TextAsset>("tutorial_1").text
+                    _loadObjectsManager.GetObjectByPath<TextAsset>("Data/tutorial_1").text
                     );
 
             _steps = new List<TutorialStep>

@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
         T GetObjectByPath<T>(string path)
             where T : Object;
 
-        T[] GetObjectsByPath<T>(string path)
+        T[] GetObjectsByPath<T>(string[] path)
             where T : Object;
     }
 }

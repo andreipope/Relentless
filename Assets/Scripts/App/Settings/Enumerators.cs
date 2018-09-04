@@ -361,7 +361,7 @@ namespace Loom.ZombieBattleground.Common
         public enum SoundType
         {
             CLICK,
-            OTHER,
+           // OTHER,
             BACKGROUND,
             BATTLEGROUND,
             TUTORIAL,
