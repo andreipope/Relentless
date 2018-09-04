@@ -48,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
 
+        protected ILoadObjectsManager LoadObjectsManager;
+
         public bool IsPlayerStunned { get; set; }
 
         public void Init()
@@ -61,6 +63,7 @@ namespace Loom.ZombieBattleground
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
             _gameplayManager.GameStarted += GameStartedHandler;
@@ -86,7 +89,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
 
-            _fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
