@@ -394,7 +394,9 @@ namespace Loom.ZombieBattleground
                 }, null, 4f);
             }
             else
+			{
                 StartTurn();
+			}
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
