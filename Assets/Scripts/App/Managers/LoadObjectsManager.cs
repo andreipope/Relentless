@@ -56,9 +56,6 @@ namespace Loom.ZombieBattleground
                 string path = AssetDatabase.GUIDToAssetPath(assetsPaths[i]);
                 string filename = Path.GetFileNameWithoutExtension(path).ToLower();
 
-                Debug.Log("Load");
-                Debug.Log(path);
-                Debug.Log(filename);
                 if (!_assetsPaths.ContainsKey(filename))
                 {
                     _assetsPaths.Add(Path.GetFileNameWithoutExtension(path).ToLower(), path);
@@ -151,7 +148,6 @@ namespace Loom.ZombieBattleground
             where T : UnityEngine.Object
         {
             filename = filename.ToLower();
-            Debug.Log(filename);
             string path = _assetsPaths[filename];
             return AssetDatabase.LoadAssetAtPath<T>(path);
         }
