@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Instance.InitServices();
 
 #if DEV_MODE
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BACKGROUND_SOUND_VOLUME, null, true, false, true);
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
                 GameClient.Get<IDataManager>().StartLoadCache();
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
 #endif
