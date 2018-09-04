@@ -14,6 +14,10 @@ namespace Loom.ZombieBattleground
 
         private Image _progressBar;
 
+        private Image _backgroundImage;
+
+        private Sprite[] _backgroundSprites;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -21,6 +25,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _sceneManager = GameClient.Get<IScenesManager>();
+
+            _backgroundSprites = GameClient.Get<ILoadObjectsManager>().GetObjectsByPath<Sprite>("Images/UI/Backgrounds/Loading");
         }
 
         public void Dispose()
@@ -47,7 +53,11 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingGameplayPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
+            _backgroundImage = Self.transform.Find("Image_Background").GetComponent<Image>();
             _progressBar = Self.transform.Find("ProgresBar/Fill").GetComponent<Image>();
+
+            int randomSprite = Random.Range(0, _backgroundSprites.Length);
+            _backgroundImage.sprite = _backgroundSprites[randomSprite];
 
             _progressBar.fillAmount = 0f;
         }
