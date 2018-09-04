@@ -398,12 +398,6 @@ namespace Loom.ZombieBattleground.Common
             GOO_OVERFLOW_FADE_OUT
         }
 
-        public enum SpreadsheetType
-        {
-            TUTORIAL,
-            FLAVOR_TEXT
-        }
-
         public enum StatType
         {
             HEALTH,
