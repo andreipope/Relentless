@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Gameplay;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,10 +17,14 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
+        private BattleFlavorLines _battleFlavorLines;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _battleFlavorLines = JsonConvert.DeserializeObject<BattleFlavorLines>(
+                    _loadObjectsManager.GetObjectByPath<TextAsset>("battle_flavor_1").text);
         }
 
         public void Dispose()
@@ -65,10 +70,14 @@ namespace Loom.ZombieBattleground
 
         private void ShowRandomFlavorText()
         {
-            IContentManager contentManger = GameClient.Get<IContentManager>();
-            int randomVal = Random.Range(0, contentManger.FlavorTextInfo.Count);
-            _flavorText.text = contentManger.FlavorTextInfo[randomVal].Description;
+            int randomVal = Random.Range(0, _battleFlavorLines.Lines.Length);
+            _flavorText.text = _battleFlavorLines.Lines[randomVal];
         }
 
+    }
+
+    public struct BattleFlavorLines
+    {
+        public string[] Lines;
     }
 }
