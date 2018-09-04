@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System.IO;
 
 namespace Loom.ZombieBattleground
 {
@@ -66,8 +67,7 @@ namespace Loom.ZombieBattleground
                 int count = 0;
                 for (int i = 0; i < loadedAssets.Length; i++)
                 {
-                    string[] splitPath = paths[i].Split('/');
-                    string filename = splitPath[splitPath.Length - 1];
+                    string filename = Path.GetFileName(paths[i]);
 
                     loadedAssets[count] = _loadedBundle.LoadAsset<T>(filename);
 
@@ -92,8 +92,7 @@ namespace Loom.ZombieBattleground
         private T LoadFromAssetBundle<T>(string path)
             where T : Object
         {
-            string[] splitPath = path.Split('/');
-            string filename = splitPath[splitPath.Length - 1];
+            string filename = Path.GetFileName(path);
 
             T asset = null;
             if (_loadedBundle != null)
