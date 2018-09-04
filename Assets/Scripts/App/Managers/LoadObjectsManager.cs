@@ -2,23 +2,28 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.IO;
+using System;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
     public class LoadObjectsManager : IService, ILoadObjectsManager
     {
-        private string _assetBundleName = "testbundle.test"; //move to a const? or could be helpful to load different bundles
-        private string[] _assetsPaths;
+        private string[] _assetBundleNames = new string[] { "data", "testbundle.test" };
         private AssetBundle _loadedBundle;
 
+#if UNITY_EDITOR
+        private Dictionary<string, string> _assetsPaths;
+#endif
+
         public T GetObjectByPath<T>(string path)
-            where T : Object
+            where T : UnityEngine.Object
         {
             return LoadFromAssetBundle<T>(path);
         }
 
         public T[] GetObjectsByPath<T>(string[] paths)
-            where T : Object
+            where T : UnityEngine.Object
         {
             return LoadAllFromAssetBundle<T>(paths);
         }
@@ -42,22 +47,33 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
         private void PrepareAssetPaths()
         {
-            _assetsPaths = AssetDatabase.FindAssets("", new[] { "Assets/Assets/LoadAtRuntime" });
+            _assetsPaths = new Dictionary<string, string>();
 
-            for (int i = 0; i < _assetsPaths.Length; i++)
+            string[] assetsPaths = AssetDatabase.FindAssets("", new[] { "Assets/Assets/LoadAtRuntime" });
+
+            for (int i = 0; i < assetsPaths.Length; i++)
             {
-                _assetsPaths[i] = AssetDatabase.GUIDToAssetPath(_assetsPaths[i]);
+                string path = AssetDatabase.GUIDToAssetPath(assetsPaths[i]);
+                string filename = Path.GetFileNameWithoutExtension(path).ToLower();
+
+                Debug.Log("Load");
+                Debug.Log(path);
+                Debug.Log(filename);
+                if (!_assetsPaths.ContainsKey(filename))
+                {
+                    _assetsPaths.Add(Path.GetFileNameWithoutExtension(path).ToLower(), path);
+                }
             }
         }
 #endif
 
         private void LoadAssetBundle()
         {
-            _loadedBundle = AssetBundle.LoadFromFile(Application.streamingAssetsPath + "/" + _assetBundleName);
+            _loadedBundle = AssetBundle.LoadFromFile(Application.streamingAssetsPath + "/" + _assetBundleNames[0]); //need to refactor once we decide on a loading system of multiple asset bundles, for now, hard coded to use the first string in the array
         }
 
         private T[] LoadAllFromAssetBundle<T>(string[] paths)
-            where T : Object
+            where T : UnityEngine.Object
         {
             T[] assets = null;
             if (_loadedBundle != null)
@@ -90,7 +106,7 @@ namespace Loom.ZombieBattleground
         }
 
         private T LoadFromAssetBundle<T>(string path)
-            where T : Object
+            where T : UnityEngine.Object
         {
             string filename = Path.GetFileName(path);
 
@@ -103,7 +119,7 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
             if (asset == null)
             {
-                asset = LoadFromAssets<T>(path);
+                asset = LoadFromAssets<T>(filename);
             }
 #endif
             return asset;
@@ -111,20 +127,14 @@ namespace Loom.ZombieBattleground
 
 #if UNITY_EDITOR
         private T[] LoadAllFromAssets<T>(string[] paths)
-            where T : Object
+            where T : UnityEngine.Object
         {
             T[] loadedAssets = new T[paths.Length];
 
             int count = 0;
             for (int i = 0; i < loadedAssets.Length; i++)
             {
-                int index = ArrayUtility.FindIndex(_assetsPaths, (x) =>
-                {
-                    string xLower = x.ToLower();
-                    return xLower.Contains(paths[i].ToLower());
-                });
-
-                loadedAssets[count] = AssetDatabase.LoadAssetAtPath<T>(_assetsPaths[index]);
+                loadedAssets[count] = AssetDatabase.LoadAssetAtPath<T>(_assetsPaths[Path.GetFileName(paths[i]).ToLower()]);
 
                 if (loadedAssets[count] != null)
                 {
@@ -137,17 +147,12 @@ namespace Loom.ZombieBattleground
             return loadedAssets;
         }
 
-        private T LoadFromAssets<T>(string path)
-            where T : Object
+        private T LoadFromAssets<T>(string filename)
+            where T : UnityEngine.Object
         {
-            path = path.ToLower();
-            int index = ArrayUtility.FindIndex(_assetsPaths, (x) =>
-            {
-
-                string xLower = x.ToLower();
-                return xLower.Contains(path);
-            });
-            path = _assetsPaths[index];
+            filename = filename.ToLower();
+            Debug.Log(filename);
+            string path = _assetsPaths[filename];
             return AssetDatabase.LoadAssetAtPath<T>(path);
         }
 #endif
