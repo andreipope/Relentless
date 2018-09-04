@@ -5,7 +5,6 @@ using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

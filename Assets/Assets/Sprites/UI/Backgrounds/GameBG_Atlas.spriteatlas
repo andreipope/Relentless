@@ -76,6 +76,6 @@ SpriteAtlas:
   - mask_bottle_player
   - battleground_bg
   - opponent_bottle_mask
-  - graveyard_fulldeck
+  - graveyard_full
   m_Tag: GameBG_Atlas
   m_IsVariant: 0

@@ -116,5 +116,9 @@ namespace Loom.ZombieBattleground.Common
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
         internal static float CreatureAttackSoundVolume = 0.05f;
+
+        internal const string AssetBundleMain = "main";
+
+        internal const string AssetBundleLoadingScreen = "loadingscreen";
     }
 }

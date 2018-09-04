@@ -260,8 +260,7 @@ namespace Loom.ZombieBattleground
                     skillSecond.Skill.ToLower());
 
             Texture2D heroTexture =
-                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" +
-                    hero.HeroElement + "_EXP");
+                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");
             Transform transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
 
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
