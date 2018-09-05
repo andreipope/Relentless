@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 
 namespace Loom.ZombieBattleground
 {
@@ -50,10 +52,22 @@ namespace Loom.ZombieBattleground
         /// <exception cref="Exception">Service don't have Init() method!</exception>
         public void InitServices()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            StringBuilder logMessageBuilder = new StringBuilder(1024);
+
             foreach (IService service in Services.Values)
             {
+                stopwatch.Restart();
                 service.Init();
+                stopwatch.Stop();
+                logMessageBuilder.AppendFormat(
+                    "Service {0}.Init() took {1} ms\n",
+                    service.GetType().Name,
+                    stopwatch.ElapsedMilliseconds
+                );
             }
+
+            UnityEngine.Debug.Log(logMessageBuilder.ToString());
         }
 
         /// <summary>
