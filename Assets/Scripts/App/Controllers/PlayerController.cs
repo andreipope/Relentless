@@ -73,9 +73,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep != null && !_tutorialManager.CurrentTutorialDataStep.CanHandleInput)
-               /* _tutorialManager.CurrentStep != 8 &&
-                _tutorialManager.CurrentStep != 17 && _tutorialManager.CurrentStep != 19 &&
-                _tutorialManager.CurrentStep != 27) */
                 return;
 
             _pointerEventSolver.Update();
