@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
         private void FillRandomTargets()
         {
-            foreach(var targetType in TargetTypes)
+            foreach(Enumerators.AbilityTargetType targetType in TargetTypes)
             {
                 switch(targetType)
                 {
@@ -84,13 +84,13 @@ namespace Loom.ZombieBattleground
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
-            if(target is BoardUnit)
+            if(target is BoardUnit unit)
             {
-                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, target as BoardUnit, defenseValue);
+                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
             }
-            else if(target is Player)
+            else if(target is Player player)
             {
-                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, target as Player, defenseValue);
+                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
             }
         }
     }

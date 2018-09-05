@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         private void GetInfosAboutUnitsOnBoard()
         {
-            foreach (var target in TargetTypes)
+            foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
 
         private void GenerateNewUnitsOnBoard()
         {
-            foreach (var unitInfo in _replaceUnitInfos)
+            foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
                 CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle);
             }
@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         private void ClearOldUnitsOnBoard()
         {
-            foreach(var unitInfo in _replaceUnitInfos)
+            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
                 unitInfo.OldUnit.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnit);
                 unitInfo.OldUnit.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnit.Card);
@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
         private void GetPossibleNewUnits()
         {
             ReplaceUnitInfo replaceUnitInfo = null;
-            foreach (var unit in _boardUnits)
+            foreach (BoardUnit unit in _boardUnits)
             {
                 replaceUnitInfo = new ReplaceUnitInfo()
                 {
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
 
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
-            var possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost);
+            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost);
 
             if (possibleUnits.Count == 0)
             {
