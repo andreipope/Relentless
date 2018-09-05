@@ -16,7 +16,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
         {
           "JanePose": "NORMAL",
@@ -31,7 +32,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -46,7 +48,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -61,7 +64,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "true",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -76,7 +80,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -91,7 +96,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "true",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -106,7 +112,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -121,7 +128,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -146,7 +154,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -161,7 +170,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "true",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -176,7 +186,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -191,7 +202,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -206,7 +218,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "false"
+          "IsShowNextButton": "false",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -231,7 +244,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -246,7 +260,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "true",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -261,7 +276,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -276,7 +292,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -291,7 +308,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "false"
+          "IsShowNextButton": "false",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -306,7 +324,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -331,7 +350,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -346,7 +366,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -361,7 +382,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -376,7 +398,8 @@
           "HasDelayToPlaySound": "true",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -401,7 +424,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -416,7 +440,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -431,7 +456,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -446,7 +472,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -471,7 +498,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -496,7 +524,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -511,7 +540,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -526,7 +556,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -541,7 +572,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -566,7 +598,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -581,7 +614,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -596,7 +630,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -611,7 +646,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "KISS",
@@ -626,7 +662,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         }
       ]
     },
@@ -642,6 +679,14 @@
           "ArrowStartPosition": "null",
           "ArrowEndPosition": "null",
           "RequiredAction": "NONE",
+		  "CanMoveToNextStepByClickInPaused": "false",
+          "ShouldStopTurn": "false",
+          "CanProceedWithEndStepManually": "true",
+          "HasDelayToPlaySound": "false",
+          "IsShowNextButtonFocusing": "false",
+          "IsShowQuestion": "false",
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0,
 		  "SoundName": "czb_tutorial_B_01_welcome",
         },
 		{
@@ -659,7 +704,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -676,7 +722,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -687,6 +734,14 @@
           "ArrowStartPosition": "null",
           "ArrowEndPosition": "null",
           "RequiredAction": "NONE",
+		  "CanMoveToNextStepByClickInPaused": "false",
+          "ShouldStopTurn": "false",
+          "CanProceedWithEndStepManually": "true",
+          "HasDelayToPlaySound": "false",
+          "IsShowNextButtonFocusing": "false",
+          "IsShowQuestion": "false",
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0,
 		  "SoundName": "czb_tutorial_B_02_pickle",
         },
 		{
@@ -704,7 +759,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -715,6 +771,14 @@
           "ArrowStartPosition": "null",
           "ArrowEndPosition": "null",
           "RequiredAction": "NONE",
+		  "CanMoveToNextStepByClickInPaused": "false",
+          "ShouldStopTurn": "false",
+          "CanProceedWithEndStepManually": "true",
+          "HasDelayToPlaySound": "false",
+          "IsShowNextButtonFocusing": "false",
+          "IsShowQuestion": "false",
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0,
 		  "SoundName": "czb_tutorial_B_03_not_good",
         },
 		{
@@ -732,7 +796,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THINKING",
@@ -749,7 +814,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -760,6 +826,14 @@
           "ArrowStartPosition": "null",
           "ArrowEndPosition": "null",
           "RequiredAction": "NONE",
+		  "CanMoveToNextStepByClickInPaused": "false",
+          "ShouldStopTurn": "false",
+          "CanProceedWithEndStepManually": "true",
+          "HasDelayToPlaySound": "false",
+          "IsShowNextButtonFocusing": "false",
+          "IsShowQuestion": "false",
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0,
 		  "SoundName": "czb_tutorial_B_04_yes",
         },
 		{
@@ -777,7 +851,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -788,6 +863,14 @@
           "ArrowStartPosition": "null",
           "ArrowEndPosition": "null",
           "RequiredAction": "NONE",
+		  "CanMoveToNextStepByClickInPaused": "false",
+          "ShouldStopTurn": "false",
+          "CanProceedWithEndStepManually": "true",
+          "HasDelayToPlaySound": "false",
+          "IsShowNextButtonFocusing": "false",
+          "IsShowQuestion": "false",
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0,
 		  "SoundName": "czb_tutorial_B_05_shroom",
         },
 		{
@@ -805,7 +888,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -823,7 +907,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -840,7 +925,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -858,7 +944,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -875,7 +962,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -893,7 +981,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -911,7 +1000,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -928,7 +1018,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -946,7 +1037,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -964,7 +1056,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -981,7 +1074,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -999,7 +1093,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1017,7 +1112,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1035,7 +1131,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1053,7 +1150,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1071,7 +1169,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1089,7 +1188,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1107,7 +1207,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -1125,7 +1226,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1143,7 +1245,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -1161,7 +1264,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -1179,7 +1283,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1197,7 +1302,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1215,7 +1321,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1233,7 +1340,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1250,7 +1358,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1268,7 +1377,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1285,7 +1395,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1302,7 +1413,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1320,7 +1432,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1338,7 +1451,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1356,7 +1470,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1374,7 +1489,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "POINTING",
@@ -1392,7 +1508,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -1410,7 +1527,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -1428,7 +1546,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "THUMBS_UP",
@@ -1446,7 +1565,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "NORMAL",
@@ -1464,7 +1584,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "KISS",
@@ -1482,7 +1603,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
 		{
           "JanePose": "KISS",
@@ -1500,7 +1622,8 @@
           "HasDelayToPlaySound": "false",
           "IsShowNextButtonFocusing": "false",
           "IsShowQuestion": "false",
-          "IsShowNextButton": "true"
+          "IsShowNextButton": "true",
+          "DelayToPlaySound": 6.0
         },
       ]
     }
