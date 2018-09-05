@@ -207,7 +207,8 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA
+            BUFFS_TOOLTIP_DATA,
+            TUTORIAL_DATA
         }
 
         public enum CardKind
@@ -435,7 +436,9 @@ namespace Loom.ZombieBattleground.Common
             MOVE_CARD,
             ATTACK_CARD_CARD,
             ATTACK_CARD_HERO,
-            USE_ABILITY
+            USE_ABILITY,
+
+            NONE
         }
 
         public enum UnitStatusType
