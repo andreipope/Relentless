@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             BuildPipeline.BuildAssetBundles(
                 outputPath,
-                Utilites.GetBuildAssetBundleOptions(),
+                Utilites.GetBuildAssetBundleOptions(buildTarget),
                 buildTarget);
         }
     }

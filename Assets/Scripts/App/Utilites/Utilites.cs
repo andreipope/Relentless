@@ -139,9 +139,16 @@ namespace Loom.ZombieBattleground
             BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
         }
 
-        public static BuildAssetBundleOptions GetBuildAssetBundleOptions()
+        public static BuildAssetBundleOptions GetBuildAssetBundleOptions(BuildTarget buildTarget)
         {
-            return BuildAssetBundleOptions.UncompressedAssetBundle;
+            BuildAssetBundleOptions options = BuildAssetBundleOptions.None;
+            switch (buildTarget)
+            {
+                default:
+                    options |= BuildAssetBundleOptions.UncompressedAssetBundle;
+                    break;
+            }
+            return options;
         }
 
         private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
@@ -166,6 +173,9 @@ namespace Loom.ZombieBattleground
                 case BuildTarget.StandaloneWindows64:
                     outputPath += ".exe";
                     break;
+                case BuildTarget.Android:
+                    outputPath += ".apk";
+                    break;
             }
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
@@ -174,7 +184,7 @@ namespace Loom.ZombieBattleground
                 locationPathName = outputPath,
                 target = buildTarget,
                 targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget),
-                options = BuildOptions.Development
+                options = BuildOptions.None
             };
             BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
             if (buildReport.summary.result != BuildResult.Succeeded)
@@ -191,7 +201,7 @@ namespace Loom.ZombieBattleground
 
             BuildPipeline.BuildAssetBundles(
                 outputPath,
-                GetBuildAssetBundleOptions(),
+                GetBuildAssetBundleOptions(buildTarget),
                 buildTarget);
 
             // Delete existing StreamingAssets bundles
