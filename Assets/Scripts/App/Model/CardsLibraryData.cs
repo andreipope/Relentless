@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
-using LoomNetwork.Internal;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data

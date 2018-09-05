@@ -5,7 +5,6 @@ using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -74,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
-        private GameObject _cardCreaturePrefab, _cardSpellPrefab, _backgroundCanvasPrefab;
+        private GameObject _cardCreaturePrefab, _cardSpellPrefab;
 
         private CollectionData _collectionData;
 
@@ -132,9 +131,6 @@ namespace Loom.ZombieBattleground
             _cardCreaturePrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
-
-            _backgroundCanvasPrefab =
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundEditingCanvas");
 
             _createdArmyCards = new List<BoardCard>();
             _createdHordeCards = new List<BoardCard>();

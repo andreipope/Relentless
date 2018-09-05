@@ -1,7 +1,6 @@
 using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
-using LoomNetwork.Internal;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,10 +19,6 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
-        public Sprite FeralFrame { get; set; }
-
-        public Sprite HeavyFrame { get; set; }
-
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -31,9 +26,6 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
-
-            FeralFrame = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UnitFrames/feral");
-            HeavyFrame = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UnitFrames/heavy");
         }
 
         public void Dispose()

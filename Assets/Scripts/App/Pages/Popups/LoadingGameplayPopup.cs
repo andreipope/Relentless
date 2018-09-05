@@ -26,7 +26,14 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _sceneManager = GameClient.Get<IScenesManager>();
 
-            _backgroundSprites = GameClient.Get<ILoadObjectsManager>().GetObjectsByPath<Sprite>("Images/UI/Backgrounds/Loading");
+            _backgroundSprites = GameClient.Get<ILoadObjectsManager>().GetObjectsByPath<Sprite>(new string[] {
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_air",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_earth",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_fire",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_life",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_toxic",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_water"
+            });
         }
 
         public void Dispose()

@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         private const string BuildMetaInfoPath = "Assets/Resources/" + BuildMetaInfo.ResourcesPath + ".asset";
 
-        public int callbackOrder { get; }
+        public int callbackOrder { get; } = 0;
 
         public void OnPreprocessBuild(BuildReport report)
         {

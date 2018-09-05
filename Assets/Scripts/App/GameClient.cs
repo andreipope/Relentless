@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 
 namespace Loom.ZombieBattleground
@@ -23,8 +25,11 @@ namespace Loom.ZombieBattleground
 #endif
 
             BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.KEndpoints[backend];
+            LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
+            loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
+
+            AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
-            AddService<ILoadObjectsManager>(new LoadObjectsManager());
             AddService<IInputManager>(new InputManager());
             AddService<ILocalizationManager>(new LocalizationManager());
             AddService<IDataManager>(new DataManager());

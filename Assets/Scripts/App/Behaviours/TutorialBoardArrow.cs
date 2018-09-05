@@ -6,11 +6,9 @@ namespace Loom.ZombieBattleground
     {
         public bool IsEnabled;
 
-        private Vector3 _targetPosition;
-
         public void UpdateTargetPosition(Vector3 position)
         {
-            _targetPosition = position;
+            TargetPosition = position;
             Activate();
         }
 
@@ -30,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             if (IsEnabled)
             {
-                UpdateLength(_targetPosition);
+                UpdateLength(TargetPosition);
             }
         }
 

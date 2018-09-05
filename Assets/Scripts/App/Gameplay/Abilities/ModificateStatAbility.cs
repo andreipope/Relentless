@@ -37,15 +37,16 @@ namespace Loom.ZombieBattleground
                 {
                     if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
-                        if (StatType == Enumerators.StatType.DAMAGE)
+                        switch (StatType)
                         {
-                            TargetUnit.BuffedDamage += Value;
-                            TargetUnit.CurrentDamage += Value;
-                        }
-                        else if (StatType == Enumerators.StatType.HEALTH)
-                        {
-                            TargetUnit.BuffedHp += Value;
-                            TargetUnit.CurrentHp += Value;
+                            case Enumerators.StatType.DAMAGE:
+                                TargetUnit.BuffedDamage += Value;
+                                TargetUnit.CurrentDamage += Value;
+                                break;
+                            case Enumerators.StatType.HEALTH:
+                                TargetUnit.BuffedHp += Value;
+                                TargetUnit.CurrentHp += Value;
+                                break;
                         }
 
                         CreateVfx(TargetUnit.Transform.position);

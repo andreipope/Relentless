@@ -4,8 +4,6 @@ namespace Loom.ZombieBattleground
 {
     public class OpponentBoardArrow : BattleBoardArrow
     {
-        private Vector3 _targetPosition = Vector3.zero;
-
         private object _target;
 
         public void SetTarget(object target)
@@ -15,18 +13,18 @@ namespace Loom.ZombieBattleground
             switch (_target)
             {
                 case Player player:
-                    _targetPosition = player.AvatarObject.transform.position;
+                    TargetPosition = player.AvatarObject.transform.position;
                     player.SetGlowStatus(true);
                     break;
                 case BoardUnit unit:
-                    _targetPosition = unit.Transform.position;
+                    TargetPosition = unit.Transform.position;
                     unit.SetSelectedUnit(true);
                     break;
             }
 
-            _targetPosition.z = 0;
+            TargetPosition.z = 0;
 
-            UpdateLength(_targetPosition, false);
+            UpdateLength(TargetPosition, false);
         }
 
         public override void Dispose()
@@ -50,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         protected override void Update()
         {
-            UpdateLength(_targetPosition, false);
+            UpdateLength(TargetPosition, false);
         }
 
         private void Awake()

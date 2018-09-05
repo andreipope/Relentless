@@ -15,10 +15,6 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
 
-#if !DISABLE_DATA_ENCRYPTION
-using LoomNetwork.Internal;
-#endif
-
 namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
@@ -473,7 +469,7 @@ namespace Loom.ZombieBattleground
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
                     Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
-                }
+                },
             };
         }
 

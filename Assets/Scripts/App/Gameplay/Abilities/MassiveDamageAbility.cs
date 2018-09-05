@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using LoomNetwork.Internal;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground

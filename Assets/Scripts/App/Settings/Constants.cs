@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
 
+        internal const string LocalTutorialDataFilePath = "tutorial_data.json";
+
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 
@@ -116,5 +118,9 @@ namespace Loom.ZombieBattleground.Common
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
         internal static float CreatureAttackSoundVolume = 0.05f;
+
+        internal const string AssetBundleMain = "main";
+
+        internal const string AssetBundleLoadingScreen = "loadingscreen";
     }
 }

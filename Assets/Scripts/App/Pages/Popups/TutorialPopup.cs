@@ -35,7 +35,13 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _janePoses = Resources.LoadAll<Sprite>("Images/Tutorial");
+            _janePoses = _loadObjectsManager.GetObjectsByPath<Sprite>(new string[] {
+                "Images/Tutorial/1BasicJane",
+                "Images/Tutorial/2ThinkingJane",
+                "Images/Tutorial/3PointingJane",
+                "Images/Tutorial/4ThumbsUpJane",
+                "Images/Tutorial/5KissJane"
+            });
 
             _focusObjects = new List<GameObject>();
         }
@@ -102,7 +108,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            if (_tutorialManager.CurrentStep == 22)
+            if (_tutorialManager.CurrentTutorialDataStep.IsManuallyHideBubble)
             {
                 _bubbleObject.SetActive(false);
                 _tutorialManager.IsBubbleShow = false;

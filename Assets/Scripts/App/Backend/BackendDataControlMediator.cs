@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _dataManager.LoadRemoteConfig();
             Debug.Log(
                 $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
-#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND && !FORCE_DISABLE_VERSION_CHECK
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
                 throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
 #endif
