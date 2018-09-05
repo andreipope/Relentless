@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private ILoadObjectsManager _loadObjectsManager;
+
         private BattlegroundController _battlegroundController;
 
         private CardsController _cardsController;
@@ -53,6 +55,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -84,7 +87,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
 
-            _fightTargetingArrowPrefab = Resources.Load<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
