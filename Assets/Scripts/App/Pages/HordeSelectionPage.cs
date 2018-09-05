@@ -584,6 +584,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
                 _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = _selectedDeckId;
+                HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+                _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
         }
