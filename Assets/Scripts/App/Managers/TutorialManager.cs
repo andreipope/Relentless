@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
-using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,15 +16,24 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private TutorialPopup _popup;
+        private IDataManager _dataManager;
 
-        private List<TutorialStep> _steps;
+        private TutorialPopup _popup;
 
         private TutorialBoardArrow _targettingArrow;
 
         private GameObject _targettingArrowPrefab;
 
-        private TutorialLines _tutorialLines;
+        public bool IsTutorial { get; private set; }
+
+        public bool IsBubbleShow { get; set; }
+
+        private List<TutorialData> _tutorials;
+        private List<TutorialDataStep> _tutorialSteps;
+        private int _currentTutorialStepIndex;
+
+        public TutorialData CurrentTutorial { get; private set; }
+        public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
         public void Dispose()
         {
@@ -36,79 +44,31 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _tutorialLines =
-                JsonConvert.DeserializeObject<TutorialLines>(
-                    _loadObjectsManager.GetObjectByPath<TextAsset>("Data/tutorial_1").text
-                    );
-
-            _steps = new List<TutorialStep>
-            {
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, true),
-                new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THINKING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.POINTING, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.THUMBS_UP, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.NORMAL, false),
-                new TutorialStep(Enumerators.TutorialJanePoses.KISS, false)
-            };
-
-            for (int i = 0; i < _steps.Count; i++)
-            {
-                TutorialStep step = _steps[i];
-                step.Description = _tutorialLines.Lines[i];
-            }
+            _dataManager = GameClient.Get<IDataManager>();
 
             // card vs player
-            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>()
-                .GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+
+            _tutorials = _dataManager.CachedTutorialData.TutorialDatas;
+
+            foreach (var element in _tutorials)
+                element.ParseData();
         }
 
         public void Update()
         {
         }
 
-        public int CurrentStep { get; private set; }
-
-        public bool IsTutorial { get; private set; }
-
-        public bool IsBubbleShow { get; set; }
-
-        public void StartTutorial()
+        public void StartTutorial(int id)
         {
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>
                 {
-                    CurrentStep = 0;
+                    CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+                    _currentTutorialStepIndex = 0;
+                    _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+                    CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+
                     IsBubbleShow = true;
                     _uiManager.DrawPopup<TutorialPopup>();
                     _popup = _uiManager.GetPopup<TutorialPopup>();
@@ -119,6 +79,11 @@ namespace Loom.ZombieBattleground
                 4f);
 
             IsTutorial = true;
+        }
+
+        public void StartTutorial()
+        {
+            StartTutorial(0); // todod move it from here
         }
 
         public void StopTutorial()
@@ -148,16 +113,12 @@ namespace Loom.ZombieBattleground
             if (!IsTutorial)
                 return;
 
-            if (CurrentStep == 0 || CurrentStep == 1 || CurrentStep == 2 || CurrentStep == 3 || CurrentStep == 4 ||
-                CurrentStep == 5 || CurrentStep == 6 || CurrentStep == 7 || CurrentStep == 9 || CurrentStep == 14 ||
-                CurrentStep == 15 || CurrentStep == 18 || CurrentStep == 20 || CurrentStep == 22 || CurrentStep == 24 ||
-                CurrentStep == 25 || CurrentStep == 26 || CurrentStep == 29 || CurrentStep == 30 || CurrentStep == 31 ||
-                CurrentStep == 33 || CurrentStep == 34 || CurrentStep == 35 || CurrentStep == 36 || CurrentStep == 37)
+            if (CurrentTutorialDataStep.CanMoveToNextStepByClick)
             {
                 NextStep();
             }
 
-            if (CurrentStep == 11 && Paused)
+            if (CurrentTutorialDataStep.CanMoveToNextStepByClickInPaused && Paused)
             {
                 NextStep();
             }
@@ -167,44 +128,9 @@ namespace Loom.ZombieBattleground
         {
             if (IsTutorial)
             {
-                switch (action)
+                if (CurrentTutorialDataStep.RequiredAction == action)
                 {
-                    case Enumerators.TutorialReportAction.MOVE_CARD:
-                        if (CurrentStep == 8 || CurrentStep == 27)
-                        {
-                            NextStep();
-                        }
-
-                        break;
-                    case Enumerators.TutorialReportAction.END_TURN:
-                        if (CurrentStep == 10 || CurrentStep == 12 || CurrentStep == 16 || CurrentStep == 17 ||
-                            CurrentStep == 21)
-                        {
-                            NextStep();
-                        }
-
-                        break;
-                    case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-                        if (CurrentStep == 13 || CurrentStep == 23)
-                        {
-                            NextStep();
-                        }
-
-                        break;
-                    case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                        if (CurrentStep == 19 || CurrentStep == 28)
-                        {
-                            NextStep();
-                        }
-
-                        break;
-                    case Enumerators.TutorialReportAction.USE_ABILITY:
-                        if (CurrentStep == 32)
-                        {
-                            NextStep();
-                        }
-
-                        break;
+                    NextStep();
                 }
             }
         }
@@ -230,13 +156,13 @@ namespace Loom.ZombieBattleground
             if (!IsBubbleShow)
                 return;
 
-            if (CurrentStep >= _steps.Count - 1)
+            if (_tutorialSteps.IndexOf(CurrentTutorialDataStep) >= _tutorialSteps.Count - 1)
             {
                 GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                 return;
             }
 
-            if (CurrentStep == 11)
+            if (CurrentTutorialDataStep.ShouldStopTurn)
             {
                 GameClient.Get<ITimerManager>().AddTimer(
                     x =>
@@ -247,7 +173,7 @@ namespace Loom.ZombieBattleground
                     5f);
             }
 
-            if (CurrentStep != 32)
+            if (CurrentTutorialDataStep.CanProceedWithEndStepManually)
             {
                 NextStepCommonEndActions();
             }
@@ -264,24 +190,27 @@ namespace Loom.ZombieBattleground
 
         private void NextStepCommonEndActions()
         {
-            CurrentStep++;
-            GameClient.Get<IGameplayManager>().TutorialStep = CurrentStep;
+            _currentTutorialStepIndex++;
+
+            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+
+            GameClient.Get<IGameplayManager>().TutorialStep = _currentTutorialStepIndex;
             UpdateTutorialVisual();
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-            if (CurrentStep == 22)
+            if (CurrentTutorialDataStep.HasDelayToPlaySound)
             {
                 GameClient.Get<ITimerManager>().AddTimer(
                     x =>
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep,
+                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex,
                             Constants.TutorialSoundVolume, false);
                     },
                     null,
-                    6f);
+                    CurrentTutorialDataStep.DelayToPlaySound);
             }
             else
             {
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentStep, Constants.TutorialSoundVolume,
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex, Constants.TutorialSoundVolume,
                     false);
             }
         }
@@ -289,18 +218,20 @@ namespace Loom.ZombieBattleground
         private void UpdateTutorialVisual()
         {
             DestroySelectTarget();
-            _popup.Show(_steps[CurrentStep].Description);
-            _popup.UpdatePose(_steps[CurrentStep].Pose);
 
-            if (_steps[CurrentStep].Focusing)
+            _popup.Show(CurrentTutorialDataStep.JaneText);
+            _popup.UpdatePose(CurrentTutorialDataStep.JanePose);
+
+            if (CurrentTutorialDataStep.IsFocusing)
             {
-                if (_steps[CurrentStep].IsArrowEnabled)
+                if (CurrentTutorialDataStep.IsArrowEnabled)
                 {
                     CreateSelectTarget();
                 }
 
-                _popup.ShowTutorialFocus(CurrentStep);
-                if (CurrentStep == 5 || CurrentStep == 9 || CurrentStep == 14)
+                _popup.ShowTutorialFocus(_currentTutorialStepIndex);
+
+                if (CurrentTutorialDataStep.IsShowNextButtonFocusing)
                 {
                     _popup.ShowNextButton();
                 }
@@ -308,11 +239,12 @@ namespace Loom.ZombieBattleground
             else
             {
                 _popup.HideTutorialFocus();
-                if (CurrentStep == 3)
+
+                if (CurrentTutorialDataStep.IsShowQuestion)
                 {
                     _popup.ShowQuestion();
                 }
-                else if (CurrentStep != 12 && CurrentStep != 17)
+                else if (CurrentTutorialDataStep.IsShowNextButton)
                 {
                     _popup.ShowNextButton();
                 }
@@ -322,8 +254,8 @@ namespace Loom.ZombieBattleground
         private void CreateSelectTarget()
         {
             _targettingArrow = Object.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
-            _targettingArrow.Begin(_steps[CurrentStep].TutorialTargetingArrowInfo.StartPosition);
-            _targettingArrow.UpdateTargetPosition(_steps[CurrentStep].TutorialTargetingArrowInfo.TargetPosition);
+            _targettingArrow.Begin((Vector3)CurrentTutorialDataStep.ArrowStartPosition);
+            _targettingArrow.UpdateTargetPosition((Vector3)CurrentTutorialDataStep.ArrowEndPosition);
         }
 
         private void DestroySelectTarget()
@@ -334,61 +266,5 @@ namespace Loom.ZombieBattleground
                 _targettingArrow = null;
             }
         }
-    }
-
-    public class TutorialStep
-    {
-        public string Description;
-
-        public bool Focusing;
-
-        public Enumerators.TutorialJanePoses Pose;
-
-        public bool IsArrowEnabled;
-
-        public TutorialTargetingArrowInfo TutorialTargetingArrowInfo;
-
-        public TutorialStep(Enumerators.TutorialJanePoses pose, bool focusing)
-        {
-            Focusing = focusing;
-            Pose = pose;
-            TutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
-            IsArrowEnabled = false;
-        }
-
-        public TutorialStep(
-            Enumerators.TutorialJanePoses pose,
-            bool focusing,
-            bool isArrowEnabled)
-        {
-            Focusing = focusing;
-            Pose = pose;
-
-            IsArrowEnabled = isArrowEnabled;
-        }
-
-        public TutorialStep(
-            Enumerators.TutorialJanePoses pose,
-            bool focusing,
-            bool isArrowEnabled,
-            Vector3 startPosition,
-            Vector3 targetPosition)
-            : this(pose, focusing, isArrowEnabled)
-        {
-            TutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
-            TutorialTargetingArrowInfo.StartPosition = startPosition;
-            TutorialTargetingArrowInfo.TargetPosition = targetPosition;
-        }
-    }
-
-    public class TutorialTargetingArrowInfo
-    {
-        public Vector3 StartPosition;
-        public Vector3 TargetPosition;
-    }
-
-    public struct TutorialLines
-    {
-        public string[] Lines;
     }
 }

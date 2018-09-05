@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            if (_tutorialManager.CurrentStep == 22)
+            if (_tutorialManager.CurrentTutorialDataStep.IsManuallyHideBubble)// _tutorialManager.CurrentStep == 22)
             {
                 _bubbleObject.SetActive(false);
                 _tutorialManager.IsBubbleShow = false;

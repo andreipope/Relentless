@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground
 {
     public interface ITutorialManager
     {
-        int CurrentStep { get; }
+        TutorialDataStep CurrentTutorialDataStep { get; }
 
         bool IsTutorial { get; }
 
