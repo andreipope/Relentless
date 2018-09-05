@@ -838,5 +838,105 @@ namespace Loom.ZombieBattleground
 
             return boardUnit;
         }
+
+        #region specific setup of battleground
+
+        public void SetupBattlegroundAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            SetupOverlordsAsSpecific(specificBattlegroundInfo);
+            SetupOverlordsHandsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInHand, specificBattlegroundInfo.OpponentInfo.CardsInHand);
+            SetupOverlordsBoardUnitsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsOnBoard, specificBattlegroundInfo.OpponentInfo.CardsOnBoard);
+            SetupGeneralUIAsSpecific(specificBattlegroundInfo);
+        }
+
+        private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
+            _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+
+            _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
+            _gameplayManager.CurrentPlayer.Goo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
+        }
+
+        private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            foreach (var cardName in playerCards)
+                _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.CurrentPlayer, cardName), true);
+
+            foreach (var cardName in playerCards)
+                _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.OpponentPlayer, cardName), true);
+        }
+
+        private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            _gameplayManager.CurrentPlayer.SetDeck(playerCards);
+            _gameplayManager.OpponentPlayer.SetDeck(opponentCards);
+        }
+
+        private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            // todo implement logic
+        }
+
+        private void SetupOverlordsBoardUnitsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+          /*  foreach (var cardName in playerCards)
+                _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardName);
+
+            foreach (var cardName in opponentCards)
+                _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardName); */
+        }
+
+        private void SetupGeneralUIAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            // todo implement logic
+        }
     }
+
+
+    public class SpecificBattlegroundInfo
+    {
+        public int CurrentTurn;
+
+        public SpecificBattlegroundOverlordInfo PlayerInfo;
+        public SpecificBattlegroundOverlordInfo OpponentInfo;
+
+        public SpecificBattlegroundInfo()
+        {
+            CurrentTurn = Constants.FirstGameTurnIndex;
+            PlayerInfo = new SpecificBattlegroundOverlordInfo();
+            OpponentInfo = new SpecificBattlegroundOverlordInfo();
+        }
+
+        public class SpecificBattlegroundOverlordInfo
+        {
+            public int Health;
+            public int MaximumHealth;
+            public int CurrentGoo;
+            public int MaximumGoo;
+
+            public List<string> CardsInHand;
+            public List<string> CardsInDeck;
+            public List<string> CardsOnBoard;
+            public List<string> CardsOnGraveyard;
+
+            public SpecificBattlegroundOverlordInfo()
+            {
+                CardsInHand = new List<string>();
+                CardsInDeck = new List<string>();
+                CardsOnBoard = new List<string>();
+                CardsOnGraveyard = new List<string>();
+
+                MaximumHealth = Constants.DefaultPlayerHp;
+                Health = MaximumHealth;
+
+                MaximumGoo = Constants.DefaultPlayerGoo;
+                Health = MaximumGoo;
+            }
+        }
+    }
+
+    #endregion
 }

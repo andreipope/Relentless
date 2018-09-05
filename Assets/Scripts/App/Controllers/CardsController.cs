@@ -845,6 +845,11 @@ namespace Loom.ZombieBattleground
                 2f);
         }
 
+        public WorkingCard GetWorkingCardFromName(Player owner, string cardName)
+        {
+            return new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), owner);
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             CardDistribution = false;
