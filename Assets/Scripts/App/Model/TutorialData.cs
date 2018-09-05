@@ -9,22 +9,11 @@ namespace Loom.ZombieBattleground
     {
         public int TutorialId;
         public List<TutorialDataStep> TutorialDataSteps;
-
-        public void ParseData()
-        {
-            foreach (var element in TutorialDataSteps)
-                element.ParseData();
-        }
     }
 
     public class TutorialDataStep
     {
-        public string janePose;
-        public string requiredAction;
-
-        [JsonIgnore]
         public Enumerators.TutorialJanePoses JanePose;
-        [JsonIgnore]
         public Enumerators.TutorialReportAction RequiredAction;
 
         public FloatVector3 ArrowStartPosition;
@@ -54,9 +43,6 @@ namespace Loom.ZombieBattleground
 
         public TutorialDataStep()
         {
-            janePose = string.Empty;
-            requiredAction = string.Empty;
-
             ArrowStartPosition = new FloatVector3();
             ArrowEndPosition = new FloatVector3();
 
@@ -81,27 +67,6 @@ namespace Loom.ZombieBattleground
             IsManuallyHideBubble = false;
             IsPauseTutorial = false;
             CanHandleInput = false;
-        }
-
-        public void ParseData()
-        {
-            if (!string.IsNullOrEmpty(janePose))
-            {
-                JanePose = Utilites.CastStringTuEnum<Enumerators.TutorialJanePoses>(janePose);
-            }
-            else
-            {
-                JanePose = Enumerators.TutorialJanePoses.NORMAL;
-            }
-
-            if (!string.IsNullOrEmpty(requiredAction))
-            {
-                RequiredAction = Utilites.CastStringTuEnum<Enumerators.TutorialReportAction>(requiredAction);
-            }
-            else
-            {
-                RequiredAction = Enumerators.TutorialReportAction.NONE;
-            }
         }
     }
 }

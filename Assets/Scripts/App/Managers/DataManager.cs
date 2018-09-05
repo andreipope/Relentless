@@ -43,7 +43,6 @@ namespace Loom.ZombieBattleground
             CachedOpponentDecksData = new OpponentDecksData();
             CachedCreditsData = new CreditsData();
             CachedBuffsTooltipData = new TooltipContentData();
-            CachedTutorialData = new TutorialContentData();
         }
 
         public TooltipContentData CachedBuffsTooltipData { get; set; }
@@ -64,8 +63,6 @@ namespace Loom.ZombieBattleground
 
         public BetaConfig BetaConfig { get; set; }
 
-        public TutorialContentData CachedTutorialData { get; set; }
-        
         public long CachedDecksLastModificationTimestamp
         {
             get => _decksDataWithTimestamp.LastModificationTimestamp;
@@ -151,9 +148,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
-                    break;
-                case Enumerators.CacheDataType.TUTORIAL_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedTutorialData));
                     break;
             }
 
@@ -413,14 +407,6 @@ namespace Loom.ZombieBattleground
                         CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
 
                     break;
-                case Enumerators.CacheDataType.TUTORIAL_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                        {
-                            CachedTutorialData = DeserializeObjectFromPath<TutorialContentData>(_cacheDataPathes[type]);
-                        }
-                    }
-                    break;
             }
         }
 
@@ -445,10 +431,6 @@ namespace Loom.ZombieBattleground
                 CachedBuffsTooltipData =
                     JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
-
-                CachedTutorialData =
-                    JsonConvert.DeserializeObject<TutorialContentData>(_loadObjectsManager
-                        .GetObjectByPath<TextAsset>("Data/tutorial_data").text);
             }
         }
 
@@ -488,10 +470,6 @@ namespace Loom.ZombieBattleground
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
                     Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
                 },
-                {
-                    Enumerators.CacheDataType.TUTORIAL_DATA,
-                    Path.Combine(Application.persistentDataPath, Constants.LocalTutorialDataFilePath)
-                }
             };
         }
 

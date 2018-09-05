@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -49,10 +51,8 @@ namespace Loom.ZombieBattleground
             // card vs player
             _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
-            _tutorials = _dataManager.CachedTutorialData.TutorialDatas;
-
-            foreach (var element in _tutorials)
-                element.ParseData();
+            _tutorials = JsonConvert.DeserializeObject<TutorialContentData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
         }
 
         public void Update()

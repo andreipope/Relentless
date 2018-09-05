@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         BetaConfig BetaConfig { get; set; }
 
-        TutorialContentData CachedTutorialData { get; set; }
-
         Task LoadRemoteConfig();
 
         Task StartLoadCache();
