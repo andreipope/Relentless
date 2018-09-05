@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            if (_gameplayManager.IsTutorial)
+            if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
             {
                 EndCardDistribution();
             }

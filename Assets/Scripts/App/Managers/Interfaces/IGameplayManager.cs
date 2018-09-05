@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         int TutorialStep { get; set; }
 
+        bool IsSpecificGameplayBattleground { get; set; }
+
         T GetController<T>()
             where T : IController;
 

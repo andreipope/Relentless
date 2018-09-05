@@ -92,32 +92,35 @@ namespace Loom.ZombieBattleground
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
 
-            List<string> playerDeck = new List<string>();
+            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            {
+                List<string> playerDeck = new List<string>();
 
-            if (_gameplayManager.IsTutorial)
-            {
-                playerDeck.Add("MonZoon");
-                playerDeck.Add("Burrrnn");
-                playerDeck.Add("Golem");
-                playerDeck.Add("Rockky");
-                playerDeck.Add("Rockky");
-            }
-            else
-            {
-                int deckId = _gameplayManager.OpponentDeckId;
-                foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
-                    .Cards)
+                if (_gameplayManager.IsTutorial)
                 {
-                    for (int i = 0; i < card.Amount; i++)
+                    playerDeck.Add("MonZoon");
+                    playerDeck.Add("Burrrnn");
+                    playerDeck.Add("Golem");
+                    playerDeck.Add("Rockky");
+                    playerDeck.Add("Rockky");
+                }
+                else
+                {
+                    int deckId = _gameplayManager.OpponentDeckId;
+                    foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
+                        .Cards)
                     {
-                        playerDeck.Add(card.CardName);
+                        for (int i = 0; i < card.Amount; i++)
+                        {
+                            playerDeck.Add(card.CardName);
+                        }
                     }
                 }
+
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
-
-            _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
-
-            _battlegroundController.UpdatePositionOfCardsInOpponentHand();
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;

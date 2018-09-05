@@ -92,35 +92,38 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.CurrentPlayer = new Player(GameObject.Find("Player"), false);
 
-            List<string> playerDeck = new List<string>();
+            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            {
+                List<string> playerDeck = new List<string>();
 
-            if (_gameplayManager.IsTutorial)
-            {
-                playerDeck.Add("GooZilla");
-                playerDeck.Add("Burrrnn");
-                playerDeck.Add("Burrrnn");
-                playerDeck.Add("Burrrnn");
-                playerDeck.Add("Azuraz");
-            }
-            else
-            {
-                int deckId = _gameplayManager.PlayerDeckId;
-                foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
+                if (_gameplayManager.IsTutorial)
                 {
-                    for (int i = 0; i < card.Amount; i++)
+                    playerDeck.Add("GooZilla");
+                    playerDeck.Add("Burrrnn");
+                    playerDeck.Add("Burrrnn");
+                    playerDeck.Add("Burrrnn");
+                    playerDeck.Add("Azuraz");
+                }
+                else
+                {
+                    int deckId = _gameplayManager.PlayerDeckId;
+                    foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
                     {
+                        for (int i = 0; i < card.Amount; i++)
+                        {
 #if DEV_MODE
 
 // playerDeck.Add("Whizpar");
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                        playerDeck.Add(card.CardName);
+                            playerDeck.Add(card.CardName);
+                        }
                     }
                 }
-            }
 
-            _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+                _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+            }
 
             _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
             _gameplayManager.CurrentPlayer.TurnEnded += OnTurnEndedEndedHandler;
@@ -128,7 +131,7 @@ namespace Loom.ZombieBattleground
 
         public void SetHand()
         {
-            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial);
+            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
 
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>

@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground
 
         public Player OpponentPlayer { get; set; }
 
+        public bool IsSpecificGameplayBattleground { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -233,14 +235,20 @@ namespace Loom.ZombieBattleground
                 CurrentTurnPlayer = CurrentPlayer;
             }
 
-            OpponentPlayer.SetFirstHand(IsTutorial);
+            if (!IsSpecificGameplayBattleground)
+            {
+                OpponentPlayer.SetFirstHand(IsTutorial);
+            }
 
             if (!IsTutorial)
             {
-                _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                // if (!IsSpecificGameplayBattleground) // check if it really needed
                 {
-                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
-                });
+                    _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                    {
+                        CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                    });
+                }
             }
             else
             {
