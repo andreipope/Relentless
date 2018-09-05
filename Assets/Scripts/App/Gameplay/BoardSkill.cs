@@ -321,7 +321,7 @@ namespace Loom.ZombieBattleground
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.CanUseBoardSkill)
             {
                 return true;
             }

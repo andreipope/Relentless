@@ -76,9 +76,7 @@ public class EndTurnButton : MonoBehaviour
     // was OnMouseDown
     private void OnMouseUp()
     {
-        if (GameClient.Get<ITutorialManager>().IsTutorial && GameClient.Get<ITutorialManager>().CurrentStep != 10 &&
-            GameClient.Get<ITutorialManager>().CurrentStep != 16 &&
-            GameClient.Get<ITutorialManager>().CurrentStep != 21)
+        if (GameClient.Get<ITutorialManager>().IsTutorial && !GameClient.Get<ITutorialManager>().CurrentTutorialDataStep.CanClickEndTurn)
             return;
 
         if (_active && _hovering)
