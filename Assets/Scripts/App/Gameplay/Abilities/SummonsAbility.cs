@@ -44,14 +44,14 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            SpawnMinion(GetOpponentOverlord());
+                          CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name);
                         }
 
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            SpawnMinion(PlayerCallerOfAbility);
+                            CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name);
                         }
 
                         break;
@@ -69,61 +69,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
-        }
-
-        private void SpawnMinion(Player owner)
-        {
-            if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
-                return;
-
-            Card libraryCard = DataManager.CachedCardsLibraryData.GetCardFromName(Name).Clone();
-
-            WorkingCard card = new WorkingCard(libraryCard, owner);
-            BoardUnit unit = CreateBoardUnit(card,  owner);
-
-            owner.AddCardToBoard(card);
-            owner.BoardCards.Add(unit);
-
-            if (!owner.IsLocalPlayer)
-            {
-                BattlegroundController.OpponentBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            }
-            else
-            {
-                BattlegroundController.PlayerBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
-            }
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.SUMMON_UNIT_CARD, new object[]
-                {
-                    owner, unit
-                }));
-        }
-
-        private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
-        {
-            GameObject playerBoard = owner.IsLocalPlayer ?
-                BattlegroundController.PlayerBoardObject :
-                BattlegroundController.OpponentBoardObject;
-
-            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
-            boardUnit.Transform.parent = playerBoard.transform;
-            boardUnit.Transform.position =
-                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnit.OwnerPlayer = owner;
-            boardUnit.SetObjectInfo(card);
-
-            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
-            {
-                boardUnit.IsPlayable = true;
-            }
-
-            boardUnit.PlayArrivalAnimation();
-
-            return boardUnit;
         }
     }
 }
