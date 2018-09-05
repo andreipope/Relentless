@@ -201,7 +201,7 @@
           "skill": "MEND",
           "iconPath": "overlordability_life_mend",
           "description": "Restore 2 Def to your Overlord",
-          "skillTargets": "",
+          "skillTargets": "PLAYER",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 2
