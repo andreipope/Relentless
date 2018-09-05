@@ -1,4 +1,4 @@
-#define DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+//#define DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 
 using UnityEngine;
 using System.IO;
