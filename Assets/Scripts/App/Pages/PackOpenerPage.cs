@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardSpellPrefab;
 
-        private GameObject _packOpenVfXprefab;
+        //private GameObject _packOpenVfXprefab;
 
         private GameObject _packOpenVfx;
 
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (_selfPage != null && _selfPage.activeInHierarchy)
+            /*if (_selfPage != null && _selfPage.activeInHierarchy)
             {
                 if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
                 {
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                         _activatedTemporaryPack = true;
                     }
                 }
-            }
+            }*/
         }
 
         public void Show()
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
 
-            _packOpenVfXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
+            //_packOpenVfXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _packsObject = _selfPage.transform.Find("PackItem").gameObject;
@@ -268,10 +268,10 @@ namespace Loom.ZombieBattleground
             animationSequence.OnComplete(
                 () =>
                 {
-                    _packOpenVfx = Object.Instantiate(_packOpenVfXprefab);
+                    /*_packOpenVfx = Object.Instantiate(_packOpenVfXprefab);
                     _packOpenVfx.transform.position = Utilites.CastVfxPosition(_centerPos);
                     _packOpenVfx.GetComponent<AnimationEventTriggering>().AnimationEventTriggered +=
-                        OnPackOpenVFXAnimationEventHandler;
+                        OnPackOpenVFXAnimationEventHandler;*/
 
                     Object.Destroy(go);
                     GameClient.Get<ITimerManager>().AddTimer(
