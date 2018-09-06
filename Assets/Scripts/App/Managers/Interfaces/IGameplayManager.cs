@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         int TutorialStep { get; set; }
 
+        bool CanDoDragActions { get; set; }
+
         T GetController<T>()
             where T : IController;
 

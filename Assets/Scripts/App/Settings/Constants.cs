@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
 
+        internal const string LocalTutorialDataFilePath = "tutorial_data.json";
+
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 

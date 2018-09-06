@@ -184,7 +184,7 @@ namespace Loom.ZombieBattleground
             cancellationToken.ThrowIfCancellationRequested();
             await PlayCardsFromHand(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
             {
                 (_tutorialManager as TutorialManager).Paused = true;
             }

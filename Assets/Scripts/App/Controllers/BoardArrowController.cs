@@ -1,4 +1,4 @@
-﻿namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground
 {
     public class BoardArrowController : IController
     {
