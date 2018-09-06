@@ -34,8 +34,6 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardSpellPrefab;
 
-        //private GameObject _packOpenVfXprefab;
-
         private GameObject _packOpenVfx;
 
         private GameObject _cardPlaceholdersPrefab;
@@ -74,29 +72,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            /*if (_selfPage != null && _selfPage.activeInHierarchy)
-            {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (_isCardPreview)
-                        {
-                            CardPreview(false);
-                        }
-                        else
-                        {
-                            CardClickeCheck();
-                        }
-                    }
 
-                    if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
-                        Input.GetKeyDown(KeyCode.W))
-                    {
-                        _activatedTemporaryPack = true;
-                    }
-                }
-            }*/
         }
 
         public void Show()
@@ -114,8 +90,6 @@ namespace Loom.ZombieBattleground
 
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
-
-            //_packOpenVfXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _packsObject = _selfPage.transform.Find("PackItem").gameObject;
@@ -268,11 +242,6 @@ namespace Loom.ZombieBattleground
             animationSequence.OnComplete(
                 () =>
                 {
-                    /*_packOpenVfx = Object.Instantiate(_packOpenVfXprefab);
-                    _packOpenVfx.transform.position = Utilites.CastVfxPosition(_centerPos);
-                    _packOpenVfx.GetComponent<AnimationEventTriggering>().AnimationEventTriggered +=
-                        OnPackOpenVFXAnimationEventHandler;*/
-
                     Object.Destroy(go);
                     GameClient.Get<ITimerManager>().AddTimer(
                         x =>
