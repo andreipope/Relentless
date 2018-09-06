@@ -920,10 +920,10 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public void SpawnUnitOnBoard(Player owner, string name)
+        public BoardUnit SpawnUnitOnBoard(Player owner, string name)
         {
             if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
-                return;
+                return null;
 
             Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
 
@@ -949,6 +949,8 @@ namespace Loom.ZombieBattleground
                 {
                     owner, unit
                 }));
+
+            return unit;
         }
 
         private BoardUnit CreateBoardUnitForSpawn(WorkingCard card, Player owner)

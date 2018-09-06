@@ -249,6 +249,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
+        public bool CantAttackInThisTurnBlocker { get; set; }
+
         public bool IsHeavyUnit()
         {
             return HasBuffHeavy || HasHeavy;
@@ -841,7 +843,7 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun)
+            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun || CantAttackInThisTurnBlocker)
             {
                 return false;
             }

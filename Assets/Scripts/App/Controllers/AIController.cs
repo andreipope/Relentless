@@ -115,6 +115,23 @@ namespace Loom.ZombieBattleground
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
         }
 
+        public async Task LaunchAIBrain()
+        {
+            _aiBrainCancellationTokenSource = new CancellationTokenSource();
+            Debug.Log("brain started");
+
+            try
+            {
+                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("brain canceled!");
+            }
+
+            Debug.Log("brain finished");
+        }
+
         private void SetAiTypeByDeck()
         {
             OpponentDeck deck =
@@ -144,19 +161,13 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _aiBrainCancellationTokenSource = new CancellationTokenSource();
-            Debug.Log("brain started");
-
-            try
+            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
             {
-                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("brain canceled!");
+                if (!_tutorialManager.CurrentTutorialDataStep.IsLaunchAIBrain)
+                    return;
             }
 
-            Debug.Log("brain finished");
+            await LaunchAIBrain();
         }
 
         private void TurnEndedHandler()
@@ -169,6 +180,7 @@ namespace Loom.ZombieBattleground
             _attackedUnitTargets.Clear();
             _unitsToIgnoreThisTurn.Clear();
         }
+
 
         private async Task DoAiBrain(CancellationToken cancellationToken)
         {

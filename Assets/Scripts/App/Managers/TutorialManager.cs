@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void NextStepCommonEndActions()
+        private async void NextStepCommonEndActions()
         {
             _currentTutorialStepIndex++;
 
@@ -220,6 +220,9 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex, Constants.TutorialSoundVolume,
                     false);
             }
+
+            if (CurrentTutorialDataStep.IsLaunchAIBrain)
+               await _gameplayManager.GetController<AIController>().LaunchAIBrain();
         }
 
         private void UpdateTutorialVisual()

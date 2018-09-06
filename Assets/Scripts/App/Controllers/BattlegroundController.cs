@@ -875,13 +875,22 @@ namespace Loom.ZombieBattleground
             // todo implement logic
         }
 
-        private void SetupOverlordsBoardUnitsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        private void SetupOverlordsBoardUnitsAsSpecific(List<SpecificBattlegroundInfo.UnitOnBoardInfo> playerCards,
+                                                        List<SpecificBattlegroundInfo.UnitOnBoardInfo> opponentCards)
         {
-            foreach (string cardName in playerCards)
-                _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardName);
+            BoardUnit workingUnit = null;
 
-            foreach (string cardName in opponentCards)
-                _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardName);
+            foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
+            {
+                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
+                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+            }
+
+            foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
+            {
+                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
+                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+            }
         }
 
         private void SetupGeneralUIAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)

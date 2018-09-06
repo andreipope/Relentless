@@ -26,14 +26,14 @@ namespace Loom.ZombieBattleground
 
             public List<string> CardsInHand;
             public List<string> CardsInDeck;
-            public List<string> CardsOnBoard;
+            public List<UnitOnBoardInfo> CardsOnBoard;
             public List<string> CardsOnGraveyard;
 
             public SpecificBattlegroundOverlordInfo()
             {
                 CardsInHand = new List<string>();
                 CardsInDeck = new List<string>();
-                CardsOnBoard = new List<string>();
+                CardsOnBoard = new List<UnitOnBoardInfo>();
                 CardsOnGraveyard = new List<string>();
 
                 MaximumHealth = Constants.DefaultPlayerHp;
@@ -41,6 +41,18 @@ namespace Loom.ZombieBattleground
 
                 MaximumGoo = Constants.DefaultPlayerGoo;
                 Health = MaximumGoo;
+            }
+        }
+
+        public class UnitOnBoardInfo
+        {
+            public string Name;
+            public bool IsManuallyPlayable;
+
+            public UnitOnBoardInfo()
+            {
+                Name = string.Empty;
+                IsManuallyPlayable = false;
             }
         }
     }

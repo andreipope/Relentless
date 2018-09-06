@@ -23,6 +23,7 @@ namespace Loom.ZombieBattleground
         public string JaneText;
         public string SoundName;
         public string EmotionDescription;
+        public string AvailableCard;
 
         public bool IsFocusing;
         public bool IsArrowEnabled;
@@ -39,6 +40,8 @@ namespace Loom.ZombieBattleground
         public bool IsManuallyHideBubble;
         public bool IsPauseTutorial;
         public bool CanHandleInput;
+        public bool IsLaunchAIBrain;
+        public bool AvailableCardUsableInHand;
 
         public float DelayToPlaySound;
 
@@ -50,6 +53,7 @@ namespace Loom.ZombieBattleground
             JaneText = string.Empty;
             SoundName = string.Empty;
             EmotionDescription = string.Empty;
+            AvailableCard = string.Empty;
 
             DelayToPlaySound = 0f;
 
