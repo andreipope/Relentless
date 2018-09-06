@@ -376,6 +376,15 @@ namespace Loom.ZombieBattleground
             InitialUnitType = Enumerators.CardType.HEAVY;
 
             ChangeTypeFrame(2.5f, 1.7f);
+            if (!AttackedThisTurn && NumTurnsOnBoard == 0)
+            {
+                IsPlayable = false;
+                SetHighlightingEnabled(false);
+            }
+            else if (!AttackedThisTurn && IsPlayable)
+            {
+                StopSleepingParticles();
+            }
         }
 
         public void SetAsWalkerUnit()
@@ -421,7 +430,7 @@ namespace Loom.ZombieBattleground
         public void ArrivalAnimationEventHandler()
         {
             _unitContentObject.SetActive(true);
-            if (HasFeral)
+            if (HasFeral || NumTurnsOnBoard > 0)
             {
                 StopSleepingParticles();
             }
