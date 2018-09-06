@@ -20,6 +20,10 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private IGameplayManager _gameplayManager;
+
+        private BattlegroundController _battlegroundController;
+
         private TutorialPopup _popup;
 
         private TutorialBoardArrow _targettingArrow;
@@ -47,6 +51,9 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             // card vs player
             _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
@@ -59,31 +66,31 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void StartTutorial(int id)
+        public void SetupTutorialById(int id)
         {
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
-                    _currentTutorialStepIndex = 0;
-                    _tutorialSteps = CurrentTutorial.TutorialDataSteps;
-                    CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
-
-                    IsBubbleShow = true;
-                    _uiManager.DrawPopup<TutorialPopup>();
-                    _popup = _uiManager.GetPopup<TutorialPopup>();
-                    UpdateTutorialVisual();
-                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TutorialSoundVolume, false);
-                },
-                null,
-                4f);
-
-            IsTutorial = true;
+            CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+            _currentTutorialStepIndex = 0;
+            _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
         }
 
         public void StartTutorial()
         {
-            StartTutorial(0); // todod move it from here
+            //  GameClient.Get<ITimerManager>().AddTimer(
+            //      x =>
+            //      {
+            _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.SpecificBattlegroundInfo);
+
+            IsBubbleShow = true;
+            _uiManager.DrawPopup<TutorialPopup>();
+            _popup = _uiManager.GetPopup<TutorialPopup>();
+            UpdateTutorialVisual();
+            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TutorialSoundVolume, false);
+            //        },
+            //      null,
+            //       4f);
+
+            IsTutorial = true;
         }
 
         public void StopTutorial()

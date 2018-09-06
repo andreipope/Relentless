@@ -233,15 +233,6 @@ namespace Loom.ZombieBattleground
         {
             CurrentTurn = Constants.FirstGameTurnIndex;
 
-            if (_gameplayManager.IsTutorial)
-            {
-                _gameplayManager.OpponentPlayer.Health = 12;
-                _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
-                _gameplayManager.OpponentPlayer.Goo = 10;
-                _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
-                _gameplayManager.CurrentPlayer.Goo = 7;
-            }
-
 #if DEV_MODE
             _gameplayManager.OpponentPlayer.Health = 99;
             _gameplayManager.CurrentPlayer.Health = 99;
@@ -252,7 +243,7 @@ namespace Loom.ZombieBattleground
             PlayerBoardObject = GameObject.Find("PlayerBoard");
             OpponentBoardObject = GameObject.Find("OpponentBoard");
             PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
-            OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");            
+            OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
         }
 
         public void StartGameplayTurns()
@@ -844,65 +835,11 @@ namespace Loom.ZombieBattleground
 
         #region specific setup of battleground
 
-        public void StartTestSpecificBattleground()
-        {
-            _gameplayManager.IsSpecificGameplayBattleground = true;
-
-            if (_gameplayManager.IsSpecificGameplayBattleground)
-            {
-                SetupBattlegroundAsSpecific(new SpecificBattlegroundInfo()
-                {
-                    CurrentTurn = 5,
-                    PlayerInfo = new SpecificBattlegroundInfo.SpecificBattlegroundOverlordInfo()
-                    {
-                        Health = 7,
-                        MaximumHealth = 7,
-                        CurrentGoo = 4,
-                        MaximumGoo = 4,
-                        CardsInDeck = new List<string>(),
-                        CardsInHand = new List<string>()
-                        {
-                            "Ghoul",
-                            "Ghoul",
-                            "Modo",
-                            "Zeuz",
-                        },
-                        CardsOnBoard = new List<string>()
-                        {
-                             "Ghoul",
-                             "Zeuz",
-                             "Zeuz",
-                             "Zeuz",
-                        },
-                        CardsOnGraveyard = new List<string>()
-                    },
-                    OpponentInfo = new SpecificBattlegroundInfo.SpecificBattlegroundOverlordInfo()
-                    {
-                        Health = 14,
-                        MaximumHealth = 14,
-                        CurrentGoo = 4,
-                        MaximumGoo = 4,
-                        CardsInDeck = new List<string>(),
-                        CardsInHand = new List<string>()
-                        {
-                            "Ghoul",
-                            "Zeuz",
-                        },
-                        CardsOnBoard = new List<string>()
-                        {
-                             "Ghoul",
-                             "Zeuz",
-                        },
-                        CardsOnGraveyard = new List<string>()
-                    }
-                });
-            }
-        }
-
         public void SetupBattlegroundAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
             SetupOverlordsAsSpecific(specificBattlegroundInfo);
             SetupOverlordsHandsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInHand, specificBattlegroundInfo.OpponentInfo.CardsInHand);
+            SetupOverlordsDecksAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, specificBattlegroundInfo.OpponentInfo.CardsInDeck);
             SetupOverlordsBoardUnitsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsOnBoard, specificBattlegroundInfo.OpponentInfo.CardsOnBoard);
             SetupGeneralUIAsSpecific(specificBattlegroundInfo);
         }
@@ -923,7 +860,7 @@ namespace Loom.ZombieBattleground
             foreach (string cardName in playerCards)
                 _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.CurrentPlayer, cardName), true);
 
-            foreach (string cardName in playerCards)
+            foreach (string cardName in opponentCards)
                 _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.OpponentPlayer, cardName), true);
         }
 
@@ -954,7 +891,6 @@ namespace Loom.ZombieBattleground
 
         private void OnGameInitializedHandler()
         {
-           // StartTestSpecificBattleground();
         }
     }
 

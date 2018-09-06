@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         public int TutorialId;
         public List<TutorialDataStep> TutorialDataSteps;
+        public SpecificBattlegroundInfo SpecificBattlegroundInfo;
+        public bool PlayerTurnFirst;
     }
 
     public class TutorialDataStep

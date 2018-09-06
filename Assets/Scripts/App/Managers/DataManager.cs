@@ -96,6 +96,7 @@ namespace Loom.ZombieBattleground
 #if DEV_MODE
             CachedUserLocalData.Tutorial = false;
 #endif
+            CachedUserLocalData.Tutorial = true;
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
         }

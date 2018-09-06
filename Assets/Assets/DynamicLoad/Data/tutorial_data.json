@@ -779,7 +779,49 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false
         }
-      ]
+      ],
+      "SpecificBattlegroundInfo": {
+        "CurrentTurn": 1,
+        "PlayerInfo": {
+          "Health": 9,
+          "MaximumHealth": 20,
+          "CurrentGoo": 7,
+          "MaximumGoo": 7,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            "GooZilla",
+            "Burrrnn",
+            "Burrrnn",
+            "Burrrnn",
+            "Azuraz"
+          ],
+          "CardsOnBoard": [
+          ],
+          "CardsOnGraveyard": [
+          ]
+        },
+        "OpponentInfo": {
+          "Health": 12,
+          "MaximumHealth": 20,
+          "CurrentGoo": 10,
+          "MaximumGoo": 10,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            "MonZoon",
+            "Burrrnn",
+            "Golem",
+            "Rockky",
+            "Rockky"
+          ],
+          "CardsOnBoard": [
+          ],
+          "CardsOnGraveyard": [
+          ]
+        }
+      },
+      "PlayerTurnFirst": true
     },
     {
       "TutorialId": 1,
@@ -789,9 +831,7 @@
           "janeText": "Welcome back, Zombie Slayer!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          
-          
+          "CanMoveToNextStepByClick": true,
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -801,7 +841,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_01_welcome",
+          "SoundName": "czb_tutorial_B_01_welcome"
         },
         {
           "janePose": "NORMAL",
@@ -809,8 +849,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -827,8 +867,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -845,8 +885,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -856,7 +896,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_02_pickle",
+          "SoundName": "czb_tutorial_B_02_pickle"
         },
         {
           "janePose": "THINKING",
@@ -864,8 +904,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -882,8 +922,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -893,7 +933,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_03_not_good",
+          "SoundName": "czb_tutorial_B_03_not_good"
         },
         {
           "janePose": "THINKING",
@@ -901,8 +941,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -919,8 +959,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -937,8 +977,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -948,7 +988,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_04_yes",
+          "SoundName": "czb_tutorial_B_04_yes"
         },
         {
           "janePose": "POINTING",
@@ -956,8 +996,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -974,8 +1014,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -985,7 +1025,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_05_shroom",
+          "SoundName": "czb_tutorial_B_05_shroom"
         },
         {
           "janePose": "POINTING",
@@ -993,8 +1033,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1011,8 +1051,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_10_service",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1030,8 +1070,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1048,8 +1088,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_12_bolderrs",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1067,8 +1107,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1085,8 +1125,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_13_big_one",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1104,8 +1144,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_14_goo",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1123,8 +1163,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1141,8 +1181,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_15_carrier",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1160,8 +1200,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_16_overflow",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1179,8 +1219,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1197,8 +1237,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_17_work",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1216,8 +1256,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_18_setbacks",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1235,8 +1275,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_19_going",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1254,8 +1294,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_19a_extra",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1273,8 +1313,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_19b_own",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1292,8 +1332,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_19c_take",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1311,8 +1351,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_19d_zeptic",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1330,8 +1370,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_20_zplan",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1349,8 +1389,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_21_done",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1368,8 +1408,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_22_that",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1387,8 +1427,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_22b_that",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1406,8 +1446,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_23_system",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1425,8 +1465,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_24_ranks",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1444,8 +1484,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_25_naturally",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1463,8 +1503,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1481,8 +1521,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_26_buffed",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1500,8 +1540,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1518,8 +1558,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1536,8 +1576,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_27_effects",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1555,8 +1595,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_28_instance",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1574,8 +1614,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_29_super",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1593,8 +1633,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_30_highest",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1612,8 +1652,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_30a_combo",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1631,8 +1671,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_31_waiting",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1650,8 +1690,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_32_misery",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1669,8 +1709,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_33_comeback",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1688,8 +1728,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_34_master",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1707,8 +1747,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_35_proud",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1726,8 +1766,8 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          
-          
+
+
           "SoundName": "czb_tutorial_B_36_mmmbye",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1738,8 +1778,54 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "CurrentTurn": 9,
+        "PlayerInfo": {
+          "Health": 9,
+          "MaximumHealth": 20,
+          "CurrentGoo": 9,
+          "MaximumGoo": 9,
+          "CardsInHand": [
+            "Zeptic",
+            "Cherno-bill"
+          ],
+          "CardsInDeck": [
+
+          ],
+          "CardsOnBoard": [
+            "Shroom",
+            "Poizom",
+            "Poizom",
+            "Poizom"
+          ],
+          "CardsOnGraveyard": [
+
+          ]
         },
-      ]
+        "OpponentInfo": {
+          "Health": 6,
+          "MaximumHealth": 20,
+          "CurrentGoo": 9,
+          "MaximumGoo": 9,
+          "CardsInHand": [
+
+          ],
+          "CardsInDeck": [
+
+          ],
+          "CardsOnBoard": [
+            "Mountain",
+            "Slab",
+            "Slab"
+          ],
+          "CardsOnGraveyard": [
+
+          ]
+        }
+      },
+      "PlayerTurnFirst": false
     }
   ]
 }

@@ -96,24 +96,13 @@ namespace Loom.ZombieBattleground
             {
                 List<string> playerDeck = new List<string>();
 
-                if (_gameplayManager.IsTutorial)
+                int deckId = _gameplayManager.OpponentDeckId;
+                foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
+                    .Cards)
                 {
-                    playerDeck.Add("MonZoon");
-                    playerDeck.Add("Burrrnn");
-                    playerDeck.Add("Golem");
-                    playerDeck.Add("Rockky");
-                    playerDeck.Add("Rockky");
-                }
-                else
-                {
-                    int deckId = _gameplayManager.OpponentDeckId;
-                    foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
-                        .Cards)
+                    for (int i = 0; i < card.Amount; i++)
                     {
-                        for (int i = 0; i < card.Amount; i++)
-                        {
-                            playerDeck.Add(card.CardName);
-                        }
+                        playerDeck.Add(card.CardName);
                     }
                 }
 

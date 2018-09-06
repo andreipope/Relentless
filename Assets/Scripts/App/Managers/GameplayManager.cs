@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private ITimerManager _timerManager;
 
+        private ITutorialManager _tutorialManager;
+
         private List<IController> _controllers;
 
         private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
@@ -169,6 +171,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             InitControllers();
 
@@ -215,7 +218,6 @@ namespace Loom.ZombieBattleground
 
         private void StartInitializeGame()
         {
-            // initialize players
             GetController<PlayerController>().InitializePlayer();
 
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
@@ -226,34 +228,29 @@ namespace Loom.ZombieBattleground
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
-            if (!IsTutorial)
+            if(IsTutorial)
             {
-                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
-            }
-            else
-            {
-                CurrentTurnPlayer = CurrentPlayer;
-            }
+                IsSpecificGameplayBattleground = true;
 
-            if (!IsSpecificGameplayBattleground)
-            {
-                OpponentPlayer.SetFirstHand(IsTutorial);
-            }
+                _tutorialManager.SetupTutorialById(1);
 
-            if (!IsTutorial)
-            {
-                // if (!IsSpecificGameplayBattleground) // check if it really needed
-                {
-                    _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
-                    {
-                        CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
-                    });
-                }
-            }
-            else
-            {
+                CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
+
                 GetController<PlayerController>().SetHand();
                 GetController<CardsController>().StartCardDistribution();
+            }
+            else
+            {
+                IsSpecificGameplayBattleground = false;
+
+                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+
+                OpponentPlayer.SetFirstHand(IsTutorial);
+
+                _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                {
+                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                });
             }
 
             IsGameEnded = false;
