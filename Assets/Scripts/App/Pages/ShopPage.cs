@@ -14,6 +14,7 @@ namespace Loom.ZombieBattleground
         private const float ScrollAnimationDuration = 0.5f;
         private const int MaxItemsInShop = 5;
         private const int LoopStartFakeShopCount = 1;
+        private const int LoopEndFakeShopCount = 2;
 
         private readonly float[] _costs =
         {
@@ -164,9 +165,12 @@ namespace Loom.ZombieBattleground
             _loopFakeShopObjects = new List<ShopObject>();
 
             // add fake shop obj in front
-            ShopObject fakeShopObj = new ShopObject(MaxItemsInShop, _shopsContainer.transform);
-            fakeShopObj.Deselect();
-            _loopFakeShopObjects.Add(fakeShopObj);
+            for (int i = 0; i < LoopStartFakeShopCount; i++)
+            {
+                ShopObject fakeShopObj = new ShopObject(MaxItemsInShop, _shopsContainer.transform);
+                fakeShopObj.Deselect();
+                _loopFakeShopObjects.Add(fakeShopObj);
+            }
 
             // real shop obj
             for (int i = 0; i < MaxItemsInShop; i++)
@@ -176,9 +180,13 @@ namespace Loom.ZombieBattleground
             }
 
             // add fake shop obj in end
-            ShopObject fakeObj = new ShopObject(LoopStartFakeShopCount, _shopsContainer.transform);
-            fakeObj.Deselect();
-            _loopFakeShopObjects.Add(fakeObj);
+            for (int i = 0; i < LoopEndFakeShopCount; i++)
+            {
+                ShopObject fakeObj = new ShopObject(i+1, _shopsContainer.transform);
+                fakeObj.Deselect();
+                _loopFakeShopObjects.Add(fakeObj);
+            }
+
 
             ShopObjectSelected(_shopObjects[0]);
         }
@@ -370,38 +378,64 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-    }
-
-    public class ShopObject
-    {
-        private readonly GameObject _activeShopItemObj;
-        private readonly GameObject _deactiveShopItemObj;
-        private readonly ILoadObjectsManager _loadObjectsManager;
-
-        private GameObject SelfObject { get; }
-
-        public ShopObject(int index, Transform parent)
+        public class ShopObject
         {
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/UI/Elements/Shop/Item_ShopSelected_"+index), parent, false);
+            private readonly GameObject _activeShopItemObj;
+            private readonly GameObject _deactiveShopItemObj;
+            private readonly ILoadObjectsManager _loadObjectsManager;
+            private readonly Image _glowImage;
+            private Sequence _stateChangeSequence;
 
-            _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
-            _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
+            private GameObject SelfObject { get; }
+
+            public ShopObject(int index, Transform parent)
+            {
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/UI/Elements/Shop/Item_ShopSelected_"+index), parent, false);
+
+                _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
+                _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
+                _glowImage = SelfObject.transform.Find("Image_Glow").gameObject.GetComponent<Image>();
+            }
+
+            public void Select()
+            {
+                _deactiveShopItemObj.SetActive(false);
+                _activeShopItemObj.SetActive(true);
+                SetUIActiveState(true, true, false);
+            }
+
+            public void Deselect()
+            {
+                _deactiveShopItemObj.SetActive(true);
+                _activeShopItemObj.SetActive(false);
+                SetUIActiveState(false, true, false);
+            }
+
+            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha)
+            {
+                float duration = animateTransition ? ScrollAnimationDuration : 0f;
+                float targetAlpha = active ? 1f : 0f;
+
+                _stateChangeSequence?.Kill();
+                _stateChangeSequence = DOTween.Sequence();
+
+                Action<Image, bool> applyAnimation = (image, invert) =>
+                {
+                    image.gameObject.SetActive(true);
+                    if (forceResetAlpha)
+                    {
+                        image.color = image.color.SetAlpha(invert ? targetAlpha : 1f - targetAlpha);
+                    }
+
+                    _stateChangeSequence.Insert(0f,
+                        image.DOColor(image.color.SetAlpha(invert ? 1f - targetAlpha : targetAlpha), duration)
+                            .OnComplete(() => image.gameObject.SetActive(invert ? !active : active)));
+                };
+
+                applyAnimation(_glowImage, false);
+            }
         }
-
-        public void Select()
-        {
-            _deactiveShopItemObj.SetActive(false);
-            _activeShopItemObj.SetActive(true);
-        }
-
-        public void Deselect()
-        {
-            _deactiveShopItemObj.SetActive(true);
-            _activeShopItemObj.SetActive(false);
-        }
-
-
     }
 }
