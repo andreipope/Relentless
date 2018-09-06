@@ -1334,7 +1334,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-        {
+        { 
           "id": 28,
           "janePose": "POINTING",
           "janeText": "Go ahead, let’s drag Zeptic into play and get Overflow going!",
@@ -1669,19 +1669,9 @@
           "id": 45,
           "janePose": "NORMAL",
           "janeText": "Well, what are YOU waiting for?",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 2.0,
-            "Z": 0.0
-          },
+          "IsFocusing": false,
+          "IsArrowEnabled": false,
+          "CanMoveToNextStepByClick": true,
           "requiredAction": "ATTACK_CARD_CARD",
           "SoundName": "czb_tutorial_B_31_waiting",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1692,8 +1682,6 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false
         },
         {
           "id": 46,
@@ -1725,8 +1713,68 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false
         },
-        {
+		{
           "id": 47,
+          "janePose": "NORMAL",
+          "janeText": "Put this poor excuse of an Overlord out of his misery!",
+          "IsFocusing": true,
+          "IsArrowEnabled": true,
+          "CanMoveToNextStepByClick": false,
+          "ArrowStartPosition": {
+            "X": 0.0,
+            "Y": -1.5,
+            "Z": 0.0
+          },
+          "ArrowEndPosition": {
+            "X": 0.0,
+            "Y": 2.0,
+            "Z": 0.0
+          },
+          "requiredAction": "ATTACK_CARD_CARD",
+          "SoundName": "czb_tutorial_B_32_misery",
+          "CanMoveToNextStepByClickInPaused": false,
+          "ShouldStopTurn": false,
+          "CanProceedWithEndStepManually": true,
+          "HasDelayToPlaySound": false,
+          "IsShowNextButtonFocusing": false,
+          "IsShowQuestion": false,
+          "IsShowNextButton": true,
+          "DelayToPlaySound": 6.0,
+          "CanHandleInput": false,
+          "CanClickEndTurn": false
+        },
+		{
+          "id": 48,
+          "janePose": "NORMAL",
+          "janeText": "Put this poor excuse of an Overlord out of his misery!",
+          "IsFocusing": true,
+          "IsArrowEnabled": true,
+          "CanMoveToNextStepByClick": false,
+          "ArrowStartPosition": {
+            "X": 0.0,
+            "Y": -1.5,
+            "Z": 0.0
+          },
+          "ArrowEndPosition": {
+            "X": 0.0,
+            "Y": 5.5,
+            "Z": 0.0
+          },
+          "requiredAction": "ATTACK_CARD_HERO",
+          "SoundName": "czb_tutorial_B_32_misery",
+          "CanMoveToNextStepByClickInPaused": false,
+          "ShouldStopTurn": false,
+          "CanProceedWithEndStepManually": true,
+          "HasDelayToPlaySound": false,
+          "IsShowNextButtonFocusing": false,
+          "IsShowQuestion": false,
+          "IsShowNextButton": true,
+          "DelayToPlaySound": 6.0,
+          "CanHandleInput": false,
+          "CanClickEndTurn": false
+        },
+        {
+          "id": 49,
           "janePose": "THUMBS_UP",
           "janeText": "AWESOME!! ...Now that’s what I call a proper comeback!",
           "IsFocusing": false,
@@ -1744,7 +1792,7 @@
           "DelayToPlaySound": 6.0
         },
         {
-          "id": 48,
+          "id": 50,
           "janePose": "NORMAL",
           "janeText": "Well... That's it! The student has become the master!",
           "IsFocusing": false,
@@ -1762,7 +1810,7 @@
           "DelayToPlaySound": 6.0
         },
         {
-          "id": 49,
+          "id": 51,
           "janePose": "KISS",
           "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b> <kiss>",
           "IsFocusing": false,
@@ -1780,7 +1828,7 @@
           "DelayToPlaySound": 6.0
         },
         {
-          "id": 50,
+          "id": 52,
           "janePose": "KISS",
           "janeText": "K..mmmbyeee",
           "IsFocusing": false,
@@ -1813,22 +1861,10 @@
 
           ],
           "CardsOnBoard": [
-            {
-              "Name": "Shroom",
-              "IsManuallyPlayable": false
-            },
-            {
-              "Name": "Poizom",
-              "IsManuallyPlayable": false
-            },
-            {
-              "Name": "Poizom",
-              "IsManuallyPlayable": false
-            },
-            {
-              "Name": "Poizom",
-              "IsManuallyPlayable": false
-            }
+            "Shroom",
+            "Poizom",
+            "Poizom",
+            "Poizom"
           ],
           "CardsOnGraveyard": [
 
@@ -1846,18 +1882,9 @@
 
           ],
           "CardsOnBoard": [
-            {
-              "Name": "Mountain",
-              "IsManuallyPlayable": true
-            },
-            {
-              "Name": "Slab",
-              "IsManuallyPlayable": false
-            },
-            {
-              "Name": "Slab",
-              "IsManuallyPlayable": false
-            }
+            "Mountain",
+            "Slab",
+            "Slab"
           ],
           "CardsOnGraveyard": [
 

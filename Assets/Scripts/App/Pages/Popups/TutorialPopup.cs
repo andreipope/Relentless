@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
 
             _focusObjects.Clear();
 
-            foreach (Transform obj in Self.transform.Find("FocusObjects").transform)
+            foreach (Transform obj in Self.transform.Find("FocusObjects_" + _tutorialManager.CurrentTutorial.TutorialId).transform)
             {
                 _focusObjects.Add(obj.gameObject);
             }
@@ -136,7 +136,8 @@ namespace Loom.ZombieBattleground
         public void ShowTutorialFocus(int step)
         {
             HideTutorialFocus();
-            Self.transform.Find("FocusObjects/Step_" + step).gameObject.SetActive(true);
+            Debug.Log(_tutorialManager.CurrentTutorial.TutorialId);
+            Self.transform.Find("FocusObjects_"+ _tutorialManager.CurrentTutorial.TutorialId + "/Step_" + step).gameObject.SetActive(true);
         }
 
         public void HideTutorialFocus()
