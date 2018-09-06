@@ -668,6 +668,7 @@ namespace Loom.ZombieBattleground
         public void OnEndTurn()
         {
             HasBuffRush = false;
+            CantAttackInThisTurnBlocker = false;
 
             CancelTargetingArrows();
         }
