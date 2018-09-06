@@ -276,6 +276,10 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.KillBoardCard(this);
             }
+            else
+            {
+                InvokeUnitDied();
+            }
         }
 
         public void BuffUnit(Enumerators.BuffType type)
