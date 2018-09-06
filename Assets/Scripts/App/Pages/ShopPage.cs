@@ -1,13 +1,18 @@
+using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class ShopPage : IUIElement
     {
+        private const float ScrollAnimationDuration = 0.5f;
+
         private readonly float[] _costs =
         {
             1.99f, 2.99f, 4.99f, 9.99f
@@ -48,6 +53,9 @@ namespace Loom.ZombieBattleground
 
         private int _selectedShopIndex;
         private HorizontalLayoutGroup _shopsContainer;
+        private List<ShopObject> _shopObjects;
+
+        private Sequence _shopSelectScrollSequence;
 
         public void Init()
         {
@@ -141,7 +149,38 @@ namespace Loom.ZombieBattleground
             _buttonItem3.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[2];
             _buttonItem4.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[3];
 
+            FillShopObjects();
+            SetSelectedShopIndexAndUpdateScrollPosition(0, false, force: true);
+
             _selfPage.SetActive(true);
+        }
+
+        private void FillShopObjects()
+        {
+            _shopObjects = new List<ShopObject>();
+
+            for (int i = 0; i < _shopsContainer.transform.childCount; i++)
+            {
+                ShopObject current = new ShopObject(_shopsContainer.transform.GetChild(i).gameObject);
+                _shopObjects.Add(current);
+            }
+
+            ShopObjectSelected(_shopObjects[0]);
+        }
+
+        private void ShopObjectSelected(ShopObject shopObject)
+        {
+            foreach (ShopObject item in _shopObjects)
+            {
+                if (!item.Equals(shopObject))
+                {
+                    item.Deselect();
+                }
+                else
+                {
+                    item.Select();
+                }
+            }
         }
 
         private void SwitchShopObject(int direction)
@@ -151,15 +190,13 @@ namespace Loom.ZombieBattleground
 
             if (newIndex < 0)
             {
-                SetSelectedShopIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false);
-                SetSelectedShopIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(force: true);
+                SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count, false, false);
+                SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count - 1, true);
             }
-            else if (newIndex >= _overlordObjects.Count)
+            else if (newIndex >= _shopObjects.Count)
             {
                 SetSelectedShopIndexAndUpdateScrollPosition(-1, false, false);
                 SetSelectedShopIndexAndUpdateScrollPosition(0, true);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(force: true);
             }
             else
             {
@@ -168,40 +205,45 @@ namespace Loom.ZombieBattleground
         }
 
         private bool SetSelectedShopIndexAndUpdateScrollPosition(
-            int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
+            int shopIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
         {
-            if (!force && heroIndex == _selectedShopIndex)
+            if (!force && shopIndex == _selectedShopIndex)
             {
                 return false;
             }
 
-            _selectedShopIndex = heroIndex;
+            _selectedShopIndex = shopIndex;
 
             RectTransform shopContainerRectTransform = _shopsContainer.GetComponent<RectTransform>();
-            _heroSelectScrollSequence?.Kill();
+            _shopSelectScrollSequence?.Kill();
             if (animateTransition)
             {
-                _heroSelectScrollSequence = DOTween.Sequence();
-                _heroSelectScrollSequence.Append(
+                _shopSelectScrollSequence = DOTween.Sequence();
+                _shopSelectScrollSequence.Append(
                         DOTween.To(
                             () => shopContainerRectTransform.anchoredPosition,
                             v => shopContainerRectTransform.anchoredPosition = v,
-                            CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex),
+                            CalculateShopContainerShiftForShopIndex(_selectedShopIndex),
                             ScrollAnimationDuration))
-                    .AppendCallback(() => _heroSelectScrollSequence = null);
+                    .AppendCallback(() => _shopSelectScrollSequence = null);
             }
             else
             {
                 shopContainerRectTransform.anchoredPosition =
-                    CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex);
+                    CalculateShopContainerShiftForShopIndex(_selectedShopIndex);
             }
 
             if (selectOverlordObject)
             {
-                _overlordObjects[_selectedHeroIndex].Select(animateTransition);
+                ShopObjectSelected(_shopObjects[_selectedShopIndex]);
             }
 
             return true;
+        }
+
+        private Vector2 CalculateShopContainerShiftForShopIndex(int shopIndex)
+        {
+            return Vector2.left * (shopIndex + 1) * _shopsContainer.spacing;
         }
 
         public void Hide()
@@ -216,6 +258,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _shopSelectScrollSequence?.Kill();
         }
 
         #region Buttons Handlers
@@ -313,4 +356,58 @@ namespace Loom.ZombieBattleground
         #endregion
 
     }
+
+    public class ShopObject
+    {
+        private GameObject _activeShopItemObj;
+        private GameObject _deactiveShopItemObj;
+
+        private GameObject SelfObject { get; }
+
+        public ShopObject(GameObject obj)
+        {
+            SelfObject = obj;
+            _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
+            _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
+        }
+
+        public void Select()
+        {
+
+            _deactiveShopItemObj.SetActive(false);
+            _activeShopItemObj.SetActive(true);
+
+        }
+
+        public void Deselect()
+        {
+
+            _deactiveShopItemObj.SetActive(true);
+            _activeShopItemObj.SetActive(false);
+        }
+
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
