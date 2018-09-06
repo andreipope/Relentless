@@ -624,7 +624,7 @@ namespace Loom.ZombieBattleground
                     boardCard.DrawTooltipInfoOfUnit(boardUnit);
                     break;
                 case BoardCard tooltipCard:
-                    tooltipCard.DrawTooltipInfoOfCard(tooltipCard);
+                    boardCard.DrawTooltipInfoOfCard(tooltipCard);
                     break;
             }
 
