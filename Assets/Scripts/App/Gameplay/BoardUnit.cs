@@ -1018,9 +1018,6 @@ namespace Loom.ZombieBattleground
 
         private void UnitDeselectedEventHandler(BoardUnit unit)
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
-                return;
-
             if (unit == this)
             {
                 OnMouseUp();
