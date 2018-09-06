@@ -1861,10 +1861,22 @@
 
           ],
           "CardsOnBoard": [
-            "Shroom",
-            "Poizom",
-            "Poizom",
-            "Poizom"
+            {
+              "Name": "Shroom",
+              "IsManuallyPlayable": false
+            },
+            {
+              "Name": "Poizom",
+              "IsManuallyPlayable": false
+            },
+            {
+              "Name": "Poizom",
+              "IsManuallyPlayable": false
+            },
+            {
+              "Name": "Poizom",
+              "IsManuallyPlayable": false
+            }
           ],
           "CardsOnGraveyard": [
 
@@ -1882,9 +1894,18 @@
 
           ],
           "CardsOnBoard": [
-            "Mountain",
-            "Slab",
-            "Slab"
+            {
+              "Name": "Mountain",
+              "IsManuallyPlayable": true
+            },
+            {
+              "Name": "Slab",
+              "IsManuallyPlayable": false
+            },
+            {
+              "Name": "Slab",
+              "IsManuallyPlayable": false
+            }
           ],
           "CardsOnGraveyard": [
 
