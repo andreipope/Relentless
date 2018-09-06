@@ -469,7 +469,7 @@ namespace Loom.ZombieBattleground
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
                     Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
-                }
+                },
             };
         }
 

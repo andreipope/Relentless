@@ -1,12 +1,13 @@
-//#define ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+//#define DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 
 using UnityEngine;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 using System.Linq;
 using UnityEditor;
 #endif
@@ -16,8 +17,8 @@ namespace Loom.ZombieBattleground
     public class LoadObjectsManager : IService, ILoadObjectsManager
     {
         private readonly Dictionary<string, AssetBundle> _loadedAssetBundles = new Dictionary<string, AssetBundle>();
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
-        private const string DynamicLoadAssetsRoot = "Assets/Assets/LoadAtRuntime";
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+        private const string DynamicLoadAssetsRoot = "Assets/Assets/DynamicLoad";
         private Dictionary<string, string> _assetsPaths;
 #endif
 
@@ -27,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             PrepareAssetPaths();
 #endif
         }
@@ -69,19 +70,27 @@ namespace Loom.ZombieBattleground
         public void LoadAssetBundleFromFile(string name)
         {
             string bundleLocalPath = Utilites.GetAssetBundleLocalPath(name);
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             if (!File.Exists(bundleLocalPath))
                 return;
 #endif
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             AssetBundle assetBundle = AssetBundle.LoadFromFile(bundleLocalPath);
+            if (assetBundle == null)
+                throw new Exception($"Failed to load asset bundle '{name}'");
+
             _loadedAssetBundles.Add(name, assetBundle);
+
+            stopwatch.Stop();
+            UnityEngine.Debug.Log($"Loading '{name}' bundle took {stopwatch.ElapsedMilliseconds} ms");
         }
 
         public async Task LoadAssetBundleFromFileAsync(string name, IProgress<float> progress = null)
         {
             string bundleLocalPath = Utilites.GetAssetBundleLocalPath(name);
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             if (!File.Exists(bundleLocalPath))
                 return;
 #endif
@@ -91,10 +100,13 @@ namespace Loom.ZombieBattleground
             request.completed += _ => tcs.TrySetResult(true);
             await tcs.Task;
 
+            if (request.assetBundle == null)
+                throw new Exception($"Failed to load asset bundle '{name}'");
+
             _loadedAssetBundles.Add(name, request.assetBundle);
         }
 
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
         private void PrepareAssetPaths()
         {
             _assetsPaths = new Dictionary<string, string>();
@@ -135,7 +147,7 @@ namespace Loom.ZombieBattleground
             }
 
             bool bundleExists = _loadedAssetBundles.TryGetValue(bundleName, out AssetBundle assetBundle);
-#if !(UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION)
+#if !(UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION)
             if (!bundleExists)
                 throw new Exception($"Asset bundle '{bundleName}' not loaded");
 #endif
@@ -149,10 +161,11 @@ namespace Loom.ZombieBattleground
             if (assetBundle != null)
                 return assetBundle.LoadAsset<T>(fileName);
 
-#if UNITY_EDITOR && ENABLE_EDITOR_ASSET_BUNDLE_SIMULATION
+#if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             fileName = fileName.ToLowerInvariant();
-            string path = _assetsPaths[fileName];
-            return AssetDatabase.LoadAssetAtPath<T>(path);
+
+            if (_assetsPaths.TryGetValue(fileName, out string path))
+                return AssetDatabase.LoadAssetAtPath<T>(path);
 #endif
 
             return null;
