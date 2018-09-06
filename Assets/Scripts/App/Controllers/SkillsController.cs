@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
 
+        private BattlegroundController _battlegroundController;
+
         private BoardSkill _playerPrimarySkill, _playerSecondarySkill;
 
         private bool _skillsInitialized;
@@ -51,6 +53,8 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
 
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
         }
@@ -338,8 +342,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.WIND_SHIELD:
                     WindShieldAction(skill.Owner, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.WIND_WALL:
-                    WindWallAction(skill.Owner, skill, skill.Skill, target);
+                case Enumerators.OverlordSkill.LEVITATE:
+                    Levitate(skill.Owner, skill, skill.Skill, target);
                     break;
                 case Enumerators.OverlordSkill.RETREAT:
                     RetreatAction(skill.Owner, skill, skill.Skill, target);
@@ -417,7 +421,21 @@ namespace Loom.ZombieBattleground
 
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
+            int goo = owner.Goo;
+
+            owner.Goo -= goo;
+
+          /*  List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.RealCost <= goo);
+
+            if (units.Count == 0)
+                return;
+
+                 */
+
+
             BoardUnit targetUnit = target as BoardUnit;
+
+
             Player unitOwner = targetUnit.OwnerPlayer;
             WorkingCard returningCard = targetUnit.Card;
 
@@ -481,18 +499,17 @@ namespace Loom.ZombieBattleground
 
         private void WindShieldAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            BoardUnit targetUnit = target as BoardUnit;
-            targetUnit.BuffShield();
-        }
-
-        private void WindWallAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
-        {
             List<BoardUnit> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR), skill.Value);
 
             foreach (var unit in units)
             {
                 unit.BuffShield();
             }
+        }
+
+        private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
+        {
+            _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
         }
 
         private void RetreatAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -538,17 +555,77 @@ namespace Loom.ZombieBattleground
 
         private void BreakoutAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<object> targets = new List<object>();
+
+            var opponent = _gameplayManager.GetOpponentByPlayer(owner);
+
+            targets.Add(opponent);
+            targets.AddRange(opponent.BoardCards);
+
+            targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
+
+            foreach (object targetObject in targets)
+            {
+                AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact",
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            }
         }
 
         private void InfectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+           List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+
+            if (units.Count == 0)
+                return;
+
+            BoardUnit unit = units[UnityEngine.Random.Range(0, units.Count)];
+
+            int unitAtk = unit.CurrentDamage;
+
+            _battlegroundController.DestroyBoardUnit(unit);
+
+            var opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
+
+            if (opponentUnits.Count == 0)
+                return;
+
+            unit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
+
+            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
         }
 
         private void EpidemicAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+
+            if (units.Count == 0)
+                return;
+
+            units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+            List<BoardUnit> opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
+
+            int unitAtk = 0;
+
+            BoardUnit opponentUnit = null;
+            for (int i = 0; i < units.Count; i++)
+            {
+                unitAtk = units[i].CurrentDamage;
+
+                _battlegroundController.DestroyBoardUnit(units[i]);
+
+                if (opponentUnits.Count > 0)
+                {
+                    opponentUnit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
+
+                    _battleController.AttackUnitBySkill(owner, skill, opponentUnit, 0);
+
+                    opponentUnits.Remove(opponentUnit);
+                }
+            }
         }
 
         // LIFE
@@ -595,12 +672,28 @@ namespace Loom.ZombieBattleground
 
         private void RessurectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-
+            // todo implement logic
         }
 
         private void EnhanceAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<object> targets = new List<object>();
+
+            targets.Add(owner);
+            targets.AddRange(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.LIFE));
+
+            foreach(object targetObject in targets)
+            {
+                switch(targetObject)
+                {
+                    case BoardUnit unit:
+                        _battleController.HealUnitBySkill(owner, skill, unit);
+                        break;
+                    case Player player:
+                        _battleController.HealPlayerBySkill(owner, skill, player);
+                        break;
+                }
+            }
         }
 
         private void ReanimateAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -670,17 +763,39 @@ namespace Loom.ZombieBattleground
 
         private void IceWallAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            if(target is BoardUnit unit)
+            {
+                unit.BuffedHp += skill.Value;
+                unit.CurrentHp += skill.Value;
+            }
+            else if(target is Player player)
+            {
+                _battleController.HealPlayerBySkill(owner, skill, player);
+            }
+
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
         }
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            _battlegroundController.DestroyBoardUnit(target as BoardUnit);
         }
 
         private void BlizzardAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<BoardUnit> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
+            units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+
+            foreach(var unit in units)
+            {
+                unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
+
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
+            }
+
+            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
+                                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
         }
 
         // FIRE
