@@ -33,43 +33,17 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Player unitOwner = TargetUnit.OwnerPlayer;
-            WorkingCard returningCard = TargetUnit.Card;
-
-            returningCard.InitialCost = returningCard.LibraryCard.Cost;
-            returningCard.RealCost = returningCard.InitialCost;
-
             Vector3 unitPosition = TargetUnit.Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            TimerManager.AddTimer(
-                x =>
+            CardsController.ReturnCardToHand(TargetUnit);
+
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
                 {
-                    // STEP 1 - REMOVE UNIT FROM BOARD
-                    unitOwner.BoardCards.Remove(TargetUnit);
-
-                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
-                    TargetUnit.Die(true);
-                    Object.Destroy(TargetUnit.GameObject);
-
-                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                    unitOwner.RemoveCardFromBoard(returningCard);
-
-                    // STEP 4 - RETURN CARD TO HAND
-                    CardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-                    // STEP 4 - REARRANGE HANDS
-                    GameplayManager.RearrangeHands();
-
-                    ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                        Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-                        {
                             PlayerCallerOfAbility, AbilityData, TargetUnit
-                        }));
-                },
-                null,
-                2f);
+                }));
         }
 
         protected override void InputEndedHandler()
