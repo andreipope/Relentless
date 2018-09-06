@@ -243,7 +243,6 @@ namespace Loom.ZombieBattleground
         {
             if (changeRealCost)
             {
-                WorkingCard.LibraryCard.Cost += value;
                 WorkingCard.RealCost += value;
                 ManaCost = WorkingCard.RealCost;
                 CostText.text = ManaCost.ToString();

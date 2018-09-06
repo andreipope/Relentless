@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         bool IsSpecificGameplayBattleground { get; set; }
 
+        bool CanDoDragActions { get; set; }
+
         T GetController<T>()
             where T : IController;
 

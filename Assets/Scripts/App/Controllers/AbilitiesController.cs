@@ -734,6 +734,8 @@ namespace Loom.ZombieBattleground
             {
                 unit.IsAllAbilitiesResolvedAtStart = status;
             }
+
+            _gameplayManager.CanDoDragActions = status;
         }
 
         private void CallPermanentAbilityAction(

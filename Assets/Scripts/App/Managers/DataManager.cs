@@ -35,6 +35,11 @@ namespace Loom.ZombieBattleground
 
         public DataManager()
         {
+            InitCachedData();
+        }
+
+        private void InitCachedData()
+        {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData();
             CachedHeroesData = new HeroesData();
@@ -103,6 +108,7 @@ namespace Loom.ZombieBattleground
 
         public void DeleteData()
         {
+            InitCachedData();
             FileInfo[] files = _dir.GetFiles();
 
             foreach (FileInfo file in files)
