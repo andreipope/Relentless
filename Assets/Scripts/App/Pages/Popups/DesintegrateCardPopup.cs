@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,11 +11,15 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        private MenuButtonNoGlow _yesButton, _noButton, _backButton;
+        private Button _yesButton, _noButton;
 
         private CollectionCardData _cardData;
 
         public GameObject Self { get; private set; }
+
+        private GameObject _cardPreview;
+        private Vector3 _cardPreviewOriginalPos;
+        private Vector3 _cardPreviewPosition = new Vector3(5.5f, 0.1f, 5f);
 
         public void Init()
         {
@@ -34,6 +39,10 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+
+            if (_cardPreview != null)
+                _cardPreview.transform.position = _cardPreviewOriginalPos;
+
         }
 
         public void SetMainPriority()
@@ -42,17 +51,24 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            _cardPreview = GameObject.Find("CardPreview");
+            if (_cardPreview != null)
+            {
+                _cardPreviewOriginalPos = _cardPreview.transform.position;
+                _cardPreview.transform.position = _cardPreviewPosition;
+            }
+
+
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _yesButton = Self.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
-            _noButton = Self.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
-            _backButton = Self.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>();
+            _yesButton = Self.transform.Find("QuestionArea/YesButton").GetComponent<Button>();
+            _noButton = Self.transform.Find("QuestionArea/NoButton").GetComponent<Button>();
 
-            _yesButton.Clicked.AddListener(DesintegrateButtonHandler);
-            _noButton.Clicked.AddListener(CloseDesintegratePopup);
-            _backButton.Clicked.AddListener(CloseDesintegratePopup);
+
+            _yesButton.onClick.AddListener(DesintegrateButtonHandler);
+            _noButton.onClick.AddListener(CloseDesintegratePopup);
         }
 
         public void Show(object data)
@@ -62,11 +78,11 @@ namespace Loom.ZombieBattleground
             _cardData = data as CollectionCardData;
             if (_cardData.Amount == 0)
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
+                _yesButton.interactable = false;
             }
             else
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = true;
+                _yesButton.interactable = true;
             }
         }
 
@@ -92,10 +108,10 @@ namespace Loom.ZombieBattleground
             _cardData.Amount--;
             if (_cardData.Amount == 0)
             {
-                _yesButton.GetComponent<MenuButtonNoGlow>().Interactable = false;
+                _yesButton.interactable = false;
             }
 
-            GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
+            _cardPreview.GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
 
             Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
                 .Find(card => card.Name == _cardData.CardName);

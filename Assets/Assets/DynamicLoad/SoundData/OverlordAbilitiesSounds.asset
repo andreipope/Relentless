@@ -10,19 +10,19 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e283d5ecf866417da771c031af0b616, type: 3}
   m_Name: OverlordAbilitiesSounds
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   soundList:
   - CZB_AUD_Air_Overlord_Ability_draw_F1_EXP
-  - CZB_AUD_Air_Overlord_Ability_pushPower_F1_EXP
-  - CZB_AUD_Earth_Overlord_Ability_stoneskin_F1_EXP
-  - CZB_AUD_Fire_Overlord_Ability_firebolt_F1_EXP
-  - CZB_AUD_Fire_Overlord_Ability_firebolt_Impact_F3_EXP
+  - CZB_AUD_Air_Overlord_Ability_push_F1_EXP
+  - CZB_AUD_Earth_Overlord_Ability_stone_skin_F1_EXP
+  - CZB_AUD_FIre_Overlord_Ability_fire_bolt_F1_EXP
+  - CZB_AUD_FIre_Overlord_Ability_fire_bolt_Impact_F3_EXP
   - CZB_AUD_Fire_Overlord_Ability_rabies_F2_EXP
-  - CZB_AUD_Life_Overlord_Ability_healingtouch_F1_EXP
+  - CZB_AUD_Life_Overlord_Ability_healing_touch_F1_EXP
   - CZB_AUD_Life_Overlord_Ability_mend_F1_EXP
-  - CZB_AUD_Toxic_Overlord_Ability_poisondart_F3_EXP
-  - CZB_AUD_Toxic_Overlord_Ability_poisondart_Impact_F2_EXP
+  - CZB_AUD_Toxic_Overlord_Ability_poison_dart_F3_EXP
+  - CZB_AUD_Toxic_Overlord_Ability_poison_dart_Impact_F2_EXP
   - CZB_AUD_Water_Overlord_Ability_freeze_F1_EXP
   - CZB_AUD_Water_Overlord_Ability_freeze_Impact_F1_EXP
-  - CZB_AUD_Water_Overlord_Ability_icebolt_F2_EXP
-  - CZB_AUD_Water_Overlord_Ability_icebolt_Impact_F1_EXP
+  - CZB_AUD_Water_Overlord_Ability_ice_bolt_F2_EXP
+  - CZB_AUD_Water_Overlord_Ability_ice_bolt_Impact_F1_EXP
