@@ -161,14 +161,22 @@ public class BoardArrow : MonoBehaviour
     {
         if (SelectedCard != null)
         {
-            if (SelectedCard.GameObject != null) SelectedCard.SetSelectedUnit(false);
+            if (SelectedCard.GameObject != null)
+            {
+                SelectedCard.SetSelectedUnit(false);
+                OnCardUnselected(SelectedCard);
+            }
 
             SelectedCard = null;
         }
 
         if (SelectedPlayer != null)
         {
-            if (SelectedPlayer.AvatarObject != null) SelectedPlayer.SetGlowStatus(false);
+            if (SelectedPlayer.AvatarObject != null)
+            {
+                SelectedPlayer.SetGlowStatus(false);
+                OnPlayerUnselected(SelectedPlayer);
+            }
 
             SelectedPlayer = null;
         }
