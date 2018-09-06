@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             FadeSound(oldContainers, volumeStep: volumeStep);
 
             SoundContainer soundContainer = CreateSound(soundType, 0, parent, isLoop);
-            soundContainer.AudioSource.time = oldContainers[0].AudioSource.time;
+            soundContainer.AudioSource.time = Mathf.Min(oldContainers[0].AudioSource.time, soundContainer.AudioSource.clip.length - 0.01f);
             FadeSound(soundContainer, true, volumeStep, oldContainers[0].AudioSource.volume);
         }
 
