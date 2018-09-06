@@ -812,7 +812,7 @@ namespace Loom.ZombieBattleground
             return CreateOpponentBoardCard();
         }
 
-        public void ReturnCardToHand(Player player, BoardUnit unit)
+        public void ReturnCardToHand(BoardUnit unit)
         {
             Player unitOwner = unit.OwnerPlayer;
             WorkingCard returningCard = unit.Card;
