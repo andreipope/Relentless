@@ -24,11 +24,15 @@ namespace Loom.ZombieBattleground
 
         private IPlayerManager _playerManager;
 
+        private ISoundManager _soundManager;
+
         private GameObject _selfPage;
 
         private Button _buttonItem1, _buttonItem2, _buttonItem3, _buttonItem4;
 
         private Button _buttonOpen, _buttonCollection, _buttonBack, _buttonBuy;
+
+        private Button _leftArrowButton, _rightArrowButton;
 
         private TextMeshProUGUI _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
 
@@ -42,11 +46,15 @@ namespace Loom.ZombieBattleground
 
         private Color _selectedColor;
 
+        private int _selectedShopIndex;
+        private HorizontalLayoutGroup _shopsContainer;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
@@ -78,8 +86,13 @@ namespace Loom.ZombieBattleground
 
             _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<Button>();
             _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<Button>();
-            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<Button>();
+            _buttonOpen = _selfPage.transform.Find("Image_Header/Button_Open").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
+            _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
+            _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
+
+            _shopsContainer = _selfPage.transform.Find("Panel_ShopContent/Group")
+                .GetComponent<HorizontalLayoutGroup>();
 
             _buttonItem1.onClick.AddListener(() => ChooseItemHandler(0));
             _buttonItem2.onClick.AddListener(() => ChooseItemHandler(1));
@@ -90,6 +103,8 @@ namespace Loom.ZombieBattleground
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
+            _leftArrowButton.onClick.AddListener(LeftArrowButtonOnClickHandler);
+            _rightArrowButton.onClick.AddListener(RightArrowButtonOnClickHandler);
 
             _packsObjects = new[]
             {
@@ -127,6 +142,66 @@ namespace Loom.ZombieBattleground
             _buttonItem4.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[3];
 
             _selfPage.SetActive(true);
+        }
+
+        private void SwitchShopObject(int direction)
+        {
+            int newIndex = _selectedShopIndex;
+            newIndex += direction;
+
+            if (newIndex < 0)
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false);
+                SetSelectedShopIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true);
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(force: true);
+            }
+            else if (newIndex >= _overlordObjects.Count)
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(-1, false, false);
+                SetSelectedShopIndexAndUpdateScrollPosition(0, true);
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(force: true);
+            }
+            else
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(newIndex, true);
+            }
+        }
+
+        private bool SetSelectedShopIndexAndUpdateScrollPosition(
+            int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
+        {
+            if (!force && heroIndex == _selectedShopIndex)
+            {
+                return false;
+            }
+
+            _selectedShopIndex = heroIndex;
+
+            RectTransform shopContainerRectTransform = _shopsContainer.GetComponent<RectTransform>();
+            _heroSelectScrollSequence?.Kill();
+            if (animateTransition)
+            {
+                _heroSelectScrollSequence = DOTween.Sequence();
+                _heroSelectScrollSequence.Append(
+                        DOTween.To(
+                            () => shopContainerRectTransform.anchoredPosition,
+                            v => shopContainerRectTransform.anchoredPosition = v,
+                            CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex),
+                            ScrollAnimationDuration))
+                    .AppendCallback(() => _heroSelectScrollSequence = null);
+            }
+            else
+            {
+                shopContainerRectTransform.anchoredPosition =
+                    CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex);
+            }
+
+            if (selectOverlordObject)
+            {
+                _overlordObjects[_selectedHeroIndex].Select(animateTransition);
+            }
+
+            return true;
         }
 
         public void Hide()
@@ -221,6 +296,18 @@ namespace Loom.ZombieBattleground
             }
 
             _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0.8f, 0.3f);
+        }
+
+        private void LeftArrowButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SwitchShopObject(-1);
+        }
+
+        private void RightArrowButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SwitchShopObject(1);
         }
 
         #endregion
