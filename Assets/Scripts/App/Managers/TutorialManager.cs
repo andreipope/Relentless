@@ -1,53 +1,41 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
 using System;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Gameplay;
-using LoomNetwork.CZB.Common;
-using UnityEngine.Networking;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using UnityEngine;
+using Newtonsoft.Json;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class TutorialManager : IService, ITutorialManager
     {
+        public bool Paused;
+
         private IUIManager _uiManager;
-        private IContentManager _contentManager;
+
         private ISoundManager _soundManager;
+
+        private ILoadObjectsManager _loadObjectsManager;
+
+        private IDataManager _dataManager;
+
         private TutorialPopup _popup;
-
-
-        private int _currentStep = 0;
-
-        private List<TutorialStep> _steps;
-
-        private bool _tutorialStarted,
-                     _isBubbleShow;
 
         private TutorialBoardArrow _targettingArrow;
 
         private GameObject _targettingArrowPrefab;
 
-        public bool paused;
+        public bool IsTutorial { get; private set; }
 
-        public int CurrentStep
-        {
-            get { return _currentStep; }
-        }
+        public bool IsBubbleShow { get; set; }
 
-        public bool IsTutorial
-        {
-            get { return _tutorialStarted; }
-        }
+        private List<TutorialData> _tutorials;
+        private List<TutorialDataStep> _tutorialSteps;
+        private int _currentTutorialStepIndex;
 
-        public bool IsBubbleShow
-        {
-            get { return _isBubbleShow; }
-            set { _isBubbleShow = value; }
-        }
+        public TutorialData CurrentTutorial { get; private set; }
+        public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
         public void Dispose()
         {
@@ -56,124 +44,63 @@ namespace LoomNetwork.CZB
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
-            _contentManager = GameClient.Get<IContentManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
-            int i = 0;
-            _steps = new List<TutorialStep>();
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-									_contentManager.TutorialInfo[i].Description, false));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-						            _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(5f, -6f, 0), new Vector3(0, -1.7f, 0)));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-									_contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-									_contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-									_contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.6f, 0), new Vector3(0, 5.55f, 0)));//card vs player
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                    _contentManager.TutorialInfo[i].Description, true));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                              _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 2f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THINKING,
-                                    _contentManager.TutorialInfo[i].Description, false));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-									_contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(7f, -6.5f, 0), new Vector3(0, -1.6f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                    _contentManager.TutorialInfo[i].Description, true, true, new Vector3(0, -1.5f, 0), new Vector3(0, 5.55f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                 _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                 _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-                                 _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.POINTING,
-                                 _contentManager.TutorialInfo[i].Description, true, true, new Vector3(2.5f, -5.0f, 0), new Vector3(0f, 5.55f, 0)));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.THUMBSUP,
-                                    _contentManager.TutorialInfo[i].Description, false));
-			_steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.NORMAL,
-									_contentManager.TutorialInfo[i].Description, false));
-            _steps.Add(new TutorialStep(ref i, Enumerators.TutorialJanePoses.KISS,
-									_contentManager.TutorialInfo[i].Description, false));
-
+            // card vs player
             _targettingArrowPrefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+
+            _tutorials = JsonConvert.DeserializeObject<TutorialContentData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
+        }
+
+        public void Update()
+        {
+        }
+
+        public void StartTutorial(int id)
+        {
+            GameClient.Get<ITimerManager>().AddTimer(
+                x =>
+                {
+                    CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+                    _currentTutorialStepIndex = 0;
+                    _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+                    CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+
+                    IsBubbleShow = true;
+                    _uiManager.DrawPopup<TutorialPopup>();
+                    _popup = _uiManager.GetPopup<TutorialPopup>();
+                    UpdateTutorialVisual();
+                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TutorialSoundVolume, false);
+                },
+                null,
+                4f);
+
+            IsTutorial = true;
         }
 
         public void StartTutorial()
         {
-            GameClient.Get<ITimerManager>().AddTimer((x) =>
-            {
-                _currentStep = 0;
-                _isBubbleShow = true;
-                _uiManager.DrawPopup<TutorialPopup>();
-                _popup = _uiManager.GetPopup<TutorialPopup>() as TutorialPopup;
-                UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TUTORIAL_SOUND_VOLUME, false, false);
-
-            }, null, 4f, false);
-
-            _tutorialStarted = true;
-
-
-            // GameObject.Find("Player/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
-            //  GameObject.Find("Opponent/Avatar").GetComponent<PlayerAvatar>().SetupTutorial();
+            StartTutorial(0); // todod move it from here
         }
 
         public void StopTutorial()
         {
             _uiManager.HidePopup<TutorialPopup>();
-            _tutorialStarted = false;
+            IsTutorial = false;
             GameClient.Get<IGameplayManager>().IsTutorial = false;
-            GameClient.Get<IDataManager>().CachedUserLocalData.tutorial = false;
+            GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
             GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
         {
-            _soundManager.PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-             Action callback = () =>
+            Action callback = () =>
             {
                 GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(state);
@@ -181,151 +108,154 @@ namespace LoomNetwork.CZB
             _uiManager.DrawPopup<ConfirmationPopup>(callback);
         }
 
-        public void Update()
-        {
-        }
-        
         public void NextButtonClickHandler()
         {
-            if (!_tutorialStarted)
-                return;
-            if (_currentStep == 0 ||
-                _currentStep == 1 ||
-                _currentStep == 2 ||
-                _currentStep == 3 ||
-                _currentStep == 4 ||
-                _currentStep == 5 ||
-                _currentStep == 6 ||
-                _currentStep == 7 ||
-				_currentStep == 9 ||
-                _currentStep == 14 ||
-                _currentStep == 15 ||
-                _currentStep == 18 ||
-                _currentStep == 20 ||
-                _currentStep == 22 ||
-                _currentStep == 24 ||
-				_currentStep == 25 ||
-				_currentStep == 26 ||
-                _currentStep == 29 ||
-                _currentStep == 30 ||
-                _currentStep == 31 ||
-                _currentStep == 33 ||
-                _currentStep == 34 ||
-                _currentStep == 35 ||
-                _currentStep == 36 ||
-                _currentStep == 37
-                )
-                NextStep();
-            if (_currentStep == 11 && paused)
-                NextStep();
-        }      
-        
-        public void NextStep()
-        {
-            if (!_isBubbleShow)
+            if (!IsTutorial)
                 return;
 
-            if (_currentStep >= _steps.Count - 1)
+            if (CurrentTutorialDataStep.CanMoveToNextStepByClick)
             {
-                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
-                return;
+                NextStep();
             }
-            if (_currentStep == 11)
-                GameClient.Get<ITimerManager>().AddTimer((x) => { GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn(); }, null, 5f, false);
 
-            if (_currentStep != 32)
-                NextStepCommonEndActions();       
-            else
-                GameClient.Get<ITimerManager>().AddTimer((x) => { NextStepCommonEndActions(); }, time:2f);
-        }
-
-        private void NextStepCommonEndActions()
-        {
-            _steps[_currentStep].finished = true;
-            _currentStep++;
-            GameClient.Get<IGameplayManager>().TutorialStep = _currentStep;
-            UpdateTutorialVisual(/*_steps[_currentStep].description, _steps[_currentStep].focusPoints*/);
-            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-            if (_currentStep == 22)
-                GameClient.Get<ITimerManager>().AddTimer((x) => {
-                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, Constants.TUTORIAL_SOUND_VOLUME, false, false);
-                }, null, 6f, false);
-            else
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentStep, Constants.TUTORIAL_SOUND_VOLUME, false, false);
-        }
-
-        private void UpdateTutorialVisual(/*string text, Vector2[] positions*/)
-        {
-            DestroySelectTarget();
-			_popup.Show(_steps[_currentStep].description);
-			_popup.UpdatePose(_steps[_currentStep].pose);
-            //_popup.SetPosition(positions[0]);
-            if (_steps[_currentStep].focusing)
+            if (CurrentTutorialDataStep.CanMoveToNextStepByClickInPaused && Paused)
             {
-                if (_steps[_currentStep].isArrowEnabled)
-                    CreateSelectTarget();
-                _popup.ShowTutorialFocus(_currentStep);
-				if (_currentStep == 5 || _currentStep == 9 || _currentStep == 14)
-					_popup.ShowNextButton();
-			}
-            else
-            {
-                _popup.HideTutorialFocus();
-                if (_currentStep == 3)
-                    _popup.ShowQuestion();
-                else if(_currentStep != 12 && _currentStep != 17 )
-                    _popup.ShowNextButton();
+                NextStep();
             }
         }
 
         public void ReportAction(Enumerators.TutorialReportAction action)
         {
-            if(_tutorialStarted)
-            switch(action)
+            if (IsTutorial)
             {
-                case Enumerators.TutorialReportAction.MOVE_CARD:
-                    if (_currentStep == 8 || _currentStep == 27)
-                        NextStep();
-                    break;
-                case Enumerators.TutorialReportAction.END_TURN:
-                    if (_currentStep == 10 || _currentStep == 12 || _currentStep == 16 || _currentStep == 17 || _currentStep == 21)
-                        NextStep();
-                    break;
-                case Enumerators.TutorialReportAction.ATTACK_CARD_CARD:
-					if (_currentStep == 13 || _currentStep == 23)
-						NextStep();
-					break;
-                case Enumerators.TutorialReportAction.ATTACK_CARD_HERO:
-                    if (_currentStep == 19 || _currentStep == 28)
-                        NextStep();
-                        break;
-                case Enumerators.TutorialReportAction.USE_ABILITY:
-                    if (_currentStep == 32)
-                        NextStep();
-                        break;
-                    default:
-                    break;
+                if (CurrentTutorialDataStep.RequiredAction == action)
+                {
+                    NextStep();
+                }
             }
         }
 
         public void ActivateSelectTarget()
         {
             if (_targettingArrow != null)
+            {
                 _targettingArrow.Activate();
+            }
         }
 
         public void DeactivateSelectTarget()
         {
             if (_targettingArrow != null)
+            {
                 _targettingArrow.Deactivate();
+            }
         }
 
+        public void NextStep()
+        {
+            if (!IsBubbleShow)
+                return;
+
+            if (_tutorialSteps.IndexOf(CurrentTutorialDataStep) >= _tutorialSteps.Count - 1)
+            {
+                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
+                return;
+            }
+
+            if (CurrentTutorialDataStep.ShouldStopTurn)
+            {
+                GameClient.Get<ITimerManager>().AddTimer(
+                    x =>
+                    {
+                        GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
+                    },
+                    null,
+                    5f);
+            }
+
+            if (CurrentTutorialDataStep.CanProceedWithEndStepManually)
+            {
+                NextStepCommonEndActions();
+            }
+            else
+            {
+                GameClient.Get<ITimerManager>().AddTimer(
+                    x =>
+                    {
+                        NextStepCommonEndActions();
+                    },
+                    time: 2f);
+            }
+        }
+
+        private void NextStepCommonEndActions()
+        {
+            _currentTutorialStepIndex++;
+
+            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+
+            GameClient.Get<IGameplayManager>().TutorialStep = _currentTutorialStepIndex;
+            UpdateTutorialVisual();
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+            if (CurrentTutorialDataStep.HasDelayToPlaySound)
+            {
+                GameClient.Get<ITimerManager>().AddTimer(
+                    x =>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex,
+                            Constants.TutorialSoundVolume, false);
+                    },
+                    null,
+                    CurrentTutorialDataStep.DelayToPlaySound);
+            }
+            else
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex, Constants.TutorialSoundVolume,
+                    false);
+            }
+        }
+
+        private void UpdateTutorialVisual()
+        {
+            DestroySelectTarget();
+
+            _popup.Show(CurrentTutorialDataStep.JaneText);
+            _popup.UpdatePose(CurrentTutorialDataStep.JanePose);
+
+            if (CurrentTutorialDataStep.IsFocusing)
+            {
+                if (CurrentTutorialDataStep.IsArrowEnabled)
+                {
+                    CreateSelectTarget();
+                }
+
+                _popup.ShowTutorialFocus(_currentTutorialStepIndex);
+
+                if (CurrentTutorialDataStep.IsShowNextButtonFocusing)
+                {
+                    _popup.ShowNextButton();
+                }
+            }
+            else
+            {
+                _popup.HideTutorialFocus();
+
+                if (CurrentTutorialDataStep.IsShowQuestion)
+                {
+                    _popup.ShowQuestion();
+                }
+                else if (CurrentTutorialDataStep.IsShowNextButton)
+                {
+                    _popup.ShowNextButton();
+                }
+            }
+        }
 
         private void CreateSelectTarget()
         {
-            _targettingArrow = MonoBehaviour.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
-            _targettingArrow.Begin(_steps[_currentStep].tutorialTargetingArrowInfo.startPosition);
-            _targettingArrow.UpdateTargetPosition(_steps[_currentStep].tutorialTargetingArrowInfo.targetPosition);
+            _targettingArrow = Object.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
+            _targettingArrow.Begin((Vector3)CurrentTutorialDataStep.ArrowStartPosition);
+            _targettingArrow.UpdateTargetPosition((Vector3)CurrentTutorialDataStep.ArrowEndPosition);
         }
 
         private void DestroySelectTarget()
@@ -335,65 +265,6 @@ namespace LoomNetwork.CZB
                 _targettingArrow.Dispose();
                 _targettingArrow = null;
             }
-            //_targettingArrow.Deactivate();
         }
-    }
-
-    public class TutorialStep
-    {
-        private int _index;
-        public Vector2[] focusPoints;
-        public string description;
-        public bool focusing;
-        public Enumerators.TutorialJanePoses pose;
-        //public Action _handler;
-        public bool finished;
-        public bool isArrowEnabled;
-        public TutorialTargetingArrowInfo tutorialTargetingArrowInfo;
-
-
-        public TutorialStep(ref int index, Enumerators.TutorialJanePoses pose, string description, bool focusing)
-        {
-            _index = index;
-           // this.focusPoints = Vector2.zero;
-            this.description = description;
-            this.focusing = focusing;
-            this.pose = pose;
-            finished = false;
-            index++;
-            tutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
-            isArrowEnabled = false;
-        }
-
-        public TutorialStep(ref int index, Enumerators.TutorialJanePoses pose, string description, bool focusing, bool isArrowEnabled, Vector3 startPosition, Vector3 targetPosition)
-        {
-            _index = index;
-           // this.focusPoints = Vector2.zero;
-            this.description = description;
-            this.focusing = focusing;
-			this.pose = pose;
-
-			finished = false;
-            index++;
-            this.isArrowEnabled = isArrowEnabled;
-            tutorialTargetingArrowInfo = new TutorialTargetingArrowInfo();
-            tutorialTargetingArrowInfo.startPosition = startPosition;
-            tutorialTargetingArrowInfo.targetPosition = targetPosition;
-        }
-
-        public void Update()
-        {
-            if(finished)
-            {
-               // _handler;
-            }
-            
-        }
-    }
-
-    public class TutorialTargetingArrowInfo
-    {
-        public Vector3 startPosition;
-        public Vector3 targetPosition;
     }
 }

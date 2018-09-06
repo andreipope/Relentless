@@ -1,44 +1,23 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
+using Loom.ZombieBattleground.Common;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class MatchManager : IService, IMatchManager
     {
         private IUIManager _uiManager;
+
         private IScenesManager _sceneManager;
+
         private IAppStateManager _appStateManager;
+
         private IGameplayManager _gameplayManager;
+
         private ITutorialManager _tutorialManager;
 
         private Enumerators.AppState _finishMatchAppState;
 
-
         public Enumerators.MatchType MatchType { get; set; }
-
-        public void Dispose()
-        {
-            _sceneManager.SceneForAppStateWasLoadedEvent -= SceneForAppStateWasLoadedEventHandler;
-        }
-
-        public void Init()
-        {
-            _uiManager = GameClient.Get<IUIManager>();
-            _sceneManager = GameClient.Get<IScenesManager>();
-            _appStateManager = GameClient.Get<IAppStateManager>();
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
-
-            _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
-        }
-        public void Update()
-        {
-        }
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
@@ -65,30 +44,35 @@ namespace LoomNetwork.CZB
                     CreateLocalMatch();
                     break;
                 default:
-                    throw new NotImplementedException(matchType.ToString() + " not implemented yet.");
+                    throw new NotImplementedException(matchType + " not implemented yet.");
             }
 
             MatchType = matchType;
         }
 
+        public void Dispose()
+        {
+            _sceneManager.SceneForAppStateWasLoadedEvent -= SceneForAppStateWasLoadedEventHandler;
+        }
+
+        public void Init()
+        {
+            _uiManager = GameClient.Get<IUIManager>();
+            _sceneManager = GameClient.Get<IScenesManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+
+            _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
+        }
+
+        public void Update()
+        {
+        }
+
         private void CreateLocalMatch()
         {
-            //todo write logic
-
-            StartLoadMatch();
-        }
-
-        private void CreatePVEMatch()
-        {
-            //todo write logic
-
-            StartLoadMatch();
-        }
-
-        private void CreateNetworkMatch()
-        {
-            //todo write logic
-
+            // todo write logic
             StartLoadMatch();
         }
 
@@ -102,17 +86,18 @@ namespace LoomNetwork.CZB
 
         private void SceneForAppStateWasLoadedEventHandler(Enumerators.AppState state)
         {
-            if (state == Enumerators.AppState.GAMEPLAY)
+            switch (state)
             {
-                _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+                case Enumerators.AppState.GAMEPLAY:
+                    _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
-                _uiManager.HidePopup<LoadingGameplayPopup>();
+                    _uiManager.HidePopup<LoadingGameplayPopup>();
 
-                _gameplayManager.StartGameplay();
-            }
-            else if(state == Enumerators.AppState.APP_INIT)
-            {
-                _appStateManager.ChangeAppState(_finishMatchAppState);
+                    _gameplayManager.StartGameplay();
+                    break;
+                case Enumerators.AppState.APP_INIT:
+                    _appStateManager.ChangeAppState(_finishMatchAppState);
+                    break;
             }
         }
     }

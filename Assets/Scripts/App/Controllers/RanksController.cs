@@ -1,26 +1,19 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
-using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class RanksController : IController
     {
-        private IGameplayManager _gameplayManager;
-
         public void Dispose()
         {
         }
 
         public void Init()
         {
-            _gameplayManager = GameClient.Get<IGameplayManager>();
         }
 
         public void Update()
@@ -31,12 +24,15 @@ namespace LoomNetwork.CZB
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnit> units, Data.Card card)
+        public void UpdateRanksByElements(List<BoardUnit> units, Card card)
         {
-            var elementFilter = units.Where((unit) => unit.Card.libraryCard.cardSetType == card.cardSetType && (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
-            var weakerUnitsList = elementFilter.Where((unit) => (int)unit.Card.libraryCard.cardRank < (int)card.cardRank).ToList();
-            if(weakerUnitsList.Count > 0)
-                DoRankUpgrades(weakerUnitsList, card.cardSetType, card.cardRank);
+            List<BoardUnit> filter = units.Where(unit =>
+                unit.Card.LibraryCard.CardSetType == card.CardSetType &&
+                (int) unit.Card.LibraryCard.CardRank < (int) card.CardRank).ToList();
+            if (filter.Count > 0)
+            {
+                DoRankUpgrades(filter, card.CardSetType, card.CardRank);
+            }
         }
 
         public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
@@ -62,14 +58,11 @@ namespace LoomNetwork.CZB
                     LifeRankBuff(units, rank);
                     break;
             }
-           
-            //foreach (var unit in units)
-             //   unit.ApplyBuffs();
         }
 
         private void AirRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
         {
-            List<Enumerators.BuffType> buffs =  new List<Enumerators.BuffType>();
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
             switch (rank)
             {
@@ -87,6 +80,7 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
         }
 
@@ -110,6 +104,7 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
         }
 
@@ -133,6 +128,7 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
         }
 
@@ -156,6 +152,7 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
         }
 
@@ -179,6 +176,7 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
         }
 
@@ -202,17 +200,8 @@ namespace LoomNetwork.CZB
                     count = 3;
                     break;
             }
+
             BuffRandomAlly(units, count, buffs);
-        }
-
-        private void BuffHorde(List<BoardUnit> units, Enumerators.BuffType buffType)
-        {
-            foreach (var unit in units)
-            {
-                Debug.Log(unit.Card.libraryCard.name);
-
-                unit.BuffUnit(buffType);
-            }
         }
 
         private void BuffRandomAlly(List<BoardUnit> units, int count, List<Enumerators.BuffType> buffTypes)
@@ -221,16 +210,18 @@ namespace LoomNetwork.CZB
             for (int i = 0; i < count; i++)
             {
                 if (units.Count == 0)
+                {
                     break;
+                }
+
                 random = Random.Range(0, units.Count);
 
                 foreach (Enumerators.BuffType buff in buffTypes)
                 {
-                    //units[random].BuffUnit(buffs);
                     units[random].ApplyBuff(buff);
                 }
+
                 units.RemoveAt(random);
-                
             }
         }
     }

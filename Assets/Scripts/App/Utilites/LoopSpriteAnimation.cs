@@ -1,40 +1,34 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class LoopSpriteAnimation : MonoBehaviour
     {
         [Range(0.1f, 150f)]
-        public float speed = 1f;
+        public float Speed = 1f;
 
-        public List<Sprite> frames;
+        public List<Sprite> Frames;
 
-        public SpriteRenderer spriteRenderer;
-
+        public SpriteRenderer SpriteRenderer;
 
         private void Start()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            SpriteRenderer = GetComponent<SpriteRenderer>();
             StartCoroutine(Animate());
         }
 
         private IEnumerator Animate()
         {
-            var delay = new WaitForSeconds(Time.fixedDeltaTime / speed);
+            WaitForSeconds delay = new WaitForSeconds(Time.fixedDeltaTime / Speed);
 
             while (true)
             {
-                for (int i = 0; i < frames.Count; i++)
+                for (int i = 0; i < Frames.Count; i++)
                 {
-                    spriteRenderer.sprite = frames[i];
+                    SpriteRenderer.sprite = Frames[i];
                     yield return delay;
                 }
             }

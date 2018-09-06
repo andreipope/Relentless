@@ -1,13 +1,19 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using System;
+using System.Threading.Tasks;
+using Object = UnityEngine.Object;
 
-
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface ILoadObjectsManager
     {
-        T GetObjectByPath<T>(string path) where T : UnityEngine.Object;
-        T[] GetObjectsByPath<T>(string path) where T : UnityEngine.Object;       
+        T GetObjectByPath<T>(string path, string bundleName = null)
+            where T : Object;
+
+        T[] GetObjectsByPath<T>(string[] path, string bundleName = null)
+            where T : Object;
+
+        void LoadAssetBundleFromFile(string name);
+
+        Task LoadAssetBundleFromFileAsync(string name, IProgress<float> progress = null);
     }
 }

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: StoneSkin_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 4d458060b8db95e45aa82eaf5357be75, type: 3}
+    - {fileID: 2800000, guid: 1cba6fbcf84f18940a698b5db7300835, type: 3}
+    - {fileID: 2800000, guid: f3ecb2e0d6b7fc34ea66e54726462f29, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 4d458060b8db95e45aa82eaf5357be75, type: 3}
+  - {fileID: 21300000, guid: f3ecb2e0d6b7fc34ea66e54726462f29, type: 3}
+  - {fileID: 21300000, guid: 1cba6fbcf84f18940a698b5db7300835, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - StoneSprite
+  - Dust2
+  - StoneSpriteMask
+  m_Tag: StoneSkin_Atlas
+  m_IsVariant: 0

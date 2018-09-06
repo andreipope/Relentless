@@ -1,73 +1,70 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using LoomNetwork.CZB.Gameplay;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class LoadingGameplayPopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
-        public static Action OnHidePopupEvent;
-
         private ILoadObjectsManager _loadObjectsManager;
+
         private IUIManager _uiManager;
+
         private IScenesManager _sceneManager;
-
-
-        private GameObject _selfPage;
 
         private Image _progressBar;
 
+        private Image _backgroundImage;
+
+        private Sprite[] _backgroundSprites;
+
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _sceneManager = GameClient.Get<IScenesManager>();
-        }
 
+            _backgroundSprites = GameClient.Get<ILoadObjectsManager>().GetObjectsByPath<Sprite>(new string[] {
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_air",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_earth",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_fire",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_life",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_toxic",
+                "Images/UI/Backgrounds/Loading/loading_screen_bg_water"
+            });
+        }
 
         public void Dispose()
         {
-            
         }
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-
-            if (_selfPage == null)
+            if (Self == null)
                 return;
-            
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
-		}
+
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
+        }
 
         public void SetMainPriority()
         {
-            
         }
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate (_loadObjectsManager.GetObjectByPath<GameObject> ("Prefabs/UI/Popups/LoadingGameplayPopup"));
-            _selfPage.transform.SetParent (_uiManager.Canvas3.transform, false);
-                
-            _progressBar = _selfPage.transform.Find("ProgresBar/Fill").GetComponent<Image>();
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingGameplayPopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+
+            _backgroundImage = Self.transform.Find("Image_Background").GetComponent<Image>();
+            _progressBar = Self.transform.Find("ProgresBar/Fill").GetComponent<Image>();
+
+            int randomSprite = Random.Range(0, _backgroundSprites.Length);
+            _backgroundImage.sprite = _backgroundSprites[randomSprite];
 
             _progressBar.fillAmount = 0f;
         }
@@ -79,15 +76,15 @@ namespace LoomNetwork.CZB
 
         public void Update()
         {
-            if (_selfPage == null)
+            if (Self == null)
                 return;
-            
-            _progressBar.fillAmount = Mathf.Max(_progressBar.fillAmount, (float)_sceneManager.SceneLoadingProgress / 100f);
 
-            if (_sceneManager.SceneLoadingProgress >= 100) {
-                Hide ();
+            _progressBar.fillAmount = Mathf.Max(_progressBar.fillAmount, _sceneManager.SceneLoadingProgress / 100f);
+
+            if (_sceneManager.SceneLoadingProgress >= 100)
+            {
+                Hide();
             }
         }
-
     }
 }

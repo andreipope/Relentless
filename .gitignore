@@ -4,6 +4,7 @@
 /[Bb]uild/
 /[Bb]uilds/
 /[Aa]ssetBundles/
+/[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/StreamingAssets/AssetBundles/*
 
@@ -40,6 +41,18 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+# StyleCop
+StyleCop.Cache
+
+# ReUniter
+.reuniter_data
+
+# Mac crap
+.DS_Store
+
 # Local-only files
 Assets/Resources/BuildMetaInfo.asset
 Assets/Resources/BuildMetaInfo.asset.meta
+
+TypeCache.asset
+TypeCache.asset.meta

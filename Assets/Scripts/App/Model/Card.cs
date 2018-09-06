@@ -1,70 +1,73 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using Loom.Newtonsoft.Json;
-using UnityEngine;
-using LoomNetwork.CZB.Helpers;
-using LoomNetwork.Internal;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
+using Newtonsoft.Json;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class Card
     {
-        //[JsonIgnore]
-        public int id;
-        public Enumerators.SetType cardSetType;
-        public string kind;
-        public string name;
-        public int cost;
-        public string description;
-        public string flavorText; // new
-        public string picture;
-        public int damage;
-        public int health;
-        public string rank;
-        public string type;
-        public string frame;
-        public List<AbilityData> abilities = new List<AbilityData>();
-        public CardViewInfo cardViewInfo = new CardViewInfo();
+        public int Id;
+
+        public Enumerators.SetType CardSetType;
+
+        public string Kind;
+
+        public string Name;
+
+        public int Cost;
+
+        public string Description;
+
+        public string FlavorText;
+
+        public string Picture;
+
+        public int Damage;
+
+        public int Health;
+
+        public string Rank;
+
+        public string Type;
+
+        public string Frame;
+
+        public List<AbilityData> Abilities = new List<AbilityData>();
+
+        public CardViewInfo CardViewInfo = new CardViewInfo();
 
         [JsonIgnore]
-        public Enumerators.CardRank cardRank;
-        [JsonIgnore]
-        public Enumerators.CardType cardType;
-        [JsonIgnore]
-        public Enumerators.CardKind cardKind;
+        public Enumerators.CardRank CardRank;
 
-        public Card()
-        {
-        }
+        [JsonIgnore]
+        public Enumerators.CardType CardType;
+
+        [JsonIgnore]
+        public Enumerators.CardKind CardKind;
 
         public Card Clone()
         {
             Card card = new Card
             {
-                id = id,
-                kind = kind,
-                name = name,
-                cost = cost,
-                description = description,
-                flavorText = flavorText,
-                picture = picture,
-                damage = damage,
-                health = health,
-                rank = rank,
-                type = type,
-                cardSetType = cardSetType,
-                cardKind = cardKind,
-                cardRank = cardRank,
-                cardType = cardType,
-                abilities = abilities,
-                cardViewInfo = cardViewInfo,
-                frame = frame
+                Id = Id,
+                Kind = Kind,
+                Name = Name,
+                Cost = Cost,
+                Description = Description,
+                FlavorText = FlavorText,
+                Picture = Picture,
+                Damage = Damage,
+                Health = Health,
+                Rank = Rank,
+                Type = Type,
+                CardSetType = CardSetType,
+                CardKind = CardKind,
+                CardRank = CardRank,
+                CardType = CardType,
+                Abilities = Abilities,
+                CardViewInfo = CardViewInfo,
+                Frame = Frame
             };
 
             return card;
@@ -72,13 +75,14 @@ namespace LoomNetwork.CZB.Data
 
         public override string ToString()
         {
-            return $"({nameof(name)}: {name}, {nameof(cardSetType)}: {cardType})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardType})";
         }
     }
 
     public class CardViewInfo
     {
-        public FloatVector3 position = FloatVector3.zero;
-        public FloatVector3 scale = new FloatVector3(0.38f);
+        public FloatVector3 Position = FloatVector3.Zero;
+
+        public FloatVector3 Scale = new FloatVector3(0.38f);
     }
 }

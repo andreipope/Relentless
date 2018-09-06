@@ -1,70 +1,48 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-        public int health;
-        public int damage;
-        public Enumerators.SetType setType;
+        public int Health { get; }
 
-        public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int Damage { get; }
+
+        public Enumerators.SetType SetType { get; }
+
+        public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            health = ability.health;
-            damage = ability.damage;
-            setType = ability.abilitySetType;
+            Health = ability.Health;
+            Damage = ability.Damage;
+            SetType = ability.AbilitySetType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            foreach (var unit in playerCallerOfAbility.BoardCards)
+            foreach (BoardUnit unit in PlayerCallerOfAbility.BoardCards)
             {
-                if(unit.Card.libraryCard.cardSetType.Equals(setType) && unit != abilityUnitOwner)
+                if (unit.Card.LibraryCard.CardSetType.Equals(SetType) && unit != AbilityUnitOwner)
                 {
-                    
-                    unit.BuffedDamage += damage;
-                    unit.CurrentDamage += damage;
+                    unit.BuffedDamage += Damage;
+                    unit.CurrentDamage += Damage;
 
-                    unit.BuffedHP += health;
-                    unit.CurrentHP += health;
-                }   
+                    unit.BuffedHp += Health;
+                    unit.CurrentHp += Health;
+                }
             }
         }
     }

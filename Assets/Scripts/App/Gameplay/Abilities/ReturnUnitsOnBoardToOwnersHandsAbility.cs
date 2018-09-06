@@ -1,17 +1,13 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
 using System.Collections.Generic;
-using UnityEngine;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ReturnUnitsOnBoardToOwnersHandsAbility : AbilityBase
     {
-        public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
         }
 
@@ -19,30 +15,10 @@ namespace LoomNetwork.CZB
         {
             base.Activate();
 
-            if (abilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
         }
 
         public override void Action(object info = null)
@@ -50,28 +26,28 @@ namespace LoomNetwork.CZB
             base.Action(info);
 
             List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+            units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (var unit in units)
+            foreach (BoardUnit unit in units)
+            {
                 ReturnBoardUnitToHand(unit);
-
+            }
 
             units.Clear();
         }
 
         private void ReturnBoardUnitToHand(BoardUnit unit)
         {
-            CreateVFX(unit.transform.position, true, 3f, true);
+            CreateVfx(unit.Transform.position, true, 3f, true);
 
-            _cardsController.ReturnCardToHand(playerCallerOfAbility, unit);
+            CardsController.ReturnCardToHand(unit);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-            {
-                playerCallerOfAbility,
-                abilityData,
-                unit
-            }));
+            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
+                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
+                {
+                    PlayerCallerOfAbility, AbilityData, unit
+                }));
         }
     }
 }

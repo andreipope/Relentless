@@ -1,46 +1,39 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
 using TMPro;
-using UnityEngine.EventSystems;
+using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class ReportViewBaseAttackCreatureByCreature : ReportViewBase
     {
-        private BoardUnit _attackingCreature,
-                              _attackedCreature;
+        private BoardUnit _attackingCreature, _attackedCreature;
 
-        private int _attackingDamage,
-                    _attackedDamage;
+        private int _attackingDamage, _attackedDamage;
 
-        private GameObject _attackingCreatureObj,
-                           _attackedCreatureObj;
+        private GameObject _attackingCreatureObj, _attackedCreatureObj;
 
-        public ReportViewBaseAttackCreatureByCreature(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public ReportViewBaseAttackCreatureByCreature(GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
             base.SetInfo();
 
-            _attackingCreature = gameAction.parameters[0] as BoardUnit;
-            _attackingDamage = (int)gameAction.parameters[1];
-            _attackedCreature = gameAction.parameters[2] as BoardUnit;
-            _attackedDamage = (int)gameAction.parameters[3];
+            _attackingCreature = GameAction.Parameters[0] as BoardUnit;
+            _attackingDamage = (int) GameAction.Parameters[1];
+            _attackedCreature = GameAction.Parameters[2] as BoardUnit;
+            _attackedDamage = (int) GameAction.Parameters[3];
 
-
-            previewImage.sprite = _attackingCreature.sprite;
+            PreviewImage.sprite = _attackingCreature.Sprite;
             _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
             _attackedCreatureObj = CreateCardPreview(_attackedCreature.Card, Vector3.right * 6);
 
-            attackingPictureObject.SetActive(true);
+            AttackingPictureObject.SetActive(true);
 
             GameObject attackViewPlayer = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);
-            var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            TextMeshPro damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = (-_attackingDamage).ToString();
             attackViewPlayer.transform.localPosition = -Vector3.up * 3;
 
@@ -48,27 +41,11 @@ namespace LoomNetwork.CZB
             {
                 GameObject attackViewCreature = _attackingCreatureObj.transform.Find("AttackingHealth").gameObject;
                 attackViewCreature.SetActive(true);
-                var damageTextCreature = attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
+                TextMeshPro damageTextCreature =
+                    attackViewCreature.transform.Find("AttackText").GetComponent<TextMeshPro>();
                 damageTextCreature.text = (-_attackedDamage).ToString();
                 attackViewCreature.transform.localPosition = -Vector3.up * 3;
-
             }
         }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
     }
 }

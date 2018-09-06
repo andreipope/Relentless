@@ -1,76 +1,63 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
+﻿using System;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
-using UnityEngine.EventSystems;
-using LoomNetwork.CZB.Data;
-using System;
-using LoomNetwork.CZB.Common;
+using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
-    public class GameplayActionReport_HealPlayerByAbility : ReportViewBase
+    public class GameplayActionReportHealPlayerByAbility : ReportViewBase
     {
         private object _abilityOwner;
+
         private AbilityData _usedAbility;
+
         private int _abilityValue;
+
         private Player _abilityUsedOnPlayer;
 
-        private GameObject _healCreatureObj,
-                           _healedPlayerObj;
+        private GameObject _healCreatureObj, _healedPlayerObj;
 
-        public GameplayActionReport_HealPlayerByAbility(GameObject prefab, Transform parent, GameActionReport gameAction) : base(prefab, parent, gameAction) { }
+        public GameplayActionReportHealPlayerByAbility(GameObject prefab, Transform parent, GameActionReport gameAction)
+            : base(prefab, parent, gameAction)
+        {
+        }
 
         public override void SetInfo()
         {
             base.SetInfo();
-            _abilityOwner = gameAction.parameters[0];
-            _usedAbility = gameAction.parameters[1] as AbilityData;
-            _abilityValue = (int)gameAction.parameters[2];
-            _abilityUsedOnPlayer = gameAction.parameters[3] as Player;
+            _abilityOwner = GameAction.Parameters[0];
+            _usedAbility = GameAction.Parameters[1] as AbilityData;
+            _abilityValue = (int) GameAction.Parameters[2];
+            _abilityUsedOnPlayer = GameAction.Parameters[3] as Player;
 
-
-            if (_abilityOwner is BoardUnit)
+            switch (_abilityOwner)
             {
-                previewImage.sprite = (_abilityOwner as BoardUnit).sprite;
-                _healCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
-            }
-            else if (_abilityOwner is BoardSpell)
-            {
-                var rarity = Enum.GetName(typeof(Enumerators.CardRank), (_abilityOwner as BoardSpell).Card.libraryCard.cardRank);
-                string cardSetName = cardsController.GetSetOfCard((_abilityOwner as BoardSpell).Card.libraryCard);
-                previewImage.sprite = loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(), (_abilityOwner as BoardSpell).Card.libraryCard.picture.ToLower()));
-                _healCreatureObj = CreateCardPreview((_abilityOwner as BoardSpell).Card, Vector3.zero);
+                case BoardUnit unit:
+                    PreviewImage.sprite = unit.Sprite;
+                    _healCreatureObj = CreateCardPreview(unit.Card, Vector3.zero);
+                    break;
+                case BoardSpell spell:
+                {
+                    string rarity = Enum.GetName(typeof(Enumerators.CardRank), spell.Card.LibraryCard.CardRank);
+                    string cardSetName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                    PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(
+                        string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", cardSetName.ToLower(), rarity.ToLower(),
+                            spell.Card.LibraryCard.Picture.ToLower()));
+                    _healCreatureObj = CreateCardPreview(spell.Card, Vector3.zero);
+                    break;
+                }
             }
 
-            healPictureObject.SetActive(true);
+            HealPictureObject.SetActive(true);
 
             _healedPlayerObj = CreatePlayerPreview(_abilityUsedOnPlayer, Vector3.right * 6);
 
             GameObject attackViewPlayer = _healedPlayerObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);
-            var damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
+            TextMeshPro damageText = attackViewPlayer.transform.Find("AttackText").GetComponent<TextMeshPro>();
             damageText.text = _abilityValue.ToString();
             attackViewPlayer.transform.localPosition = Vector3.up * -0.86f;
         }
-
-        public override void OnPointerEnterEventHandler(PointerEventData obj)
-        {
-            base.OnPointerEnterEventHandler(obj);
-        }
-
-        public override void OnPointerExitEventHandler(PointerEventData obj)
-        {
-            base.OnPointerExitEventHandler(obj);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
     }
 }
