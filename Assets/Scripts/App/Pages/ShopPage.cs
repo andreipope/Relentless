@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
     public class ShopPage : IUIElement
     {
         private const float ScrollAnimationDuration = 0.5f;
+        private const int MaxItemsInShop = 5;
+        private const int LoopStartFakeShopCount = 1;
 
         private readonly float[] _costs =
         {
@@ -54,6 +56,7 @@ namespace Loom.ZombieBattleground
         private int _selectedShopIndex;
         private HorizontalLayoutGroup _shopsContainer;
         private List<ShopObject> _shopObjects;
+        private List<ShopObject> _loopFakeShopObjects;
 
         private Sequence _shopSelectScrollSequence;
 
@@ -158,12 +161,24 @@ namespace Loom.ZombieBattleground
         private void FillShopObjects()
         {
             _shopObjects = new List<ShopObject>();
+            _loopFakeShopObjects = new List<ShopObject>();
 
-            for (int i = 0; i < _shopsContainer.transform.childCount; i++)
+            // add fake shop obj in front
+            ShopObject fakeShopObj = new ShopObject(MaxItemsInShop, _shopsContainer.transform);
+            fakeShopObj.Deselect();
+            _loopFakeShopObjects.Add(fakeShopObj);
+
+            // real shop obj
+            for (int i = 0; i < MaxItemsInShop; i++)
             {
-                ShopObject current = new ShopObject(_shopsContainer.transform.GetChild(i).gameObject);
+                ShopObject current = new ShopObject(i+1, _shopsContainer.transform);
                 _shopObjects.Add(current);
             }
+
+            // add fake shop obj in end
+            ShopObject fakeObj = new ShopObject(LoopStartFakeShopCount, _shopsContainer.transform);
+            fakeObj.Deselect();
+            _loopFakeShopObjects.Add(fakeObj);
 
             ShopObjectSelected(_shopObjects[0]);
         }
@@ -172,7 +187,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (ShopObject item in _shopObjects)
             {
-                if (!item.Equals(shopObject))
+                if (item != shopObject)
                 {
                     item.Deselect();
                 }
@@ -205,7 +220,7 @@ namespace Loom.ZombieBattleground
         }
 
         private bool SetSelectedShopIndexAndUpdateScrollPosition(
-            int shopIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
+            int shopIndex, bool animateTransition, bool selectShopObject = true, bool force = false)
         {
             if (!force && shopIndex == _selectedShopIndex)
             {
@@ -233,7 +248,7 @@ namespace Loom.ZombieBattleground
                     CalculateShopContainerShiftForShopIndex(_selectedShopIndex);
             }
 
-            if (selectOverlordObject)
+            if (selectShopObject)
             {
                 ShopObjectSelected(_shopObjects[_selectedShopIndex]);
             }
@@ -359,29 +374,30 @@ namespace Loom.ZombieBattleground
 
     public class ShopObject
     {
-        private GameObject _activeShopItemObj;
-        private GameObject _deactiveShopItemObj;
+        private readonly GameObject _activeShopItemObj;
+        private readonly GameObject _deactiveShopItemObj;
+        private readonly ILoadObjectsManager _loadObjectsManager;
 
         private GameObject SelfObject { get; }
 
-        public ShopObject(GameObject obj)
+        public ShopObject(int index, Transform parent)
         {
-            SelfObject = obj;
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
+                        "Prefabs/UI/Elements/Shop/Item_ShopSelected_"+index), parent, false);
+
             _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
             _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
         }
 
         public void Select()
         {
-
             _deactiveShopItemObj.SetActive(false);
             _activeShopItemObj.SetActive(true);
-
         }
 
         public void Deselect()
         {
-
             _deactiveShopItemObj.SetActive(true);
             _activeShopItemObj.SetActive(false);
         }
@@ -389,25 +405,3 @@ namespace Loom.ZombieBattleground
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
