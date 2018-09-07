@@ -310,6 +310,23 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.PUSH:
                 case Enumerators.OverlordSkill.DRAW:
+                case Enumerators.OverlordSkill.BLIZZARD:
+                case Enumerators.OverlordSkill.BREAKOUT:
+                case Enumerators.OverlordSkill.ENHANCE:
+                case Enumerators.OverlordSkill.EPIDEMIC:
+                case Enumerators.OverlordSkill.FORTIFY:
+                case Enumerators.OverlordSkill.FORTRESS:
+                case Enumerators.OverlordSkill.ICE_WALL:
+                case Enumerators.OverlordSkill.INFECT:
+                case Enumerators.OverlordSkill.LEVITATE:
+                case Enumerators.OverlordSkill.MASS_RABIES:
+                case Enumerators.OverlordSkill.METEOR_SHOWER:
+                case Enumerators.OverlordSkill.PHALANX:
+                case Enumerators.OverlordSkill.REANIMATE:
+                case Enumerators.OverlordSkill.RESSURECT:
+                case Enumerators.OverlordSkill.RETREAT:
+                case Enumerators.OverlordSkill.SHATTER:
+                case Enumerators.OverlordSkill.WIND_SHIELD:
                 default:
                     prefab = new GameObject();
                     break;
@@ -942,7 +959,17 @@ namespace Loom.ZombieBattleground
 
         private void FortifyAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            if (target != null && target is BoardUnit)
+            {
+                BoardUnit unit = target as BoardUnit;
+
+                unit.SetAsHeavyUnit();
+
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
+
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            }
         }
 
         private void PhalanxAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -969,7 +996,12 @@ namespace Loom.ZombieBattleground
 
         private void FortressAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<BoardUnit> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH), skill.Count);
+
+            foreach(BoardUnit unit in units)
+            {
+                unit.SetAsHeavyUnit();
+            }
         }
 
         // 
