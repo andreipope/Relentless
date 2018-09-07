@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS
+﻿#if ENABLE_IL2CPP
 
 namespace Loom.ZombieBattleground.Protobuf
 {
