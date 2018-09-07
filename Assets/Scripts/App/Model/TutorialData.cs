@@ -72,6 +72,7 @@ namespace Loom.ZombieBattleground
             IsManuallyHideBubble = false;
             IsPauseTutorial = false;
             CanHandleInput = false;
+            IsLaunchAIBrain = false;
         }
     }
 }

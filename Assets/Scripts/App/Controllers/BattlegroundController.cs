@@ -849,6 +849,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
             _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
             _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+            _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
 
             _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
             _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;

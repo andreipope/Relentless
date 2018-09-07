@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
             public int CurrentGoo;
             public int MaximumGoo;
 
+            public Enumerators.AiType AiType;
+
             public List<string> CardsInHand;
             public List<string> CardsInDeck;
             public List<UnitOnBoardInfo> CardsOnBoard;
@@ -36,11 +38,13 @@ namespace Loom.ZombieBattleground
                 CardsOnBoard = new List<UnitOnBoardInfo>();
                 CardsOnGraveyard = new List<string>();
 
+                AiType = Enumerators.AiType.BLITZ_AI;
+
                 MaximumHealth = Constants.DefaultPlayerHp;
                 Health = MaximumHealth;
 
                 MaximumGoo = Constants.DefaultPlayerGoo;
-                Health = MaximumGoo;
+                CurrentGoo = MaximumGoo;
             }
         }
 

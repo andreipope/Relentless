@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground
             {
                 IsSpecificGameplayBattleground = true;
 
-                _tutorialManager.SetupTutorialById(1);
+                _tutorialManager.SetupTutorialById(0);
 
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 

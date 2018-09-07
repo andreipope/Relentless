@@ -136,8 +136,14 @@ namespace Loom.ZombieBattleground
         {
             OpponentDeck deck =
                 _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId);
-            _aiType = (Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type);
+            SetAiType((Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type));
         }
+
+        public void SetAiType(Enumerators.AiType aiType)
+        {
+            _aiType = aiType;
+        }
+
 
         private void GameEndedHandler(Enumerators.EndGameType obj)
         {
@@ -300,7 +306,7 @@ namespace Loom.ZombieBattleground
 
             int totalValue = GetPlayerAttackingValue();
             if ((totalValue >= _gameplayManager.CurrentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
-                _aiType == Enumerators.AiType.TIME_BLITZ_AI) && !_tutorialManager.IsTutorial)
+                _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {

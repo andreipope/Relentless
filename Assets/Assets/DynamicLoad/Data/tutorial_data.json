@@ -20,7 +20,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "IsLaunchAIBrain": true
         },
         {
           "id": 1,
@@ -240,6 +241,7 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
+          "IsLaunchAIBrain": true,
           "IsPauseTutorial": true
         },
         {
@@ -364,7 +366,8 @@
           "IsShowNextButton": false,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "IsLaunchAIBrain": true
         },
         {
           "id": 18,
@@ -470,7 +473,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "IsManuallyHideBubble": true
+          "IsManuallyHideBubble": true,
+          "IsLaunchAIBrain": true
         },
         {
           "id": 23,
@@ -613,7 +617,7 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
+          "CanHandleInput": true,
           "CanClickEndTurn": false
         },
         {
@@ -806,6 +810,7 @@
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
+          "AiType" : "MIXED_AI",
           "CardsInHand": [
           ],
           "CardsInDeck": [
@@ -1887,6 +1892,7 @@
           "MaximumHealth": 20,
           "CurrentGoo": 9,
           "MaximumGoo": 9,
+          "AiType" : "BLITZ_AI",
           "CardsInHand": [
 
           ],
@@ -1895,12 +1901,12 @@
           ],
           "CardsOnBoard": [
             {
-              "Name": "Mountain",
-              "IsManuallyPlayable": true
-            },
-            {
               "Name": "Slab",
               "IsManuallyPlayable": false
+            },
+            {
+              "Name": "Mountain",
+              "IsManuallyPlayable": true
             },
             {
               "Name": "Slab",
