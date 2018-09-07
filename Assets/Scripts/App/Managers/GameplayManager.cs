@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground
 
         public Player OpponentPlayer { get; set; }
 
+        public bool CanDoDragActions { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -119,6 +121,8 @@ namespace Loom.ZombieBattleground
                     IsGameEnded = false;
                     IsPreparingEnded = false;
 
+                    CanDoDragActions = true;
+
                     GameStarted?.Invoke();
 
                     StartInitializeGame();
@@ -132,6 +136,8 @@ namespace Loom.ZombieBattleground
             IsGameStarted = false;
             IsGameEnded = true;
             IsPreparingEnded = false;
+
+            CanDoDragActions = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -216,7 +222,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void StartInitializeGame()
+		private void StartInitializeGame()
         {
             // initialize players
             GetController<PlayerController>().InitializePlayer();

@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         private readonly SkillsController _skillsController;
 
+        private readonly BoardArrowController _boardArrowController;
+
         private readonly SpriteRenderer _glowObjectSprite;
 
         private readonly TextMeshPro _cooldownText;
@@ -61,6 +63,7 @@ namespace Loom.ZombieBattleground
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
             _glowObjectSprite.gameObject.SetActive(false);
@@ -186,6 +189,9 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+                return;
+
             if (!_gameplayManager.IsGameplayReady())
                 return;
 
@@ -223,7 +229,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (!_usedInThisTurn && Owner.IsLocalPlayer)
+                if ((IsSkillReady && !_usedInThisTurn) && Owner.IsLocalPlayer)
                 {
                     StartDoSkill();
                 }
@@ -321,7 +327,7 @@ namespace Loom.ZombieBattleground
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 32)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.CanUseBoardSkill)
             {
                 return true;
             }

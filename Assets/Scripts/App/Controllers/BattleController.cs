@@ -249,11 +249,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer)
+        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer, int value = -1)
         {
+            int healValue = ability.Value;
+
+            if (value > 0)
+                healValue = value;
+
             if (healedPlayer != null)
             {
-                healedPlayer.Health += ability.Value;
+                healedPlayer.Health += healValue;
                 if (healedPlayer.Health > Constants.DefaultPlayerHp)
                 {
                     healedPlayer.Health = Constants.DefaultPlayerHp;
@@ -263,15 +268,20 @@ namespace Loom.ZombieBattleground
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                 Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY, new[]
                 {
-                    healler, ability, ability.Value, healedPlayer
+                    healler, ability, healValue, healedPlayer
                 }));
         }
 
-        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature)
+        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature, int value = -1)
         {
+            int healValue = ability.Value;
+
+            if (value > 0)
+                healValue = value;
+
             if (healedCreature != null)
             {
-                healedCreature.CurrentHp += ability.Value;
+                healedCreature.CurrentHp += healValue;
                 if (healedCreature.CurrentHp > healedCreature.MaxCurrentHp)
                 {
                     healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
@@ -281,7 +291,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                 Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY, new[]
                 {
-                    healler, ability, ability.Value, healedCreature
+                    healler, ability, healValue, healedCreature
                 }));
         }
 

@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-
+using Loom.Google.Protobuf.Reflection;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -145,7 +147,7 @@ namespace Loom.ZombieBattleground
             switch (buildTarget)
             {
                 default:
-                    options |= BuildAssetBundleOptions.UncompressedAssetBundle;
+                    options |= BuildAssetBundleOptions.ChunkBasedCompression;
                     break;
             }
             return options;
@@ -459,5 +461,59 @@ namespace Loom.ZombieBattleground
 
         #endregion cryptography
 
+#if UNITY_EDITOR
+        [MenuItem("Utilites/AOT/Generate Zb AOT Hint")]
+        public static void GenerateZbAotHint()
+        {
+            void GetPropertyFullType(StringBuilder stringBuilder, PropertyInfo propertyInfo)
+            {
+                string propertyTypeFullString = propertyInfo.PropertyType.FullName;
+                if (propertyInfo.PropertyType.IsGenericType)
+                {
+                    propertyTypeFullString = "";
+                    propertyTypeFullString = propertyInfo.PropertyType.GetGenericTypeDefinition().FullName;
+                    propertyTypeFullString = propertyTypeFullString.Substring(0, propertyTypeFullString.IndexOf("`", StringComparison.Ordinal));
+                    propertyTypeFullString += "<";
+                    for (int i = 0; i < propertyInfo.PropertyType.GenericTypeArguments.Length; i++)
+                    {
+                        Type type = propertyInfo.PropertyType.GenericTypeArguments[i];
+                        propertyTypeFullString += type.FullName;
+                        if (i != propertyInfo.PropertyType.GenericTypeArguments.Length - 1)
+                        {
+                            propertyTypeFullString += ", ";
+                        }
+                    }
+
+                    propertyTypeFullString += ">";
+                }
+                stringBuilder.Append(
+                    $"new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::{propertyInfo.DeclaringType.FullName}, global::{propertyTypeFullString}>().ToString();\n");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            void ProcessMessageDescriptor(MessageDescriptor messageDescriptor)
+            {
+                foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
+                {
+                    ProcessMessageDescriptor(nestedMethodDescriptor);
+                }
+
+                foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder().Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
+                {
+                    PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
+                        (string) fieldDescriptor.GetType().GetField("propertyName", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(fieldDescriptor)
+                        );
+                    GetPropertyFullType(sb, propertyInfo);
+                }
+            }
+
+            foreach (MessageDescriptor descriptorMessageType in ZbReflection.Descriptor.MessageTypes)
+            {
+                ProcessMessageDescriptor(descriptorMessageType);
+            }
+
+            File.WriteAllText("Library/aot_hint.txt", sb.ToString());
+        }
+#endif
     }
 }

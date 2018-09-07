@@ -180,8 +180,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 LastModificationTimestamp = lastModificationTimestamp
             };
 
-            CreateDeckResponse createDeckResponse =
-                await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
+            CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 

@@ -59,15 +59,17 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.SHOP:
 
                     //_uiManager.SetPage<ShopPage>();
+                    //break;
                     _uiManager.DrawPopup<WarningPopup>(
                         $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    break;
+                    return;
                 case Enumerators.AppState.PACK_OPENER:
                 {
                     //_uiManager.SetPage<PackOpenerPage>();
+                    //break;
                     _uiManager.DrawPopup<WarningPopup>(
                         $"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    break;
+                    return;
                 }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();

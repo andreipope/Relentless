@@ -193,6 +193,7 @@ namespace Loom.Client.Internal
                     // TODO: set a timeout and throw exception when it's exceeded
                     if (e.IsText && !string.IsNullOrEmpty(e.Data))
                     {
+                        this.Logger.Log("[Response Data] " + e.Data);
                         var partialMsg = JsonConvert.DeserializeObject<JsonRpcResponse>(e.Data);
                         if (partialMsg.Id == msgId)
                         {
