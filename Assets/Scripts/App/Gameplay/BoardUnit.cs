@@ -248,7 +248,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
-        public bool CantAttackInThisTurnBlocker { get; set; } = true;
+        public bool CantAttackInThisTurnBlocker { get; set; } = false;
 
         public bool IsHeavyUnit()
         {
