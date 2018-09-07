@@ -933,6 +933,8 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit, true);
+
             if (!owner.IsLocalPlayer)
             {
                 _battlegroundController.OpponentBoardCards.Add(unit);

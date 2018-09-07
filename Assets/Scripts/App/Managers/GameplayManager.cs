@@ -48,8 +48,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsPreparingEnded { get; set; }
 
-        public int TutorialStep { get; set; }
-
         public Player CurrentTurnPlayer { get; set; }
 
         public Player CurrentPlayer { get; set; }
@@ -238,7 +236,7 @@ namespace Loom.ZombieBattleground
             {
                 IsSpecificGameplayBattleground = true;
 
-                _tutorialManager.SetupTutorialById(0);
+                _tutorialManager.SetupTutorialById(1);
 
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 

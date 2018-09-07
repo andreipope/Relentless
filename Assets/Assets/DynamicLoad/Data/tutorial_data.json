@@ -290,7 +290,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "UnitsCanAttack": true
         },
         {
           "id": 14,
@@ -386,7 +387,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "UnitsCanAttack": true
         },
         {
           "id": 19,
@@ -415,7 +417,10 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "BoardArrowCantUsableOnUnit": true,
+          "BoardArrowCanUsableOnPlayer": true,
+          "UnitsCanAttack": true
         },
         {
           "id": 20,
@@ -503,7 +508,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "UnitsCanAttack": true
         },
         {
           "id": 24,
@@ -589,7 +595,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "BoardArrowCantUsableOnUnit": true
         },
         {
           "id": 28,
@@ -618,7 +625,9 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "BoardArrowCanUsableOnPlayer": true,
+          "UnitsCanAttack": true
         },
         {
           "id": 29,
@@ -705,7 +714,9 @@
           "DelayToPlaySound": 6.0,
           "CanUseBoardSkill": true,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "BoardArrowCantUsableOnUnit": true,
+          "BoardArrowCanUsableOnPlayer": true
         },
         {
           "id": 33,
@@ -1053,7 +1064,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "UnitsCanAttack": true
         },
         {
           "id": 12,
@@ -1859,8 +1871,8 @@
           "CurrentGoo": 9,
           "MaximumGoo": 9,
           "CardsInHand": [
-            "Zeptic",
-            "Cherno-bill"
+            "Cherno-bill",
+            "Zeptic"
           ],
           "CardsInDeck": [
 
@@ -1868,7 +1880,7 @@
           "CardsOnBoard": [
             {
               "Name": "Shroom",
-              "IsManuallyPlayable": false
+              "IsManuallyPlayable": true
             },
             {
               "Name": "Poizom",

@@ -1040,7 +1040,7 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
                 return;
 
             if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())

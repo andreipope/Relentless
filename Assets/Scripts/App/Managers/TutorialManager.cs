@@ -201,7 +201,6 @@ namespace Loom.ZombieBattleground
 
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
 
-            GameClient.Get<IGameplayManager>().TutorialStep = _currentTutorialStepIndex;
             UpdateTutorialVisual();
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (CurrentTutorialDataStep.HasDelayToPlaySound)

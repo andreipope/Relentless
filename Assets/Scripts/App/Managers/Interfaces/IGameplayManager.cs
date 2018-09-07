@@ -33,8 +33,6 @@ namespace Loom.ZombieBattleground
 
         bool IsPreparingEnded { get; set; }
 
-        int TutorialStep { get; set; }
-
         bool IsSpecificGameplayBattleground { get; set; }
 
         bool CanDoDragActions { get; set; }
