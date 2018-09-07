@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         private Vector3 _centerPos;
 
-        private bool _lock, _isCardPreview;
+        private bool _lock;
 
         private Transform _cardsContainer;
 
@@ -169,7 +169,6 @@ namespace Loom.ZombieBattleground
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
-                _isCardPreview = true;
             }
             else
             {
@@ -183,7 +182,6 @@ namespace Loom.ZombieBattleground
                     () =>
                     {
                         Object.Destroy(_cardPreview.gameObject);
-                        _isCardPreview = false;
                     });
             }
         }
