@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
             switch (buildTarget)
             {
                 default:
-                    options |= BuildAssetBundleOptions.UncompressedAssetBundle;
+                    options |= BuildAssetBundleOptions.ChunkBasedCompression;
                     break;
             }
             return options;

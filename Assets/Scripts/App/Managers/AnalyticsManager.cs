@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 public class AnalyticsManager : IAnalyticsManager, IService
 {
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
+    private const string FirstTimeInstallKey = "Analytics_FirstTimeInstall";
 
     private GoogleAnalyticsV4 _googleAnalytics;
 
@@ -27,6 +28,14 @@ public class AnalyticsManager : IAnalyticsManager, IService
             PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
             Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
+        }
+
+        // first Install
+        bool isFirstTimeInstall = PlayerPrefs.GetInt(FirstTimeInstallKey, 0) == 0;
+        if (isFirstTimeInstall)
+        {
+            LogEvent("NewInstallation", Application.platform.ToString(), 0);
+            PlayerPrefs.SetInt(FirstTimeInstallKey, 1);
         }
     }
 

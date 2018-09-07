@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private ILoadObjectsManager _loadObjectsManager;
+
         private BattlegroundController _battlegroundController;
 
         private CardsController _cardsController;
@@ -48,20 +50,18 @@ namespace Loom.ZombieBattleground
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
 
-        protected ILoadObjectsManager LoadObjectsManager;
-
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
-            LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
             _gameplayManager.GameStarted += GameStartedHandler;
@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
 
-            _fightTargetingArrowPrefab = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+            _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
@@ -184,7 +184,7 @@ namespace Loom.ZombieBattleground
             cancellationToken.ThrowIfCancellationRequested();
             await PlayCardsFromHand(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentStep == 11)
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
             {
                 (_tutorialManager as TutorialManager).Paused = true;
             }

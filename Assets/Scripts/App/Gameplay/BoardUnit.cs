@@ -61,6 +61,8 @@ namespace Loom.ZombieBattleground
 
         private readonly InputController _inputController;
 
+        private readonly BoardArrowController _boardArrowController;
+
         private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly SpriteRenderer _pictureSprite;
@@ -78,8 +80,6 @@ namespace Loom.ZombieBattleground
         private readonly TextMeshPro _healthText;
 
         private readonly ParticleSystem _sleepingParticles;
-
-        private readonly OnBehaviourHandler _onBehaviourHandler;
 
         private readonly GameObject _unitContentObject;
 
@@ -125,6 +125,8 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _inputController = _gameplayManager.GetController<InputController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+
 
             GameObject =
                 Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
@@ -148,11 +150,6 @@ namespace Loom.ZombieBattleground
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
 
-            _onBehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
-
-            _onBehaviourHandler.TriggerEntered += TriggerEnter;
-            _onBehaviourHandler.TriggerExited += TriggerExit;
-
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
@@ -167,6 +164,8 @@ namespace Loom.ZombieBattleground
             UnitStatus = Enumerators.UnitStatusType.NONE;
 
             IsAllAbilitiesResolvedAtStart = true;
+
+            _gameplayManager.CanDoDragActions = false;
         }
 
         public event Action UnitDied;
@@ -276,6 +275,10 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.KillBoardCard(this);
             }
+            else
+            {
+                InvokeUnitDied();
+            }
         }
 
         public void BuffUnit(Enumerators.BuffType type)
@@ -373,6 +376,15 @@ namespace Loom.ZombieBattleground
             InitialUnitType = Enumerators.CardType.HEAVY;
 
             ChangeTypeFrame(2.5f, 1.7f);
+            if (!AttackedThisTurn && NumTurnsOnBoard == 0)
+            {
+                IsPlayable = false;
+                SetHighlightingEnabled(false);
+            }
+            else if (!AttackedThisTurn && IsPlayable)
+            {
+                StopSleepingParticles();
+            }
         }
 
         public void SetAsWalkerUnit()
@@ -418,7 +430,7 @@ namespace Loom.ZombieBattleground
         public void ArrivalAnimationEventHandler()
         {
             _unitContentObject.SetActive(true);
-            if (HasFeral)
+            if (HasFeral || NumTurnsOnBoard > 0)
             {
                 StopSleepingParticles();
             }
@@ -1002,32 +1014,11 @@ namespace Loom.ZombieBattleground
             sequence.Play();
         }
 
-        private void TriggerEnter(Collider collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                BoardArrow targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardSelected(this);
-                }
-            }
-        }
-
-        private void TriggerExit(Collider collider)
-        {
-            if (collider.transform.parent != null)
-            {
-                BoardArrow targetingArrow = collider.transform.parent.GetComponent<BoardArrow>();
-                if (targetingArrow != null)
-                {
-                    targetingArrow.OnCardUnselected(this);
-                }
-            }
-        }
-
         private void UnitSelectedEventHandler(BoardUnit unit)
         {
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+                return;
+
             if (unit == this)
             {
                 OnMouseDown();
