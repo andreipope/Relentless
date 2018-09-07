@@ -222,9 +222,12 @@ namespace Loom.ZombieBattleground
             {
                 if (player.CardsInDeck.Count == 0)
                 {
-                    player.DamageByNoMoreCardsInDeck++;
-                    player.Health -= player.DamageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        player.DamageByNoMoreCardsInDeck++;
+                        player.Health -= player.DamageByNoMoreCardsInDeck;
+                        _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
+                    }
                     return;
                 }
 
@@ -244,9 +247,12 @@ namespace Loom.ZombieBattleground
             {
                 if (otherPlayer.CardsInDeck.Count == 0)
                 {
-                    otherPlayer.DamageByNoMoreCardsInDeck++;
-                    otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        otherPlayer.DamageByNoMoreCardsInDeck++;
+                        otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
+                        _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
+                    }
                     return;
                 }
 
