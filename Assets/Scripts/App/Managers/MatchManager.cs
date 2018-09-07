@@ -89,6 +89,10 @@ namespace Loom.ZombieBattleground
             switch (state)
             {
                 case Enumerators.AppState.GAMEPLAY:
+
+                    if(_gameplayManager.IsTutorial)
+                        _tutorialManager.SetupTutorialById(1); // specialID of tutorial
+
                     _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
                     _uiManager.HidePopup<LoadingGameplayPopup>();
