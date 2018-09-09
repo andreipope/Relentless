@@ -24,8 +24,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                        "ws://battleground-testnet-asia1.dappchains.com:9999/queryws",
-                        "ws://battleground-testnet-asia1.dappchains.com:46657/websocket"
+                        "ws://127.0.0.2:9999/queryws",
+                        "ws://127.0.0.2:46657/websocket"
 #endif
                     )
                 },
