@@ -15,7 +15,7 @@ public static class LoomTestContext
     public static void TestSetUp(string userId = "Loom")
     {
         BackendEndpointsContainer.BackendEndpoint backendEndpoint =
-            BackendEndpointsContainer.KEndpoints[BackendPurpose.Local];
+            BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
         BackendFacade = new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost,
             backendEndpoint.WriterHost);
         BackendDataControlMediator.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
