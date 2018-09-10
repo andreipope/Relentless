@@ -1383,19 +1383,9 @@
           "id": 28,
           "janePose": "NORMAL",
           "janeText": "Put this poor excuse of an Overlord out of his misery!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
+          "IsFocusing": false,
+          "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.5,
-            "Z": 0.0
-          },
           "requiredAction": "ATTACK_CARD_HERO",
           "SoundName": "czb_tutorial_B_32_misery",
           "CanMoveToNextStepByClickInPaused": false,
@@ -1413,70 +1403,6 @@
         },
 		{
           "id": 29,
-          "janePose": "NORMAL",
-          "janeText": "Put this poor excuse of an Overlord out of his misery!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.5,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_HERO",
-          "SoundName": "czb_tutorial_B_32_misery",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
-        },
-		{
-          "id": 30,
-          "janePose": "NORMAL",
-          "janeText": "Put this poor excuse of an Overlord out of his misery!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.5,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_HERO",
-          "SoundName": "czb_tutorial_B_32_misery",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
-        },
-		{
-          "id": 31,
           "janePose": "THUMBS_UP",
           "janeText": "AWESOME!! ...Now that’s what I call a proper comeback!",
           "IsFocusing": false,
@@ -1494,7 +1420,7 @@
           "DelayToPlaySound": 6.0
         },
 		{
-          "id": 32,
+          "id": 30,
           "janePose": "NORMAL",
           "janeText": "Well... That's it! The student has become the master!",
           "IsFocusing": false,
@@ -1512,7 +1438,7 @@
           "DelayToPlaySound": 6.0
         },
 		{
-          "id": 33,
+          "id": 31,
           "janePose": "KISS",
           "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b> <kiss>",
           "IsFocusing": false,
@@ -1530,7 +1456,7 @@
           "DelayToPlaySound": 6.0
         },
         {
-          "id": 34,
+          "id": 32,
           "janePose": "KISS",
           "janeText": "K..mmmbyeee",
           "IsFocusing": false,
@@ -1555,7 +1481,7 @@
           "MaximumHealth": 20,
           "CurrentGoo": 9,
           "MaximumGoo": 9,
-		  "HeroId": 0,
+		  "HeroId": 4,
           "CardsInHand": [
             "Cherno-bill",
             "Zeptic"
