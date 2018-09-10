@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         private List<AbilityInstance> _abilities;
 
+        private Hero _selectedHero;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -104,8 +106,8 @@ namespace Loom.ZombieBattleground
         public void Show(object data)
         {
             Show();
-
-            FillInfo((Hero) data);
+            _selectedHero = (Hero)data;
+            FillInfo(_selectedHero);
             _abilities[0].IsSelected = true;
             AbilityInstanceOnSelectionChanged(_abilities[0]);
         }
@@ -154,6 +156,8 @@ namespace Loom.ZombieBattleground
         {
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
+            int index = _selectedHero.Skills.IndexOf(ability.Skill);
+            _selectedHero.PrimarySkill = index;
         }
 
         private class AbilityInstance : IDisposable

@@ -400,6 +400,8 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
             _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
+            _uiManager.GetPage<DeckEditingPage>().PrimarySkill = _currentOverlordObject.SelfHero.PrimarySkill;
+            _uiManager.GetPage<DeckEditingPage>().SecondarySkill = _currentOverlordObject.SelfHero.SecondarySkill;
             _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }
 

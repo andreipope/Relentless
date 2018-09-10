@@ -50,6 +50,7 @@ namespace Loom.ZombieBattleground
         private Transform _containerOfDecks, _hordeSelection;
 
         private List<HordeDeckObject> _hordeDecks;
+        private HordeDeckObject _editingDeck;
 
         private int _selectedDeckId = -1;
 
@@ -244,12 +245,14 @@ namespace Loom.ZombieBattleground
 
             deck.Select();
 
+            Debug.LogError("deck.SelfHero.PrimarySkill: " + deck.SelfDeck.PrimarySkill);
+
             _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                 deck.SelfHero.Element.ToUpper() + "_" +
-                deck.SelfHero.Skills[deck.SelfHero.PrimarySkill].Skill.ToLower());
+                deck.SelfHero.Skills[deck.SelfDeck.PrimarySkill].Skill.ToLower());
             _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                 deck.SelfHero.Element.ToUpper() + "_" +
-                deck.SelfHero.Skills[deck.SelfHero.SecondarySkill].Skill.ToLower());
+                deck.SelfHero.Skills[deck.SelfDeck.SecondarySkill].Skill.ToLower());
 
             _hordeSelection.transform.SetParent(deck.SelectionContainer, false);
             _hordeSelection.gameObject.SetActive(true);
@@ -538,12 +541,18 @@ namespace Loom.ZombieBattleground
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-            if (deck != null)
+            _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            if (_editingDeck != null)
             {
-                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(deck.SelfHero);
+                //_uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
+                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_editingDeck.SelfHero);
             }
         }
+
+        //private void AbilityPopupClosedEvent()
+        //{
+        //    _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
+        //}
 
         // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()

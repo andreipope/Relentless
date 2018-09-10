@@ -114,7 +114,7 @@
         {
           "title": "Mass Rabies",
           "skill": "MASS_RABIES",
-          "iconPath": "overlordability_mass_rabies",
+          "iconPath": "overlordability_fire_mass_rabies",
           "description": "Give 2 random ally Fire zombies Feral",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "FIRE",
@@ -126,7 +126,7 @@
         {
           "title": "Meteor Shower",
           "skill": "METEOR_SHOWER",
-          "iconPath": "overlordability_meteor_shower",
+          "iconPath": "overlordability_fire_meteor_shower",
           "description": "Deal 2 damage to all zombies",
           "skillTargets": "",
           "elementTargets": "FIRE",
