@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public static class BackendEndpointsContainer
     {
-        public static readonly Dictionary<BackendPurpose, BackendEndpoint> KEndpoints =
+        public static readonly Dictionary<BackendPurpose, BackendEndpoint> Endpoints =
             new Dictionary<BackendPurpose, BackendEndpoint>
             {
                 {
@@ -24,8 +24,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
 #else
-                        "ws://battleground-testnet-asia1.dappchains.com:9999/queryws",
-                        "ws://battleground-testnet-asia1.dappchains.com:46657/websocket"
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket"
 #endif
                     )
                 },
