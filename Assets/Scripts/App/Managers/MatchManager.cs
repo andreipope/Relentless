@@ -89,19 +89,34 @@ namespace Loom.ZombieBattleground
             switch (state)
             {
                 case Enumerators.AppState.GAMEPLAY:
+                    {
+                        if (_gameplayManager.IsTutorial)
+                        {
+                            _tutorialManager.SetupTutorialById(_tutorialManager.LatestTutorialId);
+                        }
 
-                    if(_gameplayManager.IsTutorial)
-                        _tutorialManager.SetupTutorialById(1); // specialID of tutorial
+                        _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
 
-                    _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+                        _uiManager.HidePopup<LoadingGameplayPopup>();
 
-                    _uiManager.HidePopup<LoadingGameplayPopup>();
-
-                    _gameplayManager.StartGameplay();
+                        _gameplayManager.StartGameplay();
+                    }
                     break;
                 case Enumerators.AppState.APP_INIT:
-                    _appStateManager.ChangeAppState(_finishMatchAppState);
+                    {
+                        _appStateManager.ChangeAppState(_finishMatchAppState);
+
+                        if (_gameplayManager.IsTutorial)
+                        {
+                            GameClient.Get<ITimerManager>().AddTimer((t) =>
+                            {
+                                FindMatch(Enumerators.MatchType.LOCAL);
+
+                            }, null, 2f);
+                        }
+                    }
                     break;
+
             }
         }
     }

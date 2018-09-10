@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
                 CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
 
-                OpponentPlayer.SetFirstHand(IsTutorial);
+                OpponentPlayer.SetFirstHand(false);
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
