@@ -557,7 +557,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.BuffShield();
             }
-        }
+        } 
 
         private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
@@ -726,7 +726,14 @@ namespace Loom.ZombieBattleground
 
         private void RessurectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
+                                                                      && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                                                                      && x.RealCost == skill.Value);
+
+            cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
+
+            foreach (WorkingCard card in cards)
+                _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
         }
 
         private void EnhanceAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -752,7 +759,13 @@ namespace Loom.ZombieBattleground
 
         private void ReanimateAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            // todo implement logic
+            List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
+                                                                       && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+
+            cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
+
+            foreach (WorkingCard card in cards)
+                _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
         }
 
         // WATER
@@ -1004,22 +1017,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        // 
-
         #endregion
     }
 }
-
-/*
-
-1. enemy zombies = only enemy zombies
-2. all enemies or enemies = enemy zombies + enemy overlord
-3. all zombies = friendly zombies and enemy zombies (no overlords)
-4. everyone = friendsly and enemy zombies and overlords
-5. ally zombies = only ally zombies
-6. all allies = ally zombies + ally overlords
-7. enemy overlord
-8. ally overlord
-9. all overlords
-
- */
