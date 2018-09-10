@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>();
             UpdateTutorialVisual();
-            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, Constants.TutorialSoundVolume, false);
+            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume, false);
             //        },
             //      null,
             //       4f);
@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITimerManager>().AddTimer(
                     x =>
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex,
+                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName,
                             Constants.TutorialSoundVolume, false);
                     },
                     null,
@@ -216,7 +216,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, _currentTutorialStepIndex, Constants.TutorialSoundVolume,
+                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume,
                     false);
             }
 

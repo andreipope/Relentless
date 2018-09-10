@@ -455,6 +455,10 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
             }
+            else
+            {
+                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.HERO_DEATH);
+            }
         }
 
         public void SetGlowStatus(bool status)

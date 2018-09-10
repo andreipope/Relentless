@@ -21,7 +21,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "IsLaunchAIBrain": true
+          "IsLaunchAIBrain": true,
+          "SoundName": "czb_tutorial_01_welcome"
         },
         {
           "id": 1,
@@ -40,7 +41,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_02_weary"
         },
         {
           "id": 2,
@@ -59,7 +61,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_03_pleasure"
         },
         {
           "id": 3,
@@ -78,7 +81,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_04_ropes"
         },
         {
           "id": 4,
@@ -97,7 +101,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_06_dive"
         },
         {
           "id": 5,
@@ -116,7 +121,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_07_goo_bottles"
         },
         {
           "id": 6,
@@ -135,7 +141,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_08_power"
         },
         {
           "id": 7,
@@ -154,7 +161,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_09_Goo_Cost"
         },
         {
           "id": 8,
@@ -183,7 +191,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_10_general"
         },
         {
           "id": 9,
@@ -202,7 +211,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_11_zzz"
         },
         {
           "id": 10,
@@ -221,7 +231,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": true
+          "CanClickEndTurn": true,
+          "SoundName": "czb_tutorial_12_end_turn"
         },
         {
           "id": 11,
@@ -242,7 +253,8 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "IsLaunchAIBrain": true,
-          "IsPauseTutorial": true
+          "IsPauseTutorial": true,
+          "SoundName": "czb_tutorial_13_draw"
         },
         {
           "id": 12,
@@ -261,7 +273,8 @@
           "IsShowNextButton": false,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_14_wait"
         },
         {
           "id": 13,
@@ -291,7 +304,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "SoundName": "czb_tutorial_15_attack"
         },
         {
           "id": 14,
@@ -310,7 +324,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_16_defense"
         },
         {
           "id": 15,
@@ -329,7 +344,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_17_first_zombie"
         },
         {
           "id": 16,
@@ -348,7 +364,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": true
+          "CanClickEndTurn": true,
+          "SoundName": "czb_tutorial_18_end_turn2"
         },
         {
           "id": 17,
@@ -368,7 +385,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
           "CanClickEndTurn": false,
-          "IsLaunchAIBrain": true
+          "IsLaunchAIBrain": true,
+          "SoundName": "czb_tutorial_19_plan"
         },
         {
           "id": 18,
@@ -388,7 +406,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "SoundName": "czb_tutorial_20_overlord"
         },
         {
           "id": 19,
@@ -420,7 +439,8 @@
           "CanClickEndTurn": false,
           "BoardArrowCantUsableOnUnit": true,
           "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "SoundName": "czb_tutorial_21_attack_overlord"
         },
         {
           "id": 20,
@@ -439,7 +459,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_22_hang"
         },
         {
           "id": 21,
@@ -458,7 +479,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": true
+          "CanClickEndTurn": true,
+          "SoundName": "czb_tutorial_23_end_turn3"
         },
         {
           "id": 22,
@@ -479,7 +501,8 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "IsManuallyHideBubble": true,
-          "IsLaunchAIBrain": true
+          "IsLaunchAIBrain": true,
+          "SoundName": "czb_tutorial_24_heavy"
         },
         {
           "id": 23,
@@ -509,7 +532,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "SoundName": "czb_tutorial_25_remove_heavy"
         },
         {
           "id": 24,
@@ -528,7 +552,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_26_active_zombies"
         },
         {
           "id": 25,
@@ -547,7 +572,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_27_feral"
         },
         {
           "id": 26,
@@ -566,7 +592,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_28_feral2"
         },
         {
           "id": 27,
@@ -596,7 +623,8 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
           "CanClickEndTurn": false,
-          "BoardArrowCantUsableOnUnit": true
+          "BoardArrowCantUsableOnUnit": true,
+          "SoundName": "czb_tutorial_29_drag_feral"
         },
         {
           "id": 28,
@@ -627,7 +655,8 @@
           "CanHandleInput": true,
           "CanClickEndTurn": false,
           "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "SoundName": "czb_tutorial_30_immediatly"
         },
         {
           "id": 29,
@@ -646,7 +675,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_31_perfect"
         },
         {
           "id": 30,
@@ -665,7 +695,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_32_goo_to_use"
         },
         {
           "id": 31,
@@ -684,7 +715,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_33_goo_to_use"
         },
         {
           "id": 32,
@@ -716,7 +748,8 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "BoardArrowCantUsableOnUnit": true,
-          "BoardArrowCanUsableOnPlayer": true
+          "BoardArrowCanUsableOnPlayer": true,
+          "SoundName": "czb_tutorial_34_abilities"
         },
         {
           "id": 33,
@@ -735,7 +768,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_35_won1"
         },
         {
           "id": 34,
@@ -754,7 +788,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_36_slayer"
         },
         {
           "id": 35,
@@ -773,7 +808,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_37_adventure"
         },
         {
           "id": 36,
@@ -792,7 +828,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
-          "CanClickEndTurn": false
+          "CanClickEndTurn": false,
+          "SoundName": "czb_tutorial_38_good_luck"
         }
       ],
       "SpecificBattlegroundInfo": {
@@ -802,7 +839,7 @@
           "MaximumHealth": 20,
           "CurrentGoo": 7,
           "MaximumGoo": 7,
-		  "HeroId": 4,
+          "HeroId": 4,
           "CardsInHand": [
           ],
           "CardsInDeck": [
@@ -822,8 +859,8 @@
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
-		  "HeroId": 0,
-          "AiType" : "MIXED_AI",
+          "HeroId": 0,
+          "AiType": "MIXED_AI",
           "CardsInHand": [
           ],
           "CardsInDeck": [
@@ -841,7 +878,7 @@
       },
       "PlayerTurnFirst": true
     },
-	{
+    {
       "TutorialId": 1,
       "TutorialDataSteps": [
         {
@@ -862,7 +899,7 @@
           "DelayToPlaySound": 0.0,
           "SoundName": "czb_tutorial_B_01_welcome"
         },
-		{
+        {
           "id": 1,
           "janePose": "THINKING",
           "janeText": "Looks like you’re in the middle of a match... \n...in a bit of a pickle too",
@@ -883,7 +920,7 @@
           "CanClickEndTurn": true,
           "IsLaunchAIBrain": true
         },
-		{
+        {
           "id": 2,
           "janePose": "THINKING",
           "janeText": "Hmm, one more hit and it's game over \nThe enemy has one intimidating zombie in play, \n...not good at all",
@@ -901,8 +938,8 @@
           "DelayToPlaySound": 0.0,
           "SoundName": "czb_tutorial_B_03_not_good"
         },
-		{
-		  "id": 3,
+        {
+          "id": 3,
           "janePose": "THUMBS_UP",
           "janeText": "YES! Exactly what we needed!",
           "IsFocusing": false,
@@ -918,8 +955,8 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
           "SoundName": "czb_tutorial_B_04_yes"
-		},
-		{
+        },
+        {
           "id": 4,
           "janePose": "THUMBS_UP",
           "janeText": "Let's drop the big one! <b><color=\"orange\"><u>General</u></color></b> Cherno-bill - and MELT, MELT!",
@@ -937,7 +974,7 @@
           "IsShowNextButton": false,
           "DelayToPlaySound": 0.0
         },
-		{
+        {
           "id": 5,
           "janePose": "POINTING",
           "janeText": "To do that you need 11 Goo \nRight now, you only have 10",
@@ -955,7 +992,7 @@
           "IsShowNextButton": false,
           "DelayToPlaySound": 0.0
         },
-		{
+        {
           "id": 6,
           "janePose": "POINTING",
           "janeText": "Good thing you got Zeptic, he's a <b><color=\"orange\"><u>Goo-Carrier</u></color></b>",
@@ -973,7 +1010,7 @@
           "IsShowNextButton": false,
           "DelayToPlaySound": 0.0
         },
-		{
+        {
           "id": 7,
           "janePose": "POINTING",
           "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>",
@@ -991,7 +1028,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 8,
           "janePose": "POINTING",
           "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work",
@@ -1009,7 +1046,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 9,
           "janePose": "POINTING",
           "janeText": "Overflow is for this turn only, and comes with some setbacks. So... it's a calculated risk!",
@@ -1027,7 +1064,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 10,
           "janePose": "POINTING",
           "janeText": "Each goo-carrier has it's own drawback depending on it's elemental faction",
@@ -1045,7 +1082,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 11,
           "janePose": "THINKING",
           "janeText": "Toxic zombies specialize in dealing extra damage",
@@ -1063,7 +1100,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 12,
           "janePose": "THINKING",
           "janeText": "So, Toxic goo-carriers, for example, deal damage to your own Overlord",
@@ -1081,7 +1118,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{ 
+        {
           "id": 13,
           "janePose": "THUMBS_UP",
           "janeText": "Go ahead, let’s drag Zeptic into play and get Overflow going!",
@@ -1113,7 +1150,7 @@
           "AvailableCard": "Zeptic",
           "AvailableCardUsableInHand": true
         },
-		{
+        {
           "id": 14,
           "janePose": "THUMBS_UP",
           "janeText": "Great! ...zz-plan iz unfolding! muhaha \nSee - the Overflow gauge is about to burst - and is now 11!!",
@@ -1131,7 +1168,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 15,
           "janePose": "POINTING",
           "janeText": "We have the goo to drop the big one! \nLet’s show the enemy Overlord how it's done!",
@@ -1163,7 +1200,7 @@
           "AvailableCard": "Cherno-bill",
           "AvailableCardUsableInHand": true
         },
-		{
+        {
           "id": 16,
           "janePose": "THUMBS_UP",
           "janeText": "OH, DID YOU SEE THAT?!?!?",
@@ -1181,7 +1218,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 17,
           "janePose": "THUMBS_UP",
           "janeText": "Check that out - your Poizoms got +1 Attack and the Destroy ability!",
@@ -1199,7 +1236,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 18,
           "janePose": "POINTING",
           "janeText": "This is the <b><color=\"orange\"><u>Ranks System</u></color></b> at work",
@@ -1217,7 +1254,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 19,
           "janePose": "POINTING",
           "janeText": "See - we have ranks in the zombie army, the higher their rank the rarer and more powerful they are!",
@@ -1235,7 +1272,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 20,
           "janePose": "POINTING",
           "janeText": "Minions are naturally the weakest, followed by Officers \nThen Commanders and finally the fearsome Generals!",
@@ -1253,7 +1290,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 21,
           "janePose": "POINTING",
           "janeText": "Now, when we have a higher ranking zombie in play \nThe lower ranks of its element get buffed \nThe higher the rank, the stronger the buff",
@@ -1271,7 +1308,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 22,
           "janePose": "POINTING",
           "janeText": "Just remember - each of the 6 elements causes a different effect",
@@ -1289,7 +1326,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 23,
           "janePose": "POINTING",
           "janeText": "For instance, Toxic Generals like Cherno-bill give 3 lower ranking toxic zombies +1 Attack and the Destroy ability",
@@ -1307,7 +1344,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 24,
           "janePose": "POINTING",
           "janeText": "See - now we have a super motivated squad of Poizoms ready for the final blow!",
@@ -1325,7 +1362,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 25,
           "janePose": "POINTING",
           "janeText": "Oh, by the way, did I mention that these rank buffs stack?",
@@ -1343,7 +1380,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 26,
           "janePose": "NORMAL",
           "janeText": "So you can get a crazy combo if you plan it right!",
@@ -1361,7 +1398,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 27,
           "janePose": "NORMAL",
           "janeText": "Well, what are YOU waiting for?",
@@ -1379,14 +1416,14 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
         },
-		{
+        {
           "id": 28,
           "janePose": "NORMAL",
           "janeText": "Put this poor excuse of an Overlord out of his misery!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          "requiredAction": "ATTACK_CARD_HERO",
+          "requiredAction": "HERO_DEATH",
           "SoundName": "czb_tutorial_B_32_misery",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1401,7 +1438,7 @@
           "BoardArrowCanUsableOnPlayer": true,
           "UnitsCanAttack": true
         },
-		{
+        {
           "id": 29,
           "janePose": "THUMBS_UP",
           "janeText": "AWESOME!! ...Now that’s what I call a proper comeback!",
@@ -1419,7 +1456,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 30,
           "janePose": "NORMAL",
           "janeText": "Well... That's it! The student has become the master!",
@@ -1437,7 +1474,7 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         },
-		{
+        {
           "id": 31,
           "janePose": "KISS",
           "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b> <kiss>",
@@ -1473,15 +1510,15 @@
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0
         }
-	  ],
-	    "SpecificBattlegroundInfo": {
+      ],
+      "SpecificBattlegroundInfo": {
         "CurrentTurn": 9,
         "PlayerInfo": {
           "Health": 10,
           "MaximumHealth": 20,
           "CurrentGoo": 9,
           "MaximumGoo": 9,
-		  "HeroId": 4,
+          "HeroId": 4,
           "CardsInHand": [
             "Cherno-bill",
             "Zeptic"
@@ -1512,8 +1549,8 @@
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
-		  "HeroId": 1,
-          "AiType" : "BLITZ_AI",
+          "HeroId": 1,
+          "AiType": "BLITZ_AI",
           "CardsInHand": [
 
           ],
