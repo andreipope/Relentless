@@ -165,7 +165,7 @@ namespace Loom.ZombieBattleground
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
-            _coolDownTimer.SetAngle(_cooldown);
+            _coolDownTimer.SetAngle(_cooldown, true);
         }
 
         public void Hide()
