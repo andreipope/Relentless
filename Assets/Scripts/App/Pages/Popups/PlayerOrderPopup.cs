@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
                 Self.transform.Find("Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
 
             _playerOverlordPicture = Self.transform.Find("Image_PlayerOverlord").GetComponent<Image>();
-            _opponentOverlordPicture = Self.transform.Find("Image_OpponentOverlord").GetComponent<Image>();
+            _opponentOverlordPicture = Self.transform.Find("OpponentMask/Image_OpponentOverlord").GetComponent<Image>();
 
             _opponentTurnRootObject = Self.transform.Find("Item_OpponentOverlordTurn").gameObject;
             _opponentFirstTurnObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
