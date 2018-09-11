@@ -437,7 +437,8 @@ namespace Loom.ZombieBattleground.Common
             ATTACK_CARD_CARD,
             ATTACK_CARD_HERO,
             USE_ABILITY,
-            HERO_DEATH
+            HERO_DEATH,
+            START_TURN,
         }
 
         public enum UnitStatusType

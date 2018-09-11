@@ -906,7 +906,7 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
-          "requiredAction": "END_TURN",
+          "requiredAction": "START_TURN",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,

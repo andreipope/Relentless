@@ -24,6 +24,10 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial)
             {
                 _tutorialManager.StopTutorial();
+
+                ForceStartGameplay();
+
+                return;
             }
 
             _finishMatchAppState = appStateAfterMatch;
@@ -90,34 +94,30 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AppState.GAMEPLAY:
                     {
-                        if (_gameplayManager.IsTutorial)
-                        {
-                            _tutorialManager.SetupTutorialById(_tutorialManager.LatestTutorialId);
-                        }
-
-                        _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
-
-                        _uiManager.HidePopup<LoadingGameplayPopup>();
-
-                        _gameplayManager.StartGameplay();
+                        ForceStartGameplay();
                     }
                     break;
                 case Enumerators.AppState.APP_INIT:
                     {
                         _appStateManager.ChangeAppState(_finishMatchAppState);
-
-                        if (_gameplayManager.IsTutorial)
-                        {
-                            GameClient.Get<ITimerManager>().AddTimer((t) =>
-                            {
-                                FindMatch(Enumerators.MatchType.LOCAL);
-
-                            }, null, 2f);
-                        }
                     }
                     break;
 
             }
+        }
+
+        private void ForceStartGameplay()
+        {
+            if (_gameplayManager.IsTutorial)
+            {
+                _tutorialManager.SetupTutorialById(_tutorialManager.LatestTutorialId);
+            }
+
+            _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+
+            _uiManager.HidePopup<LoadingGameplayPopup>();
+
+            _gameplayManager.StartGameplay();
         }
     }
 }

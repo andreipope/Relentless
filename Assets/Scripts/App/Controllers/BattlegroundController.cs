@@ -335,6 +335,8 @@ namespace Loom.ZombieBattleground
 
             _playerController.UpdateHandCardsHighlight();
 
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.START_TURN);
+
             TurnStarted?.Invoke();
         }
 
@@ -375,7 +377,6 @@ namespace Loom.ZombieBattleground
         public void StopTurn()
         {
             EndTurn();
-
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
