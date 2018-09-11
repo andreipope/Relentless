@@ -1,19 +1,24 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class RanksController : IController
     {
+        private ITutorialManager _tutorialManager;
+
         public void Dispose()
         {
         }
 
         public void Init()
         {
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+
         }
 
         public void Update()
@@ -206,22 +211,20 @@ namespace Loom.ZombieBattleground
 
         private void BuffRandomAlly(List<BoardUnit> units, int count, List<Enumerators.BuffType> buffTypes)
         {
-            int random;
-            for (int i = 0; i < count; i++)
+            if(_tutorialManager.IsTutorial)
             {
-                if (units.Count == 0)
+                // need for attacking by Poizom's
+                units = units.FindAll(x => x.UnitCanBeUsable());
+            }
+
+            units = InternalTools.GetRandomElementsFromList(units, count);
+
+            foreach (Enumerators.BuffType buff in buffTypes)
+            {
+                foreach (BoardUnit unit in units)
                 {
-                    break;
+                    unit.ApplyBuff(buff);
                 }
-
-                random = Random.Range(0, units.Count);
-
-                foreach (Enumerators.BuffType buff in buffTypes)
-                {
-                    units[random].ApplyBuff(buff);
-                }
-
-                units.RemoveAt(random);
             }
         }
     }

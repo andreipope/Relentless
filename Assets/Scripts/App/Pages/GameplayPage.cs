@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         private ISoundManager _soundManager;
 
+        private ITutorialManager _tutorialManager;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private BattlegroundController _battlegroundController;
@@ -72,6 +74,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _gameplayManager.GameInitialized += GameInitializedHandler;
@@ -176,14 +179,23 @@ namespace Loom.ZombieBattleground
                     Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
             _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
 
-            int heroId = Constants.TutorialPlayerHeroId; // TUTORIAL
+            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo);
+            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo);
+            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId);
+            int heroId = 0; //Constants.TutorialPlayerHeroId; // TUTORIAL
+            int opponentHeroId = 0;
 
             if (!_gameplayManager.IsTutorial)
             {
                 heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
+                opponentHeroId = randomOpponentDeck.HeroId;
+            }
+            else
+            {
+                heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
             }
 
-            int opponentHeroId = randomOpponentDeck.HeroId;
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.HeroesParsed[opponentHeroId];

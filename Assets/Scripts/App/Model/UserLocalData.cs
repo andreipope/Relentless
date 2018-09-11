@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground.Data
 
         public bool OpenedFirstPack;
 
+        public int CurrentTutorialId = 0;
+
         public UserLocalData()
         {
             Reset();
@@ -24,6 +26,7 @@ namespace Loom.ZombieBattleground.Data
             AppLanguage = Enumerators.Language.NONE;
             LastSelectedDeckId = -1;
             OpenedFirstPack = false;
+            CurrentTutorialId = 0;
         }
     }
 }
