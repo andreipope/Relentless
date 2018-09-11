@@ -147,10 +147,11 @@ namespace Loom.ZombieBattleground
         {
             if (IsTutorial)
             {
-                if (CurrentTutorialDataStep.RequiredAction == action)
-                {
-                    NextStep();
-                }
+                if(CurrentTutorialDataStep != null)
+                    if (CurrentTutorialDataStep.RequiredAction == action)
+                    {
+                        NextStep();
+                    }
             }
         }
 

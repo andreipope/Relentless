@@ -884,7 +884,7 @@
         {
           "id": 0,
           "janePose": "NORMAL",
-          "janeText": "Welcome back, Zombie Slayer! \nIt's me Jane, remember? \nTime for advanced play! Are you up for it?",
+          "janeText": "Welcome back, Zombie Slayer! \nIt's me Jane, remember? \nTime for advanced play! \nAre you up for it?",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -913,7 +913,7 @@
           "HasDelayToPlaySound": false,
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 0.0,
           "SoundName": "czb_tutorial_B_02_pickle",
           "CanHandleInput": false,
@@ -923,7 +923,7 @@
         {
           "id": 2,
           "janePose": "THINKING",
-          "janeText": "Hmm, one more hit and it's game over \nThe enemy has one intimidating zombie in play, \n...not good at all",
+          "janeText": "Hmm, one more hit and it's game over. \nThe enemy has one intimidating zombie in play, \n...not good at all",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -977,7 +977,7 @@
         {
           "id": 5,
           "janePose": "POINTING",
-          "janeText": "To do that you need 11 Goo \nRight now, you only have 10",
+          "janeText": "To do that you need 11 Goo. \nRight now, you only have 10",
           "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1275,7 +1275,7 @@
         {
           "id": 20,
           "janePose": "POINTING",
-          "janeText": "Minions are naturally the weakest, followed by Officers \nThen Commanders and finally the fearsome Generals!",
+          "janeText": "Minions are naturally the weakest, followed by Officers. \nThen Commanders and finally the fearsome Generals!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1293,7 +1293,7 @@
         {
           "id": 21,
           "janePose": "POINTING",
-          "janeText": "Now, when we have a higher ranking zombie in play \nThe lower ranks of its element get buffed \nThe higher the rank, the stronger the buff",
+          "janeText": "Now, when we have a higher \nranking zombie in play. \nThe lower ranks of its \nelement get buffed. \nThe higher the rank, \nthe stronger the buff",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1431,7 +1431,7 @@
           "HasDelayToPlaySound": false,
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
           "CanClickEndTurn": false,
@@ -1520,11 +1520,10 @@
           "MaximumGoo": 9,
           "HeroId": 4,
           "CardsInHand": [
-            "Cherno-bill",
-            "Zeptic"
+            "Cherno-bill"
           ],
           "CardsInDeck": [
-
+            "Zeptic"
           ],
           "CardsOnBoard": [
             {
