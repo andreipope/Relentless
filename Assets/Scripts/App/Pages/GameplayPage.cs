@@ -225,10 +225,7 @@ namespace Loom.ZombieBattleground
             _opponentCardDeckCountText = GameObject.Find("Opponent/CardDeckText").GetComponent<TextMeshPro>();
 
             _endTurnButton = GameObject.Find("EndTurnButton");
-
-            Debug.Log(GameObject.Find("Opponent/Object_SpellPrimary"));
-            Debug.Log(GameObject.Find("Opponent"));
-
+            
             PlayerPrimarySkillHandler =
                 GameObject.Find("Player").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
