@@ -226,15 +226,18 @@ namespace Loom.ZombieBattleground
 
             _endTurnButton = GameObject.Find("EndTurnButton");
 
+            Debug.Log(GameObject.Find("Opponent/Object_SpellPrimary"));
+            Debug.Log(GameObject.Find("Opponent"));
+
             PlayerPrimarySkillHandler =
-                GameObject.Find("Player/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find("Player").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
-                GameObject.Find("Player/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find("Player").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             OpponentPrimarySkillHandler =
-                GameObject.Find("Opponent/Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find("Opponent").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             OpponentSecondarySkillHandler =
-                GameObject.Find("Opponent/Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find("Opponent").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {

@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
                 !_tutorialManager.IsTutorial &&
                 appStateAfterMatch != Enumerators.AppState.MAIN_MENU)
             {
-                ForceStartGameplay(true);
+                _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY, true);
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AppState.GAMEPLAY:
                     {
-                        ForceStartGameplay();
+                        ForceStartGameplay(_gameplayManager.IsTutorial);
                     }
                     break;
                 case Enumerators.AppState.APP_INIT:
@@ -114,12 +114,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
             }
 
-            _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
-
-            if (force)
-            {
-                _uiManager.SetPage<GameplayPage>();
-            }
+            _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY, force);
 
             _uiManager.HidePopup<LoadingGameplayPopup>();
 
