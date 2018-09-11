@@ -92,18 +92,10 @@ namespace Loom.ZombieBattleground
             _attackedUnitTargets = new List<BoardUnit>();
             _unitsToIgnoreThisTurn = new List<BoardUnit>();
 
-            List<string> playerDeck = new List<string>();
+            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            {
+                List<string> playerDeck = new List<string>();
 
-            if (_gameplayManager.IsTutorial)
-            {
-                playerDeck.Add("MonZoon");
-                playerDeck.Add("Burrrnn");
-                playerDeck.Add("Golem");
-                playerDeck.Add("Rockky");
-                playerDeck.Add("Rockky");
-            }
-            else
-            {
                 int deckId = _gameplayManager.OpponentDeckId;
                 foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
                     .Cards)
@@ -113,22 +105,45 @@ namespace Loom.ZombieBattleground
                         playerDeck.Add(card.CardName);
                     }
                 }
+
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
-
-            _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
-
-            _battlegroundController.UpdatePositionOfCardsInOpponentHand();
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
+        }
+
+        public async Task LaunchAIBrain()
+        {
+            _aiBrainCancellationTokenSource = new CancellationTokenSource();
+            Debug.Log("brain started");
+
+            try
+            {
+                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("brain canceled!");
+            }
+
+            Debug.Log("brain finished");
         }
 
         private void SetAiTypeByDeck()
         {
             OpponentDeck deck =
                 _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId);
-            _aiType = (Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type);
+            SetAiType((Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type));
         }
+
+        public void SetAiType(Enumerators.AiType aiType)
+        {
+            _aiType = aiType;
+        }
+
 
         private void GameEndedHandler(Enumerators.EndGameType obj)
         {
@@ -152,19 +167,13 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _aiBrainCancellationTokenSource = new CancellationTokenSource();
-            Debug.Log("brain started");
-
-            try
+            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
             {
-                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("brain canceled!");
+                if (!_tutorialManager.CurrentTutorialDataStep.IsLaunchAIBrain)
+                    return;
             }
 
-            Debug.Log("brain finished");
+            await LaunchAIBrain();
         }
 
         private void TurnEndedHandler()
@@ -178,18 +187,28 @@ namespace Loom.ZombieBattleground
             _unitsToIgnoreThisTurn.Clear();
         }
 
+
         private async Task DoAiBrain(CancellationToken cancellationToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(1f));
+            //  await Task.Delay(TimeSpan.FromSeconds(1f));
+            await LetsThink(cancellationToken);
+
             cancellationToken.ThrowIfCancellationRequested();
+
             await PlayCardsFromHand(cancellationToken);
+
             cancellationToken.ThrowIfCancellationRequested();
+
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
             {
                 (_tutorialManager as TutorialManager).Paused = true;
             }
             else
             {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 await UsePlayerSkills(cancellationToken);
@@ -295,14 +314,14 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.CurrentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
-                _aiType == Enumerators.AiType.TIME_BLITZ_AI) && !_tutorialManager.IsTutorial)
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
+                _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnit unit in unitsOnBoard)
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (UnitCanBeUsable(unit))
+                      //  if (UnitCanBeUsable(unit))
                         {
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
@@ -316,7 +335,7 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (UnitCanBeUsable(unit))
+                      //  if (UnitCanBeUsable(unit))
                         {
                             if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                             {
@@ -462,6 +481,8 @@ namespace Loom.ZombieBattleground
                 _normalSpellCardInHand.RemoveAll(x =>
                     x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
             }
+
+            await LetsThink(cancellationToken);
         }
 
         private bool CardBePlayableForOverflowGoo(int cost, int goo)
@@ -956,6 +977,9 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnit> GetUnitsOnBoard()
         {
+            foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
+                Debug.Log(unit.Card.LibraryCard.Name);
+
             return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0);
         }
 

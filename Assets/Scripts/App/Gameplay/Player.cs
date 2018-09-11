@@ -390,6 +390,9 @@ namespace Loom.ZombieBattleground
 
         public List<T> ShuffleCardsList<T>(List<T> cards)
         {
+            if (cards.Count == 0)
+                return cards;
+
             List<T> array = cards;
 
             if (!_gameplayManager.IsTutorial)
@@ -451,6 +454,10 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+            }
+            else
+            {
+                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.HERO_DEATH);
             }
         }
 
