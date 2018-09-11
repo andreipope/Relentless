@@ -111,6 +111,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _gameplayManager.IsTutorial = false;
                 _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
             }
 
             IsTutorial = false;
