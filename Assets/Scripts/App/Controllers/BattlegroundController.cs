@@ -241,7 +241,7 @@ namespace Loom.ZombieBattleground
             }
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Health = 1;
             _gameplayManager.CurrentPlayer.Health = 99;
 #endif
 
