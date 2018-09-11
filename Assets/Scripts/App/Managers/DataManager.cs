@@ -499,7 +499,7 @@ namespace Loom.ZombieBattleground
 
         private T DeserializeObjectFromPath<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(DecryptData(path)));
+            return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
         }
 
         private string SerializeObject(object obj)
