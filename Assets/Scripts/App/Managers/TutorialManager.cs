@@ -100,12 +100,20 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            Action callback = () =>
+            GameClient.Get<IAppStateManager>().SetPausingApp(true);
+
+            Action[] callbacks = new Action[2];
+            callbacks[0] = () =>
             {
                 GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(state);
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
             };
-            _uiManager.DrawPopup<ConfirmationPopup>(callback);
+            callbacks[1] = () =>
+            {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
+            };
+            _uiManager.DrawPopup<ConfirmationPopup>(callbacks);
         }
 
         public void NextButtonClickHandler()

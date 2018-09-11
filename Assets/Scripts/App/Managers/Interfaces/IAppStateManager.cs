@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
 
         void ChangeAppState(Enumerators.AppState stateTo);
 
+        void SetPausingApp(bool mustPause);
+
         void BackAppState();
     }
 }
