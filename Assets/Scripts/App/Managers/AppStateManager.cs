@@ -22,10 +22,13 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AppState AppState { get; set; }
 
-        public void ChangeAppState(Enumerators.AppState stateTo)
+        public void ChangeAppState(Enumerators.AppState stateTo, bool force = false)
         {
-            if (AppState == stateTo)
-                return;
+            if (!force)
+            {
+                if (AppState == stateTo)
+                    return;
+            }
 
             switch (stateTo)
             {

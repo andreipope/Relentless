@@ -728,7 +728,7 @@ namespace Loom.ZombieBattleground
             return ability;
         }
 
-        private void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
+        public void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
         {
             if (boardObject is BoardUnit unit)
             {

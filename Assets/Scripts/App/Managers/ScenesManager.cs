@@ -22,10 +22,13 @@ namespace Loom.ZombieBattleground
 
         public bool IsAutoSceneSwitcher { get; set; }
 
-        public void ChangeScene(Enumerators.AppState appState)
+        public void ChangeScene(Enumerators.AppState appState, bool force = false)
         {
-            if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState)
-                return;
+            if (!force)
+            {
+                if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState)
+                    return;
+            }
 
             IsLoadedScene = false;
             _isLoadingStarted = true;

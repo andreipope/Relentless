@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         public int TutorialId;
         public List<TutorialDataStep> TutorialDataSteps;
+        public SpecificBattlegroundInfo SpecificBattlegroundInfo;
+        public bool PlayerTurnFirst;
     }
 
     public class TutorialDataStep
@@ -22,6 +23,7 @@ namespace Loom.ZombieBattleground
         public string JaneText;
         public string SoundName;
         public string EmotionDescription;
+        public string AvailableCard;
 
         public bool IsFocusing;
         public bool IsArrowEnabled;
@@ -38,6 +40,11 @@ namespace Loom.ZombieBattleground
         public bool IsManuallyHideBubble;
         public bool IsPauseTutorial;
         public bool CanHandleInput;
+        public bool IsLaunchAIBrain;
+        public bool AvailableCardUsableInHand;
+        public bool UnitsCanAttack;
+        public bool BoardArrowCantUsableOnUnit;
+        public bool BoardArrowCanUsableOnPlayer;
 
         public float DelayToPlaySound;
 
@@ -49,6 +56,7 @@ namespace Loom.ZombieBattleground
             JaneText = string.Empty;
             SoundName = string.Empty;
             EmotionDescription = string.Empty;
+            AvailableCard = string.Empty;
 
             DelayToPlaySound = 0f;
 
@@ -67,6 +75,10 @@ namespace Loom.ZombieBattleground
             IsManuallyHideBubble = false;
             IsPauseTutorial = false;
             CanHandleInput = false;
+            IsLaunchAIBrain = false;
+            UnitsCanAttack = false;
+            BoardArrowCantUsableOnUnit = false;
+            BoardArrowCanUsableOnPlayer = false;
         }
     }
 }
