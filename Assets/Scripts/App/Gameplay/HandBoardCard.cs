@@ -176,6 +176,8 @@ public class HandBoardCard
                     Transform.position = InitialPos;
                     Transform.eulerAngles = InitialRotation;
                     _isReturnToHand = false;
+
+                    _gameplayManager.CanDoDragActions = true;
                 });
         }
     }
