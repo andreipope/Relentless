@@ -833,8 +833,6 @@ namespace Loom.ZombieBattleground
                                     _vfxController.PlayAttackVfx(Card.LibraryCard.CardType,
                                         targetCard.Transform.position, CurrentDamage);
 
-                                    int attackerHP = this.CurrentHp;
-                                    int attackedHP = targetCard.CurrentHp;
                                     _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
                                     if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
