@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         public int InitialHp;
 
+        public bool HasUsedBuffShield;
+
         public Player OwnerPlayer;
 
         public List<object> AttackedBoardObjectsThisTurn;
@@ -278,6 +280,13 @@ namespace Loom.ZombieBattleground
             else
             {
                 InvokeUnitDied();
+            }
+        }
+
+        public void ResolveBuffShield () {
+            if (HasUsedBuffShield) {
+                HasUsedBuffShield = false;
+                this.UseShieldFromBuff();
             }
         }
 
@@ -824,12 +833,22 @@ namespace Loom.ZombieBattleground
                                     _vfxController.PlayAttackVfx(Card.LibraryCard.CardType,
                                         targetCard.Transform.position, CurrentDamage);
 
+                                    int attackerHP = this.CurrentHp;
+                                    int attackedHP = targetCard.CurrentHp;
                                     _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
 
                                     if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
                                     {
-                                        targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                        if (!targetCard.HasBuffShield)
+                                        {
+                                            targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                        } else {
+                                            targetCard.HasUsedBuffShield = true;
+                                        }
                                     }
+
+                                    targetCard.ResolveBuffShield();
+                                    this.ResolveBuffShield();
                                 },
                                 () =>
                                 {
