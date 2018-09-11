@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IDataManager _dataManager;
+
         private TextMeshProUGUI _text;
 
         private ButtonShiftingContent _nextButton, _playButton, _skipButton;
@@ -35,6 +37,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+
             _janePoses = _loadObjectsManager.GetObjectsByPath<Sprite>(new string[] {
                 "Images/Tutorial/1BasicJane",
                 "Images/Tutorial/2ThinkingJane",
@@ -115,7 +119,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITimerManager>().AddTimer(ShowBubble, null, 6f);
             }
 
-            _text.text = (string) data;
+            _text.text = (string)data;
         }
 
         public void Update()
@@ -124,7 +128,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePose(Enumerators.TutorialJanePoses pose)
         {
-            _janeImage.sprite = _janePoses[(int) pose];
+            _janeImage.sprite = _janePoses[(int)pose];
         }
 
         public void ShowBubble(object[] param)
@@ -137,7 +141,7 @@ namespace Loom.ZombieBattleground
         {
             HideTutorialFocus();
             Debug.Log(_tutorialManager.CurrentTutorial.TutorialId);
-            Self.transform.Find("FocusObjects_"+ _tutorialManager.CurrentTutorial.TutorialId + "/Step_" + step).gameObject.SetActive(true);
+            Self.transform.Find("FocusObjects_" + _tutorialManager.CurrentTutorial.TutorialId + "/Step_" + step).gameObject.SetActive(true);
         }
 
         public void HideTutorialFocus()
@@ -171,6 +175,9 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= 0)
+                _dataManager.CachedUserLocalData.CurrentTutorialId--;
+
             _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }

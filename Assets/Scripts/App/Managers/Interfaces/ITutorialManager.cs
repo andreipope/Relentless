@@ -11,8 +11,6 @@ namespace Loom.ZombieBattleground
 
         bool IsBubbleShow { get; set; }
 
-        int LatestTutorialId { get; }
-
         void StartTutorial();
         void SetupTutorialById(int id);
 

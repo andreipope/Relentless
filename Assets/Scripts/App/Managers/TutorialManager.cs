@@ -41,8 +41,6 @@ namespace Loom.ZombieBattleground
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
-        public int LatestTutorialId { get; private set; } = 0;
-
         public void Dispose()
         {
         }
@@ -99,20 +97,24 @@ namespace Loom.ZombieBattleground
 
         public void StopTutorial()
         {
+            if (!IsTutorial)
+                return;
+
             _uiManager.HidePopup<TutorialPopup>();
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            LatestTutorialId++;
+            _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
-            if (LatestTutorialId >= 2)
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= 2)
             {
-                LatestTutorialId = 0;
-                IsTutorial = false;
-                GameClient.Get<IGameplayManager>().IsTutorial = false;
-                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-                GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
             }
+
+            IsTutorial = false;
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
@@ -121,7 +123,7 @@ namespace Loom.ZombieBattleground
 
             Action callback = () =>
             {
-                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(state);
             };
             _uiManager.DrawPopup<ConfirmationPopup>(callback);

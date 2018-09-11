@@ -21,12 +21,13 @@ namespace Loom.ZombieBattleground
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
-            if (_tutorialManager.IsTutorial)
+            _tutorialManager.StopTutorial();
+
+            if (_gameplayManager.IsTutorial &&
+                !_tutorialManager.IsTutorial &&
+                appStateAfterMatch != Enumerators.AppState.MAIN_MENU)
             {
-                _tutorialManager.StopTutorial();
-
-                ForceStartGameplay();
-
+                ForceStartGameplay(true);
                 return;
             }
 
@@ -106,14 +107,19 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ForceStartGameplay()
+        private void ForceStartGameplay(bool force = false)
         {
             if (_gameplayManager.IsTutorial)
             {
-                _tutorialManager.SetupTutorialById(_tutorialManager.LatestTutorialId);
+                _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
             }
 
             _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
+
+            if (force)
+            {
+                _uiManager.SetPage<GameplayPage>();
+            }
 
             _uiManager.HidePopup<LoadingGameplayPopup>();
 
