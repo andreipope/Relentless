@@ -175,14 +175,14 @@ namespace Loom.ZombieBattleground
             // real shop obj
             for (int i = 0; i < MaxItemsInShop; i++)
             {
-                ShopObject current = new ShopObject(i+1, _shopsContainer.transform);
+                ShopObject current = new ShopObject(i + 1, _shopsContainer.transform);
                 _shopObjects.Add(current);
             }
 
             // add fake shop obj in end
             for (int i = 0; i < LoopEndFakeShopCount; i++)
             {
-                ShopObject fakeObj = new ShopObject(i+1, _shopsContainer.transform);
+                ShopObject fakeObj = new ShopObject(i + 1, _shopsContainer.transform);
                 fakeObj.Deselect();
                 _loopFakeShopObjects.Add(fakeObj);
             }
