@@ -23,6 +23,7 @@ namespace Loom.ZombieBattleground
             WorkingCard card = new WorkingCard(libraryCard, owner);
             BoardUnit unit = CreateBoardUnit(card, owner);
             unit.IsReanimated = true;
+            AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
@@ -75,6 +76,8 @@ namespace Loom.ZombieBattleground
             }
 
             boardUnit.PlayArrivalAnimation();
+
+            GameplayManager.CanDoDragActions = true;
 
             return boardUnit;
         }
