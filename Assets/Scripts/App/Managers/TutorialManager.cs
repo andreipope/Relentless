@@ -147,8 +147,8 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
             }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
 
         private void ConfirmQuitReceivedHandler(bool status)
@@ -158,8 +158,8 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
             }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
 
 
