@@ -41,6 +41,11 @@ namespace Loom.ZombieBattleground
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
+        public int TutorialsCount
+        {
+            get { return _tutorials.Count; }
+        }
+
         public void Dispose()
         {
         }
@@ -78,9 +83,6 @@ namespace Loom.ZombieBattleground
 
         public void StartTutorial()
         {
-            //  GameClient.Get<ITimerManager>().AddTimer(
-            //      x =>
-            //      {
             _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.SpecificBattlegroundInfo);
 
             IsBubbleShow = true;
@@ -88,9 +90,6 @@ namespace Loom.ZombieBattleground
             _popup = _uiManager.GetPopup<TutorialPopup>();
             UpdateTutorialVisual();
             _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume, false);
-            //        },
-            //      null,
-            //       4f);
 
             IsTutorial = true;
         }
@@ -104,15 +103,17 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
-            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= 2)
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count - 1)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _gameplayManager.IsTutorial = false;
                 _dataManager.CachedUserLocalData.Tutorial = false;
                 _gameplayManager.IsSpecificGameplayBattleground = false;
             }
+
+            _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
@@ -122,13 +123,45 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            Action callback = () =>
+            string tutorialSkipQuestion = "Are you sure you want back to Main Menu?";
+            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+            if (state == Enumerators.AppState.MAIN_MENU)
+            {
+                questionPopup.ConfirmationReceived += ConfirmQuitReceivedHandler;
+            }
+            else
+            {
+                tutorialSkipQuestion = "Do you really want skip \nBasic Tutorial?";
+                if (_dataManager.CachedUserLocalData.CurrentTutorialId > 0)
+                    tutorialSkipQuestion = "Do you really want skip \nAdvanced Tutorial?";
+                questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
+            }
+
+            _uiManager.DrawPopup<QuestionPopup>(new object[]{tutorialSkipQuestion, false});
+        }
+
+        private void ConfirmSkipReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSkipReceivedHandler;
+            if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(state);
-            };
-            _uiManager.DrawPopup<ConfirmationPopup>(callback);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
+
+        private void ConfirmQuitReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmQuitReceivedHandler;
+            if (status)
+            {
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+            }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
+        }
+
 
         public void NextButtonClickHandler()
         {
