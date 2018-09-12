@@ -77,9 +77,9 @@ namespace Loom.ZombieBattleground.Helpers
             }
         }
 
-        public static List<object> GetRandomElementsFromList(List<object> root, int count)
+        public static List<T> GetRandomElementsFromList<T>(List<T> root, int count)
         {
-            List<object> list = new List<object>();
+            List<T> list = new List<T>();
 
             if (root.Count < count)
             {
@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground.Helpers
             }
             else
             {
-                object element;
+                T element;
                 for (int i = 0; i < count; i++)
                 {
                     element = ShakeList(root).First(x => !list.Contains(x));

@@ -2318,7 +2318,7 @@
           "kind": "CREATURE",
           "name": "Zeeter",
           "cost": 5,
-          "description": "<b>Entry: Devour Atk/Def</b> an ally zombie",
+          "description": "Entry: Devour an ally zombie, get its Atk and Def",
           "flavorText": "Nam, naam nam nam namm nam...",
           "picture": "Zeeter",
           "damage": 1,

@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
                         (int) KeyCode.Escape, null, OnRightMouseButtonUpHandler);
                 },
                 null,
-                Time.fixedDeltaTime);
+                0.75f);
         }
 
         protected override void OnDestroy()

@@ -160,14 +160,13 @@ namespace Loom.ZombieBattleground
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            _uiManager.HidePopup<YouWonPopup>();
 
             GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
-            _uiManager.HidePopup<YouWonPopup>();
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
         }
     }
 }
