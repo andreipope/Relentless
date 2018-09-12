@@ -286,6 +286,13 @@ namespace Loom.ZombieBattleground
             Sprite heroHighlight =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
+
+            string name = Utilites.FirstCharToUpper(hero.HeroElement.ToString()) + "HeroFrame";
+            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
+            var avatarHeroHighlight = MonoBehaviour.Instantiate(prefab, GameObject.Find(objectName + "/Avatar/HeroHighlightAnim").transform, false);
+            //avatarHeroHighlight.transform.localPosition = Vector3.zero;
+            avatarHeroHighlight.name = name;
+            avatarHeroHighlight.transform.parent.gameObject.SetActive(false);
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
