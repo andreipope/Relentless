@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            if (_gameplayManager.IsTutorial)
+            if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
             {
                 EndCardDistribution();
             }
@@ -222,9 +222,12 @@ namespace Loom.ZombieBattleground
             {
                 if (player.CardsInDeck.Count == 0)
                 {
-                    player.DamageByNoMoreCardsInDeck++;
-                    player.Health -= player.DamageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        player.DamageByNoMoreCardsInDeck++;
+                        player.Health -= player.DamageByNoMoreCardsInDeck;
+                        _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
+                    }
                     return;
                 }
 
@@ -244,9 +247,12 @@ namespace Loom.ZombieBattleground
             {
                 if (otherPlayer.CardsInDeck.Count == 0)
                 {
-                    otherPlayer.DamageByNoMoreCardsInDeck++;
-                    otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
-                    _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        otherPlayer.DamageByNoMoreCardsInDeck++;
+                        otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
+                        _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
+                    }
                     return;
                 }
 
@@ -845,6 +851,11 @@ namespace Loom.ZombieBattleground
                 2f);
         }
 
+        public WorkingCard GetWorkingCardFromName(Player owner, string cardName)
+        {
+            return new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), owner);
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             CardDistribution = false;
@@ -915,10 +926,10 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public void SpawnUnitOnBoard(Player owner, string name)
+        public BoardUnit SpawnUnitOnBoard(Player owner, string name)
         {
             if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
-                return;
+                return null;
 
             Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
 
@@ -927,6 +938,8 @@ namespace Loom.ZombieBattleground
 
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit, true);
 
             if (!owner.IsLocalPlayer)
             {
@@ -944,6 +957,8 @@ namespace Loom.ZombieBattleground
                 {
                     owner, unit
                 }));
+
+            return unit;
         }
 
         private BoardUnit CreateBoardUnitForSpawn(WorkingCard card, Player owner)

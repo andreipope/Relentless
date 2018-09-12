@@ -154,6 +154,9 @@ public class HandBoardCard
             {
                 Transform.position = InitialPos;
                 Transform.eulerAngles = InitialRotation;
+
+                _gameplayManager.CanDoDragActions = true;
+
                 if (_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ActivateSelectTarget();
@@ -163,6 +166,7 @@ public class HandBoardCard
         else
         {
             _isReturnToHand = true;
+            _gameplayManager.CanDoDragActions = true;
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
@@ -172,18 +176,24 @@ public class HandBoardCard
                     Transform.position = InitialPos;
                     Transform.eulerAngles = InitialRotation;
                     _isReturnToHand = false;
+
+                    _gameplayManager.CanDoDragActions = true;
                 });
         }
     }
 
     public void ResetToInitialPosition()
     {
+        _gameplayManager.CanDoDragActions = true;
+
         Transform.position = InitialPos;
         Transform.eulerAngles = InitialRotation;
     }
 
     public void ResetToHandAnimation()
     {
+        _gameplayManager.CanDoDragActions = true;
+
         _canceledPlay = false;
         _alreadySelected = false;
         StartedDrag = false;

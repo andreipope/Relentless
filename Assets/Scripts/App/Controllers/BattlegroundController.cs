@@ -93,6 +93,8 @@ namespace Loom.ZombieBattleground
             _cardsInDestroy = new List<BoardUnit>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
+
+            _gameplayManager.GameInitialized += OnGameInitializedHandler;
         }
 
         public void Dispose()
@@ -231,15 +233,6 @@ namespace Loom.ZombieBattleground
         {
             CurrentTurn = Constants.FirstGameTurnIndex;
 
-            if (_gameplayManager.IsTutorial)
-            {
-                _gameplayManager.OpponentPlayer.Health = 12;
-                _gameplayManager.OpponentPlayer.GooOnCurrentTurn = 10;
-                _gameplayManager.OpponentPlayer.Goo = 10;
-                _gameplayManager.CurrentPlayer.GooOnCurrentTurn = 7;
-                _gameplayManager.CurrentPlayer.Goo = 7;
-            }
-
 #if DEV_MODE
             _gameplayManager.OpponentPlayer.Health = 99;
             _gameplayManager.CurrentPlayer.Health = 99;
@@ -284,6 +277,8 @@ namespace Loom.ZombieBattleground
 
             if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
             {
+                Debug.Log("_dataManager.CachedUserLocalData.Tutorial = " + _dataManager.CachedUserLocalData.Tutorial);
+                Debug.Log("_tutorialManager.IsTutorial = " + _tutorialManager.IsTutorial);
                 _tutorialManager.StartTutorial();
             }
 
@@ -342,6 +337,8 @@ namespace Loom.ZombieBattleground
 
             _playerController.UpdateHandCardsHighlight();
 
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.START_TURN);
+
             TurnStarted?.Invoke();
         }
 
@@ -383,7 +380,6 @@ namespace Loom.ZombieBattleground
         {
             EndTurn();
 
-
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 _uiManager.DrawPopup<YourTurnPopup>();
@@ -394,9 +390,9 @@ namespace Loom.ZombieBattleground
                 }, null, 4f);
             }
             else
-			{
+            {
                 StartTurn();
-			}
+            }
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -838,5 +834,78 @@ namespace Loom.ZombieBattleground
 
             return boardUnit;
         }
+
+
+        #region specific setup of battleground
+
+        public void SetupBattlegroundAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            SetupOverlordsAsSpecific(specificBattlegroundInfo);
+            SetupOverlordsHandsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInHand, specificBattlegroundInfo.OpponentInfo.CardsInHand);
+            SetupOverlordsDecksAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, specificBattlegroundInfo.OpponentInfo.CardsInDeck);
+            SetupOverlordsBoardUnitsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsOnBoard, specificBattlegroundInfo.OpponentInfo.CardsOnBoard);
+            SetupGeneralUIAsSpecific(specificBattlegroundInfo);
+        }
+
+        private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
+            _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+            _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
+
+            _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
+            _gameplayManager.CurrentPlayer.Goo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
+        }
+
+        private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            foreach (string cardName in playerCards)
+                _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.CurrentPlayer, cardName), true);
+
+            foreach (string cardName in opponentCards)
+                _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.OpponentPlayer, cardName), true);
+        }
+
+        private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            _gameplayManager.CurrentPlayer.SetDeck(playerCards);
+            _gameplayManager.OpponentPlayer.SetDeck(opponentCards);
+        }
+
+        private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        {
+            // todo implement logic
+        }
+
+        private void SetupOverlordsBoardUnitsAsSpecific(List<SpecificBattlegroundInfo.UnitOnBoardInfo> playerCards,
+                                                        List<SpecificBattlegroundInfo.UnitOnBoardInfo> opponentCards)
+        {
+            BoardUnit workingUnit = null;
+
+            foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
+            {
+                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
+                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+            }
+
+            foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
+            {
+                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
+                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+            }
+        }
+
+        private void SetupGeneralUIAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            // todo implement logic
+        }
+
+        private void OnGameInitializedHandler()
+        {
+        }
     }
+
+    #endregion
 }

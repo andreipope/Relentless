@@ -10,6 +10,7 @@ public class BoardArrow : MonoBehaviour
     public List<Enumerators.SetType> ElementType = new List<Enumerators.SetType>();
 
     protected IGameplayManager GameplayManager;
+    protected ITutorialManager TutorialManager;
 
     protected BoardArrowController BoardArrowController;
 
@@ -110,6 +111,7 @@ public class BoardArrow : MonoBehaviour
     protected void Init()
     {
         GameplayManager = GameClient.Get<IGameplayManager>();
+        TutorialManager = GameClient.Get<ITutorialManager>();
         BoardArrowController = GameplayManager.GetController<BoardArrowController>();
         InputController = GameplayManager.GetController<InputController>();
 

@@ -4,6 +4,7 @@ namespace Loom.ZombieBattleground
 {
     public interface ITutorialManager
     {
+        TutorialData CurrentTutorial { get; }
         TutorialDataStep CurrentTutorialDataStep { get; }
 
         bool IsTutorial { get; }
@@ -11,6 +12,7 @@ namespace Loom.ZombieBattleground
         bool IsBubbleShow { get; set; }
 
         void StartTutorial();
+        void SetupTutorialById(int id);
 
         void StopTutorial();
 

@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         public int InitialHp;
 
+        public bool HasUsedBuffShield;
+
         public Player OwnerPlayer;
 
         public List<object> AttackedBoardObjectsThisTurn;
@@ -248,6 +250,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
+        public bool CantAttackInThisTurnBlocker { get; set; } = false;
+
         public bool IsHeavyUnit()
         {
             return HasBuffHeavy || HasHeavy;
@@ -278,6 +282,13 @@ namespace Loom.ZombieBattleground
             else
             {
                 InvokeUnitDied();
+            }
+        }
+
+        public void ResolveBuffShield () {
+            if (HasUsedBuffShield) {
+                HasUsedBuffShield = false;
+                this.UseShieldFromBuff();
             }
         }
 
@@ -381,7 +392,7 @@ namespace Loom.ZombieBattleground
                 IsPlayable = false;
                 SetHighlightingEnabled(false);
             }
-            else if (!AttackedThisTurn && IsPlayable)
+            else if (!AttackedThisTurn && IsPlayable && !CantAttackInThisTurnBlocker)
             {
                 StopSleepingParticles();
             }
@@ -430,7 +441,7 @@ namespace Loom.ZombieBattleground
         public void ArrivalAnimationEventHandler()
         {
             _unitContentObject.SetActive(true);
-            if (HasFeral || NumTurnsOnBoard > 0)
+            if (HasFeral || NumTurnsOnBoard > 0 && !CantAttackInThisTurnBlocker)
             {
                 StopSleepingParticles();
             }
@@ -630,7 +641,7 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(false);
         }
 
-        public void PlayArrivalAnimation()
+        public void PlayArrivalAnimation(bool firstAppear = true)
         {
             GameObject arrivalPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival_VFX");
@@ -641,11 +652,13 @@ namespace Loom.ZombieBattleground
             scale.x *= -1;
             spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
-            GameObject.transform.position += Vector3.back * 5f;
+            if(firstAppear)
+                GameObject.transform.position += Vector3.back * 5f;
         }
 
         public void OnStartTurn()
         {
+            Debug.Log("OnStartTurn");
             AttackedBoardObjectsThisTurn.Clear();
             NumTurnsOnBoard++;
             StopSleepingParticles();
@@ -678,6 +691,7 @@ namespace Loom.ZombieBattleground
         public void OnEndTurn()
         {
             HasBuffRush = false;
+            CantAttackInThisTurnBlocker = false;
 
             CancelTargetingArrows();
         }
@@ -698,6 +712,9 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
+            if (AttackedThisTurn || NumTurnsOnBoard == 0)
+                turns++;
+
             if (turns > _stunTurns)
             {
                 _stunTurns = turns;
@@ -828,8 +845,16 @@ namespace Loom.ZombieBattleground
 
                                     if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
                                     {
-                                        targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                        if (!targetCard.HasBuffShield)
+                                        {
+                                            targetCard.Stun(Enumerators.StunType.FREEZE, 1);
+                                        } else {
+                                            targetCard.HasUsedBuffShield = true;
+                                        }
                                     }
+
+                                    targetCard.ResolveBuffShield();
+                                    this.ResolveBuffShield();
                                 },
                                 () =>
                                 {
@@ -853,7 +878,7 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun)
+            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun || CantAttackInThisTurnBlocker)
             {
                 return false;
             }
@@ -922,7 +947,7 @@ namespace Loom.ZombieBattleground
             _pictureSprite.transform.SetParent(GameObject.transform, false);
             _pictureSprite.gameObject.SetActive(false);
             Object.Destroy(_battleframeObject);
-            PlayArrivalAnimation();
+            PlayArrivalAnimation(false);
             _pictureSprite.gameObject.SetActive(true);
             _timerManager.AddTimer(
                 x =>
@@ -1035,7 +1060,7 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            if (_gameplayManager.IsTutorial && _gameplayManager.TutorialStep == 18)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
                 return;
 
             if (OwnerPlayer != null && OwnerPlayer.IsLocalPlayer && _playerController.IsActive && UnitCanBeUsable())
