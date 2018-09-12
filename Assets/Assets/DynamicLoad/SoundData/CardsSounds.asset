@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e283d5ecf866417da771c031af0b616, type: 3}
+  m_Name: CardsSounds
+  m_EditorClassIdentifier: 
+  soundList:
+  - air_01_whizpar_A
+  - air_01_whizpar_D
+  - air_01_whizpar_P
+  - air_02_pushhh_A
+  - air_02_pushhh_D
+  - air_02_pushhh_P
+  - air_03_stormcaller_A
+  - air_03_stormcaller_D
+  - air_03_stormcaller_P
+  - czb_vo_air04_zeuz_A_03_F1_EXP
+  - czb_vo_air04_zeuz_D_04_F1_EXP
+  - czb_vo_air04_zeuz_P1_01_F1_EXP
+  - czb_vo_air04_zeuz_P2_02_F1_EXP
+  - czb_vo_earth01_rockky_A_02_F1_EXP
+  - czb_vo_earth01_rockky_D_03_F1_EXP
+  - czb_vo_earth01_rockky_P_01_F1_EXP
+  - czb_vo_earth02_golem_A_02_F1_EXP
+  - czb_vo_earth02_golem_D_03_F1_EXP
+  - czb_vo_earth02_golem_P_01_F1_EXP
+  - czb_vo_earth04_mountain_A_03_F1_EXP
+  - czb_vo_earth04_mountain_D_03_F1_EXP
+  - czb_vo_earth04_mountain_P1_01_F1_EXP
+  - czb_vo_earth04_mountain_P2_02_F1_EXP
+  - czb_vo_fire01_pyromaz_A_02_F1_EXP
+  - czb_vo_fire01_pyromaz_D_03_F1_EXP
+  - czb_vo_fire01_pyromaz_P_01_F1_EXP
+  - czb_vo_fire02_burrrnn_A_02_F1_EXP
+  - czb_vo_fire02_burrrnn_D_03_F1_EXP
+  - czb_vo_fire02_burrrnn_P_01_F1_EXP
+  - czb_vo_fire04_gargantua_A_03_F1_EXP
+  - czb_vo_fire04_gargantua_D_04_F1_EXP
+  - czb_vo_fire04_gargantua_P1_01_F1_EXP
+  - czb_vo_fire04_gargantua_P2_02_F1_EXP
+  - czb_vo_life01_azuraz_A_02_F1_EXP
+  - czb_vo_life01_azuraz_D_03_F1_EXP
+  - czb_vo_life01_azuraz_P_01_F1_EXP
+  - czb_vo_life03_vindrom_A_02_F1_EXP
+  - czb_vo_life03_vindrom_D_03_F1_EXP
+  - czb_vo_life03_vindrom_P_01_F1_EXP
+  - czb_vo_toxic01_poizom_A_02_F1_EXP
+  - czb_vo_toxic01_poizom_D_03_F1_EXP
+  - czb_vo_toxic01_poizom_P_01_F1_EXP
+  - czb_vo_toxic03_hazmaz_A_02_F1_EXP
+  - czb_vo_toxic03_hazmaz_D_03_F1_EXP
+  - czb_vo_toxic03_hazmaz_P_01_F1_EXP
+  - czb_vo_toxic04_cherno-bill_A_03_F1_EXP
+  - czb_vo_toxic04_cherno-bill_D_03_F1_EXP
+  - czb_vo_toxic04_cherno-bill_P1_01_F1_EXP
+  - czb_vo_toxic04_cherno-bill_P2_02_F1_EXP
+  - czb_vo_water02_jetter_A_F1_EXP
+  - czb_vo_water02_jetter_D_F1_EXP
+  - czb_vo_water02_jetter_P_01_F1_EXP
+  - czb_vo_water04_tsunami_A_03_F1_EXP
+  - czb_vo_water04_tsunami_D_04_F1_EXP
+  - czb_vo_water04_tsunami_P1_01_F1_EXP
+  - czb_vo_water04_tsunami_P2_02_F1_EXP
+  - earth_03_bolderr_A
+  - earth_03_bolderr_D
+  - earth_03_bolderr_P
+  - fire_03_cynderman_A
+  - fire_03_cynderman_D
+  - fire_03_cynderman_P
+  - life_02_shroom_A
+  - life_02_shroom_D
+  - life_02_shroom_P
+  - life_03_vindrom_A
+  - life_03_vindrom_D
+  - life_03_vindrom_P
+  - life_04_shammann_A
+  - life_04_shammann_D
+  - life_04_shammann_P
+  - toxic_02_ghoul_A
+  - toxic_02_ghoul_D
+  - toxic_02_ghoul_P
+  - water_01_izze_A
+  - water_01_izze_D
+  - water_01_izze_P
+  - water_03_freezzee_A
+  - water_03_freezzee_D
+  - water_03_freezzee_P

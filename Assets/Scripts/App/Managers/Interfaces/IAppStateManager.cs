@@ -1,14 +1,15 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
 
-
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface IAppStateManager
     {
-        Common.Enumerators.AppState AppState { get; set; }
-        void ChangeAppState(Common.Enumerators.AppState stateTo);
+        Enumerators.AppState AppState { get; set; }
+
+        void ChangeAppState(Enumerators.AppState stateTo, bool force = false);
+
+        void SetPausingApp(bool mustPause);
+
         void BackAppState();
     }
 }

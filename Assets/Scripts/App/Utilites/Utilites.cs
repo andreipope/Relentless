@@ -1,30 +1,112 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using Loom.Google.Protobuf.Reflection;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+
 #if UNITY_EDITOR
 using UnityEditor;
-#endif
-#if UNITY_5_3_OR_NEWER && UNITY_EDITOR
+using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 #endif
-using System;
-using System.IO;
-using System.Text;
-using System.Collections;
-using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Collections.Generic;
-using System.Linq;
-using Debug = UnityEngine.Debug;
 
-namespace LoomNetwork.Internal
+namespace Loom.ZombieBattleground
 {
     public static class Utilites
     {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        #region scene hierarchy utilites
+
+#if UNITY_EDITOR
+        [MenuItem("Utilites/Editor/Select GOs With Missing Scripts")]
+        public static void SelectMissing(MenuCommand command)
+        {
+            Transform[] ts = Object.FindObjectsOfType<Transform>();
+            List<GameObject> selection = new List<GameObject>();
+            foreach (Transform t in ts)
+            {
+                Component[] cs = t.gameObject.GetComponents<Component>();
+                foreach (Component c in cs)
+                {
+                    if (c == null)
+                    {
+                        selection.Add(t.gameObject);
+                    }
+                }
+            }
+
+            Selection.objects = selection.ToArray();
+        }
+#endif
+
+        #endregion scene hierarchy utilites
+
+        public static void SetLayerRecursively(this GameObject obj, int layer)
+        {
+            obj.layer = layer;
+
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, layer);
+            }
+        }
+
+        public static T CastStringTuEnum<T>(string data)
+        {
+            return (T) Enum.Parse(typeof(T), data.ToUpper());
+        }
+
+        public static List<T> CastList<T>(string data, char separator = '|')
+        {
+            List<T> list = new List<T>();
+            string[] targets = data.Split(separator);
+            foreach (string target in targets)
+            {
+                list.Add(CastStringTuEnum<T>(target));
+            }
+
+            return list;
+        }
+
+        public static Vector3 CastVfxPosition(Vector3 position)
+        {
+            return new Vector3(position.x, position.z, position.y);
+        }
+
+        public static Color SetAlpha(this Color color, float alpha)
+        {
+            color.a = alpha;
+            return color;
+        }
+
+        public static long GetCurrentUnixTimestampMillis()
+        {
+            DateTime localDateTime = DateTime.Now;
+            DateTime universalDateTime = localDateTime.ToUniversalTime();
+            return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
+        }
+
         #region asset bundles and cache
+
+        public static string GetAssetBundleLocalRoot()
+        {
+            return Path.Combine(Application.streamingAssetsPath, "AssetBundles");
+        }
+
+        public static string GetAssetBundleLocalPath(string assetBundleName)
+        {
+            return Path.Combine(GetAssetBundleLocalRoot(), assetBundleName);
+        }
 
 #if UNITY_EDITOR
 
@@ -33,27 +115,99 @@ namespace LoomNetwork.Internal
         {
             if (Caching.ClearCache())
             {
-                DebugLog("Clean Cache Successful");
+                Debug.Log("Clean Cache Successful");
             }
             else
             {
-                DebugLog("Clean Cache Failed");
+                Debug.Log("Clean Cache Failed");
             }
         }
-        
+
         [MenuItem("Utilites/Build/Build AssetBundles + Game")]
         public static void BuildAssetBundlesAndGame()
         {
             BuildAssetBundlesAndGame(EditorUserBuildSettings.activeBuildTarget);
         }
 
+        [MenuItem("Utilites/Build/Build Game")]
+        public static void BuildGame()
+        {
+            BuildGame(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        [MenuItem("Utilites/Build/Build Asset Bundles")]
+        public static void BuildAssetBundles()
+        {
+            BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        public static BuildAssetBundleOptions GetBuildAssetBundleOptions(BuildTarget buildTarget)
+        {
+            BuildAssetBundleOptions options = BuildAssetBundleOptions.None;
+            switch (buildTarget)
+            {
+                default:
+                    options |= BuildAssetBundleOptions.ChunkBasedCompression;
+                    break;
+            }
+            return options;
+        }
+
         private static void BuildAssetBundlesAndGame(BuildTarget buildTarget)
         {
             BuildAssetBundles(buildTarget);
             BuildGame(EditorUserBuildSettings.activeBuildTarget);
+        }
+
+        private static void BuildGame(BuildTarget buildTarget)
+        {
+            string outputPath = Path.Combine("Builds", buildTarget.ToString());
+
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+
+            outputPath = Path.Combine(outputPath, PlayerSettings.productName);
+            switch (buildTarget)
+            {
+                case BuildTarget.StandaloneWindows:
+                case BuildTarget.StandaloneWindows64:
+                    outputPath += ".exe";
+                    break;
+                case BuildTarget.Android:
+                    outputPath += ".apk";
+                    break;
+            }
+
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
+            {
+                scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray(),
+                locationPathName = outputPath,
+                target = buildTarget,
+                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget),
+                options = BuildOptions.None
+            };
+            BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            if (buildReport.summary.result != BuildResult.Succeeded)
+                throw new Exception("build failed");
+        }
+
+        private static void BuildAssetBundles(BuildTarget buildTarget)
+        {
+            string outputPath = GetAssetBundlesBuildPath(buildTarget);
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+
+            BuildPipeline.BuildAssetBundles(
+                outputPath,
+                GetBuildAssetBundleOptions(buildTarget),
+                buildTarget);
 
             // Delete existing StreamingAssets bundles
-            string assetBundleStreamingRoot = Application.streamingAssetsPath + "/AssetBundles";
+            string assetBundleStreamingRoot = GetAssetBundleLocalRoot();
             string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
             foreach (string existingBundle in existingBundles)
             {
@@ -61,7 +215,7 @@ namespace LoomNetwork.Internal
             }
 
             // Copy to StreamingAssets
-            string[] files = Directory.GetFiles(GetAssetBundlesBuildPath(buildTarget));
+            string[] files = Directory.GetFiles(outputPath);
             if (!Directory.Exists(assetBundleStreamingRoot))
             {
                 Directory.CreateDirectory(assetBundleStreamingRoot);
@@ -74,47 +228,6 @@ namespace LoomNetwork.Internal
             }
 
             AssetDatabase.Refresh();
-        }
-
-        [MenuItem("Utilites/Build/Build Asset Bundles")]
-        public static void BuildAssetBundles()
-        {
-            BuildAssetBundles(EditorUserBuildSettings.activeBuildTarget);
-        }
-
-        private static void BuildGame(BuildTarget buildTarget)
-        {
-            string outputPath = Path.Combine("Builds", buildTarget.ToString());
-
-            if (!Directory.Exists(outputPath))
-                Directory.CreateDirectory(outputPath);
-
-            outputPath = Path.Combine(outputPath, PlayerSettings.productName);
-            switch (buildTarget)
-            {
-                case BuildTarget.StandaloneWindows:
-                case BuildTarget.StandaloneWindows64:
-                    outputPath += ".exe";
-                    break;
-            }
-
-            BuildPlayerOptions buildPlayerOptions;
-            buildPlayerOptions.scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray();
-            buildPlayerOptions.locationPathName = outputPath;
-            buildPlayerOptions.target = buildTarget;
-            buildPlayerOptions.targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
-            string buildPlayer = BuildPipeline.BuildPlayer(buildPlayerOptions);
-            Debug.Log(buildPlayer);
-        }
-
-        private static void BuildAssetBundles(BuildTarget buildTarget)
-        {
-            string outputPath = GetAssetBundlesBuildPath(buildTarget);
-
-            if (!Directory.Exists(outputPath))
-                Directory.CreateDirectory(outputPath);
-
-            BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.UncompressedAssetBundle, buildTarget);
         }
 
         private static string GetAssetBundlesBuildPath(BuildTarget buildTarget)
@@ -132,24 +245,26 @@ namespace LoomNetwork.Internal
         public static void DeletePlayerPrefs()
         {
             PlayerPrefs.DeleteAll();
-            DebugLog("Delete Player Prefs Successful");
+            Debug.Log("Delete Player Prefs Successful");
         }
 
         [MenuItem("Utilites/Data/Clean Game Data (LocalLow)")]
         public static void CleanGameData()
         {
             DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/");
-            var files = dir.GetFiles();
-            foreach(var file in files)
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
                 file.Delete();
-            files = null;
+            }
 
-            var directories = dir.GetDirectories();
-            foreach (var directory in directories)
+            DirectoryInfo[] directories = dir.GetDirectories();
+            foreach (DirectoryInfo directory in directories)
+            {
                 directory.Delete(true);
-            directories = null;
+            }
 
-            DebugLog("Clean Game Data Successful");
+            Debug.Log("Clean Game Data Successful");
         }
 
         [MenuItem("Utilites/Data/Open Local Low Folder")]
@@ -157,6 +272,7 @@ namespace LoomNetwork.Internal
         {
             Process.Start(Application.persistentDataPath);
         }
+
 #endif
 
         #endregion cached data, player prefs, and data in persistent data path
@@ -169,20 +285,19 @@ namespace LoomNetwork.Internal
         {
             ProcessDirectory(Directory.GetCurrentDirectory() + "/Assets");
             AssetDatabase.Refresh();
-            DebugLog("Delete Empty Folders Successful");
+            Debug.Log("Delete Empty Folders Successful");
         }
 
         private static void ProcessDirectory(string startLocation)
         {
-            foreach (var directory in Directory.GetDirectories(startLocation))
+            foreach (string directory in Directory.GetDirectories(startLocation))
             {
                 ProcessDirectory(directory);
-                if (Directory.GetFiles(directory).Length == 0 &&
-                    Directory.GetDirectories(directory).Length == 0)
+                if (Directory.GetFiles(directory).Length == 0 && Directory.GetDirectories(directory).Length == 0)
                 {
                     Directory.Delete(directory);
                     File.Delete(directory + ".meta");
-                    DebugLog(directory + " deleted");
+                    Debug.Log(directory + " deleted");
                 }
             }
         }
@@ -191,106 +306,68 @@ namespace LoomNetwork.Internal
 
         #endregion project file hierarchy utilites
 
-        #region scene hierarchy utilites
-
-#if UNITY_EDITOR
-        [MenuItem("Utilites/Editor/Select GOs With Missing Scripts")]
-        public static void SelectMissing(MenuCommand command)
-        {
-            Transform[] ts = GameObject.FindObjectsOfType<Transform>();
-            var selection = new System.Collections.Generic.List<GameObject>();
-            foreach (Transform t in ts)
-            {
-                Component[] cs = t.gameObject.GetComponents<Component>();
-                foreach (Component c in cs)
-                {
-                    if (c == null)
-                    {
-                        selection.Add(t.gameObject);
-                    }
-                }
-            }
-            Selection.objects = selection.ToArray();
-        }
-
-#endif
-
-#endregion scene hierarchy utilites
-
         #region Auto Saving Scenes in Editor
 
 #if UNITY_EDITOR
 
-        private static int MinutesDelay = 2;
-        private static bool IsStop = false;
+        private static readonly int MinutesDelay = 2;
 
+        private static bool _isStop;
 
         [MenuItem("Utilites/AutoSaverScene/Init Auto Saving")]
         public static void Init()
         {
-            DebugLog("Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
-            IsStop = false;
+            Debug.Log(
+                "Initialized Auto Saving! Be warning - if you hide editor, saving will stop automatically. You need to initialize auto saving again");
+            _isStop = false;
             EditorCoroutine.Start(Save());
         }
 
         [MenuItem("Utilites/AutoSaverScene/Stop Auto Saving")]
         public static void Stop()
         {
-            DebugLog("Stop Auto Saving");
-            IsStop = true;
+            Debug.Log("Stop Auto Saving");
+            _isStop = true;
         }
 
         private static IEnumerator Save()
         {
             int iterations = 60 * 60 * MinutesDelay; // frames count * seconds per minute * minutes count
             for (float i = 0; i < iterations; i++)
-                yield return null;
-
-            if (!IsStop)
             {
-                DebugLog("Start Auto Save");
-#if UNITY_5_3_OR_NEWER
+                yield return null;
+            }
+
+            if (!_isStop)
+            {
+                Debug.Log("Start Auto Save");
                 if (EditorSceneManager.SaveOpenScenes())
                 {
-                    DebugLog("All Opened scenes was saved successfull!");
+                    Debug.Log("All Opened scenes was saved successfull!");
                 }
                 else
                 {
-                    DebugLog("Saving opened scenes failed");
+                    Debug.Log("Saving opened scenes failed");
                 }
-#elif UNITY_3 || UNITY_4 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
-                if (EditorApplication.SaveScene())
-                {
-                    DebugLog("Opened scene was saved successfull!");
-                }
-                else
-                {
-                    DebugLog("Saving open scene failed");
-                }
-#endif
+
                 EditorCoroutine.Start(Save());
             }
         }
 
         private class EditorCoroutine
         {
-            public static EditorCoroutine Start(IEnumerator _routine)
+            private readonly IEnumerator _routine;
+
+            private EditorCoroutine(IEnumerator routine)
             {
-                EditorCoroutine coroutine = new EditorCoroutine(_routine);
+                _routine = routine;
+            }
+
+            public static EditorCoroutine Start(IEnumerator routine)
+            {
+                EditorCoroutine coroutine = new EditorCoroutine(routine);
                 coroutine.Start();
                 return coroutine;
-            }
-
-            private readonly IEnumerator routine;
-
-            private EditorCoroutine(IEnumerator _routine)
-            {
-                routine = _routine;
-            }
-
-            private void Start()
-            {
-                EditorApplication.update += Update;
             }
 
             public void Stop()
@@ -298,9 +375,14 @@ namespace LoomNetwork.Internal
                 EditorApplication.update -= Update;
             }
 
+            private void Start()
+            {
+                EditorApplication.update += Update;
+            }
+
             private void Update()
             {
-                if (!routine.MoveNext())
+                if (!_routine.MoveNext())
                 {
                     Stop();
                 }
@@ -310,42 +392,6 @@ namespace LoomNetwork.Internal
 #endif
 
         #endregion Auto Saving Scenes in Editor
-
-        #region debugger
-
-        public static void DebugLog(object message)
-        {
-#if UNITY_EDITOR
-            UnityEngine.Debug.Log(message);
-#else
-            SaveLog(message);
-#endif
-        }
-
-        public static void DebugError(object message)
-        {
-#if UNITY_EDITOR
-            UnityEngine.Debug.LogError(message);
-#else
-            SaveLog("Error: " + message);
-#endif
-        }
-
-        public static void DebugWarning(object message)
-        {
-#if UNITY_EDITOR
-            UnityEngine.Debug.LogWarning(message);
-#else
-            SaveLog("Warning: " + message);
-#endif
-        }
-
-        private static void SaveLog(object message)
-        {
-            File.AppendAllText(Path.Combine(Application.persistentDataPath, "Logs.txt"), message.ToString() + "\n");
-        }
-
-        #endregion debugger
 
         #region cryptography
 
@@ -357,7 +403,7 @@ namespace LoomNetwork.Internal
         [DebuggerNonUserCode]
         public static string Decrypt(string value, string key)
         {
-            string result = string.Empty;
+            string result;
 
             try
             {
@@ -365,7 +411,6 @@ namespace LoomNetwork.Internal
                 {
                     using (StreamReader streamReader = new StreamReader(cryptoStream))
                     {
-
                         result = streamReader.ReadToEnd();
                     }
                 }
@@ -381,13 +426,14 @@ namespace LoomNetwork.Internal
         private static byte[] Encrypt(byte[] key, string value)
         {
             SymmetricAlgorithm symmetricAlgorithm = Rijndael.Create();
-            ICryptoTransform cryptoTransform = symmetricAlgorithm.CreateEncryptor((new Rfc2898DeriveBytes(value, new byte[16])).GetBytes(16), new byte[16]);
-            byte[] result = null;
+            ICryptoTransform cryptoTransform =
+                symmetricAlgorithm.CreateEncryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16), new byte[16]);
 
-
+            byte[] result;
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                using (CryptoStream cryptoStream =
+                    new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
                 {
                     cryptoStream.Write(key, 0, key.Length);
                     cryptoStream.FlushFinalBlock();
@@ -396,7 +442,6 @@ namespace LoomNetwork.Internal
 
                     memoryStream.Close();
                     memoryStream.Dispose();
-
                 }
             }
 
@@ -406,85 +451,69 @@ namespace LoomNetwork.Internal
         private static CryptoStream InternalDecrypt(byte[] key, string value)
         {
             SymmetricAlgorithm symmetricAlgorithm = Rijndael.Create();
-            ICryptoTransform cryptoTransform = symmetricAlgorithm.CreateDecryptor((new Rfc2898DeriveBytes(value, new byte[16])).GetBytes(16), new byte[16]);
+            ICryptoTransform cryptoTransform =
+                symmetricAlgorithm.CreateDecryptor(new Rfc2898DeriveBytes(value, new byte[16]).GetBytes(16),
+                    new byte[16]);
 
             MemoryStream memoryStream = new MemoryStream(key);
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
         }
-		#endregion cryptography
 
+        #endregion cryptography
 
-		public static void SetLayerRecursively(this GameObject obj, int layer)
-		{
-			obj.layer = layer;
-
-			foreach (Transform child in obj.transform)
-			{
-				SetLayerRecursively(child.gameObject, layer);
-			}
-		}
-
-        public static T CastStringTuEnum<T>(string data)
+#if UNITY_EDITOR
+        [MenuItem("Utilites/AOT/Generate Zb AOT Hint")]
+        public static void GenerateZbAotHint()
         {
-            return (T)Enum.Parse(typeof(T), data.ToUpper());
-        }
-
-        public static List<T> CastList<T>(string data, char separator = '|')
-        {
-            List<T> list = new List<T>();
-            string[] targets = data.Split(separator);
-            foreach (var target in targets)
+            void GetPropertyFullType(StringBuilder stringBuilder, PropertyInfo propertyInfo)
             {
-                list.Add(CastStringTuEnum<T>(target));
+                string propertyTypeFullString = propertyInfo.PropertyType.FullName;
+                if (propertyInfo.PropertyType.IsGenericType)
+                {
+                    propertyTypeFullString = "";
+                    propertyTypeFullString = propertyInfo.PropertyType.GetGenericTypeDefinition().FullName;
+                    propertyTypeFullString = propertyTypeFullString.Substring(0, propertyTypeFullString.IndexOf("`", StringComparison.Ordinal));
+                    propertyTypeFullString += "<";
+                    for (int i = 0; i < propertyInfo.PropertyType.GenericTypeArguments.Length; i++)
+                    {
+                        Type type = propertyInfo.PropertyType.GenericTypeArguments[i];
+                        propertyTypeFullString += type.FullName;
+                        if (i != propertyInfo.PropertyType.GenericTypeArguments.Length - 1)
+                        {
+                            propertyTypeFullString += ", ";
+                        }
+                    }
+
+                    propertyTypeFullString += ">";
+                }
+                stringBuilder.Append(
+                    $"new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::{propertyInfo.DeclaringType.FullName}, global::{propertyTypeFullString}>().ToString();\n");
             }
-            return list;
-        }
 
-        public static string FirstCharToUpper(string input)
-        {
-            if (!String.IsNullOrEmpty(input))
-                input = input.First().ToString().ToUpper() + input.Substring(1);
-            return input;
+            StringBuilder sb = new StringBuilder();
+            void ProcessMessageDescriptor(MessageDescriptor messageDescriptor)
+            {
+                foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
+                {
+                    ProcessMessageDescriptor(nestedMethodDescriptor);
+                }
 
-        }
+                foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder().Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
+                {
+                    PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
+                        (string) fieldDescriptor.GetType().GetField("propertyName", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(fieldDescriptor)
+                        );
+                    GetPropertyFullType(sb, propertyInfo);
+                }
+            }
 
-        public static string GetStringFromByteArray(byte[] byteArr)
-        {
-            return Convert.ToBase64String(byteArr);
-        }
+            foreach (MessageDescriptor descriptorMessageType in ZbReflection.Descriptor.MessageTypes)
+            {
+                ProcessMessageDescriptor(descriptorMessageType);
+            }
 
-        public static byte[] GetByteArrFromString(string str)
-        {
-            return string.IsNullOrEmpty(str) ? null : Convert.FromBase64String(str);
+            File.WriteAllText("Library/aot_hint.txt", sb.ToString());
         }
-        
-        public static T CreateFromJSON<T>(string jsonString)
-        {
-            return JsonUtility.FromJson<T>(jsonString);
-        }
-
-        public static string SaveToString(object obj)
-        {
-            return JsonUtility.ToJson(obj);
-        }
-
-        public static Vector3 CastVFXPosition(Vector3 position)
-        {
-            return new Vector3(position.x, position.z, position.y);
-        }
-
-        public static Color SetAlpha(this Color color, float alpha) {
-            color.a = alpha;
-            return color;
-        }
-        
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        public static long GetCurrentUnixTimestampMillis()
-        {
-            DateTime localDateTime = DateTime.Now;          
-            DateTime universalDateTime = localDateTime.ToUniversalTime();
-            return (long)(universalDateTime - UnixEpoch).TotalMilliseconds;
-        } 
+#endif
     }
 }

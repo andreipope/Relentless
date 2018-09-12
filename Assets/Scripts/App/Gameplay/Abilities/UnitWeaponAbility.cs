@@ -1,94 +1,85 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using LoomNetwork.CZB.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class UnitWeaponAbility : AbilityBase
     {
-        public int value = 0;
-        public int damage = 0;
+        public int Value;
 
-        public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public int Damage;
+
+        public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            value = ability.value;
-            damage = ability.damage;
+            Value = ability.Value;
+            Damage = ability.Damage;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnInputEndEventHandler()
-        {
-            base.OnInputEndEventHandler();
-
-            if(_isAbilityResolved)
-            {
-                Action();
-
-                if (targetUnit != null)
-                    targetUnit.UnitOnDieEvent += TargetUnitOnDieEventHandler;
-            }
-        }
-
-        protected override void OnEndTurnEventHandler()
-        {
-            base.OnEndTurnEventHandler();
-
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(playerCallerOfAbility))
-                return;
-
-            ActionEnd();
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if(targetUnit != null)
+            if (TargetUnit != null)
             {
-                targetUnit.CurrentDamage += value;
-                targetUnit.BuffedDamage += value;
+                TargetUnit.CurrentDamage += Value;
+                TargetUnit.BuffedDamage += Value;
 
-                CreateVFX(targetUnit.transform.position, true, 5f);
+                CreateVfx(TargetUnit.Transform.position, true, 5f);
             }
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+
+                if (TargetUnit != null)
+                {
+                    TargetUnit.UnitDied += TargetUnitDiedHandler;
+                }
+            }
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            ActionEnd();
         }
 
         private void ActionEnd()
         {
-            if (targetUnit != null)
+            if (TargetUnit != null)
             {
-                _battleController.AttackUnitByAbility(targetUnit, abilityData, targetUnit, damage);
+                BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVFX(targetUnit.transform.position, true, 5f);
+                CreateVfx(TargetUnit.Transform.position, true, 5f);
             }
         }
 
-        private void TargetUnitOnDieEventHandler()
+        private void TargetUnitDiedHandler()
         {
-            if (targetUnit != null)
-                targetUnit.UnitOnDieEvent -= TargetUnitOnDieEventHandler;
+            if (TargetUnit != null)
+            {
+                TargetUnit.UnitDied -= TargetUnitDiedHandler;
+            }
 
-            _abilitiesController.DeactivateAbility(activityId);
+            AbilitiesController.DeactivateAbility(ActivityId);
         }
     }
 }

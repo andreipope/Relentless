@@ -1,40 +1,27 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Networking;
-using LoomNetwork.CZB.Data;
-using System.Linq;
-using LoomNetwork.Internal;
-using LoomNetwork.CZB.Gameplay;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class YouLosePopup : IUIPopup
     {
-        public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
-        public static Action OnHidePopupEvent;
+        public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
+
         private IUIManager _uiManager;
-        private GameObject _selfPage;
 
         private Button _buttonOk;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
 
-        //private TextMeshProUGUI _nameHeroText;
+        public GameObject Self { get; private set; }
 
         public void Init()
         {
@@ -42,23 +29,22 @@ namespace LoomNetwork.CZB
             _uiManager = GameClient.Get<IUIManager>();
         }
 
-
         public void Dispose()
         {
         }
 
         public void Hide()
         {
-            OnHidePopupEvent?.Invoke();
-			GameClient.Get<ICameraManager>().FadeOut(null, 1);
+            PopupHiding?.Invoke();
+            GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
-            if (_selfPage == null)
+            if (Self == null)
                 return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
-		}
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
+        }
 
         public void SetMainPriority()
         {
@@ -66,41 +52,41 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouLosePopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouLosePopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer = _selfPage.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
-            //_nameHeroText = _selectHeroImage.transform.Find("Text_NameHero").GetComponent<TextMeshProUGUI>();
-            _buttonOk = _selfPage.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
+            _selectHeroSpriteRenderer =
+                Self.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
+
+            _buttonOk = Self.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SfxSoundVolume, false,
+                false, true);
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-            int heroId = GameClient.Get<IDataManager>().CachedDecksData.decks.First(d => d.id == playerDeckId).heroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
-            string heroName = currentPlayerHero.element.ToString().ToLower();
-            _selectHeroSpriteRenderer.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
-            //heroName = Utilites.FirstCharToUpper(heroName);
-            //_nameHeroText.text = heroName + " Hero";
-
+            int heroId = GameClient.Get<IDataManager>().CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
+            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.HeroesParsed[heroId];
+            string heroName = currentPlayerHero.Element.ToLower();
+            _selectHeroSpriteRenderer.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
         }
 
         public void Show(object data)
         {
-
             Show();
         }
 
         public void Update()
         {
-
         }
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
 

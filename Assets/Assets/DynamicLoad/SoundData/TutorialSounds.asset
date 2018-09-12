@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e283d5ecf866417da771c031af0b616, type: 3}
+  m_Name: TutorialSounds
+  m_EditorClassIdentifier: 
+  soundList:
+  - czb_tutorial_01_welcome
+  - czb_tutorial_02_weary
+  - czb_tutorial_03_pleasure
+  - czb_tutorial_04_ropes
+  - czb_tutorial_06_dive
+  - czb_tutorial_07_goo_bottles
+  - czb_tutorial_08_power
+  - czb_tutorial_09_Goo_Cost
+  - czb_tutorial_10_general
+  - czb_tutorial_11_zzz
+  - czb_tutorial_12_end_turn
+  - czb_tutorial_13_draw
+  - czb_tutorial_14_wait
+  - czb_tutorial_15_attack
+  - czb_tutorial_16_defense
+  - czb_tutorial_17_first_zombie
+  - czb_tutorial_18_end_turn2
+  - czb_tutorial_19_plan
+  - czb_tutorial_20_overlord
+  - czb_tutorial_21_attack_overlord
+  - czb_tutorial_22_hang
+  - czb_tutorial_23_end_turn3
+  - czb_tutorial_24_heavy
+  - czb_tutorial_25_remove_heavy
+  - czb_tutorial_26_active_zombies
+  - czb_tutorial_27_feral
+  - czb_tutorial_28_feral2
+  - czb_tutorial_29_drag_feral
+  - czb_tutorial_30_immediatly
+  - czb_tutorial_31_perfect
+  - czb_tutorial_32_goo_to_use
+  - czb_tutorial_33_goo_to_use
+  - czb_tutorial_34_abilities
+  - czb_tutorial_35_won1
+  - czb_tutorial_36_slayer
+  - czb_tutorial_37_adventure
+  - czb_tutorial_38_good_luck
+  - czb_tutorial_45_replay
+  - czb_tutorial_B_01_welcome
+  - czb_tutorial_B_02_pickle
+  - czb_tutorial_B_03_no_good
+  - czb_tutorial_B_04_yes
+  - czb_tutorial_B_05_shroom
+  - czb_tutorial_B_10_service
+  - czb_tutorial_B_11_home
+  - czb_tutorial_B_12_bolderrs
+  - czb_tutorial_B_13_big_one
+  - czb_tutorial_B_14_goo
+  - czb_tutorial_B_15_carrier
+  - czb_tutorial_B_16_overflow
+  - czb_tutorial_B_17_work
+  - czb_tutorial_B_18_setbacks
+  - czb_tutorial_B_19_drawback
+  - czb_tutorial_B_19a_extra
+  - czb_tutorial_B_19b_own
+  - czb_tutorial_B_19c_take
+  - czb_tutorial_B_19d_zeptic
+  - czb_tutorial_B_20a_burst
+  - czb_tutorial_B_20b_zplan
+  - czb_tutorial_B_21_done
+  - czb_tutorial_B_22_that
+  - czb_tutorial_B_22b_that
+  - czb_tutorial_B_23_system
+  - czb_tutorial_B_24_ranks
+  - czb_tutorial_B_25_naturally
+  - czb_tutorial_B_26_buffed
+  - czb_tutorial_B_27_effects
+  - czb_tutorial_B_28_instance
+  - czb_tutorial_B_29_motivated
+  - czb_tutorial_B_30_stack
+  - czb_tutorial_B_30a_combo
+  - czb_tutorial_B_31_waiting
+  - czb_tutorial_B_32_misery
+  - czb_tutorial_B_33_comeback
+  - czb_tutorial_B_34_master
+  - czb_tutorial_B_35_proud
+  - czb_tutorial_B_36_mmmbye

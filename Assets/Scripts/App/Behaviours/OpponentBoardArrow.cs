@@ -1,61 +1,60 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using UnityEngine;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class OpponentBoardArrow : BattleBoardArrow
     {
-        private Vector3 _targetPosition = Vector3.zero;
         private object _target;
-
-        private void Awake()
-        {
-            Init();
-            SetInverse();
-        }
-
-
-        protected override void Update()
-        {
-            UpdateLength(_targetPosition, false);
-        }
 
         public void SetTarget(object target)
         {
             _target = target;
 
-            if (_target is Player)
+            switch (_target)
             {
-                _targetPosition = (_target as Player).AvatarObject.transform.position;
-                (_target as Player).SetGlowStatus(true);
-            }
-            else if (_target is BoardUnit)
-            {
-                _targetPosition = (_target as BoardUnit).transform.position;
-                (_target as BoardUnit).SetSelectedUnit(true);
+                case Player player:
+                    TargetPosition = player.AvatarObject.transform.position;
+                    player.SetGlowStatus(true);
+                    break;
+                case BoardUnit unit:
+                    TargetPosition = unit.Transform.position;
+                    unit.SetSelectedUnit(true);
+                    break;
             }
 
-            _targetPosition.z = 0;
+            TargetPosition.z = 0;
 
-            UpdateLength(_targetPosition, false);
-            CreateTarget(_targetPosition);
+            UpdateLength(TargetPosition, false);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (_target != null)
             {
                 if (_target is Player)
+                {
                     (_target as Player).SetGlowStatus(false);
-                else if (_target is BoardUnit)
-                    (_target as BoardUnit).SetSelectedUnit(false);
+                }
+                else
+                {
+                    (_target as BoardUnit)?.SetSelectedUnit(false);
+                }
 
                 _target = null;
             }
+
+            base.Dispose();
+        }
+
+        protected override void Update()
+        {
+            UpdateLength(TargetPosition, false);
+        }
+
+        private void Awake()
+        {
+            Init();
+            SetInverse();
         }
     }
 }

@@ -1,33 +1,31 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
+﻿using System;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
-using System;
-using LoomNetwork.CZB.Common;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PointerEventSolver
     {
-        public event Action OnClickEvent;
-        public event Action OnDragStartedEvent;
-        public event Action OnEndEvent;
-
         private float _pressTimer;
+
         private float _dragDelta;
 
         private bool _isResolved;
 
         private Vector3 _initialPointerPosition;
 
-        public bool IsPushed { get; private set; }
-
-
         public PointerEventSolver()
         {
-            _dragDelta = Constants.POINTER_MIN_DRAG_DELTA;
+            _dragDelta = Constants.PointerMinDragDelta;
         }
+
+        public event Action Clicked;
+
+        public event Action DragStarted;
+
+        public event Action Ended;
+
+        public bool IsPushed { get; private set; }
 
         public void PushPointer(float delta = -1)
         {
@@ -41,7 +39,9 @@ namespace LoomNetwork.CZB
             _pressTimer = 0f;
 
             if (delta >= 0)
+            {
                 _dragDelta = delta;
+            }
         }
 
         public void Update()
@@ -52,16 +52,16 @@ namespace LoomNetwork.CZB
             if (Mathf.Abs((_initialPointerPosition - Input.mousePosition).magnitude) > _dragDelta)
             {
                 _isResolved = true;
-                OnDragStartedEvent?.Invoke();
+                DragStarted?.Invoke();
             }
             else
             {
                 _pressTimer += Time.unscaledDeltaTime;
 
-                if (_pressTimer >= Constants.POINTER_ON_CLICK_DELAY)
+                if (_pressTimer >= Constants.PointerOnClickDelay)
                 {
                     _isResolved = true;
-                    OnDragStartedEvent?.Invoke();
+                    DragStarted?.Invoke();
                 }
             }
         }
@@ -72,12 +72,14 @@ namespace LoomNetwork.CZB
                 return;
 
             if (!_isResolved)
-                OnClickEvent?.Invoke();
+            {
+                Clicked?.Invoke();
+            }
 
             IsPushed = false;
             _isResolved = false;
 
-            OnEndEvent?.Invoke();
+            Ended?.Invoke();
         }
     }
 }

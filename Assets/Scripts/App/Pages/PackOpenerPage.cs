@@ -1,27 +1,25 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Rendering;
-using System.Linq;
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.Internal;
-using LoomNetwork.CZB.Gameplay;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Gameplay;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
     {
         private IUIManager _uiManager;
+
         private ILoadObjectsManager _loadObjectsManager;
-        private ILocalizationManager _localizationManager;
+
         private IDataManager _dataManager;
+
         private IPlayerManager _playerManager;
 
         private CardsController _cardsController;
@@ -30,23 +28,21 @@ namespace LoomNetwork.CZB
 
         private Button _buttonBack;
 
-        private Button _buttonBuy,
-                                _buttonCollection;
+        private Button _buttonBuy, _buttonCollection;
 
-        private GameObject _packItemPrefab,
-                            _packItemContent,
-                            _cardCreaturePrefab,
-                            _cardSpellPrefab,
-                            _packOpenVFXprefab,
-                           _packOpenVFX,
-                            _cardPlaceholdersPrefab,
-                           _cardPlaceholders,
-                            _backgroundCanvasPrefab,
-                           _backgroundCanvas;
+        private GameObject _cardCreaturePrefab;
+
+        private GameObject _cardSpellPrefab;
+
+        private GameObject _packOpenVfx;
+
+        private GameObject _cardPlaceholdersPrefab;
+
+        private GameObject _cardPlaceholders;
 
         private Vector3 _centerPos;
 
-        private bool _lock, _isCardPreview;
+        private bool _lock;
 
         private Transform _cardsContainer;
 
@@ -54,11 +50,11 @@ namespace LoomNetwork.CZB
 
         private TextMeshProUGUI _packsAmount;
 
-        private int _cardsTurned = 0;
+        private int _cardsTurned;
 
         private Transform _cardPreview, _cardPreviewOriginal;
 
-        private bool _activatedTemporaryPack = false;
+        private bool _activatedTemporaryPack;
 
         private List<BoardCard> _createdBoardCards;
 
@@ -66,7 +62,6 @@ namespace LoomNetwork.CZB
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
 
@@ -75,45 +70,26 @@ namespace LoomNetwork.CZB
             _createdBoardCards = new List<BoardCard>();
         }
 
-
         public void Update()
         {
-            if (_selfPage != null && _selfPage.activeInHierarchy)
-            {
-                if (!_uiManager.GetPopup<CardInfoPopup>().Self.activeSelf)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        if (_isCardPreview)
-                            CardPreview(false);
-                        else
-                            CardClickeCheck();
-                    }
 
-                    if((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.W))
-                    {
-                        _activatedTemporaryPack = true;
-                    }
-
-                }
-            }
         }
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
+            _cardCreaturePrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
-            //_backgroundCanvasPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/BackgroundPackOpenerCanvas");
-            _cardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
+            _cardPlaceholdersPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
 
             _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
-
-            _packOpenVFXprefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/PackOpenerVFX");
 
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _packsObject = _selfPage.transform.Find("PackItem").gameObject;
@@ -134,57 +110,51 @@ namespace LoomNetwork.CZB
             if (_selfPage == null)
                 return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
+            _selfPage.SetActive(false);
+            Object.Destroy(_selfPage);
             _selfPage = null;
         }
 
         public void Dispose()
         {
-            //ResetBoardCards();
-            //MonoBehaviour.Destroy(_backgroundCanvas);
-            MonoBehaviour.Destroy(_cardPlaceholders);
-        }
-
-        private void ResetBoardCards()
-        {
-            foreach (var item in _createdBoardCards)
-                item.Dispose();
-            _createdBoardCards.Clear();
+            Object.Destroy(_cardPlaceholders);
         }
 
         private void CardClickeCheck()
         {
-            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var hit = Physics2D.Raycast(mousePos, Vector2.zero);
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
             if (hit.collider != null)
             {
-                foreach (var card in _createdBoardCards)
+                foreach (BoardCard card in _createdBoardCards)
                 {
-                    if (hit.collider.gameObject == card.gameObject)
+                    if (hit.collider.gameObject == card.GameObject)
                     {
-                        if (card.transform.Find("Back").gameObject.activeSelf)
+                        if (card.Transform.Find("Back").gameObject.activeSelf)
+                        {
                             CardSelected(card);
+                        }
                         else
                         {
-                            _cardPreviewOriginal = card.transform;
+                            _cardPreviewOriginal = card.Transform;
                             CardPreview(true);
                         }
                     }
                 }
             }
             else if (_cardsTurned == 5)
+            {
                 MoveCardsToBottomAndDestroy();
+            }
         }
 
         private void CardPreview(bool isOpen)
         {
             if (isOpen)
             {
-
-                _cardPreview = MonoBehaviour.Instantiate(_cardPreviewOriginal.gameObject).transform;
+                _cardPreview = Object.Instantiate(_cardPreviewOriginal.gameObject).transform;
                 _cardPreview.name = "CardPreview";
-                Utilites.SetLayerRecursively(_cardPreview.gameObject, 11);
+                _cardPreview.gameObject.SetLayerRecursively(11);
 
                 Sequence mySequence = DOTween.Sequence();
                 mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
@@ -199,7 +169,6 @@ namespace LoomNetwork.CZB
                 mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
 
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
-                _isCardPreview = true;
             }
             else
             {
@@ -209,11 +178,11 @@ namespace LoomNetwork.CZB
                 sequence.Append(_cardPreview.DOScale(_cardPreviewOriginal.localScale, .3f));
                 sequence.Join(_cardPreview.DOMove(_cardPreviewOriginal.position, .3f));
                 sequence.Join(_cardPreview.DORotate(_cardPreviewOriginal.eulerAngles, .3f));
-                sequence.OnComplete(() =>
-                {
-                    MonoBehaviour.Destroy(_cardPreview.gameObject);
-                    _isCardPreview = false;
-                });
+                sequence.OnComplete(
+                    () =>
+                    {
+                        Object.Destroy(_cardPreview.gameObject);
+                    });
             }
         }
 
@@ -223,135 +192,95 @@ namespace LoomNetwork.CZB
             {
                 Sequence animationSequence5 = DOTween.Sequence();
                 animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
-                animationSequence5.OnComplete(() =>
-                {
-                    MonoBehaviour.Destroy(cardObj.gameObject);
-                });
+                animationSequence5.OnComplete(
+                    () =>
+                    {
+                        Object.Destroy(cardObj.gameObject);
+                    });
             }
-            if (_playerManager.LocalUser.packsCount > 0)
+
+            if (_playerManager.LocalUser.PacksCount > 0)
+            {
                 _lock = false;
-            _packsObject.GetComponent<DragableObject>().locked = _lock;
+            }
+
+            _packsObject.GetComponent<DragableObject>().Locked = _lock;
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
             _cardsTurned = 0;
-        }
-
-        private void OpenAlertDialog(string msg)
-        {
-            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         private void InitObjects()
         {
             _cardsContainer = new GameObject("CardsContainer").transform;
             _centerPos = new Vector3(2.3f, -0.5f, 10);
-            _cardPlaceholders = MonoBehaviour.Instantiate(_cardPlaceholdersPrefab);
+            _cardPlaceholders = Object.Instantiate(_cardPlaceholdersPrefab);
 
-            var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
+            int packsCount = _playerManager.LocalUser.PacksCount > 99 ? 99 : _playerManager.LocalUser.PacksCount;
             _packsAmount.text = packsCount.ToString();
 
             _lock = false;
 
-            if (_playerManager.LocalUser.packsCount > 0)
+            if (_playerManager.LocalUser.PacksCount > 0)
             {
                 _packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
             }
             else
+            {
                 _lock = true;
-            _packsObject.GetComponent<DragableObject>().locked = _lock;
+            }
+
+            _packsObject.GetComponent<DragableObject>().Locked = _lock;
         }
-
-        #region button handlers
-
-        private void BackButtonHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            DOTween.KillAll();
-            if (_cardsContainer != null)
-                MonoBehaviour.Destroy(_cardsContainer.gameObject);
-            GameClient.Get<IAppStateManager>().BackAppState();
-        }
-
-        private void BuyButtonHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.SHOP);
-        }
-
-        private void CollectionButtonHandler()
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.COLLECTION);
-        }
-
-        private void PackOpenButtonHandler(GameObject go)
-        {
-            if (_cardsContainer != null)
-                if (_cardsContainer.transform.childCount == 0 && !_lock)
-                {
-                    _playerManager.LocalUser.packsCount--;
-                    var packsCount = _playerManager.LocalUser.packsCount > 99 ? 99 : _playerManager.LocalUser.packsCount;
-                    _packsAmount.text = packsCount.ToString();
-                    _lock = true;
-                    _packsObject.GetComponent<DragableObject>().locked = _lock;
-
-                    DetachAndAnimatePackItem(go);
-                }
-        }
-
-        #endregion
 
         private void DetachAndAnimatePackItem(GameObject go)
         {
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
-            //animationSequence.Append(go.transform.DOShakePosition(.7f, 20f, 20, 90, false, false));
 
-            
-
-            animationSequence.OnComplete(() =>
-            {
-                _packOpenVFX = MonoBehaviour.Instantiate(_packOpenVFXprefab);
-                _packOpenVFX.transform.position = Utilites.CastVFXPosition(_centerPos);
-                _packOpenVFX.GetComponent<AnimationEventTriggering>().OnAnimationEvent += OnPackOpenVFXAnimationEventHandler;
-
-                MonoBehaviour.Destroy(go);
-                GameClient.Get<ITimerManager>().AddTimer((x) =>
+            animationSequence.OnComplete(
+                () =>
                 {
-                    PackItemAnimationComplete();
-                }, null, 0.4f);
-            });
+                    Object.Destroy(go);
+                    GameClient.Get<ITimerManager>().AddTimer(
+                        x =>
+                        {
+                            PackItemAnimationComplete();
+                        },
+                        null,
+                        0.4f);
+                });
         }
 
         private void PackItemAnimationComplete()
         {
-            var cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
+            CardPack cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
 
-            if (!_dataManager.CachedUserLocalData.openedFirstPack)
+            if (!_dataManager.CachedUserLocalData.OpenedFirstPack)
             {
                 _activatedTemporaryPack = true;
-                _dataManager.CachedUserLocalData.openedFirstPack = true;
+                _dataManager.CachedUserLocalData.OpenedFirstPack = true;
                 _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             }
 
-            var cardsInPack = cardPack.OpenPack(_activatedTemporaryPack);
+            List<Card> cardsInPack = cardPack.OpenPack(_activatedTemporaryPack);
 
             _activatedTemporaryPack = false;
 
-            for (int i = 0; i < Constants.CARDS_IN_PACK; i++)
+            for (int i = 0; i < Constants.CardsInPack; i++)
             {
-                var n = i;
-                var card = cardsInPack[i];
+                Card card = cardsInPack[i];
 
-                string cardSetName = _cardsController.GetSetOfCard(card);
-
-                GameObject go = null;
-                if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.CREATURE)
+                GameObject go;
+                switch (card.CardKind)
                 {
-                    go = MonoBehaviour.Instantiate(_cardCreaturePrefab as GameObject);
-                }
-                else if ((Enumerators.CardKind)card.cardKind == Enumerators.CardKind.SPELL)
-                {
-                    go = MonoBehaviour.Instantiate(_cardSpellPrefab as GameObject);
+                    case Enumerators.CardKind.CREATURE:
+                        go = Object.Instantiate(_cardCreaturePrefab);
+                        break;
+                    case Enumerators.CardKind.SPELL:
+                        go = Object.Instantiate(_cardSpellPrefab);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 go.transform.SetParent(_cardsContainer);
@@ -359,13 +288,13 @@ namespace LoomNetwork.CZB
                 go.transform.Find("Amount").gameObject.SetActive(false);
 
                 // todo imrpoveE!!!!
-                var boardCard = new BoardCard(go);
+                BoardCard boardCard = new BoardCard(go);
 
                 boardCard.Init(card);
                 boardCard.SetHighlightingEnabled(false);
-                boardCard.transform.position = _centerPos;
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingLayerName = Constants.LAYER_DEFAULT;
-                boardCard.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+                boardCard.Transform.position = _centerPos;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.Default.id;
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingOrder = 1;
 
                 Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
                 Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
@@ -380,35 +309,91 @@ namespace LoomNetwork.CZB
 
         private void OnPackOpenVFXAnimationEventHandler(string name)
         {
-            if (_packOpenVFX == null)
+            if (_packOpenVfx == null)
                 return;
 
             if (name == "EndPackOpen")
-                MonoBehaviour.Destroy(_packOpenVFX);
+            {
+                Object.Destroy(_packOpenVfx);
+            }
         }
 
         private void CardSelected(BoardCard card)
         {
-            var go = card.gameObject;
+            GameObject go = card.GameObject;
 
             if (!go.transform.Find("Back").gameObject.activeSelf)
                 return;
 
-            Vector3 rotation = go.transform.eulerAngles;
             Sequence animationSequence3 = DOTween.Sequence();
-            animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
+            animationSequence3.Append(
+                go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
             animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
-            animationSequence3.OnComplete(() =>
-            {
-                go.transform.Find("Back").gameObject.SetActive(false);
-                Sequence animationSequence4 = DOTween.Sequence();
-                animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z), .3f));
-                animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
-                animationSequence4.AppendInterval(2f);
+            animationSequence3.OnComplete(
+                () =>
+                {
+                    go.transform.Find("Back").gameObject.SetActive(false);
+                    Sequence animationSequence4 = DOTween.Sequence();
+                    animationSequence4.Append(
+                        go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z),
+                            .3f));
+                    animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
+                    animationSequence4.AppendInterval(2f);
 
-                _cardsTurned++;
-                _dataManager.CachedCollectionData.ChangeAmount(card.libraryCard.name, 1);
-            });
+                    _cardsTurned++;
+                    _dataManager.CachedCollectionData.ChangeAmount(card.LibraryCard.Name, 1);
+                });
         }
+
+        #region button handlers
+
+        private void BackButtonHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            DOTween.KillAll();
+            if (_cardsContainer != null)
+            {
+                Object.Destroy(_cardsContainer.gameObject);
+            }
+
+            GameClient.Get<IAppStateManager>().BackAppState();
+        }
+
+        private void BuyButtonHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
+        }
+
+        private void CollectionButtonHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
+        }
+
+        private void PackOpenButtonHandler(GameObject go)
+        {
+            if (_cardsContainer != null)
+            {
+                if (_cardsContainer.transform.childCount == 0 && !_lock)
+                {
+                    _playerManager.LocalUser.PacksCount--;
+                    int packsCount = _playerManager.LocalUser.PacksCount > 99 ?
+                        99 :
+                        _playerManager.LocalUser.PacksCount;
+                    _packsAmount.text = packsCount.ToString();
+                    _lock = true;
+                    _packsObject.GetComponent<DragableObject>().Locked = _lock;
+
+                    DetachAndAnimatePackItem(go);
+                }
+            }
+        }
+
+        #endregion
+
     }
 }

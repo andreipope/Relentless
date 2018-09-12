@@ -1,53 +1,42 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class WorkingCard
     {
-        public int cardId;
-        public Card libraryCard;
+        public int CardId;
 
-        public Player owner;
+        public Card LibraryCard;
 
-        public int instanceId;
+        public Player Owner;
 
+        public int InstanceId;
 
-        public int initialHealth,
-                   initialDamage,
-                   health,
-                   damage;
+        public int InitialHealth, InitialDamage, Health, Damage;
 
-        public int initialCost,
-                   realCost;
+        public int InitialCost, RealCost;
 
-
-        public Enumerators.CardType type;
-
-        public bool IsPlayable { get; set; }
-
+        public Enumerators.CardType Type;
 
         public WorkingCard(Card card, Player player)
         {
-            libraryCard = card.Clone();
-            cardId = libraryCard.id;
-            owner = player;
+            LibraryCard = card.Clone();
+            CardId = LibraryCard.Id;
+            Owner = player;
 
-            initialHealth = libraryCard.health;
-            initialDamage = libraryCard.damage;
-            initialCost = libraryCard.cost;
-            health = initialHealth;
-            damage = initialDamage;
-            realCost = initialCost;
+            InitialHealth = LibraryCard.Health;
+            InitialDamage = LibraryCard.Damage;
+            InitialCost = LibraryCard.Cost;
+            Health = InitialHealth;
+            Damage = InitialDamage;
+            RealCost = InitialCost;
 
-            type = libraryCard.cardType;
+            Type = LibraryCard.CardType;
 
-            instanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
+            InstanceId = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
         }
+
+        public bool IsPlayable { get; set; }
     }
 }

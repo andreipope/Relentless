@@ -1,63 +1,21 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
 using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using Loom.Newtonsoft.Json;
-using LoomNetwork.Internal;
 
-namespace LoomNetwork.CZB.Data
+
+namespace Loom.ZombieBattleground.Data
 {
     public class OpponentDecksData
     {
-        public List<OpponentDeck> decks;
-
-        public OpponentDecksData()
-        {
-
-        }
-
-        public void ParseData()
-        {
-			if (decks != null) {
-				foreach (var deck in decks) {
-					deck.ParseData ();
-				}
-			}
-        }
+        public List<OpponentDeck> Decks;
     }
 
     public class OpponentDeck
     {
-        public int id;
-        public int heroId;
-        public string type;
-        public string actions;
-        public List<DeckCardData> cards;
+        public int Id;
 
-        [JsonIgnore]
-        public List<Enumerators.AIActionType> opponentActions;
+        public int HeroId;
 
-        public OpponentDeck()
-        {
-        }
+        public string Type;
 
-        public void ParseData()
-        {
-            opponentActions = Utilites.CastList<Enumerators.AIActionType>(actions);
-        }
-
-
-        public int GetNumCards()
-        {
-            int amount = 0;
-            foreach (var card in cards)
-                amount += card.amount;
-            return amount;
-        }
+        public List<DeckCardData> Cards;
     }
 }

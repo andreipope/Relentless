@@ -1,94 +1,101 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
-    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class OnBehaviourHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler,
+        IBeginDragHandler, IEndDragHandler
     {
-        public event Action<GameObject> OnMouseUpEvent;
-        public event Action<GameObject> OnMouseDownEvent;
-        public event Action<Collider2D> OnTriggerEnter2DEvent;
-        public event Action<Collider2D> OnTriggerExit2DEvent;
-        public event Action<Collider> OnTriggerEnterEvent;
-        public event Action<Collider> OnTriggerExitEvent;
-        public event Action<GameObject> OnDestroyEvent;
-        public event Action<PointerEventData> OnPointerEnterEvent;
-        public event Action<PointerEventData> OnPointerExitEvent;
-        public event Action<GameObject> OnUpdateEvent;
-        public event Action<PointerEventData, GameObject> OnDragEvent;
-        public event Action<PointerEventData, GameObject> OnBeginDragEvent;
-        public event Action<PointerEventData, GameObject> OnEndDragEvent;
+        public event Action<GameObject> MouseUpTriggered;
 
+        public event Action<GameObject> MouseDownTriggered;
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public event Action<Collider2D> Trigger2DEntered;
+
+        public event Action<Collider2D> Trigger2DExited;
+
+        public event Action<Collider> TriggerEntered;
+
+        public event Action<Collider> TriggerExited;
+
+        public event Action<GameObject> Destroying;
+
+        public event Action<PointerEventData> PointerEntered;
+
+        public event Action<PointerEventData> PointerExited;
+
+        public event Action<GameObject> Updating;
+
+        public event Action<PointerEventData, GameObject> DragUpdated;
+
+        public event Action<PointerEventData, GameObject> DragBegan;
+
+        public event Action<PointerEventData, GameObject> DragEnded;
+
+        public void OnBeginDrag(PointerEventData eventData)
         {
-            OnPointerEnterEvent?.Invoke(eventData);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            OnPointerExitEvent?.Invoke(eventData);
+            DragBegan?.Invoke(eventData, gameObject);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            OnDragEvent?.Invoke(eventData, gameObject);
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            OnBeginDragEvent?.Invoke(eventData, gameObject);
+            DragUpdated?.Invoke(eventData, gameObject);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            OnEndDragEvent?.Invoke(eventData, gameObject);
+            DragEnded?.Invoke(eventData, gameObject);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            PointerEntered?.Invoke(eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            PointerExited?.Invoke(eventData);
         }
 
         private void Update()
         {
-            OnUpdateEvent?.Invoke(gameObject);
+            Updating?.Invoke(gameObject);
         }
 
         private void OnMouseUp()
         {
-            OnMouseUpEvent?.Invoke(gameObject);
+            MouseUpTriggered?.Invoke(gameObject);
         }
 
         private void OnMouseDown()
         {
-            OnMouseDownEvent?.Invoke(gameObject);
+            MouseDownTriggered?.Invoke(gameObject);
         }
 
         private void OnTriggerExit2D(Collider2D collider)
         {
-            OnTriggerExit2DEvent?.Invoke(collider);
+            Trigger2DExited?.Invoke(collider);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            OnTriggerEnter2DEvent?.Invoke(collider);
+            Trigger2DEntered?.Invoke(collider);
         }
 
         private void OnTriggerExit(Collider collider)
         {
-            OnTriggerExitEvent?.Invoke(collider);
+            TriggerExited?.Invoke(collider);
         }
 
         private void OnTriggerEnter(Collider collider)
         {
-            OnTriggerEnterEvent?.Invoke(collider);
+            TriggerEntered?.Invoke(collider);
         }
 
         private void OnDestroy()
         {
-            OnDestroyEvent?.Invoke(gameObject);
+            Destroying?.Invoke(gameObject);
         }
     }
 }

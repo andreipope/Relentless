@@ -1,0 +1,62 @@
+#if !NET_4_6
+    #error Loom SDK requires .NET 4.6. Please go to Build Settings -> Player Settings -> Configuration and set Scripting Runtime Version to .NET 4.6
+#endif
+
+using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+
+namespace Loom.Client.Unity.Editor.Internal
+{
+    internal class CheckProject : IPreprocessBuildWithReport
+    {
+        public int callbackOrder { get; }
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            if (report.summary.platform == BuildTarget.WebGL)
+            {
+                CheckWebGLTemplate();
+                CheckWebGLPrebuiltEngine();
+            }
+        }
+
+        private void CheckWebGLPrebuiltEngine()
+        {
+            if (!EditorUserBuildSettings.webGLUsePreBuiltUnityEngine)
+                return;
+
+            bool result =
+                EditorUtility.DisplayDialog(
+                    "Loom - Incompatible Build Settings",
+                    "The 'Use pre-built Engine' WebGL build option is enabled, which is not compatible with Loom.\n\n" +
+                    "Would you like to disable it?",
+                    "Disable 'Use pre-built Engine'",
+                    "Ignore");
+
+            if (result)
+            {
+                EditorUserBuildSettings.webGLUsePreBuiltUnityEngine = false;
+            }
+        }
+
+        private void CheckWebGLTemplate()
+        {
+            if (PlayerSettings.WebGL.template.StartsWith("APPLICATION"))
+            {
+                bool result =
+                    EditorUtility.DisplayDialog(
+                    "Loom - Incompatible WebGL Template",
+                    "You are using a standard Unity WebGL template, which is not compatible with Loom SDK.\n\n" +
+                    "Would you like to use a provided Loom template?",
+                    "Set Loom Template",
+                    "Ignore");
+
+                if (result)
+                {
+                    PlayerSettings.WebGL.template = "PROJECT:Loom";
+                }
+            }
+        }
+    }
+}

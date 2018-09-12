@@ -1,17 +1,13 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
 
-
-
-using LoomNetwork.CZB.Common;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public interface IMatchManager
     {
         Enumerators.MatchType MatchType { get; set; }
 
         void FinishMatch(Enumerators.AppState appStateAfterMatch);
+
         void FindMatch(Enumerators.MatchType matchType);
     }
 }

@@ -1,0 +1,17 @@
+{
+    "name": "ZombieBattleground.Tests",
+    "references": [
+        "ZombieBattleground.Editor",
+        "ZombieBattleground.Main",
+        "ZombieBattleground.Generated",
+        "LoomSDK"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

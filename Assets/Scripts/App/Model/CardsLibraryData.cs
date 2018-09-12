@@ -1,22 +1,14 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using System.Collections;
-using System.Collections.Generic;
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using Loom.Newtonsoft.Json;
 using System;
-using LoomNetwork.Internal;
+using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 
-namespace LoomNetwork.CZB.Data
+namespace Loom.ZombieBattleground.Data
 {
     public class CardsLibraryData
     {
-        public List<CardSet> sets;
+        public List<CardSet> Sets;
 
         private List<Card> _allCards;
 
@@ -26,118 +18,93 @@ namespace LoomNetwork.CZB.Data
             get
             {
                 if (_allCards == null)
+                {
                     FillAllCards();
-                return _allCards;
-        }
-        }
+                }
 
-        public CardsLibraryData()
-        {
+                return _allCards;
+            }
         }
 
         public Card GetCard(int id)
         {
-            return Cards.Find(x => x.id == id);
-        }
-
-        public int GetCardIdFromName(string name)
-        {
-            return Cards.Find(x => x.name == name).id;
+            return Cards.Find(x => x.Id == id);
         }
 
         public Card GetCardFromName(string name)
         {
-            return Cards.Find(x => x.name == name);
+            return Cards.Find(x => x.Name == name);
         }
 
         public void FillAllCards()
         {
-            bool removeCardsWithoutGraphics = false;
-
-            // remove cards without iamges
-            var cardsToRemoveFromSet = new List<Card>();
-
             _allCards = new List<Card>();
             int id = 0;
-            if (sets != null)
+            if (Sets != null)
             {
-                foreach (var set in sets)
+                foreach (CardSet set in Sets)
                 {
-                    foreach (var card in set.cards)
+                    foreach (Card card in set.Cards)
                     {
-                        if (removeCardsWithoutGraphics)
+                        card.CardSetType =
+                            (Enumerators.SetType) Enum.Parse(typeof(Enumerators.SetType),
+                                set.Name.ToUpper()); // todo improve this shit!
+
+                        if (card.Kind != null)
                         {
-							// remove cards without iamges
-                            if (GameClient.Get<ILoadObjectsManager>().GetObjectByPath<UnityEngine.Sprite>(string.Format("Images/Cards/Illustrations/{0}_{1}_{2}",
-                                                      set.name.ToLower(),
-                                                      card.rank.ToLower(),
-                                                      card.picture.ToLower())) == null)
-                            {
-                                cardsToRemoveFromSet.Add(card);
-								continue;
-							}
-						}
+                            card.CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.Kind);
+                        }
 
-                        card.cardSetType = (Enumerators.SetType)Enum.Parse(typeof(Enumerators.SetType), set.name.ToUpper()); //todo improve this shit!
+                        if (card.Rank != null)
+                        {
+                            card.CardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.Rank);
+                        }
 
-						if (card.kind != null)
-                            card.cardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.kind);
-						if (card.rank != null)
-                            card.cardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.rank);
-						if (card.type != null)
-                            card.cardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.type);
+                        if (card.Type != null)
+                        {
+                            card.CardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.Type);
+                        }
 
-						foreach (var ability in card.abilities)
+                        foreach (AbilityData ability in card.Abilities)
+                        {
                             ability.ParseData();
+                        }
+
                         _allCards.Add(card);
 
-						if (card.cardSetType != Enumerators.SetType.OTHERS)
-							card.id = id;
+                        if (card.CardSetType != Enumerators.SetType.OTHERS)
+                        {
+                            card.Id = id;
+                        }
 
-						id++;
-					}
-				}
-			}
-
-
-            if (removeCardsWithoutGraphics)
-            {
-                // remove cards without iamges
-                foreach (var card in cardsToRemoveFromSet)
-                {
-                    foreach (var set in sets)
-                    {
-                        if (set.cards.Contains(card))
-                            set.cards.Remove(card);
+                        id++;
                     }
                 }
-                cardsToRemoveFromSet.Clear();
             }
-
 
             SortCardsByRank();
         }
 
         public void SortCardsByRank()
         {
-            if (_allCards != null)
-                _allCards = _allCards.OrderBy(x => (int)x.cardRank).ToList();
+            _allCards = _allCards?.OrderBy(x => (int) x.CardRank).ToList();
 
-            foreach (var set in sets)
-                set.cards = set.cards.OrderBy(x => (int)x.cardRank).ToList();
-    }
+            foreach (CardSet set in Sets)
+            {
+                set.Cards = set.Cards.OrderBy(x => (int) x.CardRank).ToList();
+            }
+        }
     }
 
     public class CardSet
     {
-        public string name;
-        public List<Card> cards;
+        public string Name;
+
+        public List<Card> Cards;
 
         public override string ToString()
         {
-            return $"({nameof(name)}: {name}, {cards.Count} cards)";
+            return $"({nameof(Name)}: {Name}, {Cards.Count} cards)";
         }
     }
-
-    
 }

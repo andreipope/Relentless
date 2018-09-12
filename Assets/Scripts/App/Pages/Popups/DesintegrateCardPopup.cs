@@ -1,77 +1,49 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-using System;
-using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using DG.Tweening;
 
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DesintigrateCardPopup : IUIPopup
     {
-		public GameObject Self
-        {
-            get { return _selfPage; }
-        }
-
         private ILoadObjectsManager _loadObjectsManager;
+
         private IUIManager _uiManager;
-        private GameObject _selfPage;
 
-        //private TextMeshProUGUI _description;
-        private MenuButtonNoGlow _yesButton,
-                                _noButton,
-                                _backButton;
-
-		private TextMeshProUGUI _buttonText;
-
-		public Transform cardTransform;
+        private Button _yesButton, _noButton;
 
         private CollectionCardData _cardData;
 
-		public void Init()
+        public GameObject Self { get; private set; }
+
+        private GameObject _cardPreview;
+        private Vector3 _cardPreviewOriginalPos;
+        private Vector3 _cardPreviewPosition = new Vector3(5.5f, 0.1f, 5f);
+
+        public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
         }
 
-
-		public void Dispose()
-		{
-		}
-
-        private void CloseDesintegratePopup()
+        public void Dispose()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
-			_uiManager.DrawPopup<CardInfoPopup>(libraryCard);
-
-			//(_uiManager.GetPopup<CardInfoPopup>() as CardInfoPopup).UpdateCardAmount();
-            Hide();
         }
 
-		public void Hide()
-		{
-            /*if (cardTransform != null)
-            {
-                cardTransform.DOKill();
-                cardTransform.DOScale(new Vector3(1f, 1f, 1f), 0.2f);
-            }*/
-            if (_selfPage == null)
+        public void Hide()
+        {
+            if (Self == null)
                 return;
 
-            _selfPage.SetActive (false);
-            GameObject.Destroy (_selfPage);
-            _selfPage = null;
-		}
+            Self.SetActive(false);
+            Object.Destroy(Self);
+            Self = null;
+
+            if (_cardPreview != null)
+                _cardPreview.transform.position = _cardPreviewOriginalPos;
+
+        }
 
         public void SetMainPriority()
         {
@@ -79,49 +51,73 @@ namespace LoomNetwork.CZB
 
         public void Show()
         {
-            _selfPage = MonoBehaviour.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
-            _selfPage.transform.SetParent(_uiManager.Canvas2.transform, false);
+            _cardPreview = GameObject.Find("CardPreview");
+            if (_cardPreview != null)
+            {
+                _cardPreviewOriginalPos = _cardPreview.transform.position;
+                _cardPreview.transform.position = _cardPreviewPosition;
+            }
 
-            _yesButton = _selfPage.transform.Find("QuestionArea/YesButton").GetComponent<MenuButtonNoGlow>();
-            _noButton = _selfPage.transform.Find("QuestionArea/NoButton").GetComponent<MenuButtonNoGlow>();
-            _backButton = _selfPage.transform.Find("Button_Back").GetComponent<MenuButtonNoGlow>(); 
 
-            _yesButton.onClickEvent.AddListener(DesintegrateButtonHandler);
-            _noButton.onClickEvent.AddListener(CloseDesintegratePopup);
-            _backButton.onClickEvent.AddListener(CloseDesintegratePopup);
+            Self = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DesintegrateCardPopup"));
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            //_description = _selfPage.transform.Find("DesintegrateArea/Description").GetComponent<TextMeshProUGUI>();
+            _yesButton = Self.transform.Find("QuestionArea/YesButton").GetComponent<Button>();
+            _noButton = Self.transform.Find("QuestionArea/NoButton").GetComponent<Button>();
+
+
+            _yesButton.onClick.AddListener(DesintegrateButtonHandler);
+            _noButton.onClick.AddListener(CloseDesintegratePopup);
         }
 
         public void Show(object data)
         {
             Show();
 
-            _cardData =  data as CollectionCardData;
-            //_description.text = _card.description;
-            if (_cardData.amount == 0)
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
+            _cardData = data as CollectionCardData;
+            if (_cardData.Amount == 0)
+            {
+                _yesButton.interactable = false;
+            }
             else
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = true;
+            {
+                _yesButton.interactable = true;
+            }
         }
 
         public void Update()
         {
+        }
 
+        private void CloseDesintegratePopup()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
+                .Find(card => card.Name == _cardData.CardName);
+            _uiManager.DrawPopup<CardInfoPopup>(libraryCard);
+
+            Hide();
         }
 
         private void DesintegrateButtonHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Common.Enumerators.SoundType.CLICK, Constants.SFX_SOUND_VOLUME, false, false, true);
-            _cardData.amount--;
-            if (_cardData.amount == 0)
-                _yesButton.GetComponent<MenuButtonNoGlow>().interactable = false;
-            GameObject.Find("CardPreview").GetComponent<BoardCard>().UpdateAmount(_cardData.amount);
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _cardData.Amount--;
+            if (_cardData.Amount == 0)
+            {
+                _yesButton.interactable = false;
+            }
 
-            var libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.Find(card => card.name == _cardData.cardName);
-            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int)libraryCard.cardRank + 1));
+            _cardPreview.GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
 
-			(_uiManager.GetPage<CollectionPage>() as CollectionPage).UpdateGooValue();
-		}
+            Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
+                .Find(card => card.Name == _cardData.CardName);
+            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) libraryCard.CardRank + 1));
+
+            _uiManager.GetPage<CollectionPage>().UpdateGooValue();
+        }
     }
 }

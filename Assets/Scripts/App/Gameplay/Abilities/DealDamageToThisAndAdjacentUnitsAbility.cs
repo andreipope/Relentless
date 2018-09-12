@@ -1,47 +1,21 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
-
-
-using LoomNetwork.CZB.Common;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using LoomNetwork.CZB.Data;
 
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class DealDamageToThisAndAdjacentUnitsAbility : AbilityBase
     {
-        public int value = 1;
-
-        public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            _vfxObject = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override void OnEndTurnEventHandler()
-        {
-            base.OnEndTurnEventHandler();
-
-            if (abilityCallType != Enumerators.AbilityCallType.END)
-                return;
-
-            Action();
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Action(object param = null)
@@ -49,9 +23,9 @@ namespace LoomNetwork.CZB
             base.Action(param);
 
             int targetIndex = -1;
-            for (int i = 0; i < playerCallerOfAbility.BoardCards.Count; i++)
+            for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (playerCallerOfAbility.BoardCards[i] == abilityUnitOwner)
+                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -61,18 +35,33 @@ namespace LoomNetwork.CZB
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
-                    TakeDamageToUnit(playerCallerOfAbility.BoardCards[targetIndex - 1]);
-                if (targetIndex + 1 < playerCallerOfAbility.BoardCards.Count)
-                    TakeDamageToUnit(playerCallerOfAbility.BoardCards[targetIndex + 1]);
+                {
+                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1]);
+                }
+
+                if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
+                {
+                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1]);
+                }
             }
 
-            TakeDamageToUnit(abilityUnitOwner);
+            TakeDamageToUnit(AbilityUnitOwner);
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            Action();
         }
 
         private void TakeDamageToUnit(BoardUnit unit)
         {
-            _battleController.AttackUnitByAbility(abilityUnitOwner, abilityData, unit);
-            CreateVFX(unit.transform.position, true, 5f);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            CreateVfx(unit.Transform.position, true, 5f);
         }
     }
 }

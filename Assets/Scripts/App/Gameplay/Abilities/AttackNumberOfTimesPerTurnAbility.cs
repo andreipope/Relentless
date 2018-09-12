@@ -1,63 +1,48 @@
-﻿// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
-
-using LoomNetwork.CZB.Common;
-using LoomNetwork.CZB.Data;
-
-namespace LoomNetwork.CZB
+namespace Loom.ZombieBattleground
 {
     public class AttackNumberOfTimesPerTurnAbility : AbilityBase
     {
-        private int _numberOfAttacksWas = 0;
+        public Enumerators.AttackInfoType AttackInfo { get; }
 
-        public Enumerators.AttackInfoType attackInfo;
-        public int value = 1;
+        public int Value { get; }
 
+        private int _numberOfAttacksWas;
 
-        public AttackNumberOfTimesPerTurnAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
+        public AttackNumberOfTimesPerTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
+            : base(cardKind, ability)
         {
-            this.value = ability.value;
-            this.attackInfo = ability.attackInfoType;
+            Value = ability.Value;
+            AttackInfo = ability.AttackInfoType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            abilityUnitOwner.attackInfoType = this.attackInfo;
+            AbilityUnitOwner.AttackInfoType = AttackInfo;
         }
 
-        public override void Update()
+        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
         {
-            base.Update();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        private void Action()
-        {
-        }
-
-        protected override void UnitOnAttackEventHandler(object info, int damage, bool isAttacker)
-        {
-            base.UnitOnAttackEventHandler(info, damage, isAttacker);
+            base.UnitAttackedHandler(info, damage, isAttacker);
 
             if (!isAttacker)
                 return;
 
             _numberOfAttacksWas++;
 
-            if(_numberOfAttacksWas < value)
-                abilityUnitOwner.ForceSetCreaturePlayable();
+            if (_numberOfAttacksWas < Value)
+            {
+                AbilityUnitOwner.ForceSetCreaturePlayable();
+            }
         }
 
-        protected override void OnStartTurnEventHandler()
+        protected override void TurnStartedHandler()
         {
-            base.OnStartTurnEventHandler();
+            base.TurnStartedHandler();
             _numberOfAttacksWas = 0;
         }
     }

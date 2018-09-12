@@ -1,80 +1,44 @@
-// Copyright (c) 2018 - Loom Network. All rights reserved.
-// https://loomx.io/
+#if UNITY_EDITOR
+#define DISABLE_DATA_ENCRYPTION
+#endif
 
-
-
-using LoomNetwork.CZB.Common;
-using Loom.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using LoomNetwork.CZB.BackendCommunication;
-using LoomNetwork.CZB.Protobuf;
-using UnityEngine;
-using LoomNetwork.Internal;
-using LoomNetwork.CZB.Data;
-using Card = LoomNetwork.CZB.Data.Card;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 
-namespace LoomNetwork.CZB
+using Newtonsoft.Json;
+using UnityEngine;
+
+namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
     {
-        private IAppStateManager _appStateManager;
+        private readonly DecksDataWithTimestamp _decksDataWithTimestamp = new DecksDataWithTimestamp();
+
         private ILocalizationManager _localizationManager;
+
         private ILoadObjectsManager _loadObjectsManager;
+
         private BackendFacade _backendFacade;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
 
-        public event Action OnLoadCacheCompletedEvent;
-
-        public UserLocalData CachedUserLocalData { get; set; }
-        public CardsLibraryData CachedCardsLibraryData { get; set; }
-        public HeroesData CachedHeroesData { get; set; }
-        public CollectionData CachedCollectionData { get; set; }
-        public DecksData CachedDecksData { get; set; }
-        public OpponentDecksData CachedOpponentDecksData { get; set; }
-        public TooltipContentData CachedBuffsTooltipData { get; set; }
-
-        public ActionData CachedActionsLibraryData { get; set;}
-
-        public CreditsData CachedCreditsData { get; set; }
-
-        public BetaConfig BetaConfig { get; set; }
-
-        private int _currentDeckIndex;
-        private int _currentAIDeckIndex;
-
-        private DirectoryInfo dir;
-        private DecksDataWithTimestamp _decksDataWithTimestamp = new DecksDataWithTimestamp();
-
-        public int CurrentDeckInd
-        {
-            get { return _currentDeckIndex; }
-            set { _currentDeckIndex = value; }
-        }
-
-        public int CurrentAIDeckInd
-        {
-            get { return _currentAIDeckIndex; }
-        }
-
-        public long CachedDecksLastModificationTimestamp
-        {
-            get
-            {
-                return _decksDataWithTimestamp.LastModificationTimestamp;
-            }
-            set
-            {
-                _decksDataWithTimestamp.LastModificationTimestamp = value;
-            }
-        }
+        private DirectoryInfo _dir;
 
         public DataManager()
+        {
+            InitCachedData();
+        }
+
+        private void InitCachedData()
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData();
@@ -82,29 +46,32 @@ namespace LoomNetwork.CZB
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData();
             CachedOpponentDecksData = new OpponentDecksData();
-            CachedActionsLibraryData = new ActionData();
             CachedCreditsData = new CreditsData();
             CachedBuffsTooltipData = new TooltipContentData();
         }
 
-        public void Dispose()
+        public TooltipContentData CachedBuffsTooltipData { get; set; }
+
+        public UserLocalData CachedUserLocalData { get; set; }
+
+        public CardsLibraryData CachedCardsLibraryData { get; set; }
+
+        public HeroesData CachedHeroesData { get; set; }
+
+        public CollectionData CachedCollectionData { get; set; }
+
+        public DecksData CachedDecksData { get; set; }
+
+        public OpponentDecksData CachedOpponentDecksData { get; set; }
+
+        public CreditsData CachedCreditsData { get; set; }
+
+        public BetaConfig BetaConfig { get; set; }
+
+        public long CachedDecksLastModificationTimestamp
         {
-            //SaveAllCache();
-        }
-
-        public void Init()
-        {
-            _appStateManager = GameClient.Get<IAppStateManager>();
-            _localizationManager = GameClient.Get<ILocalizationManager>();
-            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
-            dir = new DirectoryInfo(Application.persistentDataPath + "/");
-
-            CheckVersion();
-            CheckFirstLaunch();
-            FillCacheDataPathes();
+            get => _decksDataWithTimestamp.LastModificationTimestamp;
+            set => _decksDataWithTimestamp.LastModificationTimestamp = value;
         }
 
         public async Task LoadRemoteConfig()
@@ -117,416 +84,80 @@ namespace LoomNetwork.CZB
         public async Task StartLoadCache()
         {
             Debug.Log("=== Start loading server ==== ");
-            
+
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
-                await LoadCachedData((Enumerators.CacheDataType)i);
+            {
+                await LoadCachedData((Enumerators.CacheDataType) i);
+            }
 
             CachedCardsLibraryData.FillAllCards();
 
             // FIXME: remove next line after fetching collection from backend is implemented
             FillFullCollection();
-            CachedOpponentDecksData.ParseData();
-            CachedActionsLibraryData.ParseData();
 
             _localizationManager.ApplyLocalization();
 
-            if (Constants.DEV_MODE)
-                CachedUserLocalData.tutorial = false;
+#if DEV_MODE
+            CachedUserLocalData.Tutorial = false;
+#endif
 
-            GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.tutorial;
-            OnLoadCacheCompletedEvent?.Invoke();
+            GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
         }
 
-        public void Update()
+        public void DeleteData()
         {
+            InitCachedData();
+            FileInfo[] files = _dir.GetFiles();
 
-        }
-
-        public async Task SaveAllCache()
-        {
-
-            Debug.Log("== Saving all cache calledd === ");
-            int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
-            for (int i = 0; i < count; i++)
-                await SaveCache((Enumerators.CacheDataType)i);
-        }
-
-        private void CheckVersion()
-        {
-            var files = dir.GetFiles();
-            bool versionMatch = false;
-            foreach (var file in files)
-                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION)
-                    versionMatch = true;
-
-            if (!versionMatch)
+            foreach (FileInfo file in files)
             {
-				DeleteData();
+                if (file.Name.Contains("json") || file.Name.Contains("dat") ||
+                    file.Name.Contains(Constants.VersionFileResolution)) file.Delete();
             }
+
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+            {
+            }
+
+            PlayerPrefs.DeleteAll();
         }
-
-		public void DeleteData() {
-			var files = dir.GetFiles();
-
-			foreach (var file in files)
-				if (file.Name.Contains("json") || file.Name.Contains("dat") || file.Name.Contains(Constants.VERSION_FILE_RESOLUTION))
-					file.Delete();
-		    using (File.Create(dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VERSION_FILE_RESOLUTION))
-		    {
-		        
-		    }
-
-			PlayerPrefs.DeleteAll ();
-		}
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
             Debug.Log("== Saving cache type " + type);
-            if (!File.Exists(_cacheDataPathes[type]))
-                File.Create(_cacheDataPathes[type]).Close();
+            if (!File.Exists(_cacheDataPathes[type])) File.Create(_cacheDataPathes[type]).Close();
+
             switch (type)
             {
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedUserLocalData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedUserLocalData));
                     break;
-
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCardsLibraryData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCardsLibraryData));
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedHeroesData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedHeroesData));
                     break;
-
                 case Enumerators.CacheDataType.COLLECTION_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCollectionData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCollectionData));
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
-                    {
-                        _decksDataWithTimestamp.DecksData = CachedDecksData;
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(_decksDataWithTimestamp));
-                    }
+                    _decksDataWithTimestamp.DecksData = CachedDecksData;
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(_decksDataWithTimestamp));
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedOpponentDecksData));
-                    }
-                    break;
-                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedActionsLibraryData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedOpponentDecksData));
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
-                    {
-                        File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
-                    }
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
                     break;
-                default: break;
             }
-            
+
             return Task.CompletedTask;
-        }
-
-        private async Task LoadCachedData(Enumerators.CacheDataType type)
-        {
-            switch (type)
-            {
-                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                    {
-                        //if (File.Exists(_cacheDataPathes[type]))
-                        //  CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
-                        
-                        try
-                        {
-                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                            Debug.Log(listCardLibraryResponse.ToString());
-                            CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
-                            if (File.Exists(_cacheDataPathes[type]))
-                                CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
-                        }
-                    }
-                    break;
-                case Enumerators.CacheDataType.HEROES_DATA:
-                    {
-                        //if (File.Exists(_cacheDataPathes[type]))
-                        //    CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
-                        
-                        try
-                        {
-                            ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                            Debug.Log(heroesList.ToString());
-                            CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError("===== Heroes List not Loaded, loading from cache ===== " + ex);
-                            if (File.Exists(_cacheDataPathes[type]))
-                                CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
-                        }
-                    }
-                    break;
-                case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
-                    }
-                    break;
-                case Enumerators.CacheDataType.COLLECTION_DATA:
-                    {
-                        //if (File.Exists(_cacheDataPathes[type]))
-                        //  CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
-                        
-                        try
-                        {
-                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                            Debug.Log(getCollectionResponse.ToString());
-                            CachedCollectionData = getCollectionResponse.FromProtobuf();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
-                            if (File.Exists(_cacheDataPathes[type]))
-                                CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
-                        }
-                    }
-                    break;
-                case Enumerators.CacheDataType.DECKS_DATA:
-                    {
-                        //if (File.Exists(_cacheDataPathes[type]))
-                        //    CachedDecksData = DeserializeObjectFromPath<DecksData>(_cacheDataPathes[type]);
-
-                        // TODO: add code to sync local and remote decks
-                        DecksData localDecksData = null, remoteDecksData = null;
-                        long localDecksDataTimestamp = 0, remoteDecksDataTimestamp = 0;
-                        if (File.Exists(_cacheDataPathes[type]))
-                        {
-                            DecksDataWithTimestamp localDecksDataWithTimestamp = DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPathes[type]);
-                            localDecksData = localDecksDataWithTimestamp.DecksData;
-                            localDecksDataTimestamp = localDecksDataWithTimestamp.LastModificationTimestamp;
-                        } else
-                        {
-                            localDecksData = CachedDecksData;
-                        }
-                        
-                        try
-                        {
-                            ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                            if (listDecksResponse != null)
-                            {
-                                Debug.Log(listDecksResponse.ToString());
-                                //remoteDecksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.Decks.ToString());
-                                remoteDecksData = new DecksData
-                                {
-                                    decks = listDecksResponse.Decks
-                                        .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                                        .ToList()
-                                };
-                                remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
-                            }
-                            else
-                                Debug.Log(" List Deck Response is Null == ");
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
-                        }
-
-                        if (localDecksData != null && remoteDecksData != null)
-                        {
-                            if (remoteDecksDataTimestamp == localDecksDataTimestamp)
-                            {
-                                Debug.Log("Remote decks timestamp == local decks timestamp, no sync needed");
-                                CachedDecksData = remoteDecksData;
-                            } else if (remoteDecksDataTimestamp > localDecksDataTimestamp)
-                            {
-                                Debug.Log("Remote decks data is newer than local, using remote data");
-                                CachedDecksData = remoteDecksData;
-                            } else
-                            {
-                                Debug.Log("Local decks data is newer than remote, synchronizing remote state with local");
-                                try
-                                {
-                                    // Remove all remote decks, fingers crossed
-                                    foreach (Data.Deck remoteDeck in remoteDecksData.decks)
-                                    {
-                                        await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId, remoteDeck.id, 0);
-                                    }
-                                    
-                                    // Upload local decks
-                                    foreach (Data.Deck localDeck in localDecksData.decks)
-                                    {
-                                        long createdDeckId = 
-                                            await _backendFacade.AddDeck(
-                                                _backendDataControlMediator.UserDataModel.UserId, 
-                                                localDeck,
-                                                localDecksDataTimestamp
-                                                );
-                                        localDeck.id = createdDeckId;
-                                    }
-
-                                    CachedDecksData = localDecksData;
-                                } catch (Exception e)
-                                {
-                                    CachedDecksData = localDecksData;
-                                    Debug.LogError("Catastrophy! Error while synchronizing decks, assuming local deck as a fallback");
-                                    Debug.LogException(e);
-                                    throw;
-                                }
-                            }
-                        } else if (remoteDecksData != null)
-                        {
-                            Debug.Log("Using remote decks data");
-                            CachedDecksData = remoteDecksData;
-                        } else if (localDecksData != null)
-                        {
-                            Debug.Log("Using local decks data");
-                            CachedDecksData = localDecksData;
-                        }
-                    }
-                    break;
-                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedOpponentDecksData = DeserializeObjectFromPath<OpponentDecksData>(_cacheDataPathes[type]);
-                    }
-                    break;
-                case Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedActionsLibraryData = DeserializeObjectFromPath<ActionData>(_cacheDataPathes[type]);
-                    }
-                    break;
-                case Enumerators.CacheDataType.CREDITS_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPathes[type]);
-                    }
-                    break;
-                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
-                    {
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
-                    }
-                    break;
-                default: break;
-            }
-        }
-
-        private void CheckFirstLaunch()
-        {
-            if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH)))
-            {
-                CachedCardsLibraryData = JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/card_library_data").text);
-                CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/heroes_data").text);
-                //CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data").text);
-                CachedDecksData = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/decks_data").text);
-                CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
-                CachedActionsLibraryData = JsonConvert.DeserializeObject<ActionData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/action_data").text);
-                CachedCreditsData = JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/credits_data").text);
-                CachedBuffsTooltipData = JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
-
-                /*var collectionLibrary = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/collection_data");
-                if (collectionLibrary == null)
-                    FillFullCollection();
-                else
-                    CachedCollectionData = JsonConvert.DeserializeObject<CollectionData>(collectionLibrary.text);*/
-            }
-        }
-
-        private void FillCacheDataPathes()
-        {
-            _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>();
-            _cacheDataPathes.Add(Enumerators.CacheDataType.USER_LOCAL_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_USER_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.CARDS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_CARDS_LIBRARY_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.HEROES_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_HEROES_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.COLLECTION_DATA, Path.Combine(Application.persistentDataPath , Constants.LOCAL_COLLECTION_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_DECKS_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.DECKS_OPPONENT_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_DECKS_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.OPPONENT_ACTIONS_LIBRARY_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_OPPONENT_ACTIONS_LIBRARY_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.CREDITS_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_CREDITS_DATA_FILE_PATH));
-            _cacheDataPathes.Add(Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Path.Combine(Application.persistentDataPath, Constants.LOCAL_BUFFS_TOOLTIP_DATA_FILE_PATH));
-        }
-
-        private T DeserializeObjectFromPath<T>(string path)
-        {
-            if(Constants.DATA_ENCRYPTION_ENABLED)
-                return JsonConvert.DeserializeObject<T>(Utilites.Decrypt(File.ReadAllText(path), Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP));
-            else
-                return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
-        }
-
-        private string SerializeObject(object obj)
-        {
-            if (Constants.DATA_ENCRYPTION_ENABLED)
-                return Utilites.Encrypt(JsonConvert.SerializeObject(obj, Formatting.Indented), Constants.PRIVATE_ENCRYPTION_KEY_FOR_APP);
-            else
-                return JsonConvert.SerializeObject(obj, Formatting.Indented);
-        }
-
-        private void FillFullCollection()
-        {
-            CachedCollectionData = new CollectionData();
-            CachedCollectionData.cards = new List<CollectionCardData>();
-
-            foreach (var set in CachedCardsLibraryData.sets)
-            {
-                foreach (var card in set.cards)
-                {
-                    CachedCollectionData.cards.Add(new CollectionCardData()
-                    {
-                        amount = (int)GetMaxCopiesValue(card, set.name),
-                        cardName = card.name
-                    });
-                }
-            }
-        }
-
-        public uint GetMaxCopiesValue(Card card, string setName)
-        {
-            Enumerators.CardRank rank = card.cardRank;
-            uint maxCopies = 0;
-
-            if (setName.ToLower().Equals("item"))
-            {
-                maxCopies = Constants.CARD_ITEM_MAX_COPIES;
-                return maxCopies;
-            }
-
-
-            switch (rank)
-            {
-                case Enumerators.CardRank.MINION:
-                    maxCopies = Constants.CARD_MINION_MAX_COPIES;
-                    break;
-                case Enumerators.CardRank.OFFICER:
-                    maxCopies = Constants.CARD_OFFICER_MAX_COPIES;
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    maxCopies = Constants.CARD_COMMANDER_MAX_COPIES;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    maxCopies = Constants.CARD_GENERAL_MAX_COPIES;
-                    break;
-            }
-            return maxCopies;
         }
 
         public TooltipContentData.BuffInfo GetBuffInfoByType(string type)
@@ -534,7 +165,7 @@ namespace LoomNetwork.CZB
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.buffs.Find(x => x.type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLower().Equals(type.ToLower()));
         }
 
         public TooltipContentData.RankInfo GetRankInfoByType(string type)
@@ -542,13 +173,364 @@ namespace LoomNetwork.CZB
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.ranks.Find(x => x.type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLower().Equals(type.ToLower()));
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public void Init()
+        {
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _dir = new DirectoryInfo(Application.persistentDataPath + "/");
+
+            CheckVersion();
+            CheckFirstLaunch();
+            FillCacheDataPathes();
+        }
+
+        public void Update()
+        {
+        }
+
+        private uint GetMaxCopiesValue(Data.Card card, string setName)
+        {
+            Enumerators.CardRank rank = card.CardRank;
+            uint maxCopies;
+
+            if (setName.ToLower().Equals("item"))
+            {
+                maxCopies = Constants.CardItemMaxCopies;
+                return maxCopies;
+            }
+
+            switch (rank)
+            {
+                case Enumerators.CardRank.MINION:
+                    maxCopies = Constants.CardMinionMaxCopies;
+                    break;
+                case Enumerators.CardRank.OFFICER:
+                    maxCopies = Constants.CardOfficerMaxCopies;
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    maxCopies = Constants.CardCommanderMaxCopies;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    maxCopies = Constants.CardGeneralMaxCopies;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return maxCopies;
+        }
+
+        private void CheckVersion()
+        {
+            FileInfo[] files = _dir.GetFiles();
+            bool versionMatch = false;
+            foreach (FileInfo file in files)
+            {
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
+                    versionMatch = true;
+            }
+
+            if (!versionMatch)
+                DeleteData();
+        }
+
+        private async Task LoadCachedData(Enumerators.CacheDataType type)
+        {
+            switch (type)
+            {
+                case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                    try
+                    {
+                        ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+                        Debug.Log(listCardLibraryResponse.ToString());
+                        CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedCardsLibraryData =
+                                DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                    }
+
+                    break;
+                case Enumerators.CacheDataType.HEROES_DATA:
+                    try
+                    {
+                        ListHeroesResponse heroesList =
+                            await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                        Debug.Log(heroesList.ToString());
+                        CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("===== Heroes List not Loaded, loading from cache ===== " + ex);
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
+                    }
+
+                    break;
+                case Enumerators.CacheDataType.USER_LOCAL_DATA:
+                    if (File.Exists(_cacheDataPathes[type]))
+                        CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
+
+                    break;
+                case Enumerators.CacheDataType.COLLECTION_DATA:
+                    try
+                    {
+                        GetCollectionResponse getCollectionResponse =
+                            await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        Debug.Log(getCollectionResponse.ToString());
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
+                        if (File.Exists(_cacheDataPathes[type]))
+                            CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                    }
+
+                    break;
+                case Enumerators.CacheDataType.DECKS_DATA:
+                    DecksData localDecksData, remoteDecksData = null;
+                    long localDecksDataTimestamp = 0, remoteDecksDataTimestamp = 0;
+                    if (File.Exists(_cacheDataPathes[type]))
+                    {
+                        DecksDataWithTimestamp localDecksDataWithTimestamp =
+                            DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPathes[type]);
+                        localDecksData = localDecksDataWithTimestamp.DecksData;
+                        localDecksDataTimestamp = localDecksDataWithTimestamp.LastModificationTimestamp;
+                    }
+                    else
+                    {
+                        localDecksData = CachedDecksData;
+                    }
+
+                    try
+                    {
+                        ListDecksResponse listDecksResponse =
+                            await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        if (listDecksResponse != null)
+                        {
+                            Debug.Log(listDecksResponse.ToString());
+
+                            remoteDecksData = new DecksData
+                            {
+                                Decks = listDecksResponse.Decks
+                                    .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString())).ToList()
+                            };
+                            remoteDecksDataTimestamp = listDecksResponse.LastModificationTimestamp;
+                        }
+                        else
+                        {
+                            Debug.Log(" List Deck Response is Null == ");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("===== Deck Data Not Loaded from Backend ===== " + ex);
+                    }
+
+                    if (localDecksData != null && remoteDecksData != null)
+                    {
+                        if (remoteDecksDataTimestamp == localDecksDataTimestamp)
+                        {
+                            Debug.Log("Remote decks timestamp == local decks timestamp, no sync needed");
+                            CachedDecksData = remoteDecksData;
+                        }
+                        else if (remoteDecksDataTimestamp > localDecksDataTimestamp)
+                        {
+                            Debug.Log("Remote decks data is newer than local, using remote data");
+                            CachedDecksData = remoteDecksData;
+                        }
+                        else
+                        {
+                            Debug.Log("Local decks data is newer than remote, synchronizing remote state with local");
+                            try
+                            {
+                                // Remove all remote decks, fingers crossed
+                                foreach (Data.Deck remoteDeck in remoteDecksData.Decks)
+                                {
+                                    await _backendFacade.DeleteDeck(_backendDataControlMediator.UserDataModel.UserId,
+                                        remoteDeck.Id, 0);
+                                }
+
+                                // Upload local decks
+                                foreach (Data.Deck localDeck in localDecksData.Decks)
+                                {
+                                    long createdDeckId = await _backendFacade.AddDeck(
+                                        _backendDataControlMediator.UserDataModel.UserId, localDeck,
+                                        localDecksDataTimestamp);
+                                    localDeck.Id = createdDeckId;
+                                }
+
+                                CachedDecksData = localDecksData;
+                            }
+                            catch (Exception e)
+                            {
+                                CachedDecksData = localDecksData;
+                                Debug.LogError(
+                                    "Catastrophe! Error while synchronizing decks, assuming local deck as a fallback");
+                                Debug.LogException(e);
+                                throw;
+                            }
+                        }
+                    }
+                    else if (remoteDecksData != null)
+                    {
+                        Debug.Log("Using remote decks data");
+                        CachedDecksData = remoteDecksData;
+                    }
+                    else if (localDecksData != null)
+                    {
+                        Debug.Log("Using local decks data");
+                        CachedDecksData = localDecksData;
+                    }
+
+                    break;
+                case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
+                    if (File.Exists(_cacheDataPathes[type]))
+                        CachedOpponentDecksData = DeserializeObjectFromPath<OpponentDecksData>(_cacheDataPathes[type]);
+
+                    break;
+                case Enumerators.CacheDataType.CREDITS_DATA:
+                    if (File.Exists(_cacheDataPathes[type]))
+                        CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPathes[type]);
+
+                    break;
+                case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
+                    if (File.Exists(_cacheDataPathes[type]))
+                        CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
+
+                    break;
+            }
+        }
+
+        private void CheckFirstLaunch()
+        {
+            if (!File.Exists(Path.Combine(Application.persistentDataPath, Constants.LocalCardsLibraryDataFilePath)))
+            {
+                CachedCardsLibraryData =
+                    JsonConvert.DeserializeObject<CardsLibraryData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/card_library_data").text);
+                CachedHeroesData =
+                    JsonConvert.DeserializeObject<HeroesData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/heroes_data").text);
+                CachedDecksData =
+                    JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/decks_data").text);
+                CachedOpponentDecksData = JsonConvert.DeserializeObject<OpponentDecksData>(_loadObjectsManager
+                    .GetObjectByPath<TextAsset>("Data/opponent_decks_data").text);
+                CachedCreditsData =
+                    JsonConvert.DeserializeObject<CreditsData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/credits_data").text);
+                CachedBuffsTooltipData =
+                    JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
+            }
+        }
+
+        private void FillCacheDataPathes()
+        {
+            _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>
+            {
+                {
+                    Enumerators.CacheDataType.USER_LOCAL_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalUserDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.CARDS_LIBRARY_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalCardsLibraryDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.HEROES_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalHeroesDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.COLLECTION_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalCollectionDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.DECKS_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalDecksDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.DECKS_OPPONENT_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalOpponentDecksDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.CREDITS_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalCreditsDataFilePath)
+                },
+                {
+                    Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
+                },
+            };
+        }
+
+        public string DecryptData(string data)
+        {
+#if DISABLE_DATA_ENCRYPTION
+            return data;
+#else
+            return Utilites.Decrypt(data, Constants.PrivateEncryptionKeyForApp);
+#endif
+        }
+
+        public string EncryptData(string data)
+        {
+#if DISABLE_DATA_ENCRYPTION
+            return data;
+#else
+            return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
+#endif
+        }
+
+        private T DeserializeObjectFromPath<T>(string path)
+        {
+            return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
+        }
+
+        private string SerializeObject(object obj)
+        {
+            return EncryptData(JsonConvert.SerializeObject(obj, Formatting.Indented));
+        }
+
+        private void FillFullCollection()
+        {
+            CachedCollectionData = new CollectionData();
+            CachedCollectionData.Cards = new List<CollectionCardData>();
+
+            foreach (Data.CardSet set in CachedCardsLibraryData.Sets)
+            {
+                foreach (Data.Card card in set.Cards)
+                {
+                    CachedCollectionData.Cards.Add(
+                        new CollectionCardData
+                        {
+                            Amount = (int) GetMaxCopiesValue(card, set.Name),
+                            CardName = card.Name
+                        });
+                }
+            }
         }
 
         private class DecksDataWithTimestamp
         {
             public long LastModificationTimestamp;
+
             public DecksData DecksData;
-        } 
+        }
     }
 }
