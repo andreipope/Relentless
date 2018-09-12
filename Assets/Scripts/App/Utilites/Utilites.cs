@@ -96,13 +96,6 @@ namespace Loom.ZombieBattleground
             return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
         }
 
-        public static string FirstCharToUpper(string input)
-        {
-            if (String.IsNullOrEmpty(input))
-                throw new ArgumentException("input cannot be empty!");
-            return input.First().ToString().ToUpper() + input.Substring(1).ToLower();
-        }
-
         #region asset bundles and cache
 
         public static string GetAssetBundleLocalRoot()

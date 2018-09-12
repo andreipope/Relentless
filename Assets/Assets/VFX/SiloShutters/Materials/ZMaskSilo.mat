@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ZMaskSilo
   m_Shader: {fileID: 4800000, guid: 70c0d9432d8edce45942984e65cbbd3d, type: 3}
