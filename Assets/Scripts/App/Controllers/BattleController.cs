@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
                 if (damageAttacking > 0 && attackedUnit.HasBuffShield)
                 {
                     damageAttacking = 0;
-                    attackedUnit.UseShieldFromBuff();
+                    attackedUnit.HasUsedBuffShield = true;
                 }
 
                 attackedUnit.CurrentHp -= damageAttacking;
@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
                     if (damageAttacked > 0 && attackingUnit.HasBuffShield)
                     {
                         damageAttacked = 0;
-                        attackingUnit.UseShieldFromBuff();
+                        attackingUnit.HasUsedBuffShield = true;
                     }
 
                     attackingUnit.CurrentHp -= damageAttacked;

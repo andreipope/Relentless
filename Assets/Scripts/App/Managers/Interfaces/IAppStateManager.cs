@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
     {
         Enumerators.AppState AppState { get; set; }
 
-        void ChangeAppState(Enumerators.AppState stateTo);
+        void ChangeAppState(Enumerators.AppState stateTo, bool force = false);
 
         void BackAppState();
     }

@@ -21,9 +21,14 @@ namespace Loom.ZombieBattleground
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
-            if (_tutorialManager.IsTutorial)
+            _tutorialManager.StopTutorial();
+
+            if (_gameplayManager.IsTutorial &&
+                !_tutorialManager.IsTutorial &&
+                appStateAfterMatch != Enumerators.AppState.MAIN_MENU)
             {
-                _tutorialManager.StopTutorial();
+                _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY, true);
+                return;
             }
 
             _finishMatchAppState = appStateAfterMatch;
@@ -89,16 +94,31 @@ namespace Loom.ZombieBattleground
             switch (state)
             {
                 case Enumerators.AppState.GAMEPLAY:
-                    _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY);
-
-                    _uiManager.HidePopup<LoadingGameplayPopup>();
-
-                    _gameplayManager.StartGameplay();
+                    {
+                        ForceStartGameplay(_gameplayManager.IsTutorial);
+                    }
                     break;
                 case Enumerators.AppState.APP_INIT:
-                    _appStateManager.ChangeAppState(_finishMatchAppState);
+                    {
+                        _appStateManager.ChangeAppState(_finishMatchAppState);
+                    }
                     break;
+
             }
+        }
+
+        private void ForceStartGameplay(bool force = false)
+        {
+            if (_gameplayManager.IsTutorial)
+            {
+                _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+            }
+
+            _appStateManager.ChangeAppState(Enumerators.AppState.GAMEPLAY, force);
+
+            _uiManager.HidePopup<LoadingGameplayPopup>();
+
+            _gameplayManager.StartGameplay();
         }
     }
 }

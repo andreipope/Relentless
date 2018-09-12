@@ -26,8 +26,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnit unit)
         {
-            if (GameplayManager.IsTutorial && (GameplayManager.TutorialStep == 19 ||
-                GameplayManager.TutorialStep == 27 || GameplayManager.TutorialStep == 32))
+            if (TutorialManager.IsTutorial && TutorialManager.CurrentTutorialDataStep.BoardArrowCantUsableOnUnit)
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))
@@ -70,8 +69,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnPlayerSelected(Player player)
         {
-            if (GameplayManager.IsTutorial && GameplayManager.TutorialStep != 19 &&
-                GameplayManager.TutorialStep != 28 && GameplayManager.TutorialStep != 32)
+            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnPlayer)
                 return;
 
             if (player.Health <= 0)
