@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
 
             boardUnit.PlayArrivalAnimation();
 
+            GameplayManager.CanDoDragActions = true;
+
             return boardUnit;
         }
     }
