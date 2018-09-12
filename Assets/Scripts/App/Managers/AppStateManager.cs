@@ -118,7 +118,17 @@ namespace Loom.ZombieBattleground
 
                 if (_backButtonClicksCount >= 2)
                 {
-                    Application.Quit();
+                    if (_uiManager.GetPopup<ConfirmationPopup>().Self == null)
+                    {
+                        Action[] actions = new Action[2];
+                        actions[0] = () =>
+                        {
+                            Application.Quit();
+                        };
+                        actions[1] = () => { };
+
+                        _uiManager.DrawPopup<ConfirmationPopup>(actions);
+                    }
                 }
             }
 
