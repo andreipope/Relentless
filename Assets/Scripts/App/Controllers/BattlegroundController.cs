@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -56,6 +57,8 @@ namespace Loom.ZombieBattleground
 
         private PlayerController _playerController;
 
+        private VfxController _vfxController;
+
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
@@ -87,6 +90,7 @@ namespace Loom.ZombieBattleground
             _playerManager = GameClient.Get<IPlayerManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
+            _vfxController = _gameplayManager.GetController<VfxController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
 
@@ -151,10 +155,11 @@ namespace Loom.ZombieBattleground
             cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x,
                 cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
 
+            CreateDeadAnimation(cardToDestroy);
             _timerManager.AddTimer(
                 x =>
                 {
-                    cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    //cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
 
                     string cardDeathSoundName =
                         cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
@@ -191,6 +196,12 @@ namespace Loom.ZombieBattleground
                         null,
                         soundLength);
                 });
+        }
+
+        private void CreateDeadAnimation(BoardUnit cardToDestroy)
+        {
+            _vfxController.CreateDeathZombieAnimation(cardToDestroy);
+            //cardToDestroy.GameObject.GetComponent<GeneralColor>().Color = Color.black;
         }
 
         public void CheckGameDynamic()
@@ -412,6 +423,7 @@ namespace Loom.ZombieBattleground
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
 
             Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
+
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)

@@ -109,6 +109,9 @@ namespace Loom.ZombieBattleground
 
         private bool _arrivalDone;
 
+        private GeneralColor _generalColor;
+
+
         public BoardUnit(Transform parent)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -148,6 +151,8 @@ namespace Loom.ZombieBattleground
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
+
+            _generalColor = GameObject.GetComponent<GeneralColor>();
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
@@ -251,6 +256,8 @@ namespace Loom.ZombieBattleground
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
         public bool CantAttackInThisTurnBlocker { get; set; } = false;
+
+        public BoardUnit LastAttackingUnit { get; set; }
 
         public bool IsHeavyUnit()
         {
@@ -639,6 +646,9 @@ namespace Loom.ZombieBattleground
             }
 
             SetHighlightingEnabled(false);
+
+            
+
         }
 
         public void PlayArrivalAnimation(bool firstAppear = true)
@@ -654,6 +664,9 @@ namespace Loom.ZombieBattleground
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
             if(firstAppear)
                 GameObject.transform.position += Vector3.back * 5f;
+
+            _generalColor.Init();
+
         }
 
         public void OnStartTurn()

@@ -4,6 +4,7 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -228,6 +229,21 @@ namespace Loom.ZombieBattleground
             effect.transform.localPosition = Vector3.zero;
 
             Object.Destroy(effect, 2.5f);
+        }
+
+        public void CreateDeathZombieAnimation(BoardUnit cardToDestroy)
+        {
+            //Debug.LogError(cardToDestroy.LastAttackingUnit);
+            //if (cardToDestroy.LastAttackingUnit != null)
+            //{
+            //    string type = cardToDestroy.LastAttackingUnit.Card.LibraryCard.CardSetType.ToString();
+            //    type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            //    var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
+            //    GameObject effect = MonoBehaviour.Instantiate(prefab, cardToDestroy.Transform.parent);
+            //    cardToDestroy.Transform.SetParent(effect.transform);
+            //    effect.transform.position = cardToDestroy.Transform.position;
+            //    _particlesController.RegisterParticleSystem(effect, true, 5f);
+            //}
         }
     }
 }

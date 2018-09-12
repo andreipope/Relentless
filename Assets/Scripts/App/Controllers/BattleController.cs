@@ -84,6 +84,7 @@ namespace Loom.ZombieBattleground
                     attackedUnit.HasUsedBuffShield = true;
                 }
 
+                attackedUnit.LastAttackingUnit = attackingUnit;
                 attackedUnit.CurrentHp -= damageAttacking;
 
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
