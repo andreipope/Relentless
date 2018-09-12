@@ -140,7 +140,6 @@ namespace Loom.ZombieBattleground
         public void ShowTutorialFocus(int step)
         {
             HideTutorialFocus();
-            Debug.Log(_tutorialManager.CurrentTutorial.TutorialId);
             Self.transform.Find("FocusObjects_" + _tutorialManager.CurrentTutorial.TutorialId + "/Step_" + step).gameObject.SetActive(true);
         }
 
@@ -175,9 +174,8 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
-            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= 0)
-                _dataManager.CachedUserLocalData.CurrentTutorialId--;
-
+            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorialManager.TutorialsCount;
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }
