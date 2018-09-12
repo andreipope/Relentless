@@ -25,5 +25,7 @@ namespace Loom.ZombieBattleground
         void NextButtonClickHandler();
 
         void SkipTutorial(Enumerators.AppState state);
+
+        int TutorialsCount { get; }
     }
 }
