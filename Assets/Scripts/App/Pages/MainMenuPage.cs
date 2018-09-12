@@ -238,12 +238,14 @@ namespace Loom.ZombieBattleground
 
         private void QuitButtonOnClickHandler()
         {
-            Action callback = () =>
+            Action[] actions = new Action[2];
+            actions[0] = () =>
             {
                 Application.Quit();
             };
+            actions[1] = () => { };
 
-            _uiManager.DrawPopup<ConfirmationPopup>(callback);
+            _uiManager.DrawPopup<ConfirmationPopup>(actions);
         }
 
         private void OpenButtonHandler()

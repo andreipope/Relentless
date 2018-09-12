@@ -136,6 +136,22 @@ namespace Loom.ZombieBattleground
                     tutorialSkipQuestion = "Do you really want skip \nAdvanced Tutorial?";
                 questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
             }
+
+
+            GameClient.Get<IAppStateManager>().SetPausingApp(true);
+
+            Action[] callbacks = new Action[2];
+            callbacks[0] = () =>
+            {
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(state);
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
+            };
+            callbacks[1] = () =>
+            {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
+            };
+            
             _uiManager.DrawPopup<QuestionPopup>(new object[]{tutorialSkipQuestion, false});
         }
 

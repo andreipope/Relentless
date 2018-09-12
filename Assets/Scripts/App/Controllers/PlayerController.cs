@@ -341,6 +341,9 @@ namespace Loom.ZombieBattleground
         {
             _delayTimerOfClick = 0f;
             _startedOnClickDelay = false;
+
+            _topmostBoardCard = null;
+            _selectedBoardUnit = null;
         }
 
         private void CheckCardPreviewShow()
