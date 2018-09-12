@@ -89,6 +89,21 @@ namespace Loom.ZombieBattleground
             AppState = stateTo;
         }
 
+        public void SetPausingApp(bool mustPause) {
+            if (!mustPause) 
+            {
+                IsAppPaused = false;
+                Time.timeScale = 1;
+                AudioListener.pause = false;
+            } 
+            else 
+            {
+                IsAppPaused = true;
+                Time.timeScale = 0;
+                AudioListener.pause = true;
+            }
+        }
+
         public void BackAppState()
         {
             ChangeAppState(_previousState);

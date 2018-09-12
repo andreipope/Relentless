@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                                 continue;
                             }
 
-                            if (container.AudioSource.isPlaying)
+                            if (container.AudioSource.isPlaying || AudioListener.pause)
                             {
                                 continue;
                             }
