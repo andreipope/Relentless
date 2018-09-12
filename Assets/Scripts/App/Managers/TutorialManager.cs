@@ -137,21 +137,6 @@ namespace Loom.ZombieBattleground
                 questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
             }
 
-
-            GameClient.Get<IAppStateManager>().SetPausingApp(true);
-
-            Action[] callbacks = new Action[2];
-            callbacks[0] = () =>
-            {
-                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(state);
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
-            };
-            callbacks[1] = () =>
-            {
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
-            };
-            
             _uiManager.DrawPopup<QuestionPopup>(new object[]{tutorialSkipQuestion, false});
         }
 
@@ -162,6 +147,7 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
             }
         }
 
@@ -172,6 +158,7 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
             }
         }
 
