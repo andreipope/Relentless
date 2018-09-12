@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
         private readonly BoardArrowController _boardArrowController;
 
-        private readonly SpriteRenderer _glowObjectSprite;
+        private readonly GameObject _glowObject;
 
         private readonly TextMeshPro _cooldownText;
 
@@ -65,8 +65,8 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
-            _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
-            _glowObjectSprite.gameObject.SetActive(false);
+            _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
+            _glowObject.SetActive(false);
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground
 
         private void SetHighlightingEnabled(bool isActive)
         {
-            _glowObjectSprite.gameObject.SetActive(isActive);
+            _glowObject.SetActive(isActive);
 
             _shutterAnimator.enabled = isActive ? true : false;
             _shutterAnimator.speed = isActive ? 1 : -1;
