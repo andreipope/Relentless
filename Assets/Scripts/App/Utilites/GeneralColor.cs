@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class GeneralColor : MonoBehaviour {
-
-
+public class GeneralColor : MonoBehaviour
+{
     [SerializeField]
     private Color _color = Color.white;
     public Color Color
@@ -13,9 +13,10 @@ public class GeneralColor : MonoBehaviour {
         set
         {
             _color = value;
-            ChangeColor();
         }
     }
+
+    public bool isUpdated = false;
 
     private List<Renderer> _rendererList;
 
@@ -24,14 +25,21 @@ public class GeneralColor : MonoBehaviour {
     {
         _rendererList = new List<Renderer>();
         GetRenderers();
-        //_customMaterial = new Material(Shader.Find("Specular"));
     }
 	
 
 	void Update ()
     {
-		
-	}
+        if (isUpdated)
+        {
+            ChangeColor();
+            if (_color.a == 0)
+            {
+                isUpdated = false;
+                Hide();
+            }
+        }
+    }
 
     private void GetRenderers()
     {
@@ -39,7 +47,6 @@ public class GeneralColor : MonoBehaviour {
         {
             foreach (Renderer objectRenderer in transform.GetChild(i).GetComponentsInChildren<Renderer>())
             {
-                Debug.LogError(objectRenderer);
                 _rendererList.Add(objectRenderer);
             }
         }
@@ -50,10 +57,10 @@ public class GeneralColor : MonoBehaviour {
     {
         foreach (var item in _rendererList)
         {
-
             if (item is SpriteRenderer)
             {
-                (item as SpriteRenderer).color = _color;
+                if ((item as SpriteRenderer).color.a >= _color.a)
+                    (item as SpriteRenderer).color = _color;
             }
             else if (item is MeshRenderer)
             {
@@ -65,5 +72,10 @@ public class GeneralColor : MonoBehaviour {
             }
 
         }
+    }
+
+    private void Hide()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -91,6 +91,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _battleframeObject;
 
+        private Animator _battleframeAnimator;
+
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private int _currentDamage;
@@ -257,7 +259,7 @@ namespace Loom.ZombieBattleground
 
         public bool CantAttackInThisTurnBlocker { get; set; } = false;
 
-        public BoardUnit LastAttackingUnit { get; set; }
+        public Enumerators.SetType LastAttackingSetType { get; set; }
 
         public bool IsHeavyUnit()
         {
@@ -284,6 +286,8 @@ namespace Loom.ZombieBattleground
             _dead = true;
             if (!returnToHand)
             {
+                _battleframeAnimator.enabled = false;
+                _generalColor.isUpdated = true;
                 _battlegroundController.KillBoardCard(this);
             }
             else
@@ -656,6 +660,7 @@ namespace Loom.ZombieBattleground
             GameObject arrivalPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + InitialUnitType + "_Arrival_VFX");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+            _battleframeAnimator = _battleframeObject.GetComponent<Animator>();
             Transform spriteContainerTransform =
                 _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;

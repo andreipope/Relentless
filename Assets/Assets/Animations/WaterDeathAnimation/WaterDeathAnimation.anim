@@ -41,7 +41,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.r
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -69,7 +69,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.g
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -97,7 +97,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.b
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -143,7 +143,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.a
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   m_PPtrCurves: []
@@ -155,28 +155,28 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1546816037
+      path: 3079681667
       attribute: 4086844465
       script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
       typeID: 114
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 1546816037
+      path: 3079681667
       attribute: 1998982639
       script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
       typeID: 114
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 1546816037
+      path: 3079681667
       attribute: 452716804
       script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
       typeID: 114
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 1546816037
+      path: 3079681667
       attribute: 1787895179
       script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
       typeID: 114
@@ -229,7 +229,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.r
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -257,7 +257,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.g
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -285,7 +285,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.b
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   - curve:
@@ -331,7 +331,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: _color.a
-    path: BoardCreature
+    path: BoardCreature(Clone)
     classID: 114
     script: {fileID: 11500000, guid: 3d4785bf2b405da438645e3abd3de4b6, type: 3}
   m_EulerEditorCurves: []

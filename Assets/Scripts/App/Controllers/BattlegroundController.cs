@@ -155,11 +155,12 @@ namespace Loom.ZombieBattleground
             cardToDestroy.Transform.position = new Vector3(cardToDestroy.Transform.position.x,
                 cardToDestroy.Transform.position.y, cardToDestroy.Transform.position.z + 0.2f);
 
-            CreateDeadAnimation(cardToDestroy);
             _timerManager.AddTimer(
                 x =>
                 {
                     //cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    CreateDeadAnimation(cardToDestroy);
+
 
                     string cardDeathSoundName =
                         cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
@@ -182,7 +183,7 @@ namespace Loom.ZombieBattleground
 
                             cardToDestroy.InvokeUnitDied();
                             cardToDestroy.Transform.DOKill();
-                            Object.Destroy(cardToDestroy.GameObject);
+                            //Object.Destroy(cardToDestroy.GameObject);
 
                             _timerManager.AddTimer(
                                 f =>
@@ -201,7 +202,6 @@ namespace Loom.ZombieBattleground
         private void CreateDeadAnimation(BoardUnit cardToDestroy)
         {
             _vfxController.CreateDeathZombieAnimation(cardToDestroy);
-            //cardToDestroy.GameObject.GetComponent<GeneralColor>().Color = Color.black;
         }
 
         public void CheckGameDynamic()

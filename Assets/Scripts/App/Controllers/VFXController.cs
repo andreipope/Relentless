@@ -233,17 +233,16 @@ namespace Loom.ZombieBattleground
 
         public void CreateDeathZombieAnimation(BoardUnit cardToDestroy)
         {
-            //Debug.LogError(cardToDestroy.LastAttackingUnit);
-            //if (cardToDestroy.LastAttackingUnit != null)
-            //{
-            //    string type = cardToDestroy.LastAttackingUnit.Card.LibraryCard.CardSetType.ToString();
-            //    type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
-            //    var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
-            //    GameObject effect = MonoBehaviour.Instantiate(prefab, cardToDestroy.Transform.parent);
-            //    cardToDestroy.Transform.SetParent(effect.transform);
-            //    effect.transform.position = cardToDestroy.Transform.position;
-            //    _particlesController.RegisterParticleSystem(effect, true, 5f);
-            //}
+            string type = cardToDestroy.LastAttackingSetType.ToString();
+            type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
+            GameObject effect = MonoBehaviour.Instantiate(prefab);
+            effect.transform.position = cardToDestroy.Transform.position;
+            effect.SetActive(false);
+            cardToDestroy.Transform.SetParent(effect.transform, true);
+            cardToDestroy.Transform.position = effect.transform.position;
+            _particlesController.RegisterParticleSystem(effect, true, 8f);
+            effect.SetActive(true);
         }
     }
 }
