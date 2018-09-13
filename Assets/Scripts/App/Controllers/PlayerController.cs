@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (_battlegroundController.CardsZoomed)
+            if (_battlegroundController.CardsZoomed || _topmostBoardCard == null)
             {
                 CheckCardPreviewShow();
             }
