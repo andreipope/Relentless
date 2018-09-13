@@ -902,7 +902,7 @@
         {
           "id": 1,
           "janePose": "THINKING",
-          "janeText": "Looks like you’re in the middle of a match... \n...in a bit of a pickle too",
+          "janeText": "Looks like you’re in the middle of a match... \n...in a bit of a pickle too.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
@@ -923,7 +923,7 @@
         {
           "id": 2,
           "janePose": "THINKING",
-          "janeText": "Hmm, one more hit and it's game over. \nThe enemy has one intimidating zombie in play, \n...not good at all",
+          "janeText": "Hmm, one more hit and it's game over. \nThe enemy has one intimidating General zombie in play too, \n...not good at all.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -977,7 +977,7 @@
         {
           "id": 5,
           "janePose": "POINTING",
-          "janeText": "To do that you need 11 Goo. \nRight now, you only have 10",
+          "janeText": "To do that you need 11 Goo. \nRight now, you only have 10.",
           "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -995,7 +995,7 @@
         {
           "id": 6,
           "janePose": "POINTING",
-          "janeText": "Good thing you got Zeptic, he's a <b><color=\"orange\"><u>Goo-Carrier</u></color></b>",
+          "janeText": "Good thing you got Zeptic, \nhe's a <b><color=\"orange\"><u>Goo-Carrier</u></color></b>.",
           "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1013,7 +1013,7 @@
         {
           "id": 7,
           "janePose": "POINTING",
-          "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>",
+          "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1031,7 +1031,7 @@
         {
           "id": 8,
           "janePose": "POINTING",
-          "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work",
+          "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1049,7 +1049,7 @@
         {
           "id": 9,
           "janePose": "POINTING",
-          "janeText": "Overflow is for this turn only, and comes with some setbacks. So... it's a calculated risk!",
+          "janeText": "Overflow is for this turn only, and comes with some setbacks. \nSo... it's a calculated risk!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1067,11 +1067,11 @@
         {
           "id": 10,
           "janePose": "POINTING",
-          "janeText": "Each goo-carrier has it's own drawback depending on it's elemental faction",
+          "janeText": "Each goo-carrier has it's own drawback depending on \nit's elemental faction",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_16_overflow",
+          "SoundName": "czb_tutorial_B_19_drawback",
           "requiredAction": "NONE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
@@ -1085,7 +1085,7 @@
         {
           "id": 11,
           "janePose": "THINKING",
-          "janeText": "Toxic zombies specialize in dealing extra damage",
+          "janeText": "Toxic zombies specialize in dealing extra damage.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1103,7 +1103,7 @@
         {
           "id": 12,
           "janePose": "THINKING",
-          "janeText": "So, Toxic goo-carriers, for example, deal damage to your own Overlord",
+          "janeText": "For example, Toxic Goo-carriers deal damage to your own Overlord.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1153,7 +1153,7 @@
         {
           "id": 14,
           "janePose": "THUMBS_UP",
-          "janeText": "Great! ...zz-plan iz unfolding! muhaha \nSee - the Overflow gauge is about to burst - and is now 11!!",
+          "janeText": "Great! ...zz-plan iz unfolding! muhaha",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1239,7 +1239,7 @@
         {
           "id": 18,
           "janePose": "POINTING",
-          "janeText": "This is the <b><color=\"orange\"><u>Ranks System</u></color></b> at work",
+          "janeText": "This is the <b><color=\"orange\"><u>Ranks System</u></color></b> at work.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1275,7 +1275,7 @@
         {
           "id": 20,
           "janePose": "POINTING",
-          "janeText": "Minions are naturally the weakest, followed by Officers. \nThen Commanders and finally the fearsome Generals!",
+          "janeText": "Minions are naturally the weakest, followed by Officers, \nthen Commanders and finally the fearsome Generals!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1293,7 +1293,7 @@
         {
           "id": 21,
           "janePose": "POINTING",
-          "janeText": "Now, when we have a higher \nranking zombie in play. \nThe lower ranks of its \nelement get buffed. \nThe higher the rank, \nthe stronger the buff",
+          "janeText": "Now, when we have a higher ranking \nzombie in play the lower ranks of its \nelement get buffed. \nThe higher the rank, \nthe stronger the buff.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1311,7 +1311,7 @@
         {
           "id": 22,
           "janePose": "POINTING",
-          "janeText": "Just remember - each of the 6 elements causes a different effect",
+          "janeText": "Just remember - each of the 6 elements causes a different effect.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1329,7 +1329,7 @@
         {
           "id": 23,
           "janePose": "POINTING",
-          "janeText": "For instance, Toxic Generals like Cherno-bill give 3 lower ranking toxic zombies +1 Attack and the Destroy ability",
+          "janeText": "For instance, Toxic Generals like Cherno-bill give 3 lower ranking toxic zombies +1 Attack and the Destroy ability.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -1495,7 +1495,7 @@
         {
           "id": 32,
           "janePose": "KISS",
-          "janeText": "K..mmmbyeee",
+          "janeText": "Haha, OK...byeee!",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
