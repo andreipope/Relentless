@@ -1,4 +1,4 @@
-//#define USE_GAMECHAIN_1_FOR_PRODUCTION
+#define USE_GAMECHAIN_1_FOR_PRODUCTION
 
 using System.Collections.Generic;
 

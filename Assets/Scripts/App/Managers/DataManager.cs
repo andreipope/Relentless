@@ -103,6 +103,11 @@ namespace Loom.ZombieBattleground
 #endif
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
+
+            for (int i = 0; i < count; i++)
+            {
+                await SaveCache((Enumerators.CacheDataType)i);
+            }
         }
 
         public void DeleteData()
