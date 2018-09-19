@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnit : BoardObject
+    public class BoardUnit
     {
         public bool AttackedThisTurn;
 
