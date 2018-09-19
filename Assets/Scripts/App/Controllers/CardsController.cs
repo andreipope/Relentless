@@ -758,11 +758,6 @@ namespace Loom.ZombieBattleground
             return string.Empty;
         }
 
-        public void CreateNewCardByIdAndAddToHand(Player player, int id)
-        {
-            CreateNewCardByNameAndAddToHand(player, _dataManager.CachedCardsLibraryData.GetCard(id).Name);
-        }
-
         public void CreateNewCardByNameAndAddToHand(Player player, string name)
         {
             float animationDuration = 1.5f;
