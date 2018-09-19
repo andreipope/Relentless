@@ -110,7 +110,9 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (ability == null)
+                {
                     continue;
+                }
 
                 ability.Init(abilityData, BoardObjectOwner);
             }
@@ -133,7 +135,9 @@ namespace Loom.ZombieBattleground
             }
 
             if (!foundTargeting)
+            {
                 EntryHandler();
+            }
         }
 
         public void DoSelectTarget(NewAbilityData abilityData)
@@ -141,7 +145,9 @@ namespace Loom.ZombieBattleground
             Transform from = PlayerOwner.AvatarObject.transform;
 
             if (BoardObjectOwner is BoardUnit unit)
-                from = unit.Transform;                                          
+            {
+                from = unit.Transform;
+            }
         }
 
         #region actions handlers
@@ -233,7 +239,9 @@ namespace Loom.ZombieBattleground
         private void InputEndedHandler()
         {
             if (SelectedTarget != null)
+            {
                 EntryHandler(SelectedTarget);
+            }
 
             BoardArrowController.CurrentBoardArrow.Dispose();
         }
