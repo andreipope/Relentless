@@ -129,5 +129,13 @@ namespace Loom.ZombieBattleground.Common
             DEFENCE,
             ATTACK
         }
+
+        public enum CreatureType
+        {
+            WALKER,
+            FERAL,
+            HEAVY,
+            NONE
+        }
     }
 }

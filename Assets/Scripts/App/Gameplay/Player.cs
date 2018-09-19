@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player
+    public class Player : BoardObject
     {
         public int Turn;
 
