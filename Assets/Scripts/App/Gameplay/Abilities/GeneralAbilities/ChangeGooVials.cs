@@ -10,12 +10,19 @@ namespace Loom.ZombieBattleground
 
         private GameObject _vfxObject;
 
+        private IGameplayManager _gameplayManager;
+
+        private CardsController _cardsController;
+
         public NewAbilityData AbilityData { get; private set; }
 
         public void Init(NewAbilityData data, BoardObject owner)
         {
             AbilityData = data;
             _abilityUnitOwner = owner;
+
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _cardsController = _gameplayManager.GetController<CardsController>();
         }
 
         public void CallAction(object target)
@@ -28,7 +35,7 @@ namespace Loom.ZombieBattleground
             {
                 for (int i = 0; i < count; i++)
                 {
-                    GameClient.Get<IGameplayManager>().GetController<CardsController>().AddCardToHand(_abilityUnitOwner.OwnerPlayer);
+                    _cardsController.AddCardToHand(_abilityUnitOwner.OwnerPlayer);
                 }
             }
 

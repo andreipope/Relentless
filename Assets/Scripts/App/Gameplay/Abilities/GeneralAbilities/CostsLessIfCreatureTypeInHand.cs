@@ -6,12 +6,15 @@ namespace Loom.ZombieBattleground
     public class CostsLessIfCreatureTypeInHand : IAbility
     {
         private WorkingCard _workingCard;
+
         private BoardCard _boardCard;
 
         private AbilityEnumerator.FactionType _factionType;
 
         private IGameplayManager _gameplayManager;
+
         private ITimerManager _timerManager;
+
         private CardsController _cardsController;
 
         private BoardObject _abilityOwner;
