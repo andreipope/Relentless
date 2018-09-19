@@ -4,7 +4,7 @@ using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class HandBoardCard
+public class HandBoardCard : BoardObject
 {
     public Player OwnerPlayer;
 
@@ -12,7 +12,7 @@ public class HandBoardCard
 
     public bool Enabled = true;
 
-    protected BoardCard CardView;
+    public BoardCard BoardCard;
 
     protected bool StartedDrag;
 
@@ -44,7 +44,7 @@ public class HandBoardCard
     {
         GameObject = selfObject;
 
-        CardView = boardCard;
+        BoardCard = boardCard;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -83,7 +83,7 @@ public class HandBoardCard
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, BoardCard, this);
             }
             else
             {
@@ -97,7 +97,7 @@ public class HandBoardCard
         if (!Enabled)
             return;
 
-        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
+        if (_playerController.IsActive && BoardCard.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
             Enabled)
         {
             StartedDrag = true;
@@ -113,13 +113,13 @@ public class HandBoardCard
 
     public void CheckStatusOfHighlight()
     {
-        if (CardView.CanBePlayed(OwnerPlayer) && CardView.CanBeBuyed(OwnerPlayer))
+        if (BoardCard.CanBePlayed(OwnerPlayer) && BoardCard.CanBeBuyed(OwnerPlayer))
         {
-            CardView.SetHighlightingEnabled(true);
+            BoardCard.SetHighlightingEnabled(true);
         }
         else
         {
-            CardView.SetHighlightingEnabled(false);
+            BoardCard.SetHighlightingEnabled(false);
         }
     }
 
@@ -138,8 +138,8 @@ public class HandBoardCard
         _playerController.IsCardSelected = false;
 
         bool playable = !_canceledPlay &&
-            CardView.CanBeBuyed(OwnerPlayer) &&
-            (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
+            BoardCard.CanBeBuyed(OwnerPlayer) &&
+            (BoardCard.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
                 OwnerPlayer.BoardCards.Count < Constants.MaxBoardUnits);
 
         if (playable)
@@ -147,8 +147,8 @@ public class HandBoardCard
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
-                CardView.SetHighlightingEnabled(false);
+                _cardsController.PlayPlayerCard(OwnerPlayer, BoardCard, this);
+                BoardCard.SetHighlightingEnabled(false);
             }
             else
             {
