@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Common
             DELAYED,
             END_TURN,
             ENTRY,
-            START_TURN,
+            START_TURN
         }
 
         public enum AbilityAdjacentEffectMode
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Common
         {
             NONE,
             GOO,
-            VIALS,
+            VIALS
         }
 
         public enum AbilityType
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground.Common
         {
             NONE,
             DEFENCE,
-            ATTACK,
+            ATTACK
         }
     }
 }
