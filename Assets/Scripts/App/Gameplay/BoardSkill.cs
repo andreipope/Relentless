@@ -47,8 +47,6 @@ namespace Loom.ZombieBattleground
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
 
-        private SkillCoolDownTimer _coolDownTimer;
-
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;
@@ -58,8 +56,6 @@ namespace Loom.ZombieBattleground
 
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
-
-            _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -92,7 +88,6 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
-            _coolDownTimer.SetAngle(_cooldown);
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
@@ -165,7 +160,6 @@ namespace Loom.ZombieBattleground
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
-            _coolDownTimer.SetAngle(_cooldown, true);
         }
 
         public void Hide()
@@ -272,7 +266,6 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
-            _coolDownTimer.SetAngle(_cooldown);
         }
 
         private void TurnEndedHandler()
