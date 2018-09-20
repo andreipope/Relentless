@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool CanDoDragActions { get; set; }
 
+        public bool IsGameplayInputBlocked { get; set; }
+
         public T GetController<T>()
             where T : IController
         {

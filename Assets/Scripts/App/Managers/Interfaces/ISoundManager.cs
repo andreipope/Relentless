@@ -10,6 +10,9 @@ namespace Loom.ZombieBattleground
 
         bool MusicMuted { get; set; }
 
+        float SFXVolume { get; }
+        float MusicVolume { get; }
+
         float GetSoundLength(Enumerators.SoundType soundType, string namePattern);
 
         float GetSoundLength(Enumerators.SoundType soundType);

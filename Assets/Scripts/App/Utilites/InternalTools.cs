@@ -121,5 +121,24 @@ namespace Loom.ZombieBattleground.Helpers
             return DeviceDiagonalSizeInInches() > 6.5f;
 #endif
         }
+
+        public static string ProccesEnumToString(string origin)
+        {
+            if (string.IsNullOrEmpty(origin))
+                return origin;
+
+            string newValue = string.Empty;
+
+            char[] chars = origin.ToCharArray();
+
+            newValue = chars[0].ToString().ToUpper();
+
+            for(int i = 1; i < chars.Length; i++)
+            {
+                newValue += chars[i].ToString().ToLower();
+            }
+          
+            return newValue;
+        }
     }
 }

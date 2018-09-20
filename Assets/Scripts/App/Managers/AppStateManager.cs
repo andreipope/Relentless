@@ -123,6 +123,11 @@ namespace Loom.ZombieBattleground
             CheckBackButton();
         }
 
+        public void QuitApplication()
+        {
+            Application.Quit();
+        }
+
         private void CheckBackButton()
         {
             if (Input.GetKeyDown(KeyCode.Escape))

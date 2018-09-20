@@ -26,6 +26,9 @@ namespace Loom.ZombieBattleground
         private SoundsData _overlordAbilitiesSoundsFilename;
         private SoundsData _spellsSoundsFilename;
 
+        public float SFXVolume { get { return _sfxVolume; } }
+        public float MusicVolume { get { return _musicVolume; } }
+
         public void Dispose()
         {
         }
