@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _cancelButton, _confirmButton;
 
-        private Action _callback;
+        private Action _callbackOnConfirm, _callbackOnCancel;
 
         public GameObject Self { get; private set; }
 
@@ -62,7 +62,9 @@ namespace Loom.ZombieBattleground
         public void Show(object data)
         {
             Show();
-            _callback = (Action) data;
+            Action[] actions = (Action[]) data;
+            _callbackOnConfirm = actions[0];
+            _callbackOnCancel = actions[1];
         }
 
         public void Update()
@@ -73,8 +75,8 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _callback?.Invoke();
-            _callback = null;
+            _callbackOnConfirm?.Invoke();
+            _callbackOnConfirm = null;
             Hide();
         }
 
@@ -82,6 +84,8 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _callbackOnCancel?.Invoke();
+            _callbackOnCancel = null;
             Hide();
         }
     }

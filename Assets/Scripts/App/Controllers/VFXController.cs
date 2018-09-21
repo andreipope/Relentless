@@ -44,8 +44,13 @@ namespace Loom.ZombieBattleground
         {
             GameObject effect;
             GameObject vfxPrefab;
-            target = Utilites.CastVfxPosition(target);
-            Vector3 offset = Vector3.forward * 1;
+
+            Vector3 offset = Vector3.zero;
+            if (type == Enumerators.CardType.FERAL || type == Enumerators.CardType.HEAVY)
+            {
+                target = Utilites.CastVfxPosition(target);
+                offset = Vector3.forward * 1;
+            }
 
             switch (type)
             {

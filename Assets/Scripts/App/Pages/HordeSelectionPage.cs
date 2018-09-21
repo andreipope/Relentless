@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfPage;
 
+        private GameObject _battleButtonGlow;
+
         private Button _backButton,
             _battleButton,
             _battleButtonWarning,
@@ -109,6 +111,8 @@ namespace Loom.ZombieBattleground
                     .GetComponent<Image>();
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/Selection");
+
+            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/BattleButtonGlowing").gameObject;
 
             // new horde deck object
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
@@ -275,6 +279,7 @@ namespace Loom.ZombieBattleground
                 true;
 #endif
             _battleButton.interactable = canStartBattle;
+            _battleButtonGlow.SetActive(canStartBattle);
             _battleButtonWarning.gameObject.SetActive(!canStartBattle);
         }
 
