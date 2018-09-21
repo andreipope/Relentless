@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId, _currentHeroId, _primarySkill, _secondarySkill;
+        private int _currentDeckId, _currentHeroId;
 
         private List<BoardCard> _createdArmyCards, _createdHordeCards;
 
@@ -98,16 +98,6 @@ namespace Loom.ZombieBattleground
         private GameObject _hordeAreaObject, _armyAreaObject;
 
         private bool _isDragging;
-
-        public int PrimarySkill
-        {
-            set => _primarySkill = value;
-        }
-
-        public int SecondarySkill
-        {
-            set => _secondarySkill = value;
-        }
 
         public int CurrentDeckId
         {
@@ -736,8 +726,6 @@ namespace Loom.ZombieBattleground
 
                 // Add new deck
                 _currentDeck.HeroId = _currentHeroId;
-                _currentDeck.PrimarySkill = _primarySkill;
-                _currentDeck.SecondarySkill = _secondarySkill;
                 _dataManager.CachedDecksData.Decks.Add(_currentDeck);
 
                 try

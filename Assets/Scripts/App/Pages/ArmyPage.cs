@@ -74,15 +74,25 @@ namespace Loom.ZombieBattleground
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-                        if (hit.collider != null)
+                        Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                        RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+                        Debug.Log(hits.Length);
+                        if (hits.Length > 0)
                         {
-                            for (int i = 0; i < _createdBoardCards.Count; i++)
+                            foreach (RaycastHit2D hit in hits)
                             {
-                                if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
+                                Debug.Log(hit.);
+
+                                if (hit.collider != null)
                                 {
-                                    _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                                    {
+                                        if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
+                                        {
+                                            _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                                        }
+                                    }
                                 }
                             }
                         }
