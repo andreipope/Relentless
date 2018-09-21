@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground.Common
             PUSH,
             DRAW,
             WIND_SHIELD,
-            WIND_WALL,
+            LEVITATE,
             RETREAT,
 
             // EARTH
