@@ -525,7 +525,8 @@ namespace Loom.ZombieBattleground
 
         public void BackButtonOnClickHandler()
         {
-            Action callback = () =>
+            Action[] actions = new Action[2];
+            actions[0] = () =>
             {
                 _uiManager.HidePopup<YourTurnPopup>();
 
@@ -535,8 +536,9 @@ namespace Loom.ZombieBattleground
                 _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
+            actions[1] = () => { };
 
-            _uiManager.DrawPopup<ConfirmationPopup>(callback);
+            _uiManager.DrawPopup<ConfirmationPopup>(actions);
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 

@@ -236,10 +236,14 @@ namespace Loom.ZombieBattleground
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
+            // CHECK about CardsInHand in modification collection!
             await CheckGooCard(cancellationToken);
 
+            List<WorkingCard> cardsInHand = new List<WorkingCard>();
+            cardsInHand.AddRange(_normalUnitCardInHand);
+
             bool wasAction = false;
-            foreach (WorkingCard card in _normalUnitCardInHand)
+            foreach (WorkingCard card in cardsInHand)
             {
                 if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
                 {
@@ -977,9 +981,6 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnit> GetUnitsOnBoard()
         {
-            foreach (var unit in _gameplayManager.OpponentPlayer.BoardCards)
-                Debug.Log(unit.Card.LibraryCard.Name);
-
             return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0);
         }
 

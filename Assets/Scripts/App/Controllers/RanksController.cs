@@ -10,6 +10,7 @@ namespace Loom.ZombieBattleground
     public class RanksController : IController
     {
         private ITutorialManager _tutorialManager;
+        private IGameplayManager _gameplayManager;
 
         public void Dispose()
         {
@@ -18,7 +19,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
-
+            _gameplayManager = GameClient.Get<IGameplayManager>();
         }
 
         public void Update()
