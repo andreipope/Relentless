@@ -121,6 +121,17 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
+            PLAY_CARD_FROM_HAND,
+
+
+
+
+
+
+
+
+
+
             ATTACK_PLAYER_BY_CREATURE,
             ATTACK_CREATURE_BY_CREATURE,
             ATTACK_CREATURE_BY_SKILL,
