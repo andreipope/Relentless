@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: GooBlood
-  m_Shader: {fileID: 4800000, guid: 98ad3126eff91b247a9bdd71bf16bf59, type: 3}
+  m_Name: UpperClaw
+  m_Shader: {fileID: 203, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -39,15 +39,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c653493c2570cf145a80ee78cb02516a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6dfb7a37c3a53d543bf4ebe05b68033f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NewTex_1:
-        m_Texture: {fileID: 2800000, guid: d64988e69c33f6e40ac7ae8f41be9944, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -58,28 +54,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SourceNewTex_1:
-        m_Texture: {fileID: 2800000, guid: d64988e69c33f6e40ac7ae8f41be9944, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - AnimatedTwistUV_AnimatedTwistUV_Bend_1: 0
-    - AnimatedTwistUV_AnimatedTwistUV_PosX_1: 0
-    - AnimatedTwistUV_AnimatedTwistUV_PosY_1: 0
-    - AnimatedTwistUV_AnimatedTwistUV_Radius_1: 0
-    - AnimatedTwistUV_AnimatedTwistUV_Speed_1: 0
-    - DistortionUV_DistanceX_1: 1
-    - DistortionUV_DistanceY_1: 1
-    - DistortionUV_Speed_1: 1
-    - DistortionUV_WaveX_1: 6.071084
-    - DistortionUV_WaveY_1: 6
     - _BumpScale: 1
-    - _ColorMask: 15
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Displacement_Plus_Size_1: 0
-    - _Displacement_Plus_ValueX_1: 0
-    - _Displacement_Plus_ValueY_1: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -91,17 +69,10 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpriteFade: 1
     - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmisColor: {r: 0.2, g: 0.2, b: 0.2, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TintColor: {r: 0.44989175, g: 0.60294116, b: 0.1463019, a: 1}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
