@@ -82,8 +82,6 @@ namespace Loom.ZombieBattleground
                         {
                             foreach (RaycastHit2D hit in hits)
                             {
-                                Debug.Log(hit.);
-
                                 if (hit.collider != null)
                                 {
                                     for (int i = 0; i < _createdBoardCards.Count; i++)
