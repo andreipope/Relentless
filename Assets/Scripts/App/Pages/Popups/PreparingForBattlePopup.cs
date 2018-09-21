@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PreparingForBattlePopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
-            _flavorText = Self.transform.Find("Image_Machine/Flavor_Text").GetComponent<TextMeshProUGUI>();
+            _flavorText = Self.transform.Find("Flavor_Text").GetComponent<TextMeshProUGUI>();
 
             ShowRandomFlavorText();
         }
