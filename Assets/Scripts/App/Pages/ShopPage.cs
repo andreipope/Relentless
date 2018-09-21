@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BackButtonhandler()

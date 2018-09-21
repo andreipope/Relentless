@@ -483,7 +483,7 @@ namespace Loom.ZombieBattleground
         private void CollectionButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _appStateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BackButtonOnClickHandler()
@@ -558,7 +558,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = -1;
+            _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
 
             _appStateManager.ChangeAppState(Enumerators.AppState.HERO_SELECTION);
         }
@@ -588,9 +588,9 @@ namespace Loom.ZombieBattleground
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = _selectedDeckId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = _selectedDeckId;
                 HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-                _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
         }

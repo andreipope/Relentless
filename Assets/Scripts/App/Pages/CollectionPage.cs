@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class CollectionPage : IUIElement
+    public class ArmyPage : IUIElement
     {
         public List<Transform> CardPositions;
 
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ArmyPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();

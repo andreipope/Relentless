@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class DeckEditingPage : IUIElement
+    public class HordeEditingPage : IUIElement
     {
         private const int CardsPerPage = 5;
 
@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeEditingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
@@ -787,7 +787,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
             }
         }
 
@@ -1070,7 +1070,7 @@ namespace Loom.ZombieBattleground
                 OnDoneButtonPressed();
             }
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
         }
 
         private void BuyButtonHandler()
@@ -1084,7 +1084,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void SaveButtonHandler()
