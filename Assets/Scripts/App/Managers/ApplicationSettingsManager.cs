@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -30,6 +26,11 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+        }
+
+        public void SetDefaults()
+        {
+
         }
 
         public void SetResolution(IntVector2 size)
@@ -71,10 +72,13 @@ namespace Loom.ZombieBattleground
         {
             CurrentQualityLevel = qualityLevel;
 
+            QualitySettings.SetQualityLevel((int)qualityLevel);
+
             switch (qualityLevel)
             {
                 case Enumerators.QualityLevel.ULTRA:
                     {
+
                     }
                     break;
                 case Enumerators.QualityLevel.HIGH:

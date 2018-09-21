@@ -23,9 +23,9 @@ namespace Loom.ZombieBattleground
                                       _settingsButton,
                                       _closeButton;
 
-        private Dropdown _qualityDropdown,
-                         _resolutionDropdown,
-                         _screenModeDropdown;
+        private TMP_Dropdown _qualityDropdown,
+                             _resolutionDropdown,
+                             _screenModeDropdown;
 
         private Slider _sfxVolumeDropdown,
                        _musicVolumeDropdown;
@@ -72,9 +72,9 @@ namespace Loom.ZombieBattleground
             _settingsButton = Self.transform.Find("Button_Settings").GetComponent<ButtonShiftingContent>();
             _closeButton = Self.transform.Find("Button_Close").GetComponent<ButtonShiftingContent>();
 
-            _qualityDropdown = Self.transform.Find("Dropdown_Quality").GetComponent<Dropdown>();
-            _resolutionDropdown = Self.transform.Find("Dropdown_Resolution").GetComponent<Dropdown>();
-            _screenModeDropdown = Self.transform.Find("Dropdown_ScreenMode").GetComponent<Dropdown>();
+            _qualityDropdown = Self.transform.Find("Dropdown_Quality").GetComponent<TMP_Dropdown>();
+            _resolutionDropdown = Self.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
+            _screenModeDropdown = Self.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
 
             _sfxVolumeDropdown = Self.transform.Find("Slider_SFXVolume").GetComponent<Slider>();
             _musicVolumeDropdown = Self.transform.Find("Slider_MusicVolume").GetComponent<Slider>();
@@ -159,6 +159,8 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                _uiManager.HidePopup<SettingsPopup>();
+
                 _uiManager.HidePopup<YourTurnPopup>();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);

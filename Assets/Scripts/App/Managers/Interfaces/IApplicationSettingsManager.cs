@@ -14,6 +14,7 @@ namespace Loom.ZombieBattleground
 
         ResolutionInfo CurrentResolution { get; }
 
+        void SetDefaults();
         void SetResolution(IntVector2 size);
         void SetScreenMode(Enumerators.ScreenMode screenMode);
         void SetQuality(Enumerators.QualityLevel qualityLevel);
