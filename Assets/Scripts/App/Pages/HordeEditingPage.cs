@@ -535,6 +535,12 @@ namespace Loom.ZombieBattleground
 
                 RepositionHordeCards();
                 UpdateNumCardsText();
+
+                if(_highlightingVFXItem.cardId == boardCard.LibraryCard.Id)
+                {
+                    _highlightingVFXItem.ChangeState(false);
+                    _highlightingVFXItem.cardId = -1;
+                }
             }
             else
             {
