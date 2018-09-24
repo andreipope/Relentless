@@ -87,15 +87,6 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                _uiManager.DrawPopup<PastActionsPopup>(new PastActionParam()
-                {
-                    ActionType = Enumerators.ActionType.USE_OVERLORD_POWER,
-                    Caller = _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill,
-                    TargetEffects = new List<TargetEffectParam>()
-                });
-            }
         }
 
 
@@ -125,13 +116,22 @@ namespace Loom.ZombieBattleground
 
             // setup center block
 
-            if (pastActionParam.ActionType.ToString().Contains("ATTACK"))
+            if (pastActionParam.TargetEffects.Count > 0)
             {
-                _effectTypeImage.sprite = _attackActionSprite;
+                if (pastActionParam.ActionType.ToString().Contains("ATTACK"))
+                {
+                    _effectTypeImage.sprite = _attackActionSprite;
+                }
+                else
+                {
+                    _effectTypeImage.sprite = _effectActionSprite;
+                }
+
+                _effectTypeImage.enabled = true;
             }
             else
             {
-                _effectTypeImage.sprite = _effectActionSprite;
+                _effectTypeImage.enabled = false;
             }
 
             // setup left block
@@ -514,7 +514,7 @@ namespace Loom.ZombieBattleground
                 _selfObject = selfObject;
                 _withEffect = withEffect;
 
-                _skillImage = _selfObject.transform.Find("Image_SkillBackground").GetComponent<Image>();
+                _skillImage = _selfObject.transform.Find("Image_SkillPicture").GetComponent<Image>();
 
                 if (_withEffect)
                 {
@@ -526,7 +526,9 @@ namespace Loom.ZombieBattleground
 
             public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
             {
-                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_air_" + skill.Skill.OverlordSkill.ToString().ToLower());
+                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
+                                                                                skill.Owner.SelfHero.Element.ToLower() + "_" +
+                                                                                skill.Skill.OverlordSkill.ToString().ToLower());
 
                 if (_withEffect)
                 {
