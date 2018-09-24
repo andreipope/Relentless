@@ -385,7 +385,7 @@ namespace Loom.ZombieBattleground
         private void BackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+            _appStateManager.ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
         }
 
         private void ContinueButtonOnClickHandler()
@@ -399,9 +399,9 @@ namespace Loom.ZombieBattleground
         private void AbilityPopupClosedEvent()
         {
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
-            _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
-            _uiManager.GetPage<DeckEditingPage>().PrimarySkill = _currentOverlordObject.SelfHero.PrimarySkill;
-            _uiManager.GetPage<DeckEditingPage>().SecondarySkill = _currentOverlordObject.SelfHero.SecondarySkill;
+
+            _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
+
             _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }
 

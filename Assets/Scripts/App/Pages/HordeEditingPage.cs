@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class DeckEditingPage : IUIElement
+    public class HordeEditingPage : IUIElement
     {
         private const int CardsPerPage = 5;
 
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId, _currentHeroId, _primarySkill, _secondarySkill;
+        private int _currentDeckId, _currentHeroId;
 
         private List<BoardCard> _createdArmyCards, _createdHordeCards;
 
@@ -98,16 +98,6 @@ namespace Loom.ZombieBattleground
         private GameObject _hordeAreaObject, _armyAreaObject;
 
         private bool _isDragging;
-
-        public int PrimarySkill
-        {
-            set => _primarySkill = value;
-        }
-
-        public int SecondarySkill
-        {
-            set => _secondarySkill = value;
-        }
 
         public int CurrentDeckId
         {
@@ -159,7 +149,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/DeckEditingPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HordeEditingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
@@ -736,8 +726,6 @@ namespace Loom.ZombieBattleground
 
                 // Add new deck
                 _currentDeck.HeroId = _currentHeroId;
-                _currentDeck.PrimarySkill = _primarySkill;
-                _currentDeck.SecondarySkill = _secondarySkill;
                 _dataManager.CachedDecksData.Decks.Add(_currentDeck);
 
                 try
@@ -799,7 +787,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
             }
         }
 
@@ -1082,7 +1070,7 @@ namespace Loom.ZombieBattleground
                 OnDoneButtonPressed();
             }
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
         }
 
         private void BuyButtonHandler()
@@ -1096,7 +1084,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.COLLECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void SaveButtonHandler()

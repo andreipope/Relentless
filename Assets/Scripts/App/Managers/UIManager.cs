@@ -36,8 +36,8 @@ namespace Loom.ZombieBattleground
             Pages.Add(new MainMenuPage());
             Pages.Add(new HeroSelectionPage());
             Pages.Add(new HordeSelectionPage());
-            Pages.Add(new CollectionPage());
-            Pages.Add(new DeckEditingPage());
+            Pages.Add(new ArmyPage());
+            Pages.Add(new HordeEditingPage());
             Pages.Add(new ShopPage());
             Pages.Add(new GameplayPage());
             Pages.Add(new PackOpenerPage());

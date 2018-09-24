@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class CollectionPage : IUIElement
+    public class ArmyPage : IUIElement
     {
         public List<Transform> CardPositions;
 
@@ -74,15 +74,23 @@ namespace Loom.ZombieBattleground
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-                        if (hit.collider != null)
+                        Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                        RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+                        Debug.Log(hits.Length);
+                        if (hits.Length > 0)
                         {
-                            for (int i = 0; i < _createdBoardCards.Count; i++)
+                            foreach (RaycastHit2D hit in hits)
                             {
-                                if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
+                                if (hit.collider != null)
                                 {
-                                    _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                                    {
+                                        if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
+                                        {
+                                            _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -94,7 +102,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CollectionPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ArmyPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _gooValueText = _selfPage.transform.Find("GooValue/Value").GetComponent<TextMeshProUGUI>();

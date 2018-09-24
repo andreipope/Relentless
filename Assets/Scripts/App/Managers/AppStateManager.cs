@@ -50,14 +50,14 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<HeroSelectionPage>();
                     break;
-                case Enumerators.AppState.DECK_SELECTION:
+                case Enumerators.AppState.HORDE_SELECTION:
                     _uiManager.SetPage<HordeSelectionPage>();
                     break;
-                case Enumerators.AppState.COLLECTION:
-                    _uiManager.SetPage<CollectionPage>();
+                case Enumerators.AppState.ARMY:
+                    _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    _uiManager.SetPage<DeckEditingPage>();
+                    _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
 
