@@ -37,6 +37,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4792830549249572}
   - component: {fileID: 95058085798322664}
+  - component: {fileID: 210916776213530684}
   m_Layer: 0
   m_Name: ArmyCardSelection
   m_TagString: Untagged
@@ -18605,3 +18606,13 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!210 &210916776213530684
+SortingGroup:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1464626809996894}
+  m_Enabled: 1
+  m_SortingLayerID: 540465013
+  m_SortingLayer: 6
+  m_SortingOrder: 0
