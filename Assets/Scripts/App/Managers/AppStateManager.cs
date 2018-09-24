@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                    _uiManager.SetPage<HeroSelectionPage>();
+                    _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HORDE_SELECTION:
                     _uiManager.SetPage<HordeSelectionPage>();

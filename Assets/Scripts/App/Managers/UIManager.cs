@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
             Pages = new List<IUIElement>();
             Pages.Add(new LoadingPage());
             Pages.Add(new MainMenuPage());
-            Pages.Add(new HeroSelectionPage());
+            Pages.Add(new OverlordSelectionPage());
             Pages.Add(new HordeSelectionPage());
             Pages.Add(new ArmyPage());
             Pages.Add(new HordeEditingPage());
