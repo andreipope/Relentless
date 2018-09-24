@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isFirstActive;
 
-        public CardHighlightingVFXItem() { }
+        private const int OFFSET = 26;
 
         public CardHighlightingVFXItem(GameObject obj)
         {
@@ -24,7 +24,9 @@ namespace Loom.ZombieBattleground
         public void ChangeState(bool isActive)
         {
             if (!_isFirstActive && isActive)
+            {
                 return;
+            }
             selfObject.SetActive(isActive);
         }
 
@@ -34,7 +36,7 @@ namespace Loom.ZombieBattleground
             ChangeState(true);
             cardId = card.LibraryCard.Id;
             selfObject.transform.position = card.Transform.position;
-            selfObject.transform.localPosition -= Vector3.up * 26; //offset
+            selfObject.transform.localPosition -= Vector3.up * OFFSET;
         }
     }
 }
