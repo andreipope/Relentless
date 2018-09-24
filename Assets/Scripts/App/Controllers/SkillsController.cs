@@ -6,8 +6,6 @@ namespace Loom.ZombieBattleground
 {
     public class SkillsController : IController
     {
-        public BoardSkill OpponentPrimarySkill, OpponentSecondarySkill;
-
         private ILoadObjectsManager _loadObjectsManager;
 
         private IGameplayManager _gameplayManager;
@@ -28,9 +26,12 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
 
-        private BoardSkill _playerPrimarySkill, _playerSecondarySkill;
-
         private bool _skillsInitialized;
+
+        public BoardSkill OpponentPrimarySkill { get; private set; }
+        public BoardSkill OpponentSecondarySkill { get; private set; }
+        public BoardSkill PlayerPrimarySkill { get; private set; }
+        public BoardSkill PlayerSecondarySkill { get; private set; }
 
         public void Dispose()
         {
@@ -57,8 +58,8 @@ namespace Loom.ZombieBattleground
         {
             if (_skillsInitialized)
             {
-                _playerPrimarySkill.Update();
-                _playerSecondarySkill.Update();
+                PlayerPrimarySkill.Update();
+                PlayerSecondarySkill.Update();
                 OpponentPrimarySkill.Update();
                 OpponentSecondarySkill.Update();
             }
@@ -113,8 +114,8 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                _playerPrimarySkill.Hide();
-                _playerSecondarySkill.Hide();
+                PlayerPrimarySkill.Hide();
+                PlayerSecondarySkill.Hide();
             }
             else
             {
@@ -127,8 +128,8 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                _playerPrimarySkill.BlockSkill();
-                _playerSecondarySkill.BlockSkill();
+                PlayerPrimarySkill.BlockSkill();
+                PlayerSecondarySkill.BlockSkill();
             }
             else
             {
@@ -139,9 +140,9 @@ namespace Loom.ZombieBattleground
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            _playerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
+            PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
                 _gameplayManager.CurrentPlayer, primary, true);
-            _playerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
+            PlayerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
                 _gameplayManager.CurrentPlayer, secondary, false);
         }
 
@@ -239,22 +240,22 @@ namespace Loom.ZombieBattleground
 
         private void PrimarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
-            _playerPrimarySkill?.OnMouseDownEventHandler();
+            PlayerPrimarySkill?.OnMouseDownEventHandler();
         }
 
         private void PrimarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
-            _playerPrimarySkill?.OnMouseUpEventHandler();
+            PlayerPrimarySkill?.OnMouseUpEventHandler();
         }
 
         private void SecondarySkillHandlerMouseDownTriggeredHandler(GameObject obj)
         {
-            _playerSecondarySkill?.OnMouseDownEventHandler();
+            PlayerSecondarySkill?.OnMouseDownEventHandler();
         }
 
         private void SecondarySkillHandlerMouseUpTriggeredHandler(GameObject obj)
         {
-            _playerSecondarySkill?.OnMouseUpEventHandler();
+            PlayerSecondarySkill?.OnMouseUpEventHandler();
         }
 
         private void OpponentPrimarySkillHandlerMouseDownTriggeredHandler(GameObject obj)

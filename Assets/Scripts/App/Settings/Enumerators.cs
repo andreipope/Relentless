@@ -468,5 +468,26 @@ namespace Loom.ZombieBattleground.Common
             NONE,
             FROZEN
         }
+
+        public enum ActionEffectType
+        {
+            NONE,
+
+            ATTACK_BUFF,
+            ATTACK_DEBUFF,
+            SHIELD_BUFF,
+            SHIELD_DEBUFF,
+
+            FERAL,
+            HEAVY,
+
+            DAMAGE,
+            LIFE_GAIN,
+
+            BLITZ,
+            DEATH_MARK,
+            GUARD,
+            OVERFLOW,
+        }
     }
 }
