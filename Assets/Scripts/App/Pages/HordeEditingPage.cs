@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _hordeAreaObject, _armyAreaObject;
 
+        private CardHighlightingVFXItem _highlightingVFXItem;
+
         private bool _isDragging;
 
         public int CurrentDeckId
@@ -178,6 +180,10 @@ namespace Loom.ZombieBattleground
             _buttonHordeArrowRight = _selfPage.transform.Find("Horde/ArrowRightButton").GetComponent<Button>();
             _hordeCardsContainer = _selfPage.transform.Find("Horde/Cards").GetComponent<RectTransform>();
             _hordeScrollNotifier = _selfPage.transform.Find("Horde/ScrollArea").GetComponent<SimpleScrollNotifier>();
+
+            _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
+            //RectTransform cardRectTransform = _highlightingVFXObj.AddComponent<RectTransform>();
 
             _buttonBack.onClick.AddListener(BackButtonHandler);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
@@ -816,6 +822,7 @@ namespace Loom.ZombieBattleground
             if (deckBuilderCard.IsHordeItem)
             {
                 boardCard = _createdHordeCards.First(c => c.LibraryCard.Id == card.Id);
+                _highlightingVFXItem.SetActiveCard(boardCard);
             }
             else
             {
@@ -936,10 +943,14 @@ namespace Loom.ZombieBattleground
                 if (i + 1 > _currentHordePage * CardsPerPage && i + 1 < (_currentHordePage + 1) * CardsPerPage + 1)
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                        _highlightingVFXItem.ChangeState(true);
                 }
                 else
                 {
                     _createdHordeCards[i].GameObject.SetActive(false);
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                        _highlightingVFXItem.ChangeState(false);
                 }
             }
         }

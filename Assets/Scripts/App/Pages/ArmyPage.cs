@@ -46,6 +46,9 @@ namespace Loom.ZombieBattleground
 
         private List<BoardCard> _createdBoardCards;
 
+        private CardHighlightingVFXItem _highlightingVFXItem;
+
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -88,6 +91,7 @@ namespace Loom.ZombieBattleground
                                     {
                                         if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
                                         {
+                                            _highlightingVFXItem.SetActiveCard(_createdBoardCards[i]);
                                             _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
                                         }
                                     }
@@ -125,6 +129,9 @@ namespace Loom.ZombieBattleground
             _cardCounter = _selfPage.transform.Find("CardsCounter").GetChild(0).GetComponent<TextMeshProUGUI>();
 
             _cardSetsIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
+
+            _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
+            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
 
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
@@ -278,6 +285,7 @@ namespace Loom.ZombieBattleground
             int endIndex = Mathf.Min(startIndex + CardPositions.Count, cards.Count);
 
             ResetBoardCards();
+            _highlightingVFXItem.ChangeState(false);
 
             for (int i = startIndex; i < endIndex; i++)
             {
@@ -315,6 +323,11 @@ namespace Loom.ZombieBattleground
                 boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
 
                 _createdBoardCards.Add(boardCard);
+
+                if (boardCard.LibraryCard.Id == _highlightingVFXItem.cardId)
+                {
+                    _highlightingVFXItem.ChangeState(true);
+                }
             }
 
             HighlightCorrectIcon();
