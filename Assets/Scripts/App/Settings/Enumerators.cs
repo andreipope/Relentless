@@ -122,10 +122,10 @@ namespace Loom.ZombieBattleground.Common
         public enum ActionType
         {
             PLAY_CARD_FROM_HAND,
-            PLAYER_CARD_FROM_HAND_ON_CARD,
-            PLAYER_CARD_FROM_HAND_ON_MULTIPLE_CARDS,
-            PLAYER_CARD_FROM_HAND_ON_OVERLORD,
-            PLAYER_CARD_FROM_HAND_ON_CARDS_WITH_OVERLORD,
+            PLAY_CARD_FROM_HAND_ON_CARD,
+            PLAY_CARD_FROM_HAND_ON_MULTIPLE_CARDS,
+            PLAY_CARD_FROM_HAND_ON_OVERLORD,
+            PLAY_CARD_FROM_HAND_ON_CARDS_WITH_OVERLORD,
             USE_OVERLORD_POWER,
             USE_OVERLORD_POWER_ON_CARD,
             USE_OVERLORD_POWER_ON_MULTIPLE_CARD,
@@ -137,32 +137,6 @@ namespace Loom.ZombieBattleground.Common
             CARD_AFFECTING_MULTIPLE_CARDS,
             CARD_AFFECTING_OVERLORD,
             CARD_AFFECTING_CARDS_WITH_OVERLORD,
-
-
-
-
-
-
-            ATTACK_PLAYER_BY_CREATURE,
-            ATTACK_CREATURE_BY_CREATURE,
-            ATTACK_CREATURE_BY_SKILL,
-            ATTACK_PLAYER_BY_SKILL,
-            HEAL_PLAYER_BY_SKILL,
-            HEAL_CREATURE_BY_SKILL,
-            ATTACK_CREATURE_BY_ABILITY,
-            ATTACK_PLAYER_BY_ABILITY,
-            HEAL_PLAYER_BY_ABILITY,
-            HEAL_CREATURE_BY_ABILITY,
-            PLAY_UNIT_CARD,
-            PLAY_SPELL_CARD,
-            STUN_CREATURE_BY_ABILITY,
-            STUN_UNIT_BY_SKILL,
-            SUMMON_UNIT_CARD,
-            RETURN_TO_HAND_CARD_ABILITY,
-            RETURN_TO_HAND_CARD_SKILL,
-            DRAW_CARD_SKILL,
-            STUN_PLAYER_BY_SKILL,
-            REANIMATE_UNIT_BY_ABILITY
         }
 
         public enum AffectObjectType

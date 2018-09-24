@@ -398,12 +398,6 @@ namespace Loom.ZombieBattleground
                     _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES,
                         skill.OverlordSkill.ToString().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume,
                         Enumerators.CardSoundType.NONE);
-
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                        Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
-                        {
-                            owner, unit
-                        }));
                     break;
                 case Player player:
                     player.Stun(Enumerators.StunType.FREEZE, skill.Value);
@@ -414,11 +408,6 @@ namespace Loom.ZombieBattleground
                         skill.OverlordSkill.ToString().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume,
                         Enumerators.CardSoundType.NONE);
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                        Enumerators.ActionType.STUN_PLAYER_BY_SKILL, new object[]
-                        {
-                            owner, player
-                        }));
                     break;
             }
         }
@@ -447,7 +436,7 @@ namespace Loom.ZombieBattleground
             {
                 Player player = target as Player;
 
-                _battleController.HealPlayerBySkill(owner, skill, player);
+                _battleController.HealPlayerBySkill(owner, boardSkill, player);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
@@ -458,7 +447,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnit unit = target as BoardUnit;
 
-                _battleController.HealUnitBySkill(owner, skill, unit);
+                _battleController.HealUnitBySkill(owner, boardSkill, unit);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
@@ -469,7 +458,7 @@ namespace Loom.ZombieBattleground
 
         private void HardenAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            _battleController.HealPlayerBySkill(owner, skill, owner);
+            _battleController.HealPlayerBySkill(owner, boardSkill, owner);
 
             // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;
@@ -491,13 +480,13 @@ namespace Loom.ZombieBattleground
             if (target is Player player)
             {
                 // TODO additional damage to heros
-                _battleController.AttackPlayerBySkill(owner, skill, player);
+                _battleController.AttackPlayerBySkill(owner, boardSkill, player);
             }
             else
             {
                 BoardUnit creature = target as BoardUnit;
                 int attackModifier = 0;
-                _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
+                _battleController.AttackUnitBySkill(owner, boardSkill, creature, attackModifier);
             }
         }
 
@@ -537,12 +526,6 @@ namespace Loom.ZombieBattleground
                     // STEP 4 - REARRANGE HANDS
                     _gameplayManager.RearrangeHands();
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                        Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
-                        {
-                            owner, skill, targetUnit
-                        }));
-
                     // _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
                 },
                 null,
@@ -557,12 +540,6 @@ namespace Loom.ZombieBattleground
                 owner);
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
                 Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.DRAW_CARD_SKILL, new object[]
-                {
-                    owner, skill
-                }));
         }
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
@@ -607,7 +584,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnit unit = target as BoardUnit;
 
-                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+                _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
                 unit.BuffedDamage += skill.Attack;
                 unit.CurrentDamage += skill.Attack;
@@ -625,7 +602,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnit unit = target as BoardUnit;
 
-                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+                _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
                 if (unit.CurrentHp > 0)
                 {
