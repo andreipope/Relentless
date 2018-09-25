@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
@@ -26,17 +27,17 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public List<BoardUnit> OpponentBoardCards = new List<BoardUnit>();
+        public List<BoardUnitView> OpponentBoardCards = new List<BoardUnitView>();
 
-        public List<BoardUnit> OpponentGraveyardCards = new List<BoardUnit>();
+        public List<BoardUnitView> OpponentGraveyardCards = new List<BoardUnitView>();
 
         public List<GameObject> OpponentHandCards = new List<GameObject>();
 
-        public List<BoardUnit> PlayerBoardCards = new List<BoardUnit>();
+        public List<BoardUnitView> PlayerBoardCards = new List<BoardUnitView>();
 
         public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
 
-        public List<BoardUnit> PlayerGraveyardCards = new List<BoardUnit>();
+        public List<BoardUnitView> PlayerGraveyardCards = new List<BoardUnitView>();
 
         public List<BoardCard> PlayerHandCards = new List<BoardCard>();
 
@@ -46,13 +47,11 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
 
-        private List<BoardUnit> _cardsInDestroy;
-
         private IDataManager _dataManager;
 
         private IGameplayManager _gameplayManager;
 
-        private BoardUnit _lastBoardUntilOnPreview;
+        private BoardUnitView _lastBoardUntilOnPreview;
 
         private PlayerController _playerController;
 
@@ -90,8 +89,6 @@ namespace Loom.ZombieBattleground
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
 
-            _cardsInDestroy = new List<BoardUnit>();
-
             _gameplayManager.GameEnded += GameEndedHandler;
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
@@ -107,12 +104,12 @@ namespace Loom.ZombieBattleground
             {
                 CheckGameDynamic();
 
-                foreach (BoardUnit item in PlayerBoardCards)
+                foreach (BoardUnitView item in PlayerBoardCards)
                 {
                     item.Update();
                 }
 
-                foreach (BoardUnit item in OpponentBoardCards)
+                foreach (BoardUnitView item in OpponentBoardCards)
                 {
                     item.Update();
                 }
@@ -138,8 +135,9 @@ namespace Loom.ZombieBattleground
             ClearBattleground();
         }
 
-        public void KillBoardCard(BoardUnit cardToDestroy)
+        public void KillBoardCard(BoardUnitModel cardToDestroyModel)
         {
+            BoardUnitView cardToDestroy = GetBoardUnitView(cardToDestroyModel);
             if (cardToDestroy == null)
                 return;
 
@@ -157,10 +155,10 @@ namespace Loom.ZombieBattleground
                     cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
 
                     string cardDeathSoundName =
-                        cardToDestroy.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
+                        cardToDestroy.Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
-                    if (!cardToDestroy.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    if (!cardToDestroy.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName,
                             Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume,
@@ -171,11 +169,11 @@ namespace Loom.ZombieBattleground
                     _timerManager.AddTimer(
                         t =>
                         {
-                            cardToDestroy.OwnerPlayer.BoardCards.Remove(cardToDestroy);
-                            cardToDestroy.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Card);
-                            cardToDestroy.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Card);
+                            cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
+                            cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
+                            cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
 
-                            cardToDestroy.InvokeUnitDied();
+                            cardToDestroy.Model.InvokeUnitDied();
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
 
@@ -225,8 +223,6 @@ namespace Loom.ZombieBattleground
 
             PlayerGraveyardCards.Clear();
             OpponentGraveyardCards.Clear();
-
-            _cardsInDestroy.Clear();
         }
 
         public void InitializeBattleground()
@@ -289,9 +285,9 @@ namespace Loom.ZombieBattleground
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
-                List<BoardUnit> creatures = new List<BoardUnit>();
+                List<BoardUnitView> creatures = new List<BoardUnitView>();
 
-                foreach (BoardUnit card in PlayerBoardCards)
+                foreach (BoardUnitView card in PlayerBoardCards)
                 {
                     if (_playerController == null || !card.GameObject)
                     {
@@ -299,26 +295,26 @@ namespace Loom.ZombieBattleground
                         continue;
                     }
 
-                    card.OnStartTurn();
+                    card.Model.OnStartTurn();
                 }
 
-                foreach (BoardUnit item in creatures)
+                foreach (BoardUnitView item in creatures)
                 {
                     PlayerBoardCards.Remove(item);
                 }
 
                 creatures.Clear();
 
-                foreach (BoardUnit card in PlayerBoardCards)
+                foreach (BoardUnitView card in PlayerBoardCards)
                 {
                     card.SetHighlightingEnabled(true);
                 }
             }
             else
             {
-                foreach (BoardUnit card in OpponentBoardCards)
+                foreach (BoardUnitView card in OpponentBoardCards)
                 {
-                    card.OnStartTurn();
+                    card.Model.OnStartTurn();
                 }
 
                 foreach (BoardCard card in PlayerHandCards)
@@ -326,7 +322,7 @@ namespace Loom.ZombieBattleground
                     card.SetHighlightingEnabled(false);
                 }
 
-                foreach (BoardUnit card in PlayerBoardCards)
+                foreach (BoardUnitView card in PlayerBoardCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -351,16 +347,16 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
 
-                foreach (BoardUnit card in PlayerBoardCards)
+                foreach (BoardUnitView card in PlayerBoardCards)
                 {
-                    card.OnEndTurn();
+                    card.Model.OnEndTurn();
                 }
             }
             else
             {
-                foreach (BoardUnit card in OpponentBoardCards)
+                foreach (BoardUnitView card in OpponentBoardCards)
                 {
-                    card.OnEndTurn();
+                    card.Model.OnEndTurn();
                 }
             }
 
@@ -397,7 +393,7 @@ namespace Loom.ZombieBattleground
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            BoardUnit boardCard = PlayerBoardCards.Find(x => x.Card == card);
+            BoardUnitView boardCard = PlayerBoardCards.Find(x => x.Model.Card == card);
             if (boardCard == null)
                 return;
 
@@ -417,7 +413,7 @@ namespace Loom.ZombieBattleground
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
             Vector3 graveyardPos = OpponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            BoardUnit boardCard = OpponentBoardCards.Find(x => x.Card == card);
+            BoardUnitView boardCard = OpponentBoardCards.Find(x => x.Model.Card == card);
             if (boardCard != null)
             {
                 if (boardCard.Transform != null)
@@ -436,7 +432,7 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
 
-                Debug.Log("Destroy = " + boardCard.CurrentHp + "_" + boardCard.Card.LibraryCard.Name);
+                Debug.Log("Destroy = " + boardCard.Model.CurrentHp + "_" + boardCard.Model.Card.LibraryCard.Name);
             }
             else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
             {
@@ -455,7 +451,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnit> cardsList, Action onComplete = null)
+        public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnitView> cardsList, Action onComplete = null)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -490,7 +486,7 @@ namespace Loom.ZombieBattleground
             Sequence sequence = DOTween.Sequence();
             for (int i = 0; i < cardsList.Count; i++)
             {
-                BoardUnit card = cardsList[i];
+                BoardUnitView card = cardsList[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -513,7 +509,7 @@ namespace Loom.ZombieBattleground
                 _rearrangingTopRealTimeSequence = null;
             }
 
-            List<BoardUnit> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
+            List<BoardUnitView> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
 
             float boardWidth = 0.0f;
             float spacing = 0.2f;
@@ -540,7 +536,7 @@ namespace Loom.ZombieBattleground
             Sequence sequence = DOTween.Sequence();
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
-                BoardUnit card = opponentBoardCards[i];
+                BoardUnitView card = opponentBoardCards[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -562,9 +558,9 @@ namespace Loom.ZombieBattleground
                 case BoardCard card:
                     CurrentPreviewedCardId = card.WorkingCard.InstanceId;
                     break;
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Card.InstanceId;
+                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
                     break;
             }
 
@@ -583,8 +579,8 @@ namespace Loom.ZombieBattleground
                 case BoardCard card1:
                     card = card1.WorkingCard;
                     break;
-                case BoardUnit unit:
-                    card = unit.Card;
+                case BoardUnitView unit:
+                    card = unit.Model.Card;
                     break;
             }
 
@@ -616,7 +612,7 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardUnit boardUnit:
+                case BoardUnitView boardUnit:
                     boardCard.DrawTooltipInfoOfUnit(boardUnit);
                     break;
                 case BoardCard tooltipCard:
@@ -790,9 +786,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public BoardUnit GetBoardUnitFromHisObject(GameObject unitObject)
+        /// <summary>
+        /// Gets an active <see cref="BoardUnitView"/> that has <paramref name="boardUnitModel"/> attached to it.
+        /// </summary>
+        /// <param name="boardUnitModel"></param>
+        /// <returns></returns>
+        public BoardUnitView GetBoardUnitView(BoardUnitModel boardUnitModel)
         {
-            BoardUnit unit = PlayerBoardCards.Find(x => x.GameObject.Equals(unitObject));
+            BoardUnitView cardToDestroy =
+                OpponentBoardCards
+                    .Concat(OpponentGraveyardCards)
+                    .Concat(PlayerBoardCards)
+                    .Concat(PlayerGraveyardCards)
+                    .First(x => x.Model == boardUnitModel);
+            return cardToDestroy;
+        }
+
+        public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
+        {
+            BoardUnitView unit = PlayerBoardCards.Find(x => x.GameObject.Equals(unitObject));
 
             if (unit == null)
             {
@@ -809,30 +821,30 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnit unit)
+        public void DestroyBoardUnit(BoardUnitView unit)
         {
-            unit?.Die();
+            unit?.Model.Die();
         }
 
-        public void TakeControlUnit(Player to, BoardUnit unit)
+        public void TakeControlUnit(Player to, BoardUnitView unit)
         {
             // implement functionality of the take control
         }
 
-        public BoardUnit CreateBoardUnit(Player owner, WorkingCard card)
+        public BoardUnitView CreateBoardUnit(Player owner, WorkingCard card)
         {
             GameObject playerBoard = owner.IsLocalPlayer ? PlayerBoardObject : OpponentBoardObject;
 
-            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
-            boardUnit.Transform.SetParent(playerBoard.transform);
-            boardUnit.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
-            boardUnit.OwnerPlayer = owner;
-            boardUnit.SetObjectInfo(card);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.SetParent(playerBoard.transform);
+            boardUnitView.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
+            boardUnitView.Model.OwnerPlayer = owner;
+            boardUnitView.SetObjectInfo(card);
 
-            boardUnit.PlayArrivalAnimation();
+            boardUnitView.PlayArrivalAnimation();
 
-            return boardUnit;
+            return boardUnitView;
         }
 
 
@@ -882,18 +894,18 @@ namespace Loom.ZombieBattleground
         private void SetupOverlordsBoardUnitsAsSpecific(List<SpecificBattlegroundInfo.UnitOnBoardInfo> playerCards,
                                                         List<SpecificBattlegroundInfo.UnitOnBoardInfo> opponentCards)
         {
-            BoardUnit workingUnit = null;
+            BoardUnitView workingUnitView = null;
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
             {
-                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
-                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
+                workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
             }
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
-                workingUnit = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
-                workingUnit.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
+                workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
             }
         }
 

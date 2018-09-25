@@ -193,7 +193,7 @@ namespace Loom.ZombieBattleground
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
-                    BoardUnit targetUnit = skill.FightTargetingArrow.SelectedCard;
+                    BoardUnitView targetUnitView = skill.FightTargetingArrow.SelectedCard;
 
                     string soundFile = GetSoundBySkills(skill);
                     if (!string.IsNullOrEmpty(soundFile))
@@ -204,11 +204,11 @@ namespace Loom.ZombieBattleground
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
-                        targetUnit,
+                        targetUnitView,
                         x =>
                         {
-                            DoActionByType(skill, targetUnit);
-                            skill.UseSkill(targetUnit);
+                            DoActionByType(skill, targetUnitView);
+                            skill.UseSkill(targetUnitView);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
                 }
@@ -472,9 +472,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardUnit creature = target as BoardUnit;
+                BoardUnitView creature = target as BoardUnitView;
                 int attackModifier = 0;
-                _battleController.AttackUnitBySkill(owner, skill, creature, attackModifier);
+                _battleController.AttackUnitBySkill(owner, skill, creature.Model, attackModifier);
             }
         }
 
@@ -487,17 +487,17 @@ namespace Loom.ZombieBattleground
 
             owner.Goo -= goo;
 
-            BoardUnit targetUnit = target as BoardUnit;
-            Player unitOwner = targetUnit.OwnerPlayer;
-            WorkingCard returningCard = targetUnit.Card;
+            BoardUnitView targetUnitView = target as BoardUnitView;
+            Player unitOwner = targetUnitView.Model.OwnerPlayer;
+            WorkingCard returningCard = targetUnitView.Model.Card;
 
             returningCard.InitialCost = returningCard.LibraryCard.Cost;
             returningCard.RealCost = returningCard.InitialCost;
 
-            Vector3 unitPosition = targetUnit.Transform.position;
+            Vector3 unitPosition = targetUnitView.Transform.position;
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"),
-                targetUnit);
+                targetUnitView);
 
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Skill.Trim().ToLower(),
                 Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
@@ -506,11 +506,11 @@ namespace Loom.ZombieBattleground
                 x =>
                 {
                     // STEP 1 - REMOVE UNIT FROM BOARD
-                    unitOwner.BoardCards.Remove(targetUnit);
+                    unitOwner.BoardCards.Remove(targetUnitView);
 
                     // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE;
-                    targetUnit.Die(true);
-                    Object.Destroy(targetUnit.GameObject);
+                    targetUnitView.Model.Die(true);
+                    Object.Destroy(targetUnitView.GameObject);
 
                     // STEP 3 - REMOVE WORKING CARD FROM BOARD
                     unitOwner.RemoveCardFromBoard(returningCard);
@@ -524,7 +524,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                         Enumerators.ActionType.RETURN_TO_HAND_CARD_SKILL, new object[]
                         {
-                            owner, skill, targetUnit
+                            owner, skill, targetUnitView.Model
                         }));
 
                     // _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
@@ -551,11 +551,11 @@ namespace Loom.ZombieBattleground
 
         private void WindShieldAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR), skill.Value);
+            List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR), skill.Value);
 
-            foreach (var unit in units)
+            foreach (BoardUnitView unit in units)
             {
-                unit.BuffShield();
+                unit.Model.AddBuffShield();
             }
         } 
 
@@ -566,11 +566,11 @@ namespace Loom.ZombieBattleground
 
         private void RetreatAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = new List<BoardUnit>();
+            List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (BoardUnit unit in units)
+            foreach (BoardUnitView unit in units)
             {
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unit); // retreat vfx
 
@@ -582,14 +582,14 @@ namespace Loom.ZombieBattleground
 
         private void ToxicPowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if (target != null && target is BoardUnitView)
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+                _battleController.AttackUnitBySkill(owner, skill, unit.Model, 0);
 
-                unit.BuffedDamage += skill.Attack;
-                unit.CurrentDamage += skill.Attack;
+                unit.Model.BuffedDamage += skill.Attack;
+                unit.Model.CurrentDamage += skill.Attack;
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
@@ -631,14 +631,14 @@ namespace Loom.ZombieBattleground
 
         private void InfectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+            List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
 
             if (units.Count == 0)
                 return;
 
-            BoardUnit unit = units[UnityEngine.Random.Range(0, units.Count)];
+            BoardUnitView unit = units[UnityEngine.Random.Range(0, units.Count)];
 
-            int unitAtk = unit.CurrentDamage;
+            int unitAtk = unit.Model.CurrentDamage;
 
             _battlegroundController.DestroyBoardUnit(unit);
 
@@ -649,35 +649,35 @@ namespace Loom.ZombieBattleground
 
             unit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
-            _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+            _battleController.AttackUnitBySkill(owner, skill, unit.Model, 0);
         }
 
         private void EpidemicAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+            List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
 
             if (units.Count == 0)
                 return;
 
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
-            List<BoardUnit> opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
+            List<BoardUnitView> opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
 
             int unitAtk = 0;
 
-            BoardUnit opponentUnit = null;
+            BoardUnitView opponentUnitView = null;
             for (int i = 0; i < units.Count; i++)
             {
-                unitAtk = units[i].CurrentDamage;
+                unitAtk = units[i].Model.CurrentDamage;
 
                 _battlegroundController.DestroyBoardUnit(units[i]);
 
                 if (opponentUnits.Count > 0)
                 {
-                    opponentUnit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
+                    opponentUnitView = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
-                    _battleController.AttackUnitBySkill(owner, skill, opponentUnit, 0);
+                    _battleController.AttackUnitBySkill(owner, skill, opponentUnitView.Model, 0);
 
-                    opponentUnits.Remove(opponentUnit);
+                    opponentUnits.Remove(opponentUnitView);
                 }
             }
         }
@@ -699,9 +699,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                _battleController.HealUnitBySkill(owner, skill, unit);
+                _battleController.HealUnitBySkill(owner, skill, unit.Model);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
@@ -741,14 +741,14 @@ namespace Loom.ZombieBattleground
             List<object> targets = new List<object>();
 
             targets.Add(owner);
-            targets.AddRange(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.LIFE));
+            targets.AddRange(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.LIFE));
 
             foreach (object targetObject in targets)
             {
                 switch (targetObject)
                 {
-                    case BoardUnit unit:
-                        _battleController.HealUnitBySkill(owner, skill, unit);
+                    case BoardUnitView unit:
+                        _battleController.HealUnitBySkill(owner, skill, unit.Model);
                         break;
                     case Player player:
                         _battleController.HealPlayerBySkill(owner, skill, player);
@@ -774,8 +774,8 @@ namespace Loom.ZombieBattleground
         {
             switch (target)
             {
-                case BoardUnit unit:
-                    unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
+                case BoardUnitView unit:
+                    unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                     _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), unit);
@@ -787,7 +787,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                         Enumerators.ActionType.STUN_UNIT_BY_SKILL, new object[]
                         {
-                            owner, unit
+                            owner, unit.Model
                         }));
                     break;
                 case Player player:
@@ -810,15 +810,15 @@ namespace Loom.ZombieBattleground
 
         private void IceBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if (target != null && target is BoardUnitView)
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                _battleController.AttackUnitBySkill(owner, skill, unit, 0);
+                _battleController.AttackUnitBySkill(owner, skill, unit.Model, 0);
 
-                if (unit.CurrentHp > 0)
+                if (unit.Model.CurrentHp > 0)
                 {
-                    unit.Stun(Enumerators.StunType.FREEZE, 1);
+                    unit.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
                 _vfxController.CreateVfx(
@@ -830,10 +830,10 @@ namespace Loom.ZombieBattleground
 
         private void IceWallAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target is BoardUnit unit)
+            if (target is BoardUnitView unit)
             {
-                unit.BuffedHp += skill.Value;
-                unit.CurrentHp += skill.Value;
+                unit.Model.BuffedHp += skill.Value;
+                unit.Model.CurrentHp += skill.Value;
             }
             else if (target is Player player)
             {
@@ -846,17 +846,17 @@ namespace Loom.ZombieBattleground
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            _battlegroundController.DestroyBoardUnit(target as BoardUnit);
+            _battlegroundController.DestroyBoardUnit(target as BoardUnitView);
         }
 
         private void BlizzardAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
+            List<BoardUnitView> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
             foreach (var unit in units)
             {
-                unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
+                unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
             }
@@ -878,11 +878,11 @@ namespace Loom.ZombieBattleground
 
         private void RabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if (target != null && target is BoardUnitView)
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                unit.SetAsFeralUnit();
+                unit.Model.SetAsFeralUnit();
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
@@ -903,11 +903,11 @@ namespace Loom.ZombieBattleground
 
         private void MassRabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = InternalTools.GetRandomElementsFromList(owner.BoardCards, skill.Value);
+            List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards, skill.Value);
 
             foreach (var unit in units)
             {
-                unit.SetAsFeralUnit();
+                unit.Model.SetAsFeralUnit();
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
@@ -918,7 +918,7 @@ namespace Loom.ZombieBattleground
 
         private void MeteorShowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = new List<BoardUnit>();
+            List<BoardUnitView> units = new List<BoardUnitView>();
 
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
@@ -938,12 +938,12 @@ namespace Loom.ZombieBattleground
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if (target != null && target is BoardUnitView)
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                unit.BuffedHp += skill.Value;
-                unit.CurrentHp += skill.Value;
+                unit.Model.BuffedHp += skill.Value;
+                unit.Model.CurrentHp += skill.Value;
 
                 // TODO: remove this empty gameobject logic
                 Transform transform = new GameObject().transform;
@@ -972,11 +972,11 @@ namespace Loom.ZombieBattleground
 
         private void FortifyAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnit)
+            if (target != null && target is BoardUnitView)
             {
-                BoardUnit unit = target as BoardUnit;
+                BoardUnitView unit = target as BoardUnitView;
 
-                unit.SetAsHeavyUnit();
+                unit.Model.SetAsHeavyUnit();
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
 
@@ -987,13 +987,13 @@ namespace Loom.ZombieBattleground
 
         private void PhalanxAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
+            List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
 
             Transform transform;
             foreach (var unit in units)
             {
-                unit.BuffedHp += skill.Value;
-                unit.CurrentHp += skill.Value;
+                unit.Model.BuffedHp += skill.Value;
+                unit.Model.CurrentHp += skill.Value;
 
                 // TODO: remove this empty gameobject logic
                 transform = new GameObject().transform;
@@ -1009,11 +1009,11 @@ namespace Loom.ZombieBattleground
 
         private void FortressAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            List<BoardUnit> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH), skill.Count);
+            List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH), skill.Count);
 
-            foreach(BoardUnit unit in units)
+            foreach(BoardUnitView unit in units)
             {
-                unit.SetAsHeavyUnit();
+                unit.Model.SetAsHeavyUnit();
             }
         }
 

@@ -28,13 +28,13 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             if (PlayerCallerOfAbility.BoardCards.Count == 0 || PlayerCallerOfAbility.BoardCards.Count == 1 &&
-                PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitOwner))
+                PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitViewOwner))
             {
-                AbilityUnitOwner.BuffedHp += Value;
-                AbilityUnitOwner.CurrentHp += Value;
+                AbilityUnitViewOwner.Model.BuffedHp += Value;
+                AbilityUnitViewOwner.Model.CurrentHp += Value;
 
-                AbilityUnitOwner.BuffedDamage += Value;
-                AbilityUnitOwner.CurrentDamage += Value;
+                AbilityUnitViewOwner.Model.BuffedDamage += Value;
+                AbilityUnitViewOwner.Model.CurrentDamage += Value;
             }
         }
     }

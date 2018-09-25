@@ -249,8 +249,6 @@ namespace Loom.ZombieBattleground
 
             deck.Select();
 
-            Debug.LogError("deck.SelfHero.PrimarySkill: " + deck.SelfDeck.PrimarySkill);
-
             _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                 deck.SelfHero.Element.ToUpper() + "_" +
                 deck.SelfHero.Skills[deck.SelfDeck.PrimarySkill].Skill.ToLower());

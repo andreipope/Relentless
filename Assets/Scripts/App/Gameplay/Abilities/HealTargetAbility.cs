@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                     BattleController.HealPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    BattleController.HealUnitByAbility(caller, AbilityData, TargetUnit);
+                    BattleController.HealUnitByAbility(caller, AbilityData, TargetUnitView.Model);
                     break;
             }
         }

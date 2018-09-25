@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         private BoardCard _topmostBoardCard;
 
-        private BoardUnit _selectedBoardUnit;
+        private BoardUnitView _selectedBoardUnitView;
 
         private PointerEventSolver _pointerEventSolver;
 
@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
             _delayTimerOfClick = 0f;
             _startedOnClickDelay = false;
             _topmostBoardCard = null;
-            _selectedBoardUnit = null;
+            _selectedBoardUnitView = null;
         }
 
         public void HandCardPreview(object[] param)
@@ -256,10 +256,10 @@ namespace Loom.ZombieBattleground
                         StopHandTimer();
 
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        BoardUnit selectedBoardUnit =
+                        BoardUnitView selectedBoardUnitView =
                             _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
-                        if (selectedBoardUnit != null && (!_battlegroundController.IsPreviewActive ||
-                            selectedBoardUnit.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
+                        if (selectedBoardUnitView != null && (!_battlegroundController.IsPreviewActive ||
+                            selectedBoardUnitView.Model.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
                         {
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :
@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
 
                             _startedOnClickDelay = true;
                             _isPreviewHandCard = false;
-                            _selectedBoardUnit = selectedBoardUnit;
+                            _selectedBoardUnitView = selectedBoardUnitView;
                         }
                     }
                 }
@@ -343,7 +343,7 @@ namespace Loom.ZombieBattleground
             _startedOnClickDelay = false;
 
             _topmostBoardCard = null;
-            _selectedBoardUnit = null;
+            _selectedBoardUnitView = null;
         }
 
         private void CheckCardPreviewShow()
@@ -370,7 +370,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (_selectedBoardUnit != null && !_selectedBoardUnit.IsAttacking)
+                if (_selectedBoardUnitView != null && !_selectedBoardUnitView.Model.IsAttacking)
                 {
                     StopHandTimer();
                     _battlegroundController.DestroyCardPreview();
@@ -383,7 +383,7 @@ namespace Loom.ZombieBattleground
                     {
                         HandCardPreview(new object[]
                         {
-                            _selectedBoardUnit
+                            _selectedBoardUnitView
                         });
                     }
                 }

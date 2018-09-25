@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         private int _abilityValue;
 
-        private BoardUnit _abilityUsedOnUnit;
+        private BoardUnitModel _abilityUsedOnUnitModel;
 
         private GameObject _healCreatureObj, _healedCreatureObj;
 
@@ -31,12 +31,12 @@ namespace Loom.ZombieBattleground
             _abilityOwner = GameAction.Parameters[0];
             _usedAbility = GameAction.Parameters[1] as AbilityData;
             _abilityValue = (int) GameAction.Parameters[2];
-            _abilityUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
+            _abilityUsedOnUnitModel = GameAction.Parameters[3] as BoardUnitModel;
 
-            if (_abilityOwner is BoardUnit)
+            if (_abilityOwner is BoardUnitModel abilityOwnerUnitModel)
             {
-                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
-                _healCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
+                _healCreatureObj = CreateCardPreview(abilityOwnerUnitModel.Card, Vector3.zero, out BoardCard abilityOwnerUnitBoardCard);
+                PreviewImage.sprite = abilityOwnerUnitBoardCard.PictureSprite.sprite;
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
 
             HealPictureObject.SetActive(true);
 
-            _healedCreatureObj = CreateCardPreview(_abilityUsedOnUnit.Card, Vector3.right * 6);
+            _healedCreatureObj = CreateCardPreview(_abilityUsedOnUnitModel.Card, Vector3.right * 6);
 
             GameObject attackViewPlayer = _healedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);

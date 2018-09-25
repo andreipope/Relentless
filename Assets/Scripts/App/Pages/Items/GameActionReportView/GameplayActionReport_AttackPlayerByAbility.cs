@@ -33,10 +33,10 @@ namespace Loom.ZombieBattleground
             _abilityValue = (int) GameAction.Parameters[2];
             _abilityUsedOnPlayer = GameAction.Parameters[3] as Player;
 
-            if (_abilityOwner is BoardUnit)
+            if (_abilityOwner is BoardUnitModel abilityOwnerUnitModel)
             {
-                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
-                _attackingAbilityOwnerObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
+                _attackingAbilityOwnerObj = CreateCardPreview(abilityOwnerUnitModel.Card, Vector3.zero, out BoardCard attackingAbilityOwnerBoardCard);
+                PreviewImage.sprite = attackingAbilityOwnerBoardCard.PictureSprite.sprite;
             }
             else
             {

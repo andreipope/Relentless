@@ -33,12 +33,12 @@ namespace Loom.ZombieBattleground
             int increaseOn;
 
             increaseOn = PlayerCallerOfAbility.Goo * Value;
-            AbilityUnitOwner.BuffedHp += increaseOn;
-            AbilityUnitOwner.CurrentHp += increaseOn;
+            AbilityUnitViewOwner.Model.BuffedHp += increaseOn;
+            AbilityUnitViewOwner.Model.CurrentHp += increaseOn;
 
             increaseOn = PlayerCallerOfAbility.Goo * Value;
-            AbilityUnitOwner.BuffedDamage += increaseOn;
-            AbilityUnitOwner.CurrentDamage += increaseOn;
+            AbilityUnitViewOwner.Model.BuffedDamage += increaseOn;
+            AbilityUnitViewOwner.Model.CurrentDamage += increaseOn;
 
             PlayerCallerOfAbility.Goo = 0;
         }

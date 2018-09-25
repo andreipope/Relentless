@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
-                if (opponent.BoardCards[i] == TargetUnit)
+                if (opponent.BoardCards[i] == TargetUnitView)
                 {
                     targetIndex = i;
                     break;
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnit unit)
+        private void TakeTypeToUnit(BoardUnitView unit)
         {
             if (unit == null)
                 return;
@@ -62,10 +62,10 @@ namespace Loom.ZombieBattleground
             switch (CardType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.HasHeavy = true;
+                    unit.Model.HasHeavy = true;
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.HasFeral = true;
+                    unit.Model.HasFeral = true;
                     break;
             }
         }

@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BattlegroundController.DestroyBoardUnit(TargetUnit);
+            BattlegroundController.DestroyBoardUnit(TargetUnitView);
         }
 
         protected override void InputEndedHandler()

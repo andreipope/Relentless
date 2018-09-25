@@ -35,8 +35,8 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.Health <= Health)
             {
-                AbilityUnitOwner.BuffedHp += Value;
-                AbilityUnitOwner.CurrentHp += Value;
+                AbilityUnitViewOwner.Model.BuffedHp += Value;
+                AbilityUnitViewOwner.Model.CurrentHp += Value;
             }
         }
     }

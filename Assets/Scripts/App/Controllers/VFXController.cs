@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
                 case Player player:
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
                                 }
                             });
                     break;
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
                         () =>
                         {
@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
 
             switch (onObject)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     target = unit.Transform;
                     break;
                 case Player _:

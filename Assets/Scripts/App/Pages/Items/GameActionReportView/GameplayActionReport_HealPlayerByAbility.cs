@@ -33,9 +33,9 @@ namespace Loom.ZombieBattleground
 
             switch (_abilityOwner)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     PreviewImage.sprite = unit.Sprite;
-                    _healCreatureObj = CreateCardPreview(unit.Card, Vector3.zero);
+                    _healCreatureObj = CreateCardPreview(unit.Model.Card, Vector3.zero);
                     break;
                 case BoardSpell spell:
                 {

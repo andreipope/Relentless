@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         public GameObject selfObject;
 
-        public int cardId;
+        public int CardId;
 
         private bool _isFirstActive;
 
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
             _isFirstActive = true;
             ChangeState(true);
-            cardId = card.LibraryCard.Id;
+            CardId = card.LibraryCard.Id;
             selfObject.transform.position = card.Transform.position;
             selfObject.transform.localPosition -= Vector3.up * OFFSET;
         }

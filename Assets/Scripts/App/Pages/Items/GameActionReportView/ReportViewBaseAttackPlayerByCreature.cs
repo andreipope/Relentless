@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground
 {
     public class ReportViewBaseAttackPlayerByCreature : ReportViewBase
     {
-        private BoardUnit _attackingCreature;
+        private BoardUnitModel _attackingCreature;
 
         private Player _attackedPlayer;
 
@@ -20,11 +20,11 @@ namespace Loom.ZombieBattleground
         {
             base.SetInfo();
 
-            _attackingCreature = GameAction.Parameters[0] as BoardUnit;
+            _attackingCreature = GameAction.Parameters[0] as BoardUnitModel;
             _attackedPlayer = GameAction.Parameters[1] as Player;
-            PreviewImage.sprite = _attackingCreature.Sprite;
-            _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero);
+            _attackingCreatureObj = CreateCardPreview(_attackingCreature.Card, Vector3.zero, out BoardCard attackingBoardCard);
             _attackedPlayerObj = CreatePlayerPreview(_attackedPlayer, new Vector3(5f, 0, 0));
+            PreviewImage.sprite = attackingBoardCard.PictureSprite.sprite;
 
             AttackingPictureObject.SetActive(true);
 

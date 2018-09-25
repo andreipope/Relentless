@@ -28,12 +28,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetUnit != null)
+            if (TargetUnitView != null)
             {
-                TargetUnit.CurrentDamage += Value;
-                TargetUnit.BuffedDamage += Value;
+                TargetUnitView.Model.CurrentDamage += Value;
+                TargetUnitView.Model.BuffedDamage += Value;
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
+                CreateVfx(TargetUnitView.Transform.position, true, 5f);
             }
         }
 
@@ -45,9 +45,9 @@ namespace Loom.ZombieBattleground
             {
                 Action();
 
-                if (TargetUnit != null)
+                if (TargetUnitView != null)
                 {
-                    TargetUnit.UnitDied += TargetUnitDiedHandler;
+                    TargetUnitView.Model.UnitDied += TargetUnitDiedHandler;
                 }
             }
         }
@@ -64,19 +64,19 @@ namespace Loom.ZombieBattleground
 
         private void ActionEnd()
         {
-            if (TargetUnit != null)
+            if (TargetUnitView != null)
             {
-                BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
+                BattleController.AttackUnitByAbility(TargetUnitView, AbilityData, TargetUnitView.Model, Damage);
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
+                CreateVfx(TargetUnitView.Transform.position, true, 5f);
             }
         }
 
         private void TargetUnitDiedHandler()
         {
-            if (TargetUnit != null)
+            if (TargetUnitView != null)
             {
-                TargetUnit.UnitDied -= TargetUnitDiedHandler;
+                TargetUnitView.Model.UnitDied -= TargetUnitDiedHandler;
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);

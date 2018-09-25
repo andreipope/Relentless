@@ -71,11 +71,11 @@ namespace Loom.ZombieBattleground
             }
 
             Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
-                TargetUnit.Transform.position :
+                TargetUnitView.Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitOwner.Transform.position);
+            VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitViewOwner.Transform.position);
             targetPosition = Utilites.CastVfxPosition(targetPosition);
             VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
             ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
+                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
                     break;
             }
 

@@ -35,21 +35,21 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AffectObjectType.CHARACTER:
                 {
-                    if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
+                    if (TargetUnitView.Model.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
                         switch (StatType)
                         {
                             case Enumerators.StatType.DAMAGE:
-                                TargetUnit.BuffedDamage += Value;
-                                TargetUnit.CurrentDamage += Value;
+                                TargetUnitView.Model.BuffedDamage += Value;
+                                TargetUnitView.Model.CurrentDamage += Value;
                                 break;
                             case Enumerators.StatType.HEALTH:
-                                TargetUnit.BuffedHp += Value;
-                                TargetUnit.CurrentHp += Value;
+                                TargetUnitView.Model.BuffedHp += Value;
+                                TargetUnitView.Model.CurrentHp += Value;
                                 break;
                         }
 
-                        CreateVfx(TargetUnit.Transform.position);
+                        CreateVfx(TargetUnitView.Transform.position);
                     }
                 }
 

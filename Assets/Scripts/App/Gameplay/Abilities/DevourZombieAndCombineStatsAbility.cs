@@ -44,35 +44,35 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved && Value > 0)
             {
-                DevourTargetZombie(TargetUnit);
+                DevourTargetZombie(TargetUnitView);
             }
         }
 
         private void DevourAllAllyZombies()
         {
-            List<BoardUnit> units = PlayerCallerOfAbility.BoardCards;
+            List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards;
 
-            foreach (BoardUnit unit in units)
+            foreach (BoardUnitView unit in units)
             {
                 DevourTargetZombie(unit);
             }
         }
 
-        private void DevourTargetZombie(BoardUnit unit)
+        private void DevourTargetZombie(BoardUnitView unit)
         {
-            if (unit.Equals(AbilityUnitOwner))
+            if (unit.Equals(AbilityUnitViewOwner))
                 return;
 
-            int health = unit.InitialHp;
-            int damage = unit.InitialDamage;
+            int health = unit.Model.InitialHp;
+            int damage = unit.Model.InitialDamage;
 
             BattlegroundController.DestroyBoardUnit(unit);
 
-            AbilityUnitOwner.BuffedHp += health;
-            AbilityUnitOwner.CurrentHp += health;
+            AbilityUnitViewOwner.Model.BuffedHp += health;
+            AbilityUnitViewOwner.Model.CurrentHp += health;
 
-            AbilityUnitOwner.BuffedDamage += damage;
-            AbilityUnitOwner.CurrentDamage += damage;
+            AbilityUnitViewOwner.Model.BuffedDamage += damage;
+            AbilityUnitViewOwner.Model.CurrentDamage += damage;
 
             CreateVfx(unit.Transform.position, true, 5f);
         }

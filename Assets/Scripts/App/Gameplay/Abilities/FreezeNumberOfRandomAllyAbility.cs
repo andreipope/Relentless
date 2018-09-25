@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
             List<object> allies = new List<object>();
 
             allies.AddRange(PlayerCallerOfAbility.BoardCards);
-            allies.Remove(AbilityUnitOwner);
+            allies.Remove(AbilityUnitViewOwner);
             allies.Add(PlayerCallerOfAbility);
 
             allies = InternalTools.GetRandomElementsFromList(allies, Value);
@@ -51,8 +51,8 @@ namespace Loom.ZombieBattleground
                         player.Stun(Enumerators.StunType.FREEZE, Turns);
                         CreateVfx(player.AvatarObject.transform.position, true, 5f);
                         break;
-                    case BoardUnit unit:
-                        unit.Stun(Enumerators.StunType.FREEZE, Turns);
+                    case BoardUnitView unit:
+                        unit.Model.Stun(Enumerators.StunType.FREEZE, Turns);
                         CreateVfx(unit.Transform.position, true, 5f);
                         break;
                 }

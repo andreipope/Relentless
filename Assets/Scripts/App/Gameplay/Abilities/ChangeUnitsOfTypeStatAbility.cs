@@ -42,12 +42,12 @@ namespace Loom.ZombieBattleground
 
         private void Action()
         {
-            List<BoardUnit> unitsOnBoard =
-                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType.Equals(SetType));
+            List<BoardUnitView> unitsOnBoard =
+                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType.Equals(SetType));
 
-            foreach (BoardUnit unit in unitsOnBoard)
+            foreach (BoardUnitView unit in unitsOnBoard)
             {
-                if (unit.Equals(AbilityUnitOwner))
+                if (unit.Equals(AbilityUnitViewOwner))
                 {
                     continue;
                 }
@@ -55,12 +55,12 @@ namespace Loom.ZombieBattleground
                 switch (StatType)
                 {
                     case Enumerators.StatType.DAMAGE:
-                        unit.BuffedDamage += Value;
-                        unit.CurrentDamage += Value;
+                        unit.Model.BuffedDamage += Value;
+                        unit.Model.CurrentDamage += Value;
                         break;
                     case Enumerators.StatType.HEALTH:
-                        unit.BuffedHp += Value;
-                        unit.CurrentHp += Value;
+                        unit.Model.BuffedHp += Value;
+                        unit.Model.CurrentHp += Value;
                         break;
                 }
 

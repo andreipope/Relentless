@@ -28,7 +28,7 @@ public class BoardArrow : MonoBehaviour
 
     private bool _isInverse = true;
 
-    public BoardUnit SelectedCard { get; set; }
+    public BoardUnitView SelectedCard { get; set; }
 
     public Player SelectedPlayer { get; set; }
 
@@ -81,11 +81,11 @@ public class BoardArrow : MonoBehaviour
         ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
 
-    public virtual void OnCardSelected(BoardUnit creature)
+    public virtual void OnCardSelected(BoardUnitView creature)
     {
     }
 
-    public virtual void OnCardUnselected(BoardUnit creature)
+    public virtual void OnCardUnselected(BoardUnitView creature)
     {
     }
 
@@ -189,7 +189,7 @@ public class BoardArrow : MonoBehaviour
         OnPlayerSelected(player);
     }
 
-    private void UnitSelectingEventHandler(BoardUnit unit)
+    private void UnitSelectingEventHandler(BoardUnitView unit)
     {
         OnCardSelected(unit);
     }

@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
     {
         private Player _callerPlayer;
 
-        private BoardUnit _playedCard;
+        private BoardUnitModel _playedCard;
 
         private GameObject _playedCardPreviewObject;
 
@@ -20,11 +20,10 @@ namespace Loom.ZombieBattleground
             base.SetInfo();
 
             _callerPlayer = GameAction.Parameters[0] as Player;
-            _playedCard = GameAction.Parameters[1] as BoardUnit;
+            _playedCard = GameAction.Parameters[1] as BoardUnitModel;
 
-            PreviewImage.sprite = _playedCard.Sprite;
-
-            _playedCardPreviewObject = CreateCardPreview(_playedCard.Card, Vector3.zero);
+            _playedCardPreviewObject = CreateCardPreview(_playedCard.Card, Vector3.zero, out BoardCard boardCard);
+            PreviewImage.sprite = boardCard.PictureSprite.sprite;
         }
     }
 }

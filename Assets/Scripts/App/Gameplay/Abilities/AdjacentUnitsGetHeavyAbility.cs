@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitOwner)
+                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitViewOwner)
                 {
                     targetIndex = i;
                     break;
@@ -48,9 +48,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static void TakeHeavyToUnit(BoardUnit unit)
+        private static void TakeHeavyToUnit(BoardUnitView unit)
         {
-            unit?.SetAsHeavyUnit();
+            unit?.Model.SetAsHeavyUnit();
         }
     }
 }

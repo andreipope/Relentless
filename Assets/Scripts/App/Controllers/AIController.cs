@@ -40,9 +40,9 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AiType _aiType;
 
-        private List<BoardUnit> _attackedUnitTargets;
+        private List<BoardUnitView> _attackedUnitTargets;
 
-        private List<BoardUnit> _unitsToIgnoreThisTurn;
+        private List<BoardUnitView> _unitsToIgnoreThisTurn;
 
         private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
 
@@ -89,8 +89,8 @@ namespace Loom.ZombieBattleground
 
             _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
-            _attackedUnitTargets = new List<BoardUnit>();
-            _unitsToIgnoreThisTurn = new List<BoardUnit>();
+            _attackedUnitTargets = new List<BoardUnitView>();
+            _unitsToIgnoreThisTurn = new List<BoardUnitView>();
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
@@ -282,23 +282,23 @@ namespace Loom.ZombieBattleground
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
-            List<BoardUnit> unitsOnBoard = new List<BoardUnit>();
-            List<BoardUnit> alreadyUsedUnits = new List<BoardUnit>();
+            List<BoardUnitView> unitsOnBoard = new List<BoardUnitView>();
+            List<BoardUnitView> alreadyUsedUnits = new List<BoardUnitView>();
 
             unitsOnBoard.AddRange(GetUnitsOnBoard());
 
             if (OpponentHasHeavyUnits())
             {
-                foreach (BoardUnit unit in unitsOnBoard)
+                foreach (BoardUnitView unit in unitsOnBoard)
                 {
                     while (UnitCanBeUsable(unit))
                     {
                         if (UnitCanBeUsable(unit))
                         {
-                            BoardUnit attackedUnit = GetTargetOpponentUnit();
-                            if (attackedUnit != null)
+                            BoardUnitView attackedUnitView = GetTargetOpponentUnit();
+                            if (attackedUnitView != null)
                             {
-                                unit.DoCombat(attackedUnit);
+                                unit.Model.DoCombat(attackedUnitView);
                                 alreadyUsedUnits.Add(unit);
 
                                 await LetsThink(cancellationToken);
@@ -312,7 +312,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            foreach (BoardUnit creature in alreadyUsedUnits)
+            foreach (BoardUnitView creature in alreadyUsedUnits)
             {
                 unitsOnBoard.Remove(creature);
             }
@@ -321,13 +321,13 @@ namespace Loom.ZombieBattleground
             if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
-                foreach (BoardUnit unit in unitsOnBoard)
+                foreach (BoardUnitView unit in unitsOnBoard)
                 {
                     while (UnitCanBeUsable(unit))
                     {
                       //  if (UnitCanBeUsable(unit))
                         {
-                            unit.DoCombat(_gameplayManager.CurrentPlayer);
+                            unit.Model.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
                         }
                     }
@@ -335,7 +335,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                foreach (BoardUnit unit in unitsOnBoard)
+                foreach (BoardUnitView unit in unitsOnBoard)
                 {
                     while (UnitCanBeUsable(unit))
                     {
@@ -343,20 +343,20 @@ namespace Loom.ZombieBattleground
                         {
                             if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                             {
-                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                unit.Model.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
-                                BoardUnit attackedCreature = GetRandomOpponentUnit();
+                                BoardUnitView attackedCreature = GetRandomOpponentUnit();
                                 if (attackedCreature != null)
                                 {
-                                    unit.DoCombat(attackedCreature);
+                                    unit.Model.DoCombat(attackedCreature);
                                     await LetsThink(cancellationToken);
                                 }
                                 else
                                 {
-                                    unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                    unit.Model.DoCombat(_gameplayManager.CurrentPlayer);
                                     await LetsThink(cancellationToken);
                                 }
                             }
@@ -508,9 +508,9 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        private bool UnitCanBeUsable(BoardUnit unit)
+        private bool UnitCanBeUsable(BoardUnitView unit)
         {
-            return unit.UnitCanBeUsable();
+            return unit.Model.UnitCanBeUsable();
         }
 
         private bool CheckSpecialCardRules(WorkingCard card)
@@ -590,28 +590,28 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardKind.CREATURE:
                 {
-                    BoardUnit boardUnitElement = new BoardUnit(GameObject.Find("OpponentBoard").transform);
-                    GameObject boardCreature = boardUnitElement.GameObject;
+                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
+                    GameObject boardCreature = boardUnitViewElement.GameObject;
                     boardCreature.tag = SRTags.OpponentOwned;
                     boardCreature.transform.position = Vector3.zero;
-                    boardUnitElement.OwnerPlayer = card.Owner;
+                    boardUnitViewElement.Model.OwnerPlayer = card.Owner;
 
-                    boardUnitElement.SetObjectInfo(workingCard);
-                    _battlegroundController.OpponentBoardCards.Add(boardUnitElement);
+                    boardUnitViewElement.SetObjectInfo(workingCard);
+                    _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
                     boardCreature.transform.position +=
                         Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
-                    // PlayArrivalAnimation(boardCreature, libraryCard.cardType);
-                    _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitElement);
+                    // PlayArrivalAnimation(boardCreature, libraryCard.CardType);
+                    _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
 
                     _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                         Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
                         {
-                            boardUnitElement.OwnerPlayer, boardUnitElement
+                            boardUnitViewElement.Model.OwnerPlayer, boardUnitViewElement.Model
                         }));
 
-                    boardUnitElement.PlayArrivalAnimation();
+                    boardUnitViewElement.PlayArrivalAnimation();
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>
@@ -635,13 +635,13 @@ namespace Loom.ZombieBattleground
                                     () =>
                                     {
                                         _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
-                                            Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null, target);
+                                            Enumerators.CardKind.CREATURE, boardUnitViewElement, null, false, null, target);
                                     });
                             }
                             else
                             {
                                 _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
-                                    Enumerators.CardKind.CREATURE, boardUnitElement, null, false, null);
+                                    Enumerators.CardKind.CREATURE, boardUnitViewElement, null, false, null);
                             }
                         });
                     break;
@@ -808,7 +808,7 @@ namespace Loom.ZombieBattleground
                         CheckAndAddTargets(ability, ref target);
                         break;
                     case Enumerators.AbilityType.HEAL:
-                        List<BoardUnit> units = GetUnitsWithLowHp();
+                        List<BoardUnitView> units = GetUnitsWithLowHp();
 
                         if (units.Count > 0)
                         {
@@ -850,7 +850,7 @@ namespace Loom.ZombieBattleground
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                List<BoardUnit> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+                List<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
                 if (targets.Count > 0)
                 {
@@ -872,23 +872,23 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private List<BoardUnit> GetHeavyUnitsOnBoard(Player player)
+        private List<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
         {
-            return player.BoardCards.FindAll(x => x.HasHeavy || x.HasBuffHeavy);
+            return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
 
         private bool AddRandomTargetUnit(
             bool opponent, ref object target, bool lowHp = false, bool addAttackIgnore = false)
         {
-            BoardUnit boardUnit = opponent ? GetRandomOpponentUnit() : GetRandomUnit(lowHp);
-            if (boardUnit == null)
+            BoardUnitView boardUnitView = opponent ? GetRandomOpponentUnit() : GetRandomUnit(lowHp);
+            if (boardUnitView == null)
                 return false;
 
-            target = boardUnit;
+            target = boardUnitView;
 
             if (addAttackIgnore)
             {
-                _attackedUnitTargets.Add(boardUnit);
+                _attackedUnitTargets.Add(boardUnitView);
             }
 
             return true;
@@ -897,11 +897,11 @@ namespace Loom.ZombieBattleground
         private int GetPlayerAttackingValue()
         {
             int power = 0;
-            foreach (BoardUnit creature in _gameplayManager.OpponentPlayer.BoardCards)
+            foreach (BoardUnitView creature in _gameplayManager.OpponentPlayer.BoardCards)
             {
-                if (creature.CurrentHp > 0 && (creature.NumTurnsOnBoard >= 1 || creature.IsFeralUnit()))
+                if (creature.Model.CurrentHp > 0 && (creature.Model.NumTurnsOnBoard >= 1 || creature.Model.HasFeral))
                 {
-                    power += creature.CurrentDamage;
+                    power += creature.Model.CurrentDamage;
                 }
             }
 
@@ -911,23 +911,23 @@ namespace Loom.ZombieBattleground
         private int GetOpponentAttackingValue()
         {
             int power = 0;
-            foreach (BoardUnit card in _gameplayManager.CurrentPlayer.BoardCards)
+            foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
             {
-                power += card.CurrentDamage;
+                power += card.Model.CurrentDamage;
             }
 
             return power;
         }
 
-        private List<BoardUnit> GetUnitsWithLowHp(List<BoardUnit> unitsToIgnore = null)
+        private List<BoardUnitView> GetUnitsWithLowHp(List<BoardUnitView> unitsToIgnore = null)
         {
-            List<BoardUnit> finalList = new List<BoardUnit>();
+            List<BoardUnitView> finalList = new List<BoardUnitView>();
 
-            List<BoardUnit> list = GetUnitsOnBoard();
+            List<BoardUnitView> list = GetUnitsOnBoard();
 
-            foreach (BoardUnit item in list)
+            foreach (BoardUnitView item in list)
             {
-                if (item.CurrentHp < item.MaxCurrentHp)
+                if (item.Model.CurrentHp < item.Model.MaxCurrentHp)
                 {
                     finalList.Add(item);
                 }
@@ -938,7 +938,7 @@ namespace Loom.ZombieBattleground
                 finalList = finalList.FindAll(x => !unitsToIgnore.Contains(x));
             }
 
-            finalList = finalList.OrderBy(x => x.CurrentHp).OrderBy(y => y.CurrentHp.ToString().Length).ToList();
+            finalList = finalList.OrderBy(x => x.Model.CurrentHp).OrderBy(y => y.Model.CurrentHp.ToString().Length).ToList();
 
             return finalList;
         }
@@ -979,25 +979,25 @@ namespace Loom.ZombieBattleground
                 x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
         }
 
-        private List<BoardUnit> GetUnitsOnBoard()
+        private List<BoardUnitView> GetUnitsOnBoard()
         {
-            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0);
+            return _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0);
         }
 
-        private BoardUnit GetRandomUnit(bool lowHp = false, List<BoardUnit> unitsToIgnore = null)
+        private BoardUnitView GetRandomUnit(bool lowHp = false, List<BoardUnitView> unitsToIgnore = null)
         {
-            List<BoardUnit> eligibleUnits;
+            List<BoardUnitView> eligibleUnits;
 
             if (!lowHp)
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                        x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
+                        x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
             }
             else
             {
                 eligibleUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                    x.CurrentHp < x.MaxCurrentHp && !_attackedUnitTargets.Contains(x));
+                    x.Model.CurrentHp < x.Model.MaxCurrentHp && !_attackedUnitTargets.Contains(x));
             }
 
             if (unitsToIgnore != null)
@@ -1013,13 +1013,13 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        private BoardUnit GetTargetOpponentUnit()
+        private BoardUnitView GetTargetOpponentUnit()
         {
-            List<BoardUnit> eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.CurrentHp > 0);
+            List<BoardUnitView> eligibleUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0);
 
             if (eligibleUnits.Count > 0)
             {
-                List<BoardUnit> heavyUnits = eligibleUnits.FindAll(x => x.IsHeavyUnit());
+                List<BoardUnitView> heavyUnits = eligibleUnits.FindAll(x => x.Model.IsHeavyUnit);
                 if (heavyUnits != null && heavyUnits.Count >= 1)
                 {
                     return heavyUnits[_random.Next(0, heavyUnits.Count)];
@@ -1031,11 +1031,11 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        private BoardUnit GetRandomOpponentUnit(List<BoardUnit> unitsToIgnore = null)
+        private BoardUnitView GetRandomOpponentUnit(List<BoardUnitView> unitsToIgnore = null)
         {
-            List<BoardUnit> eligibleCreatures =
+            List<BoardUnitView> eligibleCreatures =
                 _gameplayManager.CurrentPlayer.BoardCards.FindAll(x =>
-                    x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
+                    x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x));
 
             if (unitsToIgnore != null)
             {
@@ -1052,11 +1052,11 @@ namespace Loom.ZombieBattleground
 
         private bool OpponentHasHeavyUnits()
         {
-            List<BoardUnit> board = _gameplayManager.CurrentPlayer.BoardCards;
-            List<BoardUnit> eligibleCreatures = board.FindAll(x => x.CurrentHp > 0);
+            List<BoardUnitView> board = _gameplayManager.CurrentPlayer.BoardCards;
+            List<BoardUnitView> eligibleCreatures = board.FindAll(x => x.Model.CurrentHp > 0);
             if (eligibleCreatures.Count > 0)
             {
-                List<BoardUnit> provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit());
+                List<BoardUnitView> provokeCreatures = eligibleCreatures.FindAll(x => x.Model.IsHeavyUnit);
                 return provokeCreatures != null && provokeCreatures.Count >= 1;
             }
 
@@ -1091,10 +1091,10 @@ namespace Loom.ZombieBattleground
                         if (skill.Skill.ElementTargetTypes.Count > 0)
                         {
                             _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                                !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType));
+                                !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType));
                         }
 
-                        List<BoardUnit> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
+                        List<BoardUnitView> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
 
                         if (units.Count > 0)
                         {
@@ -1109,9 +1109,9 @@ namespace Loom.ZombieBattleground
                 {
                     _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
                         skill.Skill.ElementTargetTypes.Count > 0 &&
-                        !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType) ||
-                        x.NumTurnsOnBoard > 0 || x.HasFeral);
-                    BoardUnit unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
+                        !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
+                        x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral);
+                    BoardUnitView unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
 
                     if (unit != null)
                     {
@@ -1130,7 +1130,7 @@ namespace Loom.ZombieBattleground
                     target = _gameplayManager.CurrentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.PLAYER;
 
-                    BoardUnit unit = GetRandomOpponentUnit();
+                    BoardUnitView unit = GetRandomOpponentUnit();
 
                     if (unit != null)
                     {
@@ -1145,28 +1145,28 @@ namespace Loom.ZombieBattleground
                     if (skill.Skill.ElementTargetTypes.Count > 0)
                     {
                         _unitsToIgnoreThisTurn = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                            !skill.Skill.ElementTargetTypes.Contains(x.Card.LibraryCard.CardSetType));
+                            !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType));
                     }
 
-                    List<BoardUnit> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
+                    List<BoardUnitView> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
 
                     if (units.Count > 0)
                     {
                         target = units[0];
 
-                        _unitsToIgnoreThisTurn.Add(target as BoardUnit);
+                        _unitsToIgnoreThisTurn.Add(target as BoardUnitView);
 
                         selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
                     else
                     {
-                        BoardUnit unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
+                        BoardUnitView unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
 
                         if (unit != null)
                         {
                             target = unit;
 
-                            _unitsToIgnoreThisTurn.Add(target as BoardUnit);
+                            _unitsToIgnoreThisTurn.Add(target as BoardUnitView);
 
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
@@ -1200,7 +1200,7 @@ namespace Loom.ZombieBattleground
             {
                 if (target != null)
                 {
-                    BoardUnit unit = target as BoardUnit;
+                    BoardUnitView unit = target as BoardUnitView;
 
                     skill.FightTargetingArrow = CreateOpponentTarget(
                         true,

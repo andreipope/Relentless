@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         private int _abilityValue;
 
-        private BoardUnit _abilityUsedOnUnit;
+        private BoardUnitModel _abilityUsedOnUnitModel;
 
         private GameObject _attackingCreatureObj, _attackedCreatureObj;
 
@@ -31,12 +31,12 @@ namespace Loom.ZombieBattleground
             _abilityOwner = GameAction.Parameters[0];
             _usedAbility = GameAction.Parameters[1] as AbilityData;
             _abilityValue = (int) GameAction.Parameters[2];
-            _abilityUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
+            _abilityUsedOnUnitModel = GameAction.Parameters[3] as BoardUnitModel;
 
-            if (_abilityOwner is BoardUnit)
+            if (_abilityOwner is BoardUnitView)
             {
-                PreviewImage.sprite = (_abilityOwner as BoardUnit).Sprite;
-                _attackingCreatureObj = CreateCardPreview((_abilityOwner as BoardUnit).Card, Vector3.zero);
+                PreviewImage.sprite = (_abilityOwner as BoardUnitView).Sprite;
+                _attackingCreatureObj = CreateCardPreview((_abilityOwner as BoardUnitView).Model.Card, Vector3.zero);
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
 
             AttackingPictureObject.SetActive(true);
 
-            _attackedCreatureObj = CreateCardPreview(_abilityUsedOnUnit.Card, Vector3.right * 6);
+            _attackedCreatureObj = CreateCardPreview(_abilityUsedOnUnitModel.Card, Vector3.right * 6);
 
             GameObject attackViewPlayer = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;
             attackViewPlayer.SetActive(true);

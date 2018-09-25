@@ -34,16 +34,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit creature = info as BoardUnit;
+            BoardUnitView creature = info as BoardUnitView;
 
             CreateVfx(creature.Transform.position);
 
-            BoardUnit leftAdjustment = null, rightAdjastment = null;
+            BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            for (int i = 0; i < creature.OwnerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < creature.Model.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (creature.OwnerPlayer.BoardCards[i] == creature)
+                if (creature.Model.OwnerPlayer.BoardCards[i] == creature)
                 {
                     targetIndex = i;
                 }
@@ -53,46 +53,46 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    leftAdjustment = creature.OwnerPlayer.BoardCards[targetIndex - 1];
+                    leftAdjustment = creature.Model.OwnerPlayer.BoardCards[targetIndex - 1];
                 }
 
-                if (targetIndex + 1 < creature.OwnerPlayer.BoardCards.Count)
+                if (targetIndex + 1 < creature.Model.OwnerPlayer.BoardCards.Count)
                 {
-                    rightAdjastment = creature.OwnerPlayer.BoardCards[targetIndex + 1];
+                    rightAdjastment = creature.Model.OwnerPlayer.BoardCards[targetIndex + 1];
                 }
             }
 
             if (leftAdjustment != null)
             {
-                if (leftAdjustment.IsStun)
+                if (leftAdjustment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
+                    BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, leftAdjustment.Model);
                 }
                 else
                 {
-                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
+                    leftAdjustment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
             if (rightAdjastment != null)
             {
-                if (rightAdjastment.IsStun)
+                if (rightAdjastment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
+                    BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, rightAdjastment.Model);
                 }
                 else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
+                    rightAdjastment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
-            if (creature.IsStun)
+            if (creature.Model.IsStun)
             {
-                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, creature);
+                BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, creature.Model);
             }
             else
             {
-                creature.Stun(Enumerators.StunType.FREEZE, 1);
+                creature.Model.Stun(Enumerators.StunType.FREEZE, 1);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action(TargetUnit);
+                Action(TargetUnitView);
             }
         }
     }

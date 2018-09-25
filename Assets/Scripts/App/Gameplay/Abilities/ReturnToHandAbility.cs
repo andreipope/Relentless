@@ -33,16 +33,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Vector3 unitPosition = TargetUnit.Transform.position;
+            Vector3 unitPosition = TargetUnitView.Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(TargetUnit);
+            CardsController.ReturnCardToHand(TargetUnitView);
 
             ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
                 Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
                 {
-                            PlayerCallerOfAbility, AbilityData, TargetUnit
+                            PlayerCallerOfAbility, AbilityData, TargetUnitView.Model
                 }));
         }
 

@@ -74,7 +74,11 @@ namespace Loom.ZombieBattleground
 
         public GameObject CreateCardPreview(WorkingCard card, Vector3 pos)
         {
-            BoardCard boardCard;
+            return CreateCardPreview(card, pos, out BoardCard _);
+        }
+
+        public GameObject CreateCardPreview(WorkingCard card, Vector3 pos, out BoardCard boardCard)
+        {
             GameObject currentBoardCard;
             CardsController.GetSetOfCard(card.LibraryCard);
 

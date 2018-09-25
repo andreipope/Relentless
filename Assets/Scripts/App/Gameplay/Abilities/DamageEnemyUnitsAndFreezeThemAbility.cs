@@ -37,14 +37,14 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 
-                        foreach (BoardUnit unit in opponent.BoardCards)
+                        foreach (BoardUnitView unit in opponent.BoardCards)
                         {
-                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit.Model);
                         }
 
-                        foreach (BoardUnit unit in opponent.BoardCards)
+                        foreach (BoardUnitView unit in opponent.BoardCards)
                         {
-                            unit.Stun(Enumerators.StunType.FREEZE, Value);
+                            unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
                         }
 
                         break;

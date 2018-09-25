@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
     {
         public List<Enumerators.AbilityTargetType> PossibleTargets = new List<Enumerators.AbilityTargetType>();
 
-        public BoardUnit SelfBoardCreature;
+        public BoardUnitView SelfBoardCreature;
 
         public Enumerators.CardType TargetUnitType;
 
@@ -23,9 +23,9 @@ namespace Loom.ZombieBattleground
 
         private int _onEscapeInputIndex;
 
-        public event Action<BoardUnit> CardSelected;
+        public event Action<BoardUnitView> CardSelected;
 
-        public event Action<BoardUnit> CardUnselected;
+        public event Action<BoardUnitView> CardUnselected;
 
         public event Action<Player> PlayerSelected;
 
@@ -35,9 +35,9 @@ namespace Loom.ZombieBattleground
 
         public event Action InputCanceled;
 
-        public override void OnCardSelected(BoardUnit unit)
+        public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.CurrentHp <= 0)
+            if (unit.Model.CurrentHp <= 0)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
@@ -46,10 +46,10 @@ namespace Loom.ZombieBattleground
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (TargetUnitType == Enumerators.CardType.NONE || unit.InitialUnitType == TargetUnitType)
+                if (TargetUnitType == Enumerators.CardType.NONE || unit.Model.InitialUnitType == TargetUnitType)
                 {
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.UnitStatus == TargetUnitStatusType)
+                        unit.Model.UnitStatus == TargetUnitStatusType)
                     {
                         if (SelfBoardCreature != unit)
                         {
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public override void OnCardUnselected(BoardUnit creature)
+        public override void OnCardUnselected(BoardUnitView creature)
         {
             if (SelectedCard == creature)
             {

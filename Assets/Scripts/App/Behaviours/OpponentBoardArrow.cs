@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
                     TargetPosition = player.AvatarObject.transform.position;
                     player.SetGlowStatus(true);
                     break;
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     TargetPosition = unit.Transform.position;
                     unit.SetSelectedUnit(true);
                     break;
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    (_target as BoardUnit)?.SetSelectedUnit(false);
+                    (_target as BoardUnitView)?.SetSelectedUnit(false);
                 }
 
                 _target = null;

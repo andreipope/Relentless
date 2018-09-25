@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitOwner)
+                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitViewOwner)
                 {
                     targetIndex = i;
                     break;
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            TakeDamageToUnit(AbilityUnitOwner);
+            TakeDamageToUnit(AbilityUnitViewOwner);
         }
 
         protected override void TurnEndedHandler()
@@ -58,9 +58,9 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        private void TakeDamageToUnit(BoardUnit unit)
+        private void TakeDamageToUnit(BoardUnitView unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model);
             CreateVfx(unit.Transform.position, true, 5f);
         }
     }

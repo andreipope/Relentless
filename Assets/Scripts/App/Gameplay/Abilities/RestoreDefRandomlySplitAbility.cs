@@ -84,13 +84,13 @@ namespace Loom.ZombieBattleground
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
-            if(target is BoardUnit unit)
+            if(target is BoardUnitView unit)
             {
-                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
+                BattleController.HealUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model, defenseValue);
             }
             else if(target is Player player)
             {
-                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                BattleController.HealPlayerByAbility(AbilityUnitViewOwner, AbilityData, player, defenseValue);
             }
         }
     }

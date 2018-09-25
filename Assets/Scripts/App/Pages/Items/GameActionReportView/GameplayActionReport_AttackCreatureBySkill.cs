@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private int _skillValue;
 
-        private BoardUnit _skillUsedOnUnit;
+        private BoardUnitModel _skillUsedOnUnitModel;
 
         private GameObject _attackedCreatureObj, _attackingPlayerObj;
 
@@ -29,14 +29,14 @@ namespace Loom.ZombieBattleground
             _callerPlayer = GameAction.Parameters[0] as Player;
             _usedSkill = GameAction.Parameters[1] as HeroSkill;
             _skillValue = (int) GameAction.Parameters[2];
-            _skillUsedOnUnit = GameAction.Parameters[3] as BoardUnit;
+            _skillUsedOnUnitModel = GameAction.Parameters[3] as BoardUnitModel;
 
             PreviewImage.sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
                 _callerPlayer.SelfHero.HeroElement + "_EXP");
 
             AttackingPictureObject.SetActive(true);
 
-            _attackedCreatureObj = CreateCardPreview(_skillUsedOnUnit.Card, Vector3.right * 6);
+            _attackedCreatureObj = CreateCardPreview(_skillUsedOnUnitModel.Card, Vector3.right * 6);
             _attackingPlayerObj = CreatePlayerPreview(_callerPlayer, Vector3.zero);
 
             GameObject cardView = _attackedCreatureObj.transform.Find("AttackingHealth").gameObject;

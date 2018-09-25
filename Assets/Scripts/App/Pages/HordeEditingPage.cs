@@ -536,10 +536,10 @@ namespace Loom.ZombieBattleground
                 RepositionHordeCards();
                 UpdateNumCardsText();
 
-                if(_highlightingVFXItem.cardId == boardCard.LibraryCard.Id)
+                if(_highlightingVFXItem.CardId == boardCard.LibraryCard.Id)
                 {
                     _highlightingVFXItem.ChangeState(false);
-                    _highlightingVFXItem.cardId = -1;
+                    _highlightingVFXItem.CardId = -1;
                 }
             }
             else
@@ -951,7 +951,7 @@ namespace Loom.ZombieBattleground
                 if (i + 1 > _currentHordePage * CardsPerPage && i + 1 < (_currentHordePage + 1) * CardsPerPage + 1)
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
-                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.CardId)
                     {
                         _highlightingVFXItem.ChangeState(true);
                     }
@@ -959,7 +959,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _createdHordeCards[i].GameObject.SetActive(false);
-                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.CardId)
                     {
                         _highlightingVFXItem.ChangeState(false);
                     }

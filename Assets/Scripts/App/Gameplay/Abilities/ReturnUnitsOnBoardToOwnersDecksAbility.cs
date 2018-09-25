@@ -25,11 +25,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnit> units = new List<BoardUnit>();
+            List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (BoardUnit unit in units)
+            foreach (BoardUnitView unit in units)
             {
                 ReturnBoardUnitToDeck(unit);
             }
@@ -37,14 +37,14 @@ namespace Loom.ZombieBattleground
             units.Clear();
         }
 
-        private void ReturnBoardUnitToDeck(BoardUnit unit)
+        private void ReturnBoardUnitToDeck(BoardUnitView unit)
         {
-            if (AbilityUnitOwner != null && unit == AbilityUnitOwner || unit == null)
+            if (AbilityUnitViewOwner != null && unit == AbilityUnitViewOwner || unit == null)
                 return;
 
             // implement animation
-            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard.Clone(), unit.OwnerPlayer));
-            unit.MoveUnitFromBoardToDeck();
+            unit.Model.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Model.Card.LibraryCard.Clone(), unit.Model.OwnerPlayer));
+            unit.Model.MoveUnitFromBoardToDeck();
         }
     }
 }

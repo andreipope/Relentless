@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             CardsInGraveyard = new List<WorkingCard>();
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
-            BoardCards = new List<BoardUnit>();
+            BoardCards = new List<BoardUnitView>();
 
             CardsPreparingToHand = new List<BoardCard>();
 
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public List<BoardUnit> BoardCards { get; set; }
+        public List<BoardUnitView> BoardCards { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; set; }
 
@@ -374,14 +374,15 @@ namespace Loom.ZombieBattleground
 
             cards = ShuffleCardsList(cards);
 
+#if DEV_MODE
+            if (IsLocalPlayer)
+            {
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
+            }
+#endif
+
             foreach (string card in cards)
             {
-#if DEV_MODE
-                if (IsLocalPlayer)
-                {
-                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card /* 15 */), this)); // special card id
-                }
-#endif
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
