@@ -64,7 +64,9 @@ namespace Loom.ZombieBattleground
             base.Start();
 
             if (ShiftedChild != null)
+			{
                 _originalShiftedChildPosition = ShiftedChild.localPosition;
+			}
         }
 
 #if UNITY_EDITOR
