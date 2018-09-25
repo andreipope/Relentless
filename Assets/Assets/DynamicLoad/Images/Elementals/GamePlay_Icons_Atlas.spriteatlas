@@ -107,6 +107,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: fb556607fa6553e46b304ea6bdcb3dd9, type: 3}
   - {fileID: 21300000, guid: 9a8c8e373c9b5b542904e405d2a50801, type: 3}
   - {fileID: 21300000, guid: 5ba2f0677dffa5d488b5e7e3a3b10c4f, type: 3}
+  - {fileID: 21300000, guid: 6598fad7eefebfb48aa58cd6d4cb5cc6, type: 3}
   - {fileID: 21300000, guid: 7bb4dbd79a9d13f4587e4a350cad40cb, type: 3}
   - {fileID: 21300000, guid: c998f908a5464ac478a2295de35ab663, type: 3}
   - {fileID: 21300000, guid: 0c5cdd08718a66b42a11819cf3da17e8, type: 3}
@@ -115,6 +116,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ea5288487ae848041998c78326af1199, type: 3}
   - {fileID: 21300000, guid: 28e3cd58c7eda074bb68cdf6dac82ced, type: 3}
   - {fileID: 21300000, guid: f5460ba8097ec024ab7ee0af9f1bbf07, type: 3}
+  - {fileID: 21300000, guid: 869079f893ff3d54f9547fb67b953762, type: 3}
   - {fileID: 21300000, guid: 7c062b096b2e35e43a938fbc76368343, type: 3}
   - {fileID: 21300000, guid: 7feb635966e5427478e9f557eb61bd78, type: 3}
   - {fileID: 21300000, guid: d8bb32694d4d01646b6169403adbb432, type: 3}
@@ -140,6 +142,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ad434eac6d1ddd248bc9a0a117a38b67, type: 3}
   - {fileID: 21300000, guid: a8f9286df4f3cbb4f9a9b80bc82ff898, type: 3}
   - {fileID: 21300000, guid: 47d9ff7d668e98544965200b442232e2, type: 3}
+  - {fileID: 21300000, guid: f01c5ccde21ed1b4798ef4ec19eda58f, type: 3}
   - {fileID: 21300000, guid: b76496ddc12866a46948b0fa14d45988, type: 3}
   - {fileID: 21300000, guid: 7aaa19dd44ea5704788b37e22f0a5287, type: 3}
   - {fileID: 21300000, guid: 61df333e9c4e0c34abb74afb99d0c822, type: 3}
@@ -188,6 +191,7 @@ SpriteAtlas:
   - battleground_past_action_bar_icon_overflow
   - battleground_past_action_bar_icon_shield_buff
   - battleground_past_action_bar_icon_life_gain
+  - overlordability_fire_mass_rabies
   - battleground_mechanic_icon_devour_large
   - battleground_mechanic_icon_end_large
   - battleground_mechanic_icon_flash_large
@@ -196,6 +200,7 @@ SpriteAtlas:
   - battleground_rank_icon_general_large
   - battleground_past_action_bar_icon_attack_buff
   - battleground_past_action_bar_icon_heavy
+  - overlordability_fire_fireball
   - battleground_rank_icon_commander_large
   - heroability_toxic_poison_dart
   - overlordability_fire_rabies
@@ -221,6 +226,7 @@ SpriteAtlas:
   - overlordability_locked
   - overlordability_earth
   - overlordability_air_push
+  - overlordability_fire_meteor_shower
   - battleground_rank_icon_officer_large
   - Icon_element_water_noborder
   - heroability_life_mend

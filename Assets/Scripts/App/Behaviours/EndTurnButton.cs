@@ -27,6 +27,9 @@ public class EndTurnButton : MonoBehaviour
     [FormerlySerializedAs("buttonText")]
     private TextMeshPro _buttonText;
 
+    [SerializeField] private GameObject _endButtonGlowObject;
+
+
     private bool _hovering;
 
     private bool _active;
@@ -38,6 +41,7 @@ public class EndTurnButton : MonoBehaviour
         _active = enabled;
         _buttonText.text = enabled ? "END\nTURN" : "\nWAIT";
         _thisRenderer.sprite = enabled ? _defaultSprite : _pressedSprite;
+        _endButtonGlowObject.SetActive(enabled);
     }
 
     private void Awake()

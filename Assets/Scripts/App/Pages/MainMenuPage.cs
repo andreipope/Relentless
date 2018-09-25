@@ -203,7 +203,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _stateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+                _stateManager.ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
             }
         }
 
@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
         private void OnClickCollection()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _stateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BuyButtonHandler()
