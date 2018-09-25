@@ -121,6 +121,8 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
+            NONE,
+
             PLAY_CARD_FROM_HAND,
             PLAY_CARD_FROM_HAND_ON_CARD,
             PLAY_CARD_FROM_HAND_ON_MULTIPLE_CARDS,
@@ -462,6 +464,9 @@ namespace Loom.ZombieBattleground.Common
             DEATH_MARK,
             GUARD,
             OVERFLOW,
+            FREEZE,
+
+            PUSH,
         }
     }
 }

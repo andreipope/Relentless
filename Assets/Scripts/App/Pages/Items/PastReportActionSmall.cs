@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
             SelfObject.transform.SetAsFirstSibling();
             PreviewImage = SelfObject.transform.Find("Image").GetComponent<Image>();
 
-            PreviewImage.sprite = null; // todo improve
+            PreviewImage.sprite = GetPreviewImage();
 
             OnBehaviourHandler behaviour = SelfObject.transform.Find("Collider").GetComponent<OnBehaviourHandler>();
             behaviour.MouseDownTriggered += MouseDownHandler;
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if(Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0))
             {
                 if (_mainRoot.IsDrawing)
                 {
@@ -56,10 +56,37 @@ namespace Loom.ZombieBattleground
                 _mainRoot.IsDrawing = true;
             }
         }
-      
+
         public void Dispose()
         {
             Object.Destroy(SelfObject);
+        }
+
+        private Sprite GetPreviewImage()
+        {
+            Sprite sprite = null;
+
+            if (PastActionReport.Caller is Player player)
+            {
+                sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                                                                    player.SelfHero.HeroElement + "_EXP");
+            }
+            else if (PastActionReport.Caller is BoardUnit unit)
+            {
+                sprite = unit.Sprite;
+            }
+            else if (PastActionReport.Caller is BoardCard card)
+            {
+                sprite = card.PictureSprite.sprite;
+            }
+            else if (PastActionReport.Caller is BoardSkill skill)
+            {
+                sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
+                                                                    skill.Owner.SelfHero.HeroElement + "_" +
+                                                                    skill.Skill.Skill.ToLower());
+            }
+
+            return sprite;
         }
     }
 }

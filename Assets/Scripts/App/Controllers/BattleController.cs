@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+         /*   _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
                 Caller = skill,
@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                         Target = attackedUnit
                     }
                 }
-            });
+            }); */
         }
 
         public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer)
@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+              /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
                     Caller = skill,
@@ -189,7 +189,7 @@ namespace Loom.ZombieBattleground
                             Target = attackedPlayer
                         }
                     }
-                });
+                }); */
             }
         }
 
@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+          /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
                 Caller = skill,
@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
                             Target = healedPlayer
                         }
                     }
-            });
+            }); */
         }
 
         public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnit healedCreature)
@@ -234,7 +234,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+           /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
                 Caller = skill,
@@ -246,7 +246,7 @@ namespace Loom.ZombieBattleground
                             Target = healedCreature
                         }
                     }
-            });
+            }); */
         }
 
         public void AttackUnitByAbility(
