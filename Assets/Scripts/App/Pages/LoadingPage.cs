@@ -101,8 +101,8 @@ namespace Loom.ZombieBattleground
                         }
                         catch (Exception e)
                         {
-                            // HACK: ignore to allow offline mode
-                            Debug.LogWarning(e);
+                            success = false;
+                            _uiManager.DrawPopup<LoginPopup>();
                         }
 
                         connectionPopup.Hide();
