@@ -124,6 +124,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.PreviewCardInstantiated += boardCard =>
             {
                 boardCard.Transform.Find("Amount").gameObject.SetActive(false);
+                boardCard.Transform.Find("AmountForArmy").gameObject.SetActive(false);
                 boardCard.SetAmountOfCardsInEditingPage(true, 0, 0);
             };
 
@@ -694,7 +695,7 @@ namespace Loom.ZombieBattleground
             {
                 if (card.LibraryCard.Name == cardId)
                 {
-                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.LibraryCard), amount);
+                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.LibraryCard), amount, true);
                     //card.UpdateAmount(amount);
                     break;
                 }
@@ -1020,6 +1021,8 @@ namespace Loom.ZombieBattleground
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
             _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
+            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
+            _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
 
             _isDragging = true;

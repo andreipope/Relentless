@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Helpers
             return list.OrderBy(item => rnd.Next()).ToList();
         }
 
-        public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false)
         {
             int count = root.childCount;
 
@@ -55,10 +55,22 @@ namespace Loom.ZombieBattleground.Helpers
 
             Vector3 pivot = new Vector3(offset, 0, 0);
 
-            for (int i = 0; i < count; i++)
+            if (!isReverse)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
-                pivot.x += width / count;
+                for (int i = 0; i < count; i++)
+                {
+                    root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, 0);
+                    pivot.x += width / count;
+                }
+            }
+            else
+            {
+                //pivot.x -= width; 
+                for (int i = 0; i < count; i++)
+                {
+                    root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, 0);
+                    pivot.x += spacing;
+                }
             }
         }
 
