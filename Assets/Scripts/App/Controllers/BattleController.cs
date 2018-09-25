@@ -151,20 +151,6 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
             }
-
-         /*   _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
-                Caller = skill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
-                        Target = attackedUnit
-                    }
-                }
-            }); */
         }
 
         public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer)
@@ -176,20 +162,6 @@ namespace Loom.ZombieBattleground
                 attackedPlayer.Health -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
-
-              /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                {
-                    ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
-                    Caller = skill,
-                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
-                            Target = attackedPlayer
-                        }
-                    }
-                }); */
             }
         }
 
@@ -208,20 +180,6 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-
-          /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
-                Caller = skill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.SHIELD_BUFF,
-                            Target = healedPlayer
-                        }
-                    }
-            }); */
         }
 
         public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnit healedCreature)
@@ -234,20 +192,6 @@ namespace Loom.ZombieBattleground
                     healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
                 }
             }
-
-           /*  _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD,
-                Caller = skill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.SHIELD_BUFF,
-                            Target = healedCreature
-                        }
-                    }
-            }); */
         }
 
         public void AttackUnitByAbility(
