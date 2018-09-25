@@ -206,14 +206,6 @@ namespace Loom.ZombieBattleground
 
         private async void DeckDeletingHandler(HordeDeckObject deck)
         {
-            // HACK for offline mode in online mode, local data should only be saved after
-            // backend operation has succeeded
-            _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
             try
             {
                 await _backendFacade.DeleteDeck(
@@ -221,19 +213,18 @@ namespace Loom.ZombieBattleground
                     deck.SelfDeck.Id,
                     _dataManager.CachedDecksLastModificationTimestamp
                 );
+                _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
             catch (Exception e)
             {
-                // HACK for offline mode
-#pragma warning disable 162
-                if (false)
-                {
-                    Debug.Log("Result === " + e);
-                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
-                    return;
-                }
-#pragma warning restore 162
+                Debug.Log("Result === " + e);
+                OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
+                return;
             }
 
             LoadDeckObjects();
