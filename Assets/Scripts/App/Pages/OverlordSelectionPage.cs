@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class HeroSelectionPage : IUIElement
+    public class OverlordSelectionPage : IUIElement
     {
         private const float ScrollAnimationDuration = 0.5f;
 
@@ -62,11 +62,11 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/HeroSelectionPage"),
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/OverlordSelectionPage"),
                 _uiManager.Canvas.transform, false);
 
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            _continueButton = _selfPage.transform.Find("Button_Continue").GetComponent<Button>();
+            _continueButton = _selfPage.transform.Find("Image_BottomMask/Button_Continue").GetComponent<Button>();
             _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
@@ -99,13 +99,12 @@ namespace Loom.ZombieBattleground
         }
 
         private bool SetSelectedHeroIndexAndUpdateScrollPosition(
-            int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false)
+            int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false, int direction = 1)
         {
             if (!force && heroIndex == _selectedHeroIndex)
             {
                 return false;
             }
-
             _selectedHeroIndex = heroIndex;
 
             RectTransform overlordContainerRectTransform = _overlordsContainer.GetComponent<RectTransform>();
@@ -129,7 +128,7 @@ namespace Loom.ZombieBattleground
 
             if (selectOverlordObject)
             {
-                _overlordObjects[_selectedHeroIndex].Select(animateTransition);
+                _overlordObjects[_selectedHeroIndex].Select(animateTransition, direction);
             }
 
             return true;
@@ -198,19 +197,19 @@ namespace Loom.ZombieBattleground
 
             if (newIndex < 0)
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false);
-                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(force: true);
+                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false, false, direction);
+                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true, true, false, direction);
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(true, true);
             }
             else if (newIndex >= _overlordObjects.Count)
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(-1, false, false);
-                SetSelectedHeroIndexAndUpdateScrollPosition(0, true);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(force: true);
+                SetSelectedHeroIndexAndUpdateScrollPosition(-1, false, false, false, direction);
+                SetSelectedHeroIndexAndUpdateScrollPosition(0, true, true, false, direction);
+                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(true, true);
             }
             else
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(newIndex, true);
+                SetSelectedHeroIndexAndUpdateScrollPosition(newIndex, true, true, false, direction);
             }
         }
 
@@ -247,7 +246,11 @@ namespace Loom.ZombieBattleground
 
             private readonly Image _highlightImage;
 
-            private readonly Image _glowImage;
+            private readonly Material _glowMeshMaterial;
+           
+            private readonly Material _glowParticleShine;
+
+            private readonly Material _glowParticleDots;
 
             private readonly Image _overlordPicture;
 
@@ -280,7 +283,14 @@ namespace Loom.ZombieBattleground
                 SelfObject.gameObject.name = hero.FullName;
 
                 _highlightImage = SelfObject.transform.Find("Image_Highlight").gameObject.GetComponent<Image>();
-                _glowImage = SelfObject.transform.Find("Image_Glow").gameObject.GetComponent<Image>();
+                Transform glowContainer = SelfObject.transform.Find("Glow");
+                Transform glowObject = Object.Instantiate(
+                        _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/VFX/UI/Overlord/ZB_ANM_OverLordSelector_" + SelfHero.Element), glowContainer, false).transform;
+
+                _glowMeshMaterial = glowObject.Find("VFX_All/MeshGlow").GetComponent<MeshRenderer>().material;
+                _glowParticleShine = glowObject.Find("VFX_All/glowingEffect/energy").GetComponent<ParticleSystemRenderer>().material;
+                _glowParticleDots = glowObject.Find("VFX_All/glowingEffect/Dots").GetComponent<ParticleSystemRenderer>().material;
 
                 _overlordPicture = SelfObject.transform.Find("Image_OverlordPicture").GetComponent<Image>();
                 _overlordPictureGray = SelfObject.transform.Find("Image_OverlordPictureGray").GetComponent<Image>();
@@ -304,6 +314,11 @@ namespace Loom.ZombieBattleground
 
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
 
+                _glowMeshMaterial.color.SetAlpha(0);
+                _glowParticleShine.SetFloat("_Alpha", 0);
+                _glowParticleDots.SetFloat("_Alpha", 0);
+                //_glow.SetActive(false);
+
                 Deselect(false, true);
             }
 
@@ -320,7 +335,7 @@ namespace Loom.ZombieBattleground
                 Object.Destroy(SelfObject);
             }
 
-            public void Select(bool animateTransition = true)
+            public void Select(bool animateTransition = true, int direction = 1)
             {
                 if (IsSelected)
                     return;
@@ -335,7 +350,7 @@ namespace Loom.ZombieBattleground
 
                 _elementIcon.sprite = _elementIconSprite;
 
-                SetUIActiveState(true, animateTransition, false);
+                SetUIActiveState(true, animateTransition, false, direction);
 
                 OverlordObjectSelectedEvent?.Invoke(this);
             }
@@ -348,11 +363,10 @@ namespace Loom.ZombieBattleground
                 IsSelected = false;
 
                 SelfObject.gameObject.name = SelfHero.Name;
-
                 SetUIActiveState(false, animateTransition, force);
             }
 
-            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha)
+            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha, int direction = 1)
             {
                 float duration = animateTransition ? ScrollAnimationDuration : 0f;
                 float targetAlpha = active ? 1f : 0f;
@@ -367,16 +381,27 @@ namespace Loom.ZombieBattleground
                     {
                         image.color = image.color.SetAlpha(invert ? targetAlpha : 1f - targetAlpha);
                     }
+                    Color color = image.color.SetAlpha(invert ? 1f - targetAlpha : targetAlpha);
 
+                    float delay = (direction < 0 && active) ? 0.3f : 0;
+                    float durationGlow = duration / 3f;
+
+                    _stateChangeSequence.Insert(delay, _glowMeshMaterial.DOFade(color.a, durationGlow));
+                    _stateChangeSequence.Insert(delay, _glowParticleShine.DOFloat(color.a, "_Alpha", durationGlow));
+                    _stateChangeSequence.Insert(delay, _glowParticleDots.DOFloat(color.a, "_Alpha", durationGlow));
                     _stateChangeSequence.Insert(0f,
-                        image.DOColor(image.color.SetAlpha(invert ? 1f - targetAlpha : targetAlpha), duration)
-                            .OnComplete(() => image.gameObject.SetActive(invert ? !active : active)));
+                            image.DOColor(color, duration)
+                            .OnComplete(() => {
+                                image.gameObject.SetActive(invert ? !active : active);
+                            }));
+
                 };
+
+                
 
                 applyAnimation(_overlordPicture, false);
                 applyAnimation(_overlordPictureGray, true);
                 applyAnimation(_highlightImage, false);
-                applyAnimation(_glowImage, false);
             }
         }
 
