@@ -127,11 +127,9 @@ namespace Loom.ZombieBattleground.Helpers
             if (string.IsNullOrEmpty(origin))
                 return origin;
 
-            string newValue = string.Empty;
-
             char[] chars = origin.Replace("_", " ").ToCharArray();
 
-            newValue = chars[0].ToString().ToUpper();
+            string newValue = chars[0].ToString().ToUpper();
 
             for(int i = 1; i < chars.Length; i++)
             {
