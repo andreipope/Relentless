@@ -92,9 +92,9 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception)
                 {
-                    if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MAIN_MENU)
+                    if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                     {
-                        SetUIState(ConnectionState.ConnectionFailedOnMenu);
+                        SetUIState(ConnectionState.ConnectionFailedInGame);
                     }
                     else
                     {
@@ -104,9 +104,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ShowFailedOnMenu()
+        public void ShowFailedInGame()
         {
-            SetUIState(ConnectionState.ConnectionFailedOnMenu);
+            SetUIState(ConnectionState.ConnectionFailedInGame);
         }
 
         private async void PressedReconnectHandler()
@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground
                     _closeButton.gameObject.SetActive(false);
                     _reconnectButton.gameObject.SetActive(true);
                     break;
-                case ConnectionState.ConnectionFailedOnMenu:
+                case ConnectionState.ConnectionFailedInGame:
                     _failedGroup.gameObject.SetActive(true);
                     _closeButton.gameObject.SetActive(true);
                     _reconnectButton.gameObject.SetActive(false);
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
 
             ConnectionFailed,
 
-            ConnectionFailedOnMenu
+            ConnectionFailedInGame
         }
     }
 }
