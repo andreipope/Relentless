@@ -37,6 +37,10 @@ namespace Loom.ZombieBattleground
 
         private List<AbilityInstance> _abilities;
 
+        private Hero _selectedHero;
+
+        private Canvas _backLayerCanvas;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -77,19 +81,21 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/OverlordAbilityPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _continueButton = Self.transform.Find("Button_Continue").GetComponent<Button>();
-            _cancelButton = Self.transform.Find("Button_Cancel").GetComponent<Button>();
+            _backLayerCanvas = Self.transform.Find("Canvas_BackLayer").GetComponent<Canvas>();
+
+            _continueButton = _backLayerCanvas.transform.Find("Button_Continue").GetComponent<Button>();
+            _cancelButton = _backLayerCanvas.transform.Find("Button_Cancel").GetComponent<Button>();
 
             _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
             _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
 
-            _title = Self.transform.Find("Title").GetComponent<TextMeshProUGUI>();
-            _skillName = Self.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
-            _skillDescription = Self.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
+            _title = _backLayerCanvas.transform.Find("Title").GetComponent<TextMeshProUGUI>();
+            _skillName = _backLayerCanvas.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
+            _skillDescription = _backLayerCanvas.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
 
             _abilitiesGroup = Self.transform.Find("Abilities").gameObject;
 
-            _heroImage = Self.transform.Find("HeroImage").GetComponent<Image>();
+            _heroImage = _backLayerCanvas.transform.Find("HeroImage").GetComponent<Image>();
 
             _abilities.Clear();
 
@@ -104,8 +110,8 @@ namespace Loom.ZombieBattleground
         public void Show(object data)
         {
             Show();
-
-            FillInfo((Hero) data);
+            _selectedHero = (Hero)data;
+            FillInfo(_selectedHero);
             _abilities[0].IsSelected = true;
             AbilityInstanceOnSelectionChanged(_abilities[0]);
         }
@@ -154,6 +160,8 @@ namespace Loom.ZombieBattleground
         {
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
+            int index = _selectedHero.Skills.IndexOf(ability.Skill);
+            _selectedHero.PrimarySkill = index;
         }
 
         private class AbilityInstance : IDisposable
@@ -164,7 +172,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Toggle _abilityToggle;
 
-            private readonly Image _glowImage;
+            private readonly GameObject _glowObj;
 
             private readonly Image _abilityIconImage;
 
@@ -187,7 +195,7 @@ namespace Loom.ZombieBattleground
                 _abilityToggle = SelfObject.GetComponent<Toggle>();
                 _abilityToggle.group = root.GetComponent<ToggleGroup>();
 
-                _glowImage = SelfObject.transform.Find("Glow").GetComponent<Image>();
+                _glowObj = SelfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = SelfObject.transform.Find("AbilityIcon").GetComponent<Image>();
 
                 _abilityToggle.onValueChanged.AddListener(OnToggleValueChanged);
@@ -240,7 +248,7 @@ namespace Loom.ZombieBattleground
 
             private void UpdateUIState()
             {
-                _glowImage.gameObject.SetActive(_isSelected);
+                _glowObj.SetActive(_isSelected);
 
                 _abilityToggle.interactable = Skill != null;
                 if (Skill != null)

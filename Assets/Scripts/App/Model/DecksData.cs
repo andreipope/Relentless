@@ -23,6 +23,10 @@ namespace Loom.ZombieBattleground.Data
 
         public List<DeckCardData> Cards;
 
+        public int PrimarySkill;
+
+        public int SecondarySkill;
+
         public Deck()
         {
             Cards = new List<DeckCardData>();

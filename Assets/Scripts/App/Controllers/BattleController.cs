@@ -199,7 +199,8 @@ namespace Loom.ZombieBattleground
             {
                 healedPlayer.Health += skill.Skill.Value;
 
-                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN)
+                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
+                    skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
                 {
                     if (healingPlayer.Health > Constants.DefaultPlayerHp)
                     {

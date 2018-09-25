@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HORDE_SELECTION);
 
             _uiManager.HidePopup<YouLosePopup>();
         }
