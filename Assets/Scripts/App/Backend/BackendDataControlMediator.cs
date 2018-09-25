@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Debug.LogWarning(e);
 
-                // HACK: ignore to allow offline mode
+                throw new Exception(e.Message);
             }
 
             try
@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Debug.LogWarning(e);
 
-                // HACK: ignore to allow offline mode
+                throw new Exception(e.Message);
             }
 
             await _dataManager.StartLoadCache();
