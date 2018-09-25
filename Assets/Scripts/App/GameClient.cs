@@ -1,4 +1,4 @@
-using System.Diagnostics;
+#define USE_STAGING_BACKEND
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
