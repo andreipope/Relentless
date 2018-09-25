@@ -358,21 +358,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private bool ShowConnectionLostPopupIfNeeded()
-        {
-            // HACK for offline mode
-            return false;
-#pragma warning disable 162
-            if (_backendFacade.IsConnected)
-            {
-                return false;
-            }
-
-            _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");
-            return true;
-#pragma warning restore 162
-        }
-
         public class HordeDeckObject
         {
             public Transform SelectionContainer;
@@ -545,17 +530,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        //private void AbilityPopupClosedEvent()
-        //{
-        //    _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
-        //}
-
-        // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
@@ -565,9 +541,6 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
@@ -581,9 +554,6 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             if (_selectedDeckId != -1)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
