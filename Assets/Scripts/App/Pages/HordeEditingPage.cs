@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _hordeAreaObject, _armyAreaObject;
 
+        private CardHighlightingVFXItem _highlightingVFXItem;
+
         private bool _isDragging;
 
         public int CurrentDeckId
@@ -178,6 +180,9 @@ namespace Loom.ZombieBattleground
             _buttonHordeArrowRight = _selfPage.transform.Find("Horde/ArrowRightButton").GetComponent<Button>();
             _hordeCardsContainer = _selfPage.transform.Find("Horde/Cards").GetComponent<RectTransform>();
             _hordeScrollNotifier = _selfPage.transform.Find("Horde/ScrollArea").GetComponent<SimpleScrollNotifier>();
+
+            _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
 
             _buttonBack.onClick.AddListener(BackButtonHandler);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
@@ -366,9 +371,10 @@ namespace Loom.ZombieBattleground
                 Card card = cards[i];
                 CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
 
-                // hack !!!! CHECK IT!!!
                 if (cardData == null)
+                {
                     continue;
+                }
 
                 BoardCard boardCard = CreateCard(card, Vector3.zero, _armyCardsContainer);
 
@@ -529,6 +535,12 @@ namespace Loom.ZombieBattleground
 
                 RepositionHordeCards();
                 UpdateNumCardsText();
+
+                if(_highlightingVFXItem.cardId == boardCard.LibraryCard.Id)
+                {
+                    _highlightingVFXItem.ChangeState(false);
+                    _highlightingVFXItem.cardId = -1;
+                }
             }
             else
             {
@@ -540,7 +552,9 @@ namespace Loom.ZombieBattleground
         public void AddCardToDeck(DeckBuilderCard sender, Card card)
         {
             if (_currentDeck == null)
+            {
                 return;
+            }
 
             if (_against[_dataManager.CachedHeroesData.HeroesParsed[_currentHeroId].HeroElement] == card.CardSetType)
             {
@@ -816,6 +830,7 @@ namespace Loom.ZombieBattleground
             if (deckBuilderCard.IsHordeItem)
             {
                 boardCard = _createdHordeCards.First(c => c.LibraryCard.Id == card.Id);
+                _highlightingVFXItem.SetActiveCard(boardCard);
             }
             else
             {
@@ -936,10 +951,18 @@ namespace Loom.ZombieBattleground
                 if (i + 1 > _currentHordePage * CardsPerPage && i + 1 < (_currentHordePage + 1) * CardsPerPage + 1)
                 {
                     _createdHordeCards[i].GameObject.SetActive(true);
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                    {
+                        _highlightingVFXItem.ChangeState(true);
+                    }
                 }
                 else
                 {
                     _createdHordeCards[i].GameObject.SetActive(false);
+                    if (_createdHordeCards[i].LibraryCard.Id == _highlightingVFXItem.cardId)
+                    {
+                        _highlightingVFXItem.ChangeState(false);
+                    }
                 }
             }
         }
@@ -984,7 +1007,9 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
+            {
                 return;
+            }
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
@@ -1001,7 +1026,9 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
+            {
                 return;
+            }
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1029,7 +1056,9 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragUpdatedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
+            {
                 return;
+            }
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             position.z = _draggingObject.transform.position.z;
