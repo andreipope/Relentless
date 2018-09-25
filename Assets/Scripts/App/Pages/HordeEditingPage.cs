@@ -453,7 +453,6 @@ namespace Loom.ZombieBattleground
             foreach (DeckCardData card in deck.Cards)
             {
                 Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
-                //UpdateCardAmount(true, card.CardName, card.Amount);
 
                 bool itemFound = false;
                 foreach (BoardCard item in _createdHordeCards)
@@ -696,7 +695,6 @@ namespace Loom.ZombieBattleground
                 if (card.LibraryCard.Name == cardId)
                 {
                     card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.LibraryCard), amount, true);
-                    //card.UpdateAmount(amount);
                     break;
                 }
             }
@@ -824,7 +822,7 @@ namespace Loom.ZombieBattleground
                 {
                     MoveHordeToLeft();
                 }
-            }
+            }   
             else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));

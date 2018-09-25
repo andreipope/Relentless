@@ -65,7 +65,6 @@ namespace Loom.ZombieBattleground.Helpers
             }
             else
             {
-                //pivot.x -= width; 
                 for (int i = 0; i < count; i++)
                 {
                     root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, 0);
