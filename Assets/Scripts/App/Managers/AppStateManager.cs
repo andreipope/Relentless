@@ -136,6 +136,11 @@ namespace Loom.ZombieBattleground
             CheckBackButton();
         }
 
+        public void QuitApplication()
+        {
+            Application.Quit();
+        }
+        
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
             UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
