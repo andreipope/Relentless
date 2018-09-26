@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using App.Utilites;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -24,8 +25,6 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
-
-        private ConnectionPopup _connectionPopup;
 
         public bool IsAppPaused { get; private set; }
 
@@ -142,18 +141,21 @@ namespace Loom.ZombieBattleground
             UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
         }
 
-        private ConnectionPopup GetConnectionPopup () {
-            return _uiManager.GetPopup<ConnectionPopup>();
-        }
-
         private void UpdateConnectionStatus()
         {
-            ConnectionPopup connectionPopup = GetConnectionPopup();
+            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
             if (!_backendFacade.IsConnected)
             {
                 if (connectionPopup.Self == null)
                 {
-                    _uiManager.DrawPopup<ConnectionPopup>();
+                    Func<Task> connectFunc = async () =>
+                    {
+                        await _backendDataControlMediator.LoginAndLoadData();
+                        connectionPopup.Hide();
+                    };
+
+                    connectionPopup.ConnectFunc = connectFunc;
+                    connectionPopup.Show();
                     connectionPopup.ShowFailedInGame();
                 }
             }

@@ -57,8 +57,7 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _failedGroup = Self.transform.Find("Failed_Group");
@@ -68,7 +67,7 @@ namespace Loom.ZombieBattleground
             _closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
-            _reconnectButton.onClick.AddListener(PressedQuitHandler);
+            _quitButton.onClick.AddListener(PressedQuitHandler);
             _closeButton.onClick.AddListener(PressedCloseHandler);
 
             _state = ConnectionState.Connecting;
@@ -113,7 +112,7 @@ namespace Loom.ZombieBattleground
             SetUIState(ConnectionState.ConnectionFailedInGame);
         }
 
-        private async void PressedQuitHandler()
+        private void PressedQuitHandler()
         {
             Application.Quit();
         }
