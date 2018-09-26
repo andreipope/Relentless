@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isPlayerInited;
 
-        private ReportPanelItem _reportGameActionsPanel;
+        private PastActionReportPanel _reportGameActionsPanel;
 
         private GameObject _endTurnButton;
 
@@ -124,8 +124,12 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (_selfPage == null || !_selfPage.activeSelf)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
+                if (_reportGameActionsPanel != null)
+                {
+                    _reportGameActionsPanel.Update();
+                }
             }
         }
 
@@ -143,7 +147,7 @@ namespace Loom.ZombieBattleground
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
-            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
 
             if (_zippingVfx == null)
             {
