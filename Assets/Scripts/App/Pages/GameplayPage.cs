@@ -38,6 +38,7 @@ namespace Loom.ZombieBattleground
         private GameObject _selfPage;
 
         private Button _buttonBack;
+        private Button _settingsButton;
 
         private ButtonShiftingContent _buttonKeep;
 
@@ -139,9 +140,11 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _settingsButton = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
             _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
             _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
@@ -150,6 +153,17 @@ namespace Loom.ZombieBattleground
             {
                 _zippingVfx = GameObject.Find("Background/Zapping").gameObject;
                 _zippingVfx.SetActive(false);
+            }
+
+            if(Application.isMobilePlatform)
+            {
+                _buttonBack.gameObject.SetActive(true);
+                _settingsButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                _settingsButton.gameObject.SetActive(true);
+                _buttonBack.gameObject.SetActive(false);
             }
 
             if (_gameplayManager.IsTutorial)
@@ -550,11 +564,18 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.GetController<CardsController>().EndCardDistribution();
             KeepButtonVisibility(false);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void KeepButtonVisibility(bool visible)
         {
             _buttonKeep.gameObject.SetActive(visible);
+        }
+
+        public void SettingsButtonOnClickHandler()
+        {
+            _uiManager.DrawPopup<SettingsPopup>();
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         #endregion

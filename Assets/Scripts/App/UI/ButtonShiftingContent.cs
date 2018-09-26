@@ -63,7 +63,10 @@ namespace Loom.ZombieBattleground
         {
             base.Start();
 
-            _originalShiftedChildPosition = ShiftedChild.localPosition;
+            if (ShiftedChild != null)
+			{
+                _originalShiftedChildPosition = ShiftedChild.localPosition;
+			}
         }
 
 #if UNITY_EDITOR
@@ -82,6 +85,9 @@ namespace Loom.ZombieBattleground
 
         private void UpdateShiftedChildPosition()
         {
+            if (ShiftedChild == null)
+                return;
+
             bool isShift = false;
             switch (currentSelectionState)
             {

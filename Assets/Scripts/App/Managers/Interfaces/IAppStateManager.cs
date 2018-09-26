@@ -11,5 +11,7 @@ namespace Loom.ZombieBattleground
         void SetPausingApp(bool mustPause);
 
         void BackAppState();
+
+        void QuitApplication();
     }
 }

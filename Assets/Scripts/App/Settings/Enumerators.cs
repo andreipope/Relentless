@@ -468,5 +468,19 @@ namespace Loom.ZombieBattleground.Common
 
             Push
         }
+        public enum ScreenMode
+        {
+            FullScreen,
+            Window,
+            BorderlessWindow
+        }
+
+        public enum QualityLevel
+        {
+            Ultra,
+            High,
+            Medium,
+            Low
+        }
     }
 }

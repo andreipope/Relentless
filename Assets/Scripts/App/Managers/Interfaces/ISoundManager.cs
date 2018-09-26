@@ -10,6 +10,9 @@ namespace Loom.ZombieBattleground
 
         bool MusicMuted { get; set; }
 
+        float SoundVolume { get; }
+        float MusicVolume { get; }
+
         float GetSoundLength(Enumerators.SoundType soundType, string namePattern);
 
         float GetSoundLength(Enumerators.SoundType soundType);
@@ -46,9 +49,9 @@ namespace Loom.ZombieBattleground
 
         void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false);
 
-        void SetMusicVolume(float value);
+        void SetMusicVolume(float value, bool withSaving = true);
 
-        void SetSoundVolume(float value);
+        void SetSoundVolume(float value, bool withSaving = true);
 
         void TurnOffSound();
 
@@ -56,8 +59,10 @@ namespace Loom.ZombieBattleground
 
         void StopPlaying(List<AudioClip> clips, int id = 0);
 
-        void SetSoundMuted(bool status);
+        void SetSoundMuted(bool status, bool withSaving = true);
 
-        void SetMusicMuted(bool status);
+        void SetMusicMuted(bool status, bool withSaving = true);
+
+        void ApplySoundData();
     }
 }

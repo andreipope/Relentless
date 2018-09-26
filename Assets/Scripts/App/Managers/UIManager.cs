@@ -67,6 +67,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
             _uiPopups.Add(new PastActionsPopup());
+            _uiPopups.Add(new SettingsPopup());            
 
             foreach (IUIPopup popup in _uiPopups)
             {
