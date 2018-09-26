@@ -1,13 +1,21 @@
+using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class ShopPage : IUIElement
     {
+        private const float ScrollAnimationDuration = 0.5f;
+        private const int MaxItemsInShop = 5;
+        private const int LoopStartFakeShopCount = 1;
+        private const int LoopEndFakeShopCount = 2;
+
         private readonly float[] _costs =
         {
             1.99f, 2.99f, 4.99f, 9.99f
@@ -24,11 +32,15 @@ namespace Loom.ZombieBattleground
 
         private IPlayerManager _playerManager;
 
+        private ISoundManager _soundManager;
+
         private GameObject _selfPage;
 
         private Button _buttonItem1, _buttonItem2, _buttonItem3, _buttonItem4;
 
         private Button _buttonOpen, _buttonCollection, _buttonBack, _buttonBuy;
+
+        private Button _leftArrowButton, _rightArrowButton;
 
         private TextMeshProUGUI _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
 
@@ -42,11 +54,19 @@ namespace Loom.ZombieBattleground
 
         private Color _selectedColor;
 
+        private int _selectedShopIndex;
+        private HorizontalLayoutGroup _shopsContainer;
+        private List<ShopObject> _shopObjects;
+        private List<ShopObject> _loopFakeShopObjects;
+
+        private Sequence _shopSelectScrollSequence;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
@@ -78,8 +98,13 @@ namespace Loom.ZombieBattleground
 
             _buttonBack = _selfPage.transform.Find("Image_Header/BackButton").GetComponent<Button>();
             _buttonBuy = _selfPage.transform.Find("BuyNowPanel/Button_Buy").GetComponent<Button>();
-            _buttonOpen = _selfPage.transform.Find("Button_Open").GetComponent<Button>();
+            _buttonOpen = _selfPage.transform.Find("Image_Header/Button_Open").GetComponent<Button>();
             _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
+            _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
+            _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
+
+            _shopsContainer = _selfPage.transform.Find("Panel_ShopContent/Group")
+                .GetComponent<HorizontalLayoutGroup>();
 
             _buttonItem1.onClick.AddListener(() => ChooseItemHandler(0));
             _buttonItem2.onClick.AddListener(() => ChooseItemHandler(1));
@@ -90,6 +115,8 @@ namespace Loom.ZombieBattleground
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
+            _leftArrowButton.onClick.AddListener(LeftArrowButtonOnClickHandler);
+            _rightArrowButton.onClick.AddListener(RightArrowButtonOnClickHandler);
 
             _packsObjects = new[]
             {
@@ -126,7 +153,120 @@ namespace Loom.ZombieBattleground
             _buttonItem3.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[2];
             _buttonItem4.transform.Find("Text_Value").GetComponent<Text>().text = "x" + _amount[3];
 
+            FillShopObjects();
+            SetSelectedShopIndexAndUpdateScrollPosition(0, false, force: true);
+
             _selfPage.SetActive(true);
+        }
+
+        private void FillShopObjects()
+        {
+            _shopObjects = new List<ShopObject>();
+            _loopFakeShopObjects = new List<ShopObject>();
+
+            // add fake shop obj in front
+            for (int i = 0; i < LoopStartFakeShopCount; i++)
+            {
+                ShopObject fakeShopObj = new ShopObject(MaxItemsInShop, _shopsContainer.transform);
+                fakeShopObj.Deselect();
+                _loopFakeShopObjects.Add(fakeShopObj);
+            }
+
+            // real shop obj
+            for (int i = 0; i < MaxItemsInShop; i++)
+            {
+                ShopObject current = new ShopObject(i + 1, _shopsContainer.transform);
+                _shopObjects.Add(current);
+            }
+
+            // add fake shop obj in end
+            for (int i = 0; i < LoopEndFakeShopCount; i++)
+            {
+                ShopObject fakeObj = new ShopObject(i + 1, _shopsContainer.transform);
+                fakeObj.Deselect();
+                _loopFakeShopObjects.Add(fakeObj);
+            }
+
+
+            ShopObjectSelected(_shopObjects[0]);
+        }
+
+        private void ShopObjectSelected(ShopObject shopObject)
+        {
+            foreach (ShopObject item in _shopObjects)
+            {
+                if (item != shopObject)
+                {
+                    item.Deselect();
+                }
+                else
+                {
+                    item.Select();
+                }
+            }
+        }
+
+        private void SwitchShopObject(int direction)
+        {
+            int newIndex = _selectedShopIndex;
+            newIndex += direction;
+
+            if (newIndex < 0)
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count, false, false);
+                SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count - 1, true);
+            }
+            else if (newIndex >= _shopObjects.Count)
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(-1, false, false);
+                SetSelectedShopIndexAndUpdateScrollPosition(0, true);
+            }
+            else
+            {
+                SetSelectedShopIndexAndUpdateScrollPosition(newIndex, true);
+            }
+        }
+
+        private bool SetSelectedShopIndexAndUpdateScrollPosition(
+            int shopIndex, bool animateTransition, bool selectShopObject = true, bool force = false)
+        {
+            if (!force && shopIndex == _selectedShopIndex)
+            {
+                return false;
+            }
+
+            _selectedShopIndex = shopIndex;
+
+            RectTransform shopContainerRectTransform = _shopsContainer.GetComponent<RectTransform>();
+            _shopSelectScrollSequence?.Kill();
+            if (animateTransition)
+            {
+                _shopSelectScrollSequence = DOTween.Sequence();
+                _shopSelectScrollSequence.Append(
+                        DOTween.To(
+                            () => shopContainerRectTransform.anchoredPosition,
+                            v => shopContainerRectTransform.anchoredPosition = v,
+                            CalculateShopContainerShiftForShopIndex(_selectedShopIndex),
+                            ScrollAnimationDuration))
+                    .AppendCallback(() => _shopSelectScrollSequence = null);
+            }
+            else
+            {
+                shopContainerRectTransform.anchoredPosition =
+                    CalculateShopContainerShiftForShopIndex(_selectedShopIndex);
+            }
+
+            if (selectShopObject)
+            {
+                ShopObjectSelected(_shopObjects[_selectedShopIndex]);
+            }
+
+            return true;
+        }
+
+        private Vector2 CalculateShopContainerShiftForShopIndex(int shopIndex)
+        {
+            return Vector2.left * (shopIndex + 1) * _shopsContainer.spacing;
         }
 
         public void Hide()
@@ -141,6 +281,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _shopSelectScrollSequence?.Kill();
         }
 
         #region Buttons Handlers
@@ -223,7 +364,78 @@ namespace Loom.ZombieBattleground
             _packsObjects[_currentPackId].transform.Find("Highlight").GetComponent<Image>().DOFade(0.8f, 0.3f);
         }
 
+        private void LeftArrowButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SwitchShopObject(-1);
+        }
+
+        private void RightArrowButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SwitchShopObject(1);
+        }
+
         #endregion
 
+        public class ShopObject
+        {
+            private readonly GameObject _activeShopItemObj;
+            private readonly GameObject _deactiveShopItemObj;
+            private readonly ILoadObjectsManager _loadObjectsManager;
+            private readonly Image _glowImage;
+            private Sequence _stateChangeSequence;
+
+            private GameObject SelfObject { get; }
+
+            public ShopObject(int index, Transform parent)
+            {
+                _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/UI/Elements/Shop/Item_ShopSelected_"+index), parent, false);
+
+                _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
+                _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
+                _glowImage = SelfObject.transform.Find("Image_Glow").gameObject.GetComponent<Image>();
+            }
+
+            public void Select()
+            {
+                _deactiveShopItemObj.SetActive(false);
+                _activeShopItemObj.SetActive(true);
+                SetUIActiveState(true, true, false);
+            }
+
+            public void Deselect()
+            {
+                _deactiveShopItemObj.SetActive(true);
+                _activeShopItemObj.SetActive(false);
+                SetUIActiveState(false, true, false);
+            }
+
+            private void SetUIActiveState(bool active, bool animateTransition, bool forceResetAlpha)
+            {
+                float duration = animateTransition ? ScrollAnimationDuration : 0f;
+                float targetAlpha = active ? 1f : 0f;
+
+                _stateChangeSequence?.Kill();
+                _stateChangeSequence = DOTween.Sequence();
+
+                Action<Image, bool> applyAnimation = (image, invert) =>
+                {
+                    image.gameObject.SetActive(true);
+                    if (forceResetAlpha)
+                    {
+                        image.color = image.color.SetAlpha(invert ? targetAlpha : 1f - targetAlpha);
+                    }
+
+                    _stateChangeSequence.Insert(0f,
+                        image.DOColor(image.color.SetAlpha(invert ? 1f - targetAlpha : targetAlpha), duration)
+                            .OnComplete(() => image.gameObject.SetActive(invert ? !active : active)));
+                };
+
+                applyAnimation(_glowImage, false);
+            }
+        }
     }
 }

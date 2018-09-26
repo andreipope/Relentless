@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -248,7 +249,21 @@ namespace Loom.ZombieBattleground
 
             Object.Destroy(effect, 2.5f);
         }
-				
+
+        public void CreateDeathZombieAnimation(BoardUnit cardToDestroy)
+        {
+            string type = cardToDestroy.LastAttackingSetType.ToString();
+            type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
+            GameObject effect = MonoBehaviour.Instantiate(prefab);
+            effect.transform.position = cardToDestroy.Transform.position;
+            effect.SetActive(false);
+            cardToDestroy.Transform.SetParent(effect.transform, true);
+            cardToDestroy.Transform.position = effect.transform.position;
+            _particlesController.RegisterParticleSystem(effect, true, 8f);
+            effect.SetActive(true);
+        }
+
         private void ChechTouchOnBattleground()
         {
             if (Input.GetMouseButtonDown(0))
@@ -281,8 +296,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject effect = Object.Instantiate(_battlegroundTouchPrefab);
             effect.transform.position = Utilites.CastVfxPosition(position);
-
             _particlesController.RegisterParticleSystem(effect, true, 5f);
-        }
+		}
     }
 }
