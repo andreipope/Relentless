@@ -1095,18 +1095,19 @@ namespace Loom.ZombieBattleground
                 active = HasBuffRush ? true : _glowObj.activeInHierarchy;
                 Object.Destroy(_glowObj);
             }
-            string type = InitialUnitType.ToString().First().ToString().ToUpper() + InitialUnitType.ToString().Substring(1).ToLower();
-            _glowObj = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + type + "_ActiveFrame_" + color), _unitContentObject.transform, false);
+            string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + InitialUnitType + "_ActiveFrame_" + color;
+            _glowObj = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
             SetHighlightingEnabled(active);
         }
 
         private void SetAttackGlowFromUnitType()
         {
-            if(_glowSelectedObject != null)
+            if (_glowSelectedObject != null)
+            {
                 Object.Destroy(_glowSelectedObject);
-
-            string type = InitialUnitType.ToString().First().ToString().ToUpper() + InitialUnitType.ToString().Substring(1).ToLower();
-            _glowSelectedObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + type + "_ActiveFrame_Red"), _unitContentObject.transform, false);
+            }
+            string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + InitialUnitType + "_ActiveFrame_Red";
+            _glowSelectedObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
             _glowSelectedObject.SetActive(false);
         }
 
