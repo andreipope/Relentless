@@ -289,11 +289,11 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             }
 
-            public virtual void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE) { }
+            public virtual void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
 
-            public virtual void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE) { }
+            public virtual void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
 
-            public virtual void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE) { }
+            public virtual void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
 
             public virtual void Dispose() { }
         }
@@ -338,7 +338,7 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 var LibraryCard = workingCard.LibraryCard;
 
@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 var LibraryCard = workingCard.LibraryCard;
 
@@ -440,7 +440,7 @@ namespace Loom.ZombieBattleground
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
@@ -479,13 +479,13 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement.ToString() + "_EXP");
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
@@ -524,7 +524,7 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                                                                                 skill.Owner.SelfHero.Element.ToLower() + "_" +
@@ -532,7 +532,7 @@ namespace Loom.ZombieBattleground
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
@@ -587,7 +587,7 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 var LibraryCard = workingCard.LibraryCard;
 
@@ -615,7 +615,7 @@ namespace Loom.ZombieBattleground
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
@@ -670,7 +670,7 @@ namespace Loom.ZombieBattleground
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.NONE)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
                 var LibraryCard = workingCard.LibraryCard;
 
@@ -695,7 +695,7 @@ namespace Loom.ZombieBattleground
 
                 if (_withEffect)
                 {
-                    if (actionEffectType != Enumerators.ActionEffectType.NONE)
+                    if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());

@@ -534,13 +534,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.PUSH,
+                        ActionEffectType = Enumerators.ActionEffectType.Push,
                         Target = target
                     }
                 }
@@ -558,7 +558,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER,
+                ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
             });
@@ -575,13 +575,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_BUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                         Target = target
                     }
                 }
@@ -635,15 +635,15 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower() + "_Impact",
                 Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.NONE;
+            Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
             if(target is Player)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
             }
             else if(target is BoardUnit)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -654,7 +654,7 @@ namespace Loom.ZombieBattleground
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
                     }
                 }
@@ -684,13 +684,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_BUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                         Target = target
                     }
                 }
@@ -779,13 +779,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.FERAL,
+                        ActionEffectType = Enumerators.ActionEffectType.Feral,
                         Target = target
                     }
                 }
@@ -807,7 +807,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER,
+                ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
             });
@@ -888,13 +888,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
                     }
                 }
@@ -922,13 +922,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
                     }
                 }
@@ -957,13 +957,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.DEATH_MARK,
+                        ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                         Target = target
                     }
                 }
@@ -996,15 +996,15 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower() + "_Impact",
                 Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.NONE;
+            Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
             if (target is Player)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
             }
             else if (target is BoardUnit)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1015,7 +1015,7 @@ namespace Loom.ZombieBattleground
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
                     }
                 }
@@ -1046,15 +1046,15 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
                 Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.NONE;
+            Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
             if (target is Player)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_OVERLORD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
             }
             else if (target is BoardUnit)
             {
-                actionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD;
+                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1065,7 +1065,7 @@ namespace Loom.ZombieBattleground
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
                     }
                 }
@@ -1129,13 +1129,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_BUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                         Target = target
                     }
                 }
@@ -1156,7 +1156,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER,
+                ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
             });
@@ -1178,13 +1178,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.USE_OVERLORD_POWER_ON_CARD,
+                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.HEAVY,
+                        ActionEffectType = Enumerators.ActionEffectType.Heavy,
                         Target = target
                     }
                 }

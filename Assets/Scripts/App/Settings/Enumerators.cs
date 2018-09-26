@@ -121,24 +121,24 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
-            NONE,
+            None,
 
-            PLAY_CARD_FROM_HAND,
-            PLAY_CARD_FROM_HAND_ON_CARD,
-            PLAY_CARD_FROM_HAND_ON_MULTIPLE_CARDS,
-            PLAY_CARD_FROM_HAND_ON_OVERLORD,
-            PLAY_CARD_FROM_HAND_ON_CARDS_WITH_OVERLORD,
-            USE_OVERLORD_POWER,
-            USE_OVERLORD_POWER_ON_CARD,
-            USE_OVERLORD_POWER_ON_MULTIPLE_CARD,
-            USE_OVERLORD_POWER_ON_OVERLORD,
-            USE_OVERLORD_POWER_ON_CARDS_WITH_OVERLORD,
-            CARD_ATTACK_CARD,
-            CARD_ATTACK_OVERLORD,
-            CARD_AFFECTING_CARD,
-            CARD_AFFECTING_MULTIPLE_CARDS,
-            CARD_AFFECTING_OVERLORD,
-            CARD_AFFECTING_CARDS_WITH_OVERLORD,
+            PlayCardFromHand,
+            PlayCardFromHandOnCard,
+            PlayCardFromHandOnMultipleCards,
+            PlayCardFromHandOnOverlord,
+            PlayCardFromHandOncardsWithOverlord,
+            UseOverlordPower,
+            UweOverlordPowerOnCard,
+            UweOverlordPowerOnMultilpleCards,
+            UweOverlordPowerOnOverlord,
+            UweOverlordPowerOnCardsWithOverlord,
+            CardAttackCard,
+            CardAttackOverlord,
+            CardAffectingCard,
+            CardAffectingMultipleCards,
+            CardAffectingOverlord,
+            CardAffectingCardsWithOverlord,
         }
 
         public enum AffectObjectType
@@ -447,26 +447,26 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionEffectType
         {
-            NONE,
+            None,
 
-            ATTACK_BUFF,
-            ATTACK_DEBUFF,
-            SHIELD_BUFF,
-            SHIELD_DEBUFF,
+            AttackBuff,
+            AttackDebuff,
+            ShieldBuff,
+            ShieldDebuff,
 
-            FERAL,
-            HEAVY,
+            Feral,
+            Heavy,
 
-            DAMAGE,
-            LIFE_GAIN,
+            Damage,
+            LifeGain,
 
-            BLITZ,
-            DEATH_MARK,
-            GUARD,
-            OVERFLOW,
-            FREEZE,
+            Blitz,
+            DeathMark,
+            Guard,
+            Overflow,
+            Freeze,
 
-            PUSH,
+            Push,
         }
     }
 }

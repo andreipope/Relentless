@@ -59,13 +59,13 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.CARD_ATTACK_OVERLORD,
+                ActionType = Enumerators.ActionType.CardAttackOverlord,
                 Caller = attackingUnit,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = attackedPlayer
                     }
                 }
@@ -121,13 +121,13 @@ namespace Loom.ZombieBattleground
 
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
-                    ActionType = Enumerators.ActionType.CARD_ATTACK_CARD,
+                    ActionType = Enumerators.ActionType.CardAttackCard,
                     Caller = attackingUnit,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
-                            ActionEffectType = Enumerators.ActionEffectType.SHIELD_DEBUFF,
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                             Target = attackedUnit
                         }
                     }

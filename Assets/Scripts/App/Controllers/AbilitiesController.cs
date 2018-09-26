@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground
 
                                             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                                             {
-                                                ActionType = Enumerators.ActionType.PLAY_CARD_FROM_HAND,
+                                                ActionType = Enumerators.ActionType.PlayCardFromHand,
                                                 Caller = card,
                                                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                             });
@@ -771,7 +771,7 @@ namespace Loom.ZombieBattleground
 
                             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                             {
-                                ActionType = Enumerators.ActionType.PLAY_CARD_FROM_HAND,
+                                ActionType = Enumerators.ActionType.PlayCardFromHand,
                                 Caller = card,
                                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                             });
