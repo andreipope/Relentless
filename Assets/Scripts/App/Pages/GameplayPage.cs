@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
+        private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
+
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
 
         private TextMeshPro _playerHealthText,
@@ -102,6 +104,9 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
+
+            _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
+            _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
         }
 
         public void Hide()
@@ -230,11 +235,6 @@ namespace Loom.ZombieBattleground
             _opponentHealthText =
                 GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                new Vector3(-3.55f, 0, -6.07f));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                new Vector3(9.77f, 0, 4.75f));
-
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
             _opponentNameText = GameObject.Find("Opponent/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -274,6 +274,11 @@ namespace Loom.ZombieBattleground
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
+			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+                _playerManaBarsPosition, _playerNameText.text);
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
+                _opponentManaBarsPosition, _opponentNameText.text);
+			
             _isPlayerInited = true;
         }
 
