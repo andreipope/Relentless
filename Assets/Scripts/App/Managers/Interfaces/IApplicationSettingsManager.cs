@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,7 +16,8 @@ namespace Loom.ZombieBattleground
         ResolutionInfo CurrentResolution { get; }
 
         void SetDefaults();
-        void SetResolution(IntVector2 size);
+        void ApplySettings();
+        void SetResolution(ResolutionInfo info);
         void SetScreenMode(Enumerators.ScreenMode screenMode);
         void SetQuality(Enumerators.QualityLevel qualityLevel);
     }

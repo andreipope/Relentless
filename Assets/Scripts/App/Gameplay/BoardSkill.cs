@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
             if (!_gameplayManager.IsGameplayReady())

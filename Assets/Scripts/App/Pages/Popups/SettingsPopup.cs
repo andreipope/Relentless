@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
         private Slider _sfxVolumeDropdown,
                        _musicVolumeDropdown;
 
+        private bool _initialInit = true;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -65,7 +67,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SettingsPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _quitToMenuButton = Self.transform.Find("Button_QuitToMainMenu").GetComponent<ButtonShiftingContent>();
             _quitToDesktopButton = Self.transform.Find("Button_QuitToDesktop").GetComponent<ButtonShiftingContent>();
@@ -104,8 +106,15 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            // check if it fine solution or not
+            if (Self != null && Self.activeInHierarchy)
+            {
+                if (Self.transform.GetSiblingIndex() != Self.transform.parent.childCount - 1)
+                {
+                    Self.transform.SetAsLastSibling();
+                }
+            }
         }
-
 
         private void FillInfo()
         {
@@ -136,26 +145,34 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < length; i++)
             {
-                data.Add(_applicationSettingsManager.Resolutions[i].name);
+                data.Add(_applicationSettingsManager.Resolutions[i].Name);
             }
             _resolutionDropdown.AddOptions(data);
+
+            _initialInit = true;
 
             _qualityDropdown.value = (int)_applicationSettingsManager.CurrentQualityLevel;
             _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
             _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
 
-            _sfxVolumeDropdown.value = _soundManager.SFXVolume;
+            _initialInit = false;
+
+            _sfxVolumeDropdown.value = _soundManager.SoundVolume;
             _musicVolumeDropdown.value = _soundManager.MusicVolume;
         }
 
 
         private void CloseButtonHandler()
         {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
             _uiManager.HidePopup<SettingsPopup>();
         }
 
         private void QuitToMenuButtonHandler()
         {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
@@ -176,27 +193,46 @@ namespace Loom.ZombieBattleground
 
         private void QuitToDesktopButtonHandler()
         {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
             _appStateManager.QuitApplication();
         }
 
         private void SettingsButtonHandler()
         {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
             _uiManager.HidePopup<SettingsPopup>();
         }
 
         private void QualityChangedHandler(int index)
         {
-            _applicationSettingsManager.SetQuality((Enumerators.QualityLevel)index);
+            if (!_initialInit)
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+                _applicationSettingsManager.SetQuality((Enumerators.QualityLevel)index);
+            }
         }
 
         private void ResolutionChangedHandler(int index)
         {
-            _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index].resolution);
+            if (!_initialInit)
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+            }
         }
 
         private void ScreenModeChangedHandler(int index)
         {
-            _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+            if (!_initialInit)
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+            }
         }
 
         private void SFXVolumeChangedHandler(float value)

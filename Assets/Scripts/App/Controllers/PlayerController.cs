@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleInput()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

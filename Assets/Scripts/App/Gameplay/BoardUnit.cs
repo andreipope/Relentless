@@ -1059,7 +1059,7 @@ namespace Loom.ZombieBattleground
 
         private void UnitSelectedEventHandler(BoardUnit unit)
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
             if (unit == this)

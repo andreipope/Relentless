@@ -449,17 +449,17 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ScreenMode
         {
-            FULL_SCREEN,
-            WINDOW,
-            BORDERLESS_WINDOW
+            FullScreen,
+            Window,
+            BorderlessWindow
         }
 
         public enum QualityLevel
         {
-            ULTRA,
-            HIGH,
-            MEDIUM,
-            LOW
+            Ultra,
+            High,
+            Medium,
+            Low
         }
     }
 }

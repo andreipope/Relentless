@@ -560,6 +560,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.GetController<CardsController>().EndCardDistribution();
             KeepButtonVisibility(false);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void KeepButtonVisibility(bool visible)
@@ -570,6 +571,7 @@ namespace Loom.ZombieBattleground
         public void SettingsButtonOnClickHandler()
         {
             _uiManager.DrawPopup<SettingsPopup>();
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         #endregion
