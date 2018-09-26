@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         private Button _reconnectButton;
 
+        private Button _quitButton;
+
         private Button _closeButton;
 
         private Transform _failedGroup;
@@ -62,9 +64,11 @@ namespace Loom.ZombieBattleground
             _failedGroup = Self.transform.Find("Failed_Group");
             _connectingGroup = Self.transform.Find("Connecting_Group");
             _reconnectButton = _failedGroup.Find("Button_Reconnect").GetComponent<Button>();
+            _quitButton = _failedGroup.Find("Button_Quit").GetComponent<Button>();
             _closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
+            _reconnectButton.onClick.AddListener(PressedQuitHandler);
             _closeButton.onClick.AddListener(PressedCloseHandler);
 
             _state = ConnectionState.Connecting;
@@ -109,6 +113,11 @@ namespace Loom.ZombieBattleground
             SetUIState(ConnectionState.ConnectionFailedInGame);
         }
 
+        private async void PressedQuitHandler()
+        {
+            Application.Quit();
+        }
+
         private async void PressedReconnectHandler()
         {
             await ExecuteConnection();
@@ -131,13 +140,15 @@ namespace Loom.ZombieBattleground
                     break;
                 case ConnectionState.ConnectionFailed:
                     _failedGroup.gameObject.SetActive(true);
-                    _closeButton.gameObject.SetActive(false);
-                    _reconnectButton.gameObject.SetActive(true);
+                    _closeButton.gameObject.SetActive(true);
+                    _reconnectButton.gameObject.SetActive(false);
+                    _quitButton.gameObject.SetActive(false);
                     break;
                 case ConnectionState.ConnectionFailedInGame:
                     _failedGroup.gameObject.SetActive(true);
-                    _closeButton.gameObject.SetActive(true);
-                    _reconnectButton.gameObject.SetActive(false);
+                    _closeButton.gameObject.SetActive(false);
+                    _reconnectButton.gameObject.SetActive(true);
+                    _quitButton.gameObject.SetActive(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
