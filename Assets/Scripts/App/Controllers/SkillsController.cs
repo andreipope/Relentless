@@ -185,7 +185,6 @@ namespace Loom.ZombieBattleground
                         targetPlayer,
                         x =>
                         {
-                            skill.UseSkill(targetPlayer);
                             DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
@@ -209,7 +208,6 @@ namespace Loom.ZombieBattleground
                         x =>
                         {
                             DoActionByType(skill, targetUnit);
-                            skill.UseSkill(targetUnit);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
                 }
@@ -232,7 +230,6 @@ namespace Loom.ZombieBattleground
                     x =>
                     {
                         DoActionByType(skill, target);
-                        skill.UseSkill(target);
                         _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                     });
             }
