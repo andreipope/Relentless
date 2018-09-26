@@ -46,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         bool IsLocalPlayerTurn();
 
+        Player GetOpponentByPlayer(Player player);
+
         void StartGameplay();
 
         void StopGameplay();

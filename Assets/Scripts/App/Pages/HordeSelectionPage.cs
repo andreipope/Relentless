@@ -52,6 +52,7 @@ namespace Loom.ZombieBattleground
         private Transform _containerOfDecks, _hordeSelection;
 
         private List<HordeDeckObject> _hordeDecks;
+        private HordeDeckObject _editingDeck;
 
         private int _selectedDeckId = -1;
 
@@ -96,18 +97,18 @@ namespace Loom.ZombieBattleground
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
             _editButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Edit")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Edit")
                     .GetComponent<Button>();
             _deleteButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Delete")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Delete")
                     .GetComponent<Button>();
             _firstSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
                     .GetComponent<Image>();
             _secondSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
                     .GetComponent<Image>();
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/Selection");
@@ -248,12 +249,14 @@ namespace Loom.ZombieBattleground
 
             deck.Select();
 
+            Debug.LogError("deck.SelfHero.PrimarySkill: " + deck.SelfDeck.PrimarySkill);
+
             _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                 deck.SelfHero.Element.ToUpper() + "_" +
-                deck.SelfHero.Skills[deck.SelfHero.PrimarySkill].Skill.ToLower());
+                deck.SelfHero.Skills[deck.SelfDeck.PrimarySkill].Skill.ToLower());
             _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
                 deck.SelfHero.Element.ToUpper() + "_" +
-                deck.SelfHero.Skills[deck.SelfHero.SecondarySkill].Skill.ToLower());
+                deck.SelfHero.Skills[deck.SelfDeck.SecondarySkill].Skill.ToLower());
 
             _hordeSelection.transform.SetParent(deck.SelectionContainer, false);
             _hordeSelection.gameObject.SetActive(true);
@@ -389,6 +392,8 @@ namespace Loom.ZombieBattleground
 
             private readonly GameObject _selfObject;
 
+            private readonly GameObject _background;
+
             private readonly Image _setTypeIcon;
 
             private readonly Image _hordePicture;
@@ -414,6 +419,8 @@ namespace Loom.ZombieBattleground
                 _selfObject.transform.localPosition = Vector3.right * HordeItemSpace * index;
 
                 SelectionContainer = _selfObject.transform.Find("SelectionContainer");
+
+                _background = _selfObject.transform.Find("Image_BaackgroundGeneral").gameObject;
 
                 _setTypeIcon = _selfObject.transform.Find("Panel_HordeType/Image").GetComponent<Image>();
                 _hordePicture = _selfObject.transform.Find("Image_HordePicture").GetComponent<Image>();
@@ -457,6 +464,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(false);
+                _background.SetActive(false);
 
                 IsSelected = true;
             }
@@ -467,6 +475,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(true);
+                _background.SetActive(true);
 
                 IsSelected = false;
             }
@@ -483,7 +492,7 @@ namespace Loom.ZombieBattleground
         private void CollectionButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _appStateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BackButtonOnClickHandler()
@@ -543,12 +552,18 @@ namespace Loom.ZombieBattleground
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-            if (deck != null)
+            _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            if (_editingDeck != null)
             {
-                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(deck.SelfHero);
+                //_uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
+                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_editingDeck.SelfHero);
             }
         }
+
+        //private void AbilityPopupClosedEvent()
+        //{
+        //    _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
+        //}
 
         // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()
@@ -558,7 +573,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = -1;
+            _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
 
             _appStateManager.ChangeAppState(Enumerators.AppState.HERO_SELECTION);
         }
@@ -588,9 +603,9 @@ namespace Loom.ZombieBattleground
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                _uiManager.GetPage<DeckEditingPage>().CurrentDeckId = _selectedDeckId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = _selectedDeckId;
                 HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-                _uiManager.GetPage<DeckEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
         }

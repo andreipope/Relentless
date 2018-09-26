@@ -168,8 +168,8 @@ namespace Loom.ZombieBattleground.Common
             LOGIN,
             MAIN_MENU,
             HERO_SELECTION,
-            DECK_SELECTION,
-            COLLECTION,
+            HORDE_SELECTION,
+            ARMY,
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground.Common
             PUSH,
             DRAW,
             WIND_SHIELD,
-            WIND_WALL,
+            LEVITATE,
             RETREAT,
 
             // EARTH

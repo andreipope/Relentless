@@ -149,6 +149,11 @@ namespace Loom.ZombieBattleground
             return CurrentTurnPlayer.Equals(CurrentPlayer);
         }
 
+        public Player GetOpponentByPlayer(Player player)
+        {
+            return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
+        }
+
         public void ResetWholeGameplayScene()
         {
             foreach (IController controller in _controllers)
