@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         public List<Transform> CardPositions;
 
-        public GameObject CardCreaturePrefab, CardSpellPrefab, CardPlaceholdersPrefab, CardPlaceholders;
+        public GameObject CardCreaturePrefab, CardItemPrefab, CardPlaceholdersPrefab, CardPlaceholders;
 
         private IUIManager _uiManager;
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Closing += UpdateGooValue;
 
             CardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
-            CardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
 
             _createdBoardCards = new List<BoardCard>();
@@ -308,7 +308,7 @@ namespace Loom.ZombieBattleground
                         boardCard = new UnitBoardCard(go);
                         break;
                     case Enumerators.CardKind.SPELL:
-                        go = Object.Instantiate(CardSpellPrefab);
+                        go = Object.Instantiate(CardItemPrefab);
                         boardCard = new SpellBoardCard(go);
                         break;
                     default:

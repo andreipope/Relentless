@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
-        private GameObject _cardCreaturePrefab, _cardSpellPrefab;
+        private GameObject _cardCreaturePrefab, _cardItemPrefab;
 
         private CollectionData _collectionData;
 
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
 
             _cardCreaturePrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
 
             _createdArmyCards = new List<BoardCard>();
             _createdHordeCards = new List<BoardCard>();
@@ -409,7 +409,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    go = Object.Instantiate(_cardSpellPrefab);
+                    go = Object.Instantiate(_cardItemPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;
                 default:

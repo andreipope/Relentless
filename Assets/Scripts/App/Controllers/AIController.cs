@@ -648,7 +648,7 @@ namespace Loom.ZombieBattleground
                 }
                 case Enumerators.CardKind.SPELL:
                 {
-                    GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    GameObject spellCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);

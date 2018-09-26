@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(currentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    currentBoardCard = Object.Instantiate(CardsController.SpellCardViewPrefab,
+                    currentBoardCard = Object.Instantiate(CardsController.ItemCardViewPrefab,
                         _reportActionPreviewPanel.transform, false);
                     boardCard = new SpellBoardCard(currentBoardCard);
                     break;
