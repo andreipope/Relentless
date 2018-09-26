@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         private Button _reconnectButton;
 
+        private Button _quitButton;
+
         private Button _closeButton;
 
         private Transform _failedGroup;
@@ -55,16 +57,17 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _failedGroup = Self.transform.Find("Failed_Group");
             _connectingGroup = Self.transform.Find("Connecting_Group");
             _reconnectButton = _failedGroup.Find("Button_Reconnect").GetComponent<Button>();
+            _quitButton = _failedGroup.Find("Button_Quit").GetComponent<Button>();
             _closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
+            _quitButton.onClick.AddListener(PressedQuitHandler);
             _closeButton.onClick.AddListener(PressedCloseHandler);
 
             _state = ConnectionState.Connecting;
@@ -92,9 +95,9 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception)
                 {
-                    if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MAIN_MENU)
+                    if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                     {
-                        SetUIState(ConnectionState.ConnectionFailedOnMenu);
+                        SetUIState(ConnectionState.ConnectionFailedInGame);
                     }
                     else
                     {
@@ -104,9 +107,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ShowFailedOnMenu()
+        public void ShowFailedInGame()
         {
-            SetUIState(ConnectionState.ConnectionFailedOnMenu);
+            SetUIState(ConnectionState.ConnectionFailedInGame);
+        }
+
+        private void PressedQuitHandler()
+        {
+            Application.Quit();
         }
 
         private async void PressedReconnectHandler()
@@ -131,13 +139,15 @@ namespace Loom.ZombieBattleground
                     break;
                 case ConnectionState.ConnectionFailed:
                     _failedGroup.gameObject.SetActive(true);
-                    _closeButton.gameObject.SetActive(false);
-                    _reconnectButton.gameObject.SetActive(true);
-                    break;
-                case ConnectionState.ConnectionFailedOnMenu:
-                    _failedGroup.gameObject.SetActive(true);
                     _closeButton.gameObject.SetActive(true);
                     _reconnectButton.gameObject.SetActive(false);
+                    _quitButton.gameObject.SetActive(false);
+                    break;
+                case ConnectionState.ConnectionFailedInGame:
+                    _failedGroup.gameObject.SetActive(true);
+                    _closeButton.gameObject.SetActive(false);
+                    _reconnectButton.gameObject.SetActive(true);
+                    _quitButton.gameObject.SetActive(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -150,7 +160,7 @@ namespace Loom.ZombieBattleground
 
             ConnectionFailed,
 
-            ConnectionFailedOnMenu
+            ConnectionFailedInGame
         }
     }
 }
