@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -71,11 +72,7 @@ namespace Loom.ZombieBattleground
 
         private readonly SpriteRenderer _frozenSprite;
 
-        private readonly SpriteRenderer _glowSprite;
-
         private readonly GameObject _shieldSprite;
-
-        private readonly GameObject _glowSelectedObjectSprite;
 
         private readonly TextMeshPro _attackText;
 
@@ -90,6 +87,11 @@ namespace Loom.ZombieBattleground
         private Action _healthChangedDelegate;
 
         private GameObject _battleframeObject;
+
+
+        private GameObject _glowObj;
+
+        private GameObject _glowSelectedObject;
 
         private Animator _battleframeAnimator;
 
@@ -144,10 +146,7 @@ namespace Loom.ZombieBattleground
 
             _pictureSprite = GameObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
-            _glowSprite = GameObject.transform.Find("Other/Glow").GetComponent<SpriteRenderer>();
             _shieldSprite = GameObject.transform.Find("Other/Shield").gameObject;
-
-            _glowSelectedObjectSprite = GameObject.transform.Find("Other/GlowSelectedObject").gameObject;
 
             _attackText = GameObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
@@ -164,9 +163,6 @@ namespace Loom.ZombieBattleground
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
             AttackedBoardObjectsThisTurn = new List<object>();
-
-            _glowSprite.gameObject.SetActive(true);
-            _glowSprite.enabled = false;
 
             IsCreatedThisTurn = true;
 
@@ -336,6 +332,8 @@ namespace Loom.ZombieBattleground
                     if (NumTurnsOnBoard == 0)
                     {
                         HasBuffRush = true;
+                        if (InitialUnitType != Enumerators.CardType.FERAL)
+                            SetNormalGlowFromUnitType();
                     }
 
                     _sleepingParticles.gameObject.SetActive(false);
@@ -386,6 +384,8 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+            SetNormalGlowFromUnitType();
+            SetAttackGlowFromUnitType();
         }
 
         public void SetAsHeavyUnit()
@@ -648,7 +648,8 @@ namespace Loom.ZombieBattleground
 
                     break;
             }
-
+            SetNormalGlowFromUnitType();
+            SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
 
             
@@ -708,7 +709,15 @@ namespace Loom.ZombieBattleground
 
         public void OnEndTurn()
         {
-            HasBuffRush = false;
+            if (HasBuffRush)
+            {
+                HasBuffRush = false;
+                if (InitialUnitType != Enumerators.CardType.FERAL)
+                {
+                    SetNormalGlowFromUnitType();
+                }
+            }
+
             CantAttackInThisTurnBlocker = false;
 
             CancelTargetingArrows();
@@ -716,7 +725,7 @@ namespace Loom.ZombieBattleground
 
         public void SetSelectedUnit(bool status)
         {
-            _glowSelectedObjectSprite.SetActive(status);
+            _glowSelectedObject.SetActive(status);
 
             if (status)
             {
@@ -762,9 +771,9 @@ namespace Loom.ZombieBattleground
                 enabled = false;
             }
 
-            if (_glowSprite)
+            if (_glowObj)
             {
-                _glowSprite.enabled = enabled;
+                _glowObj.SetActive(enabled);
             }
         }
 
@@ -1074,6 +1083,32 @@ namespace Loom.ZombieBattleground
             {
                 OnMouseUp();
             }
+        }
+
+        private void SetNormalGlowFromUnitType()
+        {
+            string color = HasBuffRush ? "Orange" : "Green";
+
+            bool active = false;
+            if (_glowObj != null)
+            {
+                active = HasBuffRush ? true : _glowObj.activeInHierarchy;
+                Object.Destroy(_glowObj);
+            }
+            string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + InitialUnitType + "_ActiveFrame_" + color;
+            _glowObj = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
+            SetHighlightingEnabled(active);
+        }
+
+        private void SetAttackGlowFromUnitType()
+        {
+            if (_glowSelectedObject != null)
+            {
+                Object.Destroy(_glowSelectedObject);
+            }
+            string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + InitialUnitType + "_ActiveFrame_Red";
+            _glowSelectedObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
+            _glowSelectedObject.SetActive(false);
         }
 
         private void OnMouseDown()
