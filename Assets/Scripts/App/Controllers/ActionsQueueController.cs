@@ -10,14 +10,14 @@ namespace Loom.ZombieBattleground
 
         private GameAction<object> _actionInProgress;
 
-        public event Action<GameActionReport> GotNewActionReportEvent;
+        public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
 
-        public List<GameActionReport> ActionsReports { get; private set; }
+        public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
         public void Init()
         {
             _actionsToDo = new Queue<GameAction<object>>();
-            ActionsReports = new List<GameActionReport>();
+            ActionsReports = new List<PastActionsPopup.PastActionParam>();
             _actionInProgress = null;
         }
 
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
         public void AddNewActionInToQueue(
-            Action<object, Action> actionToDo, object parameter = null, GameActionReport report = null)
+            Action<object, Action> actionToDo, object parameter = null, PastActionsPopup.PastActionParam report = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
@@ -61,15 +61,7 @@ namespace Loom.ZombieBattleground
             _actionInProgress = null;
         }
 
-        // todo improve I guess
-        public GameActionReport FormatGameActionReport(Enumerators.ActionType actionType, object[] parameters)
-        {
-            GameActionReport actionReport = new GameActionReport(actionType, parameters);
-
-            return actionReport;
-        }
-
-        public void PostGameActionReport(GameActionReport report)
+        public void PostGameActionReport(PastActionsPopup.PastActionParam report)
         {
             if (report != null)
             {
@@ -105,13 +97,13 @@ namespace Loom.ZombieBattleground
 
         public T Parameter;
 
-        public GameActionReport Report;
+        public PastActionsPopup.PastActionParam Report;
 
         private readonly ITimerManager _timerManager;
 
         private bool _actionDone;
 
-        public GameAction(Action<T, Action> action, T parameter, GameActionReport report)
+        public GameAction(Action<T, Action> action, T parameter, PastActionsPopup.PastActionParam report)
         {
             _timerManager = GameClient.Get<ITimerManager>();
 

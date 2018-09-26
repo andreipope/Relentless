@@ -27,14 +27,18 @@ namespace Loom.ZombieBattleground
         private GameObject _overflowObject;
 
         private TextMeshPro _overflowGooAmountText;
+		
+		private TextMeshPro _nameText;
 
         private Transform _overflowBottleContainer;
 
         private int _maxValue, _currentValue;
 
+        private string _name;
+
         private bool _isInOverflow;
 
-        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos)
+        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name)
         {
             _overflowPrefabPath = "Prefabs/" + overflowPrefabName;
             _overflowPos = overflowPos;
@@ -53,7 +57,7 @@ namespace Loom.ZombieBattleground
             }
 
             _isInOverflow = false;
-
+            _name = name;
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
@@ -148,6 +152,8 @@ namespace Loom.ZombieBattleground
             _overflowObject.transform.localPosition = _overflowPos;
             _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
             _overflowBottleContainer = _overflowObject.transform.Find("Bottles").transform;
+			_nameText = _overflowObject.transform.Find("NameText").GetComponent<TextMeshPro>();
+            _nameText.text = _name;
             for (int i = 0; i < _overflowBottleContainer.childCount; i++)
             {
                 _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
