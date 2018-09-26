@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
             List<BoardUnit> units = new List<BoardUnit>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+            units.Remove(AbilityUnitOwner);
 
             foreach (BoardUnit unit in units)
             {
