@@ -551,6 +551,7 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
@@ -559,10 +560,13 @@ namespace Loom.ZombieBattleground
                 _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
-            actions[1] = () => { };
+            actions[1] = () => {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
+            };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().SetPausingApp(true);
         }
 
         public void KeepButtonOnClickHandler()
