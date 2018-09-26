@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
 #else
             _pressAnyText.text = "PRESS ANY KEY";
 #endif
-            _loadingText.text = "LOADING.";
+            _loadingText.text = "LOADING...";
 
             _pressAnyText.gameObject.SetActive(false);
             _loginForm.SetActive(false);
