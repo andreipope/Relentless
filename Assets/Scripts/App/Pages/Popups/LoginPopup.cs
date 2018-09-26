@@ -145,16 +145,12 @@ namespace Loom.ZombieBattleground
 
                     UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
                     {
-                        // HACK
-                        IsValid = true
-
-                        // IsValid = false
+                        IsValid = false
                     };
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
                     await _backendDataControlMediator.LoginAndLoadData();
 
-                    // HACK
-                    // userDataModel.IsValid = true;
+                    userDataModel.IsValid = true;
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
 
                     SuccessfulLogin();
