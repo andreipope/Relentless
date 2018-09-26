@@ -14,10 +14,11 @@ namespace Loom.ZombieBattleground
         private List<SoundContainer> _soundContainers, _containersToRemove;
 
         protected ILoadObjectsManager LoadObjectsManager;
+        protected IDataManager DataManager;
 
         private Transform _soundsRoot;
 
-        private float _sfxVolume;
+        private float _soundVolume;
 
         private float _musicVolume;
 
@@ -26,6 +27,9 @@ namespace Loom.ZombieBattleground
         private SoundsData _overlordAbilitiesSoundsFilename;
         private SoundsData _spellsSoundsFilename;
 
+        public float SoundVolume => _soundVolume;
+        public float MusicVolume => _musicVolume;
+
         public void Dispose()
         {
         }
@@ -33,9 +37,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
-            _sfxVolume = 1f;
-            _musicVolume = 1f;
+            DataManager = GameClient.Get<IDataManager>();
 
             _tutorialSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/TutorialSounds");
             _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/CardsSounds");
@@ -97,6 +99,19 @@ namespace Loom.ZombieBattleground
                     _containersToRemove.Clear();
                 }
             }
+        }
+
+        public void ApplySoundData()
+        {
+            _soundVolume = DataManager.CachedUserLocalData.SoundVolume;
+            _musicVolume = DataManager.CachedUserLocalData.MusicVolume;
+            MusicMuted = DataManager.CachedUserLocalData.MusicMuted;
+            SfxMuted = DataManager.CachedUserLocalData.SoundMuted;
+
+            SetSoundMuted(SfxMuted, false);
+            SetMusicMuted(MusicMuted, false);
+            SetMusicVolume(_musicVolume, false);
+            SetSoundVolume(_soundVolume, false);
         }
 
         public bool SfxMuted { get; set; }
@@ -197,7 +212,7 @@ namespace Loom.ZombieBattleground
             CreateSound(soundType, volume, parent, isLoop, isPlaylist, isInQueue: isInQueue);
         }
 
-        public void SetMusicMuted(bool status)
+        public void SetMusicMuted(bool status, bool withSaving = true)
         {
             List<SoundContainer> containers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
 
@@ -210,9 +225,14 @@ namespace Loom.ZombieBattleground
             }
 
             MusicMuted = status;
+
+            if (withSaving)
+            {
+                SaveVolumeSettings();
+            }
         }
 
-        public void SetSoundMuted(bool status)
+        public void SetSoundMuted(bool status, bool withSaving = true)
         {
             List<SoundContainer> containers = _soundContainers.FindAll(x => !x.SoundParameters.IsBackground);
 
@@ -225,9 +245,14 @@ namespace Loom.ZombieBattleground
             }
 
             SfxMuted = status;
+
+            if (withSaving)
+            {
+                SaveVolumeSettings();
+            }
         }
 
-        public void SetMusicVolume(float value)
+        public void SetMusicVolume(float value, bool withSaving = true)
         {
             _musicVolume = value;
             List<SoundContainer> containers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
@@ -240,21 +265,40 @@ namespace Loom.ZombieBattleground
                     container.AudioSource.volume = _musicVolume;
                 }
             }
+
+            if (withSaving)
+            {
+                SaveVolumeSettings();
+            }
         }
 
-        public void SetSoundVolume(float value)
+        public void SetSoundVolume(float value, bool withSaving = true)
         {
-            _sfxVolume = value;
+            _soundVolume = value;
             List<SoundContainer> containers = _soundContainers.FindAll(x => !x.SoundParameters.IsBackground);
 
             if (containers != null)
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.SoundParameters.Volume = _sfxVolume;
-                    container.AudioSource.volume = _sfxVolume;
+                    container.SoundParameters.Volume = _soundVolume;
+                    container.AudioSource.volume = _soundVolume;
                 }
             }
+
+            if (withSaving)
+            {
+                SaveVolumeSettings();
+            }
+        }
+
+        public void SaveVolumeSettings()
+        {
+            DataManager.CachedUserLocalData.MusicVolume = _musicVolume;
+            DataManager.CachedUserLocalData.SoundVolume = _soundVolume;
+            DataManager.CachedUserLocalData.SoundMuted = SfxMuted;
+            DataManager.CachedUserLocalData.MusicMuted = MusicMuted;
+            DataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
         public void StopPlaying(Enumerators.SoundType soundType, int id = 0)
@@ -421,13 +465,28 @@ namespace Loom.ZombieBattleground
             soundParam.PlayOnAwake = false;
 
             soundParam.Priority = 128;
-            if (volume < 0)
+
+            if (soundParam.IsBackground)
             {
-                soundParam.Volume = _sfxVolume;
+                if (volume < 0)
+                {
+                    soundParam.Volume = MusicVolume;
+                }
+                else
+                {
+                    soundParam.Volume = (1 * MusicVolume) * volume;
+                }
             }
             else
             {
-                soundParam.Volume = volume;
+                if (volume < 0)
+                {
+                    soundParam.Volume = SoundVolume;
+                }
+                else
+                {
+                    soundParam.Volume = (1 * SoundVolume) * volume;
+                }
             }
 
             if (SfxMuted && !soundParam.IsBackground)

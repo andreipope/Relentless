@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+            units.Remove(AbilityUnitViewOwner);
 
             foreach (BoardUnitView unit in units)
             {
@@ -42,12 +43,6 @@ namespace Loom.ZombieBattleground
             CreateVfx(unit.Transform.position, true, 3f, true);
 
             CardsController.ReturnCardToHand(unit);
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-                {
-                    PlayerCallerOfAbility, AbilityData, unit.Model
-                }));
         }
     }
 }

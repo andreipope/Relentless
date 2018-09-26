@@ -449,12 +449,12 @@ namespace Loom.ZombieBattleground
                                         {
                                             workingCard.Owner.GraveyardCardsCount++;
 
-                                            _actionsQueueController.PostGameActionReport(
-                                                _actionsQueueController.FormatGameActionReport(
-                                                    Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
-                                                    {
-                                                        workingCard.Owner, card
-                                                    }));
+                                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                                            {
+                                                ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                                Caller = card,
+                                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                                            });
                                         },
                                         null,
                                         1.5f);
@@ -771,11 +771,12 @@ namespace Loom.ZombieBattleground
                         {
                             card.WorkingCard.Owner.GraveyardCardsCount++;
 
-                            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                                Enumerators.ActionType.PLAY_SPELL_CARD, new object[]
-                                {
-                                    card.WorkingCard.Owner, card
-                                }));
+                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                            {
+                                ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                Caller = card,
+                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                            });
                         },
                         null,
                         1.5f);

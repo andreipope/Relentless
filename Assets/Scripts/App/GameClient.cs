@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
@@ -28,6 +27,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
+            AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
             AddService<IInputManager>(new InputManager());

@@ -122,5 +122,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleMain = "main";
 
         internal const string AssetBundleLoadingScreen = "loadingscreen";
+
+        internal const string Space = " ";
     }
 }

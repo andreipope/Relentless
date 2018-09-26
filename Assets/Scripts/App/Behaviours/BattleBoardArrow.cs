@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
-            if (TutorialManager.IsTutorial && TutorialManager.CurrentTutorialDataStep.BoardArrowCantUsableOnUnit)
+            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))

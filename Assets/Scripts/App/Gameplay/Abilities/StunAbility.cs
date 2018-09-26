@@ -41,14 +41,7 @@ namespace Loom.ZombieBattleground
             if (info is BoardUnitView)
             {
                 BoardUnitView creature = info as BoardUnitView;
-                creature.Model.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(creature.Transform.position);
-
-                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
-                    {
-                        AbilityUnitViewOwner, creature.Model
-                    }));
             }
         }
     }

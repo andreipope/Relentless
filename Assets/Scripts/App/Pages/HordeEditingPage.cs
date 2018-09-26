@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class HordeEditingPage : IUIElement
+    public class  HordeEditingPage : IUIElement
     {
         private const int CardsPerPage = 5;
 
@@ -726,73 +726,48 @@ namespace Loom.ZombieBattleground
             bool success = true;
             if (_currentDeckId == -1)
             {
-                // HACK for offline mode: in online mode, local data should only be saved after
-                // backend operation has succeeded
-                // Quick Fix for : if there are no decks, error
-                if (_dataManager.CachedDecksData.Decks.Count > 0)
-                {
-                    _currentDeck.Id = _dataManager.CachedDecksData.Decks.Max(d => d.Id) + 1;
-                }
-                else
-                {
-                    _currentDeck.Id = 0;
-                }
-
-                // Add new deck
                 _currentDeck.HeroId = _currentHeroId;
-                _dataManager.CachedDecksData.Decks.Add(_currentDeck);
 
                 try
                 {
                     long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId,
                         _currentDeck, _dataManager.CachedDecksLastModificationTimestamp);
                     _currentDeck.Id = newDeckId;
+                    _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 }
                 catch (Exception e)
                 {
                     Debug.Log("Result === " + e);
 
-                    // HACK: for offline mode
-#pragma warning disable 162
-                    if (false)
-                    {
-                        success = false;
-                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
-                    }
-#pragma warning restore 162
+                    success = false;
+                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                 }
             }
             else
             {
-                // Update existing deck
-                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
-                {
-                    if (_dataManager.CachedDecksData.Decks[i].Id == _currentDeckId)
-                    {
-                        _dataManager.CachedDecksData.Decks[i] = _currentDeck;
-                        break;
-                    }
-                }
-
                 try
                 {
                     await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck,
                         _dataManager.CachedDecksLastModificationTimestamp);
+
+                    for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+                    {
+                        if (_dataManager.CachedDecksData.Decks[i].Id == _currentDeckId)
+                        {
+                            _dataManager.CachedDecksData.Decks[i] = _currentDeck;
+                            break;
+                        }
+                    }
+
                     Debug.Log(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
                 {
                     Debug.Log("Result === " + e);
 
-                    // HACK: for offline mode
-#pragma warning disable 162
-                    if (false)
-                    {
-                        success = false;
-                        OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
-                    }
-#pragma warning restore 162
+                    success = false;
+                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
                 }
             }
 

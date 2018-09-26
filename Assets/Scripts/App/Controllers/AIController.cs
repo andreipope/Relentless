@@ -602,16 +602,16 @@ namespace Loom.ZombieBattleground
                     boardCreature.transform.position +=
                         Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
-                    // PlayArrivalAnimation(boardCreature, libraryCard.CardType);
                     _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
 
-                    _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                        Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
+                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
-                            boardUnitViewElement.Model.OwnerPlayer, boardUnitViewElement.Model
-                        }));
+                            ActionType = Enumerators.ActionType.PlayCardFromHand,
+                            Caller = boardUnitViewElement.Model,
+                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        });
 
-                    boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation();
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>

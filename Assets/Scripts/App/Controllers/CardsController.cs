@@ -549,11 +549,12 @@ namespace Loom.ZombieBattleground
 
                             card.RemoveCardParticle.Play();
 
-                            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                                Enumerators.ActionType.PLAY_UNIT_CARD, new object[]
-                                {
-                                boardUnitView.Model.OwnerPlayer, boardUnitView.Model
-                                }));
+                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                            {
+                                ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                Caller = boardUnitView.Model,
+                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                            });
 
                             UpdateCardsStatusEvent?.Invoke(player);
 
@@ -951,12 +952,6 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.PlayerBoardCards.Add(unit);
                 _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(owner.BoardCards);
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.SUMMON_UNIT_CARD, new object[]
-                {
-                    owner, unit.Model
-                }));
 
             return unit;
         }

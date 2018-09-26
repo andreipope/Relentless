@@ -168,6 +168,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
+        public Enumerators.SetType LastAttackingSetType { get; set; }
+
         public bool CantAttackInThisTurnBlocker { get; set; } = false;
 
         public IFightSequenceHandler FightSequenceHandler;

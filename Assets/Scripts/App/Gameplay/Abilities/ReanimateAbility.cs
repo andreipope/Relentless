@@ -38,12 +38,6 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.PlayerBoardCards.Add(unit);
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]
-                {
-                    owner, unit.Model
-                }));
         }
 
         protected override void UnitDiedHandler()

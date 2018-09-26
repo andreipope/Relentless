@@ -97,18 +97,18 @@ namespace Loom.ZombieBattleground
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
             _editButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Edit")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Edit")
                     .GetComponent<Button>();
             _deleteButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Delete")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Delete")
                     .GetComponent<Button>();
             _firstSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
                     .GetComponent<Image>();
             _secondSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
                     .GetComponent<Image>();
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/Selection");
@@ -206,14 +206,6 @@ namespace Loom.ZombieBattleground
 
         private async void DeckDeletingHandler(HordeDeckObject deck)
         {
-            // HACK for offline mode in online mode, local data should only be saved after
-            // backend operation has succeeded
-            _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
             try
             {
                 await _backendFacade.DeleteDeck(
@@ -221,19 +213,18 @@ namespace Loom.ZombieBattleground
                     deck.SelfDeck.Id,
                     _dataManager.CachedDecksLastModificationTimestamp
                 );
+                _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
             catch (Exception e)
             {
-                // HACK for offline mode
-#pragma warning disable 162
-                if (false)
-                {
-                    Debug.Log("Result === " + e);
-                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
-                    return;
-                }
-#pragma warning restore 162
+                Debug.Log("Result === " + e);
+                OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
+                return;
             }
 
             LoadDeckObjects();
@@ -365,21 +356,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private bool ShowConnectionLostPopupIfNeeded()
-        {
-            // HACK for offline mode
-            return false;
-#pragma warning disable 162
-            if (_backendFacade.IsConnected)
-            {
-                return false;
-            }
-
-            _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");
-            return true;
-#pragma warning restore 162
-        }
-
         public class HordeDeckObject
         {
             public Transform SelectionContainer;
@@ -389,6 +365,8 @@ namespace Loom.ZombieBattleground
             private readonly ISoundManager _soundManager;
 
             private readonly GameObject _selfObject;
+
+            private readonly GameObject _background;
 
             private readonly Image _setTypeIcon;
 
@@ -415,6 +393,8 @@ namespace Loom.ZombieBattleground
                 _selfObject.transform.localPosition = Vector3.right * HordeItemSpace * index;
 
                 SelectionContainer = _selfObject.transform.Find("SelectionContainer");
+
+                _background = _selfObject.transform.Find("Image_BaackgroundGeneral").gameObject;
 
                 _setTypeIcon = _selfObject.transform.Find("Panel_HordeType/Image").GetComponent<Image>();
                 _hordePicture = _selfObject.transform.Find("Image_HordePicture").GetComponent<Image>();
@@ -458,6 +438,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(false);
+                _background.SetActive(false);
 
                 IsSelected = true;
             }
@@ -468,6 +449,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(true);
+                _background.SetActive(true);
 
                 IsSelected = false;
             }
@@ -552,17 +534,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        //private void AbilityPopupClosedEvent()
-        //{
-        //    _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
-        //}
-
-        // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
@@ -572,9 +545,6 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
@@ -588,9 +558,6 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             if (_selectedDeckId != -1)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);

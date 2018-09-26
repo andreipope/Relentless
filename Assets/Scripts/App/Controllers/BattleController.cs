@@ -57,11 +57,19 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
 
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.ATTACK_PLAYER_BY_CREATURE, new object[]
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAttackOverlord,
+                Caller = attackingUnitModel,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
-                    attackingUnitModel, attackedPlayer
-                }));
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = attackedPlayer
+                    }
+                }
+            });
         }
 
         public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
@@ -84,6 +92,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
                 _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damageAttacking);
@@ -98,9 +107,9 @@ namespace Loom.ZombieBattleground
                     if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                     {
                         damageAttacked = 0;
-                        attackingUnitModel.HasUsedBuffShield = true;
                     }
 
+                    attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
                     attackingUnitModel.CurrentHp -= damageAttacked;
 
                     _vfxController.SpawnGotDamageEffect(attackingUnitModel, -damageAttacked);
@@ -109,19 +118,27 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
                 }
 
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.ATTACK_CREATURE_BY_CREATURE, new object[]
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
-                        attackingUnitModel, damageAttacking, attackedUnitModel, damageAttacked
-                    }));
+                    ActionType = Enumerators.ActionType.CardAttackCard,
+                    Caller = attackingUnitModel,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = attackedUnitModel
+                        }
+                    }
+                });
 
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
             }
         }
 
-        public void AttackUnitBySkill(Player attackingPlayer, HeroSkill skill, BoardUnitModel attackedUnitModel, int modifier)
+        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier)
         {
-            int damage = skill.Value + modifier;
+            int damage = skill.Skill.Value + modifier;
 
             if (attackedUnitModel != null)
             {
@@ -130,45 +147,33 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
-
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
                 attackedUnitModel.CurrentHp -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.ATTACK_CREATURE_BY_SKILL, new object[]
-                {
-                    attackingPlayer, skill, damage, attackedUnitModel
-                }));
         }
 
-        public void AttackPlayerBySkill(Player attackingPlayer, HeroSkill skill, Player attackedPlayer)
+        public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer)
         {
             if (attackedPlayer != null)
             {
-                int damage = skill.Value;
+                int damage = skill.Skill.Value;
 
                 attackedPlayer.Health -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.ATTACK_PLAYER_BY_SKILL, new object[]
-                    {
-                        attackingPlayer, skill, attackedPlayer
-                    }));
             }
         }
 
-        public void HealPlayerBySkill(Player healingPlayer, HeroSkill skill, Player healedPlayer)
+        public void HealPlayerBySkill(Player healingPlayer, BoardSkill skill, Player healedPlayer)
         {
             if (healingPlayer != null)
             {
-                healedPlayer.Health += skill.Value;
+                healedPlayer.Health += skill.Skill.Value;
 
-                if (skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
-                    skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
+                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
+                    skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
                 {
                     if (healingPlayer.Health > Constants.DefaultPlayerHp)
                     {
@@ -176,30 +181,18 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.HEAL_PLAYER_BY_SKILL, new object[]
-                {
-                    healedPlayer, skill, healedPlayer
-                }));
         }
 
-        public void HealUnitBySkill(Player healingPlayer, HeroSkill skill, BoardUnitModel healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnitModel healedCreature)
         {
             if (healedCreature != null)
             {
-                healedCreature.CurrentHp += skill.Value;
+                healedCreature.CurrentHp += skill.Skill.Value;
                 if (healedCreature.CurrentHp > healedCreature.MaxCurrentHp)
                 {
                     healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
                 }
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.HEAL_CREATURE_BY_SKILL, new object[]
-                {
-                    healingPlayer, skill, healedCreature
-                }));
         }
 
         public void AttackUnitByAbility(
@@ -219,15 +212,12 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
+                if (attacker is BoardUnitModel)
+                    attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
+                else if(attacker is BoardSpell)
+                    attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
 
                 attackedUnitModel.CurrentHp -= damage;
-
-                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY, new[]
-                    {
-                        attacker, ability, damage, attackedUnitModel
-                    }));
             }
         }
 
@@ -240,12 +230,6 @@ namespace Loom.ZombieBattleground
                 attackedPlayer.Health -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
-
-                _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.ATTACK_PLAYER_BY_ABILITY, new[]
-                    {
-                        attacker, ability, ability.Value, attackedPlayer
-                    }));
             }
         }
 
@@ -264,12 +248,6 @@ namespace Loom.ZombieBattleground
                     healedPlayer.Health = Constants.DefaultPlayerHp;
                 }
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.HEAL_PLAYER_BY_ABILITY, new[]
-                {
-                    healler, ability, healValue, healedPlayer
-                }));
         }
 
         public void HealUnitByAbility(object healler, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
@@ -287,12 +265,6 @@ namespace Loom.ZombieBattleground
                     healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
                 }
             }
-
-            _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.HEAL_CREATURE_BY_ABILITY, new[]
-                {
-                    healler, ability, healValue, healedCreature
-                }));
         }
 
         private void FillStrongersAndWeakers()

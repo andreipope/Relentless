@@ -127,25 +127,25 @@ SpriteAtlas:
   - battleground_mechanic_icon_blank
   - battleground_mechanic_icon_destroy
   - battleground_past_action_bar_icon_effect
-  - battleground_past_action_bar_icon_attack_buff
+  - battleground_past_action_bar_icon_attackbuff
   - battleground_past_action_bar_icon_heavy
-  - battleground_past_action_bar_icon_death_mark
+  - battleground_past_action_bar_icon_deathmark
   - battleground_mechanic_icon_swingx
-  - battleground_past_action_bar_icon_attack_debuff
+  - battleground_past_action_bar_icon_attackdebuff
   - 506709160
   - battleground_mechanic_icon_overflow
   - battleground_mechanic_icon_death
-  - battleground_past_action_bar_icon_shield_debuff
+  - battleground_past_action_bar_icon_shielddebuff
   - battleground_mechanic_icon_freeze
   - battleground_mechanic_icon_end
   - battleground_mechanic_icon_devour
   - battleground_past_action_bar_icon_blitz
   - battleground_mechanic_icon_heavy
-  - battleground_past_action_bar_icon_shield_buff
+  - battleground_past_action_bar_icon_shieldbuff
   - battleground_past_action_bar_icon_guard
   - battleground_mechanic_icon_attack
   - battleground_mechanic_icon_flash
-  - battleground_past_action_bar_icon_life_gain
+  - battleground_past_action_bar_icon_lifegain
   - battleground_mechanic_icon_blank_large
   - battleground_mechanic_icon_guard
   - battleground_mechanic_icon_entry
