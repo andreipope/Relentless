@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -120,6 +121,28 @@ namespace Loom.ZombieBattleground.Helpers
 #else
             return DeviceDiagonalSizeInInches() > 6.5f;
 #endif
+        }
+
+        public static string ProccesEnumToString(string origin)
+        {
+            if (string.IsNullOrEmpty(origin))
+                return origin;
+
+            char[] chars = origin.Replace("_", Constants.Space).ToCharArray();
+
+            string newValue = chars[0].ToString().ToUpper();
+
+            for(int i = 1; i < chars.Length; i++)
+            {
+                if (char.IsUpper(chars[i]))
+                {
+                    newValue += Constants.Space;
+                }
+
+                newValue += chars[i].ToString().ToLower();
+            }
+          
+            return newValue;
         }
     }
 }

@@ -27,14 +27,14 @@ namespace Loom.ZombieBattleground
         private GameObject _overflowObject;
 
         private TextMeshPro _overflowGooAmountText;
-		
+        
 		private TextMeshPro _nameText;
 
         private Transform _overflowBottleContainer;
 
         private int _maxValue, _currentValue;
-		
-		private string _name;
+
+        private string _name;
 
         private bool _isInOverflow, _isAfterOverflow;
 
@@ -57,8 +57,8 @@ namespace Loom.ZombieBattleground
             }
 
             _isInOverflow = false;
-			_isAfterOverflow = false;
-			_name = name;
+            _isAfterOverflow = false;
+            _name = name;
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                     Disactive(_gooBottles[i]);
                 }
             }
-			_isAfterOverflow = false;
+            _isAfterOverflow = false;
             UpdateGooMeter();
         }
 
@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
             else if (_currentValue <= _maxValue && _isInOverflow)
             {
                 DestroyOverflow();
-				_isAfterOverflow = true;
+                _isAfterOverflow = true;
                 _isInOverflow = false;
             }
 
@@ -214,7 +214,7 @@ namespace Loom.ZombieBattleground
         public struct GooBottleItem
         {
             public GameObject Self;
-			
+                
 			public Animator selfAnimator;
 
             public ParticleSystem glow;
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground
             public GooBottleItem(GameObject gameObject)
             {
                 Self = gameObject;
-				selfAnimator = Self.GetComponent<Animator>();
+                selfAnimator = Self.GetComponent<Animator>();
                 glow = Self.transform.Find("GlowBottle").GetComponent<ParticleSystem>();
             }
         }

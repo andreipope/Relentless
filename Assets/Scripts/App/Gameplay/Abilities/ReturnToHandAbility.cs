@@ -38,12 +38,6 @@ namespace Loom.ZombieBattleground
             CreateVfx(unitPosition, true, 3f, true);
 
             CardsController.ReturnCardToHand(TargetUnit);
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-                {
-                            PlayerCallerOfAbility, AbilityData, TargetUnit
-                }));
         }
 
         protected override void InputEndedHandler()
