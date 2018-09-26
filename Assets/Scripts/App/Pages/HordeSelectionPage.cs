@@ -206,14 +206,6 @@ namespace Loom.ZombieBattleground
 
         private async void DeckDeletingHandler(HordeDeckObject deck)
         {
-            // HACK for offline mode in online mode, local data should only be saved after
-            // backend operation has succeeded
-            _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-            await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
-            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
             try
             {
                 await _backendFacade.DeleteDeck(
@@ -221,19 +213,18 @@ namespace Loom.ZombieBattleground
                     deck.SelfDeck.Id,
                     _dataManager.CachedDecksLastModificationTimestamp
                 );
+                _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
+                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
             catch (Exception e)
             {
-                // HACK for offline mode
-#pragma warning disable 162
-                if (false)
-                {
-                    Debug.Log("Result === " + e);
-                    OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
-                    return;
-                }
-#pragma warning restore 162
+                Debug.Log("Result === " + e);
+                OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
+                return;
             }
 
             LoadDeckObjects();
@@ -365,21 +356,6 @@ namespace Loom.ZombieBattleground
                 _containerOfDecks.transform.localPosition =
                     new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
             }
-        }
-
-        private bool ShowConnectionLostPopupIfNeeded()
-        {
-            // HACK for offline mode
-            return false;
-#pragma warning disable 162
-            if (_backendFacade.IsConnected)
-            {
-                return false;
-            }
-
-            _uiManager.DrawPopup<WarningPopup>("Sorry, modifications are only available in online mode.");
-            return true;
-#pragma warning restore 162
         }
 
         public class HordeDeckObject
@@ -560,17 +536,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        //private void AbilityPopupClosedEvent()
-        //{
-        //    _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
-        //}
-
-        // new horde deck object
         private void NewHordeDeckButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
@@ -580,9 +547,6 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (deck != null)
             {
@@ -596,9 +560,6 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
-            if (ShowConnectionLostPopupIfNeeded())
-                return;
-
             if (_selectedDeckId != -1)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
