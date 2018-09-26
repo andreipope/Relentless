@@ -92,6 +92,7 @@ namespace Loom.ZombieBattleground
                     attackedUnit.HasUsedBuffShield = true;
                 }
 
+                attackedUnit.LastAttackingSetType = attackingUnit.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
                 attackedUnit.CurrentHp -= damageAttacking;
 
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
@@ -109,6 +110,7 @@ namespace Loom.ZombieBattleground
                         attackingUnit.HasUsedBuffShield = true;
                     }
 
+                    attackingUnit.LastAttackingSetType = attackedUnit.Card.LibraryCard.CardSetType;
                     attackingUnit.CurrentHp -= damageAttacked;
 
                     _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
@@ -146,7 +148,7 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();
                 }
-
+                attackedUnit.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
                 attackedUnit.CurrentHp -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
@@ -211,6 +213,10 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnit.UseShieldFromBuff();
                 }
+                if (attacker is BoardUnit)
+                    attackedUnit.LastAttackingSetType = (attacker as BoardUnit).Card.LibraryCard.CardSetType;
+                else if(attacker is BoardSpell)
+                    attackedUnit.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
 
                 attackedUnit.CurrentHp -= damage;
             }
