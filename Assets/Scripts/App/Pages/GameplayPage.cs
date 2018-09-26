@@ -212,11 +212,6 @@ namespace Loom.ZombieBattleground
             _opponentHealthText =
                 GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                new Vector3(-3.55f, 0, -6.07f));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                new Vector3(9.77f, 0, 4.75f));
-
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
             _opponentNameText = GameObject.Find("Opponent/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -256,6 +251,11 @@ namespace Loom.ZombieBattleground
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
+			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+                new Vector3(-3.55f, 0, -6.07f), _playerNameText.text);
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
+                new Vector3(9.77f, 0, 4.75f), _opponentNameText.text);
+			
             _isPlayerInited = true;
         }
 
