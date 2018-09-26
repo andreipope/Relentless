@@ -77,16 +77,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
 #endif
 
-            try
-            {
-                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-
-                throw new Exception(e.Message);
-            }
+            await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             try
             {
@@ -95,12 +86,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-
-                throw new Exception(e.Message);
             }
 
             await _dataManager.StartLoadCache();
