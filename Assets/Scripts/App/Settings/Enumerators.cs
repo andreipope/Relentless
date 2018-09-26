@@ -138,7 +138,7 @@ namespace Loom.ZombieBattleground.Common
             CardAffectingCard,
             CardAffectingMultipleCards,
             CardAffectingOverlord,
-            CardAffectingCardsWithOverlord,
+            CardAffectingCardsWithOverlord
         }
 
         public enum AffectObjectType
@@ -466,7 +466,7 @@ namespace Loom.ZombieBattleground.Common
             Overflow,
             Freeze,
 
-            Push,
+            Push
         }
     }
 }
