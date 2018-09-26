@@ -27,6 +27,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
+            AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
             AddService<IInputManager>(new InputManager());
