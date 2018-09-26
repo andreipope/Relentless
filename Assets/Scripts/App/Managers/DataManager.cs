@@ -102,6 +102,9 @@ namespace Loom.ZombieBattleground
             CachedUserLocalData.Tutorial = false;
 #endif
 
+            GameClient.Get<ISoundManager>().ApplySoundData();
+            GameClient.Get<IApplicationSettingsManager>().ApplySettings();
+
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
             for (int i = 0; i < count; i++)

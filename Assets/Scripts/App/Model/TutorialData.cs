@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
         public bool IsLaunchAIBrain;
         public bool AvailableCardUsableInHand;
         public bool UnitsCanAttack;
-        public bool BoardArrowCantUsableOnUnit;
+        public bool BoardArrowCanUsableOnUnits;
         public bool BoardArrowCanUsableOnPlayer;
 
         public float DelayToPlaySound;
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
             CanHandleInput = false;
             IsLaunchAIBrain = false;
             UnitsCanAttack = false;
-            BoardArrowCantUsableOnUnit = false;
+            BoardArrowCanUsableOnUnits = false;
             BoardArrowCanUsableOnPlayer = false;
         }
     }

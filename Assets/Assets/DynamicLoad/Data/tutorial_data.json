@@ -305,6 +305,7 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "UnitsCanAttack": true,
+          "BoardArrowCanUsableOnUnits" : true,
           "SoundName": "czb_tutorial_15_attack"
         },
         {
@@ -437,7 +438,7 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
           "CanClickEndTurn": false,
-          "BoardArrowCantUsableOnUnit": true,
+          "BoardArrowCanUsableOnUnits": false,
           "BoardArrowCanUsableOnPlayer": true,
           "UnitsCanAttack": true,
           "SoundName": "czb_tutorial_21_attack_overlord"
@@ -533,6 +534,7 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "UnitsCanAttack": true,
+          "BoardArrowCanUsableOnUnits" : true,
           "SoundName": "czb_tutorial_25_remove_heavy"
         },
         {
@@ -623,7 +625,7 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": true,
           "CanClickEndTurn": false,
-          "BoardArrowCantUsableOnUnit": true,
+          "BoardArrowCanUsableOnUnits": false,
           "SoundName": "czb_tutorial_29_drag_feral"
         },
         {
@@ -681,7 +683,7 @@
         {
           "id": 30,
           "janePose": "NORMAL",
-          "janeText": "Overlord abilities don’t require Goo to use, but they take a few turns to get ready at the start of a match and after every use.",
+          "janeText": "Overlord abilities don’t require Goo\n to use, but they take a few turns\n to get ready at the start of a match\n and after every use.",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
@@ -747,7 +749,7 @@
           "CanUseBoardSkill": true,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "BoardArrowCantUsableOnUnit": true,
+          "BoardArrowCanUsableOnUnits": false,
           "BoardArrowCanUsableOnPlayer": true,
           "SoundName": "czb_tutorial_34_abilities"
         },
@@ -1414,6 +1416,7 @@
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
           "IsShowNextButton": true,
+          "BoardArrowCanUsableOnUnits" : true,
           "DelayToPlaySound": 6.0,
         },
         {
@@ -1427,14 +1430,15 @@
           "SoundName": "czb_tutorial_B_32_misery",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
+          "CanProceedWithEndStepManually": false,
           "HasDelayToPlaySound": false,
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
           "IsShowNextButton": false,
           "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
+          "CanHandleInput": false,
           "CanClickEndTurn": false,
+          "BoardArrowCanUsableOnUnits": false,
           "BoardArrowCanUsableOnPlayer": true,
           "UnitsCanAttack": true
         },
@@ -1477,7 +1481,7 @@
         {
           "id": 31,
           "janePose": "KISS",
-          "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b> <kiss>",
+          "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b>",
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,

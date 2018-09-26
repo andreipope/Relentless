@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NewTex_1:
-        m_Texture: {fileID: 2800000, guid: 33323777a1c2127428ff6542c39bea6a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1cdcef841b513444c9db70a183c72fdc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -59,7 +59,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SourceNewTex_1:
-        m_Texture: {fileID: 2800000, guid: 33323777a1c2127428ff6542c39bea6a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1cdcef841b513444c9db70a183c72fdc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
