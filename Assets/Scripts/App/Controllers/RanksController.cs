@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
             if (filter.Count > 0)
             {
                 DoRankUpgrades(filter, card.CardSetType, card.CardRank);
+
+                GameClient.Get<IOverlordManager>().ReportXPAction(filter[0].OwnerPlayer.SelfHero, Common.Enumerators.XPActionType.ActivateRankAbility);
             }
         }
 

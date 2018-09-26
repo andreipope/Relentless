@@ -1,0 +1,136 @@
+{
+  "Rewards": [
+    {
+      "Level": 1,
+      "Reward": null
+    },
+    {
+      "Level": 2,
+      "Reward": {
+        "Rank": "MINION",
+        "Count": 1
+      }
+    },
+    {
+      "Level": 3,
+      "Reward": null
+    },
+    {
+      "Level": 4,
+      "Reward": {
+        "SkillIndex": 0
+      }
+    },
+    {
+      "Level": 5,
+      "Reward": null
+    },
+    {
+      "Level": 6,
+      "Reward": {
+        "Rank": "MINION",
+        "Count": 2
+      }
+    },
+    {
+      "Level": 7,
+      "Reward": null
+    },
+    {
+      "Level": 8,
+      "Reward": {
+        "SkillIndex": 1
+      }
+    },
+    {
+      "Level": 9,
+      "Reward": null
+    },
+    {
+      "Level": 10,
+      "Reward": {
+        "Rank": "OFFICER",
+        "Count": 1
+      }
+    },
+    {
+      "Level": 11,
+      "Reward": null
+    },
+    {
+      "Level": 12,
+      "Reward": {
+        "SkillIndex": 2
+      }
+    },
+    {
+      "Level": 13,
+      "Reward": null
+    },
+    {
+      "Level": 14,
+      "Reward": {
+        "Rank": "OFFICER",
+        "Count": 2
+      }
+    },
+    {
+      "Level": 15,
+      "Reward": null
+    },
+    {
+      "Level": 16,
+      "Reward": {
+        "SkillIndex": 3
+      }
+    },
+    {
+      "Level": 17,
+      "Reward": null
+    },
+    {
+      "Level": 18,
+      "Reward": {
+        "Rank": "COMMANDER",
+        "Count": 1
+      }
+    },
+    {
+      "Level": 19,
+      "Reward": null
+    },
+    {
+      "Level": 20,
+      "Reward": {
+        "ItemReward": {
+          "SkillIndex": 4
+        }
+      }
+    }
+  ],
+  "ActionsXP": [
+    {
+      "Action": "KillOverlord",
+      "XP": 100
+    },
+    {
+      "Action": "KillMinion",
+      "XP": 7
+    },
+    {
+      "Action": "PlayCard",
+      "XP": 7
+    },
+    {
+      "Action": "ActivateRankAbility",
+      "XP": 7
+    },
+    {
+      "Action": "UseOverlordAbility",
+      "XP": 7
+    }
+  ],
+  "Fixed": 100,
+  "XPStep": 40,
+  "GooRewardStep": 10
+}

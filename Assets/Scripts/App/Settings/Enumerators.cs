@@ -446,5 +446,14 @@ namespace Loom.ZombieBattleground.Common
             NONE,
             FROZEN
         }
+
+        public enum XPActionType
+        {
+            KillOverlord,
+            KillMinion,
+            PlayCard,
+            ActivateRankAbility,
+            UseOverlordAbility
+        }
     }
 }

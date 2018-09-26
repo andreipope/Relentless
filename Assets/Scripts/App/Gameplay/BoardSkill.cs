@@ -166,6 +166,8 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown, true);
+
+            GameClient.Get<IOverlordManager>().ReportXPAction(Owner.SelfHero, Common.Enumerators.XPActionType.UseOverlordAbility);
         }
 
         public void Hide()

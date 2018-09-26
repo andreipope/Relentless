@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
                 attackedUnit.LastAttackingSetType = attackingUnit.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
                 attackedUnit.CurrentHp -= damageAttacking;
 
+                CheckOnKillEnemyZombie(attackedUnit);
+
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
 
                 attackedUnit.InvokeUnitDamaged(attackingUnit);
@@ -134,6 +136,8 @@ namespace Loom.ZombieBattleground
                 }
                 attackedUnit.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
                 attackedUnit.CurrentHp -= damage;
+
+                CheckOnKillEnemyZombie(attackedUnit);
 
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
             }
@@ -228,6 +232,8 @@ namespace Loom.ZombieBattleground
 
                 attackedUnit.CurrentHp -= damage;
 
+                CheckOnKillEnemyZombie(attackedUnit);
+
                 _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
                 _actionsQueueController.PostGameActionReport(_actionsQueueController.FormatGameActionReport(
                     Enumerators.ActionType.ATTACK_CREATURE_BY_ABILITY, new[]
@@ -299,6 +305,14 @@ namespace Loom.ZombieBattleground
                 {
                     healler, ability, healValue, healedCreature
                 }));
+        }
+
+        public void CheckOnKillEnemyZombie(BoardUnit attackedUnit)
+        {
+            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentHp == 0)
+            {
+                GameClient.Get<IOverlordManager>().ReportXPAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.XPActionType.KillMinion);
+            }
         }
 
         private void FillStrongersAndWeakers()

@@ -585,6 +585,7 @@ namespace Loom.ZombieBattleground
 
                             player.Goo -= card.ManaCost;
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                            GameClient.Get<IOverlordManager>().ReportXPAction(player.SelfHero, Common.Enumerators.XPActionType.PlayCard);
                             break;
                         }
                     case Enumerators.CardKind.SPELL:

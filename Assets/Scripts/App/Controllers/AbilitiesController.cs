@@ -430,7 +430,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     card.WorkingCard.Owner.Goo -= card.ManaCost;
                                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
+                                    GameClient.Get<IOverlordManager>().ReportXPAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.XPActionType.PlayCard);
                                     handCard.GameObject.SetActive(true);
                                     card.RemoveCardParticle.Play(); // move it when card should call hide action
 
@@ -752,6 +752,7 @@ namespace Loom.ZombieBattleground
                 {
                     card.WorkingCard.Owner.Goo -= card.ManaCost;
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                    GameClient.Get<IOverlordManager>().ReportXPAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.XPActionType.PlayCard);
 
                     card.GameObject.SetActive(true);
                     card.RemoveCardParticle.Play(); // move it when card should call hide action
