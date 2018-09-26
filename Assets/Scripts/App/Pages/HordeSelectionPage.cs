@@ -97,18 +97,18 @@ namespace Loom.ZombieBattleground
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
 
             _editButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Edit")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Edit")
                     .GetComponent<Button>();
             _deleteButton =
-                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Button_Delete")
+                _selfPage.transform.Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Delete")
                     .GetComponent<Button>();
             _firstSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_FirstSkil/Image_Skill")
                     .GetComponent<Image>();
             _secondSkill =
                 _selfPage.transform
-                    .Find("Panel_DecksContainer/Selection/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
+                    .Find("Panel_DecksContainer/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Image_SecondSkil/Image_Skill")
                     .GetComponent<Image>();
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/Selection");
@@ -392,6 +392,8 @@ namespace Loom.ZombieBattleground
 
             private readonly GameObject _selfObject;
 
+            private readonly GameObject _background;
+
             private readonly Image _setTypeIcon;
 
             private readonly Image _hordePicture;
@@ -417,6 +419,8 @@ namespace Loom.ZombieBattleground
                 _selfObject.transform.localPosition = Vector3.right * HordeItemSpace * index;
 
                 SelectionContainer = _selfObject.transform.Find("SelectionContainer");
+
+                _background = _selfObject.transform.Find("Image_BaackgroundGeneral").gameObject;
 
                 _setTypeIcon = _selfObject.transform.Find("Panel_HordeType/Image").GetComponent<Image>();
                 _hordePicture = _selfObject.transform.Find("Image_HordePicture").GetComponent<Image>();
@@ -460,6 +464,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(false);
+                _background.SetActive(false);
 
                 IsSelected = true;
             }
@@ -470,6 +475,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 _buttonSelect.gameObject.SetActive(true);
+                _background.SetActive(true);
 
                 IsSelected = false;
             }
