@@ -174,8 +174,6 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
-            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorialManager.TutorialsCount;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
         }
     }

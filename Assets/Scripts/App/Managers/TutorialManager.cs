@@ -157,6 +157,8 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmQuitReceivedHandler;
             if (status)
             {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
             }
