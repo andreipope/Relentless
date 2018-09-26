@@ -33,8 +33,8 @@ namespace Loom.ZombieBattleground
         private Transform _overflowBottleContainer;
 
         private int _maxValue, _currentValue;
-		
-		private string _name;
+
+        private string _name;
 
         private bool _isInOverflow;
 
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
             }
 
             _isInOverflow = false;
-			_name = name;
+            _name = name;
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
