@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             IsUsing = false;
         }
 
-        public void UseSkill(object target)
+        private void UseSkill()
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
@@ -313,6 +313,7 @@ namespace Loom.ZombieBattleground
 
             if (Skill.SkillTargetTypes.Count == 0)
             {
+                UseSkill();
                 _skillsController.DoSkillAction(this, Owner);
             }
             else
@@ -321,12 +322,14 @@ namespace Loom.ZombieBattleground
                 {
                     if (FightTargetingArrow != null)
                     {
+                        UseSkill();
                         _skillsController.DoSkillAction(this);
                         _playerController.IsCardSelected = false;
                     }
                 }
                 else
                 {
+                    UseSkill();
                     _skillsController.DoSkillAction(this);
                 }
             }
