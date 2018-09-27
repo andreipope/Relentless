@@ -4,10 +4,8 @@ using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class HandBoardCard
+public class HandBoardCard : OwnableBoardObject
 {
-    public Player OwnerPlayer;
-
     public GameObject BoardZone;
 
     public bool Enabled = true;

@@ -482,5 +482,14 @@ namespace Loom.ZombieBattleground.Common
             Medium,
             Low
         }
+
+        public enum ExperienceActionType
+        {
+            KillOverlord,
+            KillMinion,
+            PlayCard,
+            ActivateRankAbility,
+            UseOverlordAbility
+        }
     }
 }
