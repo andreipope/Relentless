@@ -804,7 +804,8 @@ namespace Loom.ZombieBattleground
             {
                 case "DELAYED":
                     return ability.Delay;
-                default: return ability.Value;
+                default:
+                    return ability.Value;
             }
         }
 

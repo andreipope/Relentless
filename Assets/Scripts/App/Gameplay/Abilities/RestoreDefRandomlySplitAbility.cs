@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
@@ -57,7 +58,8 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                         _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards);
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
                 }
             }
         }

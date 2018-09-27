@@ -136,28 +136,25 @@ namespace Loom.ZombieBattleground
 
             // setup left block
 
-            if(pastActionParam.Caller is Player player)
+            switch (pastActionParam.Caller)
             {
-                _leftBlockOverlordElement.Init(player);
-            }
-            else if(pastActionParam.Caller is BoardSkill skill)
-            {
-                _leftBlockOverlordSkillElement.Init(skill);
-            }
-            else if(pastActionParam.Caller is BoardUnitModel unit)
-            {
-                _leftBlockCardUnitElement.Init(unit.Card);
-            }
-            else if(pastActionParam.Caller is BoardCard card)
-            {
-                if(card is SpellBoardCard)
-                {
-                    _leftBlockCardSpellElement.Init(card.WorkingCard);
-                }
-                else if(card is UnitBoardCard)
-                {
-                    _leftBlockCardUnitElement.Init(card.WorkingCard);
-                }
+                case Player player:
+                    _leftBlockOverlordElement.Init(player);
+                    break;
+                case BoardSkill skill:
+                    _leftBlockOverlordSkillElement.Init(skill);
+                    break;
+                case BoardUnitModel unit:
+                    _leftBlockCardUnitElement.Init(unit.Card);
+                    break;
+                case SpellBoardCard spellBoardCard:
+                    _leftBlockCardSpellElement.Init(spellBoardCard.WorkingCard);
+                    break;
+                case UnitBoardCard unitBoardCard:
+                    _leftBlockCardUnitElement.Init(unitBoardCard.WorkingCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pastActionParam.Caller), pastActionParam.Caller, null);
             }
 
             // setup right block

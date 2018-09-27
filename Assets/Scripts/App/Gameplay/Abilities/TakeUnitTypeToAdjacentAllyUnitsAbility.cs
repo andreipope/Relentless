@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -67,6 +68,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardType.FERAL:
                     unit.Model.HasFeral = true;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(CardType), CardType, null);
             }
         }
     }

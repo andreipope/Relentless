@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            creature.Model.DoCombat(SelectedCard?.Model ?? (object) SelectedPlayer);
+            creature.Model.DoCombat((BoardObject) SelectedCard?.Model ?? SelectedPlayer);
             Dispose();
         }
 

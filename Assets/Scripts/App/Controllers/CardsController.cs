@@ -593,7 +593,7 @@ namespace Loom.ZombieBattleground
                                                 () =>
                                                 {
                                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                                        Enumerators.CardKind.CREATURE, boardUnitView, CallCardPlay, true, null);
+                                                        Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null);
                                                 });
                                         },
                                         null,
@@ -632,7 +632,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void PlayOpponentCard(
-            Player player, WorkingCard card, object target, Action<WorkingCard, object> completePlayCardCallback)
+            Player player, WorkingCard card, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
         {
             GameObject randomCard =
                 _battlegroundController.OpponentHandCards[
@@ -957,7 +957,7 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit, true);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, true);
 
             if (!owner.IsLocalPlayer)
             {

@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -47,6 +48,8 @@ namespace Loom.ZombieBattleground
                                 TargetUnitView.Model.BuffedHp += Value;
                                 TargetUnitView.Model.CurrentHp += Value;
                                 break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                         }
 
                         CreateVfx(TargetUnitView.Transform.position);

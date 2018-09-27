@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
@@ -581,6 +582,8 @@ namespace Loom.ZombieBattleground
                     _lastBoardUntilOnPreview = unit;
                     CurrentPreviewedCardId = unit.Model.Card.InstanceId;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             CreatePreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
@@ -601,6 +604,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     card = unit.Model.Card;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             BoardCard boardCard;
@@ -637,6 +642,8 @@ namespace Loom.ZombieBattleground
                 case BoardCard tooltipCard:
                     boardCard.DrawTooltipInfoOfCard(tooltipCard);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             Vector3 newPos = pos;
@@ -889,7 +896,8 @@ namespace Loom.ZombieBattleground
                             return unit.Model;
                     }
                     break;
-                default: break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
             }
 
             return null;

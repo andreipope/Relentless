@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AffectObjectType.CHARACTER:
                     BattleController.HealUnitByAbility(caller, AbilityData, TargetUnitView.Model);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
         }
 

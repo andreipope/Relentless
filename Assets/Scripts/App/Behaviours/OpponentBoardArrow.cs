@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
                     TargetPosition = unit.Transform.position;
                     unit.SetSelectedUnit(true);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             TargetPosition.z = 0;

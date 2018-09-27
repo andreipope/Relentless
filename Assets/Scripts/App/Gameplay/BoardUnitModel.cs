@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
             CreaturePlayableForceSet?.Invoke();
         }
 
-        public void DoCombat(object target)
+        public void DoCombat(BoardObject target)
         {
             if (target == null)
             {
@@ -499,6 +499,8 @@ namespace Loom.ZombieBattleground
                                 );
                         });
                     break;
+                default:
+                    throw new NotSupportedException(target.GetType().ToString());
             }
         }
 

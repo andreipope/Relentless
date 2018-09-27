@@ -28,8 +28,7 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
         }

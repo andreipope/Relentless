@@ -1,8 +1,10 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -471,6 +473,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.PHALANX:
                     PhalanxAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
             }
         }
 
@@ -686,7 +690,7 @@ namespace Loom.ZombieBattleground
 
             targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
 
-            foreach (object targetObject in targets)
+            foreach (BoardObject targetObject in targets)
             {
                 AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
 
@@ -856,6 +860,8 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         _battleController.HealPlayerBySkill(owner, boardSkill, player);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }
@@ -898,6 +904,8 @@ namespace Loom.ZombieBattleground
                         Enumerators.CardSoundType.NONE);
 
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

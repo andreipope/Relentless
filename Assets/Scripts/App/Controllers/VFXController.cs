@@ -179,6 +179,8 @@ namespace Loom.ZombieBattleground
                 case Transform transform:
                     position = transform.transform.position;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             GameObject particle = Object.Instantiate(prefab);
@@ -221,6 +223,8 @@ namespace Loom.ZombieBattleground
                             }
                         });
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
 
@@ -236,6 +240,8 @@ namespace Loom.ZombieBattleground
                 case Player _:
                     target = ((Player) onObject).AvatarObject.transform;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(onObject), onObject, null);
             }
 
             GameObject effect =

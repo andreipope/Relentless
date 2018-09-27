@@ -1,7 +1,8 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -58,7 +59,8 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                         _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Model.Card.LibraryCard) == SetType.ToString()));
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }

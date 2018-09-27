@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -55,7 +56,8 @@ namespace Loom.ZombieBattleground
                         }
 
                         break;
-                    default: continue;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }

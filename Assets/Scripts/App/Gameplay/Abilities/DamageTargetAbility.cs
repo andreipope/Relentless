@@ -1,7 +1,9 @@
+using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -98,6 +100,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AffectObjectType.CHARACTER:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
 
             Vector3 targetPosition = VfxObject.transform.position;
@@ -118,6 +122,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityEffectType.TARGET_TOXIC:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AbilityEffectType), AbilityEffectType, null);
             }
 
             if (VfxObject != null)

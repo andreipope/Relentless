@@ -254,7 +254,7 @@ namespace Loom.ZombieBattleground
         {
             Player caller = _gameplayManager.GetPlayerById(model.CallerId);
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(caller, model.CardId);
-            object target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
             {
@@ -296,7 +296,7 @@ namespace Loom.ZombieBattleground
         {
             Player caller = _gameplayManager.GetPlayerById(model.CallerId);
             BoardSkill skill = _battlegroundController.GetSkillById(caller, model.SkillId);
-            object target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
             {

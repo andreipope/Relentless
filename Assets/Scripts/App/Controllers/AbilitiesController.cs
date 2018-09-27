@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (kind == Enumerators.CardKind.CREATURE)
                         {
-                            activeAbility.Ability.AbilityUnitViewOwner = boardObject as BoardUnitView;
+                            activeAbility.Ability.AbilityUnitViewOwner = (BoardUnitView) boardObject;
                         }
                         else
                         {
@@ -223,6 +223,8 @@ namespace Loom.ZombieBattleground
                         case Enumerators.AbilityTargetType.ALL:
                             available = true;
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(item), item, null);
                     }
                 }
             }
@@ -305,6 +307,8 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
@@ -347,6 +351,8 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
@@ -358,7 +364,7 @@ namespace Loom.ZombieBattleground
             BoardCard card,
             WorkingCard workingCard,
             Enumerators.CardKind kind,
-            object boardObject,
+            BoardObject boardObject,
             Action<BoardCard> action,
             bool isPlayer,
             Action onCompleteCallback,
@@ -511,6 +517,8 @@ namespace Loom.ZombieBattleground
                             case Player player:
                                 activeAbility.Ability.TargetPlayer = player;
                                 break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(target), target, null);
                         }
 
                         activeAbility.Ability.SelectedTargetAction(true);
@@ -736,15 +744,17 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
-                    break;       
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
         }
 
-        public void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
+        public void ResolveAllAbilitiesOnUnit(BoardObject boardObject, bool status = true)
         {
-            if (boardObject is BoardUnitView unit)
+            if (boardObject is BoardUnitModel unit)
             {
-                unit.Model.IsAllAbilitiesResolvedAtStart = status;
+                unit.IsAllAbilitiesResolvedAtStart = status;
             }
 
             _gameplayManager.CanDoDragActions = status;
@@ -808,6 +818,8 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         activeAbility.Ability.TargetPlayer = player;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
                 activeAbility.Ability.SelectedTargetAction(true);

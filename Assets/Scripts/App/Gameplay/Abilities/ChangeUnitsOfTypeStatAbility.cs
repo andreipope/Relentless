@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -62,6 +63,8 @@ namespace Loom.ZombieBattleground
                         unit.Model.BuffedHp += Value;
                         unit.Model.CurrentHp += Value;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                 }
 
                 CreateVfx(unit.Transform.position, true);
