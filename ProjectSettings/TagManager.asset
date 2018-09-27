@@ -7,7 +7,7 @@ TagManager:
   - PlayerOwned
   - OpponentOwned
   - Cameras
-  - ZoneForTouching
+  - BattlegroundTouchingArea
   layers:
   - Default
   - TransparentFX

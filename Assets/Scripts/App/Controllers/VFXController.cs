@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 {
     public class VfxController : IController
     {
-        private const string TagZoneForTouching = "ZoneForTouching";
+        private const string TagZoneForTouching = "BattlegroundTouchingArea";
 
         private ISoundManager _soundManager;
 
