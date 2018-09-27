@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnit : BoardObject
+    public class BoardUnit : OwnableBoardObject
     {
         public bool AttackedThisTurn;
 

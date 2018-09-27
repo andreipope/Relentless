@@ -9,7 +9,11 @@ namespace Loom.ZombieBattleground
 {
     public class BoardObject
     {
-        public int Id;
-        public Player OwnerPlayer;
+        public int Id { get; set; }
+    }
+
+    public class OwnableBoardObject : BoardObject
+    {
+        public Player OwnerPlayer { get; set; }
     }
 }
