@@ -435,7 +435,7 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
             Card libraryCard = card.WorkingCard.LibraryCard;
-            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE && _gameplayManager.CurrentPlayer.BoardCards.Count < Constants.MaxBoardUnits)
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
