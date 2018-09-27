@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
 
+        private SkillsController _skillsController;
+
         private List<BoardUnit> _cardsInDestroy;
 
         private IDataManager _dataManager;
@@ -93,6 +95,7 @@ namespace Loom.ZombieBattleground
             _vfxController = _gameplayManager.GetController<VfxController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
+            _skillsController = _gameplayManager.GetController<SkillsController>();
 
             _cardsInDestroy = new List<BoardUnit>();
 
@@ -353,7 +356,7 @@ namespace Loom.ZombieBattleground
             TurnStarted?.Invoke();
         }
 
-        public void EndTurn()
+        public async void EndTurn()
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -365,6 +368,11 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnit card in PlayerBoardCards)
                 {
                     card.OnEndTurn();
+                }
+
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    await _gameplayManager.GetController<OpponentController>().ActionEndTurn(_gameplayManager.CurrentPlayer);
                 }
             }
             else
@@ -403,7 +411,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 StartTurn();
-            }
+            }            
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -849,6 +857,70 @@ namespace Loom.ZombieBattleground
             return boardUnit;
         }
 
+
+        public BoardObject GetTargetById(int id, Enumerators.AffectObjectType affectObjectType)
+        {
+            switch(affectObjectType)
+            {
+                case Enumerators.AffectObjectType.PLAYER:
+                    return _gameplayManager.OpponentPlayer.Id == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+                case Enumerators.AffectObjectType.CHARACTER:
+                    {
+                        List<BoardUnit> units = new List<BoardUnit>();
+                        units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+                        units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+
+                        BoardUnit unit = units.Find(u => u.Id == id);
+
+                        units.Clear();
+
+                        if (unit != null)
+                            return unit;
+                    }
+                    break;
+                default: break;
+            }
+
+            return null;
+        }
+
+        public BoardSkill GetSkillById(Player owner, int id)
+        {
+            if (!owner.IsLocalPlayer)
+            {
+                if (_skillsController.OpponentPrimarySkill.Id == id)
+                    return _skillsController.OpponentPrimarySkill;
+                else if (_skillsController.OpponentSecondarySkill.Id == id)
+                    return _skillsController.OpponentSecondarySkill;
+            }
+            else
+            {
+                if (_skillsController.PlayerPrimarySkill.Id == id)
+                    return _skillsController.PlayerPrimarySkill;
+                else if (_skillsController.PlayerSecondarySkill.Id == id)
+                    return _skillsController.PlayerSecondarySkill;
+            }
+
+            return null;
+        }
+
+        public BoardUnit GetBoardUnitById(Player owner, int id)
+        {
+            return owner.BoardCards.Find(u => u.Id == id);
+        }
+
+        public BoardObject GetBoardObjectById(int id)
+        {
+            List<BoardUnit> units = new List<BoardUnit>();
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+
+            BoardUnit unit = units.Find(u => u.Id == id);
+
+            units.Clear();
+
+            return unit;
+        }
 
         #region specific setup of battleground
 

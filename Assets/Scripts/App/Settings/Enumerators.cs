@@ -483,6 +483,16 @@ namespace Loom.ZombieBattleground.Common
             Low
         }
 
+
+        public enum PlayerAction
+        {
+            DrawCard,
+            Mulligan,
+            UseCardAbility,
+            UseOverlordSkill,
+            CardAttack,
+            EndTurn
+        }
         public enum ExperienceActionType
         {
             KillOverlord,
@@ -490,6 +500,7 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
-        }
+
+        }        }
     }
 }

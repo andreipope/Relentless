@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -116,7 +117,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void EndCardDistribution()
+        public async void EndCardDistribution()
         {
             if (!CardDistribution)
                 return;
@@ -135,6 +136,11 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer.CardsInDeck.Remove(card.WorkingCard);
                 _gameplayManager.CurrentPlayer.CardsInDeck.Add(card.WorkingCard);
                 card.ReturnCardToDeck();
+            }
+
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                await _gameplayManager.GetController<OpponentController>().ActionMulligan(_gameplayManager.CurrentPlayer, cards.Select(x => x.WorkingCard).ToList());
             }
 
             foreach (BoardCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
@@ -216,7 +222,7 @@ namespace Loom.ZombieBattleground
             callback?.Invoke();
         }
 
-        public void AddCardToHand(Player player, WorkingCard card = null)
+        public async void AddCardToHand(Player player, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -239,9 +245,14 @@ namespace Loom.ZombieBattleground
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
+
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+            }
         }
 
-        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        public async void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -271,6 +282,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 player.AddCardToHandFromOpponentDeck(otherPlayer, card);
+            }
+
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
             }
         }
 
